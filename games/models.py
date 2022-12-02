@@ -8,9 +8,15 @@ class Master(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE, null=True)
 
 class Character(models.Model):
+    RACES = (
+        ('H', 'Human'),
+        ('O', 'Orc'),
+        ('E', 'Elf'),
+        ('D', 'Dwarf')
+    )
     game = models.ForeignKey(Game, on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=255)
-    race = models.SmallIntegerField()
+    race = models.CharField(max_length=1, choices=RACES)
     age = models.SmallIntegerField()
-    xp = models.SmallIntegerField()
-    mp = models.SmallIntegerField()
+    xp = models.SmallIntegerField(default=0)
+    mp = models.SmallIntegerField(default=0)
