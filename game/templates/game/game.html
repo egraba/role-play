@@ -6,15 +6,26 @@
   </head>
   <body>
     <h1>{{ game_id }}</h1>
-    {% if player_list %}
-        <p>Players:</p>
+    {% if character_list %}
+        <p>Characters:</p>
         <ul>
-            {% for player in player_list %}
-                <li>{{ player.id }}</li>
+            {% for character in character_list %}
+                <li>{{ character }}</li>
             {% endfor %}
         </ul>
     {% else %}
-        <p>No players for this game...</p>
+        <p>No characters for this game...</p>
+    {% endif %}
+
+    {% if narrative_list %}
+        <p>Story:</p>
+        <ul>
+            {% for narrative in narrative_list %}
+                <li>{{ narrative }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>The story did not start yet...</p>
     {% endif %}
   </body>
 </html>
