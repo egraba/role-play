@@ -10,7 +10,7 @@
         <p>Ongoing games:</p>
         <ul>
             {% for game in game_list %}
-                <li><a href="/game/{{ game.id }}/">{{ game.id }}</a></li>
+                <li><a href={% url 'detail' game.id %}/">{{ game.id }}</a></li>
             {% endfor %}
         </ul>
     {% else %}
