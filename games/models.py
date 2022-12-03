@@ -20,3 +20,6 @@ class Character(models.Model):
     age = models.SmallIntegerField()
     xp = models.SmallIntegerField(default=0)
     mp = models.SmallIntegerField(default=0)
+
+    def __str__(self):
+        return self.name
