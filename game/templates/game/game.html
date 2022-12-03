@@ -6,24 +6,33 @@
   </head>
   <body>
     <h1>{{ game_id }}</h1>
+    <h2>Characters</h2>
     {% if character_list %}
-        <p>Characters:</p>
-        <ul>
+        <table>
             {% for character in character_list %}
-                <li>{{ character }}</li>
+                <tr>
+                    <td>{{ character.name }}</td>
+                    <td>{{ character.race }}</td>
+                    <td>{{ character.age }}</td>
+                    <td>{{ character.xp }}</td>
+                    <td>{{ character.mp }}</td>
+                </tr>
             {% endfor %}
-        </ul>
+        </table>
     {% else %}
         <p>No characters for this game...</p>
     {% endif %}
 
+    <h2>Story</h2>
     {% if narrative_list %}
-        <p>Story:</p>
-        <ul>
+        <table>
             {% for narrative in narrative_list %}
-                <li>{{ narrative }}</li>
+                <tr>
+                    <td>{{ narrative.date }}</td>
+                    <td>{{ narrative.message }}</td>
+                </tr>
             {% endfor %}
-        </ul>
+        </table>
     {% else %}
         <p>The story did not start yet...</p>
     {% endif %}
