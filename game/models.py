@@ -2,7 +2,7 @@ from django.db import models
 
 class Game(models.Model):
     start_date = models.DateTimeField()
-    end_date = models.DateTimeField(blank=True)
+    end_date = models.DateTimeField(null=True, blank=True)
 
 class Master(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE, null=True)
