@@ -7,10 +7,6 @@ class Game(models.Model):
     def __str__(self):
         return self.name
     
-
-class Master(models.Model):
-    game = models.ForeignKey(Game, on_delete=models.CASCADE, null=True)
-
 class Character(models.Model):
     RACES = (
         ('H', 'Human'),
@@ -27,3 +23,20 @@ class Character(models.Model):
 
     def __str__(self):
         return self.name
+
+class Narrative(models.Model):
+    date = models.DateTimeField()
+    message = models.CharField(max_length=1024)
+    action_required = models.BooleanField(default=False)
+
+    def __str(self):
+        return self.message
+
+class Action(models.Model):
+    ACTIONS = (
+        ('D', 'Launch dice'),
+    )
+    date = models.DateTimeField()
+    character = models.ForeignKey(Character, on_delete=models.CASCADE)
+    action = models.CharField(max_length=1, choices=ACTIONS)
+    result = models.SmallIntegerField()
