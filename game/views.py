@@ -11,10 +11,11 @@ def index(request):
     return render(request, 'game/index.html', context)
 
 def detail(request, game_id):
+    game = Game.objects.get(pk=game_id)
     character_list = Character.objects.all()
     narrative_list = Narrative.objects.all()
     context = {
-        'game_id': game_id,
+        'game': game,
         'character_list': character_list,
         'narrative_list': narrative_list,
     }
