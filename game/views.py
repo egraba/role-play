@@ -10,6 +10,9 @@ def index(request):
     return render(request, 'game/index.html', context)
 
 def detail(request, game_id):
-    players = Character.objects.all()
-    output = players
-    return HttpResponse(output)
+    player_list = Character.objects.all()
+    context = {
+        'game_id': game_id,
+        'player_list': player_list
+    }
+    return render(request, 'game/game.html', context)

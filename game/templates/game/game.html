@@ -5,16 +5,16 @@
     <title>egraba's role-play</title>
   </head>
   <body>
-    <h1>Role play</h1>
-    {% if game_list %}
-        <p>Ongoing games:</p>
+    <h1>{{ game_id }}</h1>
+    {% if player_list %}
+        <p>Players:</p>
         <ul>
-            {% for game in game_list %}
-                <li><a href="/game/{{ game.id }}/">{{ game.id }}</a></li>
+            {% for player in player_list %}
+                <li>{{ player.id }}</li>
             {% endfor %}
         </ul>
     {% else %}
-        <p>No games are available...</p>
+        <p>No players for this game...</p>
     {% endif %}
   </body>
 </html>
