@@ -1,9 +1,13 @@
 from django.http import HttpResponse
+from django.shortcuts import render
 
+from .models import Game
 from .models import Character
 
 def index(request):
-    return HttpResponse("Role play game")
+    game_list = Game.objects.all()
+    context = { 'game_list': game_list}
+    return render(request, 'game/index.html', context)
 
 def detail(request, game_id):
     players = Character.objects.all()
