@@ -2,6 +2,7 @@ from django.db import models
 
 class Game(models.Model):
     start_date = models.DateTimeField()
+    name = models.CharField(max_length=255, null=False, blank=False)
     end_date = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
