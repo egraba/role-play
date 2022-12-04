@@ -44,3 +44,7 @@ class Action(models.Model):
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
     action = models.CharField(max_length=1, choices=ACTIONS)
     result = models.SmallIntegerField()
+
+class DiceLaunch(models.Model):
+    action = models.ForeignKey(Action, on_delete=models.CASCADE)
+    score = models.SmallIntegerField()
