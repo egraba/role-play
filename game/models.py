@@ -29,8 +29,8 @@ class Character(models.Model):
 
 class Narrative(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE, null=True)
-    date = models.DateTimeField()
-    message = models.CharField(max_length=1024)
+    date = models.DateTimeField(default=timezone.now)
+    message = models.CharField(max_length=1024, null=False, blank=False)
     action_required = models.BooleanField(default=False)
 
     def __str(self):
