@@ -18,12 +18,12 @@ class Character(models.Model):
         ('D', 'Dwarf')
     )
     game = models.ForeignKey(Game, on_delete=models.CASCADE, null=True)
-    name = models.CharField(max_length=255)
-    race = models.CharField(max_length=1, choices=RACES)
-    age = models.SmallIntegerField()
+    name = models.CharField(max_length=255, null=False, blank=False)
+    race = models.CharField(max_length=1, choices=RACES, null=False, blank=False)
+    age = models.SmallIntegerField(null=False, blank=False)
     xp = models.SmallIntegerField(default=0)
     hp = models.SmallIntegerField(default=100)
-    mp = models.SmallIntegerField(default=0)
+    max_hp = models.SmallIntegerField(default=100)
 
     def __str__(self):
         return self.name
