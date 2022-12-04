@@ -37,7 +37,12 @@
             {% for narrative in narrative_list %}
                 <tr>
                     <td>{{ narrative.date }}</td>
+                </tr>
+                <tr>
                     <td>{{ narrative.message }}</td>
+                    {% if narrative.action_required %}
+                        <td>&#10036;</td>
+                    {% endif %}
                 </tr>
             {% endfor %}
         </table>
