@@ -1,0 +1,32 @@
+body {
+    background-color: antiquewhite;
+    text-align: center;
+    font-family: cursive;
+}
+
+table {
+    border-style: solid;
+    border-color: brown;
+    border-width: thin;
+    background-color: antiquewhite;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    padding-left: 5em;
+    padding-right: 5em;
+}
+
+span {
+    font-weight: bold;
+}
+
+.character_list {
+    border: none;
+}
+
+.character {
+    text-align: left;
+    padding-left: 1em;
+    padding-right: 1em;
+}

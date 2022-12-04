@@ -3,21 +3,29 @@
   <head>
     <meta charset="utf-8" />
     <title>egraba's role-play</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'game/style.css' %}">
   </head>
   <body>
     <h1>{{ game }}</h1>
     <h2>Characters</h2>
     {% if character_list %}
-        <table>
-            {% for character in character_list %}
-                <tr>
-                    <td>{{ character.name }}</td>
-                    <td>{{ character.race }}</td>
-                    <td>{{ character.age }}</td>
-                    <td>{{ character.xp }}</td>
-                    <td>{{ character.mp }}</td>
-                </tr>
-            {% endfor %}
+        <table class="character_list">
+            <tr>
+                {% for character in character_list %}
+                <td>
+                    <table class="character">
+                        <td>
+                            <tr><td><span>{{ character.name }}</span></td></tr>
+                            <tr><td>Race</td><td>{{ character.race }}</td></tr>
+                            <tr><td>Age</td><td>{{ character.age }}</td></tr>
+                            <tr><td>XP</td><td>{{ character.xp }}</td></tr>
+                            <tr><td>MP</td><td>{{ character.mp }}</td></tr>
+                        </td>
+                    </table>
+                <td>
+                {% endfor %}
+            </tr>
         </table>
     {% else %}
         <p>No characters for this game...</p>

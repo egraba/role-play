@@ -3,17 +3,21 @@
   <head>
     <meta charset="utf-8" />
     <title>egraba's role-play</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'game/style.css' %}">
   </head>
   <body>
     <h1>Role play</h1>
     <h2>Ongoing games</h2>
     {% if game_list %}
-        <tr>
+        <table>
             {% for game in game_list %}
+            <tr>
                 <td>{{ game.start_date }}</td>
                 <td><a href={% url 'detail' game.id %}>{{ game }}</a></td>
+            </tr>
             {% endfor %}
-        </tr>
+        </table>
     {% else %}
         <p>No games are available...</p>
     {% endif %}
