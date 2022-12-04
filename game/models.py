@@ -20,6 +20,7 @@ class Character(models.Model):
     race = models.CharField(max_length=1, choices=RACES)
     age = models.SmallIntegerField()
     xp = models.SmallIntegerField(default=0)
+    hp = models.SmallIntegerField(default=100)
     mp = models.SmallIntegerField(default=0)
 
     def __str__(self):
