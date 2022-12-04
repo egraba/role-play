@@ -17,11 +17,10 @@
                     <table class="character">
                         <td>
                             <tr><td><span>{{ character.name }}</span></td></tr>
-                            <tr><td>Race</td><td>{{ character.race }}</td></tr>
-                            <tr><td>Age</td><td>{{ character.age }}</td></tr>
-                            <tr><td>XP</td><td>{{ character.xp }}</td></tr>
-                            <tr><td>HP</td><td>{{ character.hp }}</td></tr>
-                            <tr><td>MP</td><td>{{ character.mp }}</td></tr>
+                            <tr><td>Race:</td><td>{{ character.get_race_display }}</td></tr>
+                            <tr><td>Age:</td><td>{{ character.age }}</td></tr>
+                            <tr><td>XP:</td><td>{{ character.xp }}</td></tr>
+                            <tr><td>HP:</td><td>{{ character.hp }} / {{ character.max_hp }}</td></tr>
                         </td>
                     </table>
                 <td>
