@@ -28,6 +28,7 @@ class Character(models.Model):
         return self.name
 
 class Narrative(models.Model):
+    game = models.ForeignKey(Game, on_delete=models.CASCADE, null=True)
     date = models.DateTimeField()
     message = models.CharField(max_length=1024)
     action_required = models.BooleanField(default=False)

@@ -12,8 +12,8 @@ def index(request):
 
 def detail(request, game_id):
     game = Game.objects.get(pk=game_id)
-    character_list = Character.objects.all()
-    narrative_list = Narrative.objects.all()
+    character_list = Character.objects.filter(game=game_id)
+    narrative_list = Narrative.objects.filter(game=game_id)
     context = {
         'game': game,
         'character_list': character_list,
