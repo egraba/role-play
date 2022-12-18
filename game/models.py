@@ -31,20 +31,27 @@ class Narrative(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE, null=True)
     date = models.DateTimeField(default=timezone.now)
     message = models.CharField(max_length=1024, null=False, blank=False)
-    action_required = models.BooleanField(default=False)
-
+    
     def __str(self):
         return self.message
 
-class Action(models.Model):
-    ACTIONS = (
+class ActionRequest(models.Model):
+    ACTION_TYPES = (
+        ('C', 'Make choice'),
         ('D', 'Launch dice'),
     )
-    date = models.DateTimeField()
+    narrative = models.ForeignKey(Narrative, on_delete=models.CASCADE)
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
-    action = models.CharField(max_length=1, choices=ACTIONS)
-    result = models.SmallIntegerField()
+    action_type = models.CharField(max_length=1, choices=ACTION_TYPES)
+
+class ActionResponse(models.Model):
+    narrative = models.ForeignKey(Narrative, on_delete=models.CASCADE)
+    character = models.ForeignKey(Character, on_delete=models.CASCADE)
+
+class Choice(models.Model):
+    action_response = models.ForeignKey(ActionResponse, on_delete=models.CASCADE)
+    selection = models.CharField(max_length=255)
 
 class DiceLaunch(models.Model):
-    action = models.ForeignKey(Action, on_delete=models.CASCADE)
+    action_response = models.ForeignKey(ActionResponse, on_delete=models.CASCADE)
     score = models.SmallIntegerField()
