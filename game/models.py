@@ -32,7 +32,7 @@ class Narrative(models.Model):
     date = models.DateTimeField(default=timezone.now)
     message = models.CharField(max_length=1024, null=False, blank=False)
     
-    def __str(self):
+    def __str__(self):
         return self.message
 
 class ActionRequest(Narrative):
