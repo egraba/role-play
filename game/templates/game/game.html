@@ -49,6 +49,7 @@
                                     <tr>
                                         <td class = "action_character">{{ action_request.character }}</td>
                                         <td class = "action_icon">
+                                            {{ action_request.get_action_type_display }}
                                             {% if action_request.action_type == 'C' %}
                                                 &#10067;
                                             {% elif action_request.action_type == 'D' %}
