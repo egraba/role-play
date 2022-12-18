@@ -48,10 +48,11 @@ class ActionResponse(models.Model):
     narrative = models.ForeignKey(Narrative, on_delete=models.CASCADE)
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
 
-class Choice(models.Model):
-    action_response = models.ForeignKey(ActionResponse, on_delete=models.CASCADE)
+    class Meta:
+        abstract = True
+
+class Choice(ActionResponse):
     selection = models.CharField(max_length=255)
 
-class DiceLaunch(models.Model):
-    action_response = models.ForeignKey(ActionResponse, on_delete=models.CASCADE)
+class DiceLaunch(ActionResponse):
     score = models.SmallIntegerField()
