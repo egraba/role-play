@@ -21,14 +21,17 @@ span {
     font-weight: bold;
 }
 
-.character_list {
-    border: none;
+#character_list {
+    position: fixed;
+    top: 1em;
+    left: 1em;
 }
 
 .character {
     text-align: left;
     padding-left: 1em;
     padding-right: 1em;
+    margin-bottom: 1em;
 }
 
 .action_request {

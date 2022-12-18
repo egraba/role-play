@@ -8,28 +8,21 @@
   </head>
   <body>
     <h1>{{ game }}</h1>
-    <h2>Characters</h2>
-    {% if character_list %}
-        <table class="character_list">
-            <tr>
-                {% for character in character_list %}
-                <td>
-                    <table class="character">
-                        <td>
-                            <tr><td><span>{{ character.name }}</span></td></tr>
-                            <tr><td>Race:</td><td>{{ character.get_race_display }}</td></tr>
-                            <tr><td>Age:</td><td>{{ character.age }}</td></tr>
-                            <tr><td>XP:</td><td>{{ character.xp }}</td></tr>
-                            <tr><td>HP:</td><td>{{ character.hp }} / {{ character.max_hp }}</td></tr>
-                        </td>
-                    </table>
-                <td>
-                {% endfor %}
-            </tr>
-        </table>
-    {% else %}
-        <p>No characters for this game...</p>
-    {% endif %}
+        <div id="character_list">
+            {% for character in character_list %}
+                <table class="character">
+                    <td>
+                        <tr><td><span>{{ character.name }}</span></td></tr>
+                        <tr><td>Race:</td><td>{{ character.get_race_display }}</td></tr>
+                        <tr><td>Age:</td><td>{{ character.age }}</td></tr>
+                        <tr><td>XP:</td><td>{{ character.xp }}</td></tr>
+                        <tr><td>HP:</td><td>{{ character.hp }} / {{ character.max_hp }}</td></tr>
+                    </td>
+                </table>
+            {% empty %}
+                <p>No characters for this game...</p>
+            {% endfor %}
+        </div>
 
     <h2>Story</h2>
     {% if narrative_list or action_request_list %}
