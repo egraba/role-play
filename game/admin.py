@@ -15,7 +15,7 @@ class NarrativeAdmin(admin.ModelAdmin):
     fields = ['game', 'message']
 
 class ActionRequestAdmin(admin.ModelAdmin):
-    fields = ['narrative', 'character', 'action_type']
+    fields = ['game', 'message', 'character', 'action_type']
 
 admin.site.register(Game, GameAdmin)
 admin.site.register(Character, CharacterAdmin)

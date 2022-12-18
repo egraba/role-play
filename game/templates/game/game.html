@@ -32,7 +32,7 @@
     {% endif %}
 
     <h2>Story</h2>
-    {% if narrative_list %}
+    {% if narrative_list or action_request_list %}
         <table>
             {% for narrative in narrative_list %}
                 <tr>
@@ -41,6 +41,26 @@
                 <tr>
                     <td>{{ narrative.message }}</td>
                 </tr>
+                {% for action_request in action_request_list %}
+                    {% if action_request.id == narrative.id %}
+                        <tr>
+                            <td>
+                                <table class="action_request">
+                                    <tr>
+                                        <td class = "action_character">{{ action_request.character }}</td>
+                                        <td class = "action_icon">
+                                            {% if action_request.action_type == 'C' %}
+                                                &#10067;
+                                            {% elif action_request.action_type == 'D' %}
+                                                &#127922;
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
             {% endfor %}
         </table>
     {% else %}

@@ -13,8 +13,8 @@ table {
     margin-right: auto;
     padding-top: 0.5em;
     padding-bottom: 0.5em;
-    padding-left: 5em;
-    padding-right: 5em;
+    padding-left: 1em;
+    padding-right: 1em;
 }
 
 span {
@@ -29,4 +29,27 @@ span {
     text-align: left;
     padding-left: 1em;
     padding-right: 1em;
+}
+
+.action_request {
+    border: none;
+    padding-left: 0em;
+}
+
+.action_character { 
+    text-align: left;
+    padding-left: 0em;
+    padding-right: 2em;
+}
+
+.action_message { 
+    text-align: center;
+    padding-left: 5em;
+    padding-right: 5em;
+}
+
+.action_icon { 
+    text-align: right;
+    padding-left: 2em;
+    padding-right: 0em;
 }
