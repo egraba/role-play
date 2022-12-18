@@ -35,17 +35,15 @@ class Narrative(models.Model):
     def __str(self):
         return self.message
 
-class ActionRequest(models.Model):
+class ActionRequest(Narrative):
     ACTION_TYPES = (
         ('C', 'Make choice'),
         ('D', 'Launch dice'),
     )
-    narrative = models.ForeignKey(Narrative, on_delete=models.CASCADE)
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
     action_type = models.CharField(max_length=1, choices=ACTION_TYPES)
 
-class ActionResponse(models.Model):
-    narrative = models.ForeignKey(Narrative, on_delete=models.CASCADE)
+class ActionResponse(Narrative()):
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
 
     class Meta:
