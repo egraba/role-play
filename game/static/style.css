@@ -27,6 +27,11 @@ nav {
     left: 1em;
 }
 
+footer {
+    position: relative;
+    top: 3em;
+}
+
 .character {
     text-align: left;
     padding-left: 1em;

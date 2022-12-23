@@ -4,12 +4,18 @@
     <title>{% block title %}egraba's role-play{% endblock %}</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
 </head>
 
 <body>
     <header>{% block header %}Role play{% endblock %}</header>
     <nav>{% block nav %}{% endblock %}</nav>
     <main>{% block main %}{% endblock %}</main>
-    <footer>{% block footer %}{% endblock %}</footer>
+    <footer>{% block footer %}
+        <a href="https://github.com/egraba/role-play"><i class="fa-brands fa-github" ></i></a>
+        {% endblock %}
+    </footer>
 </body>
 </html>
