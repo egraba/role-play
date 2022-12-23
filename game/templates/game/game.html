@@ -20,7 +20,7 @@
 <h1>{{ game }}</h1>
 {% for narrative in narrative_list %}
     <article>
-        <p>{{ narrative.date }}</p>
+        <header>{{ narrative.date }}</header>
         <p>{{ narrative.message }}</p>
     </article>
     {% for action_request in action_request_list %}
