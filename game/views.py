@@ -1,6 +1,7 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.views import generic
 
 from .models import Game
 from .models import Character
@@ -10,10 +11,11 @@ from .models import DiceLaunch
 
 import random
 
-def index(request):
-    game_list = Game.objects.all()
-    context = { 'game_list': game_list}
-    return render(request, 'game/index.html', context)
+class IndexView(generic.ListView):
+    template_name = 'game/index.html'
+
+    def get_queryset(self):
+        return Game.objects.all()
 
 def detail(request, game_id):
     game = Game.objects.get(pk=game_id)
