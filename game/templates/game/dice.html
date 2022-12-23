@@ -1,16 +1,9 @@
-<!DOCTYPE html>
-<html lang="en-US">
-  <head>
-    <meta charset="utf-8" />
-    <title>egraba's role-play</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'game/style.css' %}">
-  </head>
-  <body>
-    <h1>{{ game }}</h1>
-    <form action="{% url 'launch_dice' game.id character.id %}" method="post">
-        {% csrf_token %}
-        <input type="submit" value="Launch dice!">
-    </form>
-  </body>
-</html>
+{% extends 'base.html' %}
+
+{% block main %}
+<h1>{{ game }}</h1>
+<form action="{% url 'launch_dice' game.id character.id %}" method="post">
+    {% csrf_token %}
+    <input type="submit" value="Launch dice!">
+</form>
+{% endblock%}

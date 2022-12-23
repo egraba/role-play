@@ -21,7 +21,7 @@ span {
     font-weight: bold;
 }
 
-#character_list {
+nav {
     position: absolute;
     top: 1em;
     left: 1em;

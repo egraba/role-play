@@ -1,14 +1,7 @@
-<!DOCTYPE html>
-<html lang="en-US">
-  <head>
-    <meta charset="utf-8" />
-    <title>egraba's role-play</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'game/style.css' %}">
-  </head>
-  <body>
-    <h1>Role play</h1>
-    <h2>Ongoing games</h2>
+{% extends 'base.html' %}
+
+{% block main %}
+<h1>Ongoing games</h1>
     {% if game_list %}
         <table>
             {% for game in game_list %}
@@ -21,5 +14,4 @@
     {% else %}
         <p>No games are available...</p>
     {% endif %}
-  </body>
-</html>
+{% endblock %}

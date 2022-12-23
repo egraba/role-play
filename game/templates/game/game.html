@@ -1,58 +1,49 @@
-<!DOCTYPE html>
-<html lang="en-US">
-  <head>
-    <meta charset="utf-8" />
-    <title>egraba's role-play</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'game/style.css' %}">
-  </head>
-  <body>
-    <h1>{{ game }}</h1>
-        <div id="character_list">
-            {% for character in character_list %}
-                <table class="character">
-                    <td>
-                        <tr><td><span>{{ character.name }}</span></td></tr>
-                        <tr><td>Race:</td><td>{{ character.get_race_display }}</td></tr>
-                        <tr><td>Age:</td><td>{{ character.age }}</td></tr>
-                        <tr><td>XP:</td><td>{{ character.xp }}</td></tr>
-                        <tr><td>HP:</td><td>{{ character.hp }} / {{ character.max_hp }}</td></tr>
-                    </td>
-                </table>
-            {% empty %}
-                <p>No characters for this game...</p>
-            {% endfor %}
-        </div>
+{% extends 'base.html' %}
 
-        <main>
-            {% for narrative in narrative_list %}
-                <article>
-                    <p>{{ narrative.date }}</p>
-                    <p>{{ narrative.message }}</p>
-                </article>
-                {% for action_request in action_request_list %}
-                    {% if action_request.id == narrative.id %}
+{% block nav %}
+    {% for character in character_list %}
+        <table class="character">
+            <td>
+                <tr><td><span>{{ character.name }}</span></td></tr>
+                <tr><td>Race:</td><td>{{ character.get_race_display }}</td></tr>
+                <tr><td>Age:</td><td>{{ character.age }}</td></tr>
+                <tr><td>XP:</td><td>{{ character.xp }}</td></tr>
+                <tr><td>HP:</td><td>{{ character.hp }} / {{ character.max_hp }}</td></tr>
+            </td>
+        </table>
+    {% empty %}
+        <p>No characters for this game...</p>
+    {% endfor %}
+{% endblock %}
+
+{% block main %}
+<h1>{{ game }}</h1>
+{% for narrative in narrative_list %}
+    <article>
+        <p>{{ narrative.date }}</p>
+        <p>{{ narrative.message }}</p>
+    </article>
+    {% for action_request in action_request_list %}
+        {% if action_request.id == narrative.id %}
+            <tr>
+                <td>
+                    <table class="action_request">
                         <tr>
-                            <td>
-                                <table class="action_request">
-                                    <tr>
-                                        <td class = "action_character">{{ action_request.character }}</td>
-                                        <td class = "action_icon">
-                                            {% if action_request.action_type == 'D' %}
-                                                <a href={% url 'launch_dice_request' game.id action_request.character.id %}>{{ action_request.get_action_type_display }} &#127922;</a>
-                                            {% elif action_request.action_type == 'C' %}
-                                                {{ action_request.get_action_type_display }} &#10067;
-                                            {% endif %}
-                                        </td>
-                                    </tr>
-                                </table>
+                            <td class = "action_character">{{ action_request.character }}</td>
+                            <td class = "action_icon">
+                                {% if action_request.action_type == 'D' %}
+                                    <a href={% url 'launch_dice_request' game.id action_request.character.id %}>{{ action_request.get_action_type_display }} &#127922;</a>
+                                {% elif action_request.action_type == 'C' %}
+                                    {{ action_request.get_action_type_display }} &#10067;
+                                {% endif %}
                             </td>
                         </tr>
-                    {% endif %}
-                {% endfor %}
-            {% empty %}
-                <p>The story did not start yet...</p>
-            {% endfor %}
-        </main>
-  </body>
-</html>
+                    </table>
+                </td>
+            </tr>
+        {% endif %}
+    {% endfor %}
+{% empty %}
+    <p>The story did not start yet...</p>
+{% endfor %}
+{% endblock %}

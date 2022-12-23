@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{% block title %}egraba's role-play{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+
+<body>
+    <header>{% block header %}Role play{% endblock %}</header>
+    <nav>{% block nav %}{% endblock %}</nav>
+    <main>{% block main %}{% endblock %}</main>
+    <footer>{% block footer %}{% endblock %}</footer>
+</body>
+</html>
