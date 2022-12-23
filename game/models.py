@@ -43,7 +43,7 @@ class ActionRequest(Narrative):
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
     action_type = models.CharField(max_length=1, choices=ACTION_TYPES)
 
-class ActionResponse(Narrative()):
+class ActionResponse(Narrative):
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
 
     class Meta:
