@@ -32,7 +32,9 @@
                             <td class = "action_character">{{ action_request.character }}</td>
                             <td class = "action_icon">
                                 {% if action_request.action_type == 'D' %}
-                                    <a href={% url 'launch_dice_request' game.id action_request.character.id %}>{{ action_request.get_action_type_display }} &#127922;</a>
+                                    <a href={% url 'launch_dice_request' game.id action_request.character.id %}>
+                                        {{ action_request.get_action_type_display }} <i class="fa-regular fa-dice-d20"></i>
+                                    </a>
                                 {% elif action_request.action_type == 'C' %}
                                     {{ action_request.get_action_type_display }} &#10067;
                                 {% endif %}
