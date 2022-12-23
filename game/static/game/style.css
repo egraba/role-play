@@ -22,7 +22,7 @@ span {
 }
 
 #character_list {
-    position: fixed;
+    position: absolute;
     top: 1em;
     left: 1em;
 }

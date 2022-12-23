@@ -24,16 +24,12 @@
             {% endfor %}
         </div>
 
-    <h2>Story</h2>
-    {% if narrative_list or action_request_list %}
-        <table>
+        <main>
             {% for narrative in narrative_list %}
-                <tr>
-                    <td>{{ narrative.date }}</td>
-                </tr>
-                <tr>
-                    <td>{{ narrative.message }}</td>
-                </tr>
+                <article>
+                    <p>{{ narrative.date }}</p>
+                    <p>{{ narrative.message }}</p>
+                </article>
                 {% for action_request in action_request_list %}
                     {% if action_request.id == narrative.id %}
                         <tr>
@@ -55,10 +51,9 @@
                         </tr>
                     {% endif %}
                 {% endfor %}
+            {% empty %}
+                <p>The story did not start yet...</p>
             {% endfor %}
-        </table>
-    {% else %}
-        <p>The story did not start yet...</p>
-    {% endif %}
+        </main>
   </body>
 </html>
