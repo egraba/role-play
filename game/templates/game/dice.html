@@ -1,9 +1,11 @@
 {% extends 'base.html' %}
 
-{% block main %}
-<h1>{{ game }}</h1>
-<form action="{% url 'launch_dice' game.id character.id %}" method="post">
-    {% csrf_token %}
-    <input type="submit" value="Launch dice!">
-</form>
+{% block content %}
+<div class="action rpgui-container framed-golden">
+    <h1>{{ game }}</h1>
+    <form action="{% url 'launch_dice' game.id character.id %}" method="post">
+        {% csrf_token %}
+        <input type="submit" value="Launch dice!">
+    </form>
+<div>
 {% endblock%}

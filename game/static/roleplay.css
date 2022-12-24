@@ -1,0 +1,18 @@
+.rpgui-content {
+    background: #222;
+    padding: 2em;
+}
+
+.rpgui-content .title {
+    font-size: x-large;
+}
+
+.inner {
+    width: 68em;
+    margin-left: 25em;
+}
+
+.action {
+    width: 50em;
+    margin-left: 25em;
+}

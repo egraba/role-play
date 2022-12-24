@@ -3,19 +3,15 @@
 <head>
     <title>{% block title %}egraba's role-play{% endblock %}</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link href={% static 'dist/rpgui.min.css' %} rel="stylesheet" type="text/css" >
+    <script src={% static "dist/rpgui.min.js" %}></script>
+    <link href={% static 'roleplay.css' %} rel="stylesheet" type="text/css" >
     <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
 </head>
 
 <body>
-    <header>{% block header %}Role play{% endblock %}</header>
-    <nav>{% block nav %}{% endblock %}</nav>
-    <main>{% block main %}{% endblock %}</main>
-    <footer>{% block footer %}
-        <a href="https://github.com/egraba/role-play"><i class="fa-brands fa-github" ></i></a>
-        {% endblock %}
-    </footer>
+    <div class="rpgui-content">{% block content %}{% endblock%}</div>
 </body>
 </html>
