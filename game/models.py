@@ -19,7 +19,6 @@ class Character(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE, null=True)
     name = models.CharField(max_length=255, null=False, blank=False)
     race = models.CharField(max_length=1, choices=RACES, null=False, blank=False)
-    age = models.SmallIntegerField(null=False, blank=False)
     xp = models.SmallIntegerField(default=0)
     hp = models.SmallIntegerField(default=100)
     max_hp = models.SmallIntegerField(default=100)
