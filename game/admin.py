@@ -21,5 +21,3 @@ admin.site.register(Game, GameAdmin)
 admin.site.register(Character, CharacterAdmin)
 admin.site.register(Narrative, NarrativeAdmin)
 admin.site.register(PendingAction, PendingActionAdmin)
-
-
