@@ -34,22 +34,27 @@ class Narrative(models.Model):
     def __str__(self):
         return self.message
 
-class ActionRequest(Narrative):
+class PendingAction(models.Model):
     ACTION_TYPES = (
         ('C', 'Make choice'),
         ('D', 'Launch dice'),
     )
+    game = models.ForeignKey(Game, on_delete=models.CASCADE, null=True)
+    narrative = models.ForeignKey(Narrative, on_delete=models.CASCADE)
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
     action_type = models.CharField(max_length=1, choices=ACTION_TYPES)
 
-class ActionResponse(Narrative):
+    def __str__(self):
+        return self.action_type
+
+class Action(Narrative):
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
 
     class Meta:
         abstract = True
 
-class Choice(ActionResponse):
+class Choice(Action):
     selection = models.CharField(max_length=255)
 
-class DiceLaunch(ActionResponse):
+class DiceLaunch(Action):
     score = models.SmallIntegerField()

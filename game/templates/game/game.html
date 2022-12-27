@@ -9,6 +9,18 @@
             <p>XP: {{ character.xp }}</p>
             <p>HP: {{ character.hp }} / {{ character.max_hp }}</p>
         </div>
+        {% for pending_action in pending_action_list %}
+            {% if pending_action.character.id == character.id %}    
+                <div class="rpgui-container framed-grey">
+                    {% if pending_action.action_type == 'D' %}
+                        <a href={% url 'launch_dice_request' game.id pending_action.character.id %}> {{ pending_action.get_action_type_display }} <i class="fa-regular fa-dice-d20"></i></a>
+                    {% elif pending_action.action_type == 'C' %}
+                        {{ pending_action.get_action_type_display }} &#10067;
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% empty %}
+        {% endfor %}
     {% empty %}
         <p>No characters for this game...</p>
     {% endfor %}
@@ -18,28 +30,6 @@
     <h1>{{ game }}</h1>
     {% for narrative in narrative_list %}
         <p>{{ narrative.date }} {{ narrative.message }}</p>
-        {% for action_request in action_request_list %}
-            {% if action_request.id == narrative.id %}
-                <tr>
-                    <td>
-                        <table class="action_request">
-                            <tr>
-                                <td class = "action_character">{{ action_request.character }}</td>
-                                <td class = "action_icon">
-                                    {% if action_request.action_type == 'D' %}
-                                        <a href={% url 'launch_dice_request' game.id action_request.character.id %}>
-                                            {{ action_request.get_action_type_display }} <i class="fa-regular fa-dice-d20"></i>
-                                        </a>
-                                    {% elif action_request.action_type == 'C' %}
-                                        {{ action_request.get_action_type_display }} &#10067;
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            {% endif %}
-        {% endfor %}
     {% empty %}
         <p>The story did not start yet...</p>
     {% endfor %}
