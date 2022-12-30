@@ -28,3 +28,15 @@ class IndexViewTests(TestCase):
             list(response.context['game_list']),
             [game1, game2],
         )
+
+class GameViewTests(TestCase):
+    def test_game_exists(self):
+        game = create_game()
+        game_id = Game.objects.latest('start_date').pk
+        response = self.client.get(reverse('detail', args=[game_id]))
+        self.assertEqual(response.status_code, 200)
+        
+    def test_game_not_exists(self):
+        game_id = random.randint(10000, 99999)
+        response = self.client.get(reverse('detail', args=[game_id]))
+        self.assertEqual(response.status_code, 404)
