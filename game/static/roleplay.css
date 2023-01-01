@@ -7,6 +7,11 @@
     font-size: x-large;
 }
 
+.center {
+    width: 60em;
+    margin-left: 20em;
+}
+
 .inner {
     width: 68em;
     margin-left: 25em;
