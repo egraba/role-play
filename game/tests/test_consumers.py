@@ -9,7 +9,7 @@ from django.urls import re_path
 from character.tests.factories import CharacterFactory
 from game.consumers import GameEventsConsumer
 from game.models.events import DiceLaunch
-from game.utils.channels import EventType
+from game.utils.channels import GameEventType
 
 from .factories import GameFactory
 
@@ -40,23 +40,22 @@ class TestGameEventsConsumer:
 
         await communicator.send_json_to(
             {
-                "type": EventType.MASTER_INSTRUCTION,
-                "content": "some content",
+                "type": GameEventType.MASTER_INSTRUCTION,
+                "event_message": "some content",
             }
         )
         response = await communicator.receive_json_from()
         expected_json = {
-            "type": EventType.MASTER_INSTRUCTION,
+            "type": GameEventType.MASTER_INSTRUCTION,
             "date": ANY,
-            "message": "the Master said: ",
-            "content": "some content",
+            "event_message": "some content",
         }
         assert response == expected_json
 
         await communicator.disconnect()
 
     @pytest.mark.asyncio
-    async def test_master_quest(self):
+    async def test_master_quest_update(self):
         communicator = WebsocketCommunicator(
             self.application, f"/events/{self.game.id}/"
         )
@@ -67,13 +66,13 @@ class TestGameEventsConsumer:
 
         await communicator.send_json_to(
             {
-                "type": EventType.MASTER_QUEST_UPDATE,
+                "type": GameEventType.MASTER_QUEST_UPDATE,
                 "content": "some content",
             }
         )
         response = await communicator.receive_json_from()
         expected_json = {
-            "type": EventType.MASTER_QUEST_UPDATE,
+            "type": GameEventType.MASTER_QUEST_UPDATE,
             "date": ANY,
             "message": "the Master updated the quest.",
             "content": "some content",
@@ -83,7 +82,7 @@ class TestGameEventsConsumer:
         await communicator.disconnect()
 
     @pytest.mark.asyncio
-    async def test_master_start(self):
+    async def test_master_game_start(self):
         communicator = WebsocketCommunicator(
             self.application, f"/events/{self.game.id}/"
         )
@@ -94,13 +93,40 @@ class TestGameEventsConsumer:
 
         await communicator.send_json_to(
             {
-                "type": EventType.MASTER_GAME_START,
+                "type": GameEventType.MASTER_GAME_START,
                 "content": "some content",
             }
         )
         response = await communicator.receive_json_from()
         expected_json = {
-            "type": EventType.MASTER_GAME_START,
+            "type": GameEventType.MASTER_GAME_START,
+            "date": ANY,
+            "message": "the game started.",
+            "content": "some content",
+        }
+        assert response == expected_json
+
+        await communicator.disconnect()
+
+    @pytest.mark.asyncio
+    async def test_master_ability_check_request(self):
+        communicator = WebsocketCommunicator(
+            self.application, f"/events/{self.game.id}/"
+        )
+        communicator.scope["user"] = self.master_user
+        communicator.scope["game_id"] = self.game.id
+        connected, _ = await communicator.connect()
+        assert connected
+
+        await communicator.send_json_to(
+            {
+                "type": GameEventType.MASTER_ABILITY_CHECK_REQUEST,
+                "content": "some content",
+            }
+        )
+        response = await communicator.receive_json_from()
+        expected_json = {
+            "type": GameEventType.MASTER_ABILITY_CHECK_REQUEST,
             "date": ANY,
             "message": "the game started.",
             "content": "some content",
@@ -121,13 +147,13 @@ class TestGameEventsConsumer:
 
         await communicator.send_json_to(
             {
-                "type": EventType.PLAYER_CHOICE,
+                "type": GameEventType.PLAYER_CHOICE,
                 "content": "some content",
             }
         )
         response = await communicator.receive_json_from()
         expected_json = {
-            "type": EventType.PLAYER_CHOICE,
+            "type": GameEventType.PLAYER_CHOICE,
             "date": ANY,
             "message": f"[{ self.player_user }] said: ",
             "content": "some content",
@@ -151,12 +177,12 @@ class TestGameEventsConsumer:
 
         await communicator.send_json_to(
             {
-                "type": EventType.PLAYER_DICE_LAUNCH,
+                "type": GameEventType.PLAYER_DICE_LAUNCH,
             }
         )
         response = await communicator.receive_json_from()
         expected_json = {
-            "type": EventType.PLAYER_DICE_LAUNCH,
+            "type": GameEventType.PLAYER_DICE_LAUNCH,
             "date": ANY,
             "message": f"[{ self.player_user }] launched a dice: ",
             "content": ANY,

@@ -12,13 +12,12 @@ def send_email(subject, message, from_email, recipient_list):
 
 
 @shared_task
-def store_master_instruction(game_id, date, message, content):
+def store_master_instruction(game_id, date, event_message):
     game = Game.objects.get(id=game_id)
     Instruction.objects.create(
         game=game,
         date=date,
-        message=message,
-        content=content,
+        content=event_message,
     )
 
 

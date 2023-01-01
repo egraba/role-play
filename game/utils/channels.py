@@ -1,13 +1,31 @@
-from enum import StrEnum
+import datetime
+from enum import Flag, StrEnum, auto
 
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 
 
-class EventType(StrEnum):
-    """Game event types.
+class GameEventOrigin(Flag):
+    """Game event origin.
 
-    These event type are the types of messages that can be sent in the game chat.
+    Game events are all the communication events that occur during a game.
+    These events can be initiated from the client side (e.g. via a browser),
+    or via the server (e.g. via a form).
+
+    """
+
+    CLIENT_SIDE = auto()
+    SERVER_SIDE = auto()
+
+
+class GameEventType(StrEnum):
+    """Game event type.
+
+    Game events are all the communication events that occur during a game.
+    The type corresponds to a specific action that can be done during a game.
+
+    The events prefixed by "MASTER" are done by the Dungeon Master (DM), while
+    the events prefixed by "PLAYER" are done by the players.
 
     """
 
@@ -19,19 +37,27 @@ class EventType(StrEnum):
     PLAYER_DICE_LAUNCH = "player.dice.launch"
 
 
-def send_to_chat(game_id: int, event_type: str, content: str) -> None:
+def send_to_chat(
+    game_id: int, event_type: str, date: datetime, event_message: str
+) -> None:
     """Send game events to the game chat.
 
     Send game events to the game channel layer.
 
     Args:
         game_id (int): Game identifier.
-        event_type (str): Type of game event.
-        content (str): Content of the event displayed on the chat.
+        event_type (str): Type of the game event.
+        date (datetime): Date of the game event.
+        event_message (str): Message related to the event to be displayed on the chat.
 
     """
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
-        f"game_{game_id}_events",
-        {"type": event_type, "content": content},
+        group=f"game_{game_id}_events",
+        message={
+            "origin": GameEventOrigin.SERVER_SIDE,
+            "type": event_type,
+            "date": date.isoformat(),
+            "event_message": event_message,
+        },
     )
