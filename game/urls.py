@@ -5,6 +5,6 @@ from . import views
 urlpatterns = [
     path('', views.IndexView.as_view(), name='index'),
     path('<int:game_id>/', views.detail, name='detail'),
-    path('<int:game_id>/<int:character_id>/launch_dice_request/', views.launch_dice_request, name='launch_dice_request'),
-    path('<int:game_id>/<int:character_id>/launch_dice/', views.launch_dice, name='launch_dice'),
+    path('<int:game_id>/character/<int:character_id>/launch_dice/', views.DiceLaunchView.as_view(), name='launch_dice'),
+    path('<int:game_id>/character/<int:character_id>/action/<int:action_id>/success/', views.SuccessView.as_view(), name='success'),
 ]
