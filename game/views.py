@@ -9,6 +9,7 @@ from .models import Narrative
 from .models import PendingAction
 from .models import DiceLaunch
 
+import asyncio
 import random
 
 class IndexView(generic.ListView):
@@ -77,7 +78,7 @@ class DiceLaunchView(generic.CreateView):
         dice_launch = DiceLaunch()
         dice_launch.game = self.game
         dice_launch.character = self.character
-        dice_launch.score = random.randint(0, 20)
+        dice_launch.score = random.randint(1, 20)
         dice_launch.message = f"{self.character.name} launched a dice: score is {dice_launch.score}!"
         dice_launch.save()
         return HttpResponseRedirect(reverse('success', args=(self.game_id, self.character_id, dice_launch.pk,)))
