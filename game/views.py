@@ -81,6 +81,8 @@ class DiceLaunchView(generic.CreateView):
         dice_launch.score = random.randint(1, 20)
         dice_launch.message = f"{self.character.name} launched a dice: score is {dice_launch.score}!"
         dice_launch.save()
+        pending_action = PendingAction.objects.get(character=self.character)
+        pending_action.delete()
         return HttpResponseRedirect(reverse('success', args=(self.game_id, self.character_id, dice_launch.pk,)))
 
 class SuccessView(generic.DetailView):
