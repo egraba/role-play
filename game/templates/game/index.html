@@ -6,7 +6,7 @@
     <hr class="golden"/>
     <h1>Ongoing games</h1>
     {% for game in game_list %}
-        <p>{{ game.start_date }} <a href={% url 'detail' game.id %}>{{ game }}</a></p>
+        <p>{{ game.start_date }} <a href={% url 'game' game.id %}>{{ game }}</a></p>
     {% empty %}
         <p>No games are available...</p>
     {% endfor %}

@@ -17,21 +17,35 @@ class IndexView(generic.ListView):
     def get_queryset(self):
         return Game.objects.all()
 
-def detail(request, game_id):
-    try:
-        game = Game.objects.get(pk=game_id)
-        character_list = Character.objects.filter(game=game_id)
-        narrative_list = Narrative.objects.filter(game=game_id)
-        pending_action_list = PendingAction.objects.filter(game=game_id)
-        context = {
-            'game': game,
-            'character_list': character_list,
-            'narrative_list': narrative_list,
-            'pending_action_list': pending_action_list,
-        }
-    except Game.DoesNotExist:
-        raise Http404(f"Game [{game_id}] does not exist...", game_id)
-    return render(request, 'game/game.html', context)
+class GameView(generic.ListView):
+    model = Game
+    template_name = "game/game.html"
+
+    game = None
+    character_list = None
+    narrative_list = None
+    pending_action_list = None
+
+    def setup(self, request, *args, **kwargs):
+        self.request = request
+        self.args = args
+        self.kwargs = kwargs
+        game_id = self.kwargs['game_id']
+        try:
+            self.game = Game.objects.get(pk=game_id)
+            self.character_list = Character.objects.filter(game=game_id)
+            self.narrative_list = Narrative.objects.filter(game=game_id)
+            self.pending_action_list = PendingAction.objects.filter(game=game_id)
+        except Game.DoesNotExist:
+            raise Http404(f"Game [{game_id}] does not exist...", game_id)    
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['game'] = self.game
+        context['character_list'] = self.character_list
+        context['narrative_list'] = self.narrative_list
+        context['pending_action_list'] = self.pending_action_list
+        return context
 
 class DiceLaunchView(generic.CreateView):
     model = DiceLaunch
@@ -93,4 +107,4 @@ class SuccessView(generic.DetailView):
         return DiceLaunch.objects.get(pk=self.kwargs.get('action_id'))
 
     def post(self, request, *args, **kwargs):
-        return HttpResponseRedirect(reverse('detail', args=(self.game_id,)))
+        return HttpResponseRedirect(reverse('game', args=(self.game_id,)))
