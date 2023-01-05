@@ -35,13 +35,20 @@ class IndexViewTests(TestCase):
         )
 
 class GameViewTests(TestCase):
+    def setUp(self):
+        create_game()
+        self.game_id = Game.objects.latest('start_date').pk
+        
     def test_game_exists(self):
-        game = create_game()
-        game_id = Game.objects.latest('start_date').pk
-        response = self.client.get(reverse('game', args=[game_id]))
+        response = self.client.get(reverse('game', args=[self.game_id]))
         self.assertEqual(response.status_code, 200)
         
     def test_game_not_exists(self):
         game_id = random.randint(10000, 99999)
         response = self.client.get(reverse('game', args=[game_id]))
         self.assertEqual(response.status_code, 404)
+
+    def test_game_no_characters(self):
+        response = self.client.get(reverse('game', args=[self.game_id]))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "No characters for this game...")
