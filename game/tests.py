@@ -1,10 +1,11 @@
+from datetime import datetime
 from django.test import TestCase
 from django.urls import reverse
+from django.utils import timezone
 
 from .models import Game
 from .models import Character
 from .models import Narrative
-from .models import PendingAction
 
 import random
 import string
@@ -35,6 +36,20 @@ def create_several_characters(game):
     n = random.randint(2, 10)
     for i in range(n):
         l.append(create_character(game))
+    return l
+
+def create_narrative(game):
+    return Narrative.objects.create(
+        date=datetime.now(tz=timezone.utc),
+        game=game,
+        message=generate_random_string(1024)
+    )
+
+def create_several_narratives(game):
+    l = list()
+    n = random.randint(10, 100)
+    for i in range(n):
+        l.append(create_narrative(game))
     return l
 
 class IndexViewTests(TestCase):
@@ -78,4 +93,18 @@ class GameViewTests(TestCase):
         self.assertQuerysetEqual(
             list(response.context['character_list']),
             character_list,
+        )
+
+    def test_game_no_narrative(self):
+        response = self.client.get(reverse('game', args=[self.game_id]))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "The story did not start yet...")
+
+    def test_game_several_narratives(self):
+        narrative_list = create_several_narratives(self.game)
+        response = self.client.get(reverse('game', args=[self.game_id]))
+        self.assertEqual(response.status_code, 200)
+        self.assertQuerysetEqual(
+            list(response.context['narrative_list']),
+            narrative_list,
         )
