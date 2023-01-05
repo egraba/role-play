@@ -13,6 +13,12 @@ def create_game():
     game_name = generate_random_string(random.randint(1, 255))
     return Game.objects.create(name=game_name)
 
+def create_several_games(n):
+    l = list()
+    for i in range(n):
+        l.append(create_game())
+    return l
+
 class IndexViewTests(TestCase):
     def test_no_game(self):
         response = self.client.get(reverse('index'))
@@ -20,13 +26,12 @@ class IndexViewTests(TestCase):
         self.assertContains(response, "No games are available...")
 
     def test_several_games(self):
-        game1 = create_game()
-        game2 = create_game()
+        game_list = create_several_games(random.randint(1, 100))
         response = self.client.get(reverse('index'))
         self.assertEqual(response.status_code, 200)
         self.assertQuerysetEqual(
             list(response.context['game_list']),
-            [game1, game2],
+            game_list,
         )
 
 class GameViewTests(TestCase):
