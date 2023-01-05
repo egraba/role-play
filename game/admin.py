@@ -5,17 +5,22 @@ from .models import Character
 from .models import Narrative
 from .models import PendingAction
 
+
 class GameAdmin(admin.ModelAdmin):
-    fields = ['name']
+    fields = ["name"]
+
 
 class CharacterAdmin(admin.ModelAdmin):
-    fields = ['game', 'name', 'race']
+    fields = ["game", "name", "race"]
+
 
 class NarrativeAdmin(admin.ModelAdmin):
-    fields = ['game', 'message']
+    fields = ["game", "message"]
+
 
 class PendingActionAdmin(admin.ModelAdmin):
-    fields = ['game', 'narrative', 'character', 'action_type']
+    fields = ["game", "narrative", "character", "action_type"]
+
 
 admin.site.register(Game, GameAdmin)
 admin.site.register(Character, CharacterAdmin)
