@@ -1,5 +1,4 @@
-from django.http import Http404, HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
 
@@ -9,7 +8,6 @@ from .models import Narrative
 from .models import PendingAction
 from .models import DiceLaunch
 
-import asyncio
 import random
 
 
