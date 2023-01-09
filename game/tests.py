@@ -6,6 +6,7 @@ from django.utils import timezone
 from .models import Game
 from .models import Character
 from .models import Narrative
+from .models import PendingAction
 
 import random
 import string
@@ -58,6 +59,14 @@ def create_several_narratives(game):
     for i in range(n):
         l.append(create_narrative(game))
     return l
+
+
+def create_pending_action(game, narrative, character):
+    return PendingAction.objects.create(
+        game=game,
+        narrative=narrative,
+        character=character,
+    )
 
 
 class IndexViewTests(TestCase):
@@ -116,4 +125,25 @@ class GameViewTests(TestCase):
         self.assertQuerysetEqual(
             list(response.context["narrative_list"]),
             narrative_list,
+        )
+
+    def test_game_no_pending_actions(self):
+        response = self.client.get(reverse("game", args=[self.game_id]))
+        self.assertEqual(response.status_code, 200)
+        self.assertQuerysetEqual(
+            list(response.context["pending_action_list"]),
+            list(),
+        )
+
+    def test_game_one_pending_action_exists(self):
+        character = create_character(self.game)
+        narrative = create_narrative(self.game)
+        pending_action = create_pending_action(self.game, narrative, character)
+        pending_action_list = list()
+        pending_action_list.append(pending_action)
+        response = self.client.get(reverse("game", args=[self.game_id]))
+        self.assertEqual(response.status_code, 200)
+        self.assertQuerysetEqual(
+            list(response.context["pending_action_list"]),
+            pending_action_list,
         )
