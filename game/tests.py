@@ -135,15 +135,17 @@ class GameViewTests(TestCase):
             list(),
         )
 
-    def test_game_one_pending_action_exists(self):
-        character = create_character(self.game)
-        narrative = create_narrative(self.game)
-        pending_action = create_pending_action(self.game, narrative, character)
+    def test_game_several_pending_actions(self):
+        character_list = create_several_characters(self.game)
+        narrative_list = create_several_narratives(self.game)
+        narrative = narrative_list.pop()
         pending_action_list = list()
-        pending_action_list.append(pending_action)
+        for character in character_list:
+            pending_action = create_pending_action(self.game, narrative, character)
+            pending_action_list.append(pending_action)
         response = self.client.get(reverse("game", args=[self.game_id]))
         self.assertEqual(response.status_code, 200)
         self.assertQuerysetEqual(
             list(response.context["pending_action_list"]),
-            pending_action_list,
+            list(pending_action_list),
         )
