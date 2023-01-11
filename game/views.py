@@ -22,11 +22,6 @@ class GameView(generic.ListView):
     model = Game
     template_name = "game/game.html"
 
-    game = None
-    character_list = None
-    narrative_list = None
-    pending_action_list = None
-
     def setup(self, request, *args, **kwargs):
         self.request = request
         self.args = args
@@ -54,11 +49,6 @@ class DiceLaunchView(generic.CreateView):
     fields = []
     template_name = "game/dice.html"
     object = None
-
-    game = None
-    game_id = None
-    character = None
-    character_id = None
 
     def setup(self, request, *args, **kwargs):
         self.request = request
@@ -101,11 +91,6 @@ class DiceLaunchView(generic.CreateView):
 class SuccessView(generic.DetailView):
     model = DiceLaunch
     template_name = "game/success.html"
-
-    game = None
-    game_id = None
-    character = None
-    character_id = None
 
     def setup(self, request, *args, **kwargs):
         self.request = request
