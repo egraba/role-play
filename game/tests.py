@@ -150,3 +150,20 @@ class GameViewTests(TestCase):
             list(response.context["pending_action_list"]),
             list(pending_action_list),
         )
+
+
+class DiceLaunchViewTest(TestCase):
+    def setUp(self):
+        self.game = create_game()
+        self.game_id = Game.objects.latest("start_date").pk
+        self.character = create_character(self.game)
+        self.character_id = Character.objects.last().pk
+
+    def test_view_content(self):
+        response = self.client.get(
+            reverse("launch_dice", args=[self.game_id, self.character_id])
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["game"], self.game)
+        self.assertEqual(response.context["character"], self.character)
+        self.assertContains(response, "! It is your turn.")
