@@ -66,6 +66,7 @@ def create_pending_action(game, narrative, character):
         game=game,
         narrative=narrative,
         character=character,
+        action_type=random.choice(PendingAction.ACTION_TYPES)[0],
     )
 
 
