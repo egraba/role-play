@@ -27,11 +27,11 @@ def create_game():
 
 
 def create_several_games():
-    l = list()
+    game_list = list()
     n = random.randint(1, 100)
     for i in range(n):
-        l.append(create_game())
-    return l
+        game_list.append(create_game())
+    return game_list
 
 
 def create_character(game):
@@ -43,11 +43,11 @@ def create_character(game):
 
 
 def create_several_characters(game):
-    l = list()
+    character_list = list()
     n = random.randint(2, 10)
     for i in range(n):
-        l.append(create_character(game))
-    return l
+        character_list.append(create_character(game))
+    return character_list
 
 
 def create_narrative(game):
@@ -59,11 +59,11 @@ def create_narrative(game):
 
 
 def create_several_narratives(game):
-    l = list()
+    narrative_list = list()
     n = random.randint(10, 100)
     for i in range(n):
-        l.append(create_narrative(game))
-    return l
+        narrative_list.append(create_narrative(game))
+    return narrative_list
 
 
 def create_pending_action(game, narrative, character):
