@@ -100,11 +100,13 @@ class SuccessView(generic.DetailView):
         self.game = Game.objects.get(pk=self.game_id)
         self.character_id = self.kwargs["character_id"]
         self.character = Character.objects.get(pk=self.character_id)
+        self.dice_launch = DiceLaunch.objects.get(pk=self.kwargs["action_id"])
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["game"] = self.game
         context["character"] = self.character
+        context["dice_launch"] = self.dice_launch
         return context
 
     def get_object(self):

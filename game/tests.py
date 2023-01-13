@@ -7,6 +7,7 @@ from .models import Game
 from .models import Character
 from .models import Narrative
 from .models import PendingAction
+from .models import DiceLaunch
 
 import random
 import string
@@ -14,6 +15,10 @@ import string
 
 def generate_random_string(length):
     return "".join(random.choice(string.printable) for i in range(length))
+
+
+def generate_random_name(length):
+    return "".join(random.choice(string.ascii_letters) for i in range(length))
 
 
 def create_game():
@@ -31,7 +36,7 @@ def create_several_games():
 
 def create_character(game):
     return Character.objects.create(
-        name=generate_random_string(255),
+        name=generate_random_name(255),
         game=game,
         race=random.choice(Character.RACES)[0],
     )
@@ -167,3 +172,26 @@ class DiceLaunchViewTest(TestCase):
         self.assertEqual(response.context["game"], self.game)
         self.assertEqual(response.context["character"], self.character)
         self.assertContains(response, "! It is your turn.")
+
+
+class SuccessViewTest(TestCase):
+    def setUp(self):
+        self.game = create_game()
+        self.character = create_character(self.game)
+        self.dice_launch = DiceLaunch.objects.create(
+            game=self.game, character=self.character, score=random.randint(1, 20)
+        )
+
+    def test_view_content(self):
+        response = self.client.get(
+            reverse(
+                "success", args=[self.game.pk, self.character.pk, self.dice_launch.pk]
+            )
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["game"], self.game)
+        self.assertEqual(response.context["character"], self.character)
+        self.assertEqual(response.context["dice_launch"], self.dice_launch)
+        self.assertContains(
+            response, f"{self.character.name}, your score is: {self.dice_launch.score}!"
+        )

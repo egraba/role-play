@@ -3,7 +3,9 @@
 {% block content %}
 <div class="action rpgui-container framed-golden">
     <h1>{{ game }}</h1>
-    <p>{{ dice_launch }}<p>
+    {% if dice_launch %}
+        <p>{{ character }}, your score is: {{ dice_launch.score }}!<p>
+    {% endif %}
     <form method="post">
         {% csrf_token %}
         <input type="submit" value="Return to the game">
