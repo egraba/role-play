@@ -94,10 +94,9 @@ class IndexViewTests(TestCase):
 class GameViewTests(TestCase):
     def setUp(self):
         self.game = create_game()
-        self.game_id = Game.objects.latest("start_date").pk
 
     def test_game_exists(self):
-        response = self.client.get(reverse("game", args=[self.game_id]))
+        response = self.client.get(reverse("game", args=[self.game.pk]))
         self.assertEqual(response.status_code, 200)
 
     def test_game_not_exists(self):
@@ -106,13 +105,13 @@ class GameViewTests(TestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_game_no_characters(self):
-        response = self.client.get(reverse("game", args=[self.game_id]))
+        response = self.client.get(reverse("game", args=[self.game.pk]))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "No characters for this game...")
 
     def test_game_several_characters(self):
         character_list = create_several_characters(self.game)
-        response = self.client.get(reverse("game", args=[self.game_id]))
+        response = self.client.get(reverse("game", args=[self.game.pk]))
         self.assertEqual(response.status_code, 200)
         self.assertQuerysetEqual(
             list(response.context["character_list"]),
@@ -120,13 +119,13 @@ class GameViewTests(TestCase):
         )
 
     def test_game_no_narrative(self):
-        response = self.client.get(reverse("game", args=[self.game_id]))
+        response = self.client.get(reverse("game", args=[self.game.pk]))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "The story did not start yet...")
 
     def test_game_several_narratives(self):
         narrative_list = create_several_narratives(self.game)
-        response = self.client.get(reverse("game", args=[self.game_id]))
+        response = self.client.get(reverse("game", args=[self.game.pk]))
         self.assertEqual(response.status_code, 200)
         self.assertQuerysetEqual(
             list(response.context["narrative_list"]),
@@ -134,7 +133,7 @@ class GameViewTests(TestCase):
         )
 
     def test_game_no_pending_actions(self):
-        response = self.client.get(reverse("game", args=[self.game_id]))
+        response = self.client.get(reverse("game", args=[self.game.pk]))
         self.assertEqual(response.status_code, 200)
         self.assertQuerysetEqual(
             list(response.context["pending_action_list"]),
@@ -149,7 +148,7 @@ class GameViewTests(TestCase):
         for character in character_list:
             pending_action = create_pending_action(self.game, narrative, character)
             pending_action_list.append(pending_action)
-        response = self.client.get(reverse("game", args=[self.game_id]))
+        response = self.client.get(reverse("game", args=[self.game.pk]))
         self.assertEqual(response.status_code, 200)
         self.assertQuerysetEqual(
             list(response.context["pending_action_list"]),
@@ -160,13 +159,11 @@ class GameViewTests(TestCase):
 class DiceLaunchViewTest(TestCase):
     def setUp(self):
         self.game = create_game()
-        self.game_id = Game.objects.latest("start_date").pk
         self.character = create_character(self.game)
-        self.character_id = Character.objects.last().pk
 
     def test_view_content(self):
         response = self.client.get(
-            reverse("launch_dice", args=[self.game_id, self.character_id])
+            reverse("launch_dice", args=[self.game.pk, self.character.pk])
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context["game"], self.game)
