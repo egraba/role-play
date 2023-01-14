@@ -10,6 +10,13 @@ from .models import PendingAction
 from .models import DiceLaunch
 from .models import Choice
 
+from .views import IndexView
+from .views import GameView
+from .views import DiceLaunchView
+from .views import ChoiceView
+from .views import DiceLaunchSuccessView
+from .views import ChoiceSuccessView
+
 import random
 import string
 
@@ -77,6 +84,10 @@ def create_pending_action(game, narrative, character):
 
 
 class IndexViewTests(TestCase):
+    def test_view_mapping_ok(self):
+        response = self.client.get(reverse("index"))
+        self.assertEqual(response.resolver_match.func.view_class, IndexView)
+
     def test_no_game(self):
         response = self.client.get(reverse("index"))
         self.assertEqual(response.status_code, 200)
@@ -95,6 +106,10 @@ class IndexViewTests(TestCase):
 class GameViewTests(TestCase):
     def setUp(self):
         self.game = create_game()
+
+    def test_view_mapping_ok(self):
+        response = self.client.get(reverse("game", args=[self.game.pk]))
+        self.assertEqual(response.resolver_match.func.view_class, GameView)
 
     def test_game_exists(self):
         response = self.client.get(reverse("game", args=[self.game.pk]))
@@ -162,6 +177,12 @@ class DiceLaunchViewTest(TestCase):
         self.game = create_game()
         self.character = create_character(self.game)
 
+    def test_view_mapping_ok(self):
+        response = self.client.get(
+            reverse("launch_dice", args=[self.game.pk, self.character.pk])
+        )
+        self.assertEqual(response.resolver_match.func.view_class, DiceLaunchView)
+
     def test_view_content(self):
         response = self.client.get(
             reverse("launch_dice", args=[self.game.pk, self.character.pk])
@@ -176,6 +197,12 @@ class ChoiceViewTest(TestCase):
     def setUp(self):
         self.game = create_game()
         self.character = create_character(self.game)
+
+    def test_view_mapping_ok(self):
+        response = self.client.get(
+            reverse("make_choice", args=[self.game.pk, self.character.pk])
+        )
+        self.assertEqual(response.resolver_match.func.view_class, ChoiceView)
 
     def test_view_content(self):
         response = self.client.get(
@@ -193,6 +220,15 @@ class DiceLaunchSuccessViewTest(TestCase):
         self.dice_launch = DiceLaunch.objects.create(
             game=self.game, character=self.character, score=random.randint(1, 20)
         )
+
+    def test_view_mapping_ok(self):
+        response = self.client.get(
+            reverse(
+                "dice_success",
+                args=[self.game.pk, self.character.pk, self.dice_launch.pk],
+            )
+        )
+        self.assertEqual(response.resolver_match.func.view_class, DiceLaunchSuccessView)
 
     def test_view_content(self):
         response = self.client.get(
@@ -219,6 +255,14 @@ class ChoiceSuccessViewTest(TestCase):
             character=self.character,
             selection=generate_random_name(255),
         )
+
+    def test_view_mapping_ok(self):
+        response = self.client.get(
+            reverse(
+                "choice_success", args=[self.game.pk, self.character.pk, self.choice.pk]
+            )
+        )
+        self.assertEqual(response.resolver_match.func.view_class, ChoiceSuccessView)
 
     def test_view_content(self):
         response = self.client.get(
