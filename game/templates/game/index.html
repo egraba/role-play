@@ -3,19 +3,44 @@
 {% block content %}
 <div class="center rpgui-container framed">
     <h1 class="title">Role play</h1>
+    
     <hr class="golden"/>
-    {% if user.is_authenticated %}
-        <p>Hi {{ user.username }}!</p>
-        <a href="{% url 'logout' %}">Log out</a>
-    {% else %}
-        <p>You are not logged in.</p>
-        <a href="{% url 'login' %}">Log in</a>
-    {% endif %}
+    
+    <div class="rpgui-center">
+        {% if user.is_authenticated %}
+            <p>Welcome {{ user.username }}.</p>
+            <a href="{% url 'logout' %}"><button class="rpgui-button"><p>Log out</p></button></a>
+        {% else %}
+            <p>You are not logged in.</p>
+            <a href="{% url 'login' %}"><button class="rpgui-button"><p>Log in</p></button></a>
+        {% endif %}
+    </div>
+    
+    <hr/>
+
+    <p>Role Play is an open-source virtual role playing game.</p>
+    <p>It allows people to play remotely, by following a tail and perfoming some actions 
+        like throwing dices.</p>
+    
+    <hr/>
+
     <h1>Ongoing games</h1>
-    {% for game in game_list %}
-        <p>{{ game.start_date }} <a href={% url 'game' game.id %}>{{ game }}</a></p>
-    {% empty %}
-        <p>No games are available...</p>
-    {% endfor %}
+    <p>Select the game you want to join.</p>
+    <div class="rpgui-container framed-grey">
+        {% for game in game_list %}
+            <p>{{ game.start_date }} <a href={% url 'game' game.id %}>{{ game }}</a></p>
+        {% empty %}
+            <p>No games are available...</p>
+        {% endfor %}
+    </div>
+
+    <hr/>
+
+    <div class="rpgui-center">
+        <a href="https://github.com/egraba/role-play">
+            <button class="rpgui-button" ><p>View on GitHub</p></button>
+        </a>
+    </div>
+
 </div>
 {% endblock %}
