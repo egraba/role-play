@@ -11,8 +11,18 @@ urlpatterns = [
         name="launch_dice",
     ),
     path(
-        "<int:game_id>/character/<int:character_id>/action/<int:action_id>/success/",
-        views.SuccessView.as_view(),
-        name="success",
+        "<int:game_id>/character/<int:character_id>/make_choice/",
+        views.ChoiceView.as_view(),
+        name="make_choice",
+    ),
+    path(
+        "<int:game_id>/character/<int:character_id>/launch_dice/<int:action_id>/success/",
+        views.DiceLaunchSuccessView.as_view(),
+        name="dice_success",
+    ),
+    path(
+        "<int:game_id>/character/<int:character_id>/make_choice/<int:action_id>/success/",
+        views.ChoiceSuccessView.as_view(),
+        name="choice_success",
     ),
 ]

@@ -4,7 +4,10 @@
 <div class="action rpgui-container framed-golden">
     <h1>{{ game }}</h1>
     {% if dice_launch %}
-        <p>{{ character }}, your score is: {{ dice_launch.score }}!<p>
+        <p>{{ character }}, your score is: {{ dice_launch.score }}!</p>
+    {% elif choice %}
+        <p>{{ character }}, you made the following choice:</p>
+        <p>{{ choice }}</p>
     {% endif %}
     <form method="post">
         {% csrf_token %}

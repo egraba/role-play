@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="action rpgui-container framed-golden">
+    <h1>{{ game }}</h1>
+    <p>{{ character }}! It is time to make your choice.<p>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Submit">
+    </form>
+<div>
+{% endblock%}

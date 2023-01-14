@@ -15,7 +15,7 @@
                     {% if pending_action.action_type == 'D' %}
                         <a href={% url 'launch_dice' game.id pending_action.character.id %}> {{ pending_action.get_action_type_display }} <i class="fa-regular fa-dice-d20"></i></a>
                     {% elif pending_action.action_type == 'C' %}
-                        {{ pending_action.get_action_type_display }} &#10067;
+                        <a href={% url 'make_choice' game.id pending_action.character.id %}> {{ pending_action.get_action_type_display }} <i class="fa-regular fa-question"></i></a>
                     {% endif %}
                 </div>
             {% endif %}

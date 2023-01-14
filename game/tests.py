@@ -8,6 +8,7 @@ from .models import Character
 from .models import Narrative
 from .models import PendingAction
 from .models import DiceLaunch
+from .models import Choice
 
 import random
 import string
@@ -171,7 +172,21 @@ class DiceLaunchViewTest(TestCase):
         self.assertContains(response, "! It is your turn.")
 
 
-class SuccessViewTest(TestCase):
+class ChoiceViewTest(TestCase):
+    def setUp(self):
+        self.game = create_game()
+        self.character = create_character(self.game)
+
+    def test_view_content(self):
+        response = self.client.get(
+            reverse("make_choice", args=[self.game.pk, self.character.pk])
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["game"], self.game)
+        self.assertEqual(response.context["character"], self.character)
+
+
+class DiceLaunchSuccessViewTest(TestCase):
     def setUp(self):
         self.game = create_game()
         self.character = create_character(self.game)
@@ -182,7 +197,8 @@ class SuccessViewTest(TestCase):
     def test_view_content(self):
         response = self.client.get(
             reverse(
-                "success", args=[self.game.pk, self.character.pk, self.dice_launch.pk]
+                "dice_success",
+                args=[self.game.pk, self.character.pk, self.dice_launch.pk],
             )
         )
         self.assertEqual(response.status_code, 200)
@@ -192,3 +208,26 @@ class SuccessViewTest(TestCase):
         self.assertContains(
             response, f"{self.character.name}, your score is: {self.dice_launch.score}!"
         )
+
+
+class ChoiceSuccessViewTest(TestCase):
+    def setUp(self):
+        self.game = create_game()
+        self.character = create_character(self.game)
+        self.choice = Choice.objects.create(
+            game=self.game,
+            character=self.character,
+            selection=generate_random_name(255),
+        )
+
+    def test_view_content(self):
+        response = self.client.get(
+            reverse(
+                "choice_success", args=[self.game.pk, self.character.pk, self.choice.pk]
+            )
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["game"], self.game)
+        self.assertEqual(response.context["character"], self.character)
+        self.assertEqual(response.context["choice"], self.choice)
+        self.assertContains(response, f"{self.choice.selection}")

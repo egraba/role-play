@@ -35,8 +35,8 @@ class Narrative(models.Model):
 
 class PendingAction(models.Model):
     ACTION_TYPES = (
-        ("C", "Make choice"),
         ("D", "Launch dice"),
+        ("C", "Make choice"),
     )
     game = models.ForeignKey(Game, on_delete=models.CASCADE, blank=False)
     narrative = models.ForeignKey(Narrative, on_delete=models.CASCADE, blank=False)
@@ -54,9 +54,15 @@ class Action(Narrative):
         abstract = True
 
 
+class DiceLaunch(Action):
+    score = models.SmallIntegerField()
+
+    def __str__(self):
+        return self.score
+
+
 class Choice(Action):
     selection = models.CharField(max_length=255)
 
-
-class DiceLaunch(Action):
-    score = models.SmallIntegerField()
+    def __str__(self):
+        return self.selection
