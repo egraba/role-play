@@ -4,6 +4,12 @@
 <div class="center rpgui-container framed">
     <h1 class="title">Role play</h1>
     <hr class="golden"/>
+    {% if user.is_authenticated %}
+        <p>Hi {{ user.username }}!</p>
+    {% else %}
+        <p>You are not logged in</p>
+        <a href="{% url 'login' %}">Log in</a>
+    {% endif %}
     <h1>Ongoing games</h1>
     {% for game in game_list %}
         <p>{{ game.start_date }} <a href={% url 'game' game.id %}>{{ game }}</a></p>
