@@ -6,8 +6,9 @@
     <hr class="golden"/>
     {% if user.is_authenticated %}
         <p>Hi {{ user.username }}!</p>
+        <a href="{% url 'logout' %}">Log out</a>
     {% else %}
-        <p>You are not logged in</p>
+        <p>You are not logged in.</p>
         <a href="{% url 'login' %}">Log in</a>
     {% endif %}
     <h1>Ongoing games</h1>
