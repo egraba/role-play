@@ -12,9 +12,15 @@
     margin-left: 25%;
 }
 
+.login {
+    width: 20%;
+    margin-top: 10%;
+    margin-left: 40%;
+}
+
 .inner {
-    width: 68em;
-    margin-left: 25em;
+    width: 50%;
+    margin-left: 25%;
 }
 
 .action {
