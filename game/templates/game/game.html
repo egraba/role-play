@@ -26,12 +26,21 @@
     {% endfor %}
 </div>
 
-<div class="inner rpgui-container framed-golden-2">
+<div class="center rpgui-container framed">
+    <h1 class="title">Role play</h1>
+    <div class="rpgui-center">
+        <a href={% url 'index' %}>- Return to main menu -</a>
+    </div>
+    
+    <hr class="golden"/>
+    
     <h1>{{ game }}</h1>
-    {% for narrative in narrative_list %}
-        <p>{{ narrative.date }} {{ narrative.message }}</p>
-    {% empty %}
-        <p>The story did not start yet...</p>
-    {% endfor %}
+    <div class="rpgui-container framed-grey">
+        {% for narrative in narrative_list %}
+            <p>{{ narrative.date }} {{ narrative.message }}</p>
+        {% empty %}
+            <p>The story did not start yet...</p>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}

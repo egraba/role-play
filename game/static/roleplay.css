@@ -1,15 +1,21 @@
 .rpgui-content {
     background: #222;
-    padding: 2em;
+    overflow-y: scroll;
 }
 
 .rpgui-content .title {
     font-size: x-large;
 }
 
-.center {
-    width: 50%;
+.center.rpgui-container.framed {
+    position: static;
+    margin: 2em;
     margin-left: 25%;
+    width: 50%;
+}
+
+.rpgui-container.framed {
+    margin: 2em;
 }
 
 .login {
