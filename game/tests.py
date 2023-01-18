@@ -1,24 +1,15 @@
+import random
+import string
 from datetime import datetime
+
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
-from .models import Game
-from .models import Character
-from .models import Narrative
-from .models import PendingAction
-from .models import DiceLaunch
-from .models import Choice
-
-from .views import IndexView
-from .views import GameView
-from .views import DiceLaunchView
-from .views import ChoiceView
-from .views import DiceLaunchSuccessView
-from .views import ChoiceSuccessView
-
-import random
-import string
+from .models import (Character, Choice, DiceLaunch, Game, Narrative,
+                     PendingAction)
+from .views import (ChoiceSuccessView, ChoiceView, DiceLaunchSuccessView,
+                    DiceLaunchView, GameView, IndexView)
 
 
 def generate_random_string(length):

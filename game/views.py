@@ -1,16 +1,12 @@
+import random
+
 from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
 
 from .forms import ChoiceForm
-from .models import Game
-from .models import Character
-from .models import Narrative
-from .models import PendingAction
-from .models import DiceLaunch
-from .models import Choice
-
-import random
+from .models import (Character, Choice, DiceLaunch, Game, Narrative,
+                     PendingAction)
 
 
 class IndexView(generic.ListView):

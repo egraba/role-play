@@ -8,6 +8,7 @@
             <p>Race: {{ character.get_race_display }}</p>
             <p>XP: {{ character.xp }}</p>
             <p>HP: {{ character.hp }} / {{ character.max_hp }}</p>
+            <div class="rpgui-progress red" data-value="0.8"></div>
         </div>
         {% for pending_action in pending_action_list %}
             {% if pending_action.character.id == character.id %}    
