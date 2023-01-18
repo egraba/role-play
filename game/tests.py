@@ -6,10 +6,15 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
-from .models import (Character, Choice, DiceLaunch, Game, Narrative,
-                     PendingAction)
-from .views import (ChoiceSuccessView, ChoiceView, DiceLaunchSuccessView,
-                    DiceLaunchView, GameView, IndexView)
+from .models import Character, Choice, DiceLaunch, Game, Narrative, PendingAction
+from .views import (
+    ChoiceSuccessView,
+    ChoiceView,
+    DiceLaunchSuccessView,
+    DiceLaunchView,
+    GameView,
+    IndexView,
+)
 
 
 def generate_random_string(length):

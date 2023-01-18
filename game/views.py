@@ -5,8 +5,7 @@ from django.urls import reverse
 from django.views import generic
 
 from .forms import ChoiceForm
-from .models import (Character, Choice, DiceLaunch, Game, Narrative,
-                     PendingAction)
+from .models import Character, Choice, DiceLaunch, Game, Narrative, PendingAction
 
 
 class IndexView(generic.ListView):
