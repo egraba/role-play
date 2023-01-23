@@ -10,12 +10,22 @@
 .center.rpgui-container.framed {
     position: static;
     margin: 2em;
-    margin-left: 25%;
-    width: 50%;
 }
 
 .rpgui-container.framed {
     margin: 2em;
+}
+
+.menu {
+    float: left;
+}
+
+.login-menu {
+    float: right;
+}
+
+hr {
+    clear: both;
 }
 
 .login {

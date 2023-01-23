@@ -6,21 +6,25 @@
     
     <hr class="golden"/>
     
-    <div class="rpgui-center">
-        {% if user.is_authenticated %}
-            <p>Welcome {{ user.username }}.</p>
-            <a href="{% url 'logout' %}"><button class="rpgui-button"><p>Log out</p></button></a>
-        {% else %}
-            <p>You are not logged in.</p>
-            <a href="{% url 'login' %}"><button class="rpgui-button"><p>Log in</p></button></a>
-        {% endif %}
-    </div>
+    <p>Role play is an open-source virtual role playing game.</p>
+    <p>It is an online version of "paper" role play games.</p>
     
     <hr/>
 
-    <p>Role play is an open-source virtual role playing game.</p>
-    <p>It allows people to play remotely, by following a tail and perfoming some actions 
-        like throwing dices.</p>
+    <div class="rpgui-center">
+        {% if user.is_authenticated %}
+            <p>Welcome {{ user.username }}.</p>
+            <div class="menu">
+                <a href=""><button disabled class="rpgui-button"><p>New Game</p></button></a></p>
+            </div>
+            <div class="login-menu">
+                <a href="{% url 'logout' %}"><button class="rpgui-button"><p>Log out</p></button></a>
+            </div>
+        {% else %}
+            <p>You are not logged in.</p>
+            <a href="{% url 'login' %}"><button class="rpgui-button"><p>Log in</p></button></a>
+    {% endif %}
+    </div>
     
     <hr/>
 
@@ -36,6 +40,8 @@
 
     <hr/>
 
+    <h1>Release notes</h1>
+    <p>Under development...</p>
     <div class="rpgui-center">
         <a href="https://github.com/egraba/role-play">
             <button class="rpgui-button" ><p>View on GitHub</p></button>
