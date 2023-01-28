@@ -16,8 +16,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: psf/black@stable
       - uses: isort/isort-action@master
-      - name: Apply flake8
-        run: flake8
+      - uses: py-actions/flake8@v2
   build:
     needs: lint
     runs-on: ubuntu-latest
