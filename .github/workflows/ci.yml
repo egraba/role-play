@@ -15,8 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: psf/black@stable
-      - name: Apply isort
-        run: isort .
+      - uses: isort/isort-action@master
       - name: Apply flake8
         run: flake8
   build:
