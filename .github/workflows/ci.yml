@@ -14,7 +14,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Apply Black
       - uses: psf/black@stable
+      - name: Apply isort
+        run: isort .
+      - name: Apply flake8
+        run: flake8
   build:
     needs: lint
     runs-on: ubuntu-latest
