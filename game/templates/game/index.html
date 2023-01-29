@@ -21,22 +21,24 @@
                 <a href="{% url 'logout' %}"><button class="rpgui-button"><p>Log out</p></button></a>
             </div>
         {% else %}
-            <p>You are not logged in.</p>
+            <p>Please log in, if you want to play.</p>
             <a href="{% url 'login' %}"><button class="rpgui-button"><p>Log in</p></button></a>
-    {% endif %}
+        {% endif %}
     </div>
     
-    <hr/>
+    {% if user.is_authenticated %}
+        <hr/>
 
-    <h1>Ongoing games</h1>
-    <p>Select the game you want to join.</p>
-    <div class="rpgui-container framed-grey">
-        {% for game in game_list %}
-            <p>{{ game.start_date }} <a href={% url 'game' game.id %}>{{ game }}</a></p>
-        {% empty %}
-            <p>No games are available...</p>
-        {% endfor %}
-    </div>
+        <h1>Ongoing games</h1>
+        <p>Select the game you want to join.</p>
+        <div class="rpgui-container framed-grey">
+            {% for game in game_list %}
+                <p>{{ game.start_date }} <a href={% url 'game' game.id %}>{{ game }}</a></p>
+            {% empty %}
+                <p>No games are available...</p>
+            {% endfor %}
+        </div>
+    {% endif %}
 
     <hr/>
 
