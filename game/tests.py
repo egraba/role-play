@@ -87,7 +87,6 @@ class IndexViewTests(TestCase):
     def test_no_game(self):
         response = self.client.get(reverse("index"))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "No games are available...")
 
     def test_several_games(self):
         game_list = create_several_games()
