@@ -7,6 +7,11 @@ urlpatterns = [
     path("newgame", views.NewGameView.as_view(), name="newgame"),
     path("<int:game_id>/", views.GameView.as_view(), name="game"),
     path(
+        "<int:game_id>/newnarrative",
+        views.NewNarrativeView.as_view(),
+        name="newnarrative",
+    ),
+    path(
         "<int:game_id>/character/<int:character_id>/launch_dice/",
         views.DiceLaunchView.as_view(),
         name="launch_dice",

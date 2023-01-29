@@ -43,5 +43,10 @@
             <p>The story did not start yet...</p>
         {% endfor %}
     </div>
+    {% if perms.narrative.add_narrative %}
+        <div class="rpgui-center">
+            <a href={% url 'newnarrative' game.id %}><button class="rpgui-button"><p>Continue the story</p></button></a>
+        </div>
+    {% endif %}
 </div>
 {% endblock %}

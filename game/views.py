@@ -4,7 +4,7 @@ from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
 
-from .forms import ChoiceForm, NewGameForm
+from .forms import ChoiceForm, NewGameForm, NewNarrativeForm
 from .models import Character, Choice, DiceLaunch, Game, Narrative, PendingAction
 
 
@@ -58,6 +58,34 @@ class GameView(generic.ListView):
         context["narrative_list"] = self.narrative_list
         context["pending_action_list"] = self.pending_action_list
         return context
+
+
+class NewNarrativeView(generic.FormView):
+    model = Narrative
+    fields = ["message"]
+    template_name = "game/newnarrative.html"
+    form_class = NewNarrativeForm
+
+    def setup(self, request, *args, **kwargs):
+        self.request = request
+        self.args = args
+        self.kwargs = kwargs
+        self.game_id = self.kwargs["game_id"]
+        self.game = Game.objects.get(pk=self.game_id)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["game"] = self.game
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = NewNarrativeForm(request.POST)
+        if form.is_valid():
+            narrative = Narrative()
+            narrative.game = self.game
+            narrative.message = form.cleaned_data["message"]
+            narrative.save()
+            return HttpResponseRedirect(reverse("game", args=(self.game_id,)))
 
 
 class DiceLaunchView(generic.CreateView):
