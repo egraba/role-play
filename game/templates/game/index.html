@@ -14,9 +14,11 @@
     <div class="rpgui-center">
         {% if user.is_authenticated %}
             <p>Welcome {{ user.username }}.</p>
-            <div class="menu">
-                <a href=""><button disabled class="rpgui-button"><p>New Game</p></button></a></p>
-            </div>
+            {% if perms.game.add_game %}
+                <div class="menu">
+                    <a href="{% url 'newgame' %}"><button class="rpgui-button"><p>New Game</p></button></a></p>
+                </div>
+            {% endif %}
             <div class="login-menu">
                 <a href="{% url 'logout' %}"><button class="rpgui-button"><p>Log out</p></button></a>
             </div>

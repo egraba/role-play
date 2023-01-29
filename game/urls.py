@@ -4,6 +4,7 @@ from . import views
 
 urlpatterns = [
     path("", views.IndexView.as_view(), name="index"),
+    path("newgame", views.NewGameView.as_view(), name="newgame"),
     path("<int:game_id>/", views.GameView.as_view(), name="game"),
     path(
         "<int:game_id>/character/<int:character_id>/launch_dice/",

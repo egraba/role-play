@@ -4,7 +4,7 @@ from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
 
-from .forms import ChoiceForm
+from .forms import ChoiceForm, NewGameForm
 from .models import Character, Choice, DiceLaunch, Game, Narrative, PendingAction
 
 
@@ -13,6 +13,25 @@ class IndexView(generic.ListView):
 
     def get_queryset(self):
         return Game.objects.all()
+
+
+class NewGameView(generic.FormView):
+    model = Game
+    fields = ["name"]
+    template_name = "game/newgame.html"
+    form_class = NewGameForm
+
+    def post(self, request, *args, **kwargs):
+        form = NewGameForm(request.POST)
+        if form.is_valid():
+            game = Game()
+            game.name = form.cleaned_data["name"]
+            game.save()
+            return HttpResponseRedirect(
+                reverse(
+                    "index",
+                )
+            )
 
 
 class GameView(generic.ListView):
