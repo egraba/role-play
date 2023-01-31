@@ -1,10 +1,11 @@
 import random
-import string
 from datetime import datetime
 
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
+
+from game.tests import utils
 
 from ..models import Character, Choice, DiceLaunch, Game, Narrative, PendingAction
 from ..views import (
@@ -17,16 +18,8 @@ from ..views import (
 )
 
 
-def generate_random_string(length):
-    return "".join(random.choice(string.printable) for i in range(length))
-
-
-def generate_random_name(length):
-    return "".join(random.choice(string.ascii_letters) for i in range(length))
-
-
 def create_game():
-    game_name = generate_random_string(random.randint(1, 255))
+    game_name = utils.generate_random_string(random.randint(1, 255))
     return Game.objects.create(name=game_name)
 
 
@@ -40,7 +33,7 @@ def create_several_games():
 
 def create_character(game):
     return Character.objects.create(
-        name=generate_random_name(255),
+        name=utils.generate_random_name(255),
         game=game,
         race=random.choice(Character.RACES)[0],
     )
@@ -58,7 +51,7 @@ def create_narrative(game):
     return Narrative.objects.create(
         date=datetime.now(tz=timezone.utc),
         game=game,
-        message=generate_random_string(1024),
+        message=utils.generate_random_string(1024),
     )
 
 
@@ -248,7 +241,7 @@ class ChoiceSuccessViewTest(TestCase):
         self.choice = Choice.objects.create(
             game=self.game,
             character=self.character,
-            selection=generate_random_name(255),
+            selection=utils.generate_random_name(255),
         )
 
     def test_view_mapping_ok(self):
