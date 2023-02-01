@@ -2,7 +2,7 @@ from django.db import models
 from django.test import TestCase
 from django.utils import timezone
 
-from game.models import Game
+from game.models import Character, Game
 from game.tests import utils
 
 
@@ -42,3 +42,65 @@ class GameModelTest(TestCase):
     def test_str_is_name(self):
         game = Game.objects.get(id=1)
         self.assertEqual(str(game), game.name)
+
+
+class CharacterModelTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        Character.objects.create()
+
+    def test_game_type(self):
+        character = Character.objects.get(id=1)
+        game = character._meta.get_field("game")
+        self.assertTrue(game, models.ForeignKey)
+
+    def test_name_type(self):
+        character = Character.objects.get(id=1)
+        name = character._meta.get_field("name")
+        self.assertTrue(name, models.CharField)
+
+    def test_name_max_length(self):
+        character = Character.objects.get(id=1)
+        max_length = character._meta.get_field("name").max_length
+        self.assertEqual(max_length, 255)
+
+    def test_race_type(self):
+        character = Character.objects.get(id=1)
+        race = character._meta.get_field("race")
+        self.assertTrue(race, models.CharField)
+
+    def test_race_max_length(self):
+        character = Character.objects.get(id=1)
+        max_length = character._meta.get_field("race").max_length
+        self.assertEqual(max_length, 1)
+
+    def test_xp_type(self):
+        character = Character.objects.get(id=1)
+        xp = character._meta.get_field("xp")
+        self.assertTrue(xp, models.SmallIntegerField)
+
+    def test_xp_default_value(self):
+        character = Character.objects.get(id=1)
+        self.assertEqual(character.xp, 0)
+
+    def test_hp_type(self):
+        character = Character.objects.get(id=1)
+        hp = character._meta.get_field("hp")
+        self.assertTrue(hp, models.SmallIntegerField)
+
+    def test_hp_default_value(self):
+        character = Character.objects.get(id=1)
+        self.assertEqual(character.hp, 100)
+
+    def test_max_hp_type(self):
+        character = Character.objects.get(id=1)
+        max_hp = character._meta.get_field("max_hp")
+        self.assertTrue(max_hp, models.SmallIntegerField)
+
+    def test_max_hp_default_value(self):
+        character = Character.objects.get(id=1)
+        self.assertEqual(character.max_hp, 100)
+
+    def test_str(self):
+        character = Character.objects.get(id=1)
+        self.assertEqual(str(character), character.name)
