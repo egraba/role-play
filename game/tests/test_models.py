@@ -2,7 +2,7 @@ from django.db import models
 from django.test import TestCase
 from django.utils import timezone
 
-from game.models import Character, Game
+from game.models import Character, Game, Narrative
 from game.tests import utils
 
 
@@ -104,3 +104,37 @@ class CharacterModelTest(TestCase):
     def test_str(self):
         character = Character.objects.get(id=1)
         self.assertEqual(str(character), character.name)
+
+
+class NarrativeModelTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        Narrative.objects.create()
+
+    def test_game_type(self):
+        narrative = Narrative.objects.get(id=1)
+        game = narrative._meta.get_field("game")
+        self.assertTrue(game, models.ForeignKey)
+
+    def test_date_type(self):
+        narrative = Narrative.objects.get(id=1)
+        date = narrative._meta.get_field("date")
+        self.assertTrue(date, models.DateTimeField)
+
+    def test_date_default_value(self):
+        narrative = Narrative.objects.get(id=1)
+        self.assertEqual(narrative.date.second, timezone.now().second)
+
+    def test_message_type(self):
+        narrative = Narrative.objects.get(id=1)
+        message = narrative._meta.get_field("message")
+        self.assertTrue(message, models.CharField)
+
+    def test_message_max_length(self):
+        narrative = Narrative.objects.get(id=1)
+        max_length = narrative._meta.get_field("message").max_length
+        self.assertEqual(max_length, 1024)
+
+    def test_str(self):
+        narrative = Narrative.objects.get(id=1)
+        self.assertEqual(str(narrative), narrative.message)
