@@ -10,13 +10,6 @@ env:
   DJANGO_SETTINGS_MODULE: role_play.pre_settings
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: psf/black@stable
-      - uses: isort/isort-action@master
-      - uses: py-actions/flake8@v2
   build:
     needs: lint
     runs-on: ubuntu-latest
