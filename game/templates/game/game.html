@@ -1,52 +1,52 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="rpgui-container framed">
-    {% for character in character_list %}
-        <p>{{ character.name }}</p>
-        <div class="rpgui-container framed-grey">
-            <p>Race: {{ character.get_race_display }}</p>
-            <p>XP: {{ character.xp }}</p>
-            <p>HP: {{ character.hp }} / {{ character.max_hp }}</p>
-            <div class="rpgui-progress red" data-value="0.8"></div>
-        </div>
-        {% for pending_action in pending_action_list %}
-            {% if pending_action.character.id == character.id %}
-                <div class="rpgui-container framed-grey">
-                    {% if pending_action.action_type == 'D' %}
-                        <a href={% url 'launch_dice' game.id pending_action.character.id %}> {{ pending_action.get_action_type_display }} <i class="fa-regular fa-dice-d20"></i></a>
-                    {% elif pending_action.action_type == 'C' %}
-                        <a href={% url 'make_choice' game.id pending_action.character.id %}> {{ pending_action.get_action_type_display }} <i class="fa-regular fa-question"></i></a>
-                    {% endif %}
-                </div>
-            {% endif %}
+    <div class="rpgui-container framed">
+        {% for character in character_list %}
+            <p>{{ character.name }}</p>
+            <div class="rpgui-container framed-grey">
+                <p>Race: {{ character.get_race_display }}</p>
+                <p>XP: {{ character.xp }}</p>
+                <p>HP: {{ character.hp }} / {{ character.max_hp }}</p>
+                <div class="rpgui-progress red" data-value="0.8"></div>
+            </div>
+            {% for pending_action in pending_action_list %}
+                {% if pending_action.character.id == character.id %}
+                    <div class="rpgui-container framed-grey">
+                        {% if pending_action.action_type == 'D' %}
+                            <a href={% url 'launch_dice' game.id pending_action.character.id %}> {{ pending_action.get_action_type_display }} <i class="fa-regular fa-dice-d20"></i></a>
+                        {% elif pending_action.action_type == 'C' %}
+                            <a href={% url 'make_choice' game.id pending_action.character.id %}> {{ pending_action.get_action_type_display }} <i class="fa-regular fa-question"></i></a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% empty %}
+            {% endfor %}
         {% empty %}
-        {% endfor %}
-    {% empty %}
-        <p>No characters for this game...</p>
-    {% endfor %}
-</div>
-
-<div class="center rpgui-container framed">
-    <h1 class="title">Role play</h1>
-    <div class="rpgui-center">
-        <a href={% url 'index' %}>- Return to main menu -</a>
-    </div>
-
-    <hr class="golden"/>
-
-    <h1>{{ game }}</h1>
-    <div class="rpgui-container framed-grey">
-        {% for narrative in narrative_list %}
-            <p>{{ narrative.date }} {{ narrative.message }}</p>
-        {% empty %}
-            <p>The story did not start yet...</p>
+            <p>No characters for this game...</p>
         {% endfor %}
     </div>
-    {% if perms.narrative.add_narrative %}
+
+    <div class="center rpgui-container framed">
+        <h1 class="title">Role play</h1>
         <div class="rpgui-center">
-            <a href={% url 'newnarrative' game.id %}><button class="rpgui-button"><p>Continue the story</p></button></a>
+            <a href={% url 'index' %}>- Return to main menu -</a>
         </div>
-    {% endif %}
-</div>
+
+        <hr class="golden"/>
+
+        <h1>{{ game }}</h1>
+        <div class="rpgui-container framed-grey">
+            {% for narrative in narrative_list %}
+                <p>{{ narrative.date }} {{ narrative.message }}</p>
+            {% empty %}
+                <p>The story did not start yet...</p>
+            {% endfor %}
+        </div>
+        {% if perms.narrative.add_narrative %}
+            <div class="rpgui-center">
+                <a href={% url 'newnarrative' game.id %}><button class="rpgui-button"><p>Continue the story</p></button></a>
+            </div>
+        {% endif %}
+    </div>
 {% endblock %}

@@ -1,56 +1,56 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="center rpgui-container framed">
-    <h1 class="title">Role play</h1>
+    <div class="center rpgui-container framed">
+        <h1 class="title">Role play</h1>
 
-    <hr class="golden"/>
+        <hr class="golden"/>
 
-    <p>Role play is an open-source virtual role playing game.</p>
-    <p>It is an online version of "paper" role play games.</p>
+        <p>Role play is an open-source virtual role playing game.</p>
+        <p>It is an online version of "paper" role play games.</p>
 
-    <hr/>
-
-    <div class="rpgui-center">
-        {% if user.is_authenticated %}
-            <p>Welcome {{ user.username }}.</p>
-            {% if perms.game.add_game %}
-                <div class="menu">
-                    <a href="{% url 'newgame' %}"><button class="rpgui-button"><p>New Game</p></button></a></p>
-                </div>
-            {% endif %}
-            <div class="login-menu">
-                <a href="{% url 'logout' %}"><button class="rpgui-button"><p>Log out</p></button></a>
-            </div>
-        {% else %}
-            <p>Please log in, if you want to play.</p>
-            <a href="{% url 'login' %}"><button class="rpgui-button"><p>Log in</p></button></a>
-        {% endif %}
-    </div>
-
-    {% if user.is_authenticated %}
         <hr/>
 
-        <h1>Ongoing games</h1>
-        <p>Select the game you want to join.</p>
-        <div class="rpgui-container framed-grey">
-            {% for game in game_list %}
-                <p>{{ game.start_date }} <a href={% url 'game' game.id %}>{{ game }}</a></p>
-            {% empty %}
-                <p>No games are available...</p>
-            {% endfor %}
+        <div class="rpgui-center">
+            {% if user.is_authenticated %}
+                <p>Welcome {{ user.username }}.</p>
+                {% if perms.game.add_game %}
+                    <div class="menu">
+                        <a href="{% url 'newgame' %}"><button class="rpgui-button"><p>New Game</p></button></a></p>
+                    </div>
+                {% endif %}
+                <div class="login-menu">
+                    <a href="{% url 'logout' %}"><button class="rpgui-button"><p>Log out</p></button></a>
+                </div>
+            {% else %}
+                <p>Please log in, if you want to play.</p>
+                <a href="{% url 'login' %}"><button class="rpgui-button"><p>Log in</p></button></a>
+            {% endif %}
         </div>
-    {% endif %}
 
-    <hr/>
+        {% if user.is_authenticated %}
+            <hr/>
 
-    <h1>Release notes</h1>
-    <p>Under development...</p>
-    <div class="rpgui-center">
-        <a href="https://github.com/egraba/role-play">
-            <button class="rpgui-button" ><p>View on GitHub</p></button>
-        </a>
+            <h1>Ongoing games</h1>
+            <p>Select the game you want to join.</p>
+            <div class="rpgui-container framed-grey">
+                {% for game in game_list %}
+                    <p>{{ game.start_date }} <a href={% url 'game' game.id %}>{{ game }}</a></p>
+                {% empty %}
+                    <p>No games are available...</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <hr/>
+
+        <h1>Release notes</h1>
+        <p>Under development...</p>
+        <div class="rpgui-center">
+            <a href="https://github.com/egraba/role-play">
+                <button class="rpgui-button" ><p>View on GitHub</p></button>
+            </a>
+        </div>
+
     </div>
-
-</div>
 {% endblock %}
