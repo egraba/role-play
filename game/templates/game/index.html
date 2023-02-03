@@ -3,12 +3,12 @@
 {% block content %}
 <div class="center rpgui-container framed">
     <h1 class="title">Role play</h1>
-    
+
     <hr class="golden"/>
-    
+
     <p>Role play is an open-source virtual role playing game.</p>
     <p>It is an online version of "paper" role play games.</p>
-    
+
     <hr/>
 
     <div class="rpgui-center">
@@ -27,7 +27,7 @@
             <a href="{% url 'login' %}"><button class="rpgui-button"><p>Log in</p></button></a>
         {% endif %}
     </div>
-    
+
     {% if user.is_authenticated %}
         <hr/>
 

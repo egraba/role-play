@@ -11,7 +11,7 @@
             <div class="rpgui-progress red" data-value="0.8"></div>
         </div>
         {% for pending_action in pending_action_list %}
-            {% if pending_action.character.id == character.id %}    
+            {% if pending_action.character.id == character.id %}
                 <div class="rpgui-container framed-grey">
                     {% if pending_action.action_type == 'D' %}
                         <a href={% url 'launch_dice' game.id pending_action.character.id %}> {{ pending_action.get_action_type_display }} <i class="fa-regular fa-dice-d20"></i></a>
@@ -32,9 +32,9 @@
     <div class="rpgui-center">
         <a href={% url 'index' %}>- Return to main menu -</a>
     </div>
-    
+
     <hr class="golden"/>
-    
+
     <h1>{{ game }}</h1>
     <div class="rpgui-container framed-grey">
         {% for narrative in narrative_list %}
