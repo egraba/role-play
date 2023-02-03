@@ -2,7 +2,7 @@ from django.db import models
 from django.test import TestCase
 from django.utils import timezone
 
-from game.models import Character, Game, Narrative
+from game.models import Character, Game, Narrative, PendingAction
 from game.tests import utils
 
 
@@ -138,3 +138,46 @@ class NarrativeModelTest(TestCase):
     def test_str(self):
         narrative = Narrative.objects.get(id=1)
         self.assertEqual(str(narrative), narrative.message)
+
+
+class PendingActionModelTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        Game.objects.create()
+        game = Game.objects.last()
+        Character.objects.create()
+        character = Character.objects.last()
+        Narrative.objects.create()
+        narrative = Narrative.objects.last()
+        PendingAction.objects.create(
+            game=game, character=character, narrative=narrative
+        )
+
+    def test_game_type(self):
+        pending_action = PendingAction.objects.get(id=1)
+        game = pending_action._meta.get_field("game")
+        self.assertTrue(game, models.ForeignKey)
+
+    def test_character_type(self):
+        pending_action = PendingAction.objects.get(id=1)
+        character = pending_action._meta.get_field("character")
+        self.assertTrue(character, models.ForeignKey)
+
+    def test_narrative_type(self):
+        pending_action = PendingAction.objects.get(id=1)
+        narrative = pending_action._meta.get_field("narrative")
+        self.assertTrue(narrative, models.ForeignKey)
+
+    def test_action_type_type(self):
+        pending_action = PendingAction.objects.get(id=1)
+        action_type = pending_action._meta.get_field("action_type")
+        self.assertTrue(action_type, models.CharField)
+
+    def test_action_type_max_length(self):
+        pending_action = PendingAction.objects.get(id=1)
+        max_length = pending_action._meta.get_field("action_type").max_length
+        self.assertEqual(max_length, 1)
+
+    def test_str(self):
+        pending_action = PendingAction.objects.get(id=1)
+        self.assertEqual(str(pending_action), pending_action.action_type)
