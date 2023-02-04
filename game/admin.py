@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Character, Game, Narrative, PendingAction
+from game.models import Character, Game, Narrative, PendingAction
 
 
 class GameAdmin(admin.ModelAdmin):

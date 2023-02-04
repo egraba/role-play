@@ -5,10 +5,9 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
+from game.models import Character, Choice, DiceLaunch, Game, Narrative, PendingAction
 from game.tests import utils
-
-from ..models import Character, Choice, DiceLaunch, Game, Narrative, PendingAction
-from ..views import (
+from game.views import (
     ChoiceSuccessView,
     ChoiceView,
     DiceLaunchSuccessView,

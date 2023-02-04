@@ -4,8 +4,8 @@ from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
 
-from .forms import ChoiceForm, NewGameForm, NewNarrativeForm
-from .models import Character, Choice, DiceLaunch, Game, Narrative, PendingAction
+from game.forms import ChoiceForm, NewGameForm, NewNarrativeForm
+from game.models import Character, Choice, DiceLaunch, Game, Narrative, PendingAction
 
 
 class IndexView(generic.ListView):
