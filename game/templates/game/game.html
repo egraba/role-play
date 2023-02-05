@@ -31,6 +31,11 @@
         {% empty %}
             <p>No characters for this game...</p>
         {% endfor %}
+        {% if perms.narrative.add_character %}
+            <div class="rpgui-center">
+                <a href=""><button disabled class="rpgui-button"><p>Add Character</p></button></a>
+            </div>
+        {% endif %}
 
         <hr />
 
@@ -56,7 +61,6 @@
         </div>
         {% if perms.narrative.add_narrative %}
             <div class="rpgui-center">
-                <a href=""><button disabled class="rpgui-button"><p>Add Character</p></button></a>
                 <a href={% url 'newnarrative' game.id %}><button class="rpgui-button"><p>Continue the story</p></button></a>
             </div>
         {% endif %}
