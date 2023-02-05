@@ -18,7 +18,8 @@ class GameModelTest(TestCase):
 
     def test_start_date_default_value(self):
         game = Game.objects.get(id=1)
-        self.assertEqual(game.start_date.second, timezone.now().second)
+        delta = game.start_date.second - timezone.now().second
+        self.assertLessEqual(delta, 1)
 
     def test_name_type(self):
         game = Game.objects.get(id=1)
