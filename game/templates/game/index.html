@@ -14,14 +14,7 @@
         <div class="rpgui-center">
             {% if user.is_authenticated %}
                 <p>Welcome {{ user.username }}.</p>
-                {% if perms.game.add_game %}
-                    <div class="menu">
-                        <a href="{% url 'newgame' %}"><button class="rpgui-button"><p>New Game</p></button></a></p>
-                    </div>
-                {% endif %}
-                <div class="login-menu">
-                    <a href="{% url 'logout' %}"><button class="rpgui-button"><p>Log out</p></button></a>
-                </div>
+                <a href="{% url 'logout' %}"><button class="rpgui-button"><p>Log out</p></button></a>
             {% else %}
                 <p>Please log in, if you want to play.</p>
                 <a href="{% url 'login' %}"><button class="rpgui-button"><p>Log in</p></button></a>
@@ -40,6 +33,12 @@
                     <p>No games are available...</p>
                 {% endfor %}
             </div>
+            <div class="rpgui-center">
+                {% if perms.game.add_game %}
+                    <a href="{% url 'newgame' %}"><button class="rpgui-button"><p>New Game</p></button></a></p>
+                {% endif %}
+            </div>
+
         {% endif %}
 
         <hr/>

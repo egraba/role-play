@@ -21,18 +21,6 @@
     padding-bottom: 0;
 }
 
-.menu {
-    float: left;
-}
-
-.login-menu {
-    float: right;
-}
-
-hr {
-    clear: both;
-}
-
 .form {
     width: 20%;
     margin-top: 10%;
