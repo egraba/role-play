@@ -50,7 +50,7 @@ def create_narrative(game):
     return Narrative.objects.create(
         date=datetime.now(tz=timezone.utc),
         game=game,
-        message=utils.generate_random_string(1024),
+        message=utils.generate_random_string(500),
     )
 
 
@@ -119,7 +119,7 @@ class GameViewTests(TestCase):
             Narrative.objects.create(
                 game=game,
                 date=datetime.now(tz=timezone.utc),
-                message=utils.generate_random_string(1024),
+                message=utils.generate_random_string(500),
             )
 
     def test_view_mapping(self):
