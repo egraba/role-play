@@ -17,19 +17,6 @@ from game.views import (
 )
 
 
-def create_game():
-    game_name = utils.generate_random_string(random.randint(1, 50))
-    return Game.objects.create(name=game_name)
-
-
-def create_several_games():
-    game_list = list()
-    n = random.randint(1, 100)
-    for i in range(n):
-        game_list.append(create_game())
-    return game_list
-
-
 def create_character(game):
     return Character.objects.create(
         name=utils.generate_random_name(255),
@@ -192,105 +179,133 @@ class GameViewTests(TestCase):
 
 
 class DiceLaunchViewTest(TestCase):
-    def setUp(self):
-        self.game = create_game()
-        self.character = create_character(self.game)
+    @classmethod
+    def setUpTestData(cls):
+        game = Game.objects.create()
+        Character.objects.create(
+            name=utils.generate_random_name(255),
+            game=game,
+            race=random.choice(Character.RACES)[0],
+        )
 
     def test_view_mapping_ok(self):
-        response = self.client.get(
-            reverse("launch_dice", args=[self.game.pk, self.character.pk])
-        )
+        game = Game.objects.last()
+        character = Character.objects.last()
+        response = self.client.get(reverse("launch_dice", args=[game.id, character.id]))
         self.assertEqual(response.resolver_match.func.view_class, DiceLaunchView)
 
     def test_view_content(self):
-        response = self.client.get(
-            reverse("launch_dice", args=[self.game.pk, self.character.pk])
-        )
+        game = Game.objects.last()
+        character = Character.objects.last()
+        response = self.client.get(reverse("launch_dice", args=[game.id, character.id]))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context["game"], self.game)
-        self.assertEqual(response.context["character"], self.character)
+        self.assertEqual(response.context["game"], game)
+        self.assertEqual(response.context["character"], character)
         self.assertContains(response, "! It is your turn.")
 
 
 class ChoiceViewTest(TestCase):
-    def setUp(self):
-        self.game = create_game()
-        self.character = create_character(self.game)
+    @classmethod
+    def setUpTestData(cls):
+        game = Game.objects.create()
+        Character.objects.create(
+            name=utils.generate_random_name(255),
+            game=game,
+            race=random.choice(Character.RACES)[0],
+        )
 
     def test_view_mapping_ok(self):
-        response = self.client.get(
-            reverse("make_choice", args=[self.game.pk, self.character.pk])
-        )
+        game = Game.objects.last()
+        character = Character.objects.last()
+        response = self.client.get(reverse("make_choice", args=[game.id, character.id]))
         self.assertEqual(response.resolver_match.func.view_class, ChoiceView)
 
     def test_view_content(self):
-        response = self.client.get(
-            reverse("make_choice", args=[self.game.pk, self.character.pk])
-        )
+        game = Game.objects.last()
+        character = Character.objects.last()
+        response = self.client.get(reverse("make_choice", args=[game.id, character.id]))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context["game"], self.game)
-        self.assertEqual(response.context["character"], self.character)
+        self.assertEqual(response.context["game"], game)
+        self.assertEqual(response.context["character"], character)
 
 
 class DiceLaunchSuccessViewTest(TestCase):
-    def setUp(self):
-        self.game = create_game()
-        self.character = create_character(self.game)
-        self.dice_launch = DiceLaunch.objects.create(
-            game=self.game, character=self.character, score=random.randint(1, 20)
+    @classmethod
+    def setUpTestData(cls):
+        game = Game.objects.create()
+        character = Character.objects.create(
+            name=utils.generate_random_name(255),
+            game=game,
+            race=random.choice(Character.RACES)[0],
+        )
+        DiceLaunch.objects.create(
+            game=game, character=character, score=random.randint(1, 20)
         )
 
-    def test_view_mapping_ok(self):
+    def test_view_mapping(self):
+        game = Game.objects.last()
+        character = Character.objects.last()
+        dice_launch = DiceLaunch.objects.last()
         response = self.client.get(
             reverse(
                 "dice_success",
-                args=[self.game.pk, self.character.pk, self.dice_launch.pk],
+                args=[game.id, character.id, dice_launch.id],
             )
         )
         self.assertEqual(response.resolver_match.func.view_class, DiceLaunchSuccessView)
 
     def test_view_content(self):
+        game = Game.objects.last()
+        character = Character.objects.last()
+        dice_launch = DiceLaunch.objects.last()
         response = self.client.get(
             reverse(
                 "dice_success",
-                args=[self.game.pk, self.character.pk, self.dice_launch.pk],
+                args=[game.id, character.id, dice_launch.id],
             )
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context["game"], self.game)
-        self.assertEqual(response.context["character"], self.character)
-        self.assertEqual(response.context["dice_launch"], self.dice_launch)
+        self.assertEqual(response.context["game"], game)
+        self.assertEqual(response.context["character"], character)
+        self.assertEqual(response.context["dice_launch"], dice_launch)
         self.assertContains(
-            response, f"{self.character.name}, your score is: {self.dice_launch.score}!"
+            response, f"{character.name}, your score is: {dice_launch.score}!"
         )
 
 
 class ChoiceSuccessViewTest(TestCase):
-    def setUp(self):
-        self.game = create_game()
-        self.character = create_character(self.game)
-        self.choice = Choice.objects.create(
-            game=self.game,
-            character=self.character,
+    @classmethod
+    def setUpTestData(cls):
+        game = Game.objects.create()
+        character = Character.objects.create(
+            name=utils.generate_random_name(255),
+            game=game,
+            race=random.choice(Character.RACES)[0],
+        )
+        Choice.objects.create(
+            game=game,
+            character=character,
             selection=utils.generate_random_name(255),
         )
 
-    def test_view_mapping_ok(self):
+    def test_view_mapping(self):
+        game = Game.objects.last()
+        character = Character.objects.last()
+        choice = Choice.objects.last()
         response = self.client.get(
-            reverse(
-                "choice_success", args=[self.game.pk, self.character.pk, self.choice.pk]
-            )
+            reverse("choice_success", args=[game.id, character.id, choice.id])
         )
         self.assertEqual(response.resolver_match.func.view_class, ChoiceSuccessView)
 
     def test_view_content(self):
+        game = Game.objects.last()
+        character = Character.objects.last()
+        choice = Choice.objects.last()
         response = self.client.get(
-            reverse(
-                "choice_success", args=[self.game.pk, self.character.pk, self.choice.pk]
-            )
+            reverse("choice_success", args=[game.id, character.id, choice.id])
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context["game"], self.game)
-        self.assertEqual(response.context["character"], self.character)
-        self.assertEqual(response.context["choice"], self.choice)
-        self.assertContains(response, f"{self.choice.selection}")
+        self.assertEqual(response.context["game"], game)
+        self.assertEqual(response.context["character"], character)
+        self.assertEqual(response.context["choice"], choice)
+        self.assertContains(response, f"{choice.selection}")
