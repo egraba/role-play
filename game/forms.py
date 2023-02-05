@@ -2,7 +2,7 @@ from django import forms
 
 
 class NewGameForm(forms.Form):
-    name = forms.CharField(widget=forms.TextInput, max_length=255)
+    name = forms.CharField(widget=forms.TextInput, max_length=50)
 
 
 class NewNarrativeForm(forms.Form):

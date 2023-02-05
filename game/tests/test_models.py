@@ -9,7 +9,7 @@ from game.tests import utils
 class GameModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        Game.objects.create(name=utils.generate_random_string(100))
+        Game.objects.create(name=utils.generate_random_string(50))
 
     def test_start_date_type(self):
         game = Game.objects.get(id=1)
@@ -29,7 +29,7 @@ class GameModelTest(TestCase):
     def test_name_max_length(self):
         game = Game.objects.get(id=1)
         max_length = game._meta.get_field("name").max_length
-        self.assertEqual(max_length, 255)
+        self.assertEqual(max_length, 50)
 
     def test_end_date_type(self):
         game = Game.objects.get(id=1)

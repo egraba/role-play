@@ -18,7 +18,7 @@ from game.views import (
 
 
 def create_game():
-    game_name = utils.generate_random_string(random.randint(1, 255))
+    game_name = utils.generate_random_string(random.randint(1, 50))
     return Game.objects.create(name=game_name)
 
 
@@ -76,7 +76,7 @@ class IndexViewTests(TestCase):
     def setUpTestData(cls):
         number_of_games = 12
         for i in range(number_of_games):
-            Game.objects.create(name=utils.generate_random_name(20))
+            Game.objects.create(name=utils.generate_random_string(20))
 
     def test_view_mapping(self):
         response = self.client.get(reverse("index"))

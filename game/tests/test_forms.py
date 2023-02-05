@@ -11,7 +11,7 @@ class NewGameFormTest(TestCase):
 
     def test_name_max_length(self):
         form = NewGameForm()
-        self.assertEqual(form.fields["name"].max_length, 255)
+        self.assertEqual(form.fields["name"].max_length, 50)
 
 
 class NewNarrativeFormTest(TestCase):
