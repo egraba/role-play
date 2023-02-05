@@ -6,7 +6,7 @@ class NewGameForm(forms.Form):
 
 
 class NewNarrativeForm(forms.Form):
-    message = forms.CharField(widget=forms.Textarea, max_length=1024)
+    message = forms.CharField(widget=forms.Textarea, max_length=1000)
 
 
 class ChoiceForm(forms.Form):

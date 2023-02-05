@@ -134,7 +134,7 @@ class NarrativeModelTest(TestCase):
     def test_message_max_length(self):
         narrative = Narrative.objects.get(id=1)
         max_length = narrative._meta.get_field("message").max_length
-        self.assertEqual(max_length, 1024)
+        self.assertEqual(max_length, 1000)
 
     def test_str(self):
         narrative = Narrative.objects.get(id=1)

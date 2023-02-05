@@ -21,7 +21,7 @@ class NewNarrativeFormTest(TestCase):
 
     def test_name_max_length(self):
         form = NewNarrativeForm()
-        self.assertEqual(form.fields["message"].max_length, 1024)
+        self.assertEqual(form.fields["message"].max_length, 1000)
 
 
 class ChoiceFormTest(TestCase):
