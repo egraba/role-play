@@ -27,16 +27,28 @@
             <h1>Ongoing games</h1>
             <p>Select the game you want to join.</p>
             <div class="rpgui-container framed-grey">
-                {% for game in game_list %}
+                {% for game in page_obj %}
                     <p>{{ game.start_date }} <a href={% url 'game' game.id %}>{{ game }}</a></p>
                 {% empty %}
                     <p>No games are available...</p>
                 {% endfor %}
             </div>
             <div class="rpgui-center">
-                {% if perms.game.add_game %}
-                    <a href="{% url 'newgame' %}"><button class="rpgui-button"><p>New Game</p></button></a></p>
-                {% endif %}
+                <p>
+                    {% if page_obj.has_previous %}
+                        <a href="?page=1">&laquo; first</a>
+                        <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                    {% endif %}
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}">next</a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                    {% endif %}
+                    {% if perms.game.add_game %}
+                        <br/>
+                        <a href="{% url 'newgame' %}"><button class="rpgui-button"><p>New Game</p></button></a></p>
+                    {% endif %}
+                </p>
             </div>
 
         {% endif %}

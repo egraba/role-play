@@ -9,10 +9,10 @@ from game.models import Character, Choice, DiceLaunch, Game, Narrative, PendingA
 
 
 class IndexView(generic.ListView):
+    model = Game
+    paginate_by = 10
+    ordering = ["-start_date"]
     template_name = "game/index.html"
-
-    def get_queryset(self):
-        return Game.objects.all()
 
 
 class NewGameView(generic.FormView):

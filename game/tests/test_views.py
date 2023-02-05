@@ -72,22 +72,41 @@ def create_pending_action(game, narrative, character):
 
 
 class IndexViewTests(TestCase):
-    def test_view_mapping_ok(self):
+    @classmethod
+    def setUpTestData(cls):
+        number_of_games = 12
+        for i in range(number_of_games):
+            Game.objects.create(name=utils.generate_random_name(20))
+
+    def test_view_mapping(self):
         response = self.client.get(reverse("index"))
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(response.resolver_match.func.view_class, IndexView)
 
-    def test_no_game(self):
+    def test_pagination_size(self):
         response = self.client.get(reverse("index"))
         self.assertEqual(response.status_code, 200)
+        self.assertTrue("is_paginated" in response.context)
+        self.assertTrue(response.context["is_paginated"])
+        self.assertEqual(len(response.context["game_list"]), 10)
 
-    def test_several_games(self):
-        game_list = create_several_games()
+    def test_pagination_size_next_page(self):
+        response = self.client.get(reverse("index") + "?page=2")
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue("is_paginated" in response.context)
+        self.assertTrue(response.context["is_paginated"])
+        self.assertEqual(len(response.context["game_list"]), 2)
+
+    def test_ordering(self):
         response = self.client.get(reverse("index"))
         self.assertEqual(response.status_code, 200)
-        self.assertQuerysetEqual(
-            list(response.context["game_list"]),
-            game_list,
-        )
+        last_date = 0
+        for game in response.context["game_list"]:
+            if last_date == 0:
+                last_date = game.start_date
+            else:
+                self.assertTrue(last_date >= game.start_date)
+                last_date = game.start_date
 
 
 class GameViewTests(TestCase):
