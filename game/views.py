@@ -35,29 +35,24 @@ class NewGameView(generic.FormView):
 
 
 class GameView(generic.ListView):
-    model = Game
+    model = Narrative
+    paginate_by = 20
+    ordering = ["-date"]
     template_name = "game/game.html"
-
-    def setup(self, request, *args, **kwargs):
-        self.request = request
-        self.args = args
-        self.kwargs = kwargs
-        game_id = self.kwargs["game_id"]
-        try:
-            self.game = Game.objects.get(pk=game_id)
-            self.character_list = Character.objects.filter(game=game_id)
-            self.narrative_list = Narrative.objects.filter(game=game_id)
-            self.pending_action_list = PendingAction.objects.filter(game=game_id)
-        except Game.DoesNotExist:
-            raise Http404(f"Game [{game_id}] does not exist...", game_id)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["game"] = self.game
-        context["character_list"] = self.character_list
-        context["narrative_list"] = self.narrative_list
-        context["pending_action_list"] = self.pending_action_list
+        game_id = self.kwargs["game_id"]
+        try:
+            context["game"] = Game.objects.get(pk=game_id)
+            context["character_list"] = Character.objects.filter(game=game_id)
+            context["pending_action_list"] = PendingAction.objects.filter(game=game_id)
+        except Game.DoesNotExist:
+            raise Http404(f"Game [{game_id}] does not exist...", game_id)
         return context
+
+    def get_queryset(self):
+        return super().get_queryset().filter(game=self.kwargs["game_id"])
 
 
 class NewNarrativeView(generic.FormView):

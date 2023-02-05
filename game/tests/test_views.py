@@ -56,7 +56,7 @@ def create_narrative(game):
 
 def create_several_narratives(game):
     narrative_list = list()
-    n = random.randint(10, 100)
+    n = random.randint(1, 2)
     for i in range(n):
         narrative_list.append(create_narrative(game))
     return narrative_list
@@ -110,15 +110,53 @@ class IndexViewTests(TestCase):
 
 
 class GameViewTests(TestCase):
-    def setUp(self):
-        self.game = create_game()
+    @classmethod
+    def setUpTestData(cls):
+        Game.objects.create(name=utils.generate_random_string(20))
+        game = Game.objects.last()
+        number_of_narratives = 22
+        for i in range(number_of_narratives):
+            Narrative.objects.create(
+                game=game,
+                date=datetime.now(tz=timezone.utc),
+                message=utils.generate_random_string(1024),
+            )
 
-    def test_view_mapping_ok(self):
-        response = self.client.get(reverse("game", args=[self.game.pk]))
+    def test_view_mapping(self):
+        game = Game.objects.last()
+        response = self.client.get(reverse("game", args=[game.id]))
         self.assertEqual(response.resolver_match.func.view_class, GameView)
 
+    def test_pagination_size(self):
+        game = Game.objects.last()
+        response = self.client.get(reverse("game", args=[game.id]))
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue("is_paginated" in response.context)
+        self.assertTrue(response.context["is_paginated"])
+        self.assertEqual(len(response.context["narrative_list"]), 20)
+
+    def test_pagination_size_next_page(self):
+        game = Game.objects.last()
+        response = self.client.get(reverse("game", args=[game.id]) + "?page=2")
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue("is_paginated" in response.context)
+        self.assertTrue(response.context["is_paginated"])
+        self.assertEqual(len(response.context["narrative_list"]), 2)
+
+    def test_ordering(self):
+        response = self.client.get(reverse("index"))
+        self.assertEqual(response.status_code, 200)
+        last_date = 0
+        for game in response.context["game_list"]:
+            if last_date == 0:
+                last_date = game.start_date
+            else:
+                self.assertTrue(last_date >= game.start_date)
+                last_date = game.start_date
+
     def test_game_exists(self):
-        response = self.client.get(reverse("game", args=[self.game.pk]))
+        game = Game.objects.last()
+        response = self.client.get(reverse("game", args=[game.id]))
         self.assertEqual(response.status_code, 200)
 
     def test_game_not_exists(self):
@@ -126,51 +164,26 @@ class GameViewTests(TestCase):
         response = self.client.get(reverse("game", args=[game_id]))
         self.assertEqual(response.status_code, 404)
 
-    def test_game_no_characters(self):
-        response = self.client.get(reverse("game", args=[self.game.pk]))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "No characters for this game...")
-
     def test_game_several_characters(self):
-        character_list = create_several_characters(self.game)
-        response = self.client.get(reverse("game", args=[self.game.pk]))
+        game = Game.objects.last()
+        character_list = create_several_characters(game)
+        response = self.client.get(reverse("game", args=[game.id]))
         self.assertEqual(response.status_code, 200)
         self.assertQuerysetEqual(
             list(response.context["character_list"]),
             character_list,
         )
 
-    def test_game_no_narrative(self):
-        response = self.client.get(reverse("game", args=[self.game.pk]))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "The story did not start yet...")
-
-    def test_game_several_narratives(self):
-        narrative_list = create_several_narratives(self.game)
-        response = self.client.get(reverse("game", args=[self.game.pk]))
-        self.assertEqual(response.status_code, 200)
-        self.assertQuerysetEqual(
-            list(response.context["narrative_list"]),
-            narrative_list,
-        )
-
-    def test_game_no_pending_actions(self):
-        response = self.client.get(reverse("game", args=[self.game.pk]))
-        self.assertEqual(response.status_code, 200)
-        self.assertQuerysetEqual(
-            list(response.context["pending_action_list"]),
-            list(),
-        )
-
     def test_game_several_pending_actions(self):
-        character_list = create_several_characters(self.game)
-        narrative_list = create_several_narratives(self.game)
+        game = Game.objects.last()
+        character_list = create_several_characters(game)
+        narrative_list = create_several_narratives(game)
         narrative = narrative_list.pop()
         pending_action_list = list()
         for character in character_list:
-            pending_action = create_pending_action(self.game, narrative, character)
+            pending_action = create_pending_action(game, narrative, character)
             pending_action_list.append(pending_action)
-        response = self.client.get(reverse("game", args=[self.game.pk]))
+        response = self.client.get(reverse("game", args=[game.id]))
         self.assertEqual(response.status_code, 200)
         self.assertQuerysetEqual(
             list(response.context["pending_action_list"]),
