@@ -44,11 +44,10 @@
                         <a href="?page={{ page_obj.next_page_number }}">next</a>
                         <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
                     {% endif %}
-                    {% if perms.game.add_game %}
-                        <br/>
-                        <a href="{% url 'newgame' %}"><button class="rpgui-button"><p>New Game</p></button></a></p>
-                    {% endif %}
                 </p>
+                {% if perms.game.add_game %}
+                    <a href="{% url 'newgame' %}"><button class="rpgui-button"><p>New Game</p></button></a></p>
+                {% endif %}
             </div>
 
         {% endif %}
