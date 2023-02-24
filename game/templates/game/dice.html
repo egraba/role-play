@@ -3,10 +3,10 @@
 {% block content %}
     <div class="action rpgui-container framed-golden">
         <h1>{{ game }}</h1>
-        <p>{{ character }}! It is your turn.<p>
-            <form method="post">
-                {% csrf_token %}
-                <input type="submit" value="Launch dice!">
-            </form>
-            <div>
+        <p>{{ character }}! It is your turn.</p>
+        <form method="post">
+            {% csrf_token %}
+            <input type="submit" value="Launch dice!">
+        </form>
+    </div>
 {% endblock%}
