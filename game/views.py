@@ -69,11 +69,9 @@ class AddCharacterView(generic.ListView):
         except Game.DoesNotExist:
             raise Http404(f"Game [{game_id}] does not exist...", game_id)
         return context
-    
-    
+
     def get_queryset(self):
         return super().get_queryset().filter(game=None)
-    
 
 
 class NewNarrativeView(generic.FormView):

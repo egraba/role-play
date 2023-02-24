@@ -178,6 +178,7 @@ class GameViewTests(TestCase):
             list(pending_action_list),
         )
 
+
 class AddCharacterViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -198,7 +199,6 @@ class AddCharacterViewTest(TestCase):
 
     def test_view_mapping(self):
         game = Game.objects.last()
-        character = Character.objects.last()
         response = self.client.get(reverse("add_character", args=[game.id]))
         self.assertEqual(response.resolver_match.func.view_class, AddCharacterView)
 

@@ -11,14 +11,14 @@
 
         <h1>Available characters</h1>
         {% for character in character_list %}
-        <div class="character rpgui-container framed-grey">
-            <p>
-                <a href="" style="width:100em">{{ character.name }}</a>
-                Race: {{ character.get_race_display }},
-                XP: {{ character.xp }}
-                <a href=""><button disabled class="rpgui-button"><p>Add</p></button></a>
-            </p>
-        </div>
+            <div class="character rpgui-container framed-grey">
+                <p>
+                    <a href="" style="width:100em">{{ character.name }}</a>
+                    Race: {{ character.get_race_display }},
+                    XP: {{ character.xp }}
+                    <a href=""><button disabled class="rpgui-button"><p>Add</p></button></a>
+                </p>
+            </div>
         {% empty %}
             <p>No character available...</p>
         {% endfor %}
