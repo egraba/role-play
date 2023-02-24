@@ -33,7 +33,7 @@
         {% endfor %}
         {% if perms.narrative.add_character %}
             <div class="rpgui-center">
-                <a href=""><button disabled class="rpgui-button"><p>Add Character</p></button></a>
+                <a href={% url 'add_character' game.id %}><button class="rpgui-button"><p>Add Character</p></button></a>
             </div>
         {% endif %}
 

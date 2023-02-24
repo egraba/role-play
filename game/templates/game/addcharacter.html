@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="rpgui-container framed">
+        <h1 class="title">{{ game }}</h1>
+        <div class="rpgui-center">
+            <a href={% url 'game' game.id %}>- Return to game -</a>
+        </div>
+
+        <hr class="golden"/>
+
+        <h1>Available characters</h1>
+        {% for character in character_list %}
+        <div class="character rpgui-container framed-grey">
+            <p>
+                <a href="" style="width:100em">{{ character.name }}</a>
+                Race: {{ character.get_race_display }},
+                XP: {{ character.xp }}
+                <a href=""><button disabled class="rpgui-button"><p>Add</p></button></a>
+            </p>
+        </div>
+        {% empty %}
+            <p>No character available...</p>
+        {% endfor %}
+        <div class="rpgui-center">
+            <p>
+                {% if page_obj.has_previous %}
+                    <a href="?page=1">&laquo; First</a>
+                    <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                {% endif %}
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">Next</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+                {% endif %}
+            </p>
+        </div>
+    </div>
+{% endblock%}

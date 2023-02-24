@@ -8,6 +8,7 @@ from django.utils import timezone
 from game.models import Character, Choice, DiceLaunch, Game, Narrative, PendingAction
 from game.tests import utils
 from game.views import (
+    AddCharacterView,
     ChoiceSuccessView,
     ChoiceView,
     DiceLaunchSuccessView,
@@ -176,6 +177,68 @@ class GameViewTests(TestCase):
             list(response.context["pending_action_list"]),
             list(pending_action_list),
         )
+
+class AddCharacterViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        game = Game.objects.create()
+        number_of_characters_with_game = 5
+        number_of_characters_without_game = 12
+        for i in range(number_of_characters_with_game):
+            Character.objects.create(
+                name=utils.generate_random_name(255),
+                game=game,
+                race=random.choice(Character.RACES)[0],
+            )
+        for i in range(number_of_characters_without_game):
+            Character.objects.create(
+                name=utils.generate_random_name(255),
+                race=random.choice(Character.RACES)[0],
+            )
+
+    def test_view_mapping(self):
+        game = Game.objects.last()
+        character = Character.objects.last()
+        response = self.client.get(reverse("add_character", args=[game.id]))
+        self.assertEqual(response.resolver_match.func.view_class, AddCharacterView)
+
+    def test_pagination_size(self):
+        game = Game.objects.last()
+        response = self.client.get(reverse("add_character", args=[game.id]))
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue("is_paginated" in response.context)
+        self.assertTrue(response.context["is_paginated"])
+        self.assertEqual(len(response.context["character_list"]), 10)
+
+    def test_pagination_size_next_page(self):
+        game = Game.objects.last()
+        response = self.client.get(reverse("add_character", args=[game.id]) + "?page=2")
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue("is_paginated" in response.context)
+        self.assertTrue(response.context["is_paginated"])
+        self.assertEqual(len(response.context["character_list"]), 2)
+
+    def test_ordering(self):
+        game = Game.objects.last()
+        response = self.client.get(reverse("add_character", args=[game.id]))
+        self.assertEqual(response.status_code, 200)
+        last_character_name = ""
+        for character in response.context["character_list"]:
+            if last_character_name == "":
+                last_character_name = character.name
+            else:
+                self.assertTrue(last_character_name <= character.name)
+                last_character_name = character.name
+
+    def test_game_exists(self):
+        game = Game.objects.last()
+        response = self.client.get(reverse("add_character", args=[game.id]))
+        self.assertEqual(response.status_code, 200)
+
+    def test_game_not_exists(self):
+        game_id = random.randint(10000, 99999)
+        response = self.client.get(reverse("add_character", args=[game_id]))
+        self.assertEqual(response.status_code, 404)
 
 
 class DiceLaunchViewTest(TestCase):
