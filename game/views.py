@@ -74,6 +74,38 @@ class AddCharacterView(generic.ListView):
         return super().get_queryset().filter(game=None)
 
 
+class AddCharacterConfirmView(generic.UpdateView):
+    model = Character
+    fields = []
+    template_name = "game/addcharacterconfirm.html"
+
+    def setup(self, request, *args, **kwargs):
+        self.request = request
+        self.args = args
+        self.kwargs = kwargs
+        self.game_id = self.kwargs["game_id"]
+        self.game = Game.objects.get(pk=self.game_id)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        try:
+            context["game"] = self.game
+        except Game.DoesNotExist:
+            raise Http404(f"Game [{self.game_id}] does not exist...", self.game_id)
+        return context
+
+    def post(self, request, *args, **kwargs):
+        character = self.get_object()
+        character.game = self.game
+        character.save()
+        return HttpResponseRedirect(
+            reverse(
+                "game",
+                args=(self.game_id,),
+            )
+        )
+
+
 class NewNarrativeView(generic.FormView):
     model = Narrative
     fields = ["message"]

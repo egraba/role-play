@@ -36,3 +36,8 @@
     width: 50em;
     margin-left: 25em;
 }
+
+.inline {
+    display: flex;
+    justify-content: center;
+}
