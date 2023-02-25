@@ -45,4 +45,4 @@ jobs:
         echo "DJANGO_SECRET_KEY=$(python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())')" >> $GITHUB_ENV
     - name: Run Tests
       run: |
-        python manage.py test
+        python manage.py test --verbosity=2
