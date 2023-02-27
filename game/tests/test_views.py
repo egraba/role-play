@@ -187,13 +187,13 @@ class AddCharacterViewTest(TestCase):
         number_of_characters_without_game = 12
         for i in range(number_of_characters_with_game):
             Character.objects.create(
-                name=utils.generate_random_name(255),
+                name=utils.generate_random_name(10),
                 game=game,
                 race=random.choice(Character.RACES)[0],
             )
         for i in range(number_of_characters_without_game):
             Character.objects.create(
-                name=utils.generate_random_name(255),
+                name=utils.generate_random_name(10),
                 race=random.choice(Character.RACES)[0],
             )
 
@@ -224,6 +224,7 @@ class AddCharacterViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         last_character_name = ""
         for character in response.context["character_list"]:
+            print(character)
             if last_character_name == "":
                 last_character_name = character.name
             else:
