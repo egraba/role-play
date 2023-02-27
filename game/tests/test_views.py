@@ -222,14 +222,13 @@ class AddCharacterViewTest(TestCase):
         game = Game.objects.last()
         response = self.client.get(reverse("add_character", args=[game.id]))
         self.assertEqual(response.status_code, 200)
-        last_character_name = ""
+        last_xp = 0
         for character in response.context["character_list"]:
-            print(character)
-            if last_character_name == "":
-                last_character_name = character.name
+            if last_xp == 0:
+                last_xp = character.xp
             else:
-                self.assertTrue(last_character_name <= character.name)
-                last_character_name = character.name
+                self.assertTrue(last_xp >= character.xp)
+                last_xp = character.xp
 
     def test_game_exists(self):
         game = Game.objects.last()

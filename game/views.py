@@ -58,7 +58,7 @@ class GameView(generic.ListView):
 class AddCharacterView(generic.ListView):
     model = Character
     paginate_by = 10
-    ordering = ["name"]
+    ordering = ["-xp"]
     template_name = "game/addcharacter.html"
 
     def get_context_data(self, **kwargs):
