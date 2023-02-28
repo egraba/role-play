@@ -26,6 +26,9 @@
                         {% endif %}
                     {% empty %}
                     {% endfor %}
+                    {% if user.is_authenticated and perms.game.add_pendingaction %}
+                        <a href=""><button disabled class="rpgui-button"><p>Add Pending Action</p></button></a>
+                    {% endif %}
                 </p>
             </div>
         {% empty %}
