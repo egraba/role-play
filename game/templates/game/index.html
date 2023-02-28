@@ -2,7 +2,7 @@
 
 {% block content %}
     <div class="rpgui-container framed">
-        <h1 class="title">Role play</h1>
+        <h1 id="title" class="title">Role play</h1>
 
         <hr class="golden"/>
 
@@ -59,14 +59,15 @@
 
         <h1>Release notes</h1>
         <p>Under development...</p>
-        <div class="rpgui-center inline">
-
-            <img class="rpgui-icon" style="transform: scaleX(-1)" src={% static 'images/mini-skull.png' %}>
+        <div class="rpgui-center">
             <a href="https://github.com/egraba/role-play">
                 <button class="rpgui-button" ><p>View on GitHub</p></button>
             </a>
+        </div>
+        <div class="rpgui-center inline">
+            <img class="rpgui-icon" style="transform: scaleX(-1)" src={% static 'images/mini-skull.png' %}>
+            <a href="#title">- Back to top -</a>
             <img class="rpgui-icon" src={% static 'images/mini-skull.png' %}>
         </div>
-
     </div>
 {% endblock %}
