@@ -2,7 +2,7 @@
 
 {% block content %}
     <div class="rpgui-container framed">
-        <h1 class="title">{{ game }}</h1>
+        <h1 id="title" class="title">{{ game }}</h1>
         <div class="rpgui-center">
             <a href={% url 'index' %}>- Return to main menu -</a>
         </div>
@@ -77,5 +77,10 @@
                 <a href={% url 'newnarrative' game.id %}><button class="rpgui-button"><p>Continue the story</p></button></a>
             </div>
         {% endif %}
+        <div class="rpgui-center inline">
+            <img class="rpgui-icon" style="transform: scaleX(-1)" src={% static 'images/mini-skull.png' %}>
+            <a href="#title">- Back to top -</a>
+            <img class="rpgui-icon" src={% static 'images/mini-skull.png' %}>
+        </div>
     </div>
 {% endblock %}
