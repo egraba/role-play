@@ -37,6 +37,8 @@
         {% if user.is_authenticated and perms.game.change_character %}
             <div class="rpgui-center">
                 <a href={% url 'add_character' game.id %}><button class="rpgui-button"><p>Add Character</p></button></a>
+                <a href=""><button disabled class="rpgui-button"><p>Start the game</p></button></a>
+                <a href=""><button disabled class="rpgui-button"><p>End the game</p></button></a>
             </div>
         {% endif %}
 
