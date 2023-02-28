@@ -56,10 +56,13 @@
 
         <h1>Release notes</h1>
         <p>Under development...</p>
-        <div class="rpgui-center">
+        <div class="rpgui-center inline">
+            {% load static %}
+            <img class="rpgui-icon" style="transform: scaleX(-1)" src={% static 'images/mini-skull.png' %}>
             <a href="https://github.com/egraba/role-play">
                 <button class="rpgui-button" ><p>View on GitHub</p></button>
             </a>
+            <img class="rpgui-icon" src={% static 'images/mini-skull.png' %}>
         </div>
 
     </div>
