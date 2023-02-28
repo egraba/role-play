@@ -41,3 +41,10 @@
     display: flex;
     justify-content: space-between;
 }
+
+.skull {
+    width: 150px;
+    height: auto;
+    float: right;
+    margin-bottom: 1em;
+}

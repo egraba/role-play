@@ -9,7 +9,10 @@
         <p>Role play is an open-source virtual role playing game.</p>
         <p>It is an online version of "paper" role play games.</p>
 
-        <hr/>
+        {% load static %}
+        <img class="rpgui-icon skull" src={% static 'images/red-skull.png' %}>
+
+        <hr style="clear:both"/>
 
         <div class="rpgui-center">
             {% if user.is_authenticated %}
@@ -57,7 +60,7 @@
         <h1>Release notes</h1>
         <p>Under development...</p>
         <div class="rpgui-center inline">
-            {% load static %}
+
             <img class="rpgui-icon" style="transform: scaleX(-1)" src={% static 'images/mini-skull.png' %}>
             <a href="https://github.com/egraba/role-play">
                 <button class="rpgui-button" ><p>View on GitHub</p></button>
