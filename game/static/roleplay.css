@@ -49,3 +49,9 @@
     float: right;
     margin-bottom: 1em;
 }
+
+.wizard {
+    height: auto;
+    float: left;
+    margin-right: 1em;
+}
