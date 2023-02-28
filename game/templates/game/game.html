@@ -31,7 +31,7 @@
         {% empty %}
             <p>No characters for this game...</p>
         {% endfor %}
-        {% if perms.narrative.add_character %}
+        {% if user.is_authenticated and perms.game.change_character %}
             <div class="rpgui-center">
                 <a href={% url 'add_character' game.id %}><button class="rpgui-button"><p>Add Character</p></button></a>
             </div>
@@ -59,7 +59,7 @@
                 </p>
             </div>
         </div>
-        {% if perms.narrative.add_narrative %}
+        {% if user.is_authenticated and perms.game.add_narrative %}
             <div class="rpgui-center">
                 <a href={% url 'newnarrative' game.id %}><button class="rpgui-button"><p>Continue the story</p></button></a>
             </div>
