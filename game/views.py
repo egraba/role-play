@@ -4,8 +4,8 @@ from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse
 from django.views import generic
 
-from game.forms import ChoiceForm, NewGameForm, NewNarrativeForm
-from game.models import Character, Choice, DiceLaunch, Game, Narrative, PendingAction
+from game.forms import ChoiceForm, CreateTaleForm, NewGameForm
+from game.models import Character, Choice, DiceLaunch, Event, Game, PendingAction, Tale
 
 
 class IndexView(generic.ListView):
@@ -35,7 +35,7 @@ class NewGameView(generic.FormView):
 
 
 class GameView(generic.ListView):
-    model = Narrative
+    model = Event
     paginate_by = 20
     ordering = ["-date"]
     template_name = "game/game.html"
@@ -106,11 +106,11 @@ class AddCharacterConfirmView(generic.UpdateView):
         )
 
 
-class NewNarrativeView(generic.FormView):
-    model = Narrative
-    fields = ["message"]
-    template_name = "game/newnarrative.html"
-    form_class = NewNarrativeForm
+class CreateTaleView(generic.FormView):
+    model = Tale
+    fields = ["description"]
+    template_name = "game/createtale.html"
+    form_class = CreateTaleForm
 
     def setup(self, request, *args, **kwargs):
         self.request = request
@@ -125,12 +125,12 @@ class NewNarrativeView(generic.FormView):
         return context
 
     def post(self, request, *args, **kwargs):
-        form = NewNarrativeForm(request.POST)
+        form = CreateTaleForm(request.POST)
         if form.is_valid():
-            narrative = Narrative()
-            narrative.game = self.game
-            narrative.message = form.cleaned_data["message"]
-            narrative.save()
+            tale = Tale()
+            tale.game = self.game
+            tale.description = form.cleaned_data["description"]
+            tale.save()
             return HttpResponseRedirect(reverse("game", args=(self.game_id,)))
 
 

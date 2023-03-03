@@ -53,8 +53,8 @@
         <hr />
 
         <div class="rpgui-container framed-grey">
-            {% for narrative in narrative_list %}
-                <p>{{ narrative.date }} {{ narrative.message }}</p>
+            {% for event in event_list %}
+                <p>{{ event.date }} {{ event.message }}</p>
             {% empty %}
                 <p>The story did not start yet...</p>
             {% endfor %}
@@ -72,9 +72,9 @@
                 </p>
             </div>
         </div>
-        {% if user.is_authenticated and perms.game.add_narrative %}
+        {% if user.is_authenticated and perms.game.add_tale %}
             <div class="rpgui-center">
-                <a href={% url 'newnarrative' game.id %}><button class="rpgui-button"><p>Continue the story</p></button></a>
+                <a href={% url 'tale-create' game.id %}><button class="rpgui-button"><p>Continue the story</p></button></a>
             </div>
         {% endif %}
         <div class="rpgui-center inline">

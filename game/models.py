@@ -33,30 +33,26 @@ class Event(models.Model):
         return self.message
 
 
-class Narrative(models.Model):
-    game = models.ForeignKey(Game, on_delete=models.CASCADE)
-    date = models.DateTimeField(default=timezone.now)
-    message = models.CharField(max_length=1000)
+class Tale(Event):
+    description = models.CharField(max_length=1000)
 
     def __str__(self):
-        return self.message
+        return self.description
 
 
-class PendingAction(models.Model):
+class PendingAction(Event):
     ACTION_TYPES = (
         ("D", "Launch dice"),
         ("C", "Make choice"),
     )
-    game = models.ForeignKey(Game, on_delete=models.CASCADE, blank=False)
-    narrative = models.ForeignKey(Narrative, on_delete=models.CASCADE, blank=False)
-    character = models.ForeignKey(Character, on_delete=models.CASCADE, blank=False)
-    action_type = models.CharField(max_length=1, choices=ACTION_TYPES, blank=False)
+    character = models.ForeignKey(Character, on_delete=models.CASCADE)
+    action_type = models.CharField(max_length=1, choices=ACTION_TYPES)
 
     def __str__(self):
         return self.action_type
 
 
-class Action(Narrative):
+class Action(Event):
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
 
     class Meta:

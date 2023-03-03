@@ -2,7 +2,7 @@ from django.db import models
 from django.test import TestCase
 from django.utils import timezone
 
-from game.models import Character, Event, Game, Narrative, PendingAction
+from game.models import Character, Event, Game, PendingAction, Tale
 from game.tests import utils
 
 
@@ -142,76 +142,49 @@ class EventModelTest(TestCase):
         self.assertEqual(str(event), event.message)
 
 
-class NarrativeModelTest(TestCase):
+class TaleModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        game = Game.objects.create()
-        Narrative.objects.create(game=game)
+        game = Game.objects.get_or_create(id=1)[0]
+        Tale.objects.create(game=game)
 
-    def test_game_type(self):
-        narrative = Narrative.objects.get(id=1)
-        game = narrative._meta.get_field("game")
-        self.assertTrue(game, models.ForeignKey)
-
-    def test_date_type(self):
-        narrative = Narrative.objects.get(id=1)
-        date = narrative._meta.get_field("date")
-        self.assertTrue(date, models.DateTimeField)
-
-    def test_date_default_value(self):
-        narrative = Narrative.objects.get(id=1)
-        self.assertEqual(narrative.date.second, timezone.now().second)
-
-    def test_message_type(self):
-        narrative = Narrative.objects.get(id=1)
-        message = narrative._meta.get_field("message")
-        self.assertTrue(message, models.CharField)
+    def test_description_type(self):
+        tale = Tale.objects.last()
+        description = tale._meta.get_field("description")
+        self.assertTrue(description, models.CharField)
 
     def test_message_max_length(self):
-        narrative = Narrative.objects.get(id=1)
-        max_length = narrative._meta.get_field("message").max_length
+        tale = Tale.objects.last()
+        max_length = tale._meta.get_field("description").max_length
         self.assertEqual(max_length, 1000)
 
     def test_str(self):
-        narrative = Narrative.objects.get(id=1)
-        self.assertEqual(str(narrative), narrative.message)
+        tale = Tale.objects.last()
+        self.assertEqual(str(tale), tale.description)
 
 
 class PendingActionModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        game = Game.objects.create()
-        character = Character.objects.create()
-        narrative = Narrative.objects.create(game=game)
-        PendingAction.objects.create(
-            game=game, character=character, narrative=narrative
-        )
-
-    def test_game_type(self):
-        pending_action = PendingAction.objects.get(id=1)
-        game = pending_action._meta.get_field("game")
-        self.assertTrue(game, models.ForeignKey)
+        game = Game.objects.get_or_create(id=1)[0]
+        character = Character.objects.get_or_create(id=1)[0]
+        PendingAction.objects.create(game=game, character=character)
 
     def test_character_type(self):
-        pending_action = PendingAction.objects.get(id=1)
+        pending_action = PendingAction.objects.last()
         character = pending_action._meta.get_field("character")
         self.assertTrue(character, models.ForeignKey)
 
-    def test_narrative_type(self):
-        pending_action = PendingAction.objects.get(id=1)
-        narrative = pending_action._meta.get_field("narrative")
-        self.assertTrue(narrative, models.ForeignKey)
-
     def test_action_type_type(self):
-        pending_action = PendingAction.objects.get(id=1)
+        pending_action = PendingAction.objects.last()
         action_type = pending_action._meta.get_field("action_type")
         self.assertTrue(action_type, models.CharField)
 
     def test_action_type_max_length(self):
-        pending_action = PendingAction.objects.get(id=1)
+        pending_action = PendingAction.objects.last()
         max_length = pending_action._meta.get_field("action_type").max_length
         self.assertEqual(max_length, 1)
 
     def test_str(self):
-        pending_action = PendingAction.objects.get(id=1)
+        pending_action = PendingAction.objects.last()
         self.assertEqual(str(pending_action), pending_action.action_type)

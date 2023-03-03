@@ -1,7 +1,7 @@
 from django import forms
 from django.test import TestCase
 
-from game.forms import ChoiceForm, NewGameForm, NewNarrativeForm
+from game.forms import ChoiceForm, CreateTaleForm, NewGameForm
 
 
 class NewGameFormTest(TestCase):
@@ -14,14 +14,14 @@ class NewGameFormTest(TestCase):
         self.assertEqual(form.fields["name"].max_length, 50)
 
 
-class NewNarrativeFormTest(TestCase):
-    def test_message_type(self):
-        form = NewNarrativeForm()
-        self.assertIsInstance(form.fields["message"].widget, forms.Textarea)
+class CreateTaleFormTest(TestCase):
+    def test_description_type(self):
+        form = CreateTaleForm()
+        self.assertIsInstance(form.fields["description"].widget, forms.Textarea)
 
-    def test_name_max_length(self):
-        form = NewNarrativeForm()
-        self.assertEqual(form.fields["message"].max_length, 1000)
+    def test_description_max_length(self):
+        form = CreateTaleForm()
+        self.assertEqual(form.fields["description"].max_length, 1000)
 
 
 class ChoiceFormTest(TestCase):

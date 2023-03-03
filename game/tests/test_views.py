@@ -5,7 +5,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
-from game.models import Character, Choice, DiceLaunch, Game, Narrative, PendingAction
+from game.models import Character, Choice, DiceLaunch, Game, PendingAction, Tale
 from game.tests import utils
 from game.views import (
     AddCharacterView,
@@ -34,26 +34,26 @@ def create_several_characters(game):
     return character_list
 
 
-def create_narrative(game):
-    return Narrative.objects.create(
+def create_tale(game):
+    return Tale.objects.create(
         date=datetime.now(tz=timezone.utc),
         game=game,
-        message=utils.generate_random_string(500),
+        message=utils.generate_random_string(100),
+        description=utils.generate_random_string(500),
     )
 
 
-def create_several_narratives(game):
-    narrative_list = list()
+def create_several_tales(game):
+    tale_list = list()
     n = random.randint(1, 2)
     for i in range(n):
-        narrative_list.append(create_narrative(game))
-    return narrative_list
+        tale_list.append(create_tale(game))
+    return tale_list
 
 
-def create_pending_action(game, narrative, character):
+def create_pending_action(game, character):
     return PendingAction.objects.create(
         game=game,
-        narrative=narrative,
         character=character,
         action_type=random.choice(PendingAction.ACTION_TYPES)[0],
     )
@@ -105,12 +105,11 @@ class GameViewTests(TestCase):
     def setUpTestData(cls):
         Game.objects.create(name=utils.generate_random_string(20))
         game = Game.objects.last()
-        number_of_narratives = 22
-        for i in range(number_of_narratives):
-            Narrative.objects.create(
+        number_of_tales = 22
+        for i in range(number_of_tales):
+            Tale.objects.create(
                 game=game,
-                date=datetime.now(tz=timezone.utc),
-                message=utils.generate_random_string(500),
+                description=utils.generate_random_string(500),
             )
 
     def test_view_mapping(self):
@@ -124,7 +123,7 @@ class GameViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue("is_paginated" in response.context)
         self.assertTrue(response.context["is_paginated"])
-        self.assertEqual(len(response.context["narrative_list"]), 20)
+        self.assertEqual(len(response.context["event_list"]), 20)
 
     def test_pagination_size_next_page(self):
         game = Game.objects.last()
@@ -132,7 +131,7 @@ class GameViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue("is_paginated" in response.context)
         self.assertTrue(response.context["is_paginated"])
-        self.assertEqual(len(response.context["narrative_list"]), 2)
+        self.assertEqual(len(response.context["event_list"]), 2)
 
     def test_ordering(self):
         response = self.client.get(reverse("index"))
@@ -168,11 +167,9 @@ class GameViewTests(TestCase):
     def test_game_several_pending_actions(self):
         game = Game.objects.last()
         character_list = create_several_characters(game)
-        narrative_list = create_several_narratives(game)
-        narrative = narrative_list.pop()
         pending_action_list = list()
         for character in character_list:
-            pending_action = create_pending_action(game, narrative, character)
+            pending_action = create_pending_action(game, character)
             pending_action_list.append(pending_action)
         response = self.client.get(reverse("game", args=[game.id]))
         self.assertEqual(response.status_code, 200)
