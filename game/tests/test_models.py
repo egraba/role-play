@@ -230,10 +230,15 @@ class ChoiceModelTest(TestCase):
         character = choice._meta.get_field("character")
         self.assertTrue(character, models.ForeignKey)
 
-    def test_score_type(self):
+    def test_selection_type(self):
         choice = Choice.objects.last()
         selection = choice._meta.get_field("selection")
         self.assertTrue(selection, models.SmallIntegerField)
+
+    def test_selection_max_length(self):
+        choice = Choice.objects.last()
+        max_length = choice._meta.get_field("selection").max_length
+        self.assertEqual(max_length, 300)
 
     def test_str(self):
         choice = Choice.objects.last()
