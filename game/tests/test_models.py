@@ -110,7 +110,8 @@ class CharacterModelTest(TestCase):
 class NarrativeModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        Narrative.objects.create()
+        game = Game.objects.create()
+        Narrative.objects.create(game=game)
 
     def test_game_type(self):
         narrative = Narrative.objects.get(id=1)
@@ -144,12 +145,9 @@ class NarrativeModelTest(TestCase):
 class PendingActionModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        Game.objects.create()
-        game = Game.objects.last()
-        Character.objects.create()
-        character = Character.objects.last()
-        Narrative.objects.create()
-        narrative = Narrative.objects.last()
+        game = Game.objects.create()
+        character = Character.objects.create()
+        narrative = Narrative.objects.create(game=game)
         PendingAction.objects.create(
             game=game, character=character, narrative=narrative
         )
