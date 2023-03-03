@@ -1,7 +1,7 @@
 from django import forms
 
 
-class NewGameForm(forms.Form):
+class CreateGameForm(forms.Form):
     name = forms.CharField(widget=forms.TextInput, max_length=50)
 
 

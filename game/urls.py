@@ -4,7 +4,7 @@ from game import views
 
 urlpatterns = [
     path("", views.IndexView.as_view(), name="index"),
-    path("create_game", views.NewGameView.as_view(), name="newgame"),
+    path("create_game", views.CreateGameView.as_view(), name="game-create"),
     path("<int:game_id>/", views.GameView.as_view(), name="game"),
     path(
         "<int:game_id>/add_character",

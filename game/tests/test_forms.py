@@ -1,16 +1,16 @@
 from django import forms
 from django.test import TestCase
 
-from game.forms import ChoiceForm, CreateTaleForm, NewGameForm
+from game.forms import ChoiceForm, CreateGameForm, CreateTaleForm
 
 
-class NewGameFormTest(TestCase):
+class CreateGameFormTest(TestCase):
     def test_name_type(self):
-        form = NewGameForm()
+        form = CreateGameForm()
         self.assertIsInstance(form.fields["name"].widget, forms.TextInput)
 
     def test_name_max_length(self):
-        form = NewGameForm()
+        form = CreateGameForm()
         self.assertEqual(form.fields["name"].max_length, 50)
 
 
