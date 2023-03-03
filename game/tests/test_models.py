@@ -1,8 +1,10 @@
+import random
+
 from django.db import models
 from django.test import TestCase
 from django.utils import timezone
 
-from game.models import Character, Event, Game, PendingAction, Tale
+from game.models import Character, DiceLaunch, Event, Game, PendingAction, Tale
 from game.tests import utils
 
 
@@ -114,31 +116,31 @@ class EventModelTest(TestCase):
         Event.objects.create(game=game)
 
     def test_game_type(self):
-        event = Event.objects.get(id=1)
+        event = Event.objects.last()
         game = event._meta.get_field("game")
         self.assertTrue(game, models.ForeignKey)
 
     def test_date_type(self):
-        event = Event.objects.get(id=1)
+        event = Event.objects.last()
         date = event._meta.get_field("date")
         self.assertTrue(date, models.DateTimeField)
 
     def test_date_default_value(self):
-        event = Event.objects.get(id=1)
+        event = Event.objects.last()
         self.assertEqual(event.date.second, timezone.now().second)
 
     def test_message_type(self):
-        event = Event.objects.get(id=1)
+        event = Event.objects.last()
         message = event._meta.get_field("message")
         self.assertTrue(message, models.CharField)
 
     def test_message_max_length(self):
-        event = Event.objects.get(id=1)
+        event = Event.objects.last()
         max_length = event._meta.get_field("message").max_length
         self.assertEqual(max_length, 100)
 
     def test_str(self):
-        event = Event.objects.get(id=1)
+        event = Event.objects.last()
         self.assertEqual(str(event), event.message)
 
 
@@ -188,3 +190,27 @@ class PendingActionModelTest(TestCase):
     def test_str(self):
         pending_action = PendingAction.objects.last()
         self.assertEqual(str(pending_action), pending_action.action_type)
+
+
+class DiceLaunchModelTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        game = Game.objects.get_or_create(id=1)[0]
+        character = Character.objects.get_or_create(id=1)[0]
+        DiceLaunch.objects.create(
+            game=game, character=character, score=random.randint(1, 20)
+        )
+
+    def test_character_type(self):
+        dice_launch = DiceLaunch.objects.last()
+        character = dice_launch._meta.get_field("character")
+        self.assertTrue(character, models.ForeignKey)
+
+    def test_score_type(self):
+        dice_launch = DiceLaunch.objects.last()
+        score = dice_launch._meta.get_field("score")
+        self.assertTrue(score, models.SmallIntegerField)
+
+    def test_str(self):
+        dice_launch = DiceLaunch.objects.last()
+        self.assertEqual(str(dice_launch), str(dice_launch.score))

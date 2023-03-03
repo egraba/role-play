@@ -63,7 +63,7 @@ class DiceLaunch(Action):
     score = models.SmallIntegerField()
 
     def __str__(self):
-        return self.score
+        return str(self.score)
 
 
 class Choice(Action):
