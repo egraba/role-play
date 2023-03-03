@@ -13,9 +13,9 @@ class Game(models.Model):
 
 class Character(models.Model):
     RACES = (("H", "Human"), ("O", "Orc"), ("E", "Elf"), ("D", "Dwarf"))
-    game = models.ForeignKey(Game, on_delete=models.CASCADE, null=True, blank=True)
-    name = models.CharField(max_length=255, null=False, blank=False)
-    race = models.CharField(max_length=1, choices=RACES, null=False, blank=False)
+    game = models.ForeignKey(Game, on_delete=models.SET_NULL, null=True, blank=True)
+    name = models.CharField(max_length=100, unique=True)
+    race = models.CharField(max_length=1, choices=RACES)
     xp = models.SmallIntegerField(default=0)
     hp = models.SmallIntegerField(default=100)
     max_hp = models.SmallIntegerField(default=100)

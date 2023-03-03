@@ -58,7 +58,12 @@ class CharacterModelTest(TestCase):
     def test_name_max_length(self):
         character = Character.objects.get(id=1)
         max_length = character._meta.get_field("name").max_length
-        self.assertEqual(max_length, 255)
+        self.assertEqual(max_length, 100)
+
+    def test_name_uniqueness(self):
+        character = Character.objects.get(id=1)
+        is_unique = character._meta.get_field("name").unique
+        self.assertTrue(is_unique)
 
     def test_race_type(self):
         character = Character.objects.get(id=1)

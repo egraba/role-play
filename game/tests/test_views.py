@@ -20,7 +20,7 @@ from game.views import (
 
 def create_character(game):
     return Character.objects.create(
-        name=utils.generate_random_name(255),
+        name=utils.generate_random_name(100),
         game=game,
         race=random.choice(Character.RACES)[0],
     )
@@ -249,7 +249,7 @@ class DiceLaunchViewTest(TestCase):
     def setUpTestData(cls):
         game = Game.objects.create()
         Character.objects.create(
-            name=utils.generate_random_name(255),
+            name=utils.generate_random_name(100),
             game=game,
             race=random.choice(Character.RACES)[0],
         )
@@ -275,7 +275,7 @@ class ChoiceViewTest(TestCase):
     def setUpTestData(cls):
         game = Game.objects.create()
         Character.objects.create(
-            name=utils.generate_random_name(255),
+            name=utils.generate_random_name(100),
             game=game,
             race=random.choice(Character.RACES)[0],
         )
@@ -300,7 +300,7 @@ class DiceLaunchSuccessViewTest(TestCase):
     def setUpTestData(cls):
         game = Game.objects.create()
         character = Character.objects.create(
-            name=utils.generate_random_name(255),
+            name=utils.generate_random_name(100),
             game=game,
             race=random.choice(Character.RACES)[0],
         )
@@ -344,7 +344,7 @@ class ChoiceSuccessViewTest(TestCase):
     def setUpTestData(cls):
         game = Game.objects.create()
         character = Character.objects.create(
-            name=utils.generate_random_name(255),
+            name=utils.generate_random_name(100),
             game=game,
             race=random.choice(Character.RACES)[0],
         )
