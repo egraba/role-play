@@ -80,9 +80,7 @@ class AddCharacterConfirmView(generic.UpdateView):
     template_name = "game/addcharacterconfirm.html"
 
     def setup(self, request, *args, **kwargs):
-        self.request = request
-        self.args = args
-        self.kwargs = kwargs
+        super().setup(request, *args, **kwargs)
         self.game_id = self.kwargs["game_id"]
         self.game = Game.objects.get(pk=self.game_id)
 
@@ -113,9 +111,7 @@ class CreateTaleView(generic.FormView):
     form_class = CreateTaleForm
 
     def setup(self, request, *args, **kwargs):
-        self.request = request
-        self.args = args
-        self.kwargs = kwargs
+        super().setup(request, *args, **kwargs)
         self.game_id = self.kwargs["game_id"]
         self.game = Game.objects.get(pk=self.game_id)
 
@@ -141,9 +137,7 @@ class DiceLaunchView(generic.CreateView):
     object = None
 
     def setup(self, request, *args, **kwargs):
-        self.request = request
-        self.args = args
-        self.kwargs = kwargs
+        super().setup(request, *args, **kwargs)
         self.game_id = self.kwargs["game_id"]
         self.game = Game.objects.get(pk=self.game_id)
         self.character_id = self.kwargs["character_id"]
@@ -186,9 +180,7 @@ class ChoiceView(generic.FormView):
     object = None
 
     def setup(self, request, *args, **kwargs):
-        self.request = request
-        self.args = args
-        self.kwargs = kwargs
+        super().setup(request, *args, **kwargs)
         self.game_id = self.kwargs["game_id"]
         self.game = Game.objects.get(pk=self.game_id)
         self.character_id = self.kwargs["character_id"]
@@ -229,9 +221,7 @@ class DiceLaunchSuccessView(generic.DetailView):
     template_name = "game/success.html"
 
     def setup(self, request, *args, **kwargs):
-        self.request = request
-        self.args = args
-        self.kwargs = kwargs
+        super().setup(request, *args, **kwargs)
         self.game_id = self.kwargs["game_id"]
         self.game = Game.objects.get(pk=self.game_id)
         self.character_id = self.kwargs["character_id"]
@@ -257,9 +247,7 @@ class ChoiceSuccessView(generic.DetailView):
     template_name = "game/success.html"
 
     def setup(self, request, *args, **kwargs):
-        self.request = request
-        self.args = args
-        self.kwargs = kwargs
+        super().setup(request, *args, **kwargs)
         self.game_id = self.kwargs["game_id"]
         self.game = Game.objects.get(pk=self.game_id)
         self.character_id = self.kwargs["character_id"]
