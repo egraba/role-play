@@ -24,6 +24,15 @@ class Character(models.Model):
         return self.name
 
 
+class Event(models.Model):
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    date = models.DateTimeField(default=timezone.now)
+    message = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.message
+
+
 class Narrative(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     date = models.DateTimeField(default=timezone.now)

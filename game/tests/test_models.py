@@ -2,7 +2,7 @@ from django.db import models
 from django.test import TestCase
 from django.utils import timezone
 
-from game.models import Character, Game, Narrative, PendingAction
+from game.models import Character, Event, Game, Narrative, PendingAction
 from game.tests import utils
 
 
@@ -105,6 +105,41 @@ class CharacterModelTest(TestCase):
     def test_str(self):
         character = Character.objects.get(id=1)
         self.assertEqual(str(character), character.name)
+
+
+class EventModelTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        game = Game.objects.get_or_create(id=1)[0]
+        Event.objects.create(game=game)
+
+    def test_game_type(self):
+        event = Event.objects.get(id=1)
+        game = event._meta.get_field("game")
+        self.assertTrue(game, models.ForeignKey)
+
+    def test_date_type(self):
+        event = Event.objects.get(id=1)
+        date = event._meta.get_field("date")
+        self.assertTrue(date, models.DateTimeField)
+
+    def test_date_default_value(self):
+        event = Event.objects.get(id=1)
+        self.assertEqual(event.date.second, timezone.now().second)
+
+    def test_message_type(self):
+        event = Event.objects.get(id=1)
+        message = event._meta.get_field("message")
+        self.assertTrue(message, models.CharField)
+
+    def test_message_max_length(self):
+        event = Event.objects.get(id=1)
+        max_length = event._meta.get_field("message").max_length
+        self.assertEqual(max_length, 100)
+
+    def test_str(self):
+        event = Event.objects.get(id=1)
+        self.assertEqual(str(event), event.message)
 
 
 class NarrativeModelTest(TestCase):
