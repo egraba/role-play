@@ -13,6 +13,14 @@ class CreateGameFormTest(TestCase):
         form = CreateGameForm()
         self.assertEqual(form.fields["name"].max_length, 50)
 
+    def test_description_type(self):
+        form = CreateTaleForm()
+        self.assertIsInstance(form.fields["description"].widget, forms.Textarea)
+
+    def test_description_max_length(self):
+        form = CreateTaleForm()
+        self.assertEqual(form.fields["description"].max_length, 1000)
+
 
 class CreateTaleFormTest(TestCase):
     def test_description_type(self):

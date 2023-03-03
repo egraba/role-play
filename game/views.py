@@ -27,6 +27,11 @@ class CreateGameView(generic.FormView):
             game = Game()
             game.name = form.cleaned_data["name"]
             game.save()
+            tale = Tale()
+            tale.game = game
+            tale.message = "The Master initiated the story."
+            tale.description = form.cleaned_data["description"]
+            tale.save()
             return HttpResponseRedirect(
                 reverse(
                     "index",
@@ -45,6 +50,7 @@ class GameView(generic.ListView):
         game_id = self.kwargs["game_id"]
         try:
             context["game"] = Game.objects.get(pk=game_id)
+            context["tale"] = Tale.objects.last()
             context["character_list"] = Character.objects.filter(game=game_id)
             context["pending_action_list"] = PendingAction.objects.filter(game=game_id)
         except Game.DoesNotExist:
@@ -125,6 +131,7 @@ class CreateTaleView(generic.FormView):
         if form.is_valid():
             tale = Tale()
             tale.game = self.game
+            tale.message = "The Master updated the story."
             tale.description = form.cleaned_data["description"]
             tale.save()
             return HttpResponseRedirect(reverse("game", args=(self.game_id,)))
