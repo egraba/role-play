@@ -135,7 +135,7 @@ class CreateTaleView(generic.FormView):
 
 
 class DiceLaunchView(generic.CreateView):
-    model = DiceLaunch
+    model = Choice
     fields = []
     template_name = "game/dice.html"
     object = None
@@ -225,7 +225,7 @@ class ChoiceView(generic.FormView):
 
 
 class DiceLaunchSuccessView(generic.DetailView):
-    model = DiceLaunch
+    model = Choice
     template_name = "game/success.html"
 
     def setup(self, request, *args, **kwargs):

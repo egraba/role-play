@@ -4,7 +4,7 @@ from django.db import models
 from django.test import TestCase
 from django.utils import timezone
 
-from game.models import Character, DiceLaunch, Event, Game, PendingAction, Tale
+from game.models import Character, Choice, DiceLaunch, Event, Game, PendingAction, Tale
 from game.tests import utils
 
 
@@ -214,3 +214,27 @@ class DiceLaunchModelTest(TestCase):
     def test_str(self):
         dice_launch = DiceLaunch.objects.last()
         self.assertEqual(str(dice_launch), str(dice_launch.score))
+
+
+class ChoiceModelTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        game = Game.objects.get_or_create(id=1)[0]
+        character = Character.objects.get_or_create(id=1)[0]
+        Choice.objects.create(
+            game=game, character=character, selection=utils.generate_random_string(200)
+        )
+
+    def test_character_type(self):
+        choice = Choice.objects.last()
+        character = choice._meta.get_field("character")
+        self.assertTrue(character, models.ForeignKey)
+
+    def test_score_type(self):
+        choice = Choice.objects.last()
+        selection = choice._meta.get_field("selection")
+        self.assertTrue(selection, models.SmallIntegerField)
+
+    def test_str(self):
+        choice = Choice.objects.last()
+        self.assertEqual(str(choice), choice.selection)
