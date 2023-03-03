@@ -3,8 +3,8 @@ from django.utils import timezone
 
 
 class Game(models.Model):
-    start_date = models.DateTimeField(default=timezone.now)
-    name = models.CharField(max_length=50, null=False, blank=False)
+    name = models.CharField(max_length=50)
+    start_date = models.DateTimeField(null=True, blank=True)
     end_date = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):

@@ -11,16 +11,6 @@ class GameModelTest(TestCase):
     def setUpTestData(cls):
         Game.objects.create(name=utils.generate_random_string(50))
 
-    def test_start_date_type(self):
-        game = Game.objects.get(id=1)
-        start_date = game._meta.get_field("start_date")
-        self.assertTrue(start_date, models.DateTimeField)
-
-    def test_start_date_default_value(self):
-        game = Game.objects.get(id=1)
-        delta = game.start_date.second - timezone.now().second
-        self.assertLessEqual(delta, 1)
-
     def test_name_type(self):
         game = Game.objects.get(id=1)
         name = game._meta.get_field("name")
@@ -30,6 +20,11 @@ class GameModelTest(TestCase):
         game = Game.objects.get(id=1)
         max_length = game._meta.get_field("name").max_length
         self.assertEqual(max_length, 50)
+
+    def test_start_date_type(self):
+        game = Game.objects.get(id=1)
+        start_date = game._meta.get_field("start_date")
+        self.assertTrue(start_date, models.DateTimeField)
 
     def test_end_date_type(self):
         game = Game.objects.get(id=1)

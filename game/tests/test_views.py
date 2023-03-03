@@ -64,7 +64,10 @@ class IndexViewTests(TestCase):
     def setUpTestData(cls):
         number_of_games = 12
         for i in range(number_of_games):
-            Game.objects.create(name=utils.generate_random_string(20))
+            Game.objects.create(
+                name=utils.generate_random_string(20),
+                start_date=datetime.now(tz=timezone.utc),
+            )
 
     def test_view_mapping(self):
         response = self.client.get(reverse("index"))
