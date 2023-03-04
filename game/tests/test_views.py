@@ -5,6 +5,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
+from game.forms import CreateGameForm
 from game.models import Character, Choice, DiceLaunch, Game, PendingAction, Tale
 from game.tests import utils
 from game.views import (
@@ -105,6 +106,25 @@ class CreateGameViewTest(TestCase):
     def test_view_mapping(self):
         response = self.client.get(reverse("game-create"))
         self.assertEqual(response.resolver_match.func.view_class, CreateGameView)
+
+    def test_template_mapping(self):
+        response = self.client.get(reverse("game-create"))
+        self.assertTemplateUsed(response, "game/creategame.html")
+
+    def test_form_valid(self):
+        name = utils.generate_random_name(20)
+        description = utils.generate_random_string(100)
+        data = {"name": f"{name}", "description": f"{description}"}
+        form = CreateGameForm(data)
+        self.assertTrue(form.is_valid())
+        response = self.client.post(reverse("game-create"), data=form.data)
+        game = Game.objects.last()
+        self.assertEqual(game.name, name)
+        tale = Tale.objects.last()
+        self.assertEqual(tale.game, game)
+        self.assertEqual(tale.message, "The Master created the story.")
+        self.assertEqual(tale.description, description)
+        self.assertRedirects(response, reverse("index"))
 
 
 class GameViewTests(TestCase):

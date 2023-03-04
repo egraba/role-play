@@ -1,7 +1,7 @@
 import random
 
 from django.http import Http404, HttpResponseRedirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views import generic
 
 from game.forms import ChoiceForm, CreateGameForm, CreateTaleForm
@@ -16,26 +16,20 @@ class IndexView(generic.ListView):
 
 
 class CreateGameView(generic.FormView):
-    model = Game
     template_name = "game/creategame.html"
     form_class = CreateGameForm
+    success_url = reverse_lazy("index")
 
-    def post(self, request, *args, **kwargs):
-        form = CreateGameForm(request.POST)
-        if form.is_valid():
-            game = Game()
-            game.name = form.cleaned_data["name"]
-            game.save()
-            tale = Tale()
-            tale.game = game
-            tale.message = "The Master initiated the story."
-            tale.description = form.cleaned_data["description"]
-            tale.save()
-            return HttpResponseRedirect(
-                reverse(
-                    "index",
-                )
-            )
+    def form_valid(self, form):
+        game = Game()
+        game.name = form.cleaned_data["name"]
+        game.save()
+        tale = Tale()
+        tale.game = game
+        tale.message = "The Master created the story."
+        tale.description = form.cleaned_data["description"]
+        tale.save()
+        return super().form_valid(form)
 
 
 class GameView(generic.ListView):
