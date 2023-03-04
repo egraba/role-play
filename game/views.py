@@ -17,7 +17,6 @@ class IndexView(generic.ListView):
 
 class CreateGameView(generic.FormView):
     model = Game
-    fields = ["name"]
     template_name = "game/creategame.html"
     form_class = CreateGameForm
 

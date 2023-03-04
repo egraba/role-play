@@ -11,6 +11,7 @@ from game.views import (
     AddCharacterView,
     ChoiceSuccessView,
     ChoiceView,
+    CreateGameView,
     DiceLaunchSuccessView,
     DiceLaunchView,
     GameView,
@@ -98,6 +99,12 @@ class IndexViewTests(TestCase):
             else:
                 self.assertTrue(last_date >= game.start_date)
                 last_date = game.start_date
+
+
+class CreateGameViewTest(TestCase):
+    def test_view_mapping(self):
+        response = self.client.get(reverse("game-create"))
+        self.assertEqual(response.resolver_match.func.view_class, CreateGameView)
 
 
 class GameViewTests(TestCase):
