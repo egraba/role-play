@@ -117,7 +117,7 @@ class CreateGameViewTest(TestCase):
         data = {"name": f"{name}", "description": f"{description}"}
         form = CreateGameForm(data)
         self.assertTrue(form.is_valid())
-        response = self.client.post(reverse("game-create"), data=form.data)
+        response = self.client.post(reverse("game-create"), data=form.cleaned_data)
         game = Game.objects.last()
         self.assertEqual(game.name, name)
         tale = Tale.objects.last()
