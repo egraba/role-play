@@ -42,11 +42,23 @@
         {% empty %}
             <p>No characters for this game...</p>
         {% endfor %}
-        {% if user.is_authenticated and perms.game.change_character %}
+        {% if user.is_authenticated %}
             <div class="rpgui-center inline">
-                <a href={% url 'add_character' game.id %}><button class="rpgui-button"><p>Add a character</p></button></a>
-                <a href=""><button disabled class="rpgui-button"><p>Start the game</p></button></a>
-                <a href=""><button disabled class="rpgui-button"><p>End the game</p></button></a>
+                {% if perms.game.change_character %}
+                    {% if not is_game_started %}
+                        <a href={% url 'add_character' game.id %}><button class="rpgui-button"><p>Add a character</p></button></a>
+                    {% else %}
+                        <a href=""><button disabled class="rpgui-button"><p>Add a character</p></button></a>
+                    {% endif %}
+                {% endif %}
+                {% if perms.game.change_game %}
+                    {% if not is_game_started %}
+                        <a href={% url 'game-start' game.id %}><button class="rpgui-button"><p>Start the game</p></button></a>
+                    {% else %}
+                        <a href=""><button disabled class="rpgui-button"><p>Start the game</p></button></a>
+                    {% endif%}
+                    <a href=""><button disabled class="rpgui-button"><p>End the game</p></button></a>
+                {% endif %}
             </div>
         {% endif %}
 

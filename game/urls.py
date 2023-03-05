@@ -17,6 +17,11 @@ urlpatterns = [
         name="add_character_confirm",
     ),
     path(
+        "<int:pk>/start_game",
+        views.StartGameView.as_view(),
+        name="game-start",
+    ),
+    path(
         "<int:game_id>/create_tale",
         views.CreateTaleView.as_view(),
         name="tale-create",

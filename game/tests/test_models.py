@@ -41,6 +41,12 @@ class GameModelTest(TestCase):
         game = Game.objects.get(id=1)
         self.assertEqual(str(game), game.name)
 
+    def test_started(self):
+        game = Game.objects.last()
+        self.assertFalse(game.is_started())
+        game.start_date = timezone.now()
+        self.assertTrue(game.is_started())
+
 
 class CharacterModelTest(TestCase):
     @classmethod

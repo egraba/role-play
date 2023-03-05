@@ -10,6 +10,9 @@ class Game(models.Model):
     def __str__(self):
         return self.name
 
+    def is_started(self):
+        return self.start_date is not None
+
 
 class Character(models.Model):
     RACES = (("H", "Human"), ("O", "Orc"), ("E", "Elf"), ("D", "Dwarf"))

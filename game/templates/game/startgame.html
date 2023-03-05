@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="form rpgui-container framed-golden">
+        <h1>{{ game }}</h1>
+        <p>Are you sure to start the game?</p>
+        <div class="rpgui-center inline">
+            <form method="post">
+                {% csrf_token %}
+                <button class="rpgui-button" type="submit"><p>Yes</p></button>
+            </form>
+            <a href={% url 'game' game.id %}><button class="rpgui-button"><p>No</p></button></a>
+        </div>
+    </div>
+{% endblock%}

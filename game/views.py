@@ -1,7 +1,9 @@
 import random
 
+from django.core.exceptions import PermissionDenied
 from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
+from django.utils import timezone
 from django.views import generic
 
 from game.forms import ChoiceForm, CreateGameForm, CreateTaleForm
@@ -45,7 +47,9 @@ class GameView(generic.ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         try:
-            context["game"] = Game.objects.get(pk=self.game_id)
+            game = Game.objects.get(pk=self.game_id)
+            context["game"] = game
+            context["is_game_started"] = game.is_started()
             context["tale"] = Tale.objects.filter(game=self.game_id).last()
             context["character_list"] = Character.objects.filter(game=self.game_id)
             context["pending_action_list"] = PendingAction.objects.filter(
@@ -104,6 +108,27 @@ class AddCharacterConfirmView(generic.UpdateView):
             reverse(
                 "game",
                 args=(self.game_id,),
+            )
+        )
+
+
+class StartGameView(generic.UpdateView):
+    model = Game
+    fields = []
+    template_name = "game/startgame.html"
+
+    def post(self, request, *args, **kwargs):
+        game = self.get_object()
+        character_list = Character.objects.filter(game=game)
+        if len(character_list) >= 2:
+            game.start_date = timezone.now()
+            game.save()
+        else:
+            raise PermissionDenied("A game must contain at least 2 players...")
+        return HttpResponseRedirect(
+            reverse(
+                "game",
+                args=(game.id,),
             )
         )
 
