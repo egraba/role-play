@@ -61,7 +61,7 @@ def create_pending_action(game, character):
     )
 
 
-class IndexViewTests(TestCase):
+class IndexViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         number_of_games = 12
@@ -75,6 +75,10 @@ class IndexViewTests(TestCase):
         response = self.client.get(reverse("index"))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.resolver_match.func.view_class, IndexView)
+
+    def test_template_mapping(self):
+        response = self.client.get(reverse("index"))
+        self.assertTemplateUsed(response, "game/index.html")
 
     def test_pagination_size(self):
         response = self.client.get(reverse("index"))
@@ -127,7 +131,7 @@ class CreateGameViewTest(TestCase):
         self.assertRedirects(response, reverse("index"))
 
 
-class GameViewTests(TestCase):
+class GameViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         Game.objects.create(name=utils.generate_random_string(20))
@@ -143,6 +147,11 @@ class GameViewTests(TestCase):
         game = Game.objects.last()
         response = self.client.get(reverse("game", args=[game.id]))
         self.assertEqual(response.resolver_match.func.view_class, GameView)
+
+    def test_template_mapping(self):
+        game = Game.objects.last()
+        response = self.client.get(reverse("game", args=[game.id]))
+        self.assertTemplateUsed(response, "game/game.html")
 
     def test_pagination_size(self):
         game = Game.objects.last()
@@ -229,6 +238,11 @@ class AddCharacterViewTest(TestCase):
         response = self.client.get(reverse("add_character", args=[game.id]))
         self.assertEqual(response.resolver_match.func.view_class, AddCharacterView)
 
+    def test_template_mapping(self):
+        game = Game.objects.last()
+        response = self.client.get(reverse("add_character", args=[game.id]))
+        self.assertTemplateUsed(response, "game/addcharacter.html")
+
     def test_pagination_size(self):
         game = Game.objects.last()
         response = self.client.get(reverse("add_character", args=[game.id]))
@@ -278,11 +292,17 @@ class DiceLaunchViewTest(TestCase):
             race=random.choice(Character.RACES)[0],
         )
 
-    def test_view_mapping_ok(self):
+    def test_view_mapping(self):
         game = Game.objects.last()
         character = Character.objects.last()
         response = self.client.get(reverse("launch_dice", args=[game.id, character.id]))
         self.assertEqual(response.resolver_match.func.view_class, DiceLaunchView)
+
+    def test_template_mapping(self):
+        game = Game.objects.last()
+        character = Character.objects.last()
+        response = self.client.get(reverse("launch_dice", args=[game.id, character.id]))
+        self.assertTemplateUsed(response, "game/dice.html")
 
     def test_view_content(self):
         game = Game.objects.last()
@@ -304,11 +324,17 @@ class ChoiceViewTest(TestCase):
             race=random.choice(Character.RACES)[0],
         )
 
-    def test_view_mapping_ok(self):
+    def test_view_mapping(self):
         game = Game.objects.last()
         character = Character.objects.last()
         response = self.client.get(reverse("make_choice", args=[game.id, character.id]))
         self.assertEqual(response.resolver_match.func.view_class, ChoiceView)
+
+    def test_template_mapping(self):
+        game = Game.objects.last()
+        character = Character.objects.last()
+        response = self.client.get(reverse("make_choice", args=[game.id, character.id]))
+        self.assertTemplateUsed(response, "game/choice.html")
 
     def test_view_content(self):
         game = Game.objects.last()
@@ -343,6 +369,15 @@ class DiceLaunchSuccessViewTest(TestCase):
             )
         )
         self.assertEqual(response.resolver_match.func.view_class, DiceLaunchSuccessView)
+
+    def test_template_mapping(self):
+        game = Game.objects.last()
+        character = Character.objects.last()
+        dice_launch = DiceLaunch.objects.last()
+        response = self.client.get(
+            reverse("dice_success", args=[game.id, character.id, dice_launch.id])
+        )
+        self.assertTemplateUsed(response, "game/success.html")
 
     def test_view_content(self):
         game = Game.objects.last()
@@ -386,6 +421,15 @@ class ChoiceSuccessViewTest(TestCase):
             reverse("choice_success", args=[game.id, character.id, choice.id])
         )
         self.assertEqual(response.resolver_match.func.view_class, ChoiceSuccessView)
+
+    def test_template_mapping(self):
+        game = Game.objects.last()
+        character = Character.objects.last()
+        choice = Choice.objects.last()
+        response = self.client.get(
+            reverse("choice_success", args=[game.id, character.id, choice.id])
+        )
+        self.assertTemplateUsed(response, "game/success.html")
 
     def test_view_content(self):
         game = Game.objects.last()
