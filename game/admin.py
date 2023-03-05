@@ -4,7 +4,7 @@ from game.models import Character, Game, PendingAction, Tale
 
 
 class GameAdmin(admin.ModelAdmin):
-    fields = ["name"]
+    fields = ["name", "status"]
 
 
 class CharacterAdmin(admin.ModelAdmin):
