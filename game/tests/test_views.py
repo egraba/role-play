@@ -323,6 +323,7 @@ class AddCharacterViewTest(TestCase):
         game_id = random.randint(10000, 99999)
         response = self.client.get(reverse("add_character", args=[game_id]))
         self.assertEqual(response.status_code, 404)
+        self.assertRaises(Http404)
 
 
 class DiceLaunchViewTest(TestCase):
