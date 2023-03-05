@@ -56,25 +56,26 @@
             {% empty %}
                 <p>The story did not start yet...</p>
             {% endfor %}
-            <div class="rpgui-center">
-                <p>
-                    {% if page_obj.has_previous %}
-                        <a href="?page=1">&laquo; First</a>
-                        <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
-                    {% endif %}
-                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-                    {% if page_obj.has_next %}
-                        <a href="?page={{ page_obj.next_page_number }}">Next</a>
-                        <a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
-                    {% endif %}
-                </p>
-            </div>
+        </div>
+        <div class="rpgui-center">
+            <p>
+                {% if page_obj.has_previous %}
+                    <a href="?page=1">&laquo; First</a>
+                    <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                {% endif %}
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">Next</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+                {% endif %}
+            </p>
         </div>
         {% if user.is_authenticated and perms.game.add_tale %}
             <div class="rpgui-center">
                 <a href={% url 'tale-create' game.id %}><button class="rpgui-button"><p>Continue the story</p></button></a>
             </div>
         {% endif %}
+
         <div class="rpgui-center inline">
             <img class="rpgui-icon" style="transform: scaleX(-1)" src={% static 'images/mini-skull.png' %}>
             <a href="#title">- Back to top -</a>
