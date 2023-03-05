@@ -38,20 +38,25 @@ class GameView(generic.ListView):
     ordering = ["-date"]
     template_name = "game/game.html"
 
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        self.game_id = self.kwargs["game_id"]
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        game_id = self.kwargs["game_id"]
         try:
-            context["game"] = Game.objects.get(pk=game_id)
-            context["tale"] = Tale.objects.filter(game=game_id).last()
-            context["character_list"] = Character.objects.filter(game=game_id)
-            context["pending_action_list"] = PendingAction.objects.filter(game=game_id)
+            context["game"] = Game.objects.get(pk=self.game_id)
+            context["tale"] = Tale.objects.filter(game=self.game_id).last()
+            context["character_list"] = Character.objects.filter(game=self.game_id)
+            context["pending_action_list"] = PendingAction.objects.filter(
+                game=self.game_id
+            )
         except Game.DoesNotExist:
-            raise Http404(f"Game [{game_id}] does not exist...", game_id)
+            raise Http404(f"Game [{self.game_id}] does not exist...", self.game_id)
         return context
 
     def get_queryset(self):
-        return super().get_queryset().filter(game=self.kwargs["game_id"])
+        return super().get_queryset().filter(game=self.game_id)
 
 
 class AddCharacterView(generic.ListView):
