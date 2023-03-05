@@ -91,7 +91,11 @@
         </div>
         {% if user.is_authenticated and perms.game.add_tale %}
             <div class="rpgui-center">
-                <a href={% url 'tale-create' game.id %}><button class="rpgui-button"><p>Continue the story</p></button></a>
+                {% if game.status == "S" %}
+                    <a href={% url 'tale-create' game.id %}><button class="rpgui-button"><p>Continue the story</p></button></a>
+                {% else %}
+                    <a href=""><button disabled class="rpgui-button"><p>Continue the story</p></button></a>
+                {% endif %}
             </div>
         {% endif %}
 
