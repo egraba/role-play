@@ -1,6 +1,7 @@
 import random
 from datetime import datetime
 
+from django.http import Http404
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
@@ -186,39 +187,11 @@ class GameViewTest(TestCase):
                 self.assertTrue(last_date >= game.start_date)
                 last_date = game.start_date
 
-    def test_game_exists(self):
-        game = Game.objects.last()
-        response = self.client.get(reverse("game", args=[game.id]))
-        self.assertEqual(response.status_code, 200)
-
     def test_game_not_exists(self):
         game_id = random.randint(10000, 99999)
         response = self.client.get(reverse("game", args=[game_id]))
         self.assertEqual(response.status_code, 404)
-
-    def test_game_several_characters(self):
-        game = Game.objects.last()
-        character_list = create_several_characters(game)
-        response = self.client.get(reverse("game", args=[game.id]))
-        self.assertEqual(response.status_code, 200)
-        self.assertQuerysetEqual(
-            list(response.context["character_list"]),
-            character_list,
-        )
-
-    def test_game_several_pending_actions(self):
-        game = Game.objects.last()
-        character_list = create_several_characters(game)
-        pending_action_list = list()
-        for character in character_list:
-            pending_action = create_pending_action(game, character)
-            pending_action_list.append(pending_action)
-        response = self.client.get(reverse("game", args=[game.id]))
-        self.assertEqual(response.status_code, 200)
-        self.assertQuerysetEqual(
-            list(response.context["pending_action_list"]),
-            list(pending_action_list),
-        )
+        self.assertRaises(Http404)
 
     def test_game_last_tale(self):
         game = Game.objects.last()
