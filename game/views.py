@@ -43,7 +43,7 @@ class GameView(generic.ListView):
         game_id = self.kwargs["game_id"]
         try:
             context["game"] = Game.objects.get(pk=game_id)
-            context["tale"] = Tale.objects.last()
+            context["tale"] = Tale.objects.filter(game=game_id).last()
             context["character_list"] = Character.objects.filter(game=game_id)
             context["pending_action_list"] = PendingAction.objects.filter(game=game_id)
         except Game.DoesNotExist:

@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from game.forms import CreateGameForm
-from game.models import Character, Choice, DiceLaunch, Game, PendingAction, Tale
+from game.models import Character, Choice, DiceLaunch, Event, Game, PendingAction, Tale
 from game.tests import utils
 from game.views import (
     AddCharacterView,
@@ -136,7 +136,13 @@ class GameViewTest(TestCase):
     def setUpTestData(cls):
         Game.objects.create(name=utils.generate_random_string(20))
         game = Game.objects.last()
-        number_of_tales = 22
+        number_of_events = 22
+        for i in range(number_of_events):
+            Event.objects.create(
+                game=game,
+                message=utils.generate_random_string(100),
+            )
+        number_of_tales = 3
         for i in range(number_of_tales):
             Tale.objects.create(
                 game=game,
@@ -167,7 +173,7 @@ class GameViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue("is_paginated" in response.context)
         self.assertTrue(response.context["is_paginated"])
-        self.assertEqual(len(response.context["event_list"]), 2)
+        self.assertEqual(len(response.context["event_list"]), 5)
 
     def test_ordering(self):
         response = self.client.get(reverse("index"))
@@ -212,6 +218,70 @@ class GameViewTest(TestCase):
         self.assertQuerysetEqual(
             list(response.context["pending_action_list"]),
             list(pending_action_list),
+        )
+
+    def test_game_last_tale(self):
+        game = Game.objects.last()
+        tale = Tale.objects.create(game=game)
+        response = self.client.get(reverse("game", args=[game.id]))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["tale"], tale)
+
+    def test_context_data(self):
+        game1 = Game.objects.create()
+        tale1 = Tale.objects.create(game=game1, message="tale1")
+        character_list1 = list()
+        character_list1.append(Character.objects.create(game=game1, name="A"))
+        pending_action_list1 = list()
+        pending_action_list1.append(
+            PendingAction.objects.create(
+                game=game1, character=character_list1[0], message="pending_action1"
+            )
+        )
+        event_list1 = list()
+        event_list1.append(Event.objects.filter(message="tale1").last())
+        event_list1.append(Event.objects.filter(message="pending_action1").last())
+        event_list1.append(Event.objects.create(game=game1, message="event1"))
+
+        game2 = Game.objects.create()
+        tale2 = Tale.objects.create(game=game2, message="tale2")
+        character_list2 = list()
+        character_list2.append(Character.objects.create(game=game2, name="B"))
+        pending_action_list2 = list()
+        pending_action_list2.append(
+            PendingAction.objects.create(
+                game=game2, character=character_list2[0], message="pending_action2"
+            )
+        )
+        event_list2 = list()
+        event_list2.append(Event.objects.filter(message="tale2").last())
+        event_list2.append(Event.objects.filter(message="pending_action2").last())
+        event_list2.append(Event.objects.create(game=game2, message="event2"))
+
+        """
+        We test that game1 contains the context game1 only.
+        """
+        response = self.client.get(reverse("game", args=[game1.id]))
+        self.assertEqual(response.context["tale"], tale1)
+        self.assertQuerysetEqual(set(response.context["event_list"]), set(event_list1))
+        self.assertQuerysetEqual(
+            list(response.context["character_list"]), character_list1
+        )
+        self.assertQuerysetEqual(
+            list(response.context["pending_action_list"]), pending_action_list1
+        )
+
+        """
+        We test that game2 contains the context game2 only.
+        """
+        response = self.client.get(reverse("game", args=[game2.id]))
+        self.assertEqual(response.context["tale"], tale2)
+        self.assertQuerysetEqual(set(response.context["event_list"]), set(event_list2))
+        self.assertQuerysetEqual(
+            list(response.context["character_list"]), character_list2
+        )
+        self.assertQuerysetEqual(
+            list(response.context["pending_action_list"]), pending_action_list2
         )
 
 
