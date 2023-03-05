@@ -55,3 +55,7 @@
     float: left;
     margin-right: 1em;
 }
+
+.tale {
+    min-height: 120px;
+}
