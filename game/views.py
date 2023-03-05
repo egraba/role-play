@@ -25,6 +25,7 @@ class CreateGameView(generic.FormView):
     def form_valid(self, form):
         game = Game()
         game.name = form.cleaned_data["name"]
+        game.status = "P"
         game.save()
         tale = Tale()
         tale.game = game
@@ -47,9 +48,7 @@ class GameView(generic.ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         try:
-            game = Game.objects.get(pk=self.game_id)
-            context["game"] = game
-            context["is_game_started"] = game.is_started()
+            context["game"] = Game.objects.get(pk=self.game_id)
             context["tale"] = Tale.objects.filter(game=self.game_id).last()
             context["character_list"] = Character.objects.filter(game=self.game_id)
             context["pending_action_list"] = PendingAction.objects.filter(
@@ -122,9 +121,31 @@ class StartGameView(generic.UpdateView):
         character_list = Character.objects.filter(game=game)
         if len(character_list) >= 2:
             game.start_date = timezone.now()
+            game.status = "S"
             game.save()
         else:
             raise PermissionDenied("A game must contain at least 2 players...")
+        return HttpResponseRedirect(
+            reverse(
+                "game",
+                args=(game.id,),
+            )
+        )
+
+
+class EndGameView(generic.UpdateView):
+    model = Game
+    fields = []
+    template_name = "game/endgame.html"
+
+    def post(self, request, *args, **kwargs):
+        game = self.get_object()
+        if game.status == "S":
+            game.end_date = timezone.now()
+            game.status = "E"
+            game.save()
+        else:
+            raise PermissionDenied("A game must have been started to be ended...")
         return HttpResponseRedirect(
             reverse(
                 "game",

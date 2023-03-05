@@ -16,6 +16,7 @@ from game.views import (
     CreateGameView,
     DiceLaunchSuccessView,
     DiceLaunchView,
+    EndGameView,
     GameView,
     IndexView,
     StartGameView,
@@ -341,6 +342,22 @@ class StartGameViewTest(TestCase):
         game = Game.objects.last()
         response = self.client.get(reverse("game-start", args=[game.id]))
         self.assertTemplateUsed(response, "game/startgame.html")
+
+
+class EndGameViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        Game.objects.create()
+
+    def test_view_mapping(self):
+        game = Game.objects.last()
+        response = self.client.get(reverse("game-end", args=[game.id]))
+        self.assertEqual(response.resolver_match.func.view_class, EndGameView)
+
+    def test_template_mapping(self):
+        game = Game.objects.last()
+        response = self.client.get(reverse("game-end", args=[game.id]))
+        self.assertTemplateUsed(response, "game/endgame.html")
 
 
 class DiceLaunchViewTest(TestCase):

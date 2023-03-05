@@ -3,15 +3,14 @@ from django.utils import timezone
 
 
 class Game(models.Model):
+    STATUSES = (("P", "Under preparation"), ("S", "Started"), ("E", "Ended"))
     name = models.CharField(max_length=50)
     start_date = models.DateTimeField(null=True, blank=True)
     end_date = models.DateTimeField(null=True, blank=True)
+    status = models.CharField(max_length=1, choices=STATUSES)
 
     def __str__(self):
         return self.name
-
-    def is_started(self):
-        return self.start_date is not None
 
 
 class Character(models.Model):

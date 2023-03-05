@@ -22,6 +22,11 @@ urlpatterns = [
         name="game-start",
     ),
     path(
+        "<int:pk>/end_game",
+        views.EndGameView.as_view(),
+        name="game-end",
+    ),
+    path(
         "<int:game_id>/create_tale",
         views.CreateTaleView.as_view(),
         name="tale-create",
