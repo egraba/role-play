@@ -1,54 +1,54 @@
 from django.urls import path
 
-from game import views
+from game.views import common, master, player
 
 urlpatterns = [
-    path("", views.IndexView.as_view(), name="index"),
-    path("create_game", views.CreateGameView.as_view(), name="game-create"),
-    path("<int:game_id>/", views.GameView.as_view(), name="game"),
+    path("", common.IndexView.as_view(), name="index"),
+    path("<int:game_id>/", common.GameView.as_view(), name="game"),
+    path("create_game", master.CreateGameView.as_view(), name="game-create"),
     path(
         "<int:game_id>/add_character",
-        views.AddCharacterView.as_view(),
+        master.AddCharacterView.as_view(),
         name="add_character",
     ),
     path(
         "<int:game_id>/add_character/<int:pk>/confirm",
-        views.AddCharacterConfirmView.as_view(),
+        master.AddCharacterConfirmView.as_view(),
         name="add_character_confirm",
     ),
     path(
         "<int:pk>/start_game",
-        views.StartGameView.as_view(),
+        master.StartGameView.as_view(),
         name="game-start",
     ),
     path(
         "<int:pk>/end_game",
-        views.EndGameView.as_view(),
+        master.EndGameView.as_view(),
         name="game-end",
     ),
     path(
         "<int:game_id>/create_tale",
-        views.CreateTaleView.as_view(),
+        master.CreateTaleView.as_view(),
         name="tale-create",
     ),
     path(
         "<int:game_id>/character/<int:character_id>/launch_dice/",
-        views.DiceLaunchView.as_view(),
+        player.DiceLaunchView.as_view(),
         name="launch_dice",
     ),
     path(
         "<int:game_id>/character/<int:character_id>/make_choice/",
-        views.ChoiceView.as_view(),
+        player.ChoiceView.as_view(),
         name="make_choice",
     ),
     path(
         "<int:game_id>/character/<int:character_id>/launch_dice/<int:action_id>/success/",
-        views.DiceLaunchSuccessView.as_view(),
+        player.DiceLaunchSuccessView.as_view(),
         name="dice_success",
     ),
     path(
         "<int:game_id>/character/<int:character_id>/make_choice/<int:action_id>/success/",
-        views.ChoiceSuccessView.as_view(),
+        player.ChoiceSuccessView.as_view(),
         name="choice_success",
     ),
 ]
