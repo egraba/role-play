@@ -3,10 +3,10 @@ from django.core.exceptions import PermissionDenied
 from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
-from django.views.generic import FormView, ListView, UpdateView
+from django.views.generic import CreateView, FormView, ListView, UpdateView
 
-from game.forms import CreateGameForm, CreateTaleForm
-from game.models import Character, Game, Tale
+from game.forms import CreateGameForm, CreatePendingActionForm, CreateTaleForm
+from game.models import Character, Game, PendingAction, Tale
 
 
 class CreateGameView(PermissionRequiredMixin, FormView):
@@ -150,3 +150,47 @@ class CreateTaleView(PermissionRequiredMixin, FormView):
             tale.description = form.cleaned_data["description"]
             tale.save()
             return HttpResponseRedirect(reverse("game", args=(self.game_id,)))
+
+
+class CreatePendingActionView(PermissionRequiredMixin, CreateView):
+    permission_required = "game.change_pending_action"
+    model = PendingAction
+    form_class = CreatePendingActionForm
+    template_name = "game/creatependingaction.html"
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        try:
+            self.game_id = self.kwargs["game_id"]
+            self.game = Game.objects.get(id=self.game_id)
+        except Game.DoesNotExist:
+            raise Http404(f"Game [{self.game_id}] does not exist...", self.game_id)
+        try:
+            self.character_id = self.kwargs["character_id"]
+            self.character = Character.objects.get(id=self.character_id, game=self.game)
+        except Character.DoesNotExist:
+            raise Http404(
+                f"Character [{self.character_id}] does not exist...", self.character_id
+            )
+
+    def get_success_url(self):
+        return reverse_lazy("game", args=(self.game_id,))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["game"] = self.game
+        context["character"] = self.character
+        return context
+
+    def form_valid(self, form):
+        pending_action_list = PendingAction.objects.filter(character=self.character)
+        if len(pending_action_list) == 0:
+            pending_action = form.save(commit=False)
+            pending_action.game = self.game
+            pending_action.character = self.character
+            pending_action.date = timezone.now()
+            pending_action.message = f"{self.character} needs to perform an action: {pending_action.get_action_type_display()}"
+            pending_action.save()
+        else:
+            raise PermissionDenied
+        return super().form_valid(form)

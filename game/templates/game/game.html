@@ -34,8 +34,8 @@
                         {% endif %}
                     {% empty %}
                     {% endfor %}
-                    {% if user.is_authenticated and perms.game.add_pendingaction %}
-                        <a href=""><button disabled class="rpgui-button"><p>Ask for action</p></button></a>
+                    {% if user.is_authenticated and perms.game.change_character %}
+                        <a href={% url 'character-add-pending-action' game.id character.id %}><button  class="rpgui-button"><p>Ask for action</p></button></a>
                     {% endif %}
                 </p>
             </div>

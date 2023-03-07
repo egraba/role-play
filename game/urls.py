@@ -32,6 +32,11 @@ urlpatterns = [
         name="tale-create",
     ),
     path(
+        "<int:game_id>/character/<int:character_id>/add_pending_action",
+        master.CreatePendingActionView.as_view(),
+        name="character-add-pending-action",
+    ),
+    path(
         "<int:game_id>/character/<int:character_id>/launch_dice/",
         player.DiceLaunchView.as_view(),
         name="launch_dice",
