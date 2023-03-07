@@ -1,5 +1,6 @@
 import random
 
+from django.contrib.auth.models import Permission, User
 from django.http import Http404
 from django.test import TestCase
 from django.urls import reverse
@@ -16,12 +17,26 @@ from game.views.master import (
 
 
 class CreateGameViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        permission = Permission.objects.get(codename="add_game")
+        user = User.objects.get_or_create(username="Thomas")[0]
+        user.set_password("pwd")
+        user.user_permissions.add(permission)
+        user.save()
+
+    def setUp(self):
+        self.user = User.objects.last()
+        self.client.login(username=self.user.username, password="pwd")
+
     def test_view_mapping(self):
         response = self.client.get(reverse("game-create"))
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(response.resolver_match.func.view_class, CreateGameView)
 
     def test_template_mapping(self):
         response = self.client.get(reverse("game-create"))
+        self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "game/creategame.html")
 
     def test_form_valid(self):
@@ -31,6 +46,7 @@ class CreateGameViewTest(TestCase):
         form = CreateGameForm(data)
         self.assertTrue(form.is_valid())
         response = self.client.post(reverse("game-create"), data=form.cleaned_data)
+        self.assertEqual(response.status_code, 302)
         game = Game.objects.last()
         self.assertEqual(game.name, name)
         tale = Tale.objects.last()
@@ -43,6 +59,11 @@ class CreateGameViewTest(TestCase):
 class AddCharacterViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
+        permission = Permission.objects.get(codename="change_character")
+        user = User.objects.get_or_create(username="Thomas")[0]
+        user.set_password("pwd")
+        user.user_permissions.add(permission)
+        user.save()
         game = Game.objects.create()
         number_of_characters_with_game = 5
         number_of_characters_without_game = 12
@@ -57,6 +78,10 @@ class AddCharacterViewTest(TestCase):
                 name=utils.generate_random_name(10),
                 race=random.choice(Character.RACES)[0],
             )
+
+    def setUp(self):
+        self.user = User.objects.last()
+        self.client.login(username=self.user.username, password="pwd")
 
     def test_view_mapping(self):
         game = Game.objects.last()
@@ -111,11 +136,21 @@ class AddCharacterViewTest(TestCase):
 class StartGameViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
+        permission = Permission.objects.get(codename="change_game")
+        user = User.objects.get_or_create(username="Thomas")[0]
+        user.set_password("pwd")
+        user.user_permissions.add(permission)
+        user.save()
         Game.objects.create()
+
+    def setUp(self):
+        self.user = User.objects.last()
+        self.client.login(username=self.user.username, password="pwd")
 
     def test_view_mapping(self):
         game = Game.objects.last()
         response = self.client.get(reverse("game-start", args=[game.id]))
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(response.resolver_match.func.view_class, StartGameView)
 
     def test_template_mapping(self):
@@ -127,14 +162,25 @@ class StartGameViewTest(TestCase):
 class EndGameViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
+        permission = Permission.objects.get(codename="change_game")
+        user = User.objects.get_or_create(username="Thomas")[0]
+        user.set_password("pwd")
+        user.user_permissions.add(permission)
+        user.save()
         Game.objects.create()
+
+    def setUp(self):
+        self.user = User.objects.last()
+        self.client.login(username=self.user.username, password="pwd")
 
     def test_view_mapping(self):
         game = Game.objects.last()
         response = self.client.get(reverse("game-end", args=[game.id]))
+
         self.assertEqual(response.resolver_match.func.view_class, EndGameView)
 
     def test_template_mapping(self):
         game = Game.objects.last()
         response = self.client.get(reverse("game-end", args=[game.id]))
+        self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "game/endgame.html")

@@ -1,14 +1,16 @@
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
-from django.views import generic
+from django.views.generic import FormView, ListView, UpdateView
 
 from game.forms import CreateGameForm, CreateTaleForm
 from game.models import Character, Game, Tale
 
 
-class CreateGameView(generic.FormView):
+class CreateGameView(PermissionRequiredMixin, FormView):
+    permission_required = "game.add_game"
     template_name = "game/creategame.html"
     form_class = CreateGameForm
     success_url = reverse_lazy("index")
@@ -26,7 +28,8 @@ class CreateGameView(generic.FormView):
         return super().form_valid(form)
 
 
-class AddCharacterView(generic.ListView):
+class AddCharacterView(PermissionRequiredMixin, ListView):
+    permission_required = "game.change_character"
     model = Character
     paginate_by = 10
     ordering = ["-xp"]
@@ -45,7 +48,8 @@ class AddCharacterView(generic.ListView):
         return super().get_queryset().filter(game=None)
 
 
-class AddCharacterConfirmView(generic.UpdateView):
+class AddCharacterConfirmView(PermissionRequiredMixin, UpdateView):
+    permission_required = "game.change_character"
     model = Character
     fields = []
     template_name = "game/addcharacterconfirm.html"
@@ -75,7 +79,8 @@ class AddCharacterConfirmView(generic.UpdateView):
         )
 
 
-class StartGameView(generic.UpdateView):
+class StartGameView(PermissionRequiredMixin, UpdateView):
+    permission_required = "game.change_game"
     model = Game
     fields = []
     template_name = "game/startgame.html"
@@ -97,7 +102,8 @@ class StartGameView(generic.UpdateView):
         )
 
 
-class EndGameView(generic.UpdateView):
+class EndGameView(PermissionRequiredMixin, UpdateView):
+    permission_required = "game.change_game"
     model = Game
     fields = []
     template_name = "game/endgame.html"
@@ -118,7 +124,8 @@ class EndGameView(generic.UpdateView):
         )
 
 
-class CreateTaleView(generic.FormView):
+class CreateTaleView(PermissionRequiredMixin, FormView):
+    permission_required = "game.change_game"
     model = Tale
     fields = ["description"]
     template_name = "game/createtale.html"
