@@ -176,7 +176,6 @@ class EndGameViewTest(TestCase):
     def test_view_mapping(self):
         game = Game.objects.last()
         response = self.client.get(reverse("game-end", args=[game.id]))
-
         self.assertEqual(response.resolver_match.func.view_class, EndGameView)
 
     def test_template_mapping(self):
