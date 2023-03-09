@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="rpgui-container framed">
+        <h1 class="title">{{ character }}</h1>
+
+        <hr class="golden"/>
+
+        <div class="rpgui-container framed-grey">
+            <p>Race: {{ character.get_race_display }}</p>
+            <p>XP: {{ character.xp }}</p>
+            <p>HP: {{ character.hp }} / {{ character.max_hp }}</p>
+        </div>
+    </div>
+{% endblock%}

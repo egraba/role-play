@@ -1,17 +1,17 @@
 from django.http import Http404
-from django.views import generic
+from django.views.generic import DetailView, ListView
 
 from game.models import Character, Event, Game, PendingAction, Tale
 
 
-class IndexView(generic.ListView):
+class IndexView(ListView):
     model = Game
     paginate_by = 10
     ordering = ["-start_date"]
     template_name = "game/index.html"
 
 
-class GameView(generic.ListView):
+class GameView(ListView):
     model = Event
     paginate_by = 20
     ordering = ["-date"]
@@ -36,3 +36,8 @@ class GameView(generic.ListView):
 
     def get_queryset(self):
         return super().get_queryset().filter(game=self.game_id)
+
+
+class DetailCharacterView(DetailView):
+    model = Character
+    template_name = "game/character.html"

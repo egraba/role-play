@@ -5,6 +5,11 @@ from game.views import common, master, player
 urlpatterns = [
     path("", common.IndexView.as_view(), name="index"),
     path("<int:game_id>/", common.GameView.as_view(), name="game"),
+    path(
+        "character/<int:pk>",
+        common.DetailCharacterView.as_view(),
+        name="character-detail",
+    ),
     path("create_game", master.CreateGameView.as_view(), name="game-create"),
     path(
         "<int:game_id>/add_character",
