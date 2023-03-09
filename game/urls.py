@@ -9,12 +9,12 @@ urlpatterns = [
     path(
         "<int:game_id>/add_character",
         master.AddCharacterView.as_view(),
-        name="add_character",
+        name="game-add-character",
     ),
     path(
         "<int:game_id>/add_character/<int:pk>/confirm",
         master.AddCharacterConfirmView.as_view(),
-        name="add_character_confirm",
+        name="game-add-character-confirm",
     ),
     path(
         "<int:pk>/start_game",

@@ -16,7 +16,7 @@
                     <a href="" style="width:100em">{{ character.name }}</a>
                     Race: {{ character.get_race_display }},
                     XP: {{ character.xp }}
-                    <a href={% url 'add_character_confirm' game.id character.id %}><button class="rpgui-button" method="post"><p>Add</p></button></a>
+                    <a href={% url 'game-add-character-confirm' game.id character.id %}><button class="rpgui-button" method="post"><p>Add</p></button></a>
                 </p>
             </div>
         {% empty %}

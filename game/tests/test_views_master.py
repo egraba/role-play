@@ -85,17 +85,17 @@ class AddCharacterViewTest(TestCase):
 
     def test_view_mapping(self):
         game = Game.objects.last()
-        response = self.client.get(reverse("add_character", args=[game.id]))
+        response = self.client.get(reverse("game-add-character", args=[game.id]))
         self.assertEqual(response.resolver_match.func.view_class, AddCharacterView)
 
     def test_template_mapping(self):
         game = Game.objects.last()
-        response = self.client.get(reverse("add_character", args=[game.id]))
+        response = self.client.get(reverse("game-add-character", args=[game.id]))
         self.assertTemplateUsed(response, "game/addcharacter.html")
 
     def test_pagination_size(self):
         game = Game.objects.last()
-        response = self.client.get(reverse("add_character", args=[game.id]))
+        response = self.client.get(reverse("game-add-character", args=[game.id]))
         self.assertEqual(response.status_code, 200)
         self.assertTrue("is_paginated" in response.context)
         self.assertTrue(response.context["is_paginated"])
@@ -103,7 +103,9 @@ class AddCharacterViewTest(TestCase):
 
     def test_pagination_size_next_page(self):
         game = Game.objects.last()
-        response = self.client.get(reverse("add_character", args=[game.id]) + "?page=2")
+        response = self.client.get(
+            reverse("game-add-character", args=[game.id]) + "?page=2"
+        )
         self.assertEqual(response.status_code, 200)
         self.assertTrue("is_paginated" in response.context)
         self.assertTrue(response.context["is_paginated"])
@@ -111,7 +113,7 @@ class AddCharacterViewTest(TestCase):
 
     def test_ordering(self):
         game = Game.objects.last()
-        response = self.client.get(reverse("add_character", args=[game.id]))
+        response = self.client.get(reverse("game-add-character", args=[game.id]))
         self.assertEqual(response.status_code, 200)
         last_xp = 0
         for character in response.context["character_list"]:
@@ -123,12 +125,12 @@ class AddCharacterViewTest(TestCase):
 
     def test_game_exists(self):
         game = Game.objects.last()
-        response = self.client.get(reverse("add_character", args=[game.id]))
+        response = self.client.get(reverse("game-add-character", args=[game.id]))
         self.assertEqual(response.status_code, 200)
 
     def test_game_not_exists(self):
         game_id = random.randint(10000, 99999)
-        response = self.client.get(reverse("add_character", args=[game_id]))
+        response = self.client.get(reverse("game-add-character", args=[game_id]))
         self.assertEqual(response.status_code, 404)
         self.assertRaises(Http404)
 
