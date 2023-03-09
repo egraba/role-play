@@ -26,7 +26,9 @@ class GameView(ListView):
         try:
             context["game"] = Game.objects.get(pk=self.game_id)
             context["tale"] = Tale.objects.filter(game=self.game_id).last()
-            context["character_list"] = Character.objects.filter(game=self.game_id)
+            context["character_list"] = Character.objects.filter(
+                game=self.game_id
+            ).order_by("name")
             context["pending_action_list"] = PendingAction.objects.filter(
                 game=self.game_id
             )
