@@ -37,6 +37,11 @@ class GameModelTest(TestCase):
         game = Game.objects.get(id=1)
         self.assertEqual(game.end_date, None)
 
+    def test_status_type(self):
+        game = Game.objects.get(id=1)
+        status = game._meta.get_field("status")
+        self.assertTrue(status, models.CharField)
+
     def test_str_is_name(self):
         game = Game.objects.get(id=1)
         self.assertEqual(str(game), game.name)
