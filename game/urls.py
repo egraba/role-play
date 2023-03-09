@@ -37,6 +37,21 @@ urlpatterns = [
         name="character-add-pending-action",
     ),
     path(
+        "<int:game_id>/character/<int:character_id>/increase_xp",
+        master.IncreaseXpView.as_view(),
+        name="character-increase-xp",
+    ),
+    path(
+        "<int:game_id>/character/<int:character_id>/damage",
+        master.DamageView.as_view(),
+        name="character-damage",
+    ),
+    path(
+        "<int:game_id>/character/<int:character_id>/heal",
+        master.HealView.as_view(),
+        name="character-heal",
+    ),
+    path(
         "<int:game_id>/character/<int:character_id>/launch_dice/",
         player.DiceLaunchView.as_view(),
         name="launch_dice",

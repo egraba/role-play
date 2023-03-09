@@ -18,5 +18,17 @@ class CreatePendingActionForm(forms.ModelForm):
         fields = ["action_type"]
 
 
+class IncreaseXpForm(forms.Form):
+    xp = forms.IntegerField(min_value=1)
+
+
+class DamageForm(forms.Form):
+    hp = forms.IntegerField(min_value=1)
+
+
+class HealForm(forms.Form):
+    hp = forms.IntegerField(min_value=1)
+
+
 class ChoiceForm(forms.Form):
     selection = forms.CharField(widget=forms.Textarea, max_length=255)
