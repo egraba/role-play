@@ -42,6 +42,27 @@ class Tale(Event):
         return self.description
 
 
+class XpIncrease(Event):
+    xp = models.SmallIntegerField()
+
+    def __str__(self):
+        return self.xp
+
+
+class Damage(Event):
+    hp = models.SmallIntegerField()
+
+    def __str__(self):
+        return self.hp
+
+
+class Healing(Event):
+    hp = models.SmallIntegerField()
+
+    def __str__(self):
+        return self.hp
+
+
 class PendingAction(Event):
     ACTION_TYPES = (
         ("D", "Launch dice"),
