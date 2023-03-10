@@ -87,11 +87,13 @@ class AddCharacterViewTest(TestCase):
     def test_view_mapping(self):
         game = Game.objects.last()
         response = self.client.get(reverse("game-add-character", args=[game.id]))
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(response.resolver_match.func.view_class, AddCharacterView)
 
     def test_template_mapping(self):
         game = Game.objects.last()
         response = self.client.get(reverse("game-add-character", args=[game.id]))
+        self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "game/addcharacter.html")
 
     def test_pagination_size(self):
@@ -154,6 +156,7 @@ class StartGameViewTest(TestCase):
     def test_template_mapping(self):
         game = Game.objects.last()
         response = self.client.get(reverse("game-start", args=[game.id]))
+        self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "game/startgame.html")
 
     def test_game_not_exists(self):
@@ -180,6 +183,7 @@ class EndGameViewTest(TestCase):
     def test_view_mapping(self):
         game = Game.objects.last()
         response = self.client.get(reverse("game-end", args=[game.id]))
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(response.resolver_match.func.view_class, EndGameView)
 
     def test_template_mapping(self):
@@ -212,6 +216,7 @@ class CreateTaleViewTest(TestCase):
     def test_view_mapping(self):
         game = Game.objects.last()
         response = self.client.get(reverse("tale-create", args=[game.id]))
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(response.resolver_match.func.view_class, CreateTaleView)
 
     def test_template_mapping(self):
@@ -229,6 +234,7 @@ class CreateTaleViewTest(TestCase):
     def test_context_data(self):
         game = Game.objects.last()
         response = self.client.get(reverse("tale-create", args=[game.id]))
+        self.assertEqual(response.status_code, 200)
         self.assertEquals(response.context["game"], game)
 
     def test_tale_creation(self):
