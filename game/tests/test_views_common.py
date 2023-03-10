@@ -8,7 +8,7 @@ from django.utils import timezone
 
 from game.models import Character, Event, Game, PendingAction, Tale
 from game.tests import utils
-from game.views.common import GameView, IndexView
+from game.views.common import DetailCharacterView, GameView, IndexView
 
 
 def create_character(game):
@@ -221,3 +221,19 @@ class GameViewTest(TestCase):
         self.assertQuerysetEqual(
             list(response.context["pending_action_list"]), pending_action_list2
         )
+
+
+class CharacterViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        Character.objects.create()
+
+    def test_view_mapping(self):
+        character = Character.objects.last()
+        response = self.client.get(reverse("character-detail", args=[character.id]))
+        self.assertEqual(response.resolver_match.func.view_class, DetailCharacterView)
+
+    def test_template_mapping(self):
+        character = Character.objects.last()
+        response = self.client.get(reverse("character-detail", args=[character.id]))
+        self.assertTemplateUsed(response, "game/character.html")
