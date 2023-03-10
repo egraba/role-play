@@ -156,6 +156,12 @@ class StartGameViewTest(TestCase):
         response = self.client.get(reverse("game-start", args=[game.id]))
         self.assertTemplateUsed(response, "game/startgame.html")
 
+    def test_game_not_exists(self):
+        game_id = random.randint(10000, 99999)
+        response = self.client.get(reverse("game-start", args=[game_id]))
+        self.assertEqual(response.status_code, 404)
+        self.assertRaises(Http404)
+
 
 class EndGameViewTest(TestCase):
     @classmethod
@@ -181,6 +187,12 @@ class EndGameViewTest(TestCase):
         response = self.client.get(reverse("game-end", args=[game.id]))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "game/endgame.html")
+
+    def test_game_not_exists(self):
+        game_id = random.randint(10000, 99999)
+        response = self.client.get(reverse("game-end", args=[game_id]))
+        self.assertEqual(response.status_code, 404)
+        self.assertRaises(Http404)
 
 
 class CreateTaleViewTest(TestCase):
