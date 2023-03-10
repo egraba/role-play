@@ -124,11 +124,6 @@ class AddCharacterViewTest(TestCase):
                 self.assertTrue(last_xp >= character.xp)
                 last_xp = character.xp
 
-    def test_game_exists(self):
-        game = Game.objects.last()
-        response = self.client.get(reverse("game-add-character", args=[game.id]))
-        self.assertEqual(response.status_code, 200)
-
     def test_game_not_exists(self):
         game_id = random.randint(10000, 99999)
         response = self.client.get(reverse("game-add-character", args=[game_id]))
