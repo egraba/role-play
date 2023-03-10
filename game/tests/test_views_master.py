@@ -40,7 +40,7 @@ class CreateGameViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "game/creategame.html")
 
-    def test_form_valid(self):
+    def test_game_creation(self):
         name = utils.generate_random_name(20)
         description = utils.generate_random_string(100)
         data = {"name": f"{name}", "description": f"{description}"}
@@ -53,7 +53,7 @@ class CreateGameViewTest(TestCase):
         tale = Tale.objects.last()
         self.assertEqual(tale.game, game)
         self.assertEqual(tale.message, "The Master created the story.")
-        self.assertEqual(tale.description, description)
+        self.assertEqual(tale.description, form.cleaned_data["description"])
         self.assertRedirects(response, reverse("index"))
 
 
