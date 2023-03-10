@@ -164,7 +164,7 @@ class CreateTaleView(PermissionRequiredMixin, FormView):
 
 
 class CreatePendingActionView(PermissionRequiredMixin, CreateView):
-    permission_required = "game.change_pending_action"
+    permission_required = "game.add_pendingaction"
     model = PendingAction
     form_class = CreatePendingActionForm
     template_name = "game/creatependingaction.html"
@@ -183,6 +183,9 @@ class CreatePendingActionView(PermissionRequiredMixin, CreateView):
             raise Http404(
                 f"Character [{self.character_id}] does not exist...", self.character_id
             )
+        pending_action_list = PendingAction.objects.filter(character=self.character)
+        if len(pending_action_list) > 0:
+            raise PermissionDenied
 
     def get_success_url(self):
         return reverse_lazy("game", args=(self.game_id,))
@@ -194,16 +197,12 @@ class CreatePendingActionView(PermissionRequiredMixin, CreateView):
         return context
 
     def form_valid(self, form):
-        pending_action_list = PendingAction.objects.filter(character=self.character)
-        if len(pending_action_list) == 0:
-            pending_action = form.save(commit=False)
-            pending_action.game = self.game
-            pending_action.character = self.character
-            pending_action.date = timezone.now()
-            pending_action.message = f"{self.character} needs to perform an action: {pending_action.get_action_type_display()}"
-            pending_action.save()
-        else:
-            raise PermissionDenied
+        pending_action = form.save(commit=False)
+        pending_action.game = self.game
+        pending_action.character = self.character
+        pending_action.date = timezone.now()
+        pending_action.message = f"{self.character} needs to perform an action: {pending_action.get_action_type_display()}"
+        pending_action.save()
         return super().form_valid(form)
 
 
