@@ -59,26 +59,31 @@ class IndexViewTest(TestCase):
 class GameViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        Game.objects.create(name=utils.generate_random_string(20))
-        game = Game.objects.last()
+        game = Game.objects.create(name="game1")
         number_of_events = 22
         for i in range(number_of_events):
             Event.objects.create(
                 game=game,
-                message=utils.generate_random_string(100),
+                message=f"{game.name} event{i}",
             )
         number_of_tales = 3
         for i in range(number_of_tales):
             Tale.objects.create(
                 game=game,
-                description=utils.generate_random_string(500),
+                description=f"{game.name} tail{i}",
             )
         number_of_characters = 2
         for i in range(number_of_characters):
-            Character.objects.create(
+            character = Character.objects.create(
                 game=game,
-                name=utils.generate_random_name(10),
+                name=f"{game.name} character{i}",
                 race=random.choice(Character.RACES)[0],
+            )
+            PendingAction.objects.create(
+                game=game,
+                character=character,
+                action_type=random.choice(PendingAction.ACTION_TYPES)[0],
+                message=f"{game.name} pending_action{i}",
             )
 
     def test_view_mapping(self):
@@ -105,7 +110,7 @@ class GameViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue("is_paginated" in response.context)
         self.assertTrue(response.context["is_paginated"])
-        self.assertEqual(len(response.context["event_list"]), 5)
+        self.assertEqual(len(response.context["event_list"]), 7)  # Inherited events
 
     def test_ordering_character_name_ascending(self):
         game = Game.objects.last()
@@ -145,61 +150,33 @@ class GameViewTest(TestCase):
         self.assertEqual(response.context["tale"], tale)
 
     def test_context_data(self):
-        game1 = Game.objects.create()
-        tale1 = Tale.objects.create(game=game1, message="tale1")
-        character_list1 = list()
-        character_list1.append(Character.objects.create(game=game1, name="A"))
-        pending_action_list1 = list()
-        pending_action_list1.append(
-            PendingAction.objects.create(
-                game=game1, character=character_list1[0], message="pending_action1"
-            )
-        )
-        event_list1 = list()
-        event_list1.append(Event.objects.filter(message="tale1").last())
-        event_list1.append(Event.objects.filter(message="pending_action1").last())
-        event_list1.append(Event.objects.create(game=game1, message="event1"))
-
-        game2 = Game.objects.create()
-        tale2 = Tale.objects.create(game=game2, message="tale2")
-        character_list2 = list()
-        character_list2.append(Character.objects.create(game=game2, name="B"))
-        pending_action_list2 = list()
-        pending_action_list2.append(
-            PendingAction.objects.create(
-                game=game2, character=character_list2[0], message="pending_action2"
-            )
-        )
-        event_list2 = list()
-        event_list2.append(Event.objects.filter(message="tale2").last())
-        event_list2.append(Event.objects.filter(message="pending_action2").last())
-        event_list2.append(Event.objects.create(game=game2, message="event2"))
-
+        for i in range(10):
+            game = Game.objects.create(name=f"other_game{i}")
+            Tale.objects.create(game=game)
+            character = Character.objects.create(game=game, name=f"character{i}")
+            Event.objects.create(game=game)
+            PendingAction.objects.create(game=game, character=character)
         """
-        We test that game1 contains the context game1 only.
+        We test that none of the objects created above are present in the context of
+        the game created in setUpTestData().
         """
-        response = self.client.get(reverse("game", args=[game1.id]))
-        self.assertEqual(response.context["tale"], tale1)
-        self.assertQuerysetEqual(set(response.context["event_list"]), set(event_list1))
+        game = Game.objects.filter(name="game1").last()
+        response = self.client.get(reverse("game", args=[game.id]))
+        tale_list = Tale.objects.filter(game__name="game1")
+        tale = tale_list.last()
+        self.assertEqual(response.context["tale"], tale)
+        character_list = Character.objects.filter(game__name="game1")
         self.assertQuerysetEqual(
-            list(response.context["character_list"]), character_list1
+            list(response.context["character_list"]), character_list
         )
+        pending_action_list = PendingAction.objects.filter(game__name="game1")
         self.assertQuerysetEqual(
-            list(response.context["pending_action_list"]), pending_action_list1
+            list(response.context["pending_action_list"]), pending_action_list
         )
-
-        """
-        We test that game2 contains the context game2 only.
-        """
-        response = self.client.get(reverse("game", args=[game2.id]))
-        self.assertEqual(response.context["tale"], tale2)
-        self.assertQuerysetEqual(set(response.context["event_list"]), set(event_list2))
-        self.assertQuerysetEqual(
-            list(response.context["character_list"]), character_list2
-        )
-        self.assertQuerysetEqual(
-            list(response.context["pending_action_list"]), pending_action_list2
-        )
+        event_list = Event.objects.filter(game__name="game1")
+        self.assertTrue(
+            set(response.context["event_list"]).issubset(set(event_list))
+        )  # issubset() is used because of pagination.
 
 
 class CharacterViewTest(TestCase):
