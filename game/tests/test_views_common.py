@@ -100,16 +100,29 @@ class GameViewTest(TestCase):
         self.assertTrue(response.context["is_paginated"])
         self.assertEqual(len(response.context["event_list"]), 5)
 
-    def test_ordering(self):
-        response = self.client.get(reverse("index"))
+    def test_ordering_character_name_ascending(self):
+        game = Game.objects.last()
+        response = self.client.get(reverse("game", args=[game.id]))
+        self.assertEqual(response.status_code, 200)
+        last_name = 0
+        for character in response.context["character_list"]:
+            if last_name == "":
+                last_name = character.name
+            else:
+                self.assertTrue(last_name <= character.name)
+                last_name = character.name
+
+    def test_ordering_event_date_descending(self):
+        game = Game.objects.last()
+        response = self.client.get(reverse("game", args=[game.id]))
         self.assertEqual(response.status_code, 200)
         last_date = 0
-        for game in response.context["game_list"]:
+        for event in response.context["event_list"]:
             if last_date == 0:
-                last_date = game.start_date
+                last_date = event.date
             else:
-                self.assertTrue(last_date >= game.start_date)
-                last_date = game.start_date
+                self.assertTrue(last_date >= event.date)
+                last_date = event.date
 
     def test_game_not_exists(self):
         game_id = random.randint(10000, 99999)
