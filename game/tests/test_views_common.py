@@ -73,6 +73,13 @@ class GameViewTest(TestCase):
                 game=game,
                 description=utils.generate_random_string(500),
             )
+        number_of_characters = 2
+        for i in range(number_of_characters):
+            Character.objects.create(
+                game=game,
+                name=utils.generate_random_name(10),
+                race=random.choice(Character.RACES)[0],
+            )
 
     def test_view_mapping(self):
         game = Game.objects.last()
@@ -104,7 +111,7 @@ class GameViewTest(TestCase):
         game = Game.objects.last()
         response = self.client.get(reverse("game", args=[game.id]))
         self.assertEqual(response.status_code, 200)
-        last_name = 0
+        last_name = ""
         for character in response.context["character_list"]:
             if last_name == "":
                 last_name = character.name
