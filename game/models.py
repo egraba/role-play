@@ -46,21 +46,21 @@ class XpIncrease(Event):
     xp = models.SmallIntegerField()
 
     def __str__(self):
-        return self.xp
+        return str(self.xp)
 
 
 class Damage(Event):
     hp = models.SmallIntegerField()
 
     def __str__(self):
-        return self.hp
+        return str(self.hp)
 
 
 class Healing(Event):
     hp = models.SmallIntegerField()
 
     def __str__(self):
-        return self.hp
+        return str(self.hp)
 
 
 class PendingAction(Event):
