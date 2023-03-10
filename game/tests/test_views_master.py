@@ -21,7 +21,7 @@ class CreateGameViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         permission = Permission.objects.get(codename="add_game")
-        user = User.objects.get_or_create(username="Thomas")[0]
+        user = User.objects.create(username=utils.generate_random_name(5))
         user.set_password("pwd")
         user.user_permissions.add(permission)
         user.save()
@@ -61,7 +61,7 @@ class AddCharacterViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         permission = Permission.objects.get(codename="change_character")
-        user = User.objects.get_or_create(username="Thomas")[0]
+        user = User.objects.create(username=utils.generate_random_name(5))
         user.set_password("pwd")
         user.user_permissions.add(permission)
         user.save()
@@ -137,7 +137,7 @@ class StartGameViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         permission = Permission.objects.get(codename="change_game")
-        user = User.objects.get_or_create(username="Thomas")[0]
+        user = User.objects.create(username=utils.generate_random_name(5))
         user.set_password("pwd")
         user.user_permissions.add(permission)
         user.save()
@@ -170,7 +170,7 @@ class EndGameViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         permission = Permission.objects.get(codename="change_game")
-        user = User.objects.get_or_create(username="Thomas")[0]
+        user = User.objects.create(username=utils.generate_random_name(5))
         user.set_password("pwd")
         user.user_permissions.add(permission)
         user.save()
@@ -203,7 +203,7 @@ class CreateTaleViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         permission = Permission.objects.get(codename="add_tale")
-        user = User.objects.get_or_create(username="Thomas")[0]
+        user = User.objects.create(username=utils.generate_random_name(5))
         user.set_password("pwd")
         user.user_permissions.add(permission)
         user.save()
