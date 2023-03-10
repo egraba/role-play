@@ -19,25 +19,25 @@ class GameView(ListView):
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
-        self.game_id = self.kwargs["game_id"]
+        try:
+            game_id = self.kwargs["game_id"]
+            self.game = Game.objects.get(id=game_id)
+        except Game.DoesNotExist:
+            raise Http404(f"Game [{game_id}] does not exist...", game_id)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        try:
-            context["game"] = Game.objects.get(pk=self.game_id)
-            context["tale"] = Tale.objects.filter(game=self.game_id).last()
-            context["character_list"] = Character.objects.filter(
-                game=self.game_id
-            ).order_by("name")
-            context["pending_action_list"] = PendingAction.objects.filter(
-                game=self.game_id
-            )
-        except Game.DoesNotExist:
-            raise Http404(f"Game [{self.game_id}] does not exist...", self.game_id)
+        context["game"] = self.game
+        context["tale"] = Tale.objects.filter(game=self.game.id).last()
+        context["character_list"] = Character.objects.filter(
+            game=self.game.id
+        ).order_by("name")
+        context["pending_action_list"] = PendingAction.objects.filter(game=self.game.id)
+
         return context
 
     def get_queryset(self):
-        return super().get_queryset().filter(game=self.game_id)
+        return super().get_queryset().filter(game=self.game.id)
 
 
 class DetailCharacterView(DetailView):
