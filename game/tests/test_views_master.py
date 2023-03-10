@@ -5,12 +5,13 @@ from django.http import Http404
 from django.test import TestCase
 from django.urls import reverse
 
-from game.forms import CreateGameForm
+from game.forms import CreateGameForm, CreateTaleForm
 from game.models import Character, Game, Tale
 from game.tests import utils
 from game.views.master import (
     AddCharacterView,
     CreateGameView,
+    CreateTaleView,
     EndGameView,
     StartGameView,
 )
@@ -185,3 +186,56 @@ class EndGameViewTest(TestCase):
         response = self.client.get(reverse("game-end", args=[game.id]))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "game/endgame.html")
+
+
+class CreateTaleViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        permission = Permission.objects.get(codename="add_tale")
+        user = User.objects.get_or_create(username="Thomas")[0]
+        user.set_password("pwd")
+        user.user_permissions.add(permission)
+        user.save()
+        Game.objects.create()
+
+    def setUp(self):
+        self.user = User.objects.last()
+        self.client.login(username=self.user.username, password="pwd")
+
+    def test_view_mapping(self):
+        game = Game.objects.last()
+        response = self.client.get(reverse("tale-create", args=[game.id]))
+        self.assertEqual(response.resolver_match.func.view_class, CreateTaleView)
+
+    def test_template_mapping(self):
+        game = Game.objects.last()
+        response = self.client.get(reverse("tale-create", args=[game.id]))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "game/createtale.html")
+
+    def test_game_not_exists(self):
+        game_id = random.randint(10000, 99999)
+        response = self.client.get(reverse("tale-create", args=[game_id]))
+        self.assertEqual(response.status_code, 404)
+        self.assertRaises(Http404)
+
+    def test_context_data(self):
+        game = Game.objects.last()
+        response = self.client.get(reverse("tale-create", args=[game.id]))
+        self.assertEquals(response.context["game"], game)
+
+    def test_tale_creation(self):
+        description = utils.generate_random_string(100)
+        data = {"description": f"{description}"}
+        form = CreateTaleForm(data)
+        self.assertTrue(form.is_valid())
+        game = Game.objects.last()
+        response = self.client.post(
+            reverse("tale-create", args=[game.id]), data=form.cleaned_data
+        )
+        self.assertEqual(response.status_code, 302)
+        tale = Tale.objects.last()
+        self.assertEqual(tale.game, game)
+        self.assertEqual(tale.message, "The Master updated the story.")
+        self.assertEqual(tale.description, form.cleaned_data["description"])
+        self.assertRedirects(response, reverse("game", args=[game.id]))
