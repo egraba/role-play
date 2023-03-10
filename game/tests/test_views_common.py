@@ -11,47 +11,6 @@ from game.tests import utils
 from game.views.common import DetailCharacterView, GameView, IndexView
 
 
-def create_character(game):
-    return Character.objects.create(
-        name=utils.generate_random_name(100),
-        game=game,
-        race=random.choice(Character.RACES)[0],
-    )
-
-
-def create_several_characters(game):
-    character_list = list()
-    n = random.randint(2, 10)
-    for i in range(n):
-        character_list.append(create_character(game))
-    return character_list
-
-
-def create_tale(game):
-    return Tale.objects.create(
-        date=datetime.now(tz=timezone.utc),
-        game=game,
-        message=utils.generate_random_string(100),
-        description=utils.generate_random_string(500),
-    )
-
-
-def create_several_tales(game):
-    tale_list = list()
-    n = random.randint(1, 2)
-    for i in range(n):
-        tale_list.append(create_tale(game))
-    return tale_list
-
-
-def create_pending_action(game, character):
-    return PendingAction.objects.create(
-        game=game,
-        character=character,
-        action_type=random.choice(PendingAction.ACTION_TYPES)[0],
-    )
-
-
 class IndexViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
