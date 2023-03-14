@@ -18,6 +18,3 @@ class GameContextMixin(ContextMixin, View):
         context = super().get_context_data(**kwargs)
         context["game"] = self.game
         return context
-
-    class Meta:
-        abstract = True
