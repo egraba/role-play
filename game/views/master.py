@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.exceptions import PermissionDenied
-from django.http import Http404, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.views.generic import CreateView, FormView, ListView, UpdateView
@@ -14,7 +14,7 @@ from game.forms import (
     IncreaseXpForm,
 )
 from game.models import Character, Game, PendingAction, Tale
-from game.views.mixins import GameContextMixin
+from game.views.mixins import CharacterContextMixin, GameContextMixin
 
 
 class CreateGameView(PermissionRequiredMixin, FormView):
@@ -129,7 +129,9 @@ class CreateTaleView(PermissionRequiredMixin, FormView, GameContextMixin):
         return super().form_valid(form)
 
 
-class CreatePendingActionView(PermissionRequiredMixin, CreateView, GameContextMixin):
+class CreatePendingActionView(
+    PermissionRequiredMixin, CreateView, GameContextMixin, CharacterContextMixin
+):
     permission_required = "game.add_pendingaction"
     model = PendingAction
     form_class = CreatePendingActionForm
@@ -137,24 +139,12 @@ class CreatePendingActionView(PermissionRequiredMixin, CreateView, GameContextMi
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
-        try:
-            self.character_id = self.kwargs["character_id"]
-            self.character = Character.objects.get(id=self.character_id, game=self.game)
-        except Character.DoesNotExist:
-            raise Http404(
-                f"Character [{self.character_id}] does not exist...", self.character_id
-            )
         pending_action_list = PendingAction.objects.filter(character=self.character)
         if len(pending_action_list) > 0:
             raise PermissionDenied
 
     def get_success_url(self):
         return reverse_lazy("game", args=(self.game_id,))
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["character"] = self.character
-        return context
 
     def form_valid(self, form):
         pending_action = form.save(commit=False)
@@ -166,28 +156,15 @@ class CreatePendingActionView(PermissionRequiredMixin, CreateView, GameContextMi
         return super().form_valid(form)
 
 
-class IncreaseXpView(PermissionRequiredMixin, FormView, GameContextMixin):
+class IncreaseXpView(
+    PermissionRequiredMixin, FormView, GameContextMixin, CharacterContextMixin
+):
     permission_required = "game.change_character"
     form_class = IncreaseXpForm
     template_name = "game/xp.html"
 
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, *args, **kwargs)
-        try:
-            self.character_id = self.kwargs["character_id"]
-            self.character = Character.objects.get(id=self.character_id, game=self.game)
-        except Character.DoesNotExist:
-            raise Http404(
-                f"Character [{self.character_id}] does not exist...", self.character_id
-            )
-
     def get_success_url(self):
         return reverse_lazy("game", args=(self.game_id,))
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["character"] = self.character
-        return context
 
     def form_valid(self, form):
         self.character.xp += form.cleaned_data["xp"]
@@ -195,28 +172,15 @@ class IncreaseXpView(PermissionRequiredMixin, FormView, GameContextMixin):
         return super().form_valid(form)
 
 
-class DamageView(PermissionRequiredMixin, FormView, GameContextMixin):
+class DamageView(
+    PermissionRequiredMixin, FormView, GameContextMixin, CharacterContextMixin
+):
     permission_required = "game.change_character"
     form_class = DamageForm
     template_name = "game/damage.html"
 
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, *args, **kwargs)
-        try:
-            self.character_id = self.kwargs["character_id"]
-            self.character = Character.objects.get(id=self.character_id, game=self.game)
-        except Character.DoesNotExist:
-            raise Http404(
-                f"Character [{self.character_id}] does not exist...", self.character_id
-            )
-
     def get_success_url(self):
         return reverse_lazy("game", args=(self.game_id,))
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["character"] = self.character
-        return context
 
     def form_valid(self, form):
         self.character.hp -= form.cleaned_data["hp"]
@@ -224,28 +188,15 @@ class DamageView(PermissionRequiredMixin, FormView, GameContextMixin):
         return super().form_valid(form)
 
 
-class HealView(PermissionRequiredMixin, FormView, GameContextMixin):
+class HealView(
+    PermissionRequiredMixin, FormView, GameContextMixin, CharacterContextMixin
+):
     permission_required = "game.change_character"
     form_class = HealForm
     template_name = "game/heal.html"
 
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, *args, **kwargs)
-        try:
-            self.character_id = self.kwargs["character_id"]
-            self.character = Character.objects.get(id=self.character_id, game=self.game)
-        except Character.DoesNotExist:
-            raise Http404(
-                f"Character [{self.character_id}] does not exist...", self.character_id
-            )
-
     def get_success_url(self):
         return reverse_lazy("game", args=(self.game_id,))
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["character"] = self.character
-        return context
 
     def form_valid(self, form):
         healing_points = form.cleaned_data["hp"]
