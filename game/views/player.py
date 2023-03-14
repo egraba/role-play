@@ -2,13 +2,13 @@ import random
 
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from django.views import generic
+from django.views.generic import CreateView, DetailView, FormView
 
 from game.forms import ChoiceForm
 from game.models import Character, Choice, DiceLaunch, Game, PendingAction
 
 
-class DiceLaunchView(generic.CreateView):
+class DiceLaunchView(CreateView):
     model = Choice
     fields = []
     template_name = "game/dice.html"
@@ -50,7 +50,7 @@ class DiceLaunchView(generic.CreateView):
         )
 
 
-class ChoiceView(generic.FormView):
+class ChoiceView(FormView):
     model = Choice
     fields = []
     template_name = "game/choice.html"
@@ -94,7 +94,7 @@ class ChoiceView(generic.FormView):
             )
 
 
-class DiceLaunchSuccessView(generic.DetailView):
+class DiceLaunchSuccessView(DetailView):
     model = Choice
     template_name = "game/success.html"
 
@@ -120,7 +120,7 @@ class DiceLaunchSuccessView(generic.DetailView):
         return HttpResponseRedirect(reverse("game", args=(self.game_id,)))
 
 
-class ChoiceSuccessView(generic.DetailView):
+class ChoiceSuccessView(DetailView):
     model = Choice
     template_name = "game/success.html"
 
