@@ -26,7 +26,6 @@ class CreateGameView(PermissionRequiredMixin, FormView):
     def form_valid(self, form):
         game = Game()
         game.name = form.cleaned_data["name"]
-        game.status = "P"
         game.save()
         tale = Tale()
         tale.game = game
@@ -73,13 +72,8 @@ class StartGameView(PermissionRequiredMixin, UpdateView):
 
     def post(self, request, *args, **kwargs):
         game = self.get_object()
-        character_list = Character.objects.filter(game=game)
-        if len(character_list) >= 2:
-            game.start_date = timezone.now()
-            game.status = "S"
-            game.save()
-        else:
-            raise PermissionDenied("A game must contain at least 2 players...")
+        game.start()
+        game.save()
         return HttpResponseRedirect(
             reverse(
                 "game",
@@ -96,12 +90,8 @@ class EndGameView(PermissionRequiredMixin, UpdateView):
 
     def post(self, request, *args, **kwargs):
         game = self.get_object()
-        if game.status == "S":
-            game.end_date = timezone.now()
-            game.status = "E"
-            game.save()
-        else:
-            raise PermissionDenied("A game must have been started to be ended...")
+        game.end()
+        game.save()
         return HttpResponseRedirect(
             reverse(
                 "game",
