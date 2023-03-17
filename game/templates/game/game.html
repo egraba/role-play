@@ -61,7 +61,7 @@
                     {% if game.status == "P" %}
                         <a href={% url 'game-start' game.id %}><button class="rpgui-button"><p>Start the game</p></button></a>
                         <a href=""><button disabled class="rpgui-button"><p>End the game</p></button></a>
-                    {% elif game.status == "S" %}
+                    {% elif game.status == "O" %}
                         <a href=""><button disabled class="rpgui-button"><p>Start the game</p></button></a>
                         <a href={% url 'game-end' game.id %}><button class="rpgui-button"><p>End the game</p></button></a>
                     {% else %}
@@ -97,7 +97,7 @@
         </div>
         {% if user.is_authenticated and perms.game.add_tale %}
             <div class="rpgui-center">
-                {% if game.status == "S" %}
+                {% if game.status == "O" %}
                     <a href={% url 'tale-create' game.id %}><button class="rpgui-button"><p>Continue the story</p></button></a>
                 {% else %}
                     <a href=""><button disabled class="rpgui-button"><p>Continue the story</p></button></a>
