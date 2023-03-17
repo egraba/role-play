@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.views.generic import CreateView, FormView, ListView, UpdateView
+from django_fsm import TransitionNotAllowed
 
 from game.forms import (
     CreateGameForm,
@@ -72,8 +73,11 @@ class StartGameView(PermissionRequiredMixin, UpdateView):
 
     def post(self, request, *args, **kwargs):
         game = self.get_object()
-        game.start()
-        game.save()
+        try:
+            game.start()
+            game.save()
+        except TransitionNotAllowed:
+            raise PermissionDenied
         return HttpResponseRedirect(
             reverse(
                 "game",

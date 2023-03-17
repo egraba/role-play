@@ -53,6 +53,7 @@ class CreateGameViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         game = Game.objects.last()
         self.assertEqual(game.name, name)
+        self.assertEqual(game.status, "P")
         tale = Tale.objects.last()
         self.assertEqual(tale.game, game)
         self.assertEqual(tale.message, "The Master created the story.")
@@ -167,6 +168,27 @@ class StartGameViewTest(TestCase):
         response = self.client.get(reverse("game-start", args=[game_id]))
         self.assertEqual(response.status_code, 404)
         self.assertRaises(Http404)
+
+    def test_game_start_ok(self):
+        game = Game.objects.last()
+        number_of_characters = 2
+        for i in range(number_of_characters):
+            Character.objects.create(game=game, name=utils.generate_random_name(5))
+        response = self.client.post(reverse("game-start", args=[game.id]))
+        self.assertEqual(response.status_code, 302)
+        game = Game.objects.last()
+        self.assertEqual(game.status, "O")
+
+    def test_game_start_not_enough_characters(self):
+        game = Game.objects.last()
+        number_of_characters = 1
+        for i in range(number_of_characters):
+            Character.objects.create(game=game, name=utils.generate_random_name(5))
+        response = self.client.post(reverse("game-start", args=[game.id]))
+        self.assertEqual(response.status_code, 403)
+        self.assertRaises(PermissionDenied)
+        game = Game.objects.last()
+        self.assertEqual(game.status, "P")
 
 
 class EndGameViewTest(TestCase):
