@@ -1,16 +1,31 @@
 from django.db import models
 from django.utils import timezone
+from django_fsm import FSMField, transition
 
 
 class Game(models.Model):
-    STATUSES = (("P", "Under preparation"), ("S", "Started"), ("E", "Ended"))
+    STATUSES = (("P", "Under preparation"), ("O", "Ongoing"), ("F", "Finished"))
     name = models.CharField(max_length=50)
     start_date = models.DateTimeField(null=True, blank=True)
     end_date = models.DateTimeField(null=True, blank=True)
-    status = models.CharField(max_length=1, choices=STATUSES)
+    status = FSMField(max_length=1, choices=STATUSES, default="P")
 
     def __str__(self):
         return self.name
+
+    def can_start(self):
+        number_of_characters = Character.objects.filter(game=self).count()
+        return number_of_characters >= 2
+
+    @transition(field=status, source="P", target="O", conditions=[can_start])
+    def start(self):
+        self.start_date = timezone.now()
+
+    @transition(field=status, source="O", target="F")
+    def end(self):
+        for character in Character.objects.filter(game=self):
+            character.game = None
+            character.save()
 
 
 class Character(models.Model):
