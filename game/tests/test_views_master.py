@@ -223,6 +223,19 @@ class EndGameViewTest(TestCase):
         self.assertEqual(response.status_code, 404)
         self.assertRaises(Http404)
 
+    def test_game_end_ok(self):
+        game = Game.objects.last()
+        number_of_characters = 5
+        for i in range(number_of_characters):
+            Character.objects.create(game=game, name=utils.generate_random_name(5))
+        game.start()
+        game.save()
+        response = self.client.post(reverse("game-end", args=[game.id]))
+        self.assertEqual(response.status_code, 302)
+        game = Game.objects.last()
+        self.assertEqual(game.status, "F")
+        self.assertTrue(Character.objects.filter(game=game).count() == 0)
+
 
 class CreateTaleViewTest(TestCase):
     @classmethod
