@@ -14,7 +14,7 @@ from game.forms import (
     HealForm,
     IncreaseXpForm,
 )
-from game.models import Character, Game, PendingAction, Tale, XpIncrease
+from game.models import Character, Damage, Game, PendingAction, Tale, XpIncrease
 from game.views.mixins import CharacterContextMixin, GameContextMixin
 
 
@@ -178,7 +178,8 @@ class IncreaseXpView(
 class DamageView(
     PermissionRequiredMixin, FormView, GameContextMixin, CharacterContextMixin
 ):
-    permission_required = "game.change_character"
+    permission_required = "game.add_damage"
+    model = Damage
     form_class = DamageForm
     template_name = "game/damage.html"
 
@@ -186,7 +187,13 @@ class DamageView(
         return reverse_lazy("game", args=(self.game_id,))
 
     def form_valid(self, form):
-        self.character.hp -= form.cleaned_data["hp"]
+        damage = form.save(commit=False)
+        damage.game = self.game
+        damage.character = self.character
+        damage.date = timezone.now()
+        damage.message = f"{self.character} was hit: -{damage.hp} HP!"
+        damage.save()
+        self.character.hp -= damage.hp
         self.character.save()
         return super().form_valid(form)
 

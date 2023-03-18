@@ -1,7 +1,13 @@
 from django import forms
 from django.test import TestCase
 
-from game.forms import ChoiceForm, CreateGameForm, CreateTaleForm, IncreaseXpForm
+from game.forms import (
+    ChoiceForm,
+    CreateGameForm,
+    CreateTaleForm,
+    DamageForm,
+    IncreaseXpForm,
+)
 
 
 class CreateGameFormTest(TestCase):
@@ -36,6 +42,12 @@ class IncreaseXpFormTest(TestCase):
     def test_xp_type(self):
         form = IncreaseXpForm()
         self.assertIsInstance(form.fields["xp"].widget, forms.NumberInput)
+
+
+class DamageFormTest(TestCase):
+    def test_hp_type(self):
+        form = DamageForm()
+        self.assertIsInstance(form.fields["hp"].widget, forms.NumberInput)
 
 
 class ChoiceFormTest(TestCase):

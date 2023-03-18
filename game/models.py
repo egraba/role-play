@@ -71,7 +71,7 @@ class XpIncrease(Action):
         return str(self.xp)
 
 
-class Damage(Event):
+class Damage(Action):
     hp = models.SmallIntegerField()
 
     def __str__(self):

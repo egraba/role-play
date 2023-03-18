@@ -12,15 +12,17 @@ from game.forms import (
     CreateGameForm,
     CreatePendingActionForm,
     CreateTaleForm,
+    DamageForm,
     IncreaseXpForm,
 )
-from game.models import Character, Game, PendingAction, Tale, XpIncrease
+from game.models import Character, Damage, Game, PendingAction, Tale, XpIncrease
 from game.tests import utils
 from game.views.master import (
     AddCharacterView,
     CreateGameView,
     CreatePendingActionView,
     CreateTaleView,
+    DamageView,
     EndGameView,
     IncreaseXpView,
     StartGameView,
@@ -464,5 +466,88 @@ class IncreaseXpViewTest(TestCase):
         xp = random.randint(-20, 0)
         data = {"xp": f"{xp}"}
         form = IncreaseXpForm(data)
+        self.assertFalse(form.is_valid())
+        self.assertRaises(ValidationError)
+
+
+class DamageViewTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        permission = Permission.objects.get(codename="add_damage")
+        user = User.objects.create(username=utils.generate_random_name(5))
+        user.set_password("pwd")
+        user.user_permissions.add(permission)
+        user.save()
+        game = Game.objects.create()
+        Character.objects.create(game=game)
+
+    def setUp(self):
+        self.user = User.objects.last()
+        self.client.login(username=self.user.username, password="pwd")
+
+    def test_view_mapping(self):
+        game = Game.objects.last()
+        character = Character.objects.last()
+        response = self.client.get(
+            reverse("character-damage", args=[game.id, character.id])
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.resolver_match.func.view_class, DamageView)
+
+    def test_template_mapping(self):
+        game = Game.objects.last()
+        character = Character.objects.last()
+        response = self.client.get(
+            reverse("character-damage", args=[game.id, character.id])
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "game/damage.html")
+
+    def test_game_not_exists(self):
+        game_id = random.randint(10000, 99999)
+        character = Character.objects.last()
+        response = self.client.get(
+            reverse("character-damage", args=[game_id, character.id])
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertRaises(Http404)
+
+    def test_context_data(self):
+        game = Game.objects.last()
+        character = Character.objects.last()
+        response = self.client.get(
+            reverse("character-damage", args=[game.id, character.id])
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEquals(response.context["game"], game)
+        self.assertEquals(response.context["character"], character)
+
+    def test_creation_ok(self):
+        hp = random.randint(1, 20)
+        data = {"hp": f"{hp}"}
+        form = DamageForm(data)
+        self.assertTrue(form.is_valid())
+        game = Game.objects.last()
+        character = Character.objects.last()
+        response = self.client.post(
+            reverse("character-damage", args=[game.id, character.id]),
+            data=form.cleaned_data,
+        )
+        self.assertEqual(response.status_code, 302)
+        damage = Damage.objects.last()
+        self.assertEqual(damage.game, game)
+        self.assertEqual(damage.character, character)
+        self.assertEqual(damage.date.second, timezone.now().second)
+        self.assertEqual(
+            damage.message,
+            f"{character} was hit: -{damage.hp} HP!",
+        )
+        self.assertEqual(damage.hp, form.cleaned_data["hp"])
+        self.assertRedirects(response, reverse("game", args=[game.id]))
+
+    def test_creation_ko_invalid_form(self):
+        hp = random.randint(-20, 0)
+        data = {"hp": f"{hp}"}
+        form = DamageForm(data)
         self.assertFalse(form.is_valid())
         self.assertRaises(ValidationError)
