@@ -234,6 +234,10 @@ class StartGameViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         game = Game.objects.last()
         self.assertEqual(game.status, "O")
+        event = Event.objects.last()
+        self.assertEqual(event.date.second, timezone.now().second)
+        self.assertEqual(event.game, game)
+        self.assertEqual(event.message, "The game started.")
 
     def test_game_start_not_enough_characters(self):
         game = Game.objects.last()
@@ -293,6 +297,10 @@ class EndGameViewTest(TestCase):
         game = Game.objects.last()
         self.assertEqual(game.status, "F")
         self.assertTrue(Character.objects.filter(game=game).count() == 0)
+        event = Event.objects.last()
+        self.assertEqual(event.date.second, timezone.now().second)
+        self.assertEqual(event.game, game)
+        self.assertEqual(event.message, "The game ended.")
 
 
 class CreateTaleViewTest(TestCase):

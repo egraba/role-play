@@ -84,6 +84,10 @@ class StartGameView(PermissionRequiredMixin, UpdateView):
         try:
             game.start()
             game.save()
+            event = Event.objects.create(game=game)
+            event.date = timezone.now()
+            event.message = "The game started."
+            event.save()
         except TransitionNotAllowed:
             raise PermissionDenied
         return HttpResponseRedirect(
@@ -104,6 +108,10 @@ class EndGameView(PermissionRequiredMixin, UpdateView):
         game = self.get_object()
         game.end()
         game.save()
+        event = Event.objects.create(game=game)
+        event.date = timezone.now()
+        event.message = "The game ended."
+        event.save()
         return HttpResponseRedirect(
             reverse(
                 "game",
