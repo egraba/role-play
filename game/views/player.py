@@ -41,6 +41,19 @@ class DiceLaunchView(
         return super().form_valid(form)
 
 
+class DiceLaunchSuccessView(DetailView, GameContextMixin, CharacterContextMixin):
+    model = DiceLaunch
+    template_name = "game/success.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["dice_launch"] = self.get_object()
+        return context
+
+    def get_object(self):
+        return DiceLaunch.objects.get(pk=self.kwargs.get("action_id"))
+
+
 class ChoiceView(FormView, GameContextMixin, CharacterContextMixin):
     model = Choice
     fields = []
@@ -73,26 +86,6 @@ class ChoiceView(FormView, GameContextMixin, CharacterContextMixin):
                     ),
                 )
             )
-
-
-class DiceLaunchSuccessView(DetailView, GameContextMixin, CharacterContextMixin):
-    model = Choice
-    template_name = "game/success.html"
-
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, *args, **kwargs)
-        self.dice_launch = DiceLaunch.objects.get(pk=self.kwargs["action_id"])
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["dice_launch"] = self.dice_launch
-        return context
-
-    def get_object(self):
-        return DiceLaunch.objects.get(pk=self.kwargs.get("action_id"))
-
-    def post(self, request, *args, **kwargs):
-        return HttpResponseRedirect(reverse("game", args=(self.game_id,)))
 
 
 class ChoiceSuccessView(DetailView, GameContextMixin, CharacterContextMixin):
