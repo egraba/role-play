@@ -59,17 +59,17 @@ urlpatterns = [
     path(
         "<int:game_id>/character/<int:character_id>/launch_dice/",
         player.DiceLaunchView.as_view(),
-        name="launch_dice",
+        name="dicelaunch-create",
+    ),
+    path(
+        "<int:game_id>/character/<int:character_id>/launch_dice/<int:action_id>/success/",
+        player.DiceLaunchSuccessView.as_view(),
+        name="dicelaunch-success",
     ),
     path(
         "<int:game_id>/character/<int:character_id>/make_choice/",
         player.ChoiceView.as_view(),
         name="make_choice",
-    ),
-    path(
-        "<int:game_id>/character/<int:character_id>/launch_dice/<int:action_id>/success/",
-        player.DiceLaunchSuccessView.as_view(),
-        name="dice_success",
     ),
     path(
         "<int:game_id>/character/<int:character_id>/make_choice/<int:action_id>/success/",

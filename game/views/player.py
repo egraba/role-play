@@ -1,41 +1,44 @@
 import random
 
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import HttpResponseRedirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DetailView, FormView
 
-from game.forms import ChoiceForm
+from game.forms import ChoiceForm, DiceLaunchForm
 from game.models import Choice, DiceLaunch, PendingAction
-from game.views.mixins import CharacterContextMixin, GameContextMixin
+from game.views.mixins import (
+    CharacterContextMixin,
+    EventConditionsMixin,
+    GameContextMixin,
+)
 
 
-class DiceLaunchView(CreateView, GameContextMixin, CharacterContextMixin):
-    model = Choice
-    fields = []
+class DiceLaunchView(
+    PermissionRequiredMixin, CreateView, EventConditionsMixin, CharacterContextMixin
+):
+    permission_required = "game.add_dicelaunch"
+    model = DiceLaunch
+    form_class = DiceLaunchForm
     template_name = "game/dice.html"
-    object = None
 
-    def post(self, request, *args, **kwargs):
-        dice_launch = DiceLaunch()
+    def get_success_url(self):
+        return reverse_lazy(
+            "dicelaunch-success", args=(self.game.id, self.character.id, self.object.id)
+        )
+
+    def form_valid(self, form):
+        dice_launch = form.save(commit=False)
         dice_launch.game = self.game
         dice_launch.character = self.character
         dice_launch.score = random.randint(1, 20)
         dice_launch.message = (
-            f"{self.character.name} launched a dice: score is {dice_launch.score}!"
+            f"{self.character} launched a dice: score is {dice_launch.score}!"
         )
         dice_launch.save()
         pending_action = PendingAction.objects.get(character=self.character)
         pending_action.delete()
-        return HttpResponseRedirect(
-            reverse(
-                "dice_success",
-                args=(
-                    self.game_id,
-                    self.character_id,
-                    dice_launch.pk,
-                ),
-            )
-        )
+        return super().form_valid(form)
 
 
 class ChoiceView(FormView, GameContextMixin, CharacterContextMixin):
