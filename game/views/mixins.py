@@ -41,3 +41,5 @@ class EventConditionsMixin(GameContextMixin, View):
         super().setup(request, *args, **kwargs)
         if not self.game.is_ongoing():
             raise PermissionDenied()
+        else:
+            pass
