@@ -26,14 +26,16 @@ class CreateGameView(PermissionRequiredMixin, FormView):
     permission_required = "game.add_game"
     template_name = "game/creategame.html"
     form_class = CreateGameForm
-    success_url = reverse_lazy("index")
+
+    def get_success_url(self):
+        return reverse_lazy("game", args=(self.game.id,))
 
     def form_valid(self, form):
-        game = Game()
-        game.name = form.cleaned_data["name"]
-        game.save()
+        self.game = Game()
+        self.game.name = form.cleaned_data["name"]
+        self.game.save()
         tale = Tale()
-        tale.game = game
+        tale.game = self.game
         tale.message = "The Master created the story."
         tale.description = form.cleaned_data["description"]
         tale.save()

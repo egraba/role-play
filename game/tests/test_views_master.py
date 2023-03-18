@@ -81,7 +81,7 @@ class CreateGameViewTest(TestCase):
         self.assertEqual(tale.game, game)
         self.assertEqual(tale.message, "The Master created the story.")
         self.assertEqual(tale.description, form.cleaned_data["description"])
-        self.assertRedirects(response, reverse("index"))
+        self.assertRedirects(response, reverse("game", args=[game.id]))
 
 
 class AddCharacterViewTest(TestCase):
