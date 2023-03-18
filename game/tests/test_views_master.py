@@ -439,7 +439,7 @@ class IncreaseXpViewTest(TestCase):
         self.assertEquals(response.context["game"], game)
         self.assertEquals(response.context["character"], character)
 
-    def test_xp_increase_creation_ok(self):
+    def test_creation_ok(self):
         xp = random.randint(1, 20)
         data = {"xp": f"{xp}"}
         form = IncreaseXpForm(data)
@@ -462,7 +462,7 @@ class IncreaseXpViewTest(TestCase):
         self.assertEqual(xp_increase.xp, form.cleaned_data["xp"])
         self.assertRedirects(response, reverse("game", args=[game.id]))
 
-    def test_pending_action_creation_ko_invalid_form(self):
+    def test_creation_ko_invalid_form(self):
         xp = random.randint(-20, 0)
         data = {"xp": f"{xp}"}
         form = IncreaseXpForm(data)
