@@ -573,7 +573,7 @@ class HealViewTest(TestCase):
         user.user_permissions.add(permission)
         user.save()
         game = Game.objects.create()
-        Character.objects.create(game=game)
+        Character.objects.create(game=game, hp=1)
 
     def setUp(self):
         self.user = User.objects.last()
@@ -645,3 +645,26 @@ class HealViewTest(TestCase):
         form = HealForm(data)
         self.assertFalse(form.is_valid())
         self.assertRaises(ValidationError)
+
+    def test_healing_not_exceed_character_max_hp(self):
+        hp = 1000
+        data = {"hp": f"{hp}"}
+        form = HealForm(data)
+        self.assertTrue(form.is_valid())
+        game = Game.objects.last()
+        character = Character.objects.last()
+        response = self.client.post(
+            reverse("character-heal", args=[game.id, character.id]),
+            data=form.cleaned_data,
+        )
+        self.assertEqual(response.status_code, 302)
+        healing = Healing.objects.last()
+        self.assertEqual(healing.game, game)
+        self.assertEqual(healing.character, character)
+        self.assertEqual(healing.date.second, timezone.now().second)
+        self.assertEqual(
+            healing.message,
+            f"{character} was healed: +{healing.hp} HP!",
+        )
+        self.assertEqual(healing.hp, character.max_hp - character.hp)
+        self.assertRedirects(response, reverse("game", args=[game.id]))

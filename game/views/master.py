@@ -213,11 +213,11 @@ class HealView(
         healing.game = self.game
         healing.character = self.character
         healing.date = timezone.now()
+        max_healing = self.character.max_hp - self.character.hp
+        if healing.hp > max_healing:
+            healing.hp = max_healing
         healing.message = f"{self.character} was healed: +{healing.hp} HP!"
         healing.save()
-        if healing.hp + self.character.hp <= self.character.max_hp:
-            self.character.hp += healing.hp
-        else:
-            self.character.hp = self.character.max_hp
+        self.character.hp += healing.hp
         self.character.save()
         return super().form_valid(form)
