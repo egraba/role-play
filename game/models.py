@@ -64,6 +64,17 @@ class Action(Event):
         abstract = True
 
 
+class PendingAction(Action):
+    ACTION_TYPES = (
+        ("D", "Launch dice"),
+        ("C", "Make choice"),
+    )
+    action_type = models.CharField(max_length=1, choices=ACTION_TYPES)
+
+    def __str__(self):
+        return self.action_type
+
+
 class XpIncrease(Action):
     xp = models.SmallIntegerField()
 
@@ -83,18 +94,6 @@ class Healing(Action):
 
     def __str__(self):
         return str(self.hp)
-
-
-class PendingAction(Event):
-    ACTION_TYPES = (
-        ("D", "Launch dice"),
-        ("C", "Make choice"),
-    )
-    character = models.ForeignKey(Character, on_delete=models.CASCADE)
-    action_type = models.CharField(max_length=1, choices=ACTION_TYPES)
-
-    def __str__(self):
-        return self.action_type
 
 
 class DiceLaunch(Action):
