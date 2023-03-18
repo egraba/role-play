@@ -37,10 +37,10 @@
                     {% if user.is_authenticated and perms.game.change_character and game.status == "O" %}
                         <hr/>
                         <div class ="rpgui-center inline">
-                            <a href={% url 'character-add-pending-action' game.id character.id %}><button  class="rpgui-button"><p>Ask for action</p></button></a>
-                            <a href={% url 'character-increase-xp' game.id character.id %}><button  class="rpgui-button"><p>Increase XP</p></button></a>
-                            <a href={% url 'character-damage' game.id character.id %}><button  class="rpgui-button"><p>Damage</p></button></a>
-                            <a href={% url 'character-heal' game.id character.id %}><button  class="rpgui-button"><p>Heal</p></button></a>
+                            <a href={% url 'pendingaction-create' game.id character.id %}><button  class="rpgui-button"><p>Ask for action</p></button></a>
+                            <a href={% url 'xpincrease-create' game.id character.id %}><button  class="rpgui-button"><p>Increase XP</p></button></a>
+                            <a href={% url 'damage-create' game.id character.id %}><button  class="rpgui-button"><p>Damage</p></button></a>
+                            <a href={% url 'healing-create' game.id character.id %}><button  class="rpgui-button"><p>Heal</p></button></a>
                         </div>
                     {% endif %}
                 </p>
