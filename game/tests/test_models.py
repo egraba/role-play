@@ -221,7 +221,8 @@ class HealingModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         game = Game.objects.create()
-        Healing.objects.create(game=game, hp=random.randint(1, 20))
+        character = Character.objects.create()
+        Healing.objects.create(game=game, character=character, hp=random.randint(1, 20))
 
     def test_hp_type(self):
         healing = Healing.objects.last()

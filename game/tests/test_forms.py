@@ -6,6 +6,7 @@ from game.forms import (
     CreateGameForm,
     CreateTaleForm,
     DamageForm,
+    HealForm,
     IncreaseXpForm,
 )
 
@@ -47,6 +48,12 @@ class IncreaseXpFormTest(TestCase):
 class DamageFormTest(TestCase):
     def test_hp_type(self):
         form = DamageForm()
+        self.assertIsInstance(form.fields["hp"].widget, forms.NumberInput)
+
+
+class HealFormTest(TestCase):
+    def test_hp_type(self):
+        form = HealForm()
         self.assertIsInstance(form.fields["hp"].widget, forms.NumberInput)
 
 

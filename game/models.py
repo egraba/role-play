@@ -78,7 +78,7 @@ class Damage(Action):
         return str(self.hp)
 
 
-class Healing(Event):
+class Healing(Action):
     hp = models.SmallIntegerField()
 
     def __str__(self):

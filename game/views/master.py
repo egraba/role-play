@@ -201,7 +201,7 @@ class DamageView(
 class HealView(
     PermissionRequiredMixin, FormView, GameContextMixin, CharacterContextMixin
 ):
-    permission_required = "game.change_character"
+    permission_required = "game.add_healing"
     form_class = HealForm
     template_name = "game/heal.html"
 
@@ -209,9 +209,14 @@ class HealView(
         return reverse_lazy("game", args=(self.game_id,))
 
     def form_valid(self, form):
-        healing_points = form.cleaned_data["hp"]
-        if healing_points + self.character.hp <= self.character.max_hp:
-            self.character.hp += healing_points
+        healing = form.save(commit=False)
+        healing.game = self.game
+        healing.character = self.character
+        healing.date = timezone.now()
+        healing.message = f"{self.character} was healed: +{healing.hp} HP!"
+        healing.save()
+        if healing.hp + self.character.hp <= self.character.max_hp:
+            self.character.hp += healing.hp
         else:
             self.character.hp = self.character.max_hp
         self.character.save()
