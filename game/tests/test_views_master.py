@@ -563,6 +563,32 @@ class DamageViewTest(TestCase):
         self.assertFalse(form.is_valid())
         self.assertRaises(ValidationError)
 
+    def test_death(self):
+        hp = 1000
+        data = {"hp": f"{hp}"}
+        form = DamageForm(data)
+        self.assertTrue(form.is_valid())
+        game = Game.objects.last()
+        character = Character.objects.last()
+        response = self.client.post(
+            reverse("character-damage", args=[game.id, character.id]),
+            data=form.cleaned_data,
+        )
+        self.assertEqual(response.status_code, 302)
+        damage = Damage.objects.last()
+        self.assertEqual(damage.game, game)
+        self.assertEqual(damage.character, character)
+        self.assertEqual(damage.date.second, timezone.now().second)
+        self.assertEqual(
+            damage.message,
+            f"{character} was hit: -{damage.hp} HP! {character} is dead.",
+        )
+        self.assertEqual(damage.hp, form.cleaned_data["hp"])
+        character = Character.objects.last()
+        self.assertIsNone(character.game)
+        self.assertEqual(character.hp, character.max_hp)
+        self.assertRedirects(response, reverse("game", args=[game.id]))
+
 
 class HealViewTest(TestCase):
     @classmethod

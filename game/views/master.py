@@ -191,9 +191,18 @@ class DamageView(
         damage.game = self.game
         damage.character = self.character
         damage.date = timezone.now()
-        damage.message = f"{self.character} was hit: -{damage.hp} HP!"
+        if damage.hp >= self.character.hp:
+            damage.message = (
+                f"{self.character} was hit: -{damage.hp} HP! {self.character} is dead."
+            )
+            self.character.game = None  # The character is out of the game.
+            self.character.hp = (
+                self.character.max_hp
+            )  # The character is healed when out.
+            self.character.save()
+        else:
+            damage.message = f"{self.character} was hit: -{damage.hp} HP!"
         damage.save()
-        self.character.hp -= damage.hp
         self.character.save()
         return super().form_valid(form)
 
