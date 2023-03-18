@@ -1,7 +1,7 @@
 from django import forms
 from django.test import TestCase
 
-from game.forms import ChoiceForm, CreateGameForm, CreateTaleForm
+from game.forms import ChoiceForm, CreateGameForm, CreateTaleForm, IncreaseXpForm
 
 
 class CreateGameFormTest(TestCase):
@@ -30,6 +30,12 @@ class CreateTaleFormTest(TestCase):
     def test_description_max_length(self):
         form = CreateTaleForm()
         self.assertEqual(form.fields["description"].max_length, 1000)
+
+
+class IncreaseXpFormTest(TestCase):
+    def test_xp_type(self):
+        form = IncreaseXpForm()
+        self.assertIsInstance(form.fields["xp"].widget, forms.NumberInput)
 
 
 class ChoiceFormTest(TestCase):

@@ -14,7 +14,7 @@ from game.forms import (
     HealForm,
     IncreaseXpForm,
 )
-from game.models import Character, Game, PendingAction, Tale
+from game.models import Character, Game, PendingAction, Tale, XpIncrease
 from game.views.mixins import CharacterContextMixin, GameContextMixin
 
 
@@ -153,7 +153,8 @@ class CreatePendingActionView(
 class IncreaseXpView(
     PermissionRequiredMixin, FormView, GameContextMixin, CharacterContextMixin
 ):
-    permission_required = "game.change_character"
+    permission_required = "game.add_xpincrease"
+    model = XpIncrease
     form_class = IncreaseXpForm
     template_name = "game/xp.html"
 
@@ -161,7 +162,15 @@ class IncreaseXpView(
         return reverse_lazy("game", args=(self.game_id,))
 
     def form_valid(self, form):
-        self.character.xp += form.cleaned_data["xp"]
+        xp_increase = form.save(commit=False)
+        xp_increase.game = self.game
+        xp_increase.character = self.character
+        xp_increase.date = timezone.now()
+        xp_increase.message = (
+            f"{self.character} gained experience: +{xp_increase.xp} XP!"
+        )
+        xp_increase.save()
+        self.character.xp += xp_increase.xp
         self.character.save()
         return super().form_valid(form)
 

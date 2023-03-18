@@ -1,6 +1,6 @@
 from django import forms
 
-from game.models import PendingAction
+from game.models import PendingAction, XpIncrease
 
 
 class CreateGameForm(forms.Form):
@@ -18,8 +18,18 @@ class CreatePendingActionForm(forms.ModelForm):
         fields = ["action_type"]
 
 
-class IncreaseXpForm(forms.Form):
-    xp = forms.IntegerField(min_value=1)
+class IncreaseXpForm(forms.ModelForm):
+    class Meta:
+        model = XpIncrease
+        fields = ["xp"]
+
+    def clean_xp(self):
+        xp = self.cleaned_data["xp"]
+        if xp < 1:
+            raise forms.ValidationError(
+                "The gained experience should be superior to 1..."
+            )
+        return xp
 
 
 class DamageForm(forms.Form):

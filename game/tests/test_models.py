@@ -185,7 +185,10 @@ class XpIncreaseModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         game = Game.objects.create()
-        XpIncrease.objects.create(game=game, xp=random.randint(1, 20))
+        character = Character.objects.create()
+        XpIncrease.objects.create(
+            game=game, character=character, xp=random.randint(1, 20)
+        )
 
     def test_hp_type(self):
         xp_increase = XpIncrease.objects.last()

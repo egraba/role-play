@@ -57,7 +57,14 @@ class Tale(Event):
         return self.description
 
 
-class XpIncrease(Event):
+class Action(Event):
+    character = models.ForeignKey(Character, on_delete=models.CASCADE)
+
+    class Meta:
+        abstract = True
+
+
+class XpIncrease(Action):
     xp = models.SmallIntegerField()
 
     def __str__(self):
@@ -88,13 +95,6 @@ class PendingAction(Event):
 
     def __str__(self):
         return self.action_type
-
-
-class Action(Event):
-    character = models.ForeignKey(Character, on_delete=models.CASCADE)
-
-    class Meta:
-        abstract = True
 
 
 class DiceLaunch(Action):
