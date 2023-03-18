@@ -28,6 +28,7 @@ from game.models import (
 )
 from game.tests import utils
 from game.views.master import (
+    AddCharacterConfirmView,
     AddCharacterView,
     CreateGameView,
     CreatePendingActionView,
@@ -170,14 +171,44 @@ class AddCharacterConfirmViewTest(TestCase):
         user.user_permissions.add(permission)
         user.save()
         Game.objects.create()
+        Character.objects.create(name=utils.generate_random_name(5))
 
     def setUp(self):
         self.user = User.objects.last()
         self.client.login(username=self.user.username, password="pwd")
 
+    def test_view_mapping(self):
+        game = Game.objects.last()
+        character = Character.objects.last()
+        response = self.client.get(
+            reverse(self.path_name, args=[game.id, character.id])
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.resolver_match.func.view_class, AddCharacterConfirmView
+        )
+
+    def test_template_mapping(self):
+        game = Game.objects.last()
+        character = Character.objects.last()
+        response = self.client.get(
+            reverse(self.path_name, args=[game.id, character.id])
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "game/addcharacterconfirm.html")
+
+    def test_game_not_exists(self):
+        game_id = random.randint(10000, 99999)
+        character = Character.objects.last()
+        response = self.client.get(
+            reverse(self.path_name, args=[game_id, character.id])
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertRaises(Http404)
+
     def test_character_added_to_game(self):
         game = Game.objects.last()
-        character = Character.objects.create(name=utils.generate_random_name(5))
+        character = Character.objects.last()
         response = self.client.post(
             reverse(self.path_name, args=[game.id, character.id])
         )
