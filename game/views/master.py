@@ -15,7 +15,11 @@ from game.forms import (
     IncreaseXpForm,
 )
 from game.models import Character, Damage, Game, PendingAction, Tale, XpIncrease
-from game.views.mixins import CharacterContextMixin, GameContextMixin
+from game.views.mixins import (
+    CharacterContextMixin,
+    EventConditionsMixin,
+    GameContextMixin,
+)
 
 
 class CreateGameView(PermissionRequiredMixin, FormView):
@@ -104,7 +108,7 @@ class EndGameView(PermissionRequiredMixin, UpdateView):
         )
 
 
-class CreateTaleView(PermissionRequiredMixin, FormView, GameContextMixin):
+class CreateTaleView(PermissionRequiredMixin, FormView, EventConditionsMixin):
     permission_required = "game.add_tale"
     model = Tale
     fields = ["description"]
@@ -124,7 +128,7 @@ class CreateTaleView(PermissionRequiredMixin, FormView, GameContextMixin):
 
 
 class CreatePendingActionView(
-    PermissionRequiredMixin, CreateView, GameContextMixin, CharacterContextMixin
+    PermissionRequiredMixin, CreateView, EventConditionsMixin, CharacterContextMixin
 ):
     permission_required = "game.add_pendingaction"
     model = PendingAction
@@ -151,7 +155,7 @@ class CreatePendingActionView(
 
 
 class IncreaseXpView(
-    PermissionRequiredMixin, FormView, GameContextMixin, CharacterContextMixin
+    PermissionRequiredMixin, FormView, EventConditionsMixin, CharacterContextMixin
 ):
     permission_required = "game.add_xpincrease"
     model = XpIncrease
@@ -176,7 +180,7 @@ class IncreaseXpView(
 
 
 class DamageView(
-    PermissionRequiredMixin, FormView, GameContextMixin, CharacterContextMixin
+    PermissionRequiredMixin, FormView, EventConditionsMixin, CharacterContextMixin
 ):
     permission_required = "game.add_damage"
     model = Damage
@@ -208,7 +212,7 @@ class DamageView(
 
 
 class HealView(
-    PermissionRequiredMixin, FormView, GameContextMixin, CharacterContextMixin
+    PermissionRequiredMixin, FormView, EventConditionsMixin, CharacterContextMixin
 ):
     permission_required = "game.add_healing"
     form_class = HealForm

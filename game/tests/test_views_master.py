@@ -264,7 +264,11 @@ class CreateTaleViewTest(TestCase):
         user.set_password("pwd")
         user.user_permissions.add(permission)
         user.save()
-        Game.objects.create()
+        game = Game.objects.create()
+        Character.objects.create(game=game, name=utils.generate_random_name(5))
+        Character.objects.create(game=game, name=utils.generate_random_name(5))
+        game.start()
+        game.save()
 
     def setUp(self):
         self.user = User.objects.last()
@@ -294,6 +298,20 @@ class CreateTaleViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEquals(response.context["game"], game)
 
+    def test_game_is_under_preparation(self):
+        game = Game.objects.create()
+        response = self.client.get(reverse("tale-create", args=[game.id]))
+        self.assertEqual(response.status_code, 403)
+        self.assertRaises(PermissionDenied)
+
+    def test_game_is_finished(self):
+        game = Game.objects.last()
+        game.end()
+        game.save()
+        response = self.client.get(reverse("tale-create", args=[game.id]))
+        self.assertEqual(response.status_code, 403)
+        self.assertRaises(PermissionDenied)
+
     def test_tale_creation(self):
         description = utils.generate_random_string(100)
         data = {"description": f"{description}"}
@@ -320,7 +338,10 @@ class CreatePendingActionViewTest(TestCase):
         user.user_permissions.add(permission)
         user.save()
         game = Game.objects.create()
-        Character.objects.create(game=game)
+        Character.objects.create(game=game, name=utils.generate_random_name(5))
+        Character.objects.create(game=game, name=utils.generate_random_name(5))
+        game.start()
+        game.save()
 
     def setUp(self):
         self.user = User.objects.last()
@@ -365,6 +386,26 @@ class CreatePendingActionViewTest(TestCase):
         self.assertEquals(response.context["game"], game)
         self.assertEquals(response.context["character"], character)
 
+    def test_game_is_under_preparation(self):
+        game = Game.objects.create()
+        character = Character.objects.last()
+        response = self.client.get(
+            reverse("character-add-pending-action", args=[game.id, character.id])
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertRaises(PermissionDenied)
+
+    def test_game_is_finished(self):
+        game = Game.objects.last()
+        character = Character.objects.last()
+        game.end()
+        game.save()
+        response = self.client.get(
+            reverse("character-add-pending-action", args=[game.id, character.id])
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertRaises(PermissionDenied)
+
     def test_pending_action_creation_ok(self):
         action_type = random.choice(PendingAction.ACTION_TYPES)
         data = {"action_type": f"{action_type[0]}"}
@@ -407,7 +448,10 @@ class IncreaseXpViewTest(TestCase):
         user.user_permissions.add(permission)
         user.save()
         game = Game.objects.create()
-        Character.objects.create(game=game)
+        Character.objects.create(game=game, name=utils.generate_random_name(5))
+        Character.objects.create(game=game, name=utils.generate_random_name(5))
+        game.start()
+        game.save()
 
     def setUp(self):
         self.user = User.objects.last()
@@ -450,6 +494,26 @@ class IncreaseXpViewTest(TestCase):
         self.assertEquals(response.context["game"], game)
         self.assertEquals(response.context["character"], character)
 
+    def test_game_is_under_preparation(self):
+        game = Game.objects.create()
+        character = Character.objects.last()
+        response = self.client.get(
+            reverse("character-increase-xp", args=[game.id, character.id])
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertRaises(PermissionDenied)
+
+    def test_game_is_finished(self):
+        game = Game.objects.last()
+        character = Character.objects.last()
+        game.end()
+        game.save()
+        response = self.client.get(
+            reverse("character-increase-xp", args=[game.id, character.id])
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertRaises(PermissionDenied)
+
     def test_creation_ok(self):
         xp = random.randint(1, 20)
         data = {"xp": f"{xp}"}
@@ -490,7 +554,10 @@ class DamageViewTest(TestCase):
         user.user_permissions.add(permission)
         user.save()
         game = Game.objects.create()
-        Character.objects.create(game=game)
+        Character.objects.create(game=game, name=utils.generate_random_name(5))
+        Character.objects.create(game=game, name=utils.generate_random_name(5))
+        game.start()
+        game.save()
 
     def setUp(self):
         self.user = User.objects.last()
@@ -532,6 +599,26 @@ class DamageViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEquals(response.context["game"], game)
         self.assertEquals(response.context["character"], character)
+
+    def test_game_is_under_preparation(self):
+        game = Game.objects.create()
+        character = Character.objects.last()
+        response = self.client.get(
+            reverse("character-damage", args=[game.id, character.id])
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertRaises(PermissionDenied)
+
+    def test_game_is_finished(self):
+        game = Game.objects.last()
+        character = Character.objects.last()
+        game.end()
+        game.save()
+        response = self.client.get(
+            reverse("character-damage", args=[game.id, character.id])
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertRaises(PermissionDenied)
 
     def test_creation_ok(self):
         hp = random.randint(1, 20)
@@ -599,7 +686,10 @@ class HealViewTest(TestCase):
         user.user_permissions.add(permission)
         user.save()
         game = Game.objects.create()
-        Character.objects.create(game=game, hp=1)
+        Character.objects.create(game=game, name=utils.generate_random_name(5), hp=1)
+        Character.objects.create(game=game, name=utils.generate_random_name(5), hp=1)
+        game.start()
+        game.save()
 
     def setUp(self):
         self.user = User.objects.last()
@@ -641,6 +731,26 @@ class HealViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEquals(response.context["game"], game)
         self.assertEquals(response.context["character"], character)
+
+    def test_game_is_under_preparation(self):
+        game = Game.objects.create()
+        character = Character.objects.last()
+        response = self.client.get(
+            reverse("character-heal", args=[game.id, character.id])
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertRaises(PermissionDenied)
+
+    def test_game_is_finished(self):
+        game = Game.objects.last()
+        character = Character.objects.last()
+        game.end()
+        game.save()
+        response = self.client.get(
+            reverse("character-heal", args=[game.id, character.id])
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertRaises(PermissionDenied)
 
     def test_creation_ok(self):
         hp = random.randint(1, 20)

@@ -1,3 +1,4 @@
+from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.views.generic import View
 from django.views.generic.list import ContextMixin
@@ -33,3 +34,10 @@ class CharacterContextMixin(ContextMixin, View):
         context = super().get_context_data(**kwargs)
         context["character"] = self.character
         return context
+
+
+class EventConditionsMixin(GameContextMixin, View):
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        if not self.game.is_ongoing():
+            raise PermissionDenied()
