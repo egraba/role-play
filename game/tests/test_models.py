@@ -57,6 +57,19 @@ class GameModelTest(TestCase):
         game = Game.objects.last()
         self.assertEqual(str(game), game.name)
 
+    def test_is_ongoing(self):
+        game = Game.objects.last()
+        self.assertFalse(game.is_ongoing())
+        number_of_characters = 5
+        for i in range(number_of_characters):
+            Character.objects.create(game=game, name=utils.generate_random_name(5))
+        game.start()
+        game.save()
+        self.assertTrue(game.is_ongoing())
+        game.end()
+        game.save()
+        self.assertFalse(game.is_ongoing())
+
 
 class CharacterModelTest(TestCase):
     @classmethod

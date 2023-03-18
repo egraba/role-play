@@ -27,6 +27,9 @@ class Game(models.Model):
             character.game = None
             character.save()
 
+    def is_ongoing(self):
+        return self.status == "O"
+
 
 class Character(models.Model):
     RACES = (("H", "Human"), ("O", "Orc"), ("E", "Elf"), ("D", "Dwarf"))
