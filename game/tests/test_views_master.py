@@ -40,6 +40,8 @@ from game.views.master import (
 
 
 class CreateGameViewTest(TestCase):
+    path_name = "game-create"
+
     @classmethod
     def setUpTestData(cls):
         permission = Permission.objects.get(codename="add_game")
@@ -53,12 +55,12 @@ class CreateGameViewTest(TestCase):
         self.client.login(username=self.user.username, password="pwd")
 
     def test_view_mapping(self):
-        response = self.client.get(reverse("game-create"))
+        response = self.client.get(reverse(self.path_name))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.resolver_match.func.view_class, CreateGameView)
 
     def test_template_mapping(self):
-        response = self.client.get(reverse("game-create"))
+        response = self.client.get(reverse(self.path_name))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "game/creategame.html")
 
@@ -68,7 +70,7 @@ class CreateGameViewTest(TestCase):
         data = {"name": f"{name}", "description": f"{description}"}
         form = CreateGameForm(data)
         self.assertTrue(form.is_valid())
-        response = self.client.post(reverse("game-create"), data=form.cleaned_data)
+        response = self.client.post(reverse(self.path_name), data=form.cleaned_data)
         self.assertEqual(response.status_code, 302)
         game = Game.objects.last()
         self.assertEqual(game.name, name)
@@ -81,6 +83,8 @@ class CreateGameViewTest(TestCase):
 
 
 class AddCharacterViewTest(TestCase):
+    path_name = "game-add-character"
+
     @classmethod
     def setUpTestData(cls):
         permission = Permission.objects.get(codename="change_character")
@@ -109,19 +113,19 @@ class AddCharacterViewTest(TestCase):
 
     def test_view_mapping(self):
         game = Game.objects.last()
-        response = self.client.get(reverse("game-add-character", args=[game.id]))
+        response = self.client.get(reverse(self.path_name, args=[game.id]))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.resolver_match.func.view_class, AddCharacterView)
 
     def test_template_mapping(self):
         game = Game.objects.last()
-        response = self.client.get(reverse("game-add-character", args=[game.id]))
+        response = self.client.get(reverse(self.path_name, args=[game.id]))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "game/addcharacter.html")
 
     def test_pagination_size(self):
         game = Game.objects.last()
-        response = self.client.get(reverse("game-add-character", args=[game.id]))
+        response = self.client.get(reverse(self.path_name, args=[game.id]))
         self.assertEqual(response.status_code, 200)
         self.assertTrue("is_paginated" in response.context)
         self.assertTrue(response.context["is_paginated"])
@@ -129,9 +133,7 @@ class AddCharacterViewTest(TestCase):
 
     def test_pagination_size_next_page(self):
         game = Game.objects.last()
-        response = self.client.get(
-            reverse("game-add-character", args=[game.id]) + "?page=2"
-        )
+        response = self.client.get(reverse(self.path_name, args=[game.id]) + "?page=2")
         self.assertEqual(response.status_code, 200)
         self.assertTrue("is_paginated" in response.context)
         self.assertTrue(response.context["is_paginated"])
@@ -139,7 +141,7 @@ class AddCharacterViewTest(TestCase):
 
     def test_ordering(self):
         game = Game.objects.last()
-        response = self.client.get(reverse("game-add-character", args=[game.id]))
+        response = self.client.get(reverse(self.path_name, args=[game.id]))
         self.assertEqual(response.status_code, 200)
         last_xp = 0
         for character in response.context["character_list"]:
@@ -151,12 +153,14 @@ class AddCharacterViewTest(TestCase):
 
     def test_game_not_exists(self):
         game_id = random.randint(10000, 99999)
-        response = self.client.get(reverse("game-add-character", args=[game_id]))
+        response = self.client.get(reverse(self.path_name, args=[game_id]))
         self.assertEqual(response.status_code, 404)
         self.assertRaises(Http404)
 
 
 class StartGameViewTest(TestCase):
+    path_name = "game-start"
+
     @classmethod
     def setUpTestData(cls):
         permission = Permission.objects.get(codename="change_game")
@@ -172,19 +176,19 @@ class StartGameViewTest(TestCase):
 
     def test_view_mapping(self):
         game = Game.objects.last()
-        response = self.client.get(reverse("game-start", args=[game.id]))
+        response = self.client.get(reverse(self.path_name, args=[game.id]))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.resolver_match.func.view_class, StartGameView)
 
     def test_template_mapping(self):
         game = Game.objects.last()
-        response = self.client.get(reverse("game-start", args=[game.id]))
+        response = self.client.get(reverse(self.path_name, args=[game.id]))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "game/startgame.html")
 
     def test_game_not_exists(self):
         game_id = random.randint(10000, 99999)
-        response = self.client.get(reverse("game-start", args=[game_id]))
+        response = self.client.get(reverse(self.path_name, args=[game_id]))
         self.assertEqual(response.status_code, 404)
         self.assertRaises(Http404)
 
@@ -193,7 +197,7 @@ class StartGameViewTest(TestCase):
         number_of_characters = 2
         for i in range(number_of_characters):
             Character.objects.create(game=game, name=utils.generate_random_name(5))
-        response = self.client.post(reverse("game-start", args=[game.id]))
+        response = self.client.post(reverse(self.path_name, args=[game.id]))
         self.assertEqual(response.status_code, 302)
         game = Game.objects.last()
         self.assertEqual(game.status, "O")
@@ -203,7 +207,7 @@ class StartGameViewTest(TestCase):
         number_of_characters = 1
         for i in range(number_of_characters):
             Character.objects.create(game=game, name=utils.generate_random_name(5))
-        response = self.client.post(reverse("game-start", args=[game.id]))
+        response = self.client.post(reverse(self.path_name, args=[game.id]))
         self.assertEqual(response.status_code, 403)
         self.assertRaises(PermissionDenied)
         game = Game.objects.last()
@@ -211,6 +215,8 @@ class StartGameViewTest(TestCase):
 
 
 class EndGameViewTest(TestCase):
+    path_name = "game-end"
+
     @classmethod
     def setUpTestData(cls):
         permission = Permission.objects.get(codename="change_game")
@@ -226,19 +232,19 @@ class EndGameViewTest(TestCase):
 
     def test_view_mapping(self):
         game = Game.objects.last()
-        response = self.client.get(reverse("game-end", args=[game.id]))
+        response = self.client.get(reverse(self.path_name, args=[game.id]))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.resolver_match.func.view_class, EndGameView)
 
     def test_template_mapping(self):
         game = Game.objects.last()
-        response = self.client.get(reverse("game-end", args=[game.id]))
+        response = self.client.get(reverse(self.path_name, args=[game.id]))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "game/endgame.html")
 
     def test_game_not_exists(self):
         game_id = random.randint(10000, 99999)
-        response = self.client.get(reverse("game-end", args=[game_id]))
+        response = self.client.get(reverse(self.path_name, args=[game_id]))
         self.assertEqual(response.status_code, 404)
         self.assertRaises(Http404)
 
@@ -249,7 +255,7 @@ class EndGameViewTest(TestCase):
             Character.objects.create(game=game, name=utils.generate_random_name(5))
         game.start()
         game.save()
-        response = self.client.post(reverse("game-end", args=[game.id]))
+        response = self.client.post(reverse(self.path_name, args=[game.id]))
         self.assertEqual(response.status_code, 302)
         game = Game.objects.last()
         self.assertEqual(game.status, "F")
@@ -257,6 +263,8 @@ class EndGameViewTest(TestCase):
 
 
 class CreateTaleViewTest(TestCase):
+    path_name = "tale-create"
+
     @classmethod
     def setUpTestData(cls):
         permission = Permission.objects.get(codename="add_tale")
@@ -276,31 +284,31 @@ class CreateTaleViewTest(TestCase):
 
     def test_view_mapping(self):
         game = Game.objects.last()
-        response = self.client.get(reverse("tale-create", args=[game.id]))
+        response = self.client.get(reverse(self.path_name, args=[game.id]))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.resolver_match.func.view_class, CreateTaleView)
 
     def test_template_mapping(self):
         game = Game.objects.last()
-        response = self.client.get(reverse("tale-create", args=[game.id]))
+        response = self.client.get(reverse(self.path_name, args=[game.id]))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "game/createtale.html")
 
     def test_game_not_exists(self):
         game_id = random.randint(10000, 99999)
-        response = self.client.get(reverse("tale-create", args=[game_id]))
+        response = self.client.get(reverse(self.path_name, args=[game_id]))
         self.assertEqual(response.status_code, 404)
         self.assertRaises(Http404)
 
     def test_context_data(self):
         game = Game.objects.last()
-        response = self.client.get(reverse("tale-create", args=[game.id]))
+        response = self.client.get(reverse(self.path_name, args=[game.id]))
         self.assertEqual(response.status_code, 200)
         self.assertEquals(response.context["game"], game)
 
     def test_game_is_under_preparation(self):
         game = Game.objects.create()
-        response = self.client.get(reverse("tale-create", args=[game.id]))
+        response = self.client.get(reverse(self.path_name, args=[game.id]))
         self.assertEqual(response.status_code, 403)
         self.assertRaises(PermissionDenied)
 
@@ -308,7 +316,7 @@ class CreateTaleViewTest(TestCase):
         game = Game.objects.last()
         game.end()
         game.save()
-        response = self.client.get(reverse("tale-create", args=[game.id]))
+        response = self.client.get(reverse(self.path_name, args=[game.id]))
         self.assertEqual(response.status_code, 403)
         self.assertRaises(PermissionDenied)
 
@@ -319,7 +327,7 @@ class CreateTaleViewTest(TestCase):
         self.assertTrue(form.is_valid())
         game = Game.objects.last()
         response = self.client.post(
-            reverse("tale-create", args=[game.id]), data=form.cleaned_data
+            reverse(self.path_name, args=[game.id]), data=form.cleaned_data
         )
         self.assertEqual(response.status_code, 302)
         tale = Tale.objects.last()
@@ -330,6 +338,8 @@ class CreateTaleViewTest(TestCase):
 
 
 class CreatePendingActionViewTest(TestCase):
+    path_name = "pendingaction-create"
+
     @classmethod
     def setUpTestData(cls):
         permission = Permission.objects.get(codename="add_pendingaction")
@@ -351,7 +361,7 @@ class CreatePendingActionViewTest(TestCase):
         game = Game.objects.last()
         character = Character.objects.last()
         response = self.client.get(
-            reverse("character-add-pending-action", args=[game.id, character.id])
+            reverse(self.path_name, args=[game.id, character.id])
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
@@ -362,7 +372,7 @@ class CreatePendingActionViewTest(TestCase):
         game = Game.objects.last()
         character = Character.objects.last()
         response = self.client.get(
-            reverse("character-add-pending-action", args=[game.id, character.id])
+            reverse(self.path_name, args=[game.id, character.id])
         )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "game/creatependingaction.html")
@@ -371,7 +381,7 @@ class CreatePendingActionViewTest(TestCase):
         game_id = random.randint(10000, 99999)
         character = Character.objects.last()
         response = self.client.get(
-            reverse("character-add-pending-action", args=[game_id, character.id])
+            reverse(self.path_name, args=[game_id, character.id])
         )
         self.assertEqual(response.status_code, 404)
         self.assertRaises(Http404)
@@ -380,7 +390,7 @@ class CreatePendingActionViewTest(TestCase):
         game = Game.objects.last()
         character = Character.objects.last()
         response = self.client.get(
-            reverse("character-add-pending-action", args=[game.id, character.id])
+            reverse(self.path_name, args=[game.id, character.id])
         )
         self.assertEqual(response.status_code, 200)
         self.assertEquals(response.context["game"], game)
@@ -390,7 +400,7 @@ class CreatePendingActionViewTest(TestCase):
         game = Game.objects.create()
         character = Character.objects.last()
         response = self.client.get(
-            reverse("character-add-pending-action", args=[game.id, character.id])
+            reverse(self.path_name, args=[game.id, character.id])
         )
         self.assertEqual(response.status_code, 403)
         self.assertRaises(PermissionDenied)
@@ -401,7 +411,7 @@ class CreatePendingActionViewTest(TestCase):
         game.end()
         game.save()
         response = self.client.get(
-            reverse("character-add-pending-action", args=[game.id, character.id])
+            reverse(self.path_name, args=[game.id, character.id])
         )
         self.assertEqual(response.status_code, 403)
         self.assertRaises(PermissionDenied)
@@ -414,7 +424,7 @@ class CreatePendingActionViewTest(TestCase):
         game = Game.objects.last()
         character = Character.objects.last()
         response = self.client.post(
-            reverse("character-add-pending-action", args=[game.id, character.id]),
+            reverse(self.path_name, args=[game.id, character.id]),
             data=form.cleaned_data,
         )
         self.assertEqual(response.status_code, 302)
@@ -433,13 +443,15 @@ class CreatePendingActionViewTest(TestCase):
         character = Character.objects.last()
         PendingAction.objects.create(game=game, character=character)
         response = self.client.get(
-            reverse("character-add-pending-action", args=[game.id, character.id]),
+            reverse(self.path_name, args=[game.id, character.id]),
         )
         self.assertEqual(response.status_code, 403)
         self.assertRaises(PermissionDenied)
 
 
 class IncreaseXpViewTest(TestCase):
+    path_name = "xpincrease-create"
+
     @classmethod
     def setUpTestData(cls):
         permission = Permission.objects.get(codename="add_xpincrease")
@@ -461,7 +473,7 @@ class IncreaseXpViewTest(TestCase):
         game = Game.objects.last()
         character = Character.objects.last()
         response = self.client.get(
-            reverse("character-increase-xp", args=[game.id, character.id])
+            reverse(self.path_name, args=[game.id, character.id])
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.resolver_match.func.view_class, IncreaseXpView)
@@ -470,7 +482,7 @@ class IncreaseXpViewTest(TestCase):
         game = Game.objects.last()
         character = Character.objects.last()
         response = self.client.get(
-            reverse("character-increase-xp", args=[game.id, character.id])
+            reverse(self.path_name, args=[game.id, character.id])
         )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "game/xp.html")
@@ -479,7 +491,7 @@ class IncreaseXpViewTest(TestCase):
         game_id = random.randint(10000, 99999)
         character = Character.objects.last()
         response = self.client.get(
-            reverse("character-increase-xp", args=[game_id, character.id])
+            reverse(self.path_name, args=[game_id, character.id])
         )
         self.assertEqual(response.status_code, 404)
         self.assertRaises(Http404)
@@ -488,7 +500,7 @@ class IncreaseXpViewTest(TestCase):
         game = Game.objects.last()
         character = Character.objects.last()
         response = self.client.get(
-            reverse("character-increase-xp", args=[game.id, character.id])
+            reverse(self.path_name, args=[game.id, character.id])
         )
         self.assertEqual(response.status_code, 200)
         self.assertEquals(response.context["game"], game)
@@ -498,7 +510,7 @@ class IncreaseXpViewTest(TestCase):
         game = Game.objects.create()
         character = Character.objects.last()
         response = self.client.get(
-            reverse("character-increase-xp", args=[game.id, character.id])
+            reverse(self.path_name, args=[game.id, character.id])
         )
         self.assertEqual(response.status_code, 403)
         self.assertRaises(PermissionDenied)
@@ -509,7 +521,7 @@ class IncreaseXpViewTest(TestCase):
         game.end()
         game.save()
         response = self.client.get(
-            reverse("character-increase-xp", args=[game.id, character.id])
+            reverse(self.path_name, args=[game.id, character.id])
         )
         self.assertEqual(response.status_code, 403)
         self.assertRaises(PermissionDenied)
@@ -522,7 +534,7 @@ class IncreaseXpViewTest(TestCase):
         game = Game.objects.last()
         character = Character.objects.last()
         response = self.client.post(
-            reverse("character-increase-xp", args=[game.id, character.id]),
+            reverse(self.path_name, args=[game.id, character.id]),
             data=form.cleaned_data,
         )
         self.assertEqual(response.status_code, 302)
@@ -546,6 +558,8 @@ class IncreaseXpViewTest(TestCase):
 
 
 class DamageViewTest(TestCase):
+    path_name = "damage-create"
+
     @classmethod
     def setUpTestData(cls):
         permission = Permission.objects.get(codename="add_damage")
@@ -567,7 +581,7 @@ class DamageViewTest(TestCase):
         game = Game.objects.last()
         character = Character.objects.last()
         response = self.client.get(
-            reverse("character-damage", args=[game.id, character.id])
+            reverse(self.path_name, args=[game.id, character.id])
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.resolver_match.func.view_class, DamageView)
@@ -576,7 +590,7 @@ class DamageViewTest(TestCase):
         game = Game.objects.last()
         character = Character.objects.last()
         response = self.client.get(
-            reverse("character-damage", args=[game.id, character.id])
+            reverse(self.path_name, args=[game.id, character.id])
         )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "game/damage.html")
@@ -585,7 +599,7 @@ class DamageViewTest(TestCase):
         game_id = random.randint(10000, 99999)
         character = Character.objects.last()
         response = self.client.get(
-            reverse("character-damage", args=[game_id, character.id])
+            reverse(self.path_name, args=[game_id, character.id])
         )
         self.assertEqual(response.status_code, 404)
         self.assertRaises(Http404)
@@ -594,7 +608,7 @@ class DamageViewTest(TestCase):
         game = Game.objects.last()
         character = Character.objects.last()
         response = self.client.get(
-            reverse("character-damage", args=[game.id, character.id])
+            reverse(self.path_name, args=[game.id, character.id])
         )
         self.assertEqual(response.status_code, 200)
         self.assertEquals(response.context["game"], game)
@@ -604,7 +618,7 @@ class DamageViewTest(TestCase):
         game = Game.objects.create()
         character = Character.objects.last()
         response = self.client.get(
-            reverse("character-damage", args=[game.id, character.id])
+            reverse(self.path_name, args=[game.id, character.id])
         )
         self.assertEqual(response.status_code, 403)
         self.assertRaises(PermissionDenied)
@@ -615,7 +629,7 @@ class DamageViewTest(TestCase):
         game.end()
         game.save()
         response = self.client.get(
-            reverse("character-damage", args=[game.id, character.id])
+            reverse(self.path_name, args=[game.id, character.id])
         )
         self.assertEqual(response.status_code, 403)
         self.assertRaises(PermissionDenied)
@@ -628,7 +642,7 @@ class DamageViewTest(TestCase):
         game = Game.objects.last()
         character = Character.objects.last()
         response = self.client.post(
-            reverse("character-damage", args=[game.id, character.id]),
+            reverse(self.path_name, args=[game.id, character.id]),
             data=form.cleaned_data,
         )
         self.assertEqual(response.status_code, 302)
@@ -658,7 +672,7 @@ class DamageViewTest(TestCase):
         game = Game.objects.last()
         character = Character.objects.last()
         response = self.client.post(
-            reverse("character-damage", args=[game.id, character.id]),
+            reverse(self.path_name, args=[game.id, character.id]),
             data=form.cleaned_data,
         )
         self.assertEqual(response.status_code, 302)
@@ -678,6 +692,8 @@ class DamageViewTest(TestCase):
 
 
 class HealViewTest(TestCase):
+    path_name = "healing-create"
+
     @classmethod
     def setUpTestData(cls):
         permission = Permission.objects.get(codename="add_healing")
@@ -699,7 +715,7 @@ class HealViewTest(TestCase):
         game = Game.objects.last()
         character = Character.objects.last()
         response = self.client.get(
-            reverse("character-heal", args=[game.id, character.id])
+            reverse(self.path_name, args=[game.id, character.id])
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.resolver_match.func.view_class, HealView)
@@ -708,7 +724,7 @@ class HealViewTest(TestCase):
         game = Game.objects.last()
         character = Character.objects.last()
         response = self.client.get(
-            reverse("character-heal", args=[game.id, character.id])
+            reverse(self.path_name, args=[game.id, character.id])
         )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "game/heal.html")
@@ -717,7 +733,7 @@ class HealViewTest(TestCase):
         game_id = random.randint(10000, 99999)
         character = Character.objects.last()
         response = self.client.get(
-            reverse("character-heal", args=[game_id, character.id])
+            reverse(self.path_name, args=[game_id, character.id])
         )
         self.assertEqual(response.status_code, 404)
         self.assertRaises(Http404)
@@ -726,7 +742,7 @@ class HealViewTest(TestCase):
         game = Game.objects.last()
         character = Character.objects.last()
         response = self.client.get(
-            reverse("character-heal", args=[game.id, character.id])
+            reverse(self.path_name, args=[game.id, character.id])
         )
         self.assertEqual(response.status_code, 200)
         self.assertEquals(response.context["game"], game)
@@ -736,7 +752,7 @@ class HealViewTest(TestCase):
         game = Game.objects.create()
         character = Character.objects.last()
         response = self.client.get(
-            reverse("character-heal", args=[game.id, character.id])
+            reverse(self.path_name, args=[game.id, character.id])
         )
         self.assertEqual(response.status_code, 403)
         self.assertRaises(PermissionDenied)
@@ -747,7 +763,7 @@ class HealViewTest(TestCase):
         game.end()
         game.save()
         response = self.client.get(
-            reverse("character-heal", args=[game.id, character.id])
+            reverse(self.path_name, args=[game.id, character.id])
         )
         self.assertEqual(response.status_code, 403)
         self.assertRaises(PermissionDenied)
@@ -760,7 +776,7 @@ class HealViewTest(TestCase):
         game = Game.objects.last()
         character = Character.objects.last()
         response = self.client.post(
-            reverse("character-heal", args=[game.id, character.id]),
+            reverse(self.path_name, args=[game.id, character.id]),
             data=form.cleaned_data,
         )
         self.assertEqual(response.status_code, 302)
@@ -790,7 +806,7 @@ class HealViewTest(TestCase):
         game = Game.objects.last()
         character = Character.objects.last()
         response = self.client.post(
-            reverse("character-heal", args=[game.id, character.id]),
+            reverse(self.path_name, args=[game.id, character.id]),
             data=form.cleaned_data,
         )
         self.assertEqual(response.status_code, 302)

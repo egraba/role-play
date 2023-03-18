@@ -39,22 +39,22 @@ urlpatterns = [
     path(
         "<int:game_id>/character/<int:character_id>/add_pending_action",
         master.CreatePendingActionView.as_view(),
-        name="character-add-pending-action",
+        name="pendingaction-create",
     ),
     path(
         "<int:game_id>/character/<int:character_id>/increase_xp",
         master.IncreaseXpView.as_view(),
-        name="character-increase-xp",
+        name="xpincrease-create",
     ),
     path(
         "<int:game_id>/character/<int:character_id>/damage",
         master.DamageView.as_view(),
-        name="character-damage",
+        name="damage-create",
     ),
     path(
         "<int:game_id>/character/<int:character_id>/heal",
         master.HealView.as_view(),
-        name="character-heal",
+        name="healing-create",
     ),
     path(
         "<int:game_id>/character/<int:character_id>/launch_dice/",
