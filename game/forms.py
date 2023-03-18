@@ -1,6 +1,6 @@
 from django import forms
 
-from game.models import Damage, DiceLaunch, Healing, PendingAction, XpIncrease
+from game.models import Choice, Damage, DiceLaunch, Healing, PendingAction, XpIncrease
 
 
 class CreateGameForm(forms.Form):
@@ -62,5 +62,10 @@ class DiceLaunchForm(forms.ModelForm):
         fields = []
 
 
-class ChoiceForm(forms.Form):
-    selection = forms.CharField(widget=forms.Textarea, max_length=255)
+class ChoiceForm(forms.ModelForm):
+    class Meta:
+        model = Choice
+        fields = ["selection"]
+        widgets = {
+            "selection": forms.Textarea,
+        }

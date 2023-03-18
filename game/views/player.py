@@ -3,7 +3,7 @@ import random
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import CreateView, DetailView, FormView
+from django.views.generic import CreateView, DetailView
 
 from game.forms import ChoiceForm, DiceLaunchForm
 from game.models import Choice, DiceLaunch, PendingAction
@@ -54,38 +54,29 @@ class DiceLaunchSuccessView(DetailView, GameContextMixin, CharacterContextMixin)
         return DiceLaunch.objects.get(pk=self.kwargs.get("action_id"))
 
 
-class ChoiceView(FormView, GameContextMixin, CharacterContextMixin):
+class ChoiceView(
+    PermissionRequiredMixin, CreateView, EventConditionsMixin, CharacterContextMixin
+):
+    permission_required = "game.add_choice"
     model = Choice
-    fields = []
-    template_name = "game/choice.html"
     form_class = ChoiceForm
-    object = None
+    template_name = "game/choice.html"
 
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, *args, **kwargs)
-        self.selection = None
+    def get_success_url(self):
+        return reverse_lazy(
+            "choice-success",
+            args=(self.game.id, self.character.id, self.object.id),
+        )
 
-    def post(self, request, *args, **kwargs):
-        form = ChoiceForm(request.POST)
-        if form.is_valid():
-            choice = Choice()
-            choice.game = self.game
-            choice.character = self.character
-            choice.selection = form.cleaned_data["selection"]
-            choice.message = f"{self.character.name} made a choice: {choice.selection}!"
-            choice.save()
-            pending_action = PendingAction.objects.get(character=self.character)
-            pending_action.delete()
-            return HttpResponseRedirect(
-                reverse(
-                    "choice_success",
-                    args=(
-                        self.game_id,
-                        self.character_id,
-                        choice.pk,
-                    ),
-                )
-            )
+    def form_valid(self, form):
+        choice = form.save(commit=False)
+        choice.game = self.game
+        choice.character = self.character
+        choice.message = f"{self.character.name} made a choice: {choice.selection}."
+        choice.save()
+        pending_action = PendingAction.objects.get(character=self.character)
+        pending_action.delete()
+        return super().form_valid(form)
 
 
 class ChoiceSuccessView(DetailView, GameContextMixin, CharacterContextMixin):

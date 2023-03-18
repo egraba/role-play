@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="action rpgui-container framed-golden">
+    <div class="info rpgui-container framed-golden">
         <h1>{{ game }}</h1>
         <p>{{ character }}! It is time to make your choice.</p>
         <form method="post">
             {% csrf_token %}
             {{ form.as_p }}
             <div class="rpgui-center">
-                <a href="{% url 'game' game.id %}"><button class="rpgui-button"><p>Submit</p></button></a>
+                <button class="rpgui-button" type="submit"><p>Submit</p></button>
             </div>
         </form>
     </div>

@@ -26,11 +26,19 @@
                     HP: {{ character.hp }} / {{ character.max_hp }}
                     {% for pending_action in pending_action_list %}
                         {% if pending_action.character.id == character.id %}
-                            <a class="character-action" href={% url 'dicelaunch-create' game.id pending_action.character.id %}>
-                                <button class="rpgui-button">
-                                    <p>{{ pending_action.get_action_type_display }}</p>
-                                </button>
-                            </a>
+                            {% if pending_action.action_type == "D" %}
+                                <a class="character-action" href={% url 'dicelaunch-create' game.id pending_action.character.id %}>
+                                    <button class="rpgui-button">
+                                        <p>{{ pending_action.get_action_type_display }}</p>
+                                    </button>
+                                </a>
+                            {% elif pending_action.action_type == "C" %}
+                                <a class="character-action" href={% url 'choice-create' game.id pending_action.character.id %}>
+                                    <button class="rpgui-button">
+                                        <p>{{ pending_action.get_action_type_display }}</p>
+                                    </button>
+                                </a>
+                            {% endif %}
                         {% endif %}
                     {% empty %}
                     {% endfor %}

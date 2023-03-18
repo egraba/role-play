@@ -64,4 +64,4 @@ class ChoiceFormTest(TestCase):
 
     def test_name_max_length(self):
         form = ChoiceForm()
-        self.assertEqual(form.fields["selection"].max_length, 255)
+        self.assertEqual(form.fields["selection"].max_length, 300)
