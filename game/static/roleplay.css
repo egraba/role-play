@@ -21,7 +21,7 @@
     padding-bottom: 0;
 }
 
-.form {
+.form, .info {
     width: 50%;
     margin-top: 10%;
     margin-left: 25%;
@@ -30,11 +30,6 @@
 .inner {
     width: 50%;
     margin-left: 25%;
-}
-
-.action {
-    width: 50em;
-    margin-left: 25em;
 }
 
 .inline {
