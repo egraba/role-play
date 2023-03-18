@@ -363,6 +363,7 @@ class CreatePendingActionViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEquals(response.context["game"], game)
+        self.assertEquals(response.context["character"], character)
 
     def test_pending_action_creation_ok(self):
         action_type = random.choice(PendingAction.ACTION_TYPES)
