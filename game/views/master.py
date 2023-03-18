@@ -14,7 +14,7 @@ from game.forms import (
     HealForm,
     IncreaseXpForm,
 )
-from game.models import Character, Damage, Game, PendingAction, Tale, XpIncrease
+from game.models import Character, Damage, Event, Game, PendingAction, Tale, XpIncrease
 from game.views.mixins import (
     CharacterContextMixin,
     EventConditionsMixin,
@@ -61,6 +61,10 @@ class AddCharacterConfirmView(PermissionRequiredMixin, UpdateView, GameContextMi
         character = self.get_object()
         character.game = self.game
         character.save()
+        event = Event.objects.create(game=self.game)
+        event.date = timezone.now()
+        event.message = f"{character} was added to the game."
+        event.save()
         return HttpResponseRedirect(
             reverse(
                 "game",

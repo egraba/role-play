@@ -19,6 +19,7 @@ from game.forms import (
 from game.models import (
     Character,
     Damage,
+    Event,
     Game,
     Healing,
     PendingAction,
@@ -156,6 +157,38 @@ class AddCharacterViewTest(TestCase):
         response = self.client.get(reverse(self.path_name, args=[game_id]))
         self.assertEqual(response.status_code, 404)
         self.assertRaises(Http404)
+
+
+class AddCharacterConfirmViewTest(TestCase):
+    path_name = "game-add-character-confirm"
+
+    @classmethod
+    def setUpTestData(cls):
+        permission = Permission.objects.get(codename="change_character")
+        user = User.objects.create(username=utils.generate_random_name(5))
+        user.set_password("pwd")
+        user.user_permissions.add(permission)
+        user.save()
+        Game.objects.create()
+
+    def setUp(self):
+        self.user = User.objects.last()
+        self.client.login(username=self.user.username, password="pwd")
+
+    def test_character_added_to_game(self):
+        game = Game.objects.last()
+        character = Character.objects.create(name=utils.generate_random_name(5))
+        response = self.client.post(
+            reverse(self.path_name, args=[game.id, character.id])
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("game", args=[game.id]))
+        character = Character.objects.last()
+        self.assertEqual(character.game, game)
+        event = Event.objects.last()
+        self.assertEqual(event.date.second, timezone.now().second)
+        self.assertEqual(event.game, game)
+        self.assertEqual(event.message, f"{character} was added to the game.")
 
 
 class StartGameViewTest(TestCase):
