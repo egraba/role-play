@@ -8,7 +8,7 @@ class GameAdmin(admin.ModelAdmin):
 
 
 class CharacterAdmin(admin.ModelAdmin):
-    fields = ["game", "name", "race"]
+    fields = ["game", "name", "race", "user"]
 
 
 class TaleAdmin(admin.ModelAdmin):

@@ -133,6 +133,11 @@ class CharacterModelTest(TestCase):
         character = Character.objects.last()
         self.assertEqual(character.max_hp, 100)
 
+    def test_user_type(self):
+        character = Character.objects.last()
+        user = character._meta.get_field("user")
+        self.assertTrue(user, models.ForeignKey)
+
     def test_str(self):
         character = Character.objects.last()
         self.assertEqual(str(character), character.name)
