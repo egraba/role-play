@@ -17,6 +17,7 @@ class TaleAdmin(admin.ModelAdmin):
 
 class PendingActionAdmin(admin.ModelAdmin):
     fields = ["game", "character", "action_type"]
+    list_display = fields
 
 
 admin.site.register(Game, GameAdmin)
