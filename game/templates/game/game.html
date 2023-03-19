@@ -63,9 +63,7 @@
                             <button class="rpgui-button"><p>Add a character</p></button>
                         </a>
                     {% else %}
-                        <a href="">
-                            <button disabled class="rpgui-button"><p>Add a character</p></button>
-                        </a>
+                        <button disabled class="rpgui-button"><p>Add a character</p></button>
                     {% endif %}
                 {% endif %}
                 {% if perms.game.change_game %}
@@ -73,23 +71,15 @@
                         <a href={% url 'game-start' game.id %}>
                             <button class="rpgui-button"><p>Start the game</p></button>
                         </a>
-                        <a href="">
-                            <button disabled class="rpgui-button"><p>End the game</p></button>
-                        </a>
+                        <button disabled class="rpgui-button"><p>End the game</p></button>
                     {% elif game.status == "O" %}
-                        <a href="">
-                            <button disabled class="rpgui-button"><p>Start the game</p></button>
-                        </a>
+                        <button disabled class="rpgui-button"><p>Start the game</p></button>
                         <a href={% url 'game-end' game.id %}>
                             <button class="rpgui-button"><p>End the game</p></button>
                         </a>
                     {% else %}
-                        <a href="">
-                            <button disabled class="rpgui-button"><p>Start the game</p></button>
-                        </a>
-                        <a href="">
-                            <button disabled class="rpgui-button"><p>End the game</p></button>
-                        </a>
+                        <button disabled class="rpgui-button"><p>Start the game</p></button>
+                        <button disabled class="rpgui-button"><p>End the game</p></button>
                     {% endif%}
 
                 {% endif %}
