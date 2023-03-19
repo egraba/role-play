@@ -24,39 +24,30 @@
                     Race: {{ character.get_race_display }},
                     XP: {{ character.xp }},
                     HP: {{ character.hp }} / {{ character.max_hp }}
-                    {% for pending_action in pending_action_list %}
-                        {% if pending_action.character.id == character.id %}
-                            {% if pending_action.action_type == "D" %}
-                                <a class="character-action" href={% url 'dicelaunch-create' game.id pending_action.character.id %}>
-                                    <button class="rpgui-button">
-                                        <p>{{ pending_action.get_action_type_display }}</p>
-                                    </button>
-                                </a>
-                            {% elif pending_action.action_type == "C" %}
-                                <a class="character-action" href={% url 'choice-create' game.id pending_action.character.id %}>
-                                    <button class="rpgui-button">
-                                        <p>{{ pending_action.get_action_type_display }}</p>
-                                    </button>
-                                </a>
-                            {% endif %}
-                        {% endif %}
-                    {% empty %}
-                    {% endfor %}
-                    {% if user.is_authenticated and perms.game.change_character and game.status == "O" %}
+
+                    {% if user.is_authenticated and game.status == "O" %}
                         <hr/>
                         <div class ="rpgui-center inline">
-                            <a href={% url 'pendingaction-create' game.id character.id %}>
-                                <button  class="rpgui-button"><p>Ask for action</p></button>
-                            </a>
-                            <a href={% url 'xpincrease-create' game.id character.id %}>
-                                <button  class="rpgui-button"><p>Increase XP</p></button>
-                            </a>
-                            <a href={% url 'damage-create' game.id character.id %}>
-                                <button  class="rpgui-button"><p>Damage</p></button>
-                            </a>
-                            <a href={% url 'healing-create' game.id character.id %}>
-                                <button  class="rpgui-button"><p>Heal</p></button>
-                            </a>
+                            {% if perms.game.add_pendingaction %}
+                                <a href={% url 'pendingaction-create' game.id character.id %}>
+                                    <button  class="rpgui-button"><p>Ask for action</p></button>
+                                </a>
+                            {% endif %}
+                            {% if perms.game.add_xpincrease %}
+                                <a href={% url 'xpincrease-create' game.id character.id %}>
+                                    <button  class="rpgui-button"><p>Increase XP</p></button>
+                                </a>
+                            {% endif %}
+                            {% if perms.game.add_damage %}
+                                <a href={% url 'damage-create' game.id character.id %}>
+                                    <button  class="rpgui-button"><p>Damage</p></button>
+                                </a>
+                            {% endif %}
+                            {% if perms.game.add_healing %}
+                                <a href={% url 'healing-create' game.id character.id %}>
+                                    <button  class="rpgui-button"><p>Heal</p></button>
+                                </a>
+                            {% endif %}
                         </div>
                     {% endif %}
                 </p>
@@ -127,17 +118,30 @@
                 {% endif %}
             </p>
         </div>
-        {% if user.is_authenticated and perms.game.add_tale %}
+        {% if user.is_authenticated and game.status == "O" %}
             <div class="rpgui-center">
-                {% if game.status == "O" %}
+                {% if perms.game.add_tale %}
                     <a href={% url 'tale-create' game.id %}>
                         <button class="rpgui-button"><p>Continue the story</p></button>
                     </a>
-                {% else %}
-                    <a href="">
-                        <button disabled class="rpgui-button"><p>Continue the story</p></button>
-                    </a>
                 {% endif %}
+                {% for pending_action in pending_action_list %}
+                    {% if perms.game.add_dicelaunch and pending_action.action_type == "D" %}
+                        <a class="character-action" href={% url 'dicelaunch-create' game.id pending_action.character.id %}>
+                            <button class="rpgui-button">
+                                <p>{{ pending_action.get_action_type_display }}</p>
+                            </button>
+                        </a>
+                    {% endif %}
+                    {% if perms.game.add_choice and pending_action.action_type == "C" %}
+                        <a class="character-action" href={% url 'choice-create' game.id pending_action.character.id %}>
+                            <button class="rpgui-button">
+                                <p>{{ pending_action.get_action_type_display }}</p>
+                            </button>
+                        </a>
+                    {% endif %}
+                {% empty %}
+                {% endfor%}
             </div>
         {% endif %}
 
