@@ -71,9 +71,4 @@ urlpatterns = [
         player.ChoiceView.as_view(),
         name="choice-create",
     ),
-    path(
-        "<int:game_id>/character/<int:character_id>/make_choice/<int:action_id>/success/",
-        player.ChoiceSuccessView.as_view(),
-        name="choice-success",
-    ),
 ]

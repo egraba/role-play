@@ -6,14 +6,10 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
+from game.forms import ChoiceForm
 from game.models import Character, Choice, DiceLaunch, Game, PendingAction
 from game.tests import utils
-from game.views.player import (
-    ChoiceSuccessView,
-    ChoiceView,
-    DiceLaunchSuccessView,
-    DiceLaunchView,
-)
+from game.views.player import ChoiceView, DiceLaunchSuccessView, DiceLaunchView
 
 
 class DiceLaunchViewTest(TestCase):
@@ -238,51 +234,27 @@ class ChoiceViewTest(TestCase):
         self.assertEqual(response.status_code, 403)
         self.assertRaises(PermissionDenied)
 
-
-class ChoiceSuccessViewTest(TestCase):
-    path_name = "choice-success"
-
-    @classmethod
-    def setUpTestData(cls):
-        game = Game.objects.create()
-        character = Character.objects.create(
-            name=utils.generate_random_name(100),
-            game=game,
-            race=random.choice(Character.RACES)[0],
-        )
-        Choice.objects.create(
-            game=game,
-            character=character,
-            selection=utils.generate_random_name(255),
-        )
-
-    def test_view_mapping(self):
+    def test_choice(self):
+        selection = utils.generate_random_string(50)
+        data = {"selection": f"{selection}"}
+        form = ChoiceForm(data)
+        self.assertTrue(form.is_valid())
         game = Game.objects.last()
         character = Character.objects.last()
-        choice = Choice.objects.last()
-        response = self.client.get(
-            reverse(self.path_name, args=[game.id, character.id, choice.id])
+        response = self.client.post(
+            reverse(self.path_name, args=[game.id, character.id]),
+            data=form.cleaned_data,
         )
-        self.assertEqual(response.resolver_match.func.view_class, ChoiceSuccessView)
-
-    def test_template_mapping(self):
-        game = Game.objects.last()
-        character = Character.objects.last()
+        self.assertEqual(response.status_code, 302)
         choice = Choice.objects.last()
-        response = self.client.get(
-            reverse(self.path_name, args=[game.id, character.id, choice.id])
+        self.assertRedirects(
+            response,
+            reverse("game", args=[game.id]),
         )
-        self.assertTemplateUsed(response, "game/success.html")
-
-    def test_view_content(self):
-        game = Game.objects.last()
-        character = Character.objects.last()
-        choice = Choice.objects.last()
-        response = self.client.get(
-            reverse(self.path_name, args=[game.id, character.id, choice.id])
+        self.assertEqual(choice.game, game)
+        self.assertEqual(choice.date.second, timezone.now().second)
+        self.assertEqual(
+            choice.message,
+            f"{character} made a choice: {choice.selection}.",
         )
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context["game"], game)
-        self.assertEqual(response.context["character"], character)
-        self.assertEqual(response.context["choice"], choice)
-        self.assertContains(response, f"{choice.selection}")
+        self.assertEqual(choice.selection, form.cleaned_data["selection"])

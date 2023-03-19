@@ -1,8 +1,7 @@
 import random
 
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.http import HttpResponseRedirect
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView
 
 from game.forms import ChoiceForm, DiceLaunchForm
@@ -64,8 +63,8 @@ class ChoiceView(
 
     def get_success_url(self):
         return reverse_lazy(
-            "choice-success",
-            args=(self.game.id, self.character.id, self.object.id),
+            "game",
+            args=(self.game.id,),
         )
 
     def form_valid(self, form):
@@ -77,23 +76,3 @@ class ChoiceView(
         pending_action = PendingAction.objects.get(character=self.character)
         pending_action.delete()
         return super().form_valid(form)
-
-
-class ChoiceSuccessView(DetailView, GameContextMixin, CharacterContextMixin):
-    model = Choice
-    template_name = "game/success.html"
-
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, *args, **kwargs)
-        self.choice = Choice.objects.get(pk=self.kwargs["action_id"])
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["choice"] = self.choice
-        return context
-
-    def get_object(self):
-        return Choice.objects.get(pk=self.kwargs.get("action_id"))
-
-    def post(self, request, *args, **kwargs):
-        return HttpResponseRedirect(reverse("game", args=(self.game_id,)))

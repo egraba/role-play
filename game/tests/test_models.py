@@ -304,7 +304,7 @@ class ChoiceModelTest(TestCase):
         game = Game.objects.create()
         character = Character.objects.create()
         Choice.objects.create(
-            game=game, character=character, selection=utils.generate_random_string(200)
+            game=game, character=character, selection=utils.generate_random_string(50)
         )
 
     def test_character_type(self):
@@ -320,7 +320,7 @@ class ChoiceModelTest(TestCase):
     def test_selection_max_length(self):
         choice = Choice.objects.last()
         max_length = choice._meta.get_field("selection").max_length
-        self.assertEqual(max_length, 300)
+        self.assertEqual(max_length, 50)
 
     def test_str(self):
         choice = Choice.objects.last()
