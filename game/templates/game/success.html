@@ -3,12 +3,7 @@
 {% block content %}
     <div class="info rpgui-container framed-golden">
         <h1>{{ game }}</h1>
-        {% if dice_launch %}
-            <p>{{ character }}, your score is: {{ dice_launch.score }}!</p>
-        {% elif choice %}
-            <p>{{ character }}, you made the following choice:</p>
-            <p>{{ choice }}</p>
-        {% endif %}
+        <p>{{ character }}, your score is: {{ dice_launch.score }}!</p>
         <div class="rpgui-center">
             <a href={% url 'game' game.id %}><button class="rpgui-button" ><p>Return to the game</p></button></a>
         </div>
