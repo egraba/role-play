@@ -32,6 +32,8 @@ class GameView(LoginRequiredMixin, ListView, GameContextMixin):
             ).get()
         except Character.DoesNotExist:
             pass
+        except PendingAction.DoesNotExist:
+            pass
         return context
 
     def get_queryset(self):
