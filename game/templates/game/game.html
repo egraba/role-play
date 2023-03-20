@@ -24,9 +24,9 @@
                     Race: {{ character.get_race_display }},
                     XP: {{ character.xp }},
                     HP: {{ character.hp }} / {{ character.max_hp }}
+                    {% if player.id == character.user.id %}(you){% endif %}
 
                     {% if user.is_authenticated and game.status == "O" %}
-                        <hr/>
                         <div class ="rpgui-center inline">
                             {% if perms.game.add_pendingaction %}
                                 <a href={% url 'pendingaction-create' game.id character.id %}>
@@ -115,7 +115,7 @@
                         <button class="rpgui-button"><p>Continue the story</p></button>
                     </a>
                 {% endif %}
-                {% for pending_action in pending_action_list %}
+                {% if pending_action %}
                     {% if perms.game.add_dicelaunch and pending_action.action_type == "D" %}
                         <a class="character-action" href={% url 'dicelaunch-create' game.id pending_action.character.id %}>
                             <button class="rpgui-button">
@@ -130,8 +130,7 @@
                             </button>
                         </a>
                     {% endif %}
-                {% empty %}
-                {% endfor%}
+                {% endif %}
             </div>
         {% endif %}
 

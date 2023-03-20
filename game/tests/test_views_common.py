@@ -1,6 +1,7 @@
 import random
 from datetime import datetime
 
+from django.contrib.auth.models import User
 from django.http import Http404
 from django.test import TestCase
 from django.urls import reverse
@@ -59,6 +60,9 @@ class IndexViewTest(TestCase):
 class GameViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
+        user = User.objects.create(username=utils.generate_random_name(5))
+        user.set_password("pwd")
+        user.save()
         game = Game.objects.create(name="game1")
         number_of_events = 22
         for i in range(number_of_events):
@@ -85,6 +89,13 @@ class GameViewTest(TestCase):
                 action_type=random.choice(PendingAction.ACTION_TYPES)[0],
                 message=f"{game.name} pending_action{i}",
             )
+        player = Character.objects.filter(name="game1 character1").get()
+        player.user = user
+        player.save()
+
+    def setUp(self):
+        self.user = User.objects.last()
+        self.client.login(username=self.user.username, password="pwd")
 
     def test_view_mapping(self):
         game = Game.objects.last()
@@ -169,10 +180,10 @@ class GameViewTest(TestCase):
         self.assertQuerysetEqual(
             list(response.context["character_list"]), character_list
         )
-        pending_action_list = PendingAction.objects.filter(game__name="game1")
-        self.assertQuerysetEqual(
-            list(response.context["pending_action_list"]), pending_action_list
-        )
+        pending_action = PendingAction.objects.filter(
+            game__name="game1", character__name="game1 character1"
+        ).get()
+        self.assertEqual(response.context["pending_action"], pending_action)
         event_list = Event.objects.filter(game__name="game1")
         self.assertTrue(
             set(response.context["event_list"]).issubset(set(event_list))
