@@ -24,7 +24,9 @@
                     Race: {{ character.get_race_display }},
                     XP: {{ character.xp }},
                     HP: {{ character.hp }} / {{ character.max_hp }}
-                    {% if player.id == character.user.id %}(you){% endif %}
+                    {% if player %}
+                        {% if player.id == character.user.id %}(you){% endif %}
+                    {% endif %}
 
                     {% if user.is_authenticated and game.status == "O" %}
                         <div class ="rpgui-center inline">
