@@ -181,6 +181,10 @@ class GameViewTest(TestCase):
         self.assertTrue(
             set(response.context["event_list"]).issubset(set(event_list))
         )  # issubset() is used because of pagination.
+        with self.assertRaises(KeyError):
+            response.context["player"]
+        with self.assertRaises(KeyError):
+            response.context["pending_action"]
 
     def test_context_data_player(self):
         number_of_games = 3
