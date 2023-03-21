@@ -136,7 +136,7 @@ class CharacterModelTest(TestCase):
     def test_user_type(self):
         character = Character.objects.last()
         user = character._meta.get_field("user")
-        self.assertTrue(user, models.ForeignKey)
+        self.assertTrue(user, models.OneToOneField)
 
     def test_str(self):
         character = Character.objects.last()

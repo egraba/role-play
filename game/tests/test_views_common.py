@@ -89,9 +89,6 @@ class GameViewTest(TestCase):
                 action_type=random.choice(PendingAction.ACTION_TYPES)[0],
                 message=f"{game.name} pending_action{i}",
             )
-        player = Character.objects.filter(name="game1 character1").get()
-        player.user = user
-        player.save()
 
     def setUp(self):
         self.user = User.objects.last()
@@ -160,11 +157,7 @@ class GameViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context["tale"], tale)
 
-    def test_context_data(self):
-        """
-        We test that none of the objects created above are present in the context of
-        the game created in setUpTestData().
-        """
+    def test_context_data_master(self):
         number_of_games = 3
         for i in range(number_of_games):
             game = Game.objects.create(name=f"other_game{i}")
@@ -172,8 +165,11 @@ class GameViewTest(TestCase):
             character = Character.objects.create(game=game, name=f"character{i}")
             Event.objects.create(game=game)
             PendingAction.objects.create(game=game, character=character)
+
         game = Game.objects.filter(name="game1").last()
         response = self.client.get(reverse("game", args=[game.id]))
+        self.assertEqual(response.status_code, 200)
+
         tale_list = Tale.objects.filter(game__name="game1")
         tale = tale_list.last()
         self.assertEqual(response.context["tale"], tale)
@@ -181,14 +177,46 @@ class GameViewTest(TestCase):
         self.assertQuerysetEqual(
             list(response.context["character_list"]), character_list
         )
-        pending_action = PendingAction.objects.filter(
-            game__name="game1", character__name="game1 character1"
-        ).get()
-        self.assertEqual(response.context["pending_action"], pending_action)
         event_list = Event.objects.filter(game__name="game1")
         self.assertTrue(
             set(response.context["event_list"]).issubset(set(event_list))
         )  # issubset() is used because of pagination.
+
+    def test_context_data_player(self):
+        number_of_games = 3
+        for i in range(number_of_games):
+            game = Game.objects.create(name=f"other_game{i}")
+            Tale.objects.create(game=game)
+            character = Character.objects.create(game=game, name=f"character{i}")
+            Event.objects.create(game=game)
+            PendingAction.objects.create(game=game, character=character)
+
+        player = Character.objects.filter(name="game1 character1").get()
+        player.user = self.user
+        player.save()
+        self.client.logout()
+        self.client.login(username=self.user.username, password="pwd")
+
+        game = Game.objects.filter(name="game1").last()
+        response = self.client.get(reverse("game", args=[game.id]))
+        self.assertEqual(response.status_code, 200)
+
+        tale_list = Tale.objects.filter(game__name="game1")
+        tale = tale_list.last()
+        self.assertEqual(response.context["tale"], tale)
+        character_list = Character.objects.filter(game__name="game1")
+        self.assertQuerysetEqual(
+            list(response.context["character_list"]), character_list
+        )
+        event_list = Event.objects.filter(game__name="game1")
+        self.assertTrue(
+            set(response.context["event_list"]).issubset(set(event_list))
+        )  # issubset() is used because of pagination.
+        self.assertEqual(response.context["player"], player)
+        pending_action = PendingAction.objects.filter(
+            game__name="game1", character__name="game1 character1"
+        ).get()
+        self.assertEqual(response.context["pending_action"], pending_action)
 
 
 class CharacterViewTest(TestCase):

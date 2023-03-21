@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import ObjectDoesNotExist
 from django.views.generic import DetailView, ListView
 
 from game.models import Character, Event, Game, PendingAction, Tale
@@ -30,9 +31,7 @@ class GameView(LoginRequiredMixin, ListView, GameContextMixin):
             context["pending_action"] = PendingAction.objects.filter(
                 game=self.game.id, character=player
             ).get()
-        except Character.DoesNotExist:
-            pass
-        except PendingAction.DoesNotExist:
+        except ObjectDoesNotExist:
             pass
         return context
 
