@@ -161,16 +161,17 @@ class GameViewTest(TestCase):
         self.assertEqual(response.context["tale"], tale)
 
     def test_context_data(self):
-        for i in range(10):
+        """
+        We test that none of the objects created above are present in the context of
+        the game created in setUpTestData().
+        """
+        number_of_games = 3
+        for i in range(number_of_games):
             game = Game.objects.create(name=f"other_game{i}")
             Tale.objects.create(game=game)
             character = Character.objects.create(game=game, name=f"character{i}")
             Event.objects.create(game=game)
             PendingAction.objects.create(game=game, character=character)
-        """
-        We test that none of the objects created above are present in the context of
-        the game created in setUpTestData().
-        """
         game = Game.objects.filter(name="game1").last()
         response = self.client.get(reverse("game", args=[game.id]))
         tale_list = Tale.objects.filter(game__name="game1")
