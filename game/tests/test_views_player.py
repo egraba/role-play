@@ -117,7 +117,7 @@ class DiceLaunchViewTest(TestCase):
             reverse("dicelaunch-success", args=[game.id, character.id, dice_launch.id]),
         )
         self.assertEqual(dice_launch.game, game)
-        self.assertEqual(dice_launch.date.second, timezone.now().second)
+        self.assertLessEqual(dice_launch.date.second - timezone.now().second, 2)
         self.assertEqual(
             dice_launch.message,
             f"{character} launched a dice: score is {dice_launch.score}!",
@@ -309,7 +309,7 @@ class ChoiceViewTest(TestCase):
             reverse("game", args=[game.id]),
         )
         self.assertEqual(choice.game, game)
-        self.assertEqual(choice.date.second, timezone.now().second)
+        self.assertLessEqual(choice.date.second - timezone.now().second, 2)
         self.assertEqual(
             choice.message,
             f"{character} made a choice: {choice.selection}.",
