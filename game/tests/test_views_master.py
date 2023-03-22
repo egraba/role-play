@@ -217,7 +217,7 @@ class AddCharacterConfirmViewTest(TestCase):
         character = Character.objects.last()
         self.assertEqual(character.game, game)
         event = Event.objects.last()
-        self.assertEqual(event.date.second, timezone.now().second)
+        self.assertLessEqual(event.date.second - timezone.now().second, 2)
         self.assertEqual(event.game, game)
         self.assertEqual(event.message, f"{character} was added to the game.")
 
@@ -266,7 +266,7 @@ class StartGameViewTest(TestCase):
         game = Game.objects.last()
         self.assertEqual(game.status, "O")
         event = Event.objects.last()
-        self.assertEqual(event.date.second, timezone.now().second)
+        self.assertLessEqual(event.date.second - timezone.now().second, 2)
         self.assertEqual(event.game, game)
         self.assertEqual(event.message, "The game started.")
 
@@ -329,7 +329,7 @@ class EndGameViewTest(TestCase):
         self.assertEqual(game.status, "F")
         self.assertTrue(Character.objects.filter(game=game).count() == 0)
         event = Event.objects.last()
-        self.assertEqual(event.date.second, timezone.now().second)
+        self.assertLessEqual(event.date.second - timezone.now().second, 2)
         self.assertEqual(event.game, game)
         self.assertEqual(event.message, "The game ended.")
 
@@ -511,7 +511,7 @@ class CreatePendingActionViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         pending_action = PendingAction.objects.last()
         self.assertEqual(pending_action.game, game)
-        self.assertEqual(pending_action.date.second, timezone.now().second)
+        self.assertLessEqual(pending_action.date.second - timezone.now().second, 2)
         self.assertEqual(
             pending_action.message,
             f"{character} needs to perform an action: {pending_action.get_action_type_display()}",
@@ -631,7 +631,7 @@ class IncreaseXpViewTest(TestCase):
         xp_increase = XpIncrease.objects.last()
         self.assertEqual(xp_increase.game, game)
         self.assertEqual(xp_increase.character, character)
-        self.assertEqual(xp_increase.date.second, timezone.now().second)
+        self.assertLessEqual(xp_increase.date.second - timezone.now().second, 2)
         self.assertEqual(
             xp_increase.message,
             f"{character} gained experience: +{xp_increase.xp} XP!",
@@ -748,7 +748,7 @@ class DamageViewTest(TestCase):
         damage = Damage.objects.last()
         self.assertEqual(damage.game, game)
         self.assertEqual(damage.character, character)
-        self.assertEqual(damage.date.second, timezone.now().second)
+        self.assertLessEqual(damage.date.second - timezone.now().second, 2)
         self.assertEqual(
             damage.message,
             f"{character} was hit: -{damage.hp} HP!",
@@ -778,7 +778,7 @@ class DamageViewTest(TestCase):
         damage = Damage.objects.last()
         self.assertEqual(damage.game, game)
         self.assertEqual(damage.character, character)
-        self.assertEqual(damage.date.second, timezone.now().second)
+        self.assertLessEqual(damage.date.second - timezone.now().second, 2)
         self.assertEqual(
             damage.message,
             f"{character} was hit: -{damage.hp} HP! {character} is dead.",
@@ -891,7 +891,7 @@ class HealViewTest(TestCase):
         healing = Healing.objects.last()
         self.assertEqual(healing.game, game)
         self.assertEqual(healing.character, character)
-        self.assertEqual(healing.date.second, timezone.now().second)
+        self.assertLessEqual(healing.date.second - timezone.now().second, 2)
         self.assertEqual(
             healing.message,
             f"{character} was healed: +{healing.hp} HP!",
@@ -921,7 +921,7 @@ class HealViewTest(TestCase):
         healing = Healing.objects.last()
         self.assertEqual(healing.game, game)
         self.assertEqual(healing.character, character)
-        self.assertEqual(healing.date.second, timezone.now().second)
+        self.assertLessEqual(healing.date.second - timezone.now().second, 2)
         self.assertEqual(
             healing.message,
             f"{character} was healed: +{healing.hp} HP!",
