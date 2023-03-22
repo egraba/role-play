@@ -2,6 +2,7 @@ import random
 from datetime import datetime
 
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 from django.test import TestCase
 from django.urls import reverse
@@ -221,6 +222,12 @@ class GameViewTest(TestCase):
             game__name="game1", character__name="game1 character1"
         ).get()
         self.assertEqual(response.context["pending_action"], pending_action)
+        PendingAction.objects.filter(
+            game__name="game1", character__name="game1 character1"
+        ).delete()
+        response = self.client.get(reverse("game", args=[game.id]))
+        self.assertEqual(response.status_code, 200)
+        self.assertRaises(ObjectDoesNotExist)
 
 
 class CharacterViewTest(TestCase):
