@@ -458,6 +458,15 @@ class CreatePendingActionViewTest(TestCase):
         self.assertEqual(response.status_code, 404)
         self.assertRaises(Http404)
 
+    def test_character_not_exists(self):
+        game = Game.objects.last()
+        character_id = random.randint(10000, 99999)
+        response = self.client.get(
+            reverse(self.path_name, args=[game.id, character_id])
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertRaises(Http404)
+
     def test_context_data(self):
         game = Game.objects.last()
         character = Character.objects.last()
@@ -568,6 +577,15 @@ class IncreaseXpViewTest(TestCase):
         self.assertEqual(response.status_code, 404)
         self.assertRaises(Http404)
 
+    def test_character_not_exists(self):
+        game = Game.objects.last()
+        character_id = random.randint(10000, 99999)
+        response = self.client.get(
+            reverse(self.path_name, args=[game.id, character_id])
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertRaises(Http404)
+
     def test_context_data(self):
         game = Game.objects.last()
         character = Character.objects.last()
@@ -672,6 +690,15 @@ class DamageViewTest(TestCase):
         character = Character.objects.last()
         response = self.client.get(
             reverse(self.path_name, args=[game_id, character.id])
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertRaises(Http404)
+
+    def test_character_not_exists(self):
+        game = Game.objects.last()
+        character_id = random.randint(10000, 99999)
+        response = self.client.get(
+            reverse(self.path_name, args=[game.id, character_id])
         )
         self.assertEqual(response.status_code, 404)
         self.assertRaises(Http404)
@@ -806,6 +833,15 @@ class HealViewTest(TestCase):
         character = Character.objects.last()
         response = self.client.get(
             reverse(self.path_name, args=[game_id, character.id])
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertRaises(Http404)
+
+    def test_character_not_exists(self):
+        game = Game.objects.last()
+        character_id = random.randint(10000, 99999)
+        response = self.client.get(
+            reverse(self.path_name, args=[game.id, character_id])
         )
         self.assertEqual(response.status_code, 404)
         self.assertRaises(Http404)

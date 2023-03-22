@@ -2,6 +2,7 @@ import random
 
 from django.contrib.auth.models import Permission, User
 from django.core.exceptions import PermissionDenied
+from django.http import Http404
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
@@ -54,6 +55,24 @@ class DiceLaunchViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "game/dice.html")
+
+    def test_game_not_exists(self):
+        game_id = random.randint(10000, 99999)
+        character = Character.objects.last()
+        response = self.client.get(
+            reverse(self.path_name, args=[game_id, character.id])
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertRaises(Http404)
+
+    def test_character_not_exists(self):
+        game = Game.objects.last()
+        character_id = random.randint(10000, 99999)
+        response = self.client.get(
+            reverse(self.path_name, args=[game.id, character_id])
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertRaises(Http404)
 
     def test_context_data(self):
         game = Game.objects.last()
@@ -142,6 +161,26 @@ class DiceLaunchSuccessViewTest(TestCase):
         )
         self.assertTemplateUsed(response, "game/success.html")
 
+    def test_game_not_exists(self):
+        game_id = random.randint(10000, 99999)
+        character = Character.objects.last()
+        dice_launch = DiceLaunch.objects.last()
+        response = self.client.get(
+            reverse(self.path_name, args=[game_id, character.id, dice_launch.id])
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertRaises(Http404)
+
+    def test_character_not_exists(self):
+        game = Game.objects.last()
+        character_id = random.randint(10000, 99999)
+        dice_launch = DiceLaunch.objects.last()
+        response = self.client.get(
+            reverse(self.path_name, args=[game.id, character_id, dice_launch.id])
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertRaises(Http404)
+
     def test_view_content(self):
         game = Game.objects.last()
         character = Character.objects.last()
@@ -203,6 +242,24 @@ class ChoiceViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "game/choice.html")
+
+    def test_game_not_exists(self):
+        game_id = random.randint(10000, 99999)
+        character = Character.objects.last()
+        response = self.client.get(
+            reverse(self.path_name, args=[game_id, character.id])
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertRaises(Http404)
+
+    def test_character_not_exists(self):
+        game = Game.objects.last()
+        character_id = random.randint(10000, 99999)
+        response = self.client.get(
+            reverse(self.path_name, args=[game.id, character_id])
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertRaises(Http404)
 
     def test_context_data(self):
         game = Game.objects.last()
