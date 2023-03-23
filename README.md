@@ -8,4 +8,4 @@ Role playing game.
 > This project is under development.
 
 ## Requirements
-`role-play` supports Python3.8 and above.
+`role-play` has been developed and tested with Python 3.11.
