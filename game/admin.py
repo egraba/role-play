@@ -9,6 +9,7 @@ class GameAdmin(admin.ModelAdmin):
 
 class CharacterAdmin(admin.ModelAdmin):
     fields = ["game", "name", "race", "user"]
+    list_display = ["name", "race", "game", "user"]
 
 
 class TaleAdmin(admin.ModelAdmin):
