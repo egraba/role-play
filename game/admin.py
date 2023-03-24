@@ -15,6 +15,7 @@ class CharacterAdmin(admin.ModelAdmin):
 
 class TaleAdmin(admin.ModelAdmin):
     fields = ["game", "description"]
+    list_display = ["description", "game", "date"]
 
 
 class PendingActionAdmin(admin.ModelAdmin):
