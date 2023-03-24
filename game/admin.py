@@ -5,14 +5,17 @@ from game.models import Character, Game, PendingAction, Tale
 
 class GameAdmin(admin.ModelAdmin):
     fields = ["name", "status"]
+    list_display = ["name", "status", "start_date", "end_date"]
 
 
 class CharacterAdmin(admin.ModelAdmin):
     fields = ["game", "name", "race", "user"]
+    list_display = ["name", "race", "game", "user"]
 
 
 class TaleAdmin(admin.ModelAdmin):
     fields = ["game", "description"]
+    list_display = ["description", "game", "date"]
 
 
 class PendingActionAdmin(admin.ModelAdmin):
