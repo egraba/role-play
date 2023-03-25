@@ -6,12 +6,6 @@ on:
   pull_request:
     branches: [ "main" ]
 
-env:
-  PGUSER: ${{env.PGUSER}}
-  PGPASSWORD: ${{secrets.PGPASSWORD}}
-  PGPORT: ${{env.PGPORT}}
-  PGHOST: ${{env.PGHOST}}
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -45,3 +39,8 @@ jobs:
     - name: Run Tests
       run: |
         python manage.py test --verbosity=2
+      env:
+        PGUSER: ${{env.PGUSER}}
+        PGPASSWORD: ${{secrets.PGPASSWORD}}
+        PGPORT: ${{env.PGPORT}}
+        PGHOST: ${{env.PGHOST}}
