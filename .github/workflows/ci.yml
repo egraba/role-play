@@ -6,6 +6,12 @@ on:
   pull_request:
     branches: [ "main" ]
 
+env:
+  PGUSER: ciuser
+  PGPASSWORD: ${{secrets.PGPASSWORD}}
+  PGHOST: 127.0.0.1
+  PGPORT: 5432
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -14,7 +20,7 @@ jobs:
         image: postgres:14
         env:
           POSTGRES_USER: ${{env.PGUSER}}
-          POSTGRES_PASSWORD: ${{secrets.PGPASSWORD}}
+          POSTGRES_PASSWORD: ${{env.PGPASSWORD}}
           POSTGRES_DB: role-play
         ports:
           - 5432:5432
@@ -40,5 +46,3 @@ jobs:
       run: |
         echo $PGUSER
         python manage.py test --verbosity=2
-      env:
-        PGPASSWORD: ${{secrets.PGPASSWORD}}
