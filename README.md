@@ -17,7 +17,11 @@ Instead of playing role play with paper, you can do it online!
 ![Index](docs/screenshot-index-01.png)
 
 ### Example of game
+Master view.
 ![Index](docs/screenshot-game-01.png)
+
+Player view.
+![Index](docs/screenshot-game-02.png)
 
 ## Requirements
 `role-play` has been developed and tested with Python 3.11.
