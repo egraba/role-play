@@ -19,8 +19,8 @@ jobs:
       postgres:
         image: postgres:14
         env:
-          POSTGRES_USER: $PGUSER
-          POSTGRES_PASSWORD: $PGPASSWORD
+          POSTGRES_USER: ${PGUSER}
+          POSTGRES_PASSWORD: ${PGPASSWORD}
           POSTGRES_DB: role-play
         ports:
           - 5432:5432
