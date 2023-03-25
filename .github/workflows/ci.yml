@@ -16,8 +16,8 @@ jobs:
       postgres:
         image: postgres:14
         env:
-          POSTGRES_USER: preuser
-          POSTGRES_PASSWORD: prepwd
+          POSTGRES_USER: ${{ vars.PGUSER }}
+          POSTGRES_PASSWORD: ${{ vars.PGPASSWORD }}
           POSTGRES_DB: role-play
         ports:
           - 5432:5432
