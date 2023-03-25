@@ -15,7 +15,7 @@ class CharacterAdmin(admin.ModelAdmin):
 
 class TaleAdmin(admin.ModelAdmin):
     fields = ["game", "description"]
-    list_display = ["description", "game", "date"]
+    list_display = ["game", "description", "date"]
 
 
 class EventAdmin(admin.ModelAdmin):
