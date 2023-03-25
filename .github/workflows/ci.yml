@@ -7,7 +7,10 @@ on:
     branches: [ "main" ]
 
 env:
-  DJANGO_SETTINGS_MODULE: role_play.pre_settings
+  PGUSER: ciuser
+  PGPASSWORD: ${{secrets.PGPASSWORD}}
+  PGHOST: 127.0.0.1
+  PGPORT: 5432
 
 jobs:
   build:
@@ -16,8 +19,8 @@ jobs:
       postgres:
         image: postgres:14
         env:
-          POSTGRES_USER: preuser
-          POSTGRES_PASSWORD: prepwd
+          POSTGRES_USER: ${{env.PGUSER}}
+          POSTGRES_PASSWORD: ${{env.PGPASSWORD}}
           POSTGRES_DB: role-play
         ports:
           - 5432:5432
