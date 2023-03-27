@@ -30,7 +30,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["rpg.egraba.org", "role-play-production.up.railway.app"]
 
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = False
 
 SESSION_COOKIE_SECURE = False
 
