@@ -32,9 +32,9 @@ ALLOWED_HOSTS = ["rpg.egraba.org", "role-play-production.up.railway.app"]
 
 SECURE_SSL_REDIRECT = True
 
-SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = False
 
-CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = False
 
 CSRF_TRUSTED_ORIGINS = ["https://rpg.egraba.org/"]
 
