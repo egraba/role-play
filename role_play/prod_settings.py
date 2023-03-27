@@ -28,7 +28,7 @@ SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["https://rpg.egraba.org/"]
+ALLOWED_HOSTS = ["rpg.egraba.org", "127.0.0.1"]
 
 SECURE_SSL_REDIRECT = True
 
