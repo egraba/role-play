@@ -36,7 +36,7 @@ SESSION_COOKIE_SECURE = False
 
 CSRF_COOKIE_SECURE = False
 
-CSRF_TRUSTED_ORIGINS = ["https://rpg.egraba.org/"]
+CSRF_TRUSTED_ORIGINS = ["https://rpg.egraba.org"]
 
 SECURE_HSTS_SECONDS = 3600
 
