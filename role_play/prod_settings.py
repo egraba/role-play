@@ -82,6 +82,26 @@ TEMPLATES = [
 WSGI_APPLICATION = "role_play.wsgi.application"
 
 
+# Logging
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+    },
+}
+
+
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
@@ -95,6 +115,13 @@ DATABASES = {
         "PORT": os.environ["PGPORT"],
     }
 }
+
+
+# Authentication
+
+LOGIN_REDIRECT_URL = "/game"
+
+LOGOUT_REDIRECT_URL = "/game"
 
 
 # Password validation
@@ -140,9 +167,6 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-LOGIN_REDIRECT_URL = "/game"
-
-LOGOUT_REDIRECT_URL = "/game"
 
 # Update database configuration from $DATABASE_URL.
 db_from_env = dj_database_url.config(conn_max_age=500)
