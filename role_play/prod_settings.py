@@ -28,15 +28,15 @@ SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["rpg.egraba.org", "role-play-production.up.railway.app"]
+ALLOWED_HOSTS = ["role-play-production.up.railway.app"]
 
-SECURE_SSL_REDIRECT = False
+SECURE_SSL_REDIRECT = True
 
-SESSION_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = True
 
-CSRF_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = True
 
-CSRF_TRUSTED_ORIGINS = ["https://rpg.egraba.org"]
+CSRF_TRUSTED_ORIGINS = ["https://role-play-production.up.railway.app"]
 
 SECURE_HSTS_SECONDS = 3600
 
