@@ -36,7 +36,7 @@ SESSION_COOKIE_SECURE = True
 
 CSRF_COOKIE_SECURE = True
 
-CSRF_TRUSTED_ORIGINS = ["https://role-play-production.up.railway.app"]
+CSRF_TRUSTED_ORIGINS = ["https://role-play-production.up.railway.app/"]
 
 SECURE_HSTS_SECONDS = 3600
 
