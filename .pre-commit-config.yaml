@@ -21,5 +21,8 @@ repos:
   rev: 3.0.6
   hooks:
     - id: djhtml
+      exclude: .*/rpgui/.*
     - id: djcss
+      exclude: .*/rpgui/.*
     - id: djjs
+      exclude: .*/rpgui/.*
