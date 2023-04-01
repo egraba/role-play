@@ -33,6 +33,7 @@ class CreateGameView(PermissionRequiredMixin, FormView):
     def form_valid(self, form):
         self.game = Game()
         self.game.name = form.cleaned_data["name"]
+        self.game.user = self.request.user
         self.game.save()
         tale = Tale()
         tale.game = self.game

@@ -77,6 +77,7 @@ class CreateGameViewTest(TestCase):
         game = Game.objects.last()
         self.assertEqual(game.name, name)
         self.assertEqual(game.status, "P")
+        self.assertEqual(game.user, self.user)
         tale = Tale.objects.last()
         self.assertEqual(tale.game, game)
         self.assertEqual(tale.message, "The Master created the story.")
