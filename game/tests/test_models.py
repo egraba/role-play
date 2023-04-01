@@ -53,6 +53,11 @@ class GameModelTest(TestCase):
         status = game._meta.get_field("status")
         self.assertTrue(status, models.CharField)
 
+    def test_user_type(self):
+        game = Game.objects.last()
+        user = game._meta.get_field("user")
+        self.assertTrue(user, models.OneToOneField)
+
     def test_str_is_name(self):
         game = Game.objects.last()
         self.assertEqual(str(game), game.name)
