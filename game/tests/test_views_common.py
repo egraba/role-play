@@ -1,7 +1,7 @@
 import random
 from datetime import datetime
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Permission, User
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 from django.test import TestCase
@@ -16,8 +16,10 @@ from game.views.common import DetailCharacterView, GameView, IndexView
 class IndexViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
+        permission = Permission.objects.get(codename="add_game")
         user = User.objects.create(username=utils.generate_random_name(5))
         user.set_password("pwd")
+        user.user_permissions.add(permission)
         user.save()
         number_of_games = 10
         for i in range(number_of_games):
@@ -67,7 +69,7 @@ class IndexViewTest(TestCase):
                 self.assertTrue(last_date >= game.start_date)
                 last_date = game.start_date
 
-    def test_context_data_user_logged(self):
+    def test_context_data_master_logged(self):
         self.user = User.objects.last()
         self.client.login(username=self.user.username, password="pwd")
         response = self.client.get(reverse("index"))
@@ -79,6 +81,18 @@ class IndexViewTest(TestCase):
         response = self.client.get(reverse("index"))
         self.assertEqual(response.status_code, 200)
         self.assertFalse(response.context["game_list"].exists())
+
+    def test_context_data_player_logged(self):
+        permission = Permission.objects.get(codename="add_character")
+        user = User.objects.create(username=utils.generate_random_name(5))
+        user.set_password("pwd")
+        user.user_permissions.add(permission)
+        user.save()
+        self.client.login(username=user.username, password="pwd")
+        response = self.client.get(reverse("index"))
+        self.assertEqual(response.status_code, 200)
+        game = Game.objects.filter(character__user=user)
+        self.assertQuerysetEqual(response.context["game_list"], game)
 
 
 class GameViewTest(TestCase):

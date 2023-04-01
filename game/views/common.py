@@ -13,8 +13,10 @@ class IndexView(ListView):
     template_name = "game/index.html"
 
     def get_queryset(self):
-        if self.request.user.is_authenticated:
+        if self.request.user.has_perm("game.add_game"):
             return super().get_queryset().filter(user=self.request.user)
+        elif self.request.user.has_perm("game.add_character"):
+            return super().get_queryset().filter(character__user=self.request.user)
         else:
             return super().get_queryset().none()
 
