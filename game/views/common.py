@@ -8,7 +8,7 @@ from game.views.mixins import GameContextMixin
 
 class IndexView(ListView):
     model = Game
-    paginate_by = 10
+    paginate_by = 5
     ordering = ["-start_date"]
     template_name = "game/index.html"
 

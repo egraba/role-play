@@ -19,13 +19,13 @@ class IndexViewTest(TestCase):
         user = User.objects.create(username=utils.generate_random_name(5))
         user.set_password("pwd")
         user.save()
-        number_of_games = 14
+        number_of_games = 10
         for i in range(number_of_games):
             game = Game.objects.create(
                 name=utils.generate_random_string(20),
                 start_date=datetime.now(tz=timezone.utc),
             )
-            if i < 12:
+            if i < (number_of_games - 3):
                 game.user = user
                 game.save()
 
@@ -45,7 +45,7 @@ class IndexViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue("is_paginated" in response.context)
         self.assertTrue(response.context["is_paginated"])
-        self.assertEqual(len(response.context["game_list"]), 10)
+        self.assertEqual(len(response.context["game_list"]), 5)
 
     def test_pagination_size_next_page(self):
         self.user = User.objects.last()
