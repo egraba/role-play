@@ -56,7 +56,7 @@ class GameModelTest(TestCase):
     def test_user_type(self):
         game = Game.objects.last()
         user = game._meta.get_field("user")
-        self.assertTrue(user, models.OneToOneField)
+        self.assertTrue(user, models.ForeignKey)
 
     def test_str_is_name(self):
         game = Game.objects.last()

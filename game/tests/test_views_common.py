@@ -16,12 +16,18 @@ from game.views.common import DetailCharacterView, GameView, IndexView
 class IndexViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        number_of_games = 12
+        user = User.objects.create(username=utils.generate_random_name(5))
+        user.set_password("pwd")
+        user.save()
+        number_of_games = 14
         for i in range(number_of_games):
-            Game.objects.create(
+            game = Game.objects.create(
                 name=utils.generate_random_string(20),
                 start_date=datetime.now(tz=timezone.utc),
             )
+            if i < 12:
+                game.user = user
+                game.save()
 
     def test_view_mapping(self):
         response = self.client.get(reverse("index"))
@@ -33,6 +39,8 @@ class IndexViewTest(TestCase):
         self.assertTemplateUsed(response, "game/index.html")
 
     def test_pagination_size(self):
+        self.user = User.objects.last()
+        self.client.login(username=self.user.username, password="pwd")
         response = self.client.get(reverse("index"))
         self.assertEqual(response.status_code, 200)
         self.assertTrue("is_paginated" in response.context)
@@ -40,6 +48,8 @@ class IndexViewTest(TestCase):
         self.assertEqual(len(response.context["game_list"]), 10)
 
     def test_pagination_size_next_page(self):
+        self.user = User.objects.last()
+        self.client.login(username=self.user.username, password="pwd")
         response = self.client.get(reverse("index") + "?page=2")
         self.assertEqual(response.status_code, 200)
         self.assertTrue("is_paginated" in response.context)
@@ -56,6 +66,14 @@ class IndexViewTest(TestCase):
             else:
                 self.assertTrue(last_date >= game.start_date)
                 last_date = game.start_date
+
+    def test_context_data(self):
+        self.user = User.objects.last()
+        self.client.login(username=self.user.username, password="pwd")
+        response = self.client.get(reverse("index"))
+        self.assertEqual(response.status_code, 200)
+        game_list = Game.objects.filter(user=self.user)
+        self.assertTrue(set(response.context["game_list"]).issubset(set(game_list)))
 
 
 class GameViewTest(TestCase):

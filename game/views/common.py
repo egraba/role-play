@@ -12,6 +12,12 @@ class IndexView(ListView):
     ordering = ["-start_date"]
     template_name = "game/index.html"
 
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
+            return super().get_queryset().filter(user=self.request.user)
+        else:
+            return super().get_queryset().none()
+
 
 class GameView(LoginRequiredMixin, ListView, GameContextMixin):
     model = Event
