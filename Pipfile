@@ -4,34 +4,16 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-asgiref = "*"
-black = "*"
-cfgv = "*"
-click = "*"
-coverage = "*"
-distlib = "*"
 dj-database-url = "*"
-django = ">=4.1.7"
+django = "==4.1.7"
 django-fsm = "*"
-filelock = "*"
 gunicorn = "*"
-identify = "*"
-mccabe = "*"
-mypy-extensions = "*"
-nodeenv = "*"
-packaging = "*"
-pathspec = "*"
-platformdirs = "*"
-pre-commit = "*"
 psycopg2-binary = "*"
-pycodestyle = "*"
-pyflakes = "*"
-pyyaml = "*"
-sqlparse = "*"
-virtualenv = "*"
 whitenoise = "*"
 
 [dev-packages]
+black = "*"
+pre-commit = "*"
 
 [requires]
 python_version = "3.11"
