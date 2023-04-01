@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Added
+* Logged users now view the games they should view
 * Password reset capabilities
 * Pipenv is now the virtualenv management tool
 
