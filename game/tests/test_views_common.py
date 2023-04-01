@@ -67,13 +67,18 @@ class IndexViewTest(TestCase):
                 self.assertTrue(last_date >= game.start_date)
                 last_date = game.start_date
 
-    def test_context_data(self):
+    def test_context_data_user_logged(self):
         self.user = User.objects.last()
         self.client.login(username=self.user.username, password="pwd")
         response = self.client.get(reverse("index"))
         self.assertEqual(response.status_code, 200)
         game_list = Game.objects.filter(user=self.user)
         self.assertTrue(set(response.context["game_list"]).issubset(set(game_list)))
+
+    def test_context_data_anonymous_user(self):
+        response = self.client.get(reverse("index"))
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.context["game_list"].exists())
 
 
 class GameViewTest(TestCase):
