@@ -18,7 +18,7 @@ class IndexView(ListView):
             try:
                 context["character"] = Character.objects.filter(
                     user=self.request.user
-                ).get()
+                ).last()
             except ObjectDoesNotExist:
                 pass
         return context

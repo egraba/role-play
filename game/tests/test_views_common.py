@@ -94,6 +94,32 @@ class IndexViewTest(TestCase):
         game = Game.objects.filter(character__user=user)
         self.assertQuerysetEqual(response.context["game_list"], game)
 
+    def test_context_data_player_logged_no_existing_character(self):
+        permission = Permission.objects.get(codename="add_character")
+        user = User.objects.create(username=utils.generate_random_name(5))
+        user.set_password("pwd")
+        user.user_permissions.add(permission)
+        user.save()
+        self.client.login(username=user.username, password="pwd")
+        response = self.client.get(reverse("index"))
+        self.assertEqual(response.status_code, 200)
+        with self.assertRaises(KeyError):
+            response.context["pending_action"]
+        self.assertRaises(ObjectDoesNotExist)
+
+    def test_context_data_player_logged_existing_character(self):
+        permission = Permission.objects.get(codename="add_character")
+        user = User.objects.create(username=utils.generate_random_name(5))
+        user.set_password("pwd")
+        user.user_permissions.add(permission)
+        user.save()
+        Character.objects.create(name=utils.generate_random_name(5), user=user)
+        self.client.login(username=user.username, password="pwd")
+        response = self.client.get(reverse("index"))
+        self.assertEqual(response.status_code, 200)
+        character = Character.objects.last()
+        self.assertEqual(response.context["character"], character)
+
 
 class GameViewTest(TestCase):
     @classmethod
