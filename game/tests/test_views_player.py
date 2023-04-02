@@ -64,6 +64,10 @@ class CreateCharacterViewTest(TestCase):
         self.assertEqual(character.hp, 100)
         self.assertEqual(character.max_hp, 100)
 
+    def test_character_creation_already_existing_character(self):
+        self.client.get(reverse(self.path_name))
+        self.assertRaises(PermissionDenied)
+
 
 class DiceLaunchViewTest(TestCase):
     path_name = "dicelaunch-create"

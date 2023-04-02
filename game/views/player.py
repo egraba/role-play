@@ -1,6 +1,7 @@
 import random
 
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.core.exceptions import PermissionDenied
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView
 
@@ -18,6 +19,14 @@ class CreateCharacterView(PermissionRequiredMixin, CreateView):
     model = Character
     form_class = CreateCharacterForm
     template_name = "game/createcharacter.html"
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        try:
+            Character.objects.filter(user=self.request.user).get()
+            raise PermissionDenied
+        except Character.DoesNotExist:
+            pass
 
     def get_success_url(self):
         return reverse_lazy("character-detail", args=(self.object.id,))
