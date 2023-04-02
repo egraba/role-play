@@ -91,8 +91,8 @@ class IndexViewTest(TestCase):
         self.client.login(username=user.username, password="pwd")
         response = self.client.get(reverse("index"))
         self.assertEqual(response.status_code, 200)
-        game = Game.objects.filter(character__user=user)
-        self.assertQuerysetEqual(response.context["game_list"], game)
+        game_list = Game.objects.filter(character__user=user)
+        self.assertQuerysetEqual(response.context["game_list"], game_list)
 
     def test_context_data_player_logged_no_existing_character(self):
         permission = Permission.objects.get(codename="add_character")
