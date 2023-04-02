@@ -57,6 +57,11 @@ urlpatterns = [
         name="healing-create",
     ),
     path(
+        "create_character",
+        player.CreateCharacterView.as_view(),
+        name="character-create",
+    ),
+    path(
         "<int:game_id>/character/<int:character_id>/launch_dice/",
         player.DiceLaunchView.as_view(),
         name="dicelaunch-create",

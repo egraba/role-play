@@ -1,6 +1,14 @@
 from django import forms
 
-from game.models import Choice, Damage, DiceLaunch, Healing, PendingAction, XpIncrease
+from game.models import (
+    Character,
+    Choice,
+    Damage,
+    DiceLaunch,
+    Healing,
+    PendingAction,
+    XpIncrease,
+)
 
 
 class CreateGameForm(forms.Form):
@@ -54,6 +62,12 @@ class HealForm(forms.ModelForm):
         if hp < 1:
             raise forms.ValidationError("The damage should be superior to 1...")
         return hp
+
+
+class CreateCharacterForm(forms.ModelForm):
+    class Meta:
+        model = Character
+        fields = ["name", "race"]
 
 
 class DiceLaunchForm(forms.ModelForm):

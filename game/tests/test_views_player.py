@@ -7,10 +7,62 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
-from game.forms import ChoiceForm
+from game.forms import ChoiceForm, CreateCharacterForm
 from game.models import Character, Choice, DiceLaunch, Game, PendingAction
 from game.tests import utils
-from game.views.player import ChoiceView, DiceLaunchSuccessView, DiceLaunchView
+from game.views.player import (
+    ChoiceView,
+    CreateCharacterView,
+    DiceLaunchSuccessView,
+    DiceLaunchView,
+)
+
+
+class CreateCharacterViewTest(TestCase):
+    path_name = "character-create"
+
+    @classmethod
+    def setUpTestData(cls):
+        permission = Permission.objects.get(codename="add_character")
+        user = User.objects.create(username=utils.generate_random_name(5))
+        user.set_password("pwd")
+        user.user_permissions.add(permission)
+        user.save()
+
+    def setUp(self):
+        self.user = User.objects.last()
+        self.client.login(username=self.user.username, password="pwd")
+
+    def test_view_mapping(self):
+        response = self.client.get(reverse(self.path_name))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.resolver_match.func.view_class, CreateCharacterView)
+
+    def test_template_mapping(self):
+        response = self.client.get(reverse(self.path_name))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "game/createcharacter.html")
+
+    def test_character_creation_no_existing_character(self):
+        name = utils.generate_random_name(10)
+        race = random.choice(Character.RACES)[0]
+        data = {"name": f"{name}", "race": f"{race}"}
+        form = CreateCharacterForm(data)
+        self.assertTrue(form.is_valid())
+        response = self.client.post(
+            reverse(self.path_name),
+            data=form.cleaned_data,
+        )
+        self.assertEqual(response.status_code, 302)
+        character = Character.objects.last()
+        self.assertRedirects(
+            response, reverse("character-detail", args=(character.id,))
+        )
+        self.assertEqual(character.name, form.cleaned_data["name"])
+        self.assertEqual(character.race, form.cleaned_data["race"])
+        self.assertEqual(character.xp, 0)
+        self.assertEqual(character.hp, 100)
+        self.assertEqual(character.max_hp, 100)
 
 
 class DiceLaunchViewTest(TestCase):

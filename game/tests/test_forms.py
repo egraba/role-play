@@ -3,6 +3,7 @@ from django.test import TestCase
 
 from game.forms import (
     ChoiceForm,
+    CreateCharacterForm,
     CreateGameForm,
     CreateTaleForm,
     DamageForm,
@@ -55,6 +56,20 @@ class HealFormTest(TestCase):
     def test_hp_type(self):
         form = HealForm()
         self.assertIsInstance(form.fields["hp"].widget, forms.NumberInput)
+
+
+class CreateCharacterFormTest(TestCase):
+    def test_name_type(self):
+        form = CreateCharacterForm()
+        self.assertIsInstance(form.fields["name"].widget, forms.TextInput)
+
+    def test_name_max_length(self):
+        form = CreateCharacterForm()
+        self.assertEqual(form.fields["name"].max_length, 100)
+
+    def test_race_type(self):
+        form = CreateCharacterForm()
+        self.assertIsInstance(form.fields["race"].widget, forms.Select)
 
 
 class ChoiceFormTest(TestCase):
