@@ -31,6 +31,12 @@ class CreateCharacterView(PermissionRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse_lazy("character-detail", args=(self.object.id,))
 
+    def form_valid(self, form):
+        character = form.save(commit=False)
+        character.user = self.request.user
+        character.save()
+        return super().form_valid(form)
+
 
 class DiceLaunchView(
     PermissionRequiredMixin, CreateView, EventConditionsMixin, CharacterContextMixin

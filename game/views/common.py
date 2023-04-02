@@ -12,6 +12,17 @@ class IndexView(ListView):
     ordering = ["-start_date"]
     template_name = "game/index.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.is_authenticated:
+            try:
+                context["character"] = Character.objects.filter(
+                    user=self.request.user
+                ).get()
+            except ObjectDoesNotExist:
+                pass
+        return context
+
     def get_queryset(self):
         if self.request.user.has_perm("game.add_game"):
             return super().get_queryset().filter(user=self.request.user)
