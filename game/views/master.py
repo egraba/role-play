@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
@@ -131,11 +131,11 @@ class CreatePendingActionView(
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
-        pending_action_list = gmodels.PendingAction.objects.filter(
-            character=self.character
-        )
-        if len(pending_action_list) > 0:
+        try:
+            gmodels.PendingAction.objects.get(character=self.character)
             raise PermissionDenied
+        except ObjectDoesNotExist:
+            pass
 
     def get_success_url(self):
         return reverse_lazy("game", args=(self.game_id,))
