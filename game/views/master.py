@@ -96,12 +96,7 @@ class EndGameView(PermissionRequiredMixin, UpdateView):
         event.date = timezone.now()
         event.message = "The game ended."
         event.save()
-        return HttpResponseRedirect(
-            reverse(
-                "game",
-                args=(game.id,),
-            )
-        )
+        return HttpResponseRedirect(reverse("game", args=(game.id,)))
 
 
 class CreateTaleView(PermissionRequiredMixin, FormView, gmixins.EventConditionsMixin):
