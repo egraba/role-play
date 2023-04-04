@@ -48,9 +48,9 @@ class GameView(LoginRequiredMixin, ListView, gmixins.GameContextMixin):
         try:
             player = gmodels.Character.objects.get(user=self.request.user)
             context["player"] = player
-            context["pending_action"] = gmodels.PendingAction.objects.filter(
+            context["pending_action"] = gmodels.PendingAction.objects.get(
                 game=self.game.id, character=player
-            ).get()
+            )
         except ObjectDoesNotExist:
             pass
         return context
