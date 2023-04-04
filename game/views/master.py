@@ -1,41 +1,30 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.views.generic import CreateView, FormView, ListView, UpdateView
 from django_fsm import TransitionNotAllowed
 
-from game.forms import (
-    CreateGameForm,
-    CreatePendingActionForm,
-    CreateTaleForm,
-    DamageForm,
-    HealForm,
-    IncreaseXpForm,
-)
-from game.models import Character, Damage, Event, Game, PendingAction, Tale, XpIncrease
-from game.views.mixins import (
-    CharacterContextMixin,
-    EventConditionsMixin,
-    GameContextMixin,
-)
+import game.forms as gforms
+import game.models as gmodels
+import game.views.mixins as gmixins
 
 
 class CreateGameView(PermissionRequiredMixin, FormView):
     permission_required = "game.add_game"
     template_name = "game/creategame.html"
-    form_class = CreateGameForm
+    form_class = gforms.CreateGameForm
 
     def get_success_url(self):
         return reverse_lazy("game", args=(self.game.id,))
 
     def form_valid(self, form):
-        self.game = Game()
+        self.game = gmodels.Game()
         self.game.name = form.cleaned_data["name"]
         self.game.user = self.request.user
         self.game.save()
-        tale = Tale()
+        tale = gmodels.Tale()
         tale.game = self.game
         tale.message = "The Master created the story."
         tale.description = form.cleaned_data["description"]
@@ -43,9 +32,9 @@ class CreateGameView(PermissionRequiredMixin, FormView):
         return super().form_valid(form)
 
 
-class AddCharacterView(PermissionRequiredMixin, ListView, GameContextMixin):
+class AddCharacterView(PermissionRequiredMixin, ListView, gmixins.GameContextMixin):
     permission_required = "game.change_character"
-    model = Character
+    model = gmodels.Character
     paginate_by = 10
     ordering = ["-xp"]
     template_name = "game/addcharacter.html"
@@ -54,9 +43,11 @@ class AddCharacterView(PermissionRequiredMixin, ListView, GameContextMixin):
         return super().get_queryset().filter(game=None)
 
 
-class AddCharacterConfirmView(PermissionRequiredMixin, UpdateView, GameContextMixin):
+class AddCharacterConfirmView(
+    PermissionRequiredMixin, UpdateView, gmixins.GameContextMixin
+):
     permission_required = "game.change_character"
-    model = Character
+    model = gmodels.Character
     fields = []
     template_name = "game/addcharacterconfirm.html"
 
@@ -64,21 +55,16 @@ class AddCharacterConfirmView(PermissionRequiredMixin, UpdateView, GameContextMi
         character = self.get_object()
         character.game = self.game
         character.save()
-        event = Event.objects.create(game=self.game)
+        event = gmodels.Event.objects.create(game=self.game)
         event.date = timezone.now()
         event.message = f"{character} was added to the game."
         event.save()
-        return HttpResponseRedirect(
-            reverse(
-                "game",
-                args=(self.game.id,),
-            )
-        )
+        return HttpResponseRedirect(reverse("game", args=(self.game.id,)))
 
 
 class StartGameView(PermissionRequiredMixin, UpdateView):
     permission_required = "game.change_game"
-    model = Game
+    model = gmodels.Game
     fields = []
     template_name = "game/startgame.html"
 
@@ -87,23 +73,18 @@ class StartGameView(PermissionRequiredMixin, UpdateView):
         try:
             game.start()
             game.save()
-            event = Event.objects.create(game=game)
+            event = gmodels.Event.objects.create(game=game)
             event.date = timezone.now()
             event.message = "The game started."
             event.save()
         except TransitionNotAllowed:
             raise PermissionDenied
-        return HttpResponseRedirect(
-            reverse(
-                "game",
-                args=(game.id,),
-            )
-        )
+        return HttpResponseRedirect(reverse("game", args=(game.id,)))
 
 
 class EndGameView(PermissionRequiredMixin, UpdateView):
     permission_required = "game.change_game"
-    model = Game
+    model = gmodels.Game
     fields = []
     template_name = "game/endgame.html"
 
@@ -111,30 +92,25 @@ class EndGameView(PermissionRequiredMixin, UpdateView):
         game = self.get_object()
         game.end()
         game.save()
-        event = Event.objects.create(game=game)
+        event = gmodels.Event.objects.create(game=game)
         event.date = timezone.now()
         event.message = "The game ended."
         event.save()
-        return HttpResponseRedirect(
-            reverse(
-                "game",
-                args=(game.id,),
-            )
-        )
+        return HttpResponseRedirect(reverse("game", args=(game.id,)))
 
 
-class CreateTaleView(PermissionRequiredMixin, FormView, EventConditionsMixin):
+class CreateTaleView(PermissionRequiredMixin, FormView, gmixins.EventConditionsMixin):
     permission_required = "game.add_tale"
-    model = Tale
+    model = gmodels.Tale
     fields = ["description"]
     template_name = "game/createtale.html"
-    form_class = CreateTaleForm
+    form_class = gforms.CreateTaleForm
 
     def get_success_url(self):
         return reverse_lazy("game", args=(self.game.id,))
 
     def form_valid(self, form):
-        tale = Tale()
+        tale = gmodels.Tale()
         tale.game = self.game
         tale.message = "The Master updated the story."
         tale.description = form.cleaned_data["description"]
@@ -143,21 +119,26 @@ class CreateTaleView(PermissionRequiredMixin, FormView, EventConditionsMixin):
 
 
 class CreatePendingActionView(
-    PermissionRequiredMixin, CreateView, EventConditionsMixin, CharacterContextMixin
+    PermissionRequiredMixin,
+    CreateView,
+    gmixins.EventConditionsMixin,
+    gmixins.CharacterContextMixin,
 ):
     permission_required = "game.add_pendingaction"
-    model = PendingAction
-    form_class = CreatePendingActionForm
+    model = gmodels.PendingAction
+    form_class = gforms.CreatePendingActionForm
     template_name = "game/creatependingaction.html"
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
-        pending_action_list = PendingAction.objects.filter(character=self.character)
-        if len(pending_action_list) > 0:
+        try:
+            gmodels.PendingAction.objects.get(character=self.character)
             raise PermissionDenied
+        except ObjectDoesNotExist:
+            pass
 
     def get_success_url(self):
-        return reverse_lazy("game", args=(self.game_id,))
+        return reverse_lazy("game", args=(self.game.id,))
 
     def form_valid(self, form):
         pending_action = form.save(commit=False)
@@ -170,15 +151,18 @@ class CreatePendingActionView(
 
 
 class IncreaseXpView(
-    PermissionRequiredMixin, FormView, EventConditionsMixin, CharacterContextMixin
+    PermissionRequiredMixin,
+    FormView,
+    gmixins.EventConditionsMixin,
+    gmixins.CharacterContextMixin,
 ):
     permission_required = "game.add_xpincrease"
-    model = XpIncrease
-    form_class = IncreaseXpForm
+    model = gmodels.XpIncrease
+    form_class = gforms.IncreaseXpForm
     template_name = "game/xp.html"
 
     def get_success_url(self):
-        return reverse_lazy("game", args=(self.game_id,))
+        return reverse_lazy("game", args=(self.game.id,))
 
     def form_valid(self, form):
         xp_increase = form.save(commit=False)
@@ -195,15 +179,18 @@ class IncreaseXpView(
 
 
 class DamageView(
-    PermissionRequiredMixin, FormView, EventConditionsMixin, CharacterContextMixin
+    PermissionRequiredMixin,
+    FormView,
+    gmixins.EventConditionsMixin,
+    gmixins.CharacterContextMixin,
 ):
     permission_required = "game.add_damage"
-    model = Damage
-    form_class = DamageForm
+    model = gmodels.Damage
+    form_class = gforms.DamageForm
     template_name = "game/damage.html"
 
     def get_success_url(self):
-        return reverse_lazy("game", args=(self.game_id,))
+        return reverse_lazy("game", args=(self.game.id,))
 
     def form_valid(self, form):
         damage = form.save(commit=False)
@@ -214,10 +201,11 @@ class DamageView(
             damage.message = (
                 f"{self.character} was hit: -{damage.hp} HP! {self.character} is dead."
             )
-            self.character.game = None  # The character is out of the game.
-            self.character.hp = (
-                self.character.max_hp
-            )  # The character is healed when out.
+            # The character removed from the game.
+            self.character.game = None
+            # The character is healed when remove from the game,
+            # so that they can join another game.
+            self.character.hp = self.character.max_hp
             self.character.save()
         else:
             damage.message = f"{self.character} was hit: -{damage.hp} HP!"
@@ -227,20 +215,24 @@ class DamageView(
 
 
 class HealView(
-    PermissionRequiredMixin, FormView, EventConditionsMixin, CharacterContextMixin
+    PermissionRequiredMixin,
+    FormView,
+    gmixins.EventConditionsMixin,
+    gmixins.CharacterContextMixin,
 ):
     permission_required = "game.add_healing"
-    form_class = HealForm
+    form_class = gforms.HealForm
     template_name = "game/heal.html"
 
     def get_success_url(self):
-        return reverse_lazy("game", args=(self.game_id,))
+        return reverse_lazy("game", args=(self.game.id,))
 
     def form_valid(self, form):
         healing = form.save(commit=False)
         healing.game = self.game
         healing.character = self.character
         healing.date = timezone.now()
+        # A character cannot have more HP that their max HP.
         max_healing = self.character.max_hp - self.character.hp
         if healing.hp > max_healing:
             healing.hp = max_healing

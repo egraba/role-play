@@ -1,14 +1,6 @@
 from django import forms
 
-from game.models import (
-    Character,
-    Choice,
-    Damage,
-    DiceLaunch,
-    Healing,
-    PendingAction,
-    XpIncrease,
-)
+import game.models as gmodels
 
 
 class CreateGameForm(forms.Form):
@@ -22,13 +14,13 @@ class CreateTaleForm(forms.Form):
 
 class CreatePendingActionForm(forms.ModelForm):
     class Meta:
-        model = PendingAction
+        model = gmodels.PendingAction
         fields = ["action_type"]
 
 
 class IncreaseXpForm(forms.ModelForm):
     class Meta:
-        model = XpIncrease
+        model = gmodels.XpIncrease
         fields = ["xp"]
 
     def clean_xp(self):
@@ -42,7 +34,7 @@ class IncreaseXpForm(forms.ModelForm):
 
 class DamageForm(forms.ModelForm):
     class Meta:
-        model = Damage
+        model = gmodels.Damage
         fields = ["hp"]
 
     def clean_hp(self):
@@ -54,7 +46,7 @@ class DamageForm(forms.ModelForm):
 
 class HealForm(forms.ModelForm):
     class Meta:
-        model = Healing
+        model = gmodels.Healing
         fields = ["hp"]
 
     def clean_hp(self):
@@ -66,19 +58,19 @@ class HealForm(forms.ModelForm):
 
 class CreateCharacterForm(forms.ModelForm):
     class Meta:
-        model = Character
+        model = gmodels.Character
         fields = ["name", "race"]
 
 
 class DiceLaunchForm(forms.ModelForm):
     class Meta:
-        model = DiceLaunch
+        model = gmodels.DiceLaunch
         fields = []
 
 
 class ChoiceForm(forms.ModelForm):
     class Meta:
-        model = Choice
+        model = gmodels.Choice
         fields = ["selection"]
         widgets = {
             "selection": forms.Textarea,

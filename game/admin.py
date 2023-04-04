@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from game.models import Character, Event, Game, PendingAction, Tale
+import game.models as gmodels
 
 
 class GameAdmin(admin.ModelAdmin):
@@ -28,8 +28,8 @@ class PendingActionAdmin(admin.ModelAdmin):
     list_display = fields
 
 
-admin.site.register(Game, GameAdmin)
-admin.site.register(Character, CharacterAdmin)
-admin.site.register(Tale, TaleAdmin)
-admin.site.register(Event, EventAdmin)
-admin.site.register(PendingAction, PendingActionAdmin)
+admin.site.register(gmodels.Game, GameAdmin)
+admin.site.register(gmodels.Character, CharacterAdmin)
+admin.site.register(gmodels.Tale, TaleAdmin)
+admin.site.register(gmodels.Event, EventAdmin)
+admin.site.register(gmodels.PendingAction, PendingActionAdmin)
