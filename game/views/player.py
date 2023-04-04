@@ -48,7 +48,12 @@ class DiceLaunchView(
 
     def get_success_url(self):
         return reverse_lazy(
-            "dicelaunch-success", args=(self.game.id, self.character.id, self.object.id)
+            "dicelaunch-success",
+            args=(
+                self.game.id,
+                self.character.id,
+                self.object.id,
+            ),
         )
 
     def form_valid(self, form):
