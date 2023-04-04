@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Added
+* Various code enhancements (more Pythonista-like)
 * Players can now create their characters
 * Logged users now view the games they should view
 * Password reset capabilities
