@@ -201,10 +201,11 @@ class DamageView(
             damage.message = (
                 f"{self.character} was hit: -{damage.hp} HP! {self.character} is dead."
             )
-            self.character.game = None  # The character is out of the game.
-            self.character.hp = (
-                self.character.max_hp
-            )  # The character is healed when out.
+            # The character removed from the game.
+            self.character.game = None
+            # The character is healed when remove from the game,
+            # so that they can join another game.
+            self.character.hp = self.character.max_hp
             self.character.save()
         else:
             damage.message = f"{self.character} was hit: -{damage.hp} HP!"
