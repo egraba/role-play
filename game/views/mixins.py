@@ -9,11 +9,11 @@ import game.models as gmodels
 class GameContextMixin(ContextMixin, View):
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
+        game_id = self.kwargs["game_id"]
         try:
-            self.game_id = self.kwargs["game_id"]
-            self.game = gmodels.Game.objects.get(id=self.game_id)
+            self.game = gmodels.Game.objects.get(id=game_id)
         except ObjectDoesNotExist:
-            raise Http404(f"Game [{self.game_id}] does not exist...")
+            raise Http404(f"Game [{game_id}] does not exist...")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

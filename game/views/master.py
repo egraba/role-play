@@ -138,7 +138,7 @@ class CreatePendingActionView(
             pass
 
     def get_success_url(self):
-        return reverse_lazy("game", args=(self.game_id,))
+        return reverse_lazy("game", args=(self.game.id,))
 
     def form_valid(self, form):
         pending_action = form.save(commit=False)
@@ -162,7 +162,7 @@ class IncreaseXpView(
     template_name = "game/xp.html"
 
     def get_success_url(self):
-        return reverse_lazy("game", args=(self.game_id,))
+        return reverse_lazy("game", args=(self.game.id,))
 
     def form_valid(self, form):
         xp_increase = form.save(commit=False)
@@ -190,7 +190,7 @@ class DamageView(
     template_name = "game/damage.html"
 
     def get_success_url(self):
-        return reverse_lazy("game", args=(self.game_id,))
+        return reverse_lazy("game", args=(self.game.id,))
 
     def form_valid(self, form):
         damage = form.save(commit=False)
@@ -225,7 +225,7 @@ class HealView(
     template_name = "game/heal.html"
 
     def get_success_url(self):
-        return reverse_lazy("game", args=(self.game_id,))
+        return reverse_lazy("game", args=(self.game.id,))
 
     def form_valid(self, form):
         healing = form.save(commit=False)
