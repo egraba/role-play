@@ -1,1 +1,1 @@
-web: python manage.py migrate && python manage.py collectstatic && gunicorn role_play.wsgi
+web: pipenv run python manage.py migrate && pipenv run python manage.py collectstatic && pipenv run gunicorn role_play.wsgi
