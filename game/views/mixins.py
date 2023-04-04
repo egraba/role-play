@@ -24,11 +24,11 @@ class GameContextMixin(ContextMixin, View):
 class CharacterContextMixin(ContextMixin, View):
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
+        character_id = self.kwargs["character_id"]
         try:
-            self.character_id = self.kwargs["character_id"]
-            self.character = gmodels.Character.objects.get(id=self.character_id)
+            self.character = gmodels.Character.objects.get(id=character_id)
         except ObjectDoesNotExist:
-            raise Http404(f"Character [{self.character_id}] does not exist...")
+            raise Http404(f"Character [{character_id}] does not exist...")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
