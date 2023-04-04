@@ -1,7 +1,7 @@
 import random
 
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView
 
@@ -19,9 +19,10 @@ class CreateCharacterView(PermissionRequiredMixin, CreateView):
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
         try:
+            # It is not possible for a user to have several characters.
             gmodels.Character.objects.filter(user=self.request.user).get()
             raise PermissionDenied
-        except gmodels.Character.DoesNotExist:
+        except ObjectDoesNotExist:
             pass
 
     def get_success_url(self):
