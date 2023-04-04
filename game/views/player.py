@@ -1,16 +1,41 @@
 import random
 
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.core.exceptions import PermissionDenied
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView
 
-from game.forms import ChoiceForm, DiceLaunchForm
-from game.models import Choice, DiceLaunch, PendingAction
+from game.forms import ChoiceForm, CreateCharacterForm, DiceLaunchForm
+from game.models import Character, Choice, DiceLaunch, PendingAction
 from game.views.mixins import (
     CharacterContextMixin,
     EventConditionsMixin,
     GameContextMixin,
 )
+
+
+class CreateCharacterView(PermissionRequiredMixin, CreateView):
+    permission_required = "game.add_character"
+    model = Character
+    form_class = CreateCharacterForm
+    template_name = "game/createcharacter.html"
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        try:
+            Character.objects.filter(user=self.request.user).get()
+            raise PermissionDenied
+        except Character.DoesNotExist:
+            pass
+
+    def get_success_url(self):
+        return reverse_lazy("character-detail", args=(self.object.id,))
+
+    def form_valid(self, form):
+        character = form.save(commit=False)
+        character.user = self.request.user
+        character.save()
+        return super().form_valid(form)
 
 
 class DiceLaunchView(

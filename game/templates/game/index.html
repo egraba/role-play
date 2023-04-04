@@ -59,6 +59,13 @@
                 {% if perms.game.add_game %}
                     <a href="{% url 'game-create' %}"><button class="rpgui-button"><p>Create a new game</p></button></a></p>
                 {% endif %}
+                {% if perms.game.add_character %}
+                    {% if character %}
+                        <a href="{% url 'character-detail' character.id %}"><button class="rpgui-button"><p>View character</p></button></a></p>
+                    {% else %}
+                        <a href="{% url 'character-create' %}"><button class="rpgui-button"><p>Create a new character</p></button></a></p>
+                    {% endif %}
+                {% endif %}
             </div>
 
         {% endif %}

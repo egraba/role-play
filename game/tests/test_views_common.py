@@ -1,7 +1,7 @@
 import random
 from datetime import datetime
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Permission, User
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 from django.test import TestCase
@@ -16,12 +16,20 @@ from game.views.common import DetailCharacterView, GameView, IndexView
 class IndexViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        number_of_games = 12
+        permission = Permission.objects.get(codename="add_game")
+        user = User.objects.create(username=utils.generate_random_name(5))
+        user.set_password("pwd")
+        user.user_permissions.add(permission)
+        user.save()
+        number_of_games = 10
         for i in range(number_of_games):
-            Game.objects.create(
+            game = Game.objects.create(
                 name=utils.generate_random_string(20),
                 start_date=datetime.now(tz=timezone.utc),
             )
+            if i < (number_of_games - 3):
+                game.user = user
+                game.save()
 
     def test_view_mapping(self):
         response = self.client.get(reverse("index"))
@@ -33,13 +41,17 @@ class IndexViewTest(TestCase):
         self.assertTemplateUsed(response, "game/index.html")
 
     def test_pagination_size(self):
+        self.user = User.objects.last()
+        self.client.login(username=self.user.username, password="pwd")
         response = self.client.get(reverse("index"))
         self.assertEqual(response.status_code, 200)
         self.assertTrue("is_paginated" in response.context)
         self.assertTrue(response.context["is_paginated"])
-        self.assertEqual(len(response.context["game_list"]), 10)
+        self.assertEqual(len(response.context["game_list"]), 5)
 
     def test_pagination_size_next_page(self):
+        self.user = User.objects.last()
+        self.client.login(username=self.user.username, password="pwd")
         response = self.client.get(reverse("index") + "?page=2")
         self.assertEqual(response.status_code, 200)
         self.assertTrue("is_paginated" in response.context)
@@ -56,6 +68,57 @@ class IndexViewTest(TestCase):
             else:
                 self.assertTrue(last_date >= game.start_date)
                 last_date = game.start_date
+
+    def test_context_data_master_logged(self):
+        self.user = User.objects.last()
+        self.client.login(username=self.user.username, password="pwd")
+        response = self.client.get(reverse("index"))
+        self.assertEqual(response.status_code, 200)
+        game_list = Game.objects.filter(user=self.user)
+        self.assertTrue(set(response.context["game_list"]).issubset(set(game_list)))
+
+    def test_context_data_anonymous_user(self):
+        response = self.client.get(reverse("index"))
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.context["game_list"].exists())
+
+    def test_context_data_player_logged(self):
+        permission = Permission.objects.get(codename="add_character")
+        user = User.objects.create(username=utils.generate_random_name(5))
+        user.set_password("pwd")
+        user.user_permissions.add(permission)
+        user.save()
+        self.client.login(username=user.username, password="pwd")
+        response = self.client.get(reverse("index"))
+        self.assertEqual(response.status_code, 200)
+        game_list = Game.objects.filter(character__user=user)
+        self.assertQuerysetEqual(response.context["game_list"], game_list)
+
+    def test_context_data_player_logged_no_existing_character(self):
+        permission = Permission.objects.get(codename="add_character")
+        user = User.objects.create(username=utils.generate_random_name(5))
+        user.set_password("pwd")
+        user.user_permissions.add(permission)
+        user.save()
+        self.client.login(username=user.username, password="pwd")
+        response = self.client.get(reverse("index"))
+        self.assertEqual(response.status_code, 200)
+        with self.assertRaises(KeyError):
+            response.context["pending_action"]
+        self.assertRaises(ObjectDoesNotExist)
+
+    def test_context_data_player_logged_existing_character(self):
+        permission = Permission.objects.get(codename="add_character")
+        user = User.objects.create(username=utils.generate_random_name(5))
+        user.set_password("pwd")
+        user.user_permissions.add(permission)
+        user.save()
+        Character.objects.create(name=utils.generate_random_name(5), user=user)
+        self.client.login(username=user.username, password="pwd")
+        response = self.client.get(reverse("index"))
+        self.assertEqual(response.status_code, 200)
+        character = Character.objects.last()
+        self.assertEqual(response.context["character"], character)
 
 
 class GameViewTest(TestCase):

@@ -4,8 +4,8 @@ from game.models import Character, Event, Game, PendingAction, Tale
 
 
 class GameAdmin(admin.ModelAdmin):
-    fields = ["name", "status"]
-    list_display = ["name", "status", "start_date", "end_date"]
+    fields = ["name", "status", "user"]
+    list_display = ["name", "status", "user", "start_date", "end_date"]
 
 
 class CharacterAdmin(admin.ModelAdmin):

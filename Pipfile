@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+dj-database-url = "*"
+django = "==4.1.7"
+django-fsm = "*"
+gunicorn = "*"
+psycopg2-binary = "*"
+whitenoise = "*"
+
+[dev-packages]
+black = "*"
+pre-commit = "*"
+
+[requires]
+python_version = "3.11"
