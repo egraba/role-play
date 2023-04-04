@@ -16,20 +16,21 @@ class IndexView(ListView):
         context = super().get_context_data(**kwargs)
         if self.request.user.is_authenticated:
             try:
-                context["character"] = gmodels.Character.objects.filter(
+                context["character"] = gmodels.Character.objects.get(
                     user=self.request.user
-                ).last()
+                )
             except ObjectDoesNotExist:
                 pass
         return context
 
     def get_queryset(self):
+        qs = super().get_queryset()
         if self.request.user.has_perm("game.add_game"):
-            return super().get_queryset().filter(user=self.request.user)
+            return qs.filter(user=self.request.user)
         elif self.request.user.has_perm("game.add_character"):
-            return super().get_queryset().filter(character__user=self.request.user)
+            return qs.filter(character__user=self.request.user)
         else:
-            return super().get_queryset().none()
+            return qs.none()
 
 
 class GameView(LoginRequiredMixin, ListView, gmixins.GameContextMixin):
