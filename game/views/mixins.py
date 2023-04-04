@@ -1,9 +1,9 @@
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.http import Http404
 from django.views.generic import View
 from django.views.generic.list import ContextMixin
 
-from game.models import Character, Game
+import game.models as gmodels
 
 
 class GameContextMixin(ContextMixin, View):
@@ -11,8 +11,8 @@ class GameContextMixin(ContextMixin, View):
         super().setup(request, *args, **kwargs)
         try:
             self.game_id = self.kwargs["game_id"]
-            self.game = Game.objects.get(id=self.game_id)
-        except Game.DoesNotExist:
+            self.game = gmodels.Game.objects.get(id=self.game_id)
+        except ObjectDoesNotExist:
             raise Http404(f"Game [{self.game_id}] does not exist...")
 
     def get_context_data(self, **kwargs):
@@ -26,8 +26,8 @@ class CharacterContextMixin(ContextMixin, View):
         super().setup(request, *args, **kwargs)
         try:
             self.character_id = self.kwargs["character_id"]
-            self.character = Character.objects.get(id=self.character_id)
-        except Character.DoesNotExist:
+            self.character = gmodels.Character.objects.get(id=self.character_id)
+        except ObjectDoesNotExist:
             raise Http404(f"Character [{self.character_id}] does not exist...")
 
     def get_context_data(self, **kwargs):
