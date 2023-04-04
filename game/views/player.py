@@ -5,27 +5,23 @@ from django.core.exceptions import PermissionDenied
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView
 
-from game.forms import ChoiceForm, CreateCharacterForm, DiceLaunchForm
-from game.models import Character, Choice, DiceLaunch, PendingAction
-from game.views.mixins import (
-    CharacterContextMixin,
-    EventConditionsMixin,
-    GameContextMixin,
-)
+import game.forms as gforms
+import game.models as gmodels
+import game.views.mixins as gmixins
 
 
 class CreateCharacterView(PermissionRequiredMixin, CreateView):
     permission_required = "game.add_character"
-    model = Character
-    form_class = CreateCharacterForm
+    model = gmodels.Character
+    form_class = gforms.CreateCharacterForm
     template_name = "game/createcharacter.html"
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
         try:
-            Character.objects.filter(user=self.request.user).get()
+            gmodels.Character.objects.filter(user=self.request.user).get()
             raise PermissionDenied
-        except Character.DoesNotExist:
+        except gmodels.Character.DoesNotExist:
             pass
 
     def get_success_url(self):
@@ -39,11 +35,14 @@ class CreateCharacterView(PermissionRequiredMixin, CreateView):
 
 
 class DiceLaunchView(
-    PermissionRequiredMixin, CreateView, EventConditionsMixin, CharacterContextMixin
+    PermissionRequiredMixin,
+    CreateView,
+    gmixins.EventConditionsMixin,
+    gmixins.CharacterContextMixin,
 ):
     permission_required = "game.add_dicelaunch"
-    model = DiceLaunch
-    form_class = DiceLaunchForm
+    model = gmodels.DiceLaunch
+    form_class = gforms.DiceLaunchForm
     template_name = "game/dice.html"
 
     def get_success_url(self):
@@ -60,13 +59,15 @@ class DiceLaunchView(
             f"{self.character} launched a dice: score is {dice_launch.score}!"
         )
         dice_launch.save()
-        pending_action = PendingAction.objects.get(character=self.character)
+        pending_action = gmodels.PendingAction.objects.get(character=self.character)
         pending_action.delete()
         return super().form_valid(form)
 
 
-class DiceLaunchSuccessView(DetailView, GameContextMixin, CharacterContextMixin):
-    model = DiceLaunch
+class DiceLaunchSuccessView(
+    DetailView, gmixins.GameContextMixin, gmixins.CharacterContextMixin
+):
+    model = gmodels.DiceLaunch
     template_name = "game/success.html"
 
     def get_context_data(self, **kwargs):
@@ -75,22 +76,22 @@ class DiceLaunchSuccessView(DetailView, GameContextMixin, CharacterContextMixin)
         return context
 
     def get_object(self):
-        return DiceLaunch.objects.get(pk=self.kwargs.get("action_id"))
+        return gmodels.DiceLaunch.objects.get(pk=self.kwargs.get("action_id"))
 
 
 class ChoiceView(
-    PermissionRequiredMixin, CreateView, EventConditionsMixin, CharacterContextMixin
+    PermissionRequiredMixin,
+    CreateView,
+    gmixins.EventConditionsMixin,
+    gmixins.CharacterContextMixin,
 ):
     permission_required = "game.add_choice"
-    model = Choice
-    form_class = ChoiceForm
+    model = gmodels.Choice
+    form_class = gforms.ChoiceForm
     template_name = "game/choice.html"
 
     def get_success_url(self):
-        return reverse_lazy(
-            "game",
-            args=(self.game.id,),
-        )
+        return reverse_lazy("game", args=(self.game.id,))
 
     def form_valid(self, form):
         choice = form.save(commit=False)
@@ -98,6 +99,6 @@ class ChoiceView(
         choice.character = self.character
         choice.message = f"{self.character.name} made a choice: {choice.selection}."
         choice.save()
-        pending_action = PendingAction.objects.get(character=self.character)
+        pending_action = gmodels.PendingAction.objects.get(character=self.character)
         pending_action.delete()
         return super().form_valid(form)
