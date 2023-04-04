@@ -79,12 +79,7 @@ class StartGameView(PermissionRequiredMixin, UpdateView):
             event.save()
         except TransitionNotAllowed:
             raise PermissionDenied
-        return HttpResponseRedirect(
-            reverse(
-                "game",
-                args=(game.id,),
-            )
-        )
+        return HttpResponseRedirect(reverse("game", args=(game.id,)))
 
 
 class EndGameView(PermissionRequiredMixin, UpdateView):
