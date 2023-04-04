@@ -232,6 +232,7 @@ class HealView(
         healing.game = self.game
         healing.character = self.character
         healing.date = timezone.now()
+        # A character cannot have more HP that their max HP.
         max_healing = self.character.max_hp - self.character.hp
         if healing.hp > max_healing:
             healing.hp = max_healing
