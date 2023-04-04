@@ -43,7 +43,7 @@ jobs:
     - name: Generate Django secret key
       run:
         pipenv shell
-        pipenv run echo "DJANGO_SECRET_KEY=$(python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())')" >> $GITHUB_ENV
+        echo "DJANGO_SECRET_KEY=$(python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())')" >> $GITHUB_ENV
     - name: Run Tests
       run: |
         pipenv run python manage.py test --verbosity=2
