@@ -59,12 +59,7 @@ class AddCharacterConfirmView(
         event.date = timezone.now()
         event.message = f"{character} was added to the game."
         event.save()
-        return HttpResponseRedirect(
-            reverse(
-                "game",
-                args=(self.game.id,),
-            )
-        )
+        return HttpResponseRedirect(reverse("game", args=(self.game.id,)))
 
 
 class StartGameView(PermissionRequiredMixin, UpdateView):
