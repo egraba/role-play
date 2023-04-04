@@ -39,7 +39,8 @@ class CharacterContextMixin(ContextMixin, View):
 class EventConditionsMixin(GameContextMixin, View):
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
-        if not self.game.is_ongoing():
-            raise PermissionDenied()
-        else:
+        if self.game.is_ongoing():
+            # Events can be created only when a game is ongoing.
             pass
+        else:
+            raise PermissionDenied()
