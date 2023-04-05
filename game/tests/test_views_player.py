@@ -64,7 +64,11 @@ class CreateCharacterViewTest(TestCase):
         self.assertEqual(character.user, self.user)
 
     def test_character_creation_already_existing_character(self):
-        self.client.get(reverse(self.path_name))
+        gmodels.Character.objects.create(
+            name=utils.generate_random_name(5), user=self.user
+        )
+        response = self.client.get(reverse(self.path_name))
+        self.assertEqual(response.status_code, 403)
         self.assertRaises(PermissionDenied)
 
 
