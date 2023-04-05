@@ -82,7 +82,9 @@ class DiceLaunchViewTest(TestCase):
         user.set_password("pwd")
         user.user_permissions.add(permission)
         user.save()
+
         game = gmodels.Game.objects.create()
+        # A game can start with a minimum number of characters.
         number_of_characters = 2
         for i in range(number_of_characters):
             character = gmodels.Character.objects.create(
@@ -101,7 +103,13 @@ class DiceLaunchViewTest(TestCase):
         game = gmodels.Game.objects.last()
         character = gmodels.Character.objects.last()
         response = self.client.get(
-            reverse(self.path_name, args=[game.id, character.id])
+            reverse(
+                self.path_name,
+                args=(
+                    game.id,
+                    character.id,
+                ),
+            )
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
@@ -112,7 +120,13 @@ class DiceLaunchViewTest(TestCase):
         game = gmodels.Game.objects.last()
         character = gmodels.Character.objects.last()
         response = self.client.get(
-            reverse(self.path_name, args=[game.id, character.id])
+            reverse(
+                self.path_name,
+                args=(
+                    game.id,
+                    character.id,
+                ),
+            )
         )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "game/dice.html")
@@ -121,7 +135,13 @@ class DiceLaunchViewTest(TestCase):
         game_id = random.randint(10000, 99999)
         character = gmodels.Character.objects.last()
         response = self.client.get(
-            reverse(self.path_name, args=[game_id, character.id])
+            reverse(
+                self.path_name,
+                args=(
+                    game_id,
+                    character.id,
+                ),
+            )
         )
         self.assertEqual(response.status_code, 404)
         self.assertRaises(Http404)
@@ -130,7 +150,13 @@ class DiceLaunchViewTest(TestCase):
         game = gmodels.Game.objects.last()
         character_id = random.randint(10000, 99999)
         response = self.client.get(
-            reverse(self.path_name, args=[game.id, character_id])
+            reverse(
+                self.path_name,
+                args=(
+                    game.id,
+                    character_id,
+                ),
+            )
         )
         self.assertEqual(response.status_code, 404)
         self.assertRaises(Http404)
@@ -139,7 +165,13 @@ class DiceLaunchViewTest(TestCase):
         game = gmodels.Game.objects.last()
         character = gmodels.Character.objects.last()
         response = self.client.get(
-            reverse(self.path_name, args=[game.id, character.id])
+            reverse(
+                self.path_name,
+                args=(
+                    game.id,
+                    character.id,
+                ),
+            )
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context["game"], game)
@@ -149,7 +181,13 @@ class DiceLaunchViewTest(TestCase):
         game = gmodels.Game.objects.create()
         character = gmodels.Character.objects.last()
         response = self.client.get(
-            reverse(self.path_name, args=[game.id, character.id])
+            reverse(
+                self.path_name,
+                args=(
+                    game.id,
+                    character.id,
+                ),
+            )
         )
         self.assertEqual(response.status_code, 403)
         self.assertRaises(PermissionDenied)
@@ -160,7 +198,13 @@ class DiceLaunchViewTest(TestCase):
         game.end()
         game.save()
         response = self.client.get(
-            reverse(self.path_name, args=[game.id, character.id])
+            reverse(
+                self.path_name,
+                args=(
+                    game.id,
+                    character.id,
+                ),
+            )
         )
         self.assertEqual(response.status_code, 403)
         self.assertRaises(PermissionDenied)
@@ -169,13 +213,26 @@ class DiceLaunchViewTest(TestCase):
         game = gmodels.Game.objects.last()
         character = gmodels.Character.objects.last()
         response = self.client.post(
-            reverse(self.path_name, args=[game.id, character.id])
+            reverse(
+                self.path_name,
+                args=(
+                    game.id,
+                    character.id,
+                ),
+            )
         )
         self.assertEqual(response.status_code, 302)
         dice_launch = gmodels.DiceLaunch.objects.last()
         self.assertRedirects(
             response,
-            reverse("dicelaunch-success", args=[game.id, character.id, dice_launch.id]),
+            reverse(
+                "dicelaunch-success",
+                args=(
+                    game.id,
+                    character.id,
+                    dice_launch.id,
+                ),
+            ),
         )
         self.assertEqual(dice_launch.game, game)
         self.assertLessEqual(dice_launch.date.second - timezone.now().second, 2)
