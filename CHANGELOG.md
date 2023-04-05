@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Added
+* Migrate to Django 4.2 and Psycopg3
 * Various code enhancements (more Pythonista-like)
 * Players can now create their characters
 * Logged users now view the games they should view
