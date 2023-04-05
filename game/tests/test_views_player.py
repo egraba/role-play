@@ -46,6 +46,7 @@ class CreateCharacterViewTest(TestCase):
         data = {"name": f"{name}", "race": f"{race}"}
         form = gforms.CreateCharacterForm(data)
         self.assertTrue(form.is_valid())
+
         response = self.client.post(
             reverse(self.path_name),
             data=form.cleaned_data,
