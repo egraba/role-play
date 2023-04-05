@@ -5,11 +5,11 @@ name = "pypi"
 
 [packages]
 dj-database-url = "*"
-django = "==4.1.7"
+django = "~=4.2"
 django-fsm = "*"
 gunicorn = "*"
-psycopg2-binary = "*"
 whitenoise = "*"
+psycopg = {extras = ["binary"], version = "*"}
 
 [dev-packages]
 black = "*"

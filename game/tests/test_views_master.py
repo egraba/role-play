@@ -377,7 +377,7 @@ class CreateTaleViewTest(TestCase):
         game = Game.objects.last()
         response = self.client.get(reverse(self.path_name, args=[game.id]))
         self.assertEqual(response.status_code, 200)
-        self.assertEquals(response.context["game"], game)
+        self.assertEqual(response.context["game"], game)
 
     def test_game_is_under_preparation(self):
         game = Game.objects.create()
@@ -475,8 +475,8 @@ class CreatePendingActionViewTest(TestCase):
             reverse(self.path_name, args=[game.id, character.id])
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEquals(response.context["game"], game)
-        self.assertEquals(response.context["character"], character)
+        self.assertEqual(response.context["game"], game)
+        self.assertEqual(response.context["character"], character)
 
     def test_game_is_under_preparation(self):
         game = Game.objects.create()
@@ -594,8 +594,8 @@ class IncreaseXpViewTest(TestCase):
             reverse(self.path_name, args=[game.id, character.id])
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEquals(response.context["game"], game)
-        self.assertEquals(response.context["character"], character)
+        self.assertEqual(response.context["game"], game)
+        self.assertEqual(response.context["character"], character)
 
     def test_game_is_under_preparation(self):
         game = Game.objects.create()
@@ -711,8 +711,8 @@ class DamageViewTest(TestCase):
             reverse(self.path_name, args=[game.id, character.id])
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEquals(response.context["game"], game)
-        self.assertEquals(response.context["character"], character)
+        self.assertEqual(response.context["game"], game)
+        self.assertEqual(response.context["character"], character)
 
     def test_game_is_under_preparation(self):
         game = Game.objects.create()
@@ -854,8 +854,8 @@ class HealViewTest(TestCase):
             reverse(self.path_name, args=[game.id, character.id])
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEquals(response.context["game"], game)
-        self.assertEquals(response.context["character"], character)
+        self.assertEqual(response.context["game"], game)
+        self.assertEqual(response.context["character"], character)
 
     def test_game_is_under_preparation(self):
         game = Game.objects.create()
