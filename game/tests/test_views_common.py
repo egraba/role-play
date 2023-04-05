@@ -99,7 +99,7 @@ class IndexViewTest(TestCase):
         response = self.client.get(reverse("index"))
         self.assertEqual(response.status_code, 200)
         game_list = gmodels.Game.objects.filter(character__user=user)
-        self.assertQuerysetEqual(response.context["game_list"], game_list)
+        self.assertQuerySetEqual(response.context["game_list"], game_list)
 
     def test_context_data_player_logged_no_existing_character(self):
         permission = Permission.objects.get(codename="add_character")
@@ -250,7 +250,7 @@ class GameViewTest(TestCase):
         tale = tale_list.last()
         self.assertEqual(response.context["tale"], tale)
         character_list = gmodels.Character.objects.filter(game__name="game1")
-        self.assertQuerysetEqual(
+        self.assertQuerySetEqual(
             list(response.context["character_list"]), character_list
         )
         event_list = gmodels.Event.objects.filter(game__name="game1")
@@ -287,7 +287,7 @@ class GameViewTest(TestCase):
         tale = tale_list.last()
         self.assertEqual(response.context["tale"], tale)
         character_list = gmodels.Character.objects.filter(game__name="game1")
-        self.assertQuerysetEqual(
+        self.assertQuerySetEqual(
             list(response.context["character_list"]), character_list
         )
         event_list = gmodels.Event.objects.filter(game__name="game1")
