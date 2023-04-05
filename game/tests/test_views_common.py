@@ -1,12 +1,11 @@
 import random
-from datetime import datetime
+from datetime import datetime, timezone
 
 from django.contrib.auth.models import Permission, User
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 from django.test import TestCase
 from django.urls import reverse
-from django.utils import timezone
 
 import game.models as gmodels
 import game.views.common as gvcommon
