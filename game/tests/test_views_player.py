@@ -265,7 +265,11 @@ class DiceLaunchSuccessViewTest(TestCase):
         response = self.client.get(
             reverse(
                 self.path_name,
-                args=[game.id, character.id, dice_launch.id],
+                args=(
+                    game.id,
+                    character.id,
+                    dice_launch.id,
+                ),
             )
         )
         self.assertEqual(
@@ -277,7 +281,14 @@ class DiceLaunchSuccessViewTest(TestCase):
         character = gmodels.Character.objects.last()
         dice_launch = gmodels.DiceLaunch.objects.last()
         response = self.client.get(
-            reverse(self.path_name, args=[game.id, character.id, dice_launch.id])
+            reverse(
+                self.path_name,
+                args=(
+                    game.id,
+                    character.id,
+                    dice_launch.id,
+                ),
+            )
         )
         self.assertTemplateUsed(response, "game/success.html")
 
@@ -286,7 +297,14 @@ class DiceLaunchSuccessViewTest(TestCase):
         character = gmodels.Character.objects.last()
         dice_launch = gmodels.DiceLaunch.objects.last()
         response = self.client.get(
-            reverse(self.path_name, args=[game_id, character.id, dice_launch.id])
+            reverse(
+                self.path_name,
+                args=(
+                    game_id,
+                    character.id,
+                    dice_launch.id,
+                ),
+            )
         )
         self.assertEqual(response.status_code, 404)
         self.assertRaises(Http404)
@@ -296,7 +314,14 @@ class DiceLaunchSuccessViewTest(TestCase):
         character_id = random.randint(10000, 99999)
         dice_launch = gmodels.DiceLaunch.objects.last()
         response = self.client.get(
-            reverse(self.path_name, args=[game.id, character_id, dice_launch.id])
+            reverse(
+                self.path_name,
+                args=(
+                    game.id,
+                    character_id,
+                    dice_launch.id,
+                ),
+            )
         )
         self.assertEqual(response.status_code, 404)
         self.assertRaises(Http404)
@@ -308,7 +333,11 @@ class DiceLaunchSuccessViewTest(TestCase):
         response = self.client.get(
             reverse(
                 self.path_name,
-                args=[game.id, character.id, dice_launch.id],
+                args=(
+                    game.id,
+                    character.id,
+                    dice_launch.id,
+                ),
             )
         )
         self.assertEqual(response.status_code, 200)
