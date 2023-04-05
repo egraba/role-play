@@ -62,6 +62,9 @@ class IndexViewTest(TestCase):
         self.assertEqual(len(response.context["game_list"]), 2)
 
     def test_ordering(self):
+        self.user = User.objects.last()
+        self.client.login(username=self.user.username, password="pwd")
+
         response = self.client.get(reverse("index"))
         self.assertEqual(response.status_code, 200)
         last_date = 0
