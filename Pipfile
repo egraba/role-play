@@ -13,6 +13,7 @@ whitenoise = "*"
 
 [dev-packages]
 black = "*"
+coverage = "*"
 pre-commit = "*"
 
 [requires]
