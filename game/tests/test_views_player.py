@@ -84,7 +84,7 @@ class DiceLaunchViewTest(TestCase):
         user.save()
 
         game = gmodels.Game.objects.create()
-        # A game can start with a minimum number of characters.
+        # A game can only start with a minimum number of characters.
         number_of_characters = 2
         for i in range(number_of_characters):
             character = gmodels.Character.objects.create(
@@ -359,7 +359,9 @@ class ChoiceViewTest(TestCase):
         user.set_password("pwd")
         user.user_permissions.add(permission)
         user.save()
+
         game = gmodels.Game.objects.create()
+        # A game can only start with a minimum number of characters.
         number_of_characters = 2
         for i in range(number_of_characters):
             character = gmodels.Character.objects.create(
@@ -378,7 +380,13 @@ class ChoiceViewTest(TestCase):
         game = gmodels.Game.objects.last()
         character = gmodels.Character.objects.last()
         response = self.client.get(
-            reverse(self.path_name, args=[game.id, character.id])
+            reverse(
+                self.path_name,
+                args=(
+                    game.id,
+                    character.id,
+                ),
+            )
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.resolver_match.func.view_class, gvplayer.ChoiceView)
@@ -387,7 +395,13 @@ class ChoiceViewTest(TestCase):
         game = gmodels.Game.objects.last()
         character = gmodels.Character.objects.last()
         response = self.client.get(
-            reverse(self.path_name, args=[game.id, character.id])
+            reverse(
+                self.path_name,
+                args=(
+                    game.id,
+                    character.id,
+                ),
+            )
         )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "game/choice.html")
@@ -396,7 +410,13 @@ class ChoiceViewTest(TestCase):
         game_id = random.randint(10000, 99999)
         character = gmodels.Character.objects.last()
         response = self.client.get(
-            reverse(self.path_name, args=[game_id, character.id])
+            reverse(
+                self.path_name,
+                args=(
+                    game_id,
+                    character.id,
+                ),
+            )
         )
         self.assertEqual(response.status_code, 404)
         self.assertRaises(Http404)
@@ -405,7 +425,13 @@ class ChoiceViewTest(TestCase):
         game = gmodels.Game.objects.last()
         character_id = random.randint(10000, 99999)
         response = self.client.get(
-            reverse(self.path_name, args=[game.id, character_id])
+            reverse(
+                self.path_name,
+                args=(
+                    game.id,
+                    character_id,
+                ),
+            )
         )
         self.assertEqual(response.status_code, 404)
         self.assertRaises(Http404)
@@ -414,7 +440,13 @@ class ChoiceViewTest(TestCase):
         game = gmodels.Game.objects.last()
         character = gmodels.Character.objects.last()
         response = self.client.get(
-            reverse(self.path_name, args=[game.id, character.id])
+            reverse(
+                self.path_name,
+                args=(
+                    game.id,
+                    character.id,
+                ),
+            )
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context["game"], game)
@@ -424,7 +456,13 @@ class ChoiceViewTest(TestCase):
         game = gmodels.Game.objects.create()
         character = gmodels.Character.objects.last()
         response = self.client.get(
-            reverse(self.path_name, args=[game.id, character.id])
+            reverse(
+                self.path_name,
+                args=(
+                    game.id,
+                    character.id,
+                ),
+            )
         )
         self.assertEqual(response.status_code, 403)
         self.assertRaises(PermissionDenied)
@@ -435,7 +473,13 @@ class ChoiceViewTest(TestCase):
         game.end()
         game.save()
         response = self.client.get(
-            reverse(self.path_name, args=[game.id, character.id])
+            reverse(
+                self.path_name,
+                args=(
+                    game.id,
+                    character.id,
+                ),
+            )
         )
         self.assertEqual(response.status_code, 403)
         self.assertRaises(PermissionDenied)
@@ -445,17 +489,24 @@ class ChoiceViewTest(TestCase):
         data = {"selection": f"{selection}"}
         form = gforms.ChoiceForm(data)
         self.assertTrue(form.is_valid())
+
         game = gmodels.Game.objects.last()
         character = gmodels.Character.objects.last()
         response = self.client.post(
-            reverse(self.path_name, args=[game.id, character.id]),
+            reverse(
+                self.path_name,
+                args=(
+                    game.id,
+                    character.id,
+                ),
+            ),
             data=form.cleaned_data,
         )
         self.assertEqual(response.status_code, 302)
         choice = gmodels.Choice.objects.last()
         self.assertRedirects(
             response,
-            reverse("game", args=[game.id]),
+            reverse("game", args=(game.id,)),
         )
         self.assertEqual(choice.game, game)
         self.assertLessEqual(choice.date.second - timezone.now().second, 2)
