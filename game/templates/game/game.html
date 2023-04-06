@@ -34,23 +34,27 @@
                     {% if user.is_authenticated and game.status == "O" %}
                         <div class ="rpgui-center inline">
                             {% if perms.game.add_pendingaction %}
-                                <a href={% url 'pendingaction-create' game.id character.id %}>
-                                    <button  class="rpgui-button"><p>Ask for action</p></button>
-                                </a>
+                                {% if not character.pendingaction %}
+                                    <a href={% url 'pendingaction-create' game.id character.id %}>
+                                        <button class="rpgui-button"><p>Ask for action</p></button>
+                                    </a>
+                                {% else %}
+                                    <button disabled class="rpgui-button"><p>Ask for action</p></button>
+                                {% endif %}
                             {% endif %}
                             {% if perms.game.add_xpincrease %}
                                 <a href={% url 'xpincrease-create' game.id character.id %}>
-                                    <button  class="rpgui-button"><p>Increase XP</p></button>
+                                    <button class="rpgui-button"><p>Increase XP</p></button>
                                 </a>
                             {% endif %}
                             {% if perms.game.add_damage %}
                                 <a href={% url 'damage-create' game.id character.id %}>
-                                    <button  class="rpgui-button"><p>Damage</p></button>
+                                    <button class="rpgui-button"><p>Damage</p></button>
                                 </a>
                             {% endif %}
                             {% if perms.game.add_healing %}
                                 <a href={% url 'healing-create' game.id character.id %}>
-                                    <button  class="rpgui-button"><p>Heal</p></button>
+                                    <button class="rpgui-button"><p>Heal</p></button>
                                 </a>
                             {% endif %}
                         </div>
