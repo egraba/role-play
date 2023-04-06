@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+import json
 import os
 from pathlib import Path
 
@@ -28,9 +29,9 @@ SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = os.environ["ALLOWED_HOSTS"]
+ALLOWED_HOSTS = json.loads(os.environ["ALLOWED_HOSTS"])
 
-CSRF_TRUSTED_ORIGINS = ["CSRF_TRUSTED_ORIGINS"]
+CSRF_TRUSTED_ORIGINS = json.loads(os.environ["CSRF_TRUSTED_ORIGINS"])
 
 SECURE_HSTS_SECONDS = 3600
 
