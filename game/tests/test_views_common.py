@@ -254,9 +254,8 @@ class GameViewTest(TestCase):
             list(response.context["character_list"]), character_list
         )
         event_list = gmodels.Event.objects.filter(game__name="game1")
-        self.assertTrue(
-            set(response.context["event_list"]).issubset(set(event_list))
-        )  # issubset() is used because of pagination.
+        # issubset() is used because of pagination.
+        self.assertTrue(set(response.context["event_list"]).issubset(set(event_list)))
         with self.assertRaises(KeyError):
             response.context["player"]
         with self.assertRaises(KeyError):
@@ -291,9 +290,8 @@ class GameViewTest(TestCase):
             list(response.context["character_list"]), character_list
         )
         event_list = gmodels.Event.objects.filter(game__name="game1")
-        self.assertTrue(
-            set(response.context["event_list"]).issubset(set(event_list))
-        )  # issubset() is used because of pagination.
+        # issubset() is used because of pagination.
+        self.assertTrue(set(response.context["event_list"]).issubset(set(event_list)))
         self.assertEqual(response.context["player"], player)
         pending_action = gmodels.PendingAction.objects.filter(
             game__name="game1", character__name="game1 character1"
