@@ -28,7 +28,7 @@
                         (pending {{ character.pendingaction.get_action_type_display }})
                     {% endif %}
                     {% if player %}
-                        {% if player.id == character.user.id %}(you){% endif %}
+                        {% if user.id == character.user.id %}(you){% endif %}
                     {% endif %}
 
                     {% if user.is_authenticated and game.status == "O" %}
