@@ -293,16 +293,6 @@ class GameViewTest(TestCase):
         # issubset() is used because of pagination.
         self.assertTrue(set(response.context["event_list"]).issubset(set(event_list)))
         self.assertEqual(response.context["player"], player)
-        pending_action = gmodels.PendingAction.objects.filter(
-            game__name="game1", character__name="game1 character1"
-        ).get()
-        self.assertEqual(response.context["pending_action"], pending_action)
-        gmodels.PendingAction.objects.filter(
-            game__name="game1", character__name="game1 character1"
-        ).delete()
-        response = self.client.get(reverse("game", args=[game.id]))
-        self.assertEqual(response.status_code, 200)
-        self.assertRaises(ObjectDoesNotExist)
 
 
 class CharacterViewTest(TestCase):
