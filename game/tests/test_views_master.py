@@ -108,6 +108,7 @@ class AddCharacterViewTest(TestCase):
             Character.objects.create(
                 name=utils.generate_random_name(10),
                 race=random.choice(Character.RACES)[0],
+                xp=random.randint(1, 100),
             )
 
     def setUp(self):
