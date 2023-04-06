@@ -195,6 +195,33 @@ class TaleModelTest(TestCase):
         self.assertEqual(str(tale), tale.description)
 
 
+class PendingActionModelTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        game = gmodels.Game.objects.create()
+        character = gmodels.Character.objects.get_or_create(id=1)[0]
+        gmodels.PendingAction.objects.create(game=game, character=character)
+
+    def test_character_type(self):
+        pending_action = gmodels.PendingAction.objects.last()
+        character = pending_action._meta.get_field("character")
+        self.assertTrue(character, models.OneToOneField)
+
+    def test_action_type_type(self):
+        pending_action = gmodels.PendingAction.objects.last()
+        action_type = pending_action._meta.get_field("action_type")
+        self.assertTrue(action_type, models.CharField)
+
+    def test_action_type_max_length(self):
+        pending_action = gmodels.PendingAction.objects.last()
+        max_length = pending_action._meta.get_field("action_type").max_length
+        self.assertEqual(max_length, 1)
+
+    def test_str(self):
+        pending_action = gmodels.PendingAction.objects.last()
+        self.assertEqual(str(pending_action), pending_action.action_type)
+
+
 class XpIncreaseModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -250,33 +277,6 @@ class HealingModelTest(TestCase):
     def test_str(self):
         healing = gmodels.Healing.objects.last()
         self.assertEqual(str(healing), str(healing.hp))
-
-
-class PendingActionModelTest(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        game = gmodels.Game.objects.create()
-        character = gmodels.Character.objects.get_or_create(id=1)[0]
-        gmodels.PendingAction.objects.create(game=game, character=character)
-
-    def test_character_type(self):
-        pending_action = gmodels.PendingAction.objects.last()
-        character = pending_action._meta.get_field("character")
-        self.assertTrue(character, models.ForeignKey)
-
-    def test_action_type_type(self):
-        pending_action = gmodels.PendingAction.objects.last()
-        action_type = pending_action._meta.get_field("action_type")
-        self.assertTrue(action_type, models.CharField)
-
-    def test_action_type_max_length(self):
-        pending_action = gmodels.PendingAction.objects.last()
-        max_length = pending_action._meta.get_field("action_type").max_length
-        self.assertEqual(max_length, 1)
-
-    def test_str(self):
-        pending_action = gmodels.PendingAction.objects.last()
-        self.assertEqual(str(pending_action), pending_action.action_type)
 
 
 class DiceLaunchModelTest(TestCase):
