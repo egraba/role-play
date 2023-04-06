@@ -28,7 +28,7 @@
                         (pending {{ character.pendingaction.get_action_type_display }})
                     {% endif %}
                     {% if player %}
-                        {% if player.id == character.user.id %}(you){% endif %}
+                        {% if user.id == character.user.id %}(you){% endif %}
                     {% endif %}
 
                     {% if user.is_authenticated and game.status == "O" %}
@@ -124,18 +124,18 @@
                         <button class="rpgui-button"><p>Continue the story</p></button>
                     </a>
                 {% endif %}
-                {% if pending_action %}
-                    {% if perms.game.add_dicelaunch and pending_action.action_type == "D" %}
-                        <a class="character-action" href={% url 'dicelaunch-create' game.id pending_action.character.id %}>
+                {% if player.pendingaction %}
+                    {% if perms.game.add_dicelaunch and player.pendingaction.action_type == "D" %}
+                        <a class="character-action" href={% url 'dicelaunch-create' game.id player.id %}>
                             <button class="rpgui-button">
-                                <p>{{ pending_action.get_action_type_display }}</p>
+                                <p>{{ player.pendingaction.get_action_type_display }}</p>
                             </button>
                         </a>
                     {% endif %}
-                    {% if perms.game.add_choice and pending_action.action_type == "C" %}
-                        <a class="character-action" href={% url 'choice-create' game.id pending_action.character.id %}>
+                    {% if perms.game.add_choice and player.pendingaction.action_type == "C" %}
+                        <a class="character-action" href={% url 'choice-create' game.id player.id %}>
                             <button class="rpgui-button">
-                                <p>{{ pending_action.get_action_type_display }}</p>
+                                <p>{{ player.pendingaction.get_action_type_display }}</p>
                             </button>
                         </a>
                     {% endif %}
