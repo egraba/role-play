@@ -11,6 +11,9 @@
 * Password reset capabilities
 * Pipenv is now the virtualenv management tool
 
+### Fixed
+* Players' pending actions are now visible to the master (#33)
+
 ## v0.1.0 - 2023-03-28
 
 ### Initial release
