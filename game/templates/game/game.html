@@ -24,6 +24,9 @@
                     Race: {{ character.get_race_display }},
                     XP: {{ character.xp }},
                     HP: {{ character.hp }} / {{ character.max_hp }}
+                    {% if character.pendingaction %}
+                        (pending {{ character.pendingaction.get_action_type_display }})
+                    {% endif %}
                     {% if player %}
                         {% if player.id == character.user.id %}(you){% endif %}
                     {% endif %}
