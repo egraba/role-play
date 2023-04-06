@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## v0.2.0 - 2023-04-06
 
 ### Added
 * Various tests enhancements
