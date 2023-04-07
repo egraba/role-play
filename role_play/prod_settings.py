@@ -42,13 +42,13 @@ SECURE_HSTS_PRELOAD = True
 # Application definition
 
 INSTALLED_APPS = [
-    "game.apps.GameConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "game.apps.GameConfig",
 ]
 
 MIDDLEWARE = [
