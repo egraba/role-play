@@ -93,11 +93,19 @@ LOGGING = {
             "class": "logging.StreamHandler",
         },
     },
+    "root": {
+        "handlers": ["console"],
+        "level": "WARNING",
+    },
     "loggers": {
         "django": {
             "handlers": ["console"],
             "level": "INFO",
             "propagate": False,
+        },
+        "game": {
+            "handlers": ["console"],
+            "level": "INFO",
         },
     },
 }
