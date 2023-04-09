@@ -1,5 +1,10 @@
 # CHANGELOG
 
+# Unreleased
+
+### Fixed
+* Emails parameters are more relevant
+
 ## v0.2.0 - 2023-04-06
 
 ### Added
