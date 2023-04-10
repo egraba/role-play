@@ -12,6 +12,7 @@ whitenoise = "*"
 psycopg = {extras = ["binary"], version = "*"}
 django-coverage-plugin = "*"
 channels = "*"
+daphne = "*"
 
 [dev-packages]
 black = "*"
