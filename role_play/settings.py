@@ -75,6 +75,15 @@ TEMPLATES = [
 
 ASGI_APPLICATION = "role_play.asgi.application"
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [(os.environ["REDISHOST"], os.environ["REDISPORT"])],
+        },
+    },
+}
+
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases

@@ -13,6 +13,7 @@ psycopg = {extras = ["binary"], version = "*"}
 django-coverage-plugin = "*"
 channels = "*"
 daphne = "*"
+channels-redis = "*"
 
 [dev-packages]
 black = "*"
