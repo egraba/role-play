@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Added
+* It is now possible to chat within the app
 * Add index on event model
 * Upgrade project's libraries to their latest versions
 
