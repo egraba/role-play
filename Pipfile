@@ -10,6 +10,7 @@ django-fsm = "*"
 gunicorn = "*"
 whitenoise = "*"
 psycopg = {extras = ["binary"], version = "*"}
+django-coverage-plugin = "*"
 
 [dev-packages]
 black = "*"
