@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 channels = "*"
+daphne = "*"
 dj-database-url = "*"
 django = "~=4.2"
 django-fsm = "*"

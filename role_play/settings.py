@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
     "game.apps.GameConfig",
     "chat.apps.ChatConfig",
     "django.contrib.admin",
@@ -72,7 +73,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "role_play.wsgi.application"
+ASGI_APPLICATION = "role_play.asgi.application"
 
 
 # Database
