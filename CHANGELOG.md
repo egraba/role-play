@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## Unreleased
+
+### Added
+* It is now possible to chat within the app
+
 ## v0.2.1 - 2023-04-10
 
 ### Added
