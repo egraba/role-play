@@ -2,8 +2,9 @@
 
 {% block content %}
     <div class="rpgui-container framed">
+        <h1 id="title" class="title">{{ room.game }}</h1>
         <div class="rpgui-center">
-            <a href="">- Return to the game -</a>
+            <a href={% url 'game' room.game.id %}>- Return to the game -</a>
         </div>
         <p>
             <label>Discussion:</label>
@@ -16,15 +17,13 @@
         <div class="rpgui-center">
             <button id="chat-message-submit" class="rpgui-button" type="submit"><p>Send</p></button>
         </div>
-        {{ room_name|json_script:"room-name" }}
-        <script>
-            const roomName = JSON.parse(document.getElementById('room-name').textContent);
 
+        <script>
             const chatSocket = new WebSocket(
                 'ws://'
                 + window.location.host
                 + '/ws/chat/'
-                + roomName
+                + {{ room.id }}
                 + '/'
             );
 
