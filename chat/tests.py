@@ -19,10 +19,10 @@ class MessageModelTest(TestCase):
         message = cmodels.Message.objects.last()
         self.assertEqual(message.date.second, timezone.now().second)
 
-    def test_character_type(self):
+    def test_user_type(self):
         message = cmodels.Message.objects.last()
-        character = message._meta.get_field("character")
-        self.assertTrue(character, models.ForeignKey)
+        user = message._meta.get_field("user")
+        self.assertTrue(user, models.ForeignKey)
 
     def test_content_type(self):
         message = cmodels.Message.objects.last()
