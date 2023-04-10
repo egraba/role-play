@@ -3,6 +3,7 @@
 # Unreleased
 
 ### Fixed
+* Password reset screens style is app's one
 * Emails parameters are more relevant
 
 ## v0.2.0 - 2023-04-06
