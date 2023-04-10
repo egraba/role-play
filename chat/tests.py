@@ -3,12 +3,27 @@ from django.test import TestCase
 from django.utils import timezone
 
 import chat.models as cmodels
+import game.models as gmodels
+
+
+class RoomModelTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        game = gmodels.Game.objects.create()
+        cmodels.Room.objects.create(game=game)
+
+    def test_game_type(self):
+        room = cmodels.Room.objects.last()
+        game = room._meta.get_field("game")
+        self.assertTrue(game, models.OneToOneField)
 
 
 class MessageModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cmodels.Message.objects.create()
+        game = gmodels.Game.objects.create()
+        room = cmodels.Room.objects.create(game=game)
+        cmodels.Message.objects.create(room=room)
 
     def test_date_type(self):
         message = cmodels.Message.objects.last()
@@ -33,3 +48,8 @@ class MessageModelTest(TestCase):
         message = cmodels.Message.objects.last()
         max_length = message._meta.get_field("content").max_length
         self.assertEqual(max_length, 200)
+
+    def test_room_type(self):
+        message = cmodels.Message.objects.last()
+        room = message._meta.get_field("room")
+        self.assertTrue(room, models.ForeignKey)
