@@ -140,6 +140,23 @@ class AddCharacterViewTest(TestCase):
         self.assertEqual(response.status_code, 404)
         self.assertRaises(Http404)
 
+    def test_context_data(self):
+        game = gmodels.Game.objects.last()
+        character_list = gmodels.Character.objects.filter(game=None)
+        response = self.client.get(reverse(self.path_name, args=(game.id,)))
+        self.assertTrue(
+            set(response.context["character_list"]).issubset(character_list)
+        )
+
+    def test_context_data_all_characters_already_assigned(self):
+        game = gmodels.Game.objects.last()
+        character_list = gmodels.Character.objects.filter(game=None)
+        for character in character_list:
+            character.game = game
+            character.save()
+        response = self.client.get(reverse(self.path_name, args=(game.id,)))
+        self.assertFalse(response.context["character_list"])
+
 
 class AddCharacterConfirmViewTest(TestCase):
     path_name = "game-add-character-confirm"
