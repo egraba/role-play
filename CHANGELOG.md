@@ -1,6 +1,9 @@
 # CHANGELOG
 
-# Unreleased
+## v0.2.1 - 2023-04-10
+
+### Added
+* Testing coverage is now measured on templates
 
 ### Fixed
 * Password reset screens style is app's one
