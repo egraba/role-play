@@ -4,7 +4,7 @@ import chat.models as cmodels
 
 
 class MessageAdmin(admin.ModelAdmin):
-    fields = ["date", "character", "content"]
+    fields = ["date", "user", "content"]
     list_display = fields
 
 
