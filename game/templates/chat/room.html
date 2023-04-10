@@ -33,14 +33,14 @@
                         document.querySelector('#discussion').value += (data.message + '\n');
                     };
 
-                    chatSocket.onmessage = function(e) {
-                        const data = JSON.parse(e.data);
-                        document.querySelector('#discussion').value += (data.message + '\n');
-                    };
+            chatSocket.onmessage = function(e) {
+                const data = JSON.parse(e.data);
+                document.querySelector('#discussion').value += (data.message + '\n');
+            };
 
-                    chatSocket.onclose = function(e) {
-                        console.error('Chat socket closed unexpectedly');
-                    };
+            chatSocket.onclose = function(e) {
+                console.error('Chat socket closed unexpectedly');
+            };
 
                     document.querySelector('#chat-message-submit').onclick = function(e) {
                         const messageInputDom = document.querySelector('#chat-message-input');
