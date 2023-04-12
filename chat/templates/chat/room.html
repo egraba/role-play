@@ -8,49 +8,53 @@
         </div>
         <p>
             <label>Chat:</label>
-            <textarea id="chat"></textarea><br>
+            <textarea id="chat"></textarea>
         </p>
         <p>
             <label>Message:</label>
-            <input id="chat-message-input" type="text" size="100"><br>
+            <input id="chat-message-input" type="text">
         </p>
         <div class="rpgui-center">
             <button id="chat-message-submit" class="rpgui-button" type="submit"><p>Send</p></button>
         </div>
 
         <script>
-            const chatSocket = new WebSocket(
-                'ws://'
-                + window.location.host
-                + '/ws/chat/'
-                + {{ room.id }}
-                + '/'
-            );
+            const url = 'ws://' + window.location.host + '/ws/chat/' + {{ room.id }} + '/';
+            const chatSocket = new WebSocket(url);
 
             chatSocket.onmessage = function(event) {
                 const data = JSON.parse(event.data);
-                document.querySelector('#chat').value += (data.message + '\n');
+                const chat = document.getElementById('chat');
+                chat.innerHTML += data.message + '\n';
+                chat.scrollTop = chat.scrollHeight;
             };
 
             chatSocket.onclose = function(event) {
                 console.error('Chat socket closed unexpectedly');
             };
 
-            document.querySelector('#chat-message-input').focus();
-            document.querySelector('#chat-message-input').onkeyup = function(event) {
-                if (event.key === 'Enter') {
-                    document.querySelector('#chat-message-submit').click();
-                }
-            };
+            const input = document.getElementById('chat-message-input');
+            const submitButton = document.getElementById('chat-message-submit');
 
-            document.querySelector('#chat-message-submit').onclick = function(event) {
-                const messageInputDom = document.querySelector('#chat-message-input');
-                const message = messageInputDom.value;
-                chatSocket.send(JSON.stringify({
-                    'message': message
-                }));
-                messageInputDom.value = '';
-            };
+            submitButton.addEventListener('click', function(event) {
+                const message = input.value;
+                if (message) {
+                    chatSocket.send(JSON.stringify({
+                        'message': message
+                    }));
+                    input.value = '';
+                    input.focus();
+                }
+            });
+
+            input.addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    submitButton.click();
+                }
+            });
+            input.focus();
+
         </script>
     </div>
 {% endblock %}
