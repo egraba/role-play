@@ -7,8 +7,8 @@
             <a href={% url 'game' room.game.id %}>- Return to the game -</a>
         </div>
         <p>
-            <label>Discussion:</label>
-            <textarea id="discussion"></textarea><br>
+            <label>Chat:</label>
+            <textarea id="chat"></textarea><br>
         </p>
         <p>
             <label>Message:</label>
@@ -29,7 +29,7 @@
 
             chatSocket.onmessage = function(e) {
                 const data = JSON.parse(e.data);
-                document.querySelector('#discussion').value += (data.message + '\n');
+                document.querySelector('#chat').value += (data.message + '\n');
             };
 
             chatSocket.onclose = function(e) {
