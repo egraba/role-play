@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## Unreleased
+
+### Added
+* Upgrade project's libraries to their latest versions
+
 ## v0.2.1 - 2023-04-10
 
 ### Added
