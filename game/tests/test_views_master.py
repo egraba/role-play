@@ -8,6 +8,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
+import chat.models as cmodels
 import game.forms as gforms
 import game.models as gmodels
 import game.views.master as gvmaster
@@ -73,6 +74,7 @@ class AddCharacterViewTest(TestCase):
         user.save()
 
         game = gmodels.Game.objects.create()
+        cmodels.Room.objects.create(game=game)
         number_of_characters_with_game = 5
         number_of_characters_without_game = 12
         for i in range(number_of_characters_with_game):
@@ -169,7 +171,8 @@ class AddCharacterConfirmViewTest(TestCase):
         user.user_permissions.add(permission)
         user.save()
 
-        gmodels.Game.objects.create()
+        game = gmodels.Game.objects.create()
+        cmodels.Room.objects.create(game=game)
         gmodels.Character.objects.create(name=utils.generate_random_name(5))
 
     def setUp(self):
@@ -232,7 +235,8 @@ class StartGameViewTest(TestCase):
         user.user_permissions.add(permission)
         user.save()
 
-        gmodels.Game.objects.create()
+        game = gmodels.Game.objects.create()
+        cmodels.Room.objects.create(game=game)
 
     def setUp(self):
         self.user = User.objects.last()
@@ -356,6 +360,7 @@ class CreateTaleViewTest(TestCase):
         user.save()
 
         game = gmodels.Game.objects.create()
+        cmodels.Room.objects.create(game=game)
         gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
         gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
         game.start()
@@ -435,6 +440,7 @@ class CreatePendingActionViewTest(TestCase):
         user.save()
 
         game = gmodels.Game.objects.create()
+        cmodels.Room.objects.create(game=game)
         gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
         gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
         game.start()
@@ -559,6 +565,7 @@ class IncreaseXpViewTest(TestCase):
         user.save()
 
         game = gmodels.Game.objects.create()
+        cmodels.Room.objects.create(game=game)
         gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
         gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
         game.start()
@@ -680,6 +687,7 @@ class DamageViewTest(TestCase):
         user.save()
 
         game = gmodels.Game.objects.create()
+        cmodels.Room.objects.create(game=game)
         gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
         gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
         game.start()
@@ -826,6 +834,7 @@ class HealViewTest(TestCase):
         user.save()
 
         game = gmodels.Game.objects.create()
+        cmodels.Room.objects.create(game=game)
         gmodels.Character.objects.create(
             game=game, name=utils.generate_random_name(5), hp=1
         )

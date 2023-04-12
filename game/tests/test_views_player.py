@@ -7,6 +7,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
+import chat.models as cmodels
 import game.forms as gforms
 import game.models as gmodels
 import game.views.player as gvplayer
@@ -361,6 +362,7 @@ class ChoiceViewTest(TestCase):
         user.save()
 
         game = gmodels.Game.objects.create()
+        cmodels.Room.objects.create(game=game)
         # A game can only start with a minimum number of characters.
         number_of_characters = 2
         for i in range(number_of_characters):
