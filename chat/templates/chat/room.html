@@ -25,7 +25,7 @@
             chatSocket.onmessage = function(event) {
                 const data = JSON.parse(event.data);
                 const chat = document.getElementById('chat');
-                chat.innerHTML += '{{ user.username }}: ({% now "jS F Y H:i" %})\n' + data.message + '\n';
+                chat.innerHTML += data.user + ': (' + data.datetime + ')\n' + data.message + '\n';
                 chat.scrollTop = chat.scrollHeight;
             };
 
