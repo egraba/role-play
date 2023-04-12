@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Added
+* Add index on event model
 * Upgrade project's libraries to their latest versions
 
 ## v0.2.1 - 2023-04-10

@@ -52,6 +52,11 @@ class Event(models.Model):
     date = models.DateTimeField(default=timezone.now)
     message = models.CharField(max_length=100)
 
+    class Meta:
+        indexes = [
+            models.Index(fields=["-date"]),
+        ]
+
     def __str__(self):
         return self.message
 
