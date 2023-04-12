@@ -8,13 +8,13 @@ dj-database-url = "*"
 django = "~=4.2"
 django-fsm = "*"
 gunicorn = "*"
-whitenoise = "*"
 psycopg = {extras = ["binary"], version = "*"}
-django-coverage-plugin = "*"
+whitenoise = "*"
 
 [dev-packages]
 black = "*"
 coverage = "*"
+django-coverage-plugin = "*"
 pre-commit = "*"
 
 [requires]
