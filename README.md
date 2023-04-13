@@ -1,7 +1,7 @@
 # role-play
 Role playing game.
 
-![GitHub Workflow Status (with branch)](https://img.shields.io/github/actions/workflow/status/egraba/role-play/ci.yml)
+![GitHub Workflow Status (with branch)](https://github.com/egraba/role-play/actions/workflows/ci.yml/badge.svg)
 
 ## Purpose
 Instead of playing role play with paper, you can do it online!
