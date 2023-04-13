@@ -1,7 +1,10 @@
 import json
 
+from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.utils import timezone
+
+import chat.models as cmodels
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -30,4 +33,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
         )
 
     async def chat_message(self, event):
+        user = self.user
+        content = event["message"]
+        room = await database_sync_to_async(cmodels.Room.objects.get)(id=self.room_id)
+        await database_sync_to_async(cmodels.Message.objects.create)(
+            user=user, content=content, room=room
+        )
         await self.send(text_data=json.dumps(event))
