@@ -2,7 +2,6 @@
 profile = "black"
 
 [tool.coverage.run]
-relative_files = true
 plugins = [
     'django_coverage_plugin',
 ]
