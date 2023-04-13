@@ -10,5 +10,7 @@ class RoomView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         room = self.object
-        context["message_list"] = cmodels.Message.objects.filter(room=room.id)
+        context["message_list"] = cmodels.Message.objects.filter(room=room.id).order_by(
+            "date"
+        )
         return context
