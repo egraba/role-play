@@ -1,7 +1,7 @@
 # role-play
 Role playing game.
 
-![CI status](https://github.com/egraba/role-play/actions/workflows/ci.yml/badge.svg)
+[![CI status](https://github.com/egraba/role-play/actions/workflows/ci.yml/badge.svg)](https://github.com/egraba/role-play/actions)
 
 ## Purpose
 Instead of playing role play with paper, you can do it online!
