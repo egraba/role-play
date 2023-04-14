@@ -10,9 +10,6 @@
 .rpgui-container.framed {
     margin: 2em;
     position: static;
-    max-width: 1024px;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 .character.rpgui-container.framed-grey {
