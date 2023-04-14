@@ -16,6 +16,9 @@ class CreatePendingActionForm(forms.ModelForm):
     class Meta:
         model = gmodels.PendingAction
         fields = ["action_type"]
+        widgets = {
+            "action_type": forms.Select(attrs={"class": "rpgui-dropdown"}),
+        }
 
 
 class IncreaseXpForm(forms.ModelForm):
@@ -60,6 +63,9 @@ class CreateCharacterForm(forms.ModelForm):
     class Meta:
         model = gmodels.Character
         fields = ["name", "race"]
+        widgets = {
+            "race": forms.Select(attrs={"class": "rpgui-dropdown"}),
+        }
 
 
 class DiceLaunchForm(forms.ModelForm):

@@ -10,9 +10,11 @@
 .rpgui-container.framed {
     margin: 2em;
     position: static;
-    max-width: 1024px;
-    margin-left: auto;
-    margin-right: auto;
+}
+
+.rpgui-container.framed-golden-2 {
+    margin: 2em;
+    position: static;
 }
 
 .character.rpgui-container.framed-grey {
@@ -42,6 +44,7 @@
     width: 150px;
     height: auto;
     float: right;
+    margin-top: 1em;
     margin-bottom: 1em;
 }
 
@@ -53,4 +56,8 @@
 
 .tale {
     min-height: 120px;
+}
+
+ul.errorlist {
+    list-style: none;
 }

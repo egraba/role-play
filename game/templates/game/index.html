@@ -3,17 +3,6 @@
 {% block content %}
     <div class="rpgui-container framed">
         <h1 id="title" class="title">Role play</h1>
-
-        <hr class="golden"/>
-
-        <p>Role play is an open-source virtual role playing game.</p>
-        <p>It is an online version of "paper" role play games.</p>
-
-        {% load static %}
-        <img class="rpgui-icon skull" src={% static 'images/red-skull.png' %}>
-
-        <hr style="clear:both"/>
-
         <div class="rpgui-center">
             {% if user.is_authenticated %}
                 <p>Welcome {{ user.username }}.</p>
@@ -24,16 +13,26 @@
             {% endif %}
         </div>
 
-        {% if user.is_authenticated %}
-            <hr/>
+        <hr class="golden"/>
 
+        {% load static %}
+        <img class="rpgui-icon skull" src={% static 'images/red-skull.png' %}>
+        <p>Role play is an open-source virtual role playing game.</p>
+        <p>It is an online version of "paper" role play games.</p>
+
+        <hr style="clear:both"/>
+
+        {% if user.is_authenticated %}
             <h1>Ongoing games</h1>
             <p>Select the game you want to join.</p>
 
             {% for game in page_obj %}
-                <div class="rpgui-container framed-grey">
+                <div class="rpgui-container framed-golden-2">
                     <h2><a href={% url 'game' game.id %}>{{ game }}</a></h2>
-                    <p>Status: {{ game.get_status_display }}</p>
+                    <p>
+                        Status: {{ game.get_status_display }},
+                        Number of players: {{ game.character_set.all|length }}
+                    </p>
                     <p>
                         Start date: {{ game.start_date }},
                         End date: {{ game.end_date }}
@@ -57,13 +56,19 @@
                     {% endif %}
                 </p>
                 {% if perms.game.add_game %}
-                    <a href="{% url 'game-create' %}"><button class="rpgui-button"><p>Create a new game</p></button></a></p>
+                    <a href="{% url 'game-create' %}">
+                        <button class="rpgui-button"><p>Create a new game</p></button>
+                    </a>
                 {% endif %}
                 {% if perms.game.add_character %}
                     {% if character %}
-                        <a href="{% url 'character-detail' character.id %}"><button class="rpgui-button"><p>View character</p></button></a></p>
+                        <a href="{% url 'character-detail' character.id %}">
+                            <button class="rpgui-button"><p>View your character</p></button>
+                        </a>
                     {% else %}
-                        <a href="{% url 'character-create' %}"><button class="rpgui-button"><p>Create a new character</p></button></a></p>
+                        <a href="{% url 'character-create' %}">
+                            <button class="rpgui-button"><p>Create a new character</p></button>
+                        </a>
                     {% endif %}
                 {% endif %}
             </div>

@@ -9,10 +9,17 @@
 
         <hr class="golden"/>
 
-        <div class="rpgui-container framed-grey">
-            <p>Race: {{ character.get_race_display }}</p>
-            <p>XP: {{ character.xp }}</p>
-            <p>HP: {{ character.hp }} / {{ character.max_hp }}</p>
-        </div>
+        <p>Race: {{ character.get_race_display }}</p>
+        <p>XP: {{ character.xp }}</p>
+        <p>HP: {{ character.hp }} / {{ character.max_hp }}</p>
+
+        <hr/>
+
+        {% if character.game %}
+            <p>Ongoing game: <a href={% url 'game' character.game.id %}>{{ character.game }}</p>
+        {% else %}
+            <p>This character is not part of a game...</p>
+        {% endif %}
+
     </div>
 {% endblock%}
