@@ -60,6 +60,9 @@ class CreateCharacterForm(forms.ModelForm):
     class Meta:
         model = gmodels.Character
         fields = ["name", "race"]
+        widgets = {
+            "race": forms.Select(attrs={"class": "rpgui-dropdown"}),
+        }
 
 
 class DiceLaunchForm(forms.ModelForm):
