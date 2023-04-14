@@ -12,6 +12,11 @@
     position: static;
 }
 
+.rpgui-container.framed-golden-2 {
+    margin: 2em;
+    position: static;
+}
+
 .character.rpgui-container.framed-grey {
     position: relative;
     padding-top: 0;
