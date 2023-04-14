@@ -4,6 +4,7 @@
 
 ### Added
 * It is now possible to chat within the app
+* Various UX/UI improvements
 * Add index on event model
 * Upgrade project's libraries to their latest versions
 
