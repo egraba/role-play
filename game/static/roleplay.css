@@ -57,3 +57,7 @@
 .tale {
     min-height: 120px;
 }
+
+ul.errorlist {
+    list-style: none;
+}
