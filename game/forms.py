@@ -9,7 +9,7 @@ class CreateGameForm(forms.Form):
 
 
 class CreateTaleForm(forms.Form):
-    description = forms.CharField(widget=forms.Textarea, max_length=1000)
+    content = forms.CharField(widget=forms.Textarea, max_length=1000)
 
 
 class CreatePendingActionForm(forms.ModelForm):

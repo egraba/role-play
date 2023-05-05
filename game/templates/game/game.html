@@ -99,7 +99,7 @@
 
         <div class="rpgui-container framed-grey">
             {% for event in event_list %}
-                <p>{{ event.date }} {{ event.message }}</p>
+                <p>{{ event.date }}, {{ event.message }}</p>
             {% empty %}
                 <p>The story did not start yet...</p>
             {% endfor %}

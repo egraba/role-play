@@ -27,7 +27,7 @@ class CreateGameView(PermissionRequiredMixin, FormView):
         tale = gmodels.Tale()
         tale.game = self.game
         tale.message = "The Master created the story."
-        tale.description = form.cleaned_data["description"]
+        tale.content = form.cleaned_data["description"]
         tale.save()
         return super().form_valid(form)
 
@@ -113,7 +113,7 @@ class CreateTaleView(PermissionRequiredMixin, FormView, gmixins.EventConditionsM
         tale = gmodels.Tale()
         tale.game = self.game
         tale.message = "The Master updated the story."
-        tale.description = form.cleaned_data["description"]
+        tale.content = form.cleaned_data["content"]
         tale.save()
         return super().form_valid(form)
 
