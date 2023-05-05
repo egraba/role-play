@@ -57,7 +57,7 @@ class CreateGameViewTest(TestCase):
         tale = gmodels.Tale.objects.last()
         self.assertEqual(tale.game, game)
         self.assertEqual(tale.message, "The Master created the story.")
-        self.assertEqual(tale.description, form.cleaned_data["description"])
+        self.assertEqual(tale.content, form.cleaned_data["description"])
         self.assertRedirects(response, reverse("game", args=[game.id]))
 
 
@@ -406,8 +406,8 @@ class CreateTaleViewTest(TestCase):
         self.assertRaises(PermissionDenied)
 
     def test_tale_creation(self):
-        description = utils.generate_random_string(100)
-        data = {"description": f"{description}"}
+        content = utils.generate_random_string(100)
+        data = {"content": f"{content}"}
         form = gforms.CreateTaleForm(data)
         self.assertTrue(form.is_valid())
         game = gmodels.Game.objects.last()
@@ -419,7 +419,7 @@ class CreateTaleViewTest(TestCase):
         tale = gmodels.Tale.objects.last()
         self.assertEqual(tale.game, game)
         self.assertEqual(tale.message, "The Master updated the story.")
-        self.assertEqual(tale.description, form.cleaned_data["description"])
+        self.assertEqual(tale.content, form.cleaned_data["content"])
         self.assertRedirects(response, reverse("game", args=[game.id]))
 
 

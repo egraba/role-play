@@ -180,19 +180,19 @@ class TaleModelTest(TestCase):
         game = gmodels.Game.objects.create()
         gmodels.Tale.objects.create(game=game)
 
-    def test_description_type(self):
+    def test_content_type(self):
         tale = gmodels.Tale.objects.last()
-        description = tale._meta.get_field("description")
-        self.assertTrue(description, models.CharField)
+        content = tale._meta.get_field("content")
+        self.assertTrue(content, models.CharField)
 
-    def test_message_max_length(self):
+    def test_content_max_length(self):
         tale = gmodels.Tale.objects.last()
-        max_length = tale._meta.get_field("description").max_length
+        max_length = tale._meta.get_field("content").max_length
         self.assertEqual(max_length, 1000)
 
     def test_str(self):
         tale = gmodels.Tale.objects.last()
-        self.assertEqual(str(tale), tale.description)
+        self.assertEqual(str(tale), tale.content)
 
 
 class PendingActionModelTest(TestCase):

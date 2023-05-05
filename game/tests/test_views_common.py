@@ -148,7 +148,7 @@ class GameViewTest(TestCase):
         for i in range(number_of_tales):
             gmodels.Tale.objects.create(
                 game=game,
-                description=f"{game.name} tail{i}",
+                content=f"{game.name} tail{i}",
             )
         number_of_characters = 2
         for i in range(number_of_characters):

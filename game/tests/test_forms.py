@@ -14,22 +14,22 @@ class CreateGameFormTest(TestCase):
         self.assertEqual(form.fields["name"].max_length, 50)
 
     def test_description_type(self):
-        form = gforms.CreateTaleForm()
+        form = gforms.CreateGameForm()
         self.assertIsInstance(form.fields["description"].widget, forms.Textarea)
 
     def test_description_max_length(self):
-        form = gforms.CreateTaleForm()
+        form = gforms.CreateGameForm()
         self.assertEqual(form.fields["description"].max_length, 1000)
 
 
 class CreateTaleFormTest(TestCase):
-    def test_description_type(self):
+    def test_content_type(self):
         form = gforms.CreateTaleForm()
-        self.assertIsInstance(form.fields["description"].widget, forms.Textarea)
+        self.assertIsInstance(form.fields["content"].widget, forms.Textarea)
 
-    def test_description_max_length(self):
+    def test_content_max_length(self):
         form = gforms.CreateTaleForm()
-        self.assertEqual(form.fields["description"].max_length, 1000)
+        self.assertEqual(form.fields["content"].max_length, 1000)
 
 
 class IncreaseXpFormTest(TestCase):
