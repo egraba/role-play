@@ -62,10 +62,10 @@ class Event(models.Model):
 
 
 class Tale(Event):
-    description = models.CharField(max_length=1000)
+    content = models.CharField(max_length=1000)
 
     def __str__(self):
-        return self.description
+        return self.content
 
 
 class PendingAction(Event):
