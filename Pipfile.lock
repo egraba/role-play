@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "fccb09c26f2d5fd8845f2a0bd362fa23f8b0ddad69b979f5a5cb4e0cab216bf7"
+            "sha256": "177c48df27b733e13a07104c55df73290e73d54b0be9758ec79b4354bf8c4231"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -18,11 +18,11 @@
     "default": {
         "asgiref": {
             "hashes": [
-                "sha256:33958cb2e4b3cd8b1b06ef295bd8605cde65b11df51d3beab39e2e149a610ab3",
-                "sha256:8de379fcc383bcfe4507e229fc31209ea23d4831c850f74063b2c11639474dd2"
+                "sha256:89b2ef2247e3b562a16eef663bc0e2e703ec6468e2fa8a5cd61cd449786d4f6e",
+                "sha256:9e0ce3aa93a819ba5b45120216b23878cf6e8525eb3848653452b4192b92afed"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==3.7.1"
+            "version": "==3.7.2"
         },
         "dj-database-url": {
             "hashes": [
@@ -126,14 +126,6 @@
             ],
             "version": "==3.1.9"
         },
-        "pymemcache": {
-            "hashes": [
-                "sha256:27bf9bd1bbc1e20f83633208620d56de50f14185055e49504f4f5e94e94aff94",
-                "sha256:f507bc20e0dc8d562f8df9d872107a278df049fa496805c1431b926f3ddd0eab"
-            ],
-            "index": "pypi",
-            "version": "==4.0.0"
-        },
         "setuptools": {
             "hashes": [
                 "sha256:5df61bf30bb10c6f756eb19e7c9f3b473051f48db77fddbe06ff2ca307df9a6f",
@@ -170,11 +162,11 @@
     "develop": {
         "asgiref": {
             "hashes": [
-                "sha256:33958cb2e4b3cd8b1b06ef295bd8605cde65b11df51d3beab39e2e149a610ab3",
-                "sha256:8de379fcc383bcfe4507e229fc31209ea23d4831c850f74063b2c11639474dd2"
+                "sha256:89b2ef2247e3b562a16eef663bc0e2e703ec6468e2fa8a5cd61cd449786d4f6e",
+                "sha256:9e0ce3aa93a819ba5b45120216b23878cf6e8525eb3848653452b4192b92afed"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==3.7.1"
+            "version": "==3.7.2"
         },
         "black": {
             "hashes": [

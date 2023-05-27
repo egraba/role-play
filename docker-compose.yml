@@ -1,8 +1,8 @@
 services:
-  memcached:
-    image: "memcached:latest"
+  redis:
+    image: "redis:latest"
     ports:
-      - "11211:11211"
+      - "6379:6379"
 
   postgres:
     image: "postgres:13-alpine"

@@ -9,7 +9,6 @@ django = "~=4.2"
 django-fsm = "*"
 gunicorn = "*"
 psycopg = {extras = ["binary"], version = "*"}
-pymemcache = "*"
 whitenoise = "*"
 
 [dev-packages]
