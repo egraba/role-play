@@ -15,6 +15,7 @@ whitenoise = "*"
 black = "*"
 coverage = "*"
 django-coverage-plugin = "*"
+django-debug-toolbar = "*"
 pre-commit = "*"
 
 [requires]
