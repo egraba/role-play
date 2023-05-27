@@ -1,6 +1,7 @@
 import random
 
 from django.contrib.auth.models import Permission, User
+from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
 from django.forms import ValidationError
 from django.http import Http404
@@ -365,6 +366,9 @@ class CreateTaleViewTest(TestCase):
         self.user = User.objects.last()
         self.client.login(username=self.user.username, password="pwd")
 
+    def tearDown(self):
+        cache.clear()
+
     def test_view_mapping(self):
         game = gmodels.Game.objects.last()
         response = self.client.get(reverse(self.path_name, args=[game.id]))
@@ -443,6 +447,9 @@ class CreatePendingActionViewTest(TestCase):
     def setUp(self):
         self.user = User.objects.last()
         self.client.login(username=self.user.username, password="pwd")
+
+    def tearDown(self):
+        cache.clear()
 
     def test_view_mapping(self):
         game = gmodels.Game.objects.last()
@@ -568,6 +575,9 @@ class IncreaseXpViewTest(TestCase):
         self.user = User.objects.last()
         self.client.login(username=self.user.username, password="pwd")
 
+    def tearDown(self):
+        cache.clear()
+
     def test_view_mapping(self):
         game = gmodels.Game.objects.last()
         character = gmodels.Character.objects.last()
@@ -688,6 +698,9 @@ class DamageViewTest(TestCase):
     def setUp(self):
         self.user = User.objects.last()
         self.client.login(username=self.user.username, password="pwd")
+
+    def tearDown(self):
+        cache.clear()
 
     def test_view_mapping(self):
         game = gmodels.Game.objects.last()
@@ -838,6 +851,9 @@ class HealViewTest(TestCase):
     def setUp(self):
         self.user = User.objects.last()
         self.client.login(username=self.user.username, password="pwd")
+
+    def tearDown(self):
+        cache.clear()
 
     def test_view_mapping(self):
         game = gmodels.Game.objects.last()
