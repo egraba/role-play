@@ -1,4 +1,9 @@
 services:
+  memcached:
+    image: "memcached:latest"
+    ports:
+      - "11211:11211"
+
   postgres:
     image: "postgres:13-alpine"
     restart: always
@@ -10,6 +15,7 @@ services:
       - "${PGPORT}:5432"
     volumes:
       - db-data:/var/lib/postgresql/data
+
   pgadmin:
       image: dpage/pgadmin4:latest
       restart: always
@@ -20,6 +26,7 @@ services:
         - "5050:80"
       volumes:
         - pgadmin-data:/var/lib/pgadmin/data
+
 volumes:
   db-data:
   pgadmin-data:
