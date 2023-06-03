@@ -17,6 +17,7 @@ class Game(models.Model):
         return self.name
 
     def can_start(self):
+        cache.delete(f"game{self.id}")
         number_of_characters = Character.objects.filter(game=self).count()
         return number_of_characters >= 2
 
