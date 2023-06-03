@@ -68,7 +68,7 @@
             <div class="rpgui-center inline">
                 {% if perms.game.change_character %}
                     {% if game.status == "P" %}
-                        <a href={% url 'game-add-character' game.id %}>
+                        <a href={% url 'game-invite-character' game.id %}>
                             <button class="rpgui-button"><p>Invite a character</p></button>
                         </a>
                     {% else %}

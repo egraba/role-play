@@ -32,24 +32,24 @@ class CreateGameView(PermissionRequiredMixin, FormView):
         return super().form_valid(form)
 
 
-class AddCharacterView(PermissionRequiredMixin, ListView, gmixins.GameContextMixin):
+class InviteCharacterView(PermissionRequiredMixin, ListView, gmixins.GameContextMixin):
     permission_required = "game.change_character"
     model = gmodels.Character
     paginate_by = 10
     ordering = ["-xp"]
-    template_name = "game/addcharacter.html"
+    template_name = "game/invitecharacter.html"
 
     def get_queryset(self):
         return super().get_queryset().filter(game=None)
 
 
-class AddCharacterConfirmView(
+class InviteCharacterConfirmView(
     PermissionRequiredMixin, UpdateView, gmixins.GameContextMixin
 ):
     permission_required = "game.change_character"
     model = gmodels.Character
     fields = []
-    template_name = "game/addcharacterconfirm.html"
+    template_name = "game/invitecharacterconfirm.html"
 
     def post(self, request, *args, **kwargs):
         character = self.get_object()
