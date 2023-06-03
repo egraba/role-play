@@ -69,7 +69,7 @@
                 {% if perms.game.change_character %}
                     {% if game.status == "P" %}
                         <a href={% url 'game-add-character' game.id %}>
-                            <button class="rpgui-button"><p>Add a character</p></button>
+                            <button class="rpgui-button"><p>Invite a character</p></button>
                         </a>
                     {% else %}
                         <button disabled class="rpgui-button"><p>Add a character</p></button>
