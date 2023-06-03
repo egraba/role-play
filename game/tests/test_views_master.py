@@ -270,6 +270,7 @@ class StartGameViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         game = gmodels.Game.objects.last()
         self.assertEqual(game.status, "O")
+        self.assertLessEqual(game.start_date.second - timezone.now().second, 2)
         event = gmodels.Event.objects.last()
         self.assertLessEqual(event.date.second - timezone.now().second, 2)
         self.assertEqual(event.game, game)
