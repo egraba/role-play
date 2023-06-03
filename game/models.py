@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.core.cache import cache
 from django.db import models
 from django.utils import timezone
 from django_fsm import FSMField, transition
@@ -28,6 +29,7 @@ class Game(models.Model):
         for character in Character.objects.filter(game=self):
             character.game = None
             character.save()
+        cache.delete(f"game{self.id}")
 
     def is_ongoing(self):
         return self.status == "O"

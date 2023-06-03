@@ -9,12 +9,14 @@ django = "~=4.2"
 django-fsm = "*"
 gunicorn = "*"
 psycopg = {extras = ["binary"], version = "*"}
+redis = "*"
 whitenoise = "*"
 
 [dev-packages]
 black = "*"
 coverage = "*"
 django-coverage-plugin = "*"
+django-debug-toolbar = "*"
 pre-commit = "*"
 
 [requires]

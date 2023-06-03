@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.http import Http404
 from django.views.generic import View
@@ -11,7 +12,10 @@ class GameContextMixin(ContextMixin, View):
         super().setup(request, *args, **kwargs)
         game_id = self.kwargs["game_id"]
         try:
-            self.game = gmodels.Game.objects.get(id=game_id)
+            self.game = cache.get(f"game{game_id}")
+            if not self.game:
+                self.game = gmodels.Game.objects.get(id=game_id)
+                cache.set(f"game{game_id}", self.game)
         except ObjectDoesNotExist:
             raise Http404(f"Game [{game_id}] does not exist...")
 
@@ -26,7 +30,10 @@ class CharacterContextMixin(ContextMixin, View):
         super().setup(request, *args, **kwargs)
         character_id = self.kwargs["character_id"]
         try:
-            self.character = gmodels.Character.objects.get(id=character_id)
+            self.character = cache.get(f"character{character_id}")
+            if not self.character:
+                self.character = gmodels.Character.objects.get(id=character_id)
+                cache.set(f"character{character_id}", self.character)
         except ObjectDoesNotExist:
             raise Http404(f"Character [{character_id}] does not exist...")
 
