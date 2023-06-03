@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
@@ -73,6 +74,7 @@ class StartGameView(PermissionRequiredMixin, UpdateView):
         try:
             game.start()
             game.save()
+            cache.set(f"game{game.id}", game)
             event = gmodels.Event.objects.create(game=game)
             event.date = timezone.now()
             event.message = "The game started."
@@ -99,6 +101,7 @@ class EndGameView(PermissionRequiredMixin, UpdateView):
         game = self.get_object()
         game.end()
         game.save()
+        cache.set(f"game{game.id}", game)
         event = gmodels.Event.objects.create(game=game)
         event.date = timezone.now()
         event.message = "The game ended."

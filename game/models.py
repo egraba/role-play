@@ -1,5 +1,4 @@
 from django.contrib.auth.models import User
-from django.core.cache import cache
 from django.db import models
 from django.utils import timezone
 from django_fsm import FSMField, transition
@@ -17,7 +16,6 @@ class Game(models.Model):
         return self.name
 
     def can_start(self):
-        cache.delete(f"game{self.id}")
         number_of_characters = Character.objects.filter(game=self).count()
         return number_of_characters >= 2
 
@@ -30,7 +28,6 @@ class Game(models.Model):
         for character in Character.objects.filter(game=self):
             character.game = None
             character.save()
-        cache.delete(f"game{self.id}")
 
     def is_ongoing(self):
         return self.status == "O"
