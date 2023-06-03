@@ -283,10 +283,11 @@ class StartGameViewTest(TestCase):
                 game=game, name=utils.generate_random_name(5)
             )
         response = self.client.post(reverse(self.path_name, args=[game.id]))
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 302)
         self.assertRaises(PermissionDenied)
         game = gmodels.Game.objects.last()
         self.assertEqual(game.status, "P")
+        self.assertRedirects(response, reverse("game-start-error", args=(game.id,)))
 
 
 class EndGameViewTest(TestCase):

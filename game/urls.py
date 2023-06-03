@@ -27,6 +27,11 @@ urlpatterns = [
         name="game-start",
     ),
     path(
+        "<int:pk>/start_game/error",
+        master.StartGameErrorView.as_view(),
+        name="game-start-error",
+    ),
+    path(
         "<int:pk>/end_game",
         master.EndGameView.as_view(),
         name="game-end",

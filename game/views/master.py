@@ -78,8 +78,15 @@ class StartGameView(PermissionRequiredMixin, UpdateView):
             event.message = "The game started."
             event.save()
         except TransitionNotAllowed:
-            raise PermissionDenied
+            return HttpResponseRedirect(reverse("game-start-error", args=(game.id,)))
         return HttpResponseRedirect(reverse("game", args=(game.id,)))
+
+
+class StartGameErrorView(PermissionRequiredMixin, UpdateView):
+    permission_required = "game.change_game"
+    model = gmodels.Game
+    fields = []
+    template_name = "game/startgameerror.html"
 
 
 class EndGameView(PermissionRequiredMixin, UpdateView):
