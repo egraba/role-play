@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="info rpgui-container framed-golden">
+        <h1>{{ game }}</h1>
+        <p>The game cannot start:</p>
+        <ul><li>At least two players are required to start a game.</li></ul>
+        <div class="rpgui-center">
+            <a href={% url 'game' game.id %}><button class="rpgui-button"><p>Go back</p></button></a>
+        </div>
+    </div>
+{% endblock %}

@@ -6,7 +6,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("game", "0015_alter_pendingaction_character"),
+        ("game", "0001_initial"),
         ("chat", "0002_remove_message_character_message_user"),
     ]
 

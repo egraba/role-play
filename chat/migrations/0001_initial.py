@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ("game", "0015_alter_pendingaction_character"),
+        ("game", "0001_initial"),
     ]
 
     operations = [

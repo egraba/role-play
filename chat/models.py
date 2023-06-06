@@ -8,10 +8,6 @@ class Room(models.Model):
     game = models.OneToOneField(gmodels.Game, on_delete=models.CASCADE)
 
 
-class Room(models.Model):
-    game = models.OneToOneField(gmodels.Game, on_delete=models.CASCADE)
-
-
 class Message(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)

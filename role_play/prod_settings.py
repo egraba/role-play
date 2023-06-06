@@ -99,6 +99,18 @@ DATABASES = {
 }
 
 
+# Cache
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": os.environ["REDIS_URL"],
+    }
+}
+
+SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
+
+
 # Authentication
 
 LOGIN_REDIRECT_URL = "/game"

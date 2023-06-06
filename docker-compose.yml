@@ -1,0 +1,33 @@
+services:
+  redis:
+    image: "redis:latest"
+    restart: always
+    ports:
+      - "6379:6379"
+
+  postgres:
+    image: "postgres:13-alpine"
+    restart: always
+    environment:
+      - POSTGRES_USER=${PGUSER}
+      - POSTGRES_PASSWORD=${PGPASSWORD}
+      - POSTGRES_DB=${PGDB}
+    ports:
+      - "${PGPORT}:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  pgadmin:
+      image: dpage/pgadmin4:latest
+      restart: always
+      environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_MAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PW}
+      ports:
+        - "5050:80"
+      volumes:
+        - pgadmin-data:/var/lib/pgadmin/data
+
+volumes:
+  db-data:
+  pgadmin-data:

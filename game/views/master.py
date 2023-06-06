@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
@@ -28,7 +29,7 @@ class CreateGameView(PermissionRequiredMixin, FormView):
         tale = gmodels.Tale()
         tale.game = self.game
         tale.message = "The Master created the story."
-        tale.description = form.cleaned_data["description"]
+        tale.content = form.cleaned_data["description"]
         tale.save()
         room = cmodels.Room()
         room.game = self.game
@@ -36,24 +37,24 @@ class CreateGameView(PermissionRequiredMixin, FormView):
         return super().form_valid(form)
 
 
-class AddCharacterView(PermissionRequiredMixin, ListView, gmixins.GameContextMixin):
+class InviteCharacterView(PermissionRequiredMixin, ListView, gmixins.GameContextMixin):
     permission_required = "game.change_character"
     model = gmodels.Character
     paginate_by = 10
     ordering = ["-xp"]
-    template_name = "game/addcharacter.html"
+    template_name = "game/invitecharacter.html"
 
     def get_queryset(self):
         return super().get_queryset().filter(game=None)
 
 
-class AddCharacterConfirmView(
+class InviteCharacterConfirmView(
     PermissionRequiredMixin, UpdateView, gmixins.GameContextMixin
 ):
     permission_required = "game.change_character"
     model = gmodels.Character
     fields = []
-    template_name = "game/addcharacterconfirm.html"
+    template_name = "game/invitecharacterconfirm.html"
 
     def post(self, request, *args, **kwargs):
         character = self.get_object()
@@ -77,13 +78,21 @@ class StartGameView(PermissionRequiredMixin, UpdateView):
         try:
             game.start()
             game.save()
+            cache.set(f"game{game.id}", game)
             event = gmodels.Event.objects.create(game=game)
             event.date = timezone.now()
             event.message = "The game started."
             event.save()
         except TransitionNotAllowed:
-            raise PermissionDenied
+            return HttpResponseRedirect(reverse("game-start-error", args=(game.id,)))
         return HttpResponseRedirect(reverse("game", args=(game.id,)))
+
+
+class StartGameErrorView(PermissionRequiredMixin, UpdateView):
+    permission_required = "game.change_game"
+    model = gmodels.Game
+    fields = []
+    template_name = "game/startgameerror.html"
 
 
 class EndGameView(PermissionRequiredMixin, UpdateView):
@@ -96,6 +105,7 @@ class EndGameView(PermissionRequiredMixin, UpdateView):
         game = self.get_object()
         game.end()
         game.save()
+        cache.set(f"game{game.id}", game)
         event = gmodels.Event.objects.create(game=game)
         event.date = timezone.now()
         event.message = "The game ended."
@@ -117,7 +127,7 @@ class CreateTaleView(PermissionRequiredMixin, FormView, gmixins.EventConditionsM
         tale = gmodels.Tale()
         tale.game = self.game
         tale.message = "The Master updated the story."
-        tale.description = form.cleaned_data["description"]
+        tale.content = form.cleaned_data["content"]
         tale.save()
         return super().form_valid(form)
 

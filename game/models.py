@@ -25,6 +25,7 @@ class Game(models.Model):
 
     @transition(field=status, source="O", target="F")
     def end(self):
+        self.end_date = timezone.now()
         for character in Character.objects.filter(game=self):
             character.game = None
             character.save()
@@ -62,10 +63,10 @@ class Event(models.Model):
 
 
 class Tale(Event):
-    description = models.CharField(max_length=1000)
+    content = models.CharField(max_length=1000)
 
     def __str__(self):
-        return self.description
+        return self.content
 
 
 class PendingAction(Event):

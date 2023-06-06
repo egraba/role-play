@@ -12,19 +12,24 @@ urlpatterns = [
     ),
     path("create_game", master.CreateGameView.as_view(), name="game-create"),
     path(
-        "<int:game_id>/add_character",
-        master.AddCharacterView.as_view(),
-        name="game-add-character",
+        "<int:game_id>/invite_character",
+        master.InviteCharacterView.as_view(),
+        name="game-invite-character",
     ),
     path(
-        "<int:game_id>/add_character/<int:pk>/confirm",
-        master.AddCharacterConfirmView.as_view(),
-        name="game-add-character-confirm",
+        "<int:game_id>/invite_character/<int:pk>/confirm",
+        master.InviteCharacterConfirmView.as_view(),
+        name="game-invite-character-confirm",
     ),
     path(
         "<int:pk>/start_game",
         master.StartGameView.as_view(),
         name="game-start",
+    ),
+    path(
+        "<int:pk>/start_game/error",
+        master.StartGameErrorView.as_view(),
+        name="game-start-error",
     ),
     path(
         "<int:pk>/end_game",

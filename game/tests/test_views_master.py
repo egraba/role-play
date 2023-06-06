@@ -1,6 +1,7 @@
 import random
 
 from django.contrib.auth.models import Permission, User
+from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
 from django.forms import ValidationError
 from django.http import Http404
@@ -58,12 +59,12 @@ class CreateGameViewTest(TestCase):
         tale = gmodels.Tale.objects.last()
         self.assertEqual(tale.game, game)
         self.assertEqual(tale.message, "The Master created the story.")
-        self.assertEqual(tale.description, form.cleaned_data["description"])
+        self.assertEqual(tale.content, form.cleaned_data["description"])
         self.assertRedirects(response, reverse("game", args=[game.id]))
 
 
-class AddCharacterViewTest(TestCase):
-    path_name = "game-add-character"
+class InviteCharacterViewTest(TestCase):
+    path_name = "game-invite-character"
 
     @classmethod
     def setUpTestData(cls):
@@ -99,14 +100,14 @@ class AddCharacterViewTest(TestCase):
         response = self.client.get(reverse(self.path_name, args=[game.id]))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            response.resolver_match.func.view_class, gvmaster.AddCharacterView
+            response.resolver_match.func.view_class, gvmaster.InviteCharacterView
         )
 
     def test_template_mapping(self):
         game = gmodels.Game.objects.last()
         response = self.client.get(reverse(self.path_name, args=[game.id]))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "game/addcharacter.html")
+        self.assertTemplateUsed(response, "game/invitecharacter.html")
 
     def test_pagination_size(self):
         game = gmodels.Game.objects.last()
@@ -160,8 +161,8 @@ class AddCharacterViewTest(TestCase):
         self.assertFalse(response.context["character_list"])
 
 
-class AddCharacterConfirmViewTest(TestCase):
-    path_name = "game-add-character-confirm"
+class InviteCharacterConfirmViewTest(TestCase):
+    path_name = "game-invite-character-confirm"
 
     @classmethod
     def setUpTestData(cls):
@@ -187,7 +188,7 @@ class AddCharacterConfirmViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            response.resolver_match.func.view_class, gvmaster.AddCharacterConfirmView
+            response.resolver_match.func.view_class, gvmaster.InviteCharacterConfirmView
         )
 
     def test_template_mapping(self):
@@ -197,7 +198,7 @@ class AddCharacterConfirmViewTest(TestCase):
             reverse(self.path_name, args=[game.id, character.id])
         )
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "game/addcharacterconfirm.html")
+        self.assertTemplateUsed(response, "game/invitecharacterconfirm.html")
 
     def test_game_not_exists(self):
         game_id = random.randint(10000, 99999)
@@ -273,6 +274,7 @@ class StartGameViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         game = gmodels.Game.objects.last()
         self.assertEqual(game.status, "O")
+        self.assertLessEqual(game.start_date.second - timezone.now().second, 2)
         event = gmodels.Event.objects.last()
         self.assertLessEqual(event.date.second - timezone.now().second, 2)
         self.assertEqual(event.game, game)
@@ -286,10 +288,11 @@ class StartGameViewTest(TestCase):
                 game=game, name=utils.generate_random_name(5)
             )
         response = self.client.post(reverse(self.path_name, args=[game.id]))
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 302)
         self.assertRaises(PermissionDenied)
         game = gmodels.Game.objects.last()
         self.assertEqual(game.status, "P")
+        self.assertRedirects(response, reverse("game-start-error", args=(game.id,)))
 
 
 class EndGameViewTest(TestCase):
@@ -341,6 +344,7 @@ class EndGameViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         game = gmodels.Game.objects.last()
         self.assertEqual(game.status, "F")
+        self.assertLessEqual(game.end_date.second - timezone.now().second, 2)
         self.assertTrue(gmodels.Character.objects.filter(game=game).count() == 0)
         event = gmodels.Event.objects.last()
         self.assertLessEqual(event.date.second - timezone.now().second, 2)
@@ -369,6 +373,9 @@ class CreateTaleViewTest(TestCase):
     def setUp(self):
         self.user = User.objects.last()
         self.client.login(username=self.user.username, password="pwd")
+
+    def tearDown(self):
+        cache.clear()
 
     def test_view_mapping(self):
         game = gmodels.Game.objects.last()
@@ -411,8 +418,8 @@ class CreateTaleViewTest(TestCase):
         self.assertRaises(PermissionDenied)
 
     def test_tale_creation(self):
-        description = utils.generate_random_string(100)
-        data = {"description": f"{description}"}
+        content = utils.generate_random_string(100)
+        data = {"content": f"{content}"}
         form = gforms.CreateTaleForm(data)
         self.assertTrue(form.is_valid())
         game = gmodels.Game.objects.last()
@@ -424,7 +431,7 @@ class CreateTaleViewTest(TestCase):
         tale = gmodels.Tale.objects.last()
         self.assertEqual(tale.game, game)
         self.assertEqual(tale.message, "The Master updated the story.")
-        self.assertEqual(tale.description, form.cleaned_data["description"])
+        self.assertEqual(tale.content, form.cleaned_data["content"])
         self.assertRedirects(response, reverse("game", args=[game.id]))
 
 
@@ -449,6 +456,9 @@ class CreatePendingActionViewTest(TestCase):
     def setUp(self):
         self.user = User.objects.last()
         self.client.login(username=self.user.username, password="pwd")
+
+    def tearDown(self):
+        cache.clear()
 
     def test_view_mapping(self):
         game = gmodels.Game.objects.last()
@@ -575,6 +585,9 @@ class IncreaseXpViewTest(TestCase):
         self.user = User.objects.last()
         self.client.login(username=self.user.username, password="pwd")
 
+    def tearDown(self):
+        cache.clear()
+
     def test_view_mapping(self):
         game = gmodels.Game.objects.last()
         character = gmodels.Character.objects.last()
@@ -696,6 +709,9 @@ class DamageViewTest(TestCase):
     def setUp(self):
         self.user = User.objects.last()
         self.client.login(username=self.user.username, password="pwd")
+
+    def tearDown(self):
+        cache.clear()
 
     def test_view_mapping(self):
         game = gmodels.Game.objects.last()
@@ -847,6 +863,9 @@ class HealViewTest(TestCase):
     def setUp(self):
         self.user = User.objects.last()
         self.client.login(username=self.user.username, password="pwd")
+
+    def tearDown(self):
+        cache.clear()
 
     def test_view_mapping(self):
         game = gmodels.Game.objects.last()
