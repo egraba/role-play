@@ -8,7 +8,7 @@ class RoomAdmin(admin.ModelAdmin):
 
 
 class MessageAdmin(admin.ModelAdmin):
-    fields = ["date", "user", "content"]
+    fields = ["room", "user", "content"]
     list_display = fields
 
 
