@@ -20,3 +20,8 @@ class RoomView(DetailView):
         context["message_list"] = messages
 
         return context
+
+
+class RoomErrorView(DetailView):
+    model = cmodels.Room
+    template_name = "chat/roomerror.html"

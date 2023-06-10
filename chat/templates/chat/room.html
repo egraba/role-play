@@ -22,6 +22,11 @@
             const url = 'ws://' + window.location.host + '/ws/chat/' + {{ room.id }} + '/';
             const chatSocket = new WebSocket(url);
 
+            chatSocket.onerror = function(error) {
+                console.log(error);
+                window.location.replace('{% url "room-error" room.id %}');
+            }
+
             chatSocket.onmessage = function(event) {
                 const data = JSON.parse(event.data);
                 const chat = document.getElementById('chat');
