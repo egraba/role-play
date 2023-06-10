@@ -12,5 +12,5 @@ class RoomView(DetailView):
         room = self.object
         context["message_list"] = cmodels.Message.objects.filter(room=room.id).order_by(
             "date"
-        )
+        )[:20]
         return context
