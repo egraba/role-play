@@ -85,7 +85,7 @@ TEMPLATES = [
 
 # Channels
 
-
+WSGI_APPLICATION = "role_play.wsgi.application"
 ASGI_APPLICATION = "role_play.asgi.application"
 
 CHANNEL_LAYERS = {
