@@ -25,7 +25,15 @@
             chatSocket.onmessage = function(event) {
                 const data = JSON.parse(event.data);
                 const chat = document.getElementById('chat');
-                chat.innerHTML += data.user + ': (' + data.datetime + ')\n' + data.message + '\n';
+                chat.innerHTML += data.user
+                + ' (' + new Date(data.datetime).toLocaleString('en-US', {
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                }) + '): '
+                + data.message + '\n';
                 chat.scrollTop = chat.scrollHeight;
             };
 
@@ -38,7 +46,14 @@
             const submitButton = document.getElementById('chat-message-submit');
 
             {% for message in message_list %}
-                chat.innerHTML += '{{ message.user }}: ({{ message.date }})' + '\n';
+                chat.innerHTML += '{{ message.user }} ('
+                + new Date('{{ message.date|date:"M d, Y" }}').toLocaleString('en-US', {
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                }) + '): '
                 chat.innerHTML += '{{ message.content }}' + '\n';
             {% empty %}
                 chat.innerHTML = '';
