@@ -55,6 +55,7 @@
                     minute: 'numeric',
                 }) + '): '
                 chat.innerHTML += '{{ message.content }}' + '\n';
+                chat.scrollTop = chat.scrollHeight;
             {% empty %}
                 chat.innerHTML = '';
             {% endfor %}
