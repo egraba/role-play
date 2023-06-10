@@ -19,7 +19,13 @@
         </div>
 
         <script>
-            const url = 'ws://' + window.location.host + '/ws/chat/' + {{ room.id }} + '/';
+            var protocol;
+            if (window.location.host.startsWith("localhost")) {
+                protocol = 'ws://';
+            } else {
+                protocol = 'wss://';
+            }
+            const url = protocol + window.location.host + '/ws/chat/' + {{ room.id }} + '/';
             const chatSocket = new WebSocket(url);
 
             chatSocket.onerror = function(error) {
