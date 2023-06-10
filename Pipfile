@@ -4,6 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+async-timeout = "*"
 channels = "*"
 channels-redis = "*"
 daphne = "*"
