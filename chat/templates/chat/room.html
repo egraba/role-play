@@ -33,6 +33,10 @@
                 window.location.replace('{% url "room-error" room.id %}');
             }
 
+            chatSocket.onclose = function(event) {
+                console.error('Chat socket closed unexpectedly: ' + event.code);
+            };
+
             chatSocket.onmessage = function(event) {
                 const data = JSON.parse(event.data);
                 const chat = document.getElementById('chat');
@@ -48,9 +52,6 @@
                 chat.scrollTop = chat.scrollHeight;
             };
 
-            chatSocket.onclose = function(event) {
-                console.error('Chat socket closed unexpectedly');
-            };
 
             const chat = document.getElementById('chat');
             const input = document.getElementById('chat-message-input');
