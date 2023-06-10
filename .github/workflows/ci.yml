@@ -8,6 +8,8 @@ on:
 
 env:
   PGUSER: ciuser
+  REDISHOST: 127.0.0.1
+  REDISPORT: 6379
   PGPASSWORD: ${{secrets.PGPASSWORD}}
   PGHOST: 127.0.0.1
   PGPORT: 5432
