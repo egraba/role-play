@@ -61,3 +61,12 @@
 ul.errorlist {
     list-style: none;
 }
+
+#chat {
+    height: 25em;
+    font-size: xx-small;
+}
+
+#chat-message-input {
+    font-size: xx-small;
+}

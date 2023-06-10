@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Added
+* It is now possible to chat within the app
 * Use Redis as cache
 * Various UX/UI improvements
 * Add index on event model

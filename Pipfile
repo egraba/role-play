@@ -4,6 +4,9 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+channels = "*"
+channels-redis = "*"
+daphne = "*"
 dj-database-url = "*"
 django = "~=4.2"
 django-fsm = "*"

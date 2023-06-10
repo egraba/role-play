@@ -32,14 +32,17 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
     "game.apps.GameConfig",
+    "chat.apps.ChatConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "debug_toolbar",
+    "channels",
+    # "debug_toolbar",
 ]
 
 MIDDLEWARE = [
@@ -72,7 +75,19 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "role_play.wsgi.application"
+
+# Channels
+
+ASGI_APPLICATION = "role_play.asgi.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [(os.environ["REDISHOST"], os.environ["REDISPORT"])],
+        },
+    },
+}
 
 
 # Database

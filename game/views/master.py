@@ -7,6 +7,7 @@ from django.utils import timezone
 from django.views.generic import CreateView, FormView, ListView, UpdateView
 from django_fsm import TransitionNotAllowed
 
+import chat.models as cmodels
 import game.forms as gforms
 import game.models as gmodels
 import game.views.mixins as gmixins
@@ -30,6 +31,9 @@ class CreateGameView(PermissionRequiredMixin, FormView):
         tale.message = "The Master created the story."
         tale.content = form.cleaned_data["description"]
         tale.save()
+        room = cmodels.Room()
+        room.game = self.game
+        room.save()
         return super().form_valid(form)
 
 
