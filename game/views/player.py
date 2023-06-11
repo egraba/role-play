@@ -26,7 +26,7 @@ class CreateCharacterView(PermissionRequiredMixin, CreateView):
             pass
 
     def get_success_url(self):
-        return reverse_lazy("character-detail", args=(self.object.id,))
+        return self.object.get_absolute_url()
 
     def form_valid(self, form):
         character = form.save(commit=False)

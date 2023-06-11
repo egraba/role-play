@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
     <div class="rpgui-container framed">
@@ -15,7 +16,6 @@
 
         <hr class="golden"/>
 
-        {% load static %}
         <img class="rpgui-icon skull" src={% static 'images/red-skull.png' %}>
         <p>Role play is an open-source virtual role playing game.</p>
         <p>It is an online version of "paper" role play games.</p>
@@ -28,7 +28,7 @@
 
             {% for game in page_obj %}
                 <div class="rpgui-container framed-golden-2">
-                    <h2><a href={% url 'game' game.id %}>{{ game }}</a></h2>
+                    <h2><a href={{ game.get_absolute_url }}>{{ game }}</a></h2>
                     <p>
                         Status: {{ game.get_status_display }},
                         Number of players: {{ game.character_set.all|length }}
@@ -44,17 +44,7 @@
                 </div>
             {% endfor %}
             <div class="rpgui-center">
-                <p>
-                    {% if page_obj.has_previous %}
-                        <a href="?page=1">&laquo; First</a>
-                        <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
-                    {% endif %}
-                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-                    {% if page_obj.has_next %}
-                        <a href="?page={{ page_obj.next_page_number }}">Next</a>
-                        <a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
-                    {% endif %}
-                </p>
+                {% include 'pagination.html' %}
                 {% if perms.game.add_game %}
                     <a href="{% url 'game-create' %}">
                         <button class="rpgui-button"><p>Create a new game</p></button>
@@ -62,7 +52,7 @@
                 {% endif %}
                 {% if perms.game.add_character %}
                     {% if character %}
-                        <a href="{% url 'character-detail' character.id %}">
+                        <a href={{ character.get_absolute_url }}>
                             <button class="rpgui-button"><p>View your character</p></button>
                         </a>
                     {% else %}

@@ -1,29 +1,44 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
 from django_fsm import FSMField, transition
 
 
 class Game(models.Model):
-    STATUSES = (("P", "Under preparation"), ("O", "Ongoing"), ("F", "Finished"))
+    class Status(models.TextChoices):
+        UNDER_PREPARATION = "P", "Under preparation"
+        ONGOING = "O", "Ongoing"
+        FINISHED = "F", "Finished"
+
     name = models.CharField(max_length=50)
     start_date = models.DateTimeField(null=True, blank=True)
     end_date = models.DateTimeField(null=True, blank=True)
-    status = FSMField(max_length=1, choices=STATUSES, default="P")
+    status = FSMField(
+        max_length=1, choices=Status.choices, default=Status.UNDER_PREPARATION
+    )
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse("game", args=(self.id,))
+
     def can_start(self):
         number_of_characters = Character.objects.filter(game=self).count()
         return number_of_characters >= 2
 
-    @transition(field=status, source="P", target="O", conditions=[can_start])
+    @transition(
+        field=status,
+        source=Status.UNDER_PREPARATION,
+        target=Status.ONGOING,
+        conditions=[can_start],
+    )
     def start(self):
         self.start_date = timezone.now()
 
-    @transition(field=status, source="O", target="F")
+    @transition(field=status, source=Status.ONGOING, target=Status.FINISHED)
     def end(self):
         self.end_date = timezone.now()
         for character in Character.objects.filter(game=self):
@@ -31,14 +46,19 @@ class Game(models.Model):
             character.save()
 
     def is_ongoing(self):
-        return self.status == "O"
+        return self.status == self.Status.ONGOING
 
 
 class Character(models.Model):
-    RACES = (("H", "Human"), ("O", "Orc"), ("E", "Elf"), ("D", "Dwarf"))
+    class Race(models.TextChoices):
+        HUMAN = "H", "Human"
+        ORC = "O", "Orc"
+        ELF = "E", "Elf"
+        DWARF = "D", "Dwarf"
+
     game = models.ForeignKey(Game, on_delete=models.SET_NULL, null=True, blank=True)
     name = models.CharField(max_length=100, unique=True)
-    race = models.CharField(max_length=1, choices=RACES)
+    race = models.CharField(max_length=1, choices=Race.choices)
     xp = models.SmallIntegerField(default=0)
     hp = models.SmallIntegerField(default=100)
     max_hp = models.SmallIntegerField(default=100)
@@ -46,6 +66,9 @@ class Character(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse("character-detail", args=(self.id,))
 
 
 class Event(models.Model):
@@ -70,12 +93,12 @@ class Tale(Event):
 
 
 class PendingAction(Event):
-    ACTION_TYPES = (
-        ("D", "Launch dice"),
-        ("C", "Make choice"),
-    )
+    class ActionType(models.TextChoices):
+        LAUNCH_DICE = "D", "Launch dice"
+        MAKE_CHOICE = "C", "Make choice"
+
     character = models.OneToOneField(Character, on_delete=models.CASCADE)
-    action_type = models.CharField(max_length=1, choices=ACTION_TYPES)
+    action_type = models.CharField(max_length=1, choices=ActionType.choices)
 
     def __str__(self):
         return self.action_type

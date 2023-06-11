@@ -9,7 +9,7 @@
                 {% csrf_token %}
                 <button class="rpgui-button" type="submit"><p>Yes</p></button>
             </form>
-            <a href={% url 'game' game.id %}><button class="rpgui-button"><p>No</p></button></a>
+            <a href={{ game.get_absolute_url }}><button class="rpgui-button"><p>No</p></button></a>
         </div>
     </div>
 {% endblock%}

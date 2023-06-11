@@ -44,7 +44,7 @@ class CreateCharacterViewTest(TestCase):
 
     def test_character_creation_no_existing_character(self):
         name = utils.generate_random_name(10)
-        race = random.choice(gmodels.Character.RACES)[0]
+        race = random.choice(gmodels.Character.Race.choices)[0]
         data = {"name": f"{name}", "race": f"{race}"}
         form = gforms.CreateCharacterForm(data)
         self.assertTrue(form.is_valid())
@@ -55,9 +55,7 @@ class CreateCharacterViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         character = gmodels.Character.objects.last()
-        self.assertRedirects(
-            response, reverse("character-detail", args=(character.id,))
-        )
+        self.assertRedirects(response, character.get_absolute_url())
         self.assertEqual(character.name, form.cleaned_data["name"])
         self.assertEqual(character.race, form.cleaned_data["race"])
         self.assertEqual(character.xp, 0)
@@ -257,7 +255,7 @@ class DiceLaunchSuccessViewTest(TestCase):
         character = gmodels.Character.objects.create(
             name=utils.generate_random_name(100),
             game=game,
-            race=random.choice(gmodels.Character.RACES)[0],
+            race=random.choice(gmodels.Character.Race.choices)[0],
         )
         gmodels.DiceLaunch.objects.create(
             game=game, character=character, score=random.randint(1, 20)

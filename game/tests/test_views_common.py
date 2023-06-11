@@ -157,12 +157,12 @@ class GameViewTest(TestCase):
             character = gmodels.Character.objects.create(
                 game=game,
                 name=f"{game.name} character{i}",
-                race=random.choice(gmodels.Character.RACES)[0],
+                race=random.choice(gmodels.Character.Race.choices)[0],
             )
             gmodels.PendingAction.objects.create(
                 game=game,
                 character=character,
-                action_type=random.choice(gmodels.PendingAction.ACTION_TYPES)[0],
+                action_type=random.choice(gmodels.PendingAction.ActionType.choices)[0],
                 message=f"{game.name} pending_action{i}",
             )
 
@@ -304,12 +304,12 @@ class CharacterViewTest(TestCase):
 
     def test_view_mapping(self):
         character = gmodels.Character.objects.last()
-        response = self.client.get(reverse("character-detail", args=[character.id]))
+        response = self.client.get(character.get_absolute_url())
         self.assertEqual(
             response.resolver_match.func.view_class, gvcommon.DetailCharacterView
         )
 
     def test_template_mapping(self):
         character = gmodels.Character.objects.last()
-        response = self.client.get(reverse("character-detail", args=[character.id]))
+        response = self.client.get(character.get_absolute_url())
         self.assertTemplateUsed(response, "game/character.html")
