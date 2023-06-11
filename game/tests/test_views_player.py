@@ -55,9 +55,7 @@ class CreateCharacterViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         character = gmodels.Character.objects.last()
-        self.assertRedirects(
-            response, reverse("character-detail", args=(character.id,))
-        )
+        self.assertRedirects(response, character.get_absolute_url())
         self.assertEqual(character.name, form.cleaned_data["name"])
         self.assertEqual(character.race, form.cleaned_data["race"])
         self.assertEqual(character.xp, 0)

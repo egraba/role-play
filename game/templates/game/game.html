@@ -21,7 +21,7 @@
         {% for character in character_list %}
             <div class="character rpgui-container framed-grey">
                 <p>
-                    <a href={% url 'character-detail' character.id %} style="width:100em">
+                    <a href={{ character.get_absolute_url }} style="width:100em">
                         {{ character.name }}
                     </a>
                     Race: {{ character.get_race_display }},

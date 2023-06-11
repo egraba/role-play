@@ -304,12 +304,12 @@ class CharacterViewTest(TestCase):
 
     def test_view_mapping(self):
         character = gmodels.Character.objects.last()
-        response = self.client.get(reverse("character-detail", args=[character.id]))
+        response = self.client.get(character.get_absolute_url())
         self.assertEqual(
             response.resolver_match.func.view_class, gvcommon.DetailCharacterView
         )
 
     def test_template_mapping(self):
         character = gmodels.Character.objects.last()
-        response = self.client.get(reverse("character-detail", args=[character.id]))
+        response = self.client.get(character.get_absolute_url())
         self.assertTemplateUsed(response, "game/character.html")

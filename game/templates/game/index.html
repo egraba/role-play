@@ -52,7 +52,7 @@
                 {% endif %}
                 {% if perms.game.add_character %}
                     {% if character %}
-                        <a href="{% url 'character-detail' character.id %}">
+                        <a href={{ character.get_absolute_url }}>
                             <button class="rpgui-button"><p>View your character</p></button>
                         </a>
                     {% else %}

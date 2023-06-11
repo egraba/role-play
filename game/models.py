@@ -51,6 +51,9 @@ class Character(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse("character-detail", args=(self.id,))
+
 
 class Event(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
