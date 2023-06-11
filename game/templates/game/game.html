@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
     <div class="rpgui-container framed">
@@ -9,7 +10,6 @@
 
         <hr class="golden"/>
 
-        {% load static %}
         <img class="rpgui-icon wizard" src={% static 'images/wizard.png' %}>
         <div class="tale"><p >{{ tale }}</p></div>
         <div class="rpgui-center">
