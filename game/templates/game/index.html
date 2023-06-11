@@ -28,7 +28,7 @@
 
             {% for game in page_obj %}
                 <div class="rpgui-container framed-golden-2">
-                    <h2><a href={% url 'game' game.id %}>{{ game }}</a></h2>
+                    <h2><a href={{ game.get_absolute_url }}>{{ game }}</a></h2>
                     <p>
                         Status: {{ game.get_status_display }},
                         Number of players: {{ game.character_set.all|length }}

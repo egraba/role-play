@@ -4,7 +4,7 @@
     <div class="rpgui-container framed">
         <h1 class="title">{{ game }}</h1>
         <div class="rpgui-center">
-            <a href={% url 'game' game.id %}>- Return to game -</a>
+            <a href={{ game.get_absolute_url }}>- Return to game -</a>
         </div>
 
         <hr class="golden"/>

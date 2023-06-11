@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
 from django_fsm import FSMField, transition
 
@@ -14,6 +15,9 @@ class Game(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse("game", args=(self.id,))
 
     def can_start(self):
         number_of_characters = Character.objects.filter(game=self).count()

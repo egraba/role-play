@@ -5,7 +5,7 @@
         <h1>{{ game }}</h1>
         <p>{{ character }}, your score is: {{ dice_launch.score }}!</p>
         <div class="rpgui-center">
-            <a href={% url 'game' game.id %}><button class="rpgui-button" ><p>Return to the game</p></button></a>
+            <a href={{ game.get_absolute_url }}><button class="rpgui-button" ><p>Return to the game</p></button></a>
         </div>
     </div>
 {% endblock%}
