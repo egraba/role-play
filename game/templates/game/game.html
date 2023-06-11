@@ -34,7 +34,7 @@
                         {% if user.id == character.user.id %}(you){% endif %}
                     {% endif %}
 
-                    {% if user.is_authenticated and game.status == "O" %}
+                    {% if user.is_authenticated and game.get_status_display == "Ongoing" %}
                         <div class ="rpgui-center inline">
                             {% if perms.game.add_pendingaction %}
                                 {% if not character.pendingaction %}
@@ -70,7 +70,7 @@
         {% if user.is_authenticated %}
             <div class="rpgui-center inline">
                 {% if perms.game.change_character %}
-                    {% if game.status == "P" %}
+                    {% if game.get_status_display == "Under preparation" %}
                         <a href={% url 'game-invite-character' game.id %}>
                             <button class="rpgui-button"><p>Invite a character</p></button>
                         </a>
@@ -79,12 +79,12 @@
                     {% endif %}
                 {% endif %}
                 {% if perms.game.change_game %}
-                    {% if game.status == "P" %}
+                    {% if game.get_status_display == "Under preparation" %}
                         <a href={% url 'game-start' game.id %}>
                             <button class="rpgui-button"><p>Start the game</p></button>
                         </a>
                         <button disabled class="rpgui-button"><p>End the game</p></button>
-                    {% elif game.status == "O" %}
+                    {% elif game.get_status_display == "Ongoing" %}
                         <button disabled class="rpgui-button"><p>Start the game</p></button>
                         <a href={% url 'game-end' game.id %}>
                             <button class="rpgui-button"><p>End the game</p></button>
@@ -109,7 +109,7 @@
         </div>
         {% include 'pagination.html' %}
 
-        {% if user.is_authenticated and game.status == "O" %}
+        {% if user.is_authenticated and game.get_status_display == "Ongoing" %}
             <div class="rpgui-center">
                 {% if perms.game.add_tale %}
                     <a href={% url 'tale-create' game.id %}>
@@ -117,14 +117,14 @@
                     </a>
                 {% endif %}
                 {% if player.pendingaction %}
-                    {% if perms.game.add_dicelaunch and player.pendingaction.action_type == "D" %}
+                    {% if perms.game.add_dicelaunch and player.pendingaction.get_action_type_display == "Launch dice" %}
                         <a class="character-action" href={% url 'dicelaunch-create' game.id player.id %}>
                             <button class="rpgui-button">
                                 <p>{{ player.pendingaction.get_action_type_display }}</p>
                             </button>
                         </a>
                     {% endif %}
-                    {% if perms.game.add_choice and player.pendingaction.action_type == "C" %}
+                    {% if perms.game.add_choice and player.pendingaction.get_action_type_display == "Make choice" %}
                         <a class="character-action" href={% url 'choice-create' game.id player.id %}>
                             <button class="rpgui-button">
                                 <p>{{ player.pendingaction.get_action_type_display }}</p>

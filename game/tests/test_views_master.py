@@ -82,12 +82,12 @@ class InviteCharacterViewTest(TestCase):
             gmodels.Character.objects.create(
                 name=utils.generate_random_name(10),
                 game=game,
-                race=random.choice(gmodels.Character.RACES)[0],
+                race=random.choice(gmodels.Character.Race.choices)[0],
             )
         for i in range(number_of_characters_without_game):
             gmodels.Character.objects.create(
                 name=utils.generate_random_name(10),
-                race=random.choice(gmodels.Character.RACES)[0],
+                race=random.choice(gmodels.Character.Race.choices)[0],
                 xp=random.randint(1, 100),
             )
 
@@ -530,7 +530,7 @@ class CreatePendingActionViewTest(TestCase):
         self.assertRaises(PermissionDenied)
 
     def test_pending_action_creation_ok(self):
-        action_type = random.choice(gmodels.PendingAction.ACTION_TYPES)
+        action_type = random.choice(gmodels.PendingAction.ActionType.choices)
         data = {"action_type": f"{action_type[0]}"}
         form = gforms.CreatePendingActionForm(data)
         self.assertTrue(form.is_valid())
