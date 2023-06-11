@@ -1,6 +1,8 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
+from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
@@ -120,6 +122,10 @@ class CreateTaleView(PermissionRequiredMixin, FormView, gmixins.EventConditionsM
     template_name = "game/createtale.html"
     form_class = gforms.CreateTaleForm
 
+    def get_users_emails(self):
+        users = list(User.objects.filter(game=self.game).exclude(email=None))
+        return [user.email for user in users]
+
     def get_success_url(self):
         return reverse_lazy("game", args=(self.game.id,))
 
@@ -129,6 +135,12 @@ class CreateTaleView(PermissionRequiredMixin, FormView, gmixins.EventConditionsM
         tale.message = "The Master updated the story."
         tale.content = form.cleaned_data["content"]
         tale.save()
+        send_mail(
+            f"[{self.game}] The Master updated the story.",
+            f"The Master said:\n{tale.content}",
+            self.request.user.email,
+            self.get_users_emails(),
+        )
         return super().form_valid(form)
 
 
