@@ -25,8 +25,8 @@ class CreateGameView(PermissionRequiredMixin, FormView):
     def form_valid(self, form):
         self.game = gmodels.Game()
         self.game.name = form.cleaned_data["name"]
+        self.game.master = self.request.user
         self.game.save()
-        gmodels.Master.objects.create(game=self.game, user=self.request.user)
         tale = gmodels.Tale()
         tale.game = self.game
         tale.message = "The Master created the story."
@@ -121,11 +121,8 @@ class CreateTaleView(PermissionRequiredMixin, FormView, gmixins.EventConditionsM
     template_name = "game/createtale.html"
     form_class = gforms.CreateTaleForm
 
-    def get_users_emails(self):
-        users = list(
-            gmodels.Master.objects.filter(game=self.game).exclude(user__email=None)
-        )
-        return [user.user.email for user in users]
+    def get_players_emails(self):
+        return None
 
     def get_success_url(self):
         return reverse_lazy("game", args=(self.game.id,))
@@ -139,8 +136,8 @@ class CreateTaleView(PermissionRequiredMixin, FormView, gmixins.EventConditionsM
         send_mail(
             f"[{self.game}] The Master updated the story.",
             f"The Master said:\n{tale.content}",
-            self.request.user.email,
-            self.get_users_emails(),
+            self.game.master.email,
+            self.get_players_emails(),
         )
         return super().form_valid(form)
 

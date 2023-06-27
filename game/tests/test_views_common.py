@@ -24,11 +24,11 @@ class IndexViewTest(TestCase):
 
         number_of_games = 7
         for i in range(number_of_games):
-            game = gmodels.Game.objects.create(
+            gmodels.Game.objects.create(
                 name=utils.generate_random_string(20),
                 start_date=datetime.now(tz=timezone.utc),
+                master=user,
             )
-            gmodels.Master.objects.create(game=game, user=user)
 
     def test_view_mapping(self):
         response = self.client.get(reverse("index"))
@@ -79,7 +79,7 @@ class IndexViewTest(TestCase):
 
         response = self.client.get(reverse("index"))
         self.assertEqual(response.status_code, 200)
-        game_list = gmodels.Game.objects.filter(master__user=self.user)
+        game_list = gmodels.Game.objects.filter(master=self.user)
         self.assertTrue(set(response.context["game_list"]).issubset(set(game_list)))
 
     def test_context_data_anonymous_user(self):

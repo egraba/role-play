@@ -12,6 +12,7 @@ class Game(models.Model):
         FINISHED = "F", "Finished"
 
     name = models.CharField(max_length=50)
+    master = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     start_date = models.DateTimeField(null=True, blank=True)
     end_date = models.DateTimeField(null=True, blank=True)
     status = FSMField(
@@ -46,11 +47,6 @@ class Game(models.Model):
 
     def is_ongoing(self):
         return self.status == self.Status.ONGOING
-
-
-class Master(models.Model):
-    game = models.OneToOneField(Game, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
 
 class Character(models.Model):

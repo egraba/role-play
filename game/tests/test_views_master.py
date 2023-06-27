@@ -55,7 +55,7 @@ class CreateGameViewTest(TestCase):
         game = gmodels.Game.objects.last()
         self.assertEqual(game.name, name)
         self.assertEqual(game.status, "P")
-        self.assertEqual(game.master.user, self.user)
+        self.assertEqual(game.master, self.user)
         tale = gmodels.Tale.objects.last()
         self.assertEqual(tale.game, game)
         self.assertEqual(tale.message, "The Master created the story.")
@@ -363,7 +363,7 @@ class CreateTaleViewTest(TestCase):
         user.user_permissions.add(permission)
         user.save()
 
-        game = gmodels.Game.objects.create()
+        game = gmodels.Game.objects.create(master=user)
         cmodels.Room.objects.create(game=game)
         gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
         gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
