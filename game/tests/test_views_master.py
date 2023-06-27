@@ -55,7 +55,7 @@ class CreateGameViewTest(TestCase):
         game = gmodels.Game.objects.last()
         self.assertEqual(game.name, name)
         self.assertEqual(game.status, "P")
-        self.assertEqual(game.user, self.user)
+        self.assertEqual(game.master.user, self.user)
         tale = gmodels.Tale.objects.last()
         self.assertEqual(tale.game, game)
         self.assertEqual(tale.message, "The Master created the story.")

@@ -17,7 +17,6 @@ class Game(models.Model):
     status = FSMField(
         max_length=1, choices=Status.choices, default=Status.UNDER_PREPARATION
     )
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -47,6 +46,11 @@ class Game(models.Model):
 
     def is_ongoing(self):
         return self.status == self.Status.ONGOING
+
+
+class Master(models.Model):
+    game = models.OneToOneField(Game, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
 
 class Character(models.Model):

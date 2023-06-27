@@ -1,5 +1,4 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.core.mail import send_mail
@@ -26,8 +25,8 @@ class CreateGameView(PermissionRequiredMixin, FormView):
     def form_valid(self, form):
         self.game = gmodels.Game()
         self.game.name = form.cleaned_data["name"]
-        self.game.user = self.request.user
         self.game.save()
+        gmodels.Master.objects.create(game=self.game, user=self.request.user)
         tale = gmodels.Tale()
         tale.game = self.game
         tale.message = "The Master created the story."
@@ -123,8 +122,10 @@ class CreateTaleView(PermissionRequiredMixin, FormView, gmixins.EventConditionsM
     form_class = gforms.CreateTaleForm
 
     def get_users_emails(self):
-        users = list(User.objects.filter(game=self.game).exclude(email=None))
-        return [user.email for user in users]
+        users = list(
+            gmodels.Master.objects.filter(game=self.game).exclude(user__email=None)
+        )
+        return [user.user.email for user in users]
 
     def get_success_url(self):
         return reverse_lazy("game", args=(self.game.id,))
