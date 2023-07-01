@@ -7,6 +7,14 @@ class CreateGameForm(forms.Form):
     name = forms.CharField(widget=forms.TextInput, max_length=50)
     description = forms.CharField(widget=forms.Textarea, max_length=1000)
 
+    def clean_name(self):
+        name = self.cleaned_data["name"]
+        if gmodels.Game.objects.filter(name=name).exists():
+            raise forms.ValidationError(
+                "A game with the same name already exists... Please find another name."
+            )
+        return name
+
 
 class CreateTaleForm(forms.Form):
     content = forms.CharField(widget=forms.Textarea, max_length=1000)

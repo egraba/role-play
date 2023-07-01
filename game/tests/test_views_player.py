@@ -181,7 +181,7 @@ class DiceLaunchViewTest(TestCase):
         self.assertEqual(response.context["character"], character)
 
     def test_game_is_under_preparation(self):
-        game = gmodels.Game.objects.create()
+        game = gmodels.Game.objects.create(name=utils.generate_random_string(20))
         character = gmodels.Character.objects.last()
         response = self.client.get(
             reverse(
@@ -460,7 +460,7 @@ class ChoiceViewTest(TestCase):
         self.assertEqual(response.context["character"], character)
 
     def test_game_is_under_preparation(self):
-        game = gmodels.Game.objects.create()
+        game = gmodels.Game.objects.create(name=utils.generate_random_string(20))
         character = gmodels.Character.objects.last()
         response = self.client.get(
             reverse(

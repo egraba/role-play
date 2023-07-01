@@ -452,7 +452,7 @@ class CreatePendingActionViewTest(TestCase):
         user.user_permissions.add(permission)
         user.save()
 
-        game = gmodels.Game.objects.create()
+        game = gmodels.Game.objects.create(name=utils.generate_random_string(20))
         cmodels.Room.objects.create(game=game)
         gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
         gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
@@ -580,7 +580,7 @@ class IncreaseXpViewTest(TestCase):
         user.user_permissions.add(permission)
         user.save()
 
-        game = gmodels.Game.objects.create()
+        game = gmodels.Game.objects.create(name=utils.generate_random_string(20))
         cmodels.Room.objects.create(game=game)
         gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
         gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
@@ -705,7 +705,7 @@ class DamageViewTest(TestCase):
         user.user_permissions.add(permission)
         user.save()
 
-        game = gmodels.Game.objects.create()
+        game = gmodels.Game.objects.create(name=utils.generate_random_string(20))
         cmodels.Room.objects.create(game=game)
         gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
         gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
@@ -855,7 +855,7 @@ class HealViewTest(TestCase):
         user.user_permissions.add(permission)
         user.save()
 
-        game = gmodels.Game.objects.create()
+        game = gmodels.Game.objects.create(name=utils.generate_random_string(20))
         cmodels.Room.objects.create(game=game)
         gmodels.Character.objects.create(
             game=game, name=utils.generate_random_name(5), hp=1
