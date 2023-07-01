@@ -5,3 +5,38 @@ profile = "black"
 plugins = [
     'django_coverage_plugin',
 ]
+
+[tool.poetry]
+name = "role-play"
+version = "0.1.0"
+description = "Role playing game."
+authors = ["Eric Grabarczyk <eric.grabarczyk@gmail.com>"]
+license = "GNU Affero General Public License v3.0"
+readme = "README.md"
+packages = [{include = "role_play"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+async-timeout = "*"
+channels = "~=3.0"
+channels-redis = "*"
+daphne = "*"
+dj-database-url = "*"
+django = "~=4.2"
+django-eventstream = "*"
+django-fsm = "*"
+gunicorn = "*"
+psycopg = {extras = ["binary"], version = "*"}
+redis = "*"
+whitenoise = "*"
+
+[tool.poetry.group.dev.dependencies]
+black = "*"
+coverage = "*"
+django-coverage-plugin = "*"
+django-debug-toolbar = "*"
+pre-commit = "*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
