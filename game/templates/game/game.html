@@ -120,12 +120,14 @@
 
         <hr />
 
-        <div id="events" class="rpgui-container framed-grey">
-            {% for event in event_list %}
-                <p>{{ event.date }}, {{ event.message }}</p>
-            {% empty %}
-                <p>The story did not start yet...</p>
-            {% endfor %}
+        <div id="events">
+            <div class="rpgui-container framed-grey">
+                {% for event in event_list %}
+                    <p>{{ event.date }}, {{ event.message }}</p>
+                {% empty %}
+                    <p>The story did not start yet...</p>
+                {% endfor %}
+            </div>
         </div>
         {% include 'pagination.html' %}
 
