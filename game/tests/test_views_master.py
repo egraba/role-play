@@ -358,20 +358,26 @@ class CreateTaleViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         permission = Permission.objects.get(codename="add_tale")
-        user = User.objects.create(username=utils.generate_random_name(5))
+        user = User.objects.create(username="user-tale")
         user.set_password("pwd")
         user.user_permissions.add(permission)
         user.save()
+        player1 = User.objects.create(username=utils.generate_random_name(5))
+        player2 = User.objects.create(username=utils.generate_random_name(5))
 
-        game = gmodels.Game.objects.create(master=user)
+        game = gmodels.Game.objects.create(name="game-tale", master=user)
         cmodels.Room.objects.create(game=game)
-        gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
-        gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
+        gmodels.Character.objects.create(
+            game=game, name=utils.generate_random_name(5), user=player1
+        )
+        gmodels.Character.objects.create(
+            game=game, name=utils.generate_random_name(5), user=player2
+        )
         game.start()
         game.save()
 
     def setUp(self):
-        self.user = User.objects.last()
+        self.user = User.objects.get(username="user-tale")
         self.client.login(username=self.user.username, password="pwd")
 
     def tearDown(self):
@@ -422,13 +428,13 @@ class CreateTaleViewTest(TestCase):
         data = {"content": f"{content}"}
         form = gforms.CreateTaleForm(data)
         self.assertTrue(form.is_valid())
-        game = gmodels.Game.objects.last()
+        game = gmodels.Game.objects.get(name="game-tale")
 
         response = self.client.post(
             reverse(self.path_name, args=[game.id]), data=form.cleaned_data
         )
         self.assertEqual(response.status_code, 302)
-        tale = gmodels.Tale.objects.last()
+        tale = gmodels.Tale.objects.filter(game=game).last()
         self.assertEqual(tale.game, game)
         self.assertEqual(tale.message, "The Master updated the story.")
         self.assertEqual(tale.content, form.cleaned_data["content"])
