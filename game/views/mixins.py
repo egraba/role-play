@@ -2,7 +2,9 @@ from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.http import Http404
 from django.views.generic import View
+from django.views.generic.edit import FormMixin
 from django.views.generic.list import ContextMixin
+from django_eventstream import send_event
 
 import game.models as gmodels
 
@@ -43,7 +45,7 @@ class CharacterContextMixin(ContextMixin, View):
         return context
 
 
-class EventConditionsMixin(GameContextMixin, View):
+class EventConditionsMixin(GameContextMixin, FormMixin):
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
         if self.game.is_ongoing():
@@ -51,3 +53,7 @@ class EventConditionsMixin(GameContextMixin, View):
             pass
         else:
             raise PermissionDenied()
+
+    def form_valid(self, form):
+        send_event("game", "message", {"game": self.game.id, "refresh": "event"})
+        return super().form_valid(form)

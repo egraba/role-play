@@ -7,8 +7,14 @@
 
         es.addEventListener('message', function (e) {
             const obj = JSON.parse(e.data)
-            if (obj.game === {{game.id}} && obj.refresh === "tale") {
-                $("#tale").load(window.location.href + " #tale");
+            if (obj.game === {{game.id}}) {
+                if (obj.refresh === "tale") {
+                    $("#tale").load(window.location.href + " #tale");
+                } else if (obj.refresh === "event") {
+                    $("#events").load(window.location.href + " #events");
+                    $("#actions").load(window.location.href + " #actions");
+                    $("#characters").load(window.location.href + " #characters");
+                }
             }
         }, false);
     </script>
@@ -29,55 +35,58 @@
 
         <hr/>
 
-        {% for character in character_list %}
-            <div class="character rpgui-container framed-grey">
-                <p>
-                    <a href={{ character.get_absolute_url }} style="width:100em">
-                        {{ character.name }}
-                    </a>
-                    Race: {{ character.get_race_display }},
-                    XP: {{ character.xp }},
-                    HP: {{ character.hp }} / {{ character.max_hp }}
-                    {% if character.pendingaction %}
-                        (pending {{ character.pendingaction.get_action_type_display }})
-                    {% endif %}
-                    {% if player %}
-                        {% if user.id == character.user.id %}(you){% endif %}
-                    {% endif %}
+        <div id="characters">
+            {% for character in character_list %}
+                <div class="character rpgui-container framed-grey">
+                    <p>
+                        <a href={{ character.get_absolute_url }} style="width:100em">
+                            {{ character.name }}
+                        </a>
+                        Race: {{ character.get_race_display }},
+                        XP: {{ character.xp }},
+                        HP: {{ character.hp }} / {{ character.max_hp }}
+                        {% if character.pendingaction %}
+                            (pending {{ character.pendingaction.get_action_type_display }})
+                        {% endif %}
+                        {% if player %}
+                            {% if user.id == character.user.id %}(you){% endif %}
+                        {% endif %}
 
-                    {% if user.is_authenticated and game.get_status_display == "Ongoing" %}
-                        <div class ="rpgui-center inline">
-                            {% if perms.game.add_pendingaction %}
-                                {% if not character.pendingaction %}
-                                    <a href={% url 'pendingaction-create' game.id character.id %}>
-                                        <button class="rpgui-button"><p>Ask for action</p></button>
-                                    </a>
-                                {% else %}
-                                    <button disabled class="rpgui-button"><p>Ask for action</p></button>
+                        {% if user.is_authenticated and game.get_status_display == "Ongoing" %}
+                            <div class ="rpgui-center inline">
+                                {% if perms.game.add_pendingaction %}
+                                    {% if not character.pendingaction %}
+                                        <a href={% url 'pendingaction-create' game.id character.id %}>
+                                            <button class="rpgui-button"><p>Ask for action</p></button>
+                                        </a>
+                                    {% else %}
+                                        <button disabled class="rpgui-button"><p>Ask for action</p></button>
+                                    {% endif %}
                                 {% endif %}
-                            {% endif %}
-                            {% if perms.game.add_xpincrease %}
-                                <a href={% url 'xpincrease-create' game.id character.id %}>
-                                    <button class="rpgui-button"><p>Increase XP</p></button>
-                                </a>
-                            {% endif %}
-                            {% if perms.game.add_damage %}
-                                <a href={% url 'damage-create' game.id character.id %}>
-                                    <button class="rpgui-button"><p>Damage</p></button>
-                                </a>
-                            {% endif %}
-                            {% if perms.game.add_healing %}
-                                <a href={% url 'healing-create' game.id character.id %}>
-                                    <button class="rpgui-button"><p>Heal</p></button>
-                                </a>
-                            {% endif %}
-                        </div>
-                    {% endif %}
-                </p>
-            </div>
-        {% empty %}
-            <p>There is no character for this game...</p>
-        {% endfor %}
+                                {% if perms.game.add_xpincrease %}
+                                    <a href={% url 'xpincrease-create' game.id character.id %}>
+                                        <button class="rpgui-button"><p>Increase XP</p></button>
+                                    </a>
+                                {% endif %}
+                                {% if perms.game.add_damage %}
+                                    <a href={% url 'damage-create' game.id character.id %}>
+                                        <button class="rpgui-button"><p>Damage</p></button>
+                                    </a>
+                                {% endif %}
+                                {% if perms.game.add_healing %}
+                                    <a href={% url 'healing-create' game.id character.id %}>
+                                        <button class="rpgui-button"><p>Heal</p></button>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </p>
+                </div>
+            {% empty %}
+                <p>There is no character for this game...</p>
+            {% endfor %}
+        </div>
+
         {% if user.is_authenticated %}
             <div class="rpgui-center inline">
                 {% if perms.game.change_character %}
@@ -111,17 +120,19 @@
 
         <hr />
 
-        <div class="rpgui-container framed-grey">
-            {% for event in event_list %}
-                <p>{{ event.date }}, {{ event.message }}</p>
-            {% empty %}
-                <p>The story did not start yet...</p>
-            {% endfor %}
+        <div id="events">
+            <div class="rpgui-container framed-grey">
+                {% for event in event_list %}
+                    <p>{{ event.date }}, {{ event.message }}</p>
+                {% empty %}
+                    <p>The story did not start yet...</p>
+                {% endfor %}
+            </div>
         </div>
         {% include 'pagination.html' %}
 
         {% if user.is_authenticated and game.get_status_display == "Ongoing" %}
-            <div class="rpgui-center">
+            <div id="actions" class="rpgui-center">
                 {% if perms.game.add_tale %}
                     <a href={% url 'tale-create' game.id %}>
                         <button class="rpgui-button"><p>Continue the story</p></button>
