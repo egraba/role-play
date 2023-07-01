@@ -1,10 +1,12 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
+from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.views.generic import CreateView, FormView, ListView, UpdateView
+from django_eventstream import send_event
 from django_fsm import TransitionNotAllowed
 
 import chat.models as cmodels
@@ -24,7 +26,7 @@ class CreateGameView(PermissionRequiredMixin, FormView):
     def form_valid(self, form):
         self.game = gmodels.Game()
         self.game.name = form.cleaned_data["name"]
-        self.game.user = self.request.user
+        self.game.master = self.request.user
         self.game.save()
         tale = gmodels.Tale()
         tale.game = self.game
@@ -120,6 +122,10 @@ class CreateTaleView(PermissionRequiredMixin, FormView, gmixins.EventConditionsM
     template_name = "game/createtale.html"
     form_class = gforms.CreateTaleForm
 
+    def get_players_emails(self):
+        players = gmodels.Character.objects.filter(game=self.game)
+        return [player.user.email for player in players]
+
     def get_success_url(self):
         return reverse_lazy("game", args=(self.game.id,))
 
@@ -129,6 +135,13 @@ class CreateTaleView(PermissionRequiredMixin, FormView, gmixins.EventConditionsM
         tale.message = "The Master updated the story."
         tale.content = form.cleaned_data["content"]
         tale.save()
+        send_mail(
+            f"[{self.game}] The Master updated the story.",
+            f"The Master said:\n{tale.content}",
+            self.game.master.email,
+            self.get_players_emails(),
+        )
+        send_event("game", "message", {"refresh": "tale"})
         return super().form_valid(form)
 
 

@@ -42,11 +42,13 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "channels",
+    "django_eventstream",
     # "debug_toolbar",
 ]
 
 MIDDLEWARE = [
     # "debug_toolbar.middleware.DebugToolbarMiddleware",
+    "django_grip.GripMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",

@@ -5,11 +5,12 @@ name = "pypi"
 
 [packages]
 async-timeout = "*"
-channels = "*"
+channels = "~=3.0"
 channels-redis = "*"
 daphne = "*"
 dj-database-url = "*"
 django = "~=4.2"
+django-eventstream = "*"
 django-fsm = "*"
 gunicorn = "*"
 psycopg = {extras = ["binary"], version = "*"}

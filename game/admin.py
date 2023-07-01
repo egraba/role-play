@@ -4,8 +4,8 @@ import game.models as gmodels
 
 
 class GameAdmin(admin.ModelAdmin):
-    fields = ["name", "status", "user"]
-    list_display = ["name", "status", "user", "start_date", "end_date"]
+    fields = ["name", "status", "master"]
+    list_display = ["name", "status", "master", "start_date", "end_date"]
 
 
 class CharacterAdmin(admin.ModelAdmin):

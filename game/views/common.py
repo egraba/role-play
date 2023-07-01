@@ -26,7 +26,7 @@ class IndexView(ListView):
     def get_queryset(self):
         qs = super().get_queryset()
         if self.request.user.has_perm("game.add_game"):
-            return qs.filter(user=self.request.user)
+            return qs.filter(master=self.request.user)
         elif self.request.user.has_perm("game.add_character"):
             return qs.filter(character__user=self.request.user)
         else:

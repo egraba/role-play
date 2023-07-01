@@ -12,12 +12,12 @@ class Game(models.Model):
         FINISHED = "F", "Finished"
 
     name = models.CharField(max_length=50)
+    master = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     start_date = models.DateTimeField(null=True, blank=True)
     end_date = models.DateTimeField(null=True, blank=True)
     status = FSMField(
         max_length=1, choices=Status.choices, default=Status.UNDER_PREPARATION
     )
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.name
