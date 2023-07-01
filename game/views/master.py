@@ -141,7 +141,7 @@ class CreateTaleView(PermissionRequiredMixin, FormView, gmixins.EventConditionsM
             self.game.master.email,
             self.get_players_emails(),
         )
-        send_event("game", "message", {"refresh": "tale"})
+        send_event("game", "message", {"game": self.game.id, "refresh": "tale"})
         return super().form_valid(form)
 
 
