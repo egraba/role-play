@@ -7,8 +7,12 @@
 
         es.addEventListener('message', function (e) {
             const obj = JSON.parse(e.data)
-            if (obj.game === {{game.id}} && obj.refresh === "tale") {
-                $("#tale").load(window.location.href + " #tale");
+            if (obj.game === {{game.id}}) {
+                if (obj.refresh === "tale") {
+                    $("#tale").load(window.location.href + " #tale");
+                } else if (obj.refresh === "event") {
+                    $("#events").load(window.location.href + " #events");
+                }
             }
         }, false);
     </script>
@@ -111,7 +115,7 @@
 
         <hr />
 
-        <div class="rpgui-container framed-grey">
+        <div id="events" class="rpgui-container framed-grey">
             {% for event in event_list %}
                 <p>{{ event.date }}, {{ event.message }}</p>
             {% empty %}
