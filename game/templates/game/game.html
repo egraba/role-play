@@ -7,8 +7,8 @@
 
         es.addEventListener('message', function (e) {
             const obj = JSON.parse(e.data)
-            if (obj.refresh === "tale") {
-                $("#tale").load(window.location.href + "#tale");
+            if (obj.game === {{game.id}} && obj.refresh === "tale") {
+                $("#tale").load(window.location.href + " #tale");
             }
         }, false);
     </script>
