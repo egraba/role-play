@@ -124,7 +124,7 @@ class CreateTaleView(PermissionRequiredMixin, FormView, gmixins.EventConditionsM
 
     def get_players_emails(self):
         players = gmodels.Character.objects.filter(game=self.game)
-        return [player.user.email for player in players]
+        return [player.user.email for player in players if player.user is not None]
 
     def get_success_url(self):
         return reverse_lazy("game", args=(self.game.id,))
