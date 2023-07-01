@@ -2,6 +2,17 @@
 {% load static %}
 
 {% block content %}
+    <script>
+        var es = new ReconnectingEventSource('/events/');
+
+        es.addEventListener('message', function (e) {
+            const obj = JSON.parse(e.data)
+            if (obj.refresh === "tale") {
+                $("#tale").load(window.location.href + "#tale");
+            }
+        }, false);
+    </script>
+
     <div class="rpgui-container framed">
         <h1 id="title" class="title">{{ game }}</h1>
         <div class="rpgui-center">
@@ -11,7 +22,7 @@
         <hr class="golden"/>
 
         <img class="rpgui-icon wizard" src={% static 'images/wizard.png' %}>
-        <div class="tale"><p >{{ tale }}</p></div>
+        <div id="tale"><p >{{ tale }}</p></div>
         <div class="rpgui-center">
             <a href={% url 'room' game.room.id %}>- Join the chat -</a>
         </div>

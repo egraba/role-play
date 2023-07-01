@@ -25,4 +25,4 @@ repos:
     - id: djcss
       exclude: .*/rpgui/.*
     - id: djjs
-      exclude: .*/rpgui/.*
+      exclude: .*/rpgui/.*|.*/js/.*

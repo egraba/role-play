@@ -6,6 +6,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.views.generic import CreateView, FormView, ListView, UpdateView
+from django_eventstream import send_event
 from django_fsm import TransitionNotAllowed
 
 import chat.models as cmodels
@@ -140,6 +141,7 @@ class CreateTaleView(PermissionRequiredMixin, FormView, gmixins.EventConditionsM
             self.game.master.email,
             self.get_players_emails(),
         )
+        send_event("game", "message", {"refresh": "tale"})
         return super().form_valid(form)
 
 
