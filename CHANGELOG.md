@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Added
+* Game page is refreshed dynamically when game events occur
 * Poetry is now the virtualenv management tool
 * Players are now notified when a tale is updated
 * It is now possible to chat within the app
