@@ -8,7 +8,7 @@
         es.addEventListener('message', function (e) {
             const obj = JSON.parse(e.data)
             if (obj.refresh === "tale") {
-                $("#tale").load(window.location.href + "#tale");
+                $("#tale").load(window.location.href + " #tale");
             }
         }, false);
     </script>
