@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Added
+* Poetry is now the virtualenv management tool
 * Players are now notified when a tale is updated
 * It is now possible to chat within the app
 * Use Redis as cache
