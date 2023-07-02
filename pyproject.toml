@@ -25,6 +25,7 @@ dj-database-url = "*"
 django = "~=4.2"
 django-eventstream = "*"
 django-fsm = "*"
+email-validator = "*"
 gunicorn = "*"
 psycopg = {extras = ["binary"], version = "*"}
 redis = "*"
@@ -35,7 +36,6 @@ black = "*"
 coverage = "*"
 django-coverage-plugin = "*"
 django-debug-toolbar = "*"
-email-validator = "*"
 pre-commit = "*"
 
 [build-system]
