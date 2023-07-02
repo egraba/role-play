@@ -73,7 +73,7 @@ class GameListViewTest(TestCase):
         user.set_password("pwd")
         user.save()
 
-        number_of_games = 7
+        number_of_games = 22
         for i in range(number_of_games):
             gmodels.Game.objects.create(
                 name=utils.generate_random_string(20),
@@ -98,7 +98,7 @@ class GameListViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue("is_paginated" in response.context)
         self.assertTrue(response.context["is_paginated"])
-        self.assertEqual(len(response.context["game_list"]), 5)
+        self.assertEqual(len(response.context["game_list"]), 20)
 
     def test_pagination_size_next_page(self):
         self.user = User.objects.last()

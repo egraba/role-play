@@ -23,7 +23,7 @@ class IndexView(TemplateView):
 
 class GameListView(ListView):
     model = gmodels.Game
-    paginate_by = 5
+    paginate_by = 20
     ordering = ["-start_date"]
     template_name = "game/gamelist.html"
 
