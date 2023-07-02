@@ -47,12 +47,16 @@ class IndexViewTest(TestCase):
         self.assertContains(response, "Create a new game")
         self.assertContains(response, "Create a new character")
         self.assertNotContains(response, "View your character")
+        with self.assertRaises(KeyError):
+            response.context["user_character"]
 
     def test_content_logged_user_existing_character(self):
         user = User.objects.create(username=utils.generate_random_name(5))
         user.set_password("pwd")
         user.save()
-        gmodels.Character.objects.create(name=utils.generate_random_name(8), user=user)
+        character = gmodels.Character.objects.create(
+            name=utils.generate_random_name(8), user=user
+        )
         self.client.login(username=user.username, password="pwd")
 
         response = self.client.get(reverse(self.path_name))
@@ -62,6 +66,7 @@ class IndexViewTest(TestCase):
         self.assertContains(response, "Create a new game")
         self.assertNotContains(response, "Create a new character")
         self.assertContains(response, "View your character")
+        self.assertEqual(response.context["user_character"], character)
 
 
 class GameListViewTest(TestCase):
