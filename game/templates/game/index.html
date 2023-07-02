@@ -9,8 +9,9 @@
                 <p>Welcome {{ user.username }}.</p>
                 <a href="{% url 'logout' %}"><button class="rpgui-button"><p>Log out</p></button></a>
             {% else %}
-                <p>Please log in, if you want to play.</p>
+                <p>Please log in or register, if you want to play.</p>
                 <a href="{% url 'login' %}"><button class="rpgui-button"><p>Log in</p></button></a>
+                <button disabled class="rpgui-button"><p>Register</p></button>
             {% endif %}
         </div>
 
