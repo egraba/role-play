@@ -1,5 +1,3 @@
-import os
-
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
@@ -14,6 +12,7 @@ from django_fsm import TransitionNotAllowed
 import chat.models as cmodels
 import game.forms as gforms
 import game.models as gmodels
+import game.utils as gutils
 import game.views.mixins as gmixins
 
 
@@ -124,15 +123,6 @@ class CreateTaleView(PermissionRequiredMixin, FormView, gmixins.EventConditionsM
     template_name = "game/createtale.html"
     form_class = gforms.CreateTaleForm
 
-    def get_master_email(self):
-        email_domain = os.environ["EMAIL_DOMAIN"]
-        email = f"{self.game.master.username}@{email_domain}"
-        return email
-
-    def get_players_emails(self):
-        players = gmodels.Character.objects.filter(game=self.game)
-        return [player.user.email for player in players if player.user is not None]
-
     def get_success_url(self):
         return reverse_lazy("game", args=(self.game.id,))
 
@@ -145,8 +135,8 @@ class CreateTaleView(PermissionRequiredMixin, FormView, gmixins.EventConditionsM
         send_mail(
             f"[{self.game}] The Master updated the story.",
             f"The Master said:\n{tale.content}",
-            self.get_master_email(),
-            self.get_players_emails(),
+            gutils.get_master_email(self.game.master.username),
+            gutils.get_players_emails(game=self.game),
         )
         send_event("game", "message", {"game": self.game.id, "refresh": "tale"})
         return super().form_valid(form)
