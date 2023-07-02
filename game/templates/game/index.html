@@ -32,7 +32,7 @@
                     <button class="rpgui-button"><p>Create a new game</p></button>
                 </a>
                 {% if user_character %}
-                    <a href={{ character.get_absolute_url }}>
+                    <a href={{ user_character.get_absolute_url }}>
                         <button class="rpgui-button"><p>View your character</p></button>
                     </a>
                 {% else %}
