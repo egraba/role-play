@@ -25,13 +25,13 @@
 
         {% if user.is_authenticated %}
             <div class="rpgui-center">
-                <a href="">
+                <a href="{% url 'game-list' %}">
                     <button class="rpgui-button"><p>View all games</p></button>
                 </a>
                 <a href="{% url 'game-create' %}">
                     <button class="rpgui-button"><p>Create a new game</p></button>
                 </a>
-                {% if character %}
+                {% if user_character %}
                     <a href={{ character.get_absolute_url }}>
                         <button class="rpgui-button"><p>View your character</p></button>
                     </a>

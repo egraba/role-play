@@ -1,36 +1,31 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
-from django.views.generic import DetailView, ListView
+from django.views.generic import DetailView, ListView, TemplateView
 
 import game.models as gmodels
 import game.views.mixins as gmixins
 
 
-class IndexView(ListView):
-    model = gmodels.Game
-    paginate_by = 5
-    ordering = ["-start_date"]
+class IndexView(TemplateView):
     template_name = "game/index.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if self.request.user.is_authenticated:
             try:
-                context["character"] = gmodels.Character.objects.get(
+                context["user_character"] = gmodels.Character.objects.get(
                     user=self.request.user
                 )
             except ObjectDoesNotExist:
                 pass
         return context
 
-    def get_queryset(self):
-        qs = super().get_queryset()
-        if self.request.user.has_perm("game.add_game"):
-            return qs.filter(master=self.request.user)
-        elif self.request.user.has_perm("game.add_character"):
-            return qs.filter(character__user=self.request.user)
-        else:
-            return qs.none()
+
+class GameListView(ListView):
+    model = gmodels.Game
+    paginate_by = 5
+    ordering = ["-start_date"]
+    template_name = "game/gamelist.html"
 
 
 class GameView(LoginRequiredMixin, ListView, gmixins.GameContextMixin):

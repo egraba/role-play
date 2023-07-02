@@ -1,8 +1,7 @@
 import random
 from datetime import datetime, timezone
 
-from django.contrib.auth.models import Permission, User
-from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.models import User
 from django.http import Http404
 from django.test import TestCase
 from django.urls import reverse
@@ -14,12 +13,25 @@ from game.tests import utils
 
 
 class IndexViewTest(TestCase):
+    path_name = "index"
+
+    def test_view_mapping(self):
+        response = self.client.get(reverse(self.path_name))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.resolver_match.func.view_class, gvcommon.IndexView)
+
+    def test_template_mapping(self):
+        response = self.client.get(reverse(self.path_name))
+        self.assertTemplateUsed(response, "game/index.html")
+
+
+class GameListViewTest(TestCase):
+    path_name = "game-list"
+
     @classmethod
     def setUpTestData(cls):
-        permission = Permission.objects.get(codename="add_game")
         user = User.objects.create(username=utils.generate_random_name(5))
         user.set_password("pwd")
-        user.user_permissions.add(permission)
         user.save()
 
         number_of_games = 7
@@ -31,19 +43,19 @@ class IndexViewTest(TestCase):
             )
 
     def test_view_mapping(self):
-        response = self.client.get(reverse("index"))
+        response = self.client.get(reverse(self.path_name))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.resolver_match.func.view_class, gvcommon.IndexView)
+        self.assertEqual(response.resolver_match.func.view_class, gvcommon.GameListView)
 
     def test_template_mapping(self):
-        response = self.client.get(reverse("index"))
-        self.assertTemplateUsed(response, "game/index.html")
+        response = self.client.get(reverse(self.path_name))
+        self.assertTemplateUsed(response, "game/gamelist.html")
 
     def test_pagination_size(self):
         self.user = User.objects.last()
         self.client.login(username=self.user.username, password="pwd")
 
-        response = self.client.get(reverse("index"))
+        response = self.client.get(reverse(self.path_name))
         self.assertEqual(response.status_code, 200)
         self.assertTrue("is_paginated" in response.context)
         self.assertTrue(response.context["is_paginated"])
@@ -53,7 +65,7 @@ class IndexViewTest(TestCase):
         self.user = User.objects.last()
         self.client.login(username=self.user.username, password="pwd")
 
-        response = self.client.get(reverse("index") + "?page=2")
+        response = self.client.get(reverse(self.path_name) + "?page=2")
         self.assertEqual(response.status_code, 200)
         self.assertTrue("is_paginated" in response.context)
         self.assertTrue(response.context["is_paginated"])
@@ -63,7 +75,7 @@ class IndexViewTest(TestCase):
         self.user = User.objects.last()
         self.client.login(username=self.user.username, password="pwd")
 
-        response = self.client.get(reverse("index"))
+        response = self.client.get(reverse(self.path_name))
         self.assertEqual(response.status_code, 200)
         last_date = 0
         for game in response.context["game_list"]:
@@ -73,63 +85,10 @@ class IndexViewTest(TestCase):
                 self.assertTrue(last_date >= game.start_date)
                 last_date = game.start_date
 
-    def test_context_data_master_logged(self):
-        self.user = User.objects.last()
-        self.client.login(username=self.user.username, password="pwd")
-
-        response = self.client.get(reverse("index"))
-        self.assertEqual(response.status_code, 200)
-        game_list = gmodels.Game.objects.filter(master=self.user)
-        self.assertTrue(set(response.context["game_list"]).issubset(set(game_list)))
-
-    def test_context_data_anonymous_user(self):
-        response = self.client.get(reverse("index"))
-        self.assertEqual(response.status_code, 200)
-        self.assertFalse(response.context["game_list"].exists())
-
-    def test_context_data_player_logged(self):
-        permission = Permission.objects.get(codename="add_character")
-        user = User.objects.create(username=utils.generate_random_name(5))
-        user.set_password("pwd")
-        user.user_permissions.add(permission)
-        user.save()
-        self.client.login(username=user.username, password="pwd")
-
-        response = self.client.get(reverse("index"))
-        self.assertEqual(response.status_code, 200)
-        game_list = gmodels.Game.objects.filter(character__user=user)
-        self.assertQuerySetEqual(response.context["game_list"], game_list)
-
-    def test_context_data_player_logged_no_existing_character(self):
-        permission = Permission.objects.get(codename="add_character")
-        user = User.objects.create(username=utils.generate_random_name(5))
-        user.set_password("pwd")
-        user.user_permissions.add(permission)
-        user.save()
-        self.client.login(username=user.username, password="pwd")
-
-        response = self.client.get(reverse("index"))
-        self.assertEqual(response.status_code, 200)
-        with self.assertRaises(KeyError):
-            response.context["pending_action"]
-        self.assertRaises(ObjectDoesNotExist)
-
-    def test_context_data_player_logged_existing_character(self):
-        permission = Permission.objects.get(codename="add_character")
-        user = User.objects.create(username=utils.generate_random_name(5))
-        user.set_password("pwd")
-        user.user_permissions.add(permission)
-        user.save()
-
-        gmodels.Character.objects.create(name=utils.generate_random_name(5), user=user)
-        self.client.login(username=user.username, password="pwd")
-        response = self.client.get(reverse("index"))
-        self.assertEqual(response.status_code, 200)
-        character = gmodels.Character.objects.last()
-        self.assertEqual(response.context["character"], character)
-
 
 class GameViewTest(TestCase):
+    path_name = "game"
+
     @classmethod
     def setUpTestData(cls):
         user = User.objects.create(username=utils.generate_random_name(5))
