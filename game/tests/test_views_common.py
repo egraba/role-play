@@ -24,6 +24,45 @@ class IndexViewTest(TestCase):
         response = self.client.get(reverse(self.path_name))
         self.assertTemplateUsed(response, "game/index.html")
 
+    def test_content_anonymous_user(self):
+        response = self.client.get(reverse(self.path_name))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Log in")
+        self.assertContains(response, "Register")
+        self.assertNotContains(response, "View all games")
+        self.assertNotContains(response, "Create a new game")
+        self.assertNotContains(response, "Create a new character")
+        self.assertNotContains(response, "View your character")
+
+    def test_content_logged_user_no_character(self):
+        user = User.objects.create(username=utils.generate_random_name(5))
+        user.set_password("pwd")
+        user.save()
+        self.client.login(username=user.username, password="pwd")
+
+        response = self.client.get(reverse(self.path_name))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Log out")
+        self.assertContains(response, "View all games")
+        self.assertContains(response, "Create a new game")
+        self.assertContains(response, "Create a new character")
+        self.assertNotContains(response, "View your character")
+
+    def test_content_logged_user_existing_character(self):
+        user = User.objects.create(username=utils.generate_random_name(5))
+        user.set_password("pwd")
+        user.save()
+        gmodels.Character.objects.create(name=utils.generate_random_name(8), user=user)
+        self.client.login(username=user.username, password="pwd")
+
+        response = self.client.get(reverse(self.path_name))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Log out")
+        self.assertContains(response, "View all games")
+        self.assertContains(response, "Create a new game")
+        self.assertNotContains(response, "Create a new character")
+        self.assertContains(response, "View your character")
+
 
 class GameListViewTest(TestCase):
     path_name = "game-list"
