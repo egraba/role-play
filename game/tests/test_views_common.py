@@ -72,7 +72,7 @@ class IndexViewTest(TestCase):
         self.assertEqual(response.context["user_character"], character)
 
 
-class GameListViewTest(TestCase):
+class ListGameViewTest(TestCase):
     path_name = "game-list"
 
     @classmethod
@@ -92,7 +92,7 @@ class GameListViewTest(TestCase):
     def test_view_mapping(self):
         response = self.client.get(reverse(self.path_name))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.resolver_match.func.view_class, gvcommon.GameListView)
+        self.assertEqual(response.resolver_match.func.view_class, gvcommon.ListGameView)
 
     def test_template_mapping(self):
         response = self.client.get(reverse(self.path_name))

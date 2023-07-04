@@ -21,7 +21,7 @@ class IndexView(TemplateView):
         return context
 
 
-class GameListView(ListView):
+class ListGameView(ListView):
     model = gmodels.Game
     paginate_by = 20
     ordering = ["-start_date"]
