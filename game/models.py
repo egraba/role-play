@@ -70,6 +70,11 @@ class Character(models.Model):
     max_hp = models.SmallIntegerField(default=100)
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
 
+    class Meta:
+        indexes = [
+            models.Index(Upper("name"), name="character_name_upper_idx"),
+        ]
+
     def __str__(self):
         return self.name
 
