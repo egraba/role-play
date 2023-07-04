@@ -30,6 +30,7 @@ class IndexViewTest(TestCase):
         self.assertContains(response, "Log in")
         self.assertContains(response, "Register")
         self.assertNotContains(response, "View all games")
+        self.assertNotContains(response, "View all characters")
         self.assertNotContains(response, "Create a new game")
         self.assertNotContains(response, "Create a new character")
         self.assertNotContains(response, "View your character")
@@ -44,6 +45,7 @@ class IndexViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Log out")
         self.assertContains(response, "View all games")
+        self.assertContains(response, "View all characters")
         self.assertContains(response, "Create a new game")
         self.assertContains(response, "Create a new character")
         self.assertNotContains(response, "View your character")
@@ -63,6 +65,7 @@ class IndexViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Log out")
         self.assertContains(response, "View all games")
+        self.assertContains(response, "View all characters")
         self.assertContains(response, "Create a new game")
         self.assertNotContains(response, "Create a new character")
         self.assertContains(response, "View your character")
@@ -128,6 +131,68 @@ class GameListViewTest(TestCase):
             else:
                 self.assertTrue(last_date >= game.start_date)
                 last_date = game.start_date
+
+
+class ListCharacterViewTest(TestCase):
+    path_name = "character-list"
+
+    @classmethod
+    def setUpTestData(cls):
+        number_of_characters = 22
+        for i in range(number_of_characters):
+            user = User.objects.create(username=utils.generate_random_name(5))
+            user.set_password("pwd")
+            user.save()
+            gmodels.Character.objects.create(
+                name=utils.generate_random_string(20),
+                race=random.choice(gmodels.Character.Race.choices)[0],
+                user=user,
+            )
+
+    def test_view_mapping(self):
+        response = self.client.get(reverse(self.path_name))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.resolver_match.func.view_class, gvcommon.ListCharacterView
+        )
+
+    def test_template_mapping(self):
+        response = self.client.get(reverse(self.path_name))
+        self.assertTemplateUsed(response, "game/characterlist.html")
+
+    def test_pagination_size(self):
+        self.user = User.objects.last()
+        self.client.login(username=self.user.username, password="pwd")
+
+        response = self.client.get(reverse(self.path_name))
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue("is_paginated" in response.context)
+        self.assertTrue(response.context["is_paginated"])
+        self.assertEqual(len(response.context["character_list"]), 20)
+
+    def test_pagination_size_next_page(self):
+        self.user = User.objects.last()
+        self.client.login(username=self.user.username, password="pwd")
+
+        response = self.client.get(reverse(self.path_name) + "?page=2")
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue("is_paginated" in response.context)
+        self.assertTrue(response.context["is_paginated"])
+        self.assertEqual(len(response.context["character_list"]), 2)
+
+    def test_ordering(self):
+        self.user = User.objects.last()
+        self.client.login(username=self.user.username, password="pwd")
+
+        response = self.client.get(reverse(self.path_name))
+        self.assertEqual(response.status_code, 200)
+        xp = 0
+        for character in response.context["character_list"]:
+            if xp == 0:
+                xp = character.xp
+            else:
+                self.assertTrue(xp >= character.xp)
+                xp = character.xp
 
 
 class GameViewTest(TestCase):

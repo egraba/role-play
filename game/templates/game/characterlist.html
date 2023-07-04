@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="rpgui-container framed">
+        <h1 id="title" class="title">Role play</h1>
+        <div class="rpgui-center">
+            <a href={% url 'index' %}>- Return to main menu -</a>
+        </div>
+
+        <hr class="golden"/>
+
+        <h2>List of characters</h2>
+        <table class="rpgui-container framed-grey">
+            {% if page_obj %}
+                <tr>
+                    <th><p>Name</p></th>
+                    <th><p>User</p></th>
+                    <th><p>Race</p></th>
+                    <th><p>XP</p></th>
+                    <th><p>Game</p></th>
+                </tr>
+            {% endif %}
+            {% for character in page_obj %}
+                <tr>
+                    <td><a href={{ character.get_absolute_url }}>{{ character }}</a></td>
+                    <td><p>{{ character.user }}</p></td>
+                    <td><p>{{ character.get_race_display }}</p></td>
+                    <td><p>{{ character.xp }}</p></td>
+                    <td>
+                        {% if character.game %}
+                            <a href={{ character.game.get_absolute_url }}>{{ character.game }}</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td><p>There is no character available...</p></td></tr>
+            {% endfor %}
+        </table>
+
+        <div class="rpgui-center">
+            {% include 'pagination.html' %}
+        </div>
+    </div>
+{% endblock %}

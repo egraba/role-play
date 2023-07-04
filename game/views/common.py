@@ -50,6 +50,13 @@ class GameView(LoginRequiredMixin, ListView, gmixins.GameContextMixin):
         return super().get_queryset().filter(game=self.game.id)
 
 
+class ListCharacterView(ListView):
+    model = gmodels.Character
+    paginate_by = 20
+    ordering = ["-xp"]
+    template_name = "game/characterlist.html"
+
+
 class DetailCharacterView(DetailView):
     model = gmodels.Character
     template_name = "game/character.html"
