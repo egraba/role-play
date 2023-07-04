@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.core.mail import send_mail
@@ -16,8 +16,7 @@ import game.utils as gutils
 import game.views.mixins as gmixins
 
 
-class CreateGameView(PermissionRequiredMixin, FormView):
-    permission_required = "game.add_game"
+class CreateGameView(LoginRequiredMixin, FormView):
     template_name = "game/creategame.html"
     form_class = gforms.CreateGameForm
 
@@ -40,8 +39,7 @@ class CreateGameView(PermissionRequiredMixin, FormView):
         return super().form_valid(form)
 
 
-class InviteCharacterView(PermissionRequiredMixin, ListView, gmixins.GameContextMixin):
-    permission_required = "game.change_character"
+class InviteCharacterView(LoginRequiredMixin, ListView, gmixins.GameContextMixin):
     model = gmodels.Character
     paginate_by = 10
     ordering = ["-xp"]
@@ -52,9 +50,8 @@ class InviteCharacterView(PermissionRequiredMixin, ListView, gmixins.GameContext
 
 
 class InviteCharacterConfirmView(
-    PermissionRequiredMixin, UpdateView, gmixins.GameContextMixin
+    LoginRequiredMixin, UpdateView, gmixins.GameContextMixin
 ):
-    permission_required = "game.change_character"
     model = gmodels.Character
     fields = []
     template_name = "game/invitecharacterconfirm.html"
@@ -70,8 +67,7 @@ class InviteCharacterConfirmView(
         return HttpResponseRedirect(reverse("game", args=(self.game.id,)))
 
 
-class StartGameView(PermissionRequiredMixin, UpdateView):
-    permission_required = "game.change_game"
+class StartGameView(LoginRequiredMixin, UpdateView):
     model = gmodels.Game
     fields = []
     template_name = "game/startgame.html"
@@ -91,15 +87,13 @@ class StartGameView(PermissionRequiredMixin, UpdateView):
         return HttpResponseRedirect(reverse("game", args=(game.id,)))
 
 
-class StartGameErrorView(PermissionRequiredMixin, UpdateView):
-    permission_required = "game.change_game"
+class StartGameErrorView(LoginRequiredMixin, UpdateView):
     model = gmodels.Game
     fields = []
     template_name = "game/startgameerror.html"
 
 
-class EndGameView(PermissionRequiredMixin, UpdateView):
-    permission_required = "game.change_game"
+class EndGameView(LoginRequiredMixin, UpdateView):
     model = gmodels.Game
     fields = []
     template_name = "game/endgame.html"
@@ -116,8 +110,7 @@ class EndGameView(PermissionRequiredMixin, UpdateView):
         return HttpResponseRedirect(reverse("game", args=(game.id,)))
 
 
-class CreateTaleView(PermissionRequiredMixin, FormView, gmixins.EventConditionsMixin):
-    permission_required = "game.add_tale"
+class CreateTaleView(LoginRequiredMixin, FormView, gmixins.EventConditionsMixin):
     model = gmodels.Tale
     fields = ["description"]
     template_name = "game/createtale.html"
@@ -143,12 +136,11 @@ class CreateTaleView(PermissionRequiredMixin, FormView, gmixins.EventConditionsM
 
 
 class CreatePendingActionView(
-    PermissionRequiredMixin,
+    LoginRequiredMixin,
     CreateView,
     gmixins.EventConditionsMixin,
     gmixins.CharacterContextMixin,
 ):
-    permission_required = "game.add_pendingaction"
     model = gmodels.PendingAction
     form_class = gforms.CreatePendingActionForm
     template_name = "game/creatependingaction.html"
@@ -175,12 +167,11 @@ class CreatePendingActionView(
 
 
 class IncreaseXpView(
-    PermissionRequiredMixin,
+    LoginRequiredMixin,
     FormView,
     gmixins.EventConditionsMixin,
     gmixins.CharacterContextMixin,
 ):
-    permission_required = "game.add_xpincrease"
     model = gmodels.XpIncrease
     form_class = gforms.IncreaseXpForm
     template_name = "game/xp.html"
@@ -203,12 +194,11 @@ class IncreaseXpView(
 
 
 class DamageView(
-    PermissionRequiredMixin,
+    LoginRequiredMixin,
     FormView,
     gmixins.EventConditionsMixin,
     gmixins.CharacterContextMixin,
 ):
-    permission_required = "game.add_damage"
     model = gmodels.Damage
     form_class = gforms.DamageForm
     template_name = "game/damage.html"
@@ -239,12 +229,11 @@ class DamageView(
 
 
 class HealView(
-    PermissionRequiredMixin,
+    LoginRequiredMixin,
     FormView,
     gmixins.EventConditionsMixin,
     gmixins.CharacterContextMixin,
 ):
-    permission_required = "game.add_healing"
     form_class = gforms.HealForm
     template_name = "game/heal.html"
 

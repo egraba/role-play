@@ -1,6 +1,6 @@
 import random
 
-from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView
@@ -10,8 +10,7 @@ import game.models as gmodels
 import game.views.mixins as gmixins
 
 
-class CreateCharacterView(PermissionRequiredMixin, CreateView):
-    permission_required = "game.add_character"
+class CreateCharacterView(LoginRequiredMixin, CreateView):
     model = gmodels.Character
     form_class = gforms.CreateCharacterForm
     template_name = "game/createcharacter.html"
@@ -36,12 +35,11 @@ class CreateCharacterView(PermissionRequiredMixin, CreateView):
 
 
 class DiceLaunchView(
-    PermissionRequiredMixin,
+    LoginRequiredMixin,
     CreateView,
     gmixins.EventConditionsMixin,
     gmixins.CharacterContextMixin,
 ):
-    permission_required = "game.add_dicelaunch"
     model = gmodels.DiceLaunch
     form_class = gforms.DiceLaunchForm
     template_name = "game/dice.html"
@@ -71,7 +69,10 @@ class DiceLaunchView(
 
 
 class DiceLaunchSuccessView(
-    DetailView, gmixins.GameContextMixin, gmixins.CharacterContextMixin
+    LoginRequiredMixin,
+    DetailView,
+    gmixins.GameContextMixin,
+    gmixins.CharacterContextMixin,
 ):
     model = gmodels.DiceLaunch
     template_name = "game/success.html"
@@ -86,12 +87,11 @@ class DiceLaunchSuccessView(
 
 
 class ChoiceView(
-    PermissionRequiredMixin,
+    LoginRequiredMixin,
     CreateView,
     gmixins.EventConditionsMixin,
     gmixins.CharacterContextMixin,
 ):
-    permission_required = "game.add_choice"
     model = gmodels.Choice
     form_class = gforms.ChoiceForm
     template_name = "game/choice.html"

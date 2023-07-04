@@ -1,6 +1,6 @@
 import random
 
-from django.contrib.auth.models import Permission, User
+from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
@@ -20,10 +20,8 @@ class CreateCharacterViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        permission = Permission.objects.get(codename="add_character")
         user = User.objects.create(username=utils.generate_random_name(5))
         user.set_password("pwd")
-        user.user_permissions.add(permission)
         user.save()
 
     def setUp(self):
@@ -77,10 +75,8 @@ class DiceLaunchViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        permission = Permission.objects.get(codename="add_dicelaunch")
         user = User.objects.create(username=utils.generate_random_name(5))
         user.set_password("pwd")
-        user.user_permissions.add(permission)
         user.save()
 
         game = gmodels.Game.objects.create()
@@ -251,6 +247,10 @@ class DiceLaunchSuccessViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
+        user = User.objects.create(username=utils.generate_random_name(5))
+        user.set_password("pwd")
+        user.save()
+
         game = gmodels.Game.objects.create()
         character = gmodels.Character.objects.create(
             name=utils.generate_random_name(100),
@@ -260,6 +260,10 @@ class DiceLaunchSuccessViewTest(TestCase):
         gmodels.DiceLaunch.objects.create(
             game=game, character=character, score=random.randint(1, 20)
         )
+
+    def setUp(self):
+        self.user = User.objects.last()
+        self.client.login(username=self.user.username, password="pwd")
 
     def test_view_mapping(self):
         game = gmodels.Game.objects.last()
@@ -357,10 +361,8 @@ class ChoiceViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        permission = Permission.objects.get(codename="add_choice")
         user = User.objects.create(username=utils.generate_random_name(5))
         user.set_password("pwd")
-        user.user_permissions.add(permission)
         user.save()
 
         game = gmodels.Game.objects.create()
