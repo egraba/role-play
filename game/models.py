@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models.functions import Upper
 from django.urls import reverse
 from django.utils import timezone
 from django_fsm import FSMField, transition
@@ -18,6 +19,11 @@ class Game(models.Model):
     status = FSMField(
         max_length=1, choices=Status.choices, default=Status.UNDER_PREPARATION
     )
+
+    class Meta:
+        indexes = [
+            models.Index(Upper("name"), name="game_name_upper_idx"),
+        ]
 
     def __str__(self):
         return self.name
