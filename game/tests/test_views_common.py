@@ -7,6 +7,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 import chat.models as cmodels
+import game.forms as gforms
 import game.models as gmodels
 import game.views.common as gvcommon
 from game.tests import utils
@@ -379,3 +380,48 @@ class CharacterViewTest(TestCase):
         character = gmodels.Character.objects.last()
         response = self.client.get(character.get_absolute_url())
         self.assertTemplateUsed(response, "game/character.html")
+
+
+class CreateGameViewTest(TestCase):
+    path_name = "game-create"
+
+    @classmethod
+    def setUpTestData(cls):
+        user = User.objects.create(username=utils.generate_random_name(5))
+        user.set_password("pwd")
+        user.save()
+
+    def setUp(self):
+        self.user = User.objects.last()
+        self.client.login(username=self.user.username, password="pwd")
+
+    def test_view_mapping(self):
+        response = self.client.get(reverse(self.path_name))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.resolver_match.func.view_class, gvcommon.CreateGameView
+        )
+
+    def test_template_mapping(self):
+        response = self.client.get(reverse(self.path_name))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "game/creategame.html")
+
+    def test_game_creation(self):
+        name = utils.generate_random_name(20)
+        description = utils.generate_random_string(100)
+        data = {"name": f"{name}", "description": f"{description}"}
+        form = gforms.CreateGameForm(data)
+        self.assertTrue(form.is_valid())
+
+        response = self.client.post(reverse(self.path_name), data=form.cleaned_data)
+        self.assertEqual(response.status_code, 302)
+        game = gmodels.Game.objects.last()
+        self.assertEqual(game.name, name)
+        self.assertEqual(game.status, "P")
+        self.assertEqual(game.master, self.user)
+        tale = gmodels.Tale.objects.last()
+        self.assertEqual(tale.game, game)
+        self.assertEqual(tale.message, "The Master created the story.")
+        self.assertEqual(tale.content, form.cleaned_data["description"])
+        self.assertRedirects(response, reverse("game", args=[game.id]))

@@ -1,7 +1,10 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
-from django.views.generic import DetailView, ListView, TemplateView
+from django.urls import reverse_lazy
+from django.views.generic import DetailView, FormView, ListView, TemplateView
 
+import chat.models as cmodels
+import game.forms as gforms
 import game.models as gmodels
 import game.views.mixins as gmixins
 
@@ -60,3 +63,26 @@ class ListCharacterView(ListView):
 class DetailCharacterView(DetailView):
     model = gmodels.Character
     template_name = "game/character.html"
+
+
+class CreateGameView(LoginRequiredMixin, FormView):
+    template_name = "game/creategame.html"
+    form_class = gforms.CreateGameForm
+
+    def get_success_url(self):
+        return reverse_lazy("game", args=(self.game.id,))
+
+    def form_valid(self, form):
+        self.game = gmodels.Game()
+        self.game.name = form.cleaned_data["name"]
+        self.game.master = self.request.user
+        self.game.save()
+        tale = gmodels.Tale()
+        tale.game = self.game
+        tale.message = "The Master created the story."
+        tale.content = form.cleaned_data["description"]
+        tale.save()
+        room = cmodels.Room()
+        room.game = self.game
+        room.save()
+        return super().form_valid(form)

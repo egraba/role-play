@@ -16,7 +16,7 @@ urlpatterns = [
         common.DetailCharacterView.as_view(),
         name="character-detail",
     ),
-    path("create_game", master.CreateGameView.as_view(), name="game-create"),
+    path("create_game", common.CreateGameView.as_view(), name="game-create"),
     path(
         "<int:game_id>/invite_character",
         master.InviteCharacterView.as_view(),
