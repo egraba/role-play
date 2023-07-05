@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.core.mail import send_mail
@@ -39,22 +39,28 @@ class CreateGameView(LoginRequiredMixin, FormView):
         return super().form_valid(form)
 
 
-class InviteCharacterView(LoginRequiredMixin, ListView, gmixins.GameContextMixin):
+class InviteCharacterView(UserPassesTestMixin, ListView, gmixins.GameContextMixin):
     model = gmodels.Character
     paginate_by = 10
     ordering = ["-xp"]
     template_name = "game/invitecharacter.html"
+
+    def test_func(self):
+        return self.is_user_master()
 
     def get_queryset(self):
         return super().get_queryset().filter(game=None)
 
 
 class InviteCharacterConfirmView(
-    LoginRequiredMixin, UpdateView, gmixins.GameContextMixin
+    UserPassesTestMixin, UpdateView, gmixins.GameContextMixin
 ):
     model = gmodels.Character
     fields = []
     template_name = "game/invitecharacterconfirm.html"
+
+    def test_func(self):
+        return self.is_user_master()
 
     def post(self, request, *args, **kwargs):
         character = self.get_object()
@@ -67,10 +73,12 @@ class InviteCharacterConfirmView(
         return HttpResponseRedirect(reverse("game", args=(self.game.id,)))
 
 
-class StartGameView(LoginRequiredMixin, UpdateView):
-    model = gmodels.Game
+class StartGameView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
     fields = []
     template_name = "game/startgame.html"
+
+    def test_func(self):
+        return self.is_user_master()
 
     def post(self, request, *args, **kwargs):
         game = self.get_object()
@@ -87,16 +95,20 @@ class StartGameView(LoginRequiredMixin, UpdateView):
         return HttpResponseRedirect(reverse("game", args=(game.id,)))
 
 
-class StartGameErrorView(LoginRequiredMixin, UpdateView):
-    model = gmodels.Game
+class StartGameErrorView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
     fields = []
     template_name = "game/startgameerror.html"
 
+    def test_func(self):
+        return self.is_user_master()
 
-class EndGameView(LoginRequiredMixin, UpdateView):
-    model = gmodels.Game
+
+class EndGameView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
     fields = []
     template_name = "game/endgame.html"
+
+    def test_func(self):
+        return self.is_user_master()
 
     def post(self, request, *args, **kwargs):
         game = self.get_object()
@@ -110,11 +122,14 @@ class EndGameView(LoginRequiredMixin, UpdateView):
         return HttpResponseRedirect(reverse("game", args=(game.id,)))
 
 
-class CreateTaleView(LoginRequiredMixin, FormView, gmixins.EventConditionsMixin):
+class CreateTaleView(UserPassesTestMixin, FormView, gmixins.EventConditionsMixin):
     model = gmodels.Tale
     fields = ["description"]
     template_name = "game/createtale.html"
     form_class = gforms.CreateTaleForm
+
+    def test_func(self):
+        return self.is_user_master()
 
     def get_success_url(self):
         return reverse_lazy("game", args=(self.game.id,))
@@ -136,7 +151,7 @@ class CreateTaleView(LoginRequiredMixin, FormView, gmixins.EventConditionsMixin)
 
 
 class CreatePendingActionView(
-    LoginRequiredMixin,
+    UserPassesTestMixin,
     CreateView,
     gmixins.EventConditionsMixin,
     gmixins.CharacterContextMixin,
@@ -144,6 +159,9 @@ class CreatePendingActionView(
     model = gmodels.PendingAction
     form_class = gforms.CreatePendingActionForm
     template_name = "game/creatependingaction.html"
+
+    def test_func(self):
+        return self.is_user_master()
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
@@ -167,7 +185,7 @@ class CreatePendingActionView(
 
 
 class IncreaseXpView(
-    LoginRequiredMixin,
+    UserPassesTestMixin,
     FormView,
     gmixins.EventConditionsMixin,
     gmixins.CharacterContextMixin,
@@ -175,6 +193,9 @@ class IncreaseXpView(
     model = gmodels.XpIncrease
     form_class = gforms.IncreaseXpForm
     template_name = "game/xp.html"
+
+    def test_func(self):
+        return self.is_user_master()
 
     def get_success_url(self):
         return reverse_lazy("game", args=(self.game.id,))
@@ -194,7 +215,7 @@ class IncreaseXpView(
 
 
 class DamageView(
-    LoginRequiredMixin,
+    UserPassesTestMixin,
     FormView,
     gmixins.EventConditionsMixin,
     gmixins.CharacterContextMixin,
@@ -202,6 +223,9 @@ class DamageView(
     model = gmodels.Damage
     form_class = gforms.DamageForm
     template_name = "game/damage.html"
+
+    def test_func(self):
+        return self.is_user_master()
 
     def get_success_url(self):
         return reverse_lazy("game", args=(self.game.id,))
@@ -229,13 +253,16 @@ class DamageView(
 
 
 class HealView(
-    LoginRequiredMixin,
+    UserPassesTestMixin,
     FormView,
     gmixins.EventConditionsMixin,
     gmixins.CharacterContextMixin,
 ):
     form_class = gforms.HealForm
     template_name = "game/heal.html"
+
+    def test_func(self):
+        return self.is_user_master()
 
     def get_success_url(self):
         return reverse_lazy("game", args=(self.game.id,))

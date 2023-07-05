@@ -70,7 +70,7 @@ class InviteCharacterViewTest(TestCase):
         user.set_password("pwd")
         user.save()
 
-        game = gmodels.Game.objects.create()
+        game = gmodels.Game.objects.create(master=user)
         cmodels.Room.objects.create(game=game)
         number_of_characters_with_game = 5
         number_of_characters_without_game = 12
@@ -166,7 +166,7 @@ class InviteCharacterConfirmViewTest(TestCase):
         user.set_password("pwd")
         user.save()
 
-        game = gmodels.Game.objects.create()
+        game = gmodels.Game.objects.create(master=user)
         cmodels.Room.objects.create(game=game)
         gmodels.Character.objects.create(name=utils.generate_random_name(5))
 
@@ -228,7 +228,7 @@ class StartGameViewTest(TestCase):
         user.set_password("pwd")
         user.save()
 
-        game = gmodels.Game.objects.create()
+        game = gmodels.Game.objects.create(master=user)
         cmodels.Room.objects.create(game=game)
 
     def setUp(self):
@@ -296,7 +296,7 @@ class EndGameViewTest(TestCase):
         user.set_password("pwd")
         user.save()
 
-        gmodels.Game.objects.create()
+        gmodels.Game.objects.create(master=user)
 
     def setUp(self):
         self.user = User.objects.last()
@@ -438,7 +438,9 @@ class CreatePendingActionViewTest(TestCase):
         user.set_password("pwd")
         user.save()
 
-        game = gmodels.Game.objects.create(name=utils.generate_random_string(20))
+        game = gmodels.Game.objects.create(
+            name=utils.generate_random_string(20), master=user
+        )
         cmodels.Room.objects.create(game=game)
         gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
         gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
@@ -564,7 +566,9 @@ class IncreaseXpViewTest(TestCase):
         user.set_password("pwd")
         user.save()
 
-        game = gmodels.Game.objects.create(name=utils.generate_random_string(20))
+        game = gmodels.Game.objects.create(
+            name=utils.generate_random_string(20), master=user
+        )
         cmodels.Room.objects.create(game=game)
         gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
         gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
@@ -687,7 +691,9 @@ class DamageViewTest(TestCase):
         user.set_password("pwd")
         user.save()
 
-        game = gmodels.Game.objects.create(name=utils.generate_random_string(20))
+        game = gmodels.Game.objects.create(
+            name=utils.generate_random_string(20), master=user
+        )
         cmodels.Room.objects.create(game=game)
         gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
         gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
@@ -835,7 +841,9 @@ class HealViewTest(TestCase):
         user.set_password("pwd")
         user.save()
 
-        game = gmodels.Game.objects.create(name=utils.generate_random_string(20))
+        game = gmodels.Game.objects.create(
+            name=utils.generate_random_string(20), master=user
+        )
         cmodels.Room.objects.create(game=game)
         gmodels.Character.objects.create(
             game=game, name=utils.generate_random_name(5), hp=1
