@@ -37,7 +37,7 @@ class CreateCharacterView(LoginRequiredMixin, CreateView):
 class DiceLaunchView(
     LoginRequiredMixin,
     CreateView,
-    gmixins.EventConditionsMixin,
+    gmixins.EventContextMixin,
     gmixins.CharacterContextMixin,
 ):
     model = gmodels.DiceLaunch
@@ -89,7 +89,7 @@ class DiceLaunchSuccessView(
 class ChoiceView(
     LoginRequiredMixin,
     CreateView,
-    gmixins.EventConditionsMixin,
+    gmixins.EventContextMixin,
     gmixins.CharacterContextMixin,
 ):
     model = gmodels.Choice

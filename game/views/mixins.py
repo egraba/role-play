@@ -55,7 +55,7 @@ class CharacterContextMixin(ContextMixin, View):
         return context
 
 
-class EventConditionsMixin(GameContextMixin, FormMixin):
+class EventContextMixin(GameContextMixin, FormMixin):
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
         if self.game.is_ongoing():

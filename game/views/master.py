@@ -122,7 +122,7 @@ class EndGameView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
         return HttpResponseRedirect(reverse("game", args=(game.id,)))
 
 
-class CreateTaleView(UserPassesTestMixin, FormView, gmixins.EventConditionsMixin):
+class CreateTaleView(UserPassesTestMixin, FormView, gmixins.EventContextMixin):
     model = gmodels.Tale
     fields = ["description"]
     template_name = "game/createtale.html"
@@ -153,7 +153,7 @@ class CreateTaleView(UserPassesTestMixin, FormView, gmixins.EventConditionsMixin
 class CreatePendingActionView(
     UserPassesTestMixin,
     CreateView,
-    gmixins.EventConditionsMixin,
+    gmixins.EventContextMixin,
     gmixins.CharacterContextMixin,
 ):
     model = gmodels.PendingAction
@@ -187,7 +187,7 @@ class CreatePendingActionView(
 class IncreaseXpView(
     UserPassesTestMixin,
     FormView,
-    gmixins.EventConditionsMixin,
+    gmixins.EventContextMixin,
     gmixins.CharacterContextMixin,
 ):
     model = gmodels.XpIncrease
@@ -217,7 +217,7 @@ class IncreaseXpView(
 class DamageView(
     UserPassesTestMixin,
     FormView,
-    gmixins.EventConditionsMixin,
+    gmixins.EventContextMixin,
     gmixins.CharacterContextMixin,
 ):
     model = gmodels.Damage
@@ -255,7 +255,7 @@ class DamageView(
 class HealView(
     UserPassesTestMixin,
     FormView,
-    gmixins.EventConditionsMixin,
+    gmixins.EventContextMixin,
     gmixins.CharacterContextMixin,
 ):
     form_class = gforms.HealForm
