@@ -1,7 +1,13 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.urls import reverse_lazy
-from django.views.generic import DetailView, FormView, ListView, TemplateView
+from django.views.generic import (
+    CreateView,
+    DetailView,
+    FormView,
+    ListView,
+    TemplateView,
+)
 
 import chat.models as cmodels
 import game.forms as gforms
@@ -85,4 +91,28 @@ class CreateGameView(LoginRequiredMixin, FormView):
         room = cmodels.Room()
         room.game = self.game
         room.save()
+        return super().form_valid(form)
+
+
+class CreateCharacterView(LoginRequiredMixin, CreateView):
+    model = gmodels.Character
+    form_class = gforms.CreateCharacterForm
+    template_name = "game/createcharacter.html"
+
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        try:
+            # It is not possible for a user to have several characters.
+            gmodels.Character.objects.filter(user=self.request.user).get()
+            raise PermissionDenied
+        except ObjectDoesNotExist:
+            pass
+
+    def get_success_url(self):
+        return self.object.get_absolute_url()
+
+    def form_valid(self, form):
+        character = form.save(commit=False)
+        character.user = self.request.user
+        character.save()
         return super().form_valid(form)

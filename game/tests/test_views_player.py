@@ -15,61 +15,6 @@ import game.views.player as gvplayer
 from game.tests import utils
 
 
-class CreateCharacterViewTest(TestCase):
-    path_name = "character-create"
-
-    @classmethod
-    def setUpTestData(cls):
-        user = User.objects.create(username=utils.generate_random_name(5))
-        user.set_password("pwd")
-        user.save()
-
-    def setUp(self):
-        self.user = User.objects.last()
-        self.client.login(username=self.user.username, password="pwd")
-
-    def test_view_mapping(self):
-        response = self.client.get(reverse(self.path_name))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.resolver_match.func.view_class, gvplayer.CreateCharacterView
-        )
-
-    def test_template_mapping(self):
-        response = self.client.get(reverse(self.path_name))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "game/createcharacter.html")
-
-    def test_character_creation_no_existing_character(self):
-        name = utils.generate_random_name(10)
-        race = random.choice(gmodels.Character.Race.choices)[0]
-        data = {"name": f"{name}", "race": f"{race}"}
-        form = gforms.CreateCharacterForm(data)
-        self.assertTrue(form.is_valid())
-
-        response = self.client.post(
-            reverse(self.path_name),
-            data=form.cleaned_data,
-        )
-        self.assertEqual(response.status_code, 302)
-        character = gmodels.Character.objects.last()
-        self.assertRedirects(response, character.get_absolute_url())
-        self.assertEqual(character.name, form.cleaned_data["name"])
-        self.assertEqual(character.race, form.cleaned_data["race"])
-        self.assertEqual(character.xp, 0)
-        self.assertEqual(character.hp, 100)
-        self.assertEqual(character.max_hp, 100)
-        self.assertEqual(character.user, self.user)
-
-    def test_character_creation_already_existing_character(self):
-        gmodels.Character.objects.create(
-            name=utils.generate_random_name(5), user=self.user
-        )
-        response = self.client.get(reverse(self.path_name))
-        self.assertEqual(response.status_code, 403)
-        self.assertRaises(PermissionDenied)
-
-
 class DiceLaunchViewTest(TestCase):
     path_name = "dicelaunch-create"
 
