@@ -6,10 +6,9 @@
 * Game page is refreshed dynamically when game events occur
 * Poetry is now the virtualenv management tool
 * Players are now notified when a tale is updated
-* It is now possible to chat within the app
 * Use Redis as cache
 * Various UX/UI improvements
-* Add index on event model
+* Add indexes on game, character and event models
 * Upgrade project's libraries to their latest versions
 
 ## v0.2.1 - 2023-04-10

@@ -7,7 +7,6 @@ from django.http import Http404
 from django.test import TestCase
 from django.urls import reverse
 
-import chat.models as cmodels
 import game.forms as gforms
 import game.models as gmodels
 import game.views.common as gvcommon
@@ -207,7 +206,6 @@ class GameViewTest(TestCase):
         user.save()
 
         game = gmodels.Game.objects.create(name="game1")
-        cmodels.Room.objects.create(game=game)
         number_of_events = 22
         for i in range(number_of_events):
             gmodels.Event.objects.create(

@@ -9,7 +9,6 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
-import chat.models as cmodels
 import game.forms as gforms
 import game.models as gmodels
 import game.views.master as gvmaster
@@ -26,7 +25,6 @@ class InviteCharacterViewTest(TestCase):
         user.save()
 
         game = gmodels.Game.objects.create(master=user)
-        cmodels.Room.objects.create(game=game)
         number_of_characters_with_game = 5
         number_of_characters_without_game = 12
         for i in range(number_of_characters_with_game):
@@ -121,8 +119,7 @@ class InviteCharacterConfirmViewTest(TestCase):
         user.set_password("pwd")
         user.save()
 
-        game = gmodels.Game.objects.create(master=user)
-        cmodels.Room.objects.create(game=game)
+        gmodels.Game.objects.create(master=user)
         gmodels.Character.objects.create(name=utils.generate_random_name(5))
 
     def setUp(self):
@@ -183,8 +180,7 @@ class StartGameViewTest(TestCase):
         user.set_password("pwd")
         user.save()
 
-        game = gmodels.Game.objects.create(master=user)
-        cmodels.Room.objects.create(game=game)
+        gmodels.Game.objects.create(master=user)
 
     def setUp(self):
         self.user = User.objects.last()
@@ -309,7 +305,6 @@ class CreateTaleViewTest(TestCase):
         player2 = User.objects.create(username=utils.generate_random_name(5))
 
         game = gmodels.Game.objects.create(name="game-tale", master=user)
-        cmodels.Room.objects.create(game=game)
         gmodels.Character.objects.create(
             game=game, name=utils.generate_random_name(5), user=player1
         )
@@ -396,7 +391,6 @@ class CreatePendingActionViewTest(TestCase):
         game = gmodels.Game.objects.create(
             name=utils.generate_random_string(20), master=user
         )
-        cmodels.Room.objects.create(game=game)
         gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
         gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
         game.start()
@@ -524,7 +518,6 @@ class IncreaseXpViewTest(TestCase):
         game = gmodels.Game.objects.create(
             name=utils.generate_random_string(20), master=user
         )
-        cmodels.Room.objects.create(game=game)
         gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
         gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
         game.start()
@@ -649,7 +642,6 @@ class DamageViewTest(TestCase):
         game = gmodels.Game.objects.create(
             name=utils.generate_random_string(20), master=user
         )
-        cmodels.Room.objects.create(game=game)
         gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
         gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
         game.start()
@@ -799,7 +791,6 @@ class HealViewTest(TestCase):
         game = gmodels.Game.objects.create(
             name=utils.generate_random_string(20), master=user
         )
-        cmodels.Room.objects.create(game=game)
         gmodels.Character.objects.create(
             game=game, name=utils.generate_random_name(5), hp=1
         )
