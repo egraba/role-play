@@ -9,7 +9,6 @@ from django.views.generic import (
     TemplateView,
 )
 
-import chat.models as cmodels
 import game.forms as gforms
 import game.models as gmodels
 import game.views.mixins as gmixins
@@ -88,9 +87,6 @@ class CreateGameView(LoginRequiredMixin, FormView):
         tale.message = "The Master created the story."
         tale.content = form.cleaned_data["description"]
         tale.save()
-        room = cmodels.Room()
-        room.game = self.game
-        room.save()
         return super().form_valid(form)
 
 

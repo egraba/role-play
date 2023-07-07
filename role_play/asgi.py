@@ -19,8 +19,6 @@ from django.urls import path, re_path
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "role_play.settings")
 django_asgi_app = get_asgi_application()
 
-import chat.routing as crouting
-
 application = ProtocolTypeRouter(
     {
         "http": URLRouter(
@@ -34,9 +32,6 @@ application = ProtocolTypeRouter(
                 ),
                 re_path(r"", django_asgi_app),
             ]
-        ),
-        "websocket": AllowedHostsOriginValidator(
-            AuthMiddlewareStack(URLRouter(crouting.websocket_urlpatterns))
         ),
     }
 )
