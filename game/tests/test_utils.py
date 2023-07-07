@@ -11,7 +11,7 @@ from game.tests import utils
 
 class GetMasterEmailTest(TestCase):
     def test_valid_username_format(self):
-        username = utils.generate_random_name(20)
+        username = utils.generate_random_name(20).lower()
         email_domain = os.environ["EMAIL_DOMAIN"]
         expected_master_email = f"{username}@{email_domain}"
         master_email = gutils.get_master_email(username)
