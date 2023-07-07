@@ -1,7 +1,6 @@
 import random
 
-from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView
 
@@ -10,38 +9,12 @@ import game.models as gmodels
 import game.views.mixins as gmixins
 
 
-class CreateCharacterView(PermissionRequiredMixin, CreateView):
-    permission_required = "game.add_character"
-    model = gmodels.Character
-    form_class = gforms.CreateCharacterForm
-    template_name = "game/createcharacter.html"
-
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, *args, **kwargs)
-        try:
-            # It is not possible for a user to have several characters.
-            gmodels.Character.objects.filter(user=self.request.user).get()
-            raise PermissionDenied
-        except ObjectDoesNotExist:
-            pass
-
-    def get_success_url(self):
-        return self.object.get_absolute_url()
-
-    def form_valid(self, form):
-        character = form.save(commit=False)
-        character.user = self.request.user
-        character.save()
-        return super().form_valid(form)
-
-
 class DiceLaunchView(
-    PermissionRequiredMixin,
+    LoginRequiredMixin,
     CreateView,
-    gmixins.EventConditionsMixin,
+    gmixins.EventContextMixin,
     gmixins.CharacterContextMixin,
 ):
-    permission_required = "game.add_dicelaunch"
     model = gmodels.DiceLaunch
     form_class = gforms.DiceLaunchForm
     template_name = "game/dice.html"
@@ -71,7 +44,10 @@ class DiceLaunchView(
 
 
 class DiceLaunchSuccessView(
-    DetailView, gmixins.GameContextMixin, gmixins.CharacterContextMixin
+    LoginRequiredMixin,
+    DetailView,
+    gmixins.GameContextMixin,
+    gmixins.CharacterContextMixin,
 ):
     model = gmodels.DiceLaunch
     template_name = "game/success.html"
@@ -86,12 +62,11 @@ class DiceLaunchSuccessView(
 
 
 class ChoiceView(
-    PermissionRequiredMixin,
+    LoginRequiredMixin,
     CreateView,
-    gmixins.EventConditionsMixin,
+    gmixins.EventContextMixin,
     gmixins.CharacterContextMixin,
 ):
-    permission_required = "game.add_choice"
     model = gmodels.Choice
     form_class = gforms.ChoiceForm
     template_name = "game/choice.html"

@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models.functions import Upper
 from django.urls import reverse
 from django.utils import timezone
 from django_fsm import FSMField, transition
@@ -11,13 +12,18 @@ class Game(models.Model):
         ONGOING = "O", "Ongoing"
         FINISHED = "F", "Finished"
 
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, unique=True)
     master = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     start_date = models.DateTimeField(null=True, blank=True)
     end_date = models.DateTimeField(null=True, blank=True)
     status = FSMField(
         max_length=1, choices=Status.choices, default=Status.UNDER_PREPARATION
     )
+
+    class Meta:
+        indexes = [
+            models.Index(Upper("name"), name="game_name_upper_idx"),
+        ]
 
     def __str__(self):
         return self.name
@@ -63,6 +69,11 @@ class Character(models.Model):
     hp = models.SmallIntegerField(default=100)
     max_hp = models.SmallIntegerField(default=100)
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
+
+    class Meta:
+        indexes = [
+            models.Index(Upper("name"), name="character_name_upper_idx"),
+        ]
 
     def __str__(self):
         return self.name

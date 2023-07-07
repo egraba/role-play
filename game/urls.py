@@ -4,13 +4,24 @@ from game.views import common, master, player
 
 urlpatterns = [
     path("", common.IndexView.as_view(), name="index"),
+    path("games", common.ListGameView.as_view(), name="game-list"),
     path("<int:game_id>/", common.GameView.as_view(), name="game"),
+    path(
+        "characters",
+        common.ListCharacterView.as_view(),
+        name="character-list",
+    ),
     path(
         "character/<int:pk>",
         common.DetailCharacterView.as_view(),
         name="character-detail",
     ),
-    path("create_game", master.CreateGameView.as_view(), name="game-create"),
+    path(
+        "create_character",
+        common.CreateCharacterView.as_view(),
+        name="character-create",
+    ),
+    path("create_game", common.CreateGameView.as_view(), name="game-create"),
     path(
         "<int:game_id>/invite_character",
         master.InviteCharacterView.as_view(),
@@ -60,11 +71,6 @@ urlpatterns = [
         "<int:game_id>/character/<int:character_id>/heal",
         master.HealView.as_view(),
         name="healing-create",
-    ),
-    path(
-        "create_character",
-        player.CreateCharacterView.as_view(),
-        name="character-create",
     ),
     path(
         "<int:game_id>/character/<int:character_id>/launch_dice/",

@@ -25,6 +25,7 @@ dj-database-url = "*"
 django = "~=4.2"
 django-eventstream = "*"
 django-fsm = "*"
+email-validator = "*"
 gunicorn = "*"
 psycopg = {extras = ["binary"], version = "*"}
 redis = "*"

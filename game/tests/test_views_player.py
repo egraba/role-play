@@ -1,6 +1,6 @@
 import random
 
-from django.contrib.auth.models import Permission, User
+from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
@@ -15,72 +15,13 @@ import game.views.player as gvplayer
 from game.tests import utils
 
 
-class CreateCharacterViewTest(TestCase):
-    path_name = "character-create"
-
-    @classmethod
-    def setUpTestData(cls):
-        permission = Permission.objects.get(codename="add_character")
-        user = User.objects.create(username=utils.generate_random_name(5))
-        user.set_password("pwd")
-        user.user_permissions.add(permission)
-        user.save()
-
-    def setUp(self):
-        self.user = User.objects.last()
-        self.client.login(username=self.user.username, password="pwd")
-
-    def test_view_mapping(self):
-        response = self.client.get(reverse(self.path_name))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.resolver_match.func.view_class, gvplayer.CreateCharacterView
-        )
-
-    def test_template_mapping(self):
-        response = self.client.get(reverse(self.path_name))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "game/createcharacter.html")
-
-    def test_character_creation_no_existing_character(self):
-        name = utils.generate_random_name(10)
-        race = random.choice(gmodels.Character.Race.choices)[0]
-        data = {"name": f"{name}", "race": f"{race}"}
-        form = gforms.CreateCharacterForm(data)
-        self.assertTrue(form.is_valid())
-
-        response = self.client.post(
-            reverse(self.path_name),
-            data=form.cleaned_data,
-        )
-        self.assertEqual(response.status_code, 302)
-        character = gmodels.Character.objects.last()
-        self.assertRedirects(response, character.get_absolute_url())
-        self.assertEqual(character.name, form.cleaned_data["name"])
-        self.assertEqual(character.race, form.cleaned_data["race"])
-        self.assertEqual(character.xp, 0)
-        self.assertEqual(character.hp, 100)
-        self.assertEqual(character.max_hp, 100)
-        self.assertEqual(character.user, self.user)
-
-    def test_character_creation_already_existing_character(self):
-        gmodels.Character.objects.create(
-            name=utils.generate_random_name(5), user=self.user
-        )
-        response = self.client.get(reverse(self.path_name))
-        self.assertEqual(response.status_code, 403)
-        self.assertRaises(PermissionDenied)
-
-
 class DiceLaunchViewTest(TestCase):
     path_name = "dicelaunch-create"
 
     @classmethod
     def setUpTestData(cls):
-        permission = Permission.objects.get(codename="add_dicelaunch")
         user = User.objects.create(username=utils.generate_random_name(5))
         user.set_password("pwd")
-        user.user_permissions.add(permission)
         user.save()
 
         game = gmodels.Game.objects.create()
@@ -181,7 +122,7 @@ class DiceLaunchViewTest(TestCase):
         self.assertEqual(response.context["character"], character)
 
     def test_game_is_under_preparation(self):
-        game = gmodels.Game.objects.create()
+        game = gmodels.Game.objects.create(name=utils.generate_random_string(20))
         character = gmodels.Character.objects.last()
         response = self.client.get(
             reverse(
@@ -251,6 +192,10 @@ class DiceLaunchSuccessViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
+        user = User.objects.create(username=utils.generate_random_name(5))
+        user.set_password("pwd")
+        user.save()
+
         game = gmodels.Game.objects.create()
         character = gmodels.Character.objects.create(
             name=utils.generate_random_name(100),
@@ -260,6 +205,10 @@ class DiceLaunchSuccessViewTest(TestCase):
         gmodels.DiceLaunch.objects.create(
             game=game, character=character, score=random.randint(1, 20)
         )
+
+    def setUp(self):
+        self.user = User.objects.last()
+        self.client.login(username=self.user.username, password="pwd")
 
     def test_view_mapping(self):
         game = gmodels.Game.objects.last()
@@ -357,10 +306,8 @@ class ChoiceViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        permission = Permission.objects.get(codename="add_choice")
         user = User.objects.create(username=utils.generate_random_name(5))
         user.set_password("pwd")
-        user.user_permissions.add(permission)
         user.save()
 
         game = gmodels.Game.objects.create()
@@ -460,7 +407,7 @@ class ChoiceViewTest(TestCase):
         self.assertEqual(response.context["character"], character)
 
     def test_game_is_under_preparation(self):
-        game = gmodels.Game.objects.create()
+        game = gmodels.Game.objects.create(name=utils.generate_random_string(20))
         character = gmodels.Character.objects.last()
         response = self.client.get(
             reverse(

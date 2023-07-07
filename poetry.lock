@@ -554,13 +554,13 @@ typing-extensions = ">=3.10.0.0"
 
 [[package]]
 name = "django"
-version = "4.2.2"
+version = "4.2.3"
 description = "A high-level Python web framework that encourages rapid development and clean, pragmatic design."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "Django-4.2.2-py3-none-any.whl", hash = "sha256:672b3fa81e1f853bb58be1b51754108ab4ffa12a77c06db86aa8df9ed0c46fe5"},
-    {file = "Django-4.2.2.tar.gz", hash = "sha256:2a6b6fbff5b59dd07bef10bcb019bee2ea97a30b2a656d51346596724324badf"},
+    {file = "Django-4.2.3-py3-none-any.whl", hash = "sha256:f7c7852a5ac5a3da5a8d5b35cc6168f31b605971441798dac845f17ca8028039"},
+    {file = "Django-4.2.3.tar.gz", hash = "sha256:45a747e1c5b3d6df1b141b1481e193b033fd1fdbda3ff52677dc81afdaacbaed"},
 ]
 
 [package.dependencies]
@@ -644,6 +644,41 @@ gripcontrol = ">=4.0,<5"
 pubcontrol = ">=3.0,<4"
 six = ">=1.10,<2"
 Werkzeug = ">=1.0,<3"
+
+[[package]]
+name = "dnspython"
+version = "2.3.0"
+description = "DNS toolkit"
+optional = false
+python-versions = ">=3.7,<4.0"
+files = [
+    {file = "dnspython-2.3.0-py3-none-any.whl", hash = "sha256:89141536394f909066cabd112e3e1a37e4e654db00a25308b0f130bc3152eb46"},
+    {file = "dnspython-2.3.0.tar.gz", hash = "sha256:224e32b03eb46be70e12ef6d64e0be123a64e621ab4c0822ff6d450d52a540b9"},
+]
+
+[package.extras]
+curio = ["curio (>=1.2,<2.0)", "sniffio (>=1.1,<2.0)"]
+dnssec = ["cryptography (>=2.6,<40.0)"]
+doh = ["h2 (>=4.1.0)", "httpx (>=0.21.1)", "requests (>=2.23.0,<3.0.0)", "requests-toolbelt (>=0.9.1,<0.11.0)"]
+doq = ["aioquic (>=0.9.20)"]
+idna = ["idna (>=2.1,<4.0)"]
+trio = ["trio (>=0.14,<0.23)"]
+wmi = ["wmi (>=1.5.1,<2.0.0)"]
+
+[[package]]
+name = "email-validator"
+version = "2.0.0.post2"
+description = "A robust email address syntax and deliverability validation library."
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "email_validator-2.0.0.post2-py3-none-any.whl", hash = "sha256:2466ba57cda361fb7309fd3d5a225723c788ca4bbad32a0ebd5373b99730285c"},
+    {file = "email_validator-2.0.0.post2.tar.gz", hash = "sha256:1ff6e86044200c56ae23595695c54e9614f4a9551e0e393614f764860b3d7900"},
+]
+
+[package.dependencies]
+dnspython = ">=2.0.0"
+idna = ">=2.0.0"
 
 [[package]]
 name = "filelock"
@@ -1371,13 +1406,13 @@ twisted = ["twisted (>=20.3.0)", "zope.interface (>=5.2.0)"]
 
 [[package]]
 name = "typing-extensions"
-version = "4.7.0"
+version = "4.7.1"
 description = "Backported and Experimental Type Hints for Python 3.7+"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "typing_extensions-4.7.0-py3-none-any.whl", hash = "sha256:5d8c9dac95c27d20df12fb1d97b9793ab8b2af8a3a525e68c80e21060c161771"},
-    {file = "typing_extensions-4.7.0.tar.gz", hash = "sha256:935ccf31549830cda708b42289d44b6f74084d616a00be651601a4f968e77c82"},
+    {file = "typing_extensions-4.7.1-py3-none-any.whl", hash = "sha256:440d5dd3af93b060174bf433bccd69b0babc3b15b1a8dca43789fd7f61514b36"},
+    {file = "typing_extensions-4.7.1.tar.gz", hash = "sha256:b75ddc264f0ba5615db7ba217daeb99701ad295353c45f9e95963337ceeeffb2"},
 ]
 
 [[package]]
@@ -1509,4 +1544,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "d4f05fb1e0430344bbcbbf9db9b6ed6f215e35c296639da51614437c77c0f1ae"
+content-hash = "e8ffacfe3e7a7520d17866eda3920a1e67cf555005f14137deaac58b69335933"

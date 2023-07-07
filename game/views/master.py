@@ -1,6 +1,4 @@
-import os
-
-from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.core.mail import send_mail
@@ -11,54 +9,34 @@ from django.views.generic import CreateView, FormView, ListView, UpdateView
 from django_eventstream import send_event
 from django_fsm import TransitionNotAllowed
 
-import chat.models as cmodels
 import game.forms as gforms
 import game.models as gmodels
+import game.utils as gutils
 import game.views.mixins as gmixins
 
 
-class CreateGameView(PermissionRequiredMixin, FormView):
-    permission_required = "game.add_game"
-    template_name = "game/creategame.html"
-    form_class = gforms.CreateGameForm
-
-    def get_success_url(self):
-        return reverse_lazy("game", args=(self.game.id,))
-
-    def form_valid(self, form):
-        self.game = gmodels.Game()
-        self.game.name = form.cleaned_data["name"]
-        self.game.master = self.request.user
-        self.game.save()
-        tale = gmodels.Tale()
-        tale.game = self.game
-        tale.message = "The Master created the story."
-        tale.content = form.cleaned_data["description"]
-        tale.save()
-        room = cmodels.Room()
-        room.game = self.game
-        room.save()
-        return super().form_valid(form)
-
-
-class InviteCharacterView(PermissionRequiredMixin, ListView, gmixins.GameContextMixin):
-    permission_required = "game.change_character"
+class InviteCharacterView(UserPassesTestMixin, ListView, gmixins.GameContextMixin):
     model = gmodels.Character
     paginate_by = 10
     ordering = ["-xp"]
     template_name = "game/invitecharacter.html"
+
+    def test_func(self):
+        return self.is_user_master()
 
     def get_queryset(self):
         return super().get_queryset().filter(game=None)
 
 
 class InviteCharacterConfirmView(
-    PermissionRequiredMixin, UpdateView, gmixins.GameContextMixin
+    UserPassesTestMixin, UpdateView, gmixins.GameContextMixin
 ):
-    permission_required = "game.change_character"
     model = gmodels.Character
     fields = []
     template_name = "game/invitecharacterconfirm.html"
+
+    def test_func(self):
+        return self.is_user_master()
 
     def post(self, request, *args, **kwargs):
         character = self.get_object()
@@ -71,11 +49,12 @@ class InviteCharacterConfirmView(
         return HttpResponseRedirect(reverse("game", args=(self.game.id,)))
 
 
-class StartGameView(PermissionRequiredMixin, UpdateView):
-    permission_required = "game.change_game"
-    model = gmodels.Game
+class StartGameView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
     fields = []
     template_name = "game/startgame.html"
+
+    def test_func(self):
+        return self.is_user_master()
 
     def post(self, request, *args, **kwargs):
         game = self.get_object()
@@ -92,18 +71,20 @@ class StartGameView(PermissionRequiredMixin, UpdateView):
         return HttpResponseRedirect(reverse("game", args=(game.id,)))
 
 
-class StartGameErrorView(PermissionRequiredMixin, UpdateView):
-    permission_required = "game.change_game"
-    model = gmodels.Game
+class StartGameErrorView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
     fields = []
     template_name = "game/startgameerror.html"
 
+    def test_func(self):
+        return self.is_user_master()
 
-class EndGameView(PermissionRequiredMixin, UpdateView):
-    permission_required = "game.change_game"
-    model = gmodels.Game
+
+class EndGameView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
     fields = []
     template_name = "game/endgame.html"
+
+    def test_func(self):
+        return self.is_user_master()
 
     def post(self, request, *args, **kwargs):
         game = self.get_object()
@@ -117,21 +98,14 @@ class EndGameView(PermissionRequiredMixin, UpdateView):
         return HttpResponseRedirect(reverse("game", args=(game.id,)))
 
 
-class CreateTaleView(PermissionRequiredMixin, FormView, gmixins.EventConditionsMixin):
-    permission_required = "game.add_tale"
+class CreateTaleView(UserPassesTestMixin, FormView, gmixins.EventContextMixin):
     model = gmodels.Tale
     fields = ["description"]
     template_name = "game/createtale.html"
     form_class = gforms.CreateTaleForm
 
-    def get_master_email(self):
-        email_domain = os.environ["EMAIL_DOMAIN"]
-        email = f"{self.game.master.username}@{email_domain}"
-        return email
-
-    def get_players_emails(self):
-        players = gmodels.Character.objects.filter(game=self.game)
-        return [player.user.email for player in players if player.user is not None]
+    def test_func(self):
+        return self.is_user_master()
 
     def get_success_url(self):
         return reverse_lazy("game", args=(self.game.id,))
@@ -145,23 +119,25 @@ class CreateTaleView(PermissionRequiredMixin, FormView, gmixins.EventConditionsM
         send_mail(
             f"[{self.game}] The Master updated the story.",
             f"The Master said:\n{tale.content}",
-            self.get_master_email(),
-            self.get_players_emails(),
+            gutils.get_master_email(self.game.master.username),
+            gutils.get_players_emails(game=self.game),
         )
         send_event("game", "message", {"game": self.game.id, "refresh": "tale"})
         return super().form_valid(form)
 
 
 class CreatePendingActionView(
-    PermissionRequiredMixin,
+    UserPassesTestMixin,
     CreateView,
-    gmixins.EventConditionsMixin,
+    gmixins.EventContextMixin,
     gmixins.CharacterContextMixin,
 ):
-    permission_required = "game.add_pendingaction"
     model = gmodels.PendingAction
     form_class = gforms.CreatePendingActionForm
     template_name = "game/creatependingaction.html"
+
+    def test_func(self):
+        return self.is_user_master()
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
@@ -185,15 +161,17 @@ class CreatePendingActionView(
 
 
 class IncreaseXpView(
-    PermissionRequiredMixin,
+    UserPassesTestMixin,
     FormView,
-    gmixins.EventConditionsMixin,
+    gmixins.EventContextMixin,
     gmixins.CharacterContextMixin,
 ):
-    permission_required = "game.add_xpincrease"
     model = gmodels.XpIncrease
     form_class = gforms.IncreaseXpForm
     template_name = "game/xp.html"
+
+    def test_func(self):
+        return self.is_user_master()
 
     def get_success_url(self):
         return reverse_lazy("game", args=(self.game.id,))
@@ -213,15 +191,17 @@ class IncreaseXpView(
 
 
 class DamageView(
-    PermissionRequiredMixin,
+    UserPassesTestMixin,
     FormView,
-    gmixins.EventConditionsMixin,
+    gmixins.EventContextMixin,
     gmixins.CharacterContextMixin,
 ):
-    permission_required = "game.add_damage"
     model = gmodels.Damage
     form_class = gforms.DamageForm
     template_name = "game/damage.html"
+
+    def test_func(self):
+        return self.is_user_master()
 
     def get_success_url(self):
         return reverse_lazy("game", args=(self.game.id,))
@@ -249,14 +229,16 @@ class DamageView(
 
 
 class HealView(
-    PermissionRequiredMixin,
+    UserPassesTestMixin,
     FormView,
-    gmixins.EventConditionsMixin,
+    gmixins.EventContextMixin,
     gmixins.CharacterContextMixin,
 ):
-    permission_required = "game.add_healing"
     form_class = gforms.HealForm
     template_name = "game/heal.html"
+
+    def test_func(self):
+        return self.is_user_master()
 
     def get_success_url(self):
         return reverse_lazy("game", args=(self.game.id,))

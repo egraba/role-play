@@ -1,6 +1,6 @@
 import random
 
-from django.contrib.auth.models import Permission, User
+from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
 from django.forms import ValidationError
@@ -16,65 +16,16 @@ import game.views.master as gvmaster
 from game.tests import utils
 
 
-class CreateGameViewTest(TestCase):
-    path_name = "game-create"
-
-    @classmethod
-    def setUpTestData(cls):
-        permission = Permission.objects.get(codename="add_game")
-        user = User.objects.create(username=utils.generate_random_name(5))
-        user.set_password("pwd")
-        user.user_permissions.add(permission)
-        user.save()
-
-    def setUp(self):
-        self.user = User.objects.last()
-        self.client.login(username=self.user.username, password="pwd")
-
-    def test_view_mapping(self):
-        response = self.client.get(reverse(self.path_name))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.resolver_match.func.view_class, gvmaster.CreateGameView
-        )
-
-    def test_template_mapping(self):
-        response = self.client.get(reverse(self.path_name))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "game/creategame.html")
-
-    def test_game_creation(self):
-        name = utils.generate_random_name(20)
-        description = utils.generate_random_string(100)
-        data = {"name": f"{name}", "description": f"{description}"}
-        form = gforms.CreateGameForm(data)
-        self.assertTrue(form.is_valid())
-
-        response = self.client.post(reverse(self.path_name), data=form.cleaned_data)
-        self.assertEqual(response.status_code, 302)
-        game = gmodels.Game.objects.last()
-        self.assertEqual(game.name, name)
-        self.assertEqual(game.status, "P")
-        self.assertEqual(game.master, self.user)
-        tale = gmodels.Tale.objects.last()
-        self.assertEqual(tale.game, game)
-        self.assertEqual(tale.message, "The Master created the story.")
-        self.assertEqual(tale.content, form.cleaned_data["description"])
-        self.assertRedirects(response, reverse("game", args=[game.id]))
-
-
 class InviteCharacterViewTest(TestCase):
     path_name = "game-invite-character"
 
     @classmethod
     def setUpTestData(cls):
-        permission = Permission.objects.get(codename="change_character")
         user = User.objects.create(username=utils.generate_random_name(5))
         user.set_password("pwd")
-        user.user_permissions.add(permission)
         user.save()
 
-        game = gmodels.Game.objects.create()
+        game = gmodels.Game.objects.create(master=user)
         cmodels.Room.objects.create(game=game)
         number_of_characters_with_game = 5
         number_of_characters_without_game = 12
@@ -166,13 +117,11 @@ class InviteCharacterConfirmViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        permission = Permission.objects.get(codename="change_character")
         user = User.objects.create(username=utils.generate_random_name(5))
         user.set_password("pwd")
-        user.user_permissions.add(permission)
         user.save()
 
-        game = gmodels.Game.objects.create()
+        game = gmodels.Game.objects.create(master=user)
         cmodels.Room.objects.create(game=game)
         gmodels.Character.objects.create(name=utils.generate_random_name(5))
 
@@ -230,13 +179,11 @@ class StartGameViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        permission = Permission.objects.get(codename="change_game")
         user = User.objects.create(username=utils.generate_random_name(5))
         user.set_password("pwd")
-        user.user_permissions.add(permission)
         user.save()
 
-        game = gmodels.Game.objects.create()
+        game = gmodels.Game.objects.create(master=user)
         cmodels.Room.objects.create(game=game)
 
     def setUp(self):
@@ -300,13 +247,11 @@ class EndGameViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        permission = Permission.objects.get(codename="change_game")
         user = User.objects.create(username=utils.generate_random_name(5))
         user.set_password("pwd")
-        user.user_permissions.add(permission)
         user.save()
 
-        gmodels.Game.objects.create()
+        gmodels.Game.objects.create(master=user)
 
     def setUp(self):
         self.user = User.objects.last()
@@ -357,10 +302,8 @@ class CreateTaleViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        permission = Permission.objects.get(codename="add_tale")
         user = User.objects.create(username="user-tale")
         user.set_password("pwd")
-        user.user_permissions.add(permission)
         user.save()
         player1 = User.objects.create(username=utils.generate_random_name(5))
         player2 = User.objects.create(username=utils.generate_random_name(5))
@@ -446,13 +389,13 @@ class CreatePendingActionViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        permission = Permission.objects.get(codename="add_pendingaction")
         user = User.objects.create(username=utils.generate_random_name(5))
         user.set_password("pwd")
-        user.user_permissions.add(permission)
         user.save()
 
-        game = gmodels.Game.objects.create()
+        game = gmodels.Game.objects.create(
+            name=utils.generate_random_string(20), master=user
+        )
         cmodels.Room.objects.create(game=game)
         gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
         gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
@@ -574,13 +517,13 @@ class IncreaseXpViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        permission = Permission.objects.get(codename="add_xpincrease")
         user = User.objects.create(username=utils.generate_random_name(5))
         user.set_password("pwd")
-        user.user_permissions.add(permission)
         user.save()
 
-        game = gmodels.Game.objects.create()
+        game = gmodels.Game.objects.create(
+            name=utils.generate_random_string(20), master=user
+        )
         cmodels.Room.objects.create(game=game)
         gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
         gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
@@ -699,13 +642,13 @@ class DamageViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        permission = Permission.objects.get(codename="add_damage")
         user = User.objects.create(username=utils.generate_random_name(5))
         user.set_password("pwd")
-        user.user_permissions.add(permission)
         user.save()
 
-        game = gmodels.Game.objects.create()
+        game = gmodels.Game.objects.create(
+            name=utils.generate_random_string(20), master=user
+        )
         cmodels.Room.objects.create(game=game)
         gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
         gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
@@ -849,13 +792,13 @@ class HealViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        permission = Permission.objects.get(codename="add_healing")
         user = User.objects.create(username=utils.generate_random_name(5))
         user.set_password("pwd")
-        user.user_permissions.add(permission)
         user.save()
 
-        game = gmodels.Game.objects.create()
+        game = gmodels.Game.objects.create(
+            name=utils.generate_random_string(20), master=user
+        )
         cmodels.Room.objects.create(game=game)
         gmodels.Character.objects.create(
             game=game, name=utils.generate_random_name(5), hp=1

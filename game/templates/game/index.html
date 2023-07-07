@@ -9,8 +9,9 @@
                 <p>Welcome {{ user.username }}.</p>
                 <a href="{% url 'logout' %}"><button class="rpgui-button"><p>Log out</p></button></a>
             {% else %}
-                <p>Please log in, if you want to play.</p>
+                <p>Please log in or register, if you want to play.</p>
                 <a href="{% url 'login' %}"><button class="rpgui-button"><p>Log in</p></button></a>
+                <button disabled class="rpgui-button"><p>Register</p></button>
             {% endif %}
         </div>
 
@@ -23,51 +24,31 @@
         <hr style="clear:both"/>
 
         {% if user.is_authenticated %}
-            <h1>Ongoing games</h1>
-            <p>Select the game you want to join.</p>
-
-            {% for game in page_obj %}
-                <div class="rpgui-container framed-golden-2">
-                    <h2><a href={{ game.get_absolute_url }}>{{ game }}</a></h2>
-                    <p>
-                        Status: {{ game.get_status_display }},
-                        Number of players: {{ game.character_set.all|length }}
-                    </p>
-                    <p>
-                        Start date: {{ game.start_date }},
-                        End date: {{ game.end_date }}
-                    </p>
-                </div>
-            {% empty %}
-                <div class="rpgui-container framed-grey">
-                    <p>There is no game available...</p>
-                </div>
-            {% endfor %}
             <div class="rpgui-center">
-                {% include 'pagination.html' %}
-                {% if perms.game.add_game %}
-                    <a href="{% url 'game-create' %}">
-                        <button class="rpgui-button"><p>Create a new game</p></button>
+                <a href="{% url 'game-list' %}">
+                    <button class="rpgui-button"><p>View all games</p></button>
+                </a>
+                <a href="{% url 'game-create' %}">
+                    <button class="rpgui-button"><p>Create a new game</p></button>
+                </a>
+                <a href="{% url 'character-list' %}">
+                    <button class="rpgui-button"><p>View all characters</p></button>
+                </a>
+                {% if user_character %}
+                    <a href={{ user_character.get_absolute_url }}>
+                        <button class="rpgui-button"><p>View your character</p></button>
+                    </a>
+                {% else %}
+                    <a href="{% url 'character-create' %}">
+                        <button class="rpgui-button"><p>Create a new character</p></button>
                     </a>
                 {% endif %}
-                {% if perms.game.add_character %}
-                    {% if character %}
-                        <a href={{ character.get_absolute_url }}>
-                            <button class="rpgui-button"><p>View your character</p></button>
-                        </a>
-                    {% else %}
-                        <a href="{% url 'character-create' %}">
-                            <button class="rpgui-button"><p>Create a new character</p></button>
-                        </a>
-                    {% endif %}
-                {% endif %}
             </div>
-
             <hr/>
         {% endif %}
 
         <h1>Release notes</h1>
-        <p>This game is under development...</p>
+        <p>This game is under development and expecting to change a lot!</p>
         <p>Don't hesitate to provide your feedback or suggestions, by visiting our GitHub page.</p>
         <div class="rpgui-center">
             <a href="https://github.com/egraba/role-play">
