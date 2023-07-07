@@ -18,3 +18,23 @@ class StoryModelTest(TestCase):
         story = mmodels.Story.objects.last()
         max_length = story._meta.get_field("name").max_length
         self.assertEqual(max_length, 50)
+
+    def test_synopsis_type(self):
+        story = mmodels.Story.objects.last()
+        synopsis = story._meta.get_field("synopsis")
+        self.assertTrue(synopsis, models.CharField)
+
+    def test_synopsis_max_length(self):
+        story = mmodels.Story.objects.last()
+        max_length = story._meta.get_field("synopsis").max_length
+        self.assertEqual(max_length, 3000)
+
+    def test_main_conflict_type(self):
+        story = mmodels.Story.objects.last()
+        main_conflict = story._meta.get_field("main_conflict")
+        self.assertTrue(main_conflict, models.CharField)
+
+    def test_main_conflict_max_length(self):
+        story = mmodels.Story.objects.last()
+        max_length = story._meta.get_field("main_conflict").max_length
+        self.assertEqual(max_length, 1000)
