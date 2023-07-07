@@ -9,11 +9,9 @@ def get_master_email(username):
     email_domain = os.environ["EMAIL_DOMAIN"]
     username = username.lower()
     email = f"{username}@{email_domain}"
-    print(email)
     try:
         validate_email(email)
-    except EmailNotValidError as err:
-        print(str(err))
+    except EmailNotValidError:
         email = None
     return email
 
