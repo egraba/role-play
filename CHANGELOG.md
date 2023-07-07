@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## v0.3.0 - 2023-07-07
 
 ### Added
 * Game page is refreshed dynamically when game events occur
