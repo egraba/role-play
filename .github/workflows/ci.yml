@@ -14,7 +14,7 @@ env:
   PGHOST: 127.0.0.1
   PGPORT: 5432
   DJANGO_SECRET_KEY: ${{secrets.DJANGO_SECRET_KEY}}
-  EMAIL_DOMAIN: somedomain.org
+  EMAIL_DOMAIN: ${{secrets.EMAIL_DOMAIN}}
 
 jobs:
   build:

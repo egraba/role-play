@@ -7,7 +7,8 @@ import game.models as gmodels
 
 def get_master_email(username):
     email_domain = os.environ["EMAIL_DOMAIN"]
-    email = f"{username.lower()}@{email_domain}"
+    username = username.lower()
+    email = f"{username}@{email_domain}"
     print(email)
     try:
         validate_email(email)
