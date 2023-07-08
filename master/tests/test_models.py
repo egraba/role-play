@@ -22,7 +22,7 @@ class StoryModelTest(TestCase):
     def test_synopsis_type(self):
         story = mmodels.Story.objects.last()
         synopsis = story._meta.get_field("synopsis")
-        self.assertTrue(synopsis, models.CharField)
+        self.assertTrue(synopsis, models.TextField)
 
     def test_synopsis_max_length(self):
         story = mmodels.Story.objects.last()
@@ -32,7 +32,7 @@ class StoryModelTest(TestCase):
     def test_main_conflict_type(self):
         story = mmodels.Story.objects.last()
         main_conflict = story._meta.get_field("main_conflict")
-        self.assertTrue(main_conflict, models.CharField)
+        self.assertTrue(main_conflict, models.TextField)
 
     def test_main_conflict_max_length(self):
         story = mmodels.Story.objects.last()
