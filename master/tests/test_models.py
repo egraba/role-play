@@ -38,3 +38,7 @@ class StoryModelTest(TestCase):
         story = mmodels.Story.objects.last()
         max_length = story._meta.get_field("main_conflict").max_length
         self.assertEqual(max_length, 1000)
+
+    def test_str(self):
+        story = mmodels.Story.objects.last()
+        self.assertEqual(str(story), story.name)
