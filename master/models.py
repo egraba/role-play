@@ -7,6 +7,7 @@ class Story(models.Model):
     slug = models.SlugField(max_length=50, unique=True)
     synopsis = models.TextField(max_length=3000)
     main_conflict = models.TextField(max_length=1000)
+    objective = models.TextField(max_length=500)
 
     def __str__(self):
         return self.title

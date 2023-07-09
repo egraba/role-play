@@ -4,7 +4,7 @@ import master.models as mmodels
 
 
 class StoryAdmin(admin.ModelAdmin):
-    fields = ["title", "slug", "synopsis", "main_conflict"]
+    fields = ["title", "slug", "synopsis", "main_conflict", "objective"]
     list_display = ["title", "slug"]
     prepopulated_fields = {"slug": ("title",)}
 
