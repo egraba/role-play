@@ -5,6 +5,8 @@ from django.urls import reverse
 from django.utils import timezone
 from django_fsm import FSMField, transition
 
+import master.models as mmodels
+
 
 class Game(models.Model):
     class Status(models.TextChoices):
@@ -13,6 +15,9 @@ class Game(models.Model):
         FINISHED = "F", "Finished"
 
     name = models.CharField(max_length=50, unique=True)
+    story = models.ForeignKey(
+        mmodels.Story, on_delete=models.SET_NULL, null=True, blank=True
+    )
     master = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     start_date = models.DateTimeField(null=True, blank=True)
     end_date = models.DateTimeField(null=True, blank=True)

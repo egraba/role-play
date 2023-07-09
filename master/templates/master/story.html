@@ -3,6 +3,9 @@
 {% block content %}
     <div class="rpgui-container framed">
         <h1>{{ story }}</h1>
+        <div class="rpgui-center">
+            <a href={% url 'story-list' %}>- Return to story list -</a>
+        </div>
 
         <hr class="golden" />
 
@@ -22,6 +25,9 @@
         <div class="rpgui-center">
             <a href={% url 'story-update' story.slug %}>
                 <button class="rpgui-button"><p>Edit your story</p></button>
+            </a>
+            <a href={% url 'game-create' story.slug %}>
+                <button class="rpgui-button"><p>Create a game from this story</p></button>
             </a>
         </div>
     </div>

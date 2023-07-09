@@ -4,24 +4,6 @@ from django.test import TestCase
 import game.forms as gforms
 
 
-class CreateGameFormTest(TestCase):
-    def test_name_type(self):
-        form = gforms.CreateGameForm()
-        self.assertIsInstance(form.fields["name"].widget, forms.TextInput)
-
-    def test_name_max_length(self):
-        form = gforms.CreateGameForm()
-        self.assertEqual(form.fields["name"].max_length, 50)
-
-    def test_description_type(self):
-        form = gforms.CreateGameForm()
-        self.assertIsInstance(form.fields["description"].widget, forms.Textarea)
-
-    def test_description_max_length(self):
-        form = gforms.CreateGameForm()
-        self.assertEqual(form.fields["description"].max_length, 1000)
-
-
 class CreateTaleFormTest(TestCase):
     def test_content_type(self):
         form = gforms.CreateTaleForm()
