@@ -9,6 +9,9 @@ class Story(models.Model):
     main_conflict = models.TextField(max_length=1000)
     objective = models.TextField(max_length=500)
 
+    class Meta:
+        verbose_name_plural = "stories"
+
     def __str__(self):
         return self.title
 
