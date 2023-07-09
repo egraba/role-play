@@ -2,13 +2,13 @@
 
 {% block content %}
     <div class="form rpgui-container framed-golden">
-        <h1>New Game</h1>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <div class="rpgui-center">
-                <button class="rpgui-button" type="submit"><p>Submit</p></button>
-            </div>
-        </form>
+        <h1>Are you sure to create the game?</h1>
+        <div class="rpgui-center inline">
+            <form method="post">
+                {% csrf_token %}
+                <button class="rpgui-button" type="submit"><p>Yes</p></button>
+            </form>
+            <a href={{ story.get_absolute_url }}><button class="rpgui-button"><p>No</p></button></a>
+        </div>
     </div>
 {% endblock%}

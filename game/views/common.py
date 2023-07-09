@@ -1,17 +1,13 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
-from django.urls import reverse_lazy
-from django.views.generic import (
-    CreateView,
-    DetailView,
-    FormView,
-    ListView,
-    TemplateView,
-)
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+from django.views.generic import CreateView, DetailView, ListView, TemplateView
 
 import game.forms as gforms
 import game.models as gmodels
 import game.views.mixins as gmixins
+import master.models as mmodels
 
 
 class IndexView(TemplateView):
@@ -70,24 +66,31 @@ class DetailCharacterView(DetailView):
     template_name = "game/character.html"
 
 
-class CreateGameView(LoginRequiredMixin, FormView):
+class CreateGameView(LoginRequiredMixin, CreateView):
+    model = gmodels.Game
+    fields = []
     template_name = "game/creategame.html"
-    form_class = gforms.CreateGameForm
 
     def get_success_url(self):
-        return reverse_lazy("game", args=(self.game.id,))
+        return self.object.get_absolute_url()
 
-    def form_valid(self, form):
-        self.game = gmodels.Game()
-        self.game.name = form.cleaned_data["name"]
-        self.game.master = self.request.user
-        self.game.save()
+    def post(self, request, *args, **kwargs):
+        game = gmodels.Game()
+        story_slug = self.kwargs["story_slug"]
+        try:
+            story = mmodels.Story.objects.get(slug=story_slug)
+        except ObjectDoesNotExist:
+            return HttpResponseRedirect(reverse("game-create-error", args=(game.id,)))
+        game.name = story.title
+        game.story = story
+        game.master = self.request.user
+        game.save()
         tale = gmodels.Tale()
-        tale.game = self.game
+        tale.game = game
         tale.message = "The Master created the story."
-        tale.content = form.cleaned_data["description"]
+        tale.content = story.synopsis
         tale.save()
-        return super().form_valid(form)
+        return HttpResponseRedirect(game.get_absolute_url())
 
 
 class CreateCharacterView(LoginRequiredMixin, CreateView):

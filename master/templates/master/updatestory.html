@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="rpgui-container framed-golden">
+        <h1>{{ story }}</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="rpgui-center">
+                <button class="rpgui-button" type="submit"><p>Update</p></button>
+            </div>
+        </form>
+    </div>
+{% endblock%}

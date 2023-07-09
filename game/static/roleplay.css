@@ -1,4 +1,3 @@
-
 .rpgui-content {
     background: #222;
     overflow-y: scroll;
@@ -9,6 +8,11 @@
 }
 
 .rpgui-container.framed {
+    margin: 2em;
+    position: static;
+}
+
+.rpgui-container.framed-golden {
     margin: 2em;
     position: static;
 }
@@ -30,7 +34,7 @@ table {
     padding-bottom: 0;
 }
 
-.form, .info {
+.form.rpgui-container.framed-golden, .info {
     width: 50%;
     margin-top: 10%;
     margin-left: 25%;

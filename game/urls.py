@@ -21,7 +21,11 @@ urlpatterns = [
         common.CreateCharacterView.as_view(),
         name="character-create",
     ),
-    path("create_game", common.CreateGameView.as_view(), name="game-create"),
+    path(
+        "create_game/<slug:story_slug>",
+        common.CreateGameView.as_view(),
+        name="game-create",
+    ),
     path(
         "<int:game_id>/invite_character",
         master.InviteCharacterView.as_view(),
