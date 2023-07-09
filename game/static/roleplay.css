@@ -1,4 +1,3 @@
-
 .rpgui-content {
     background: #222;
     overflow-y: scroll;
@@ -9,6 +8,11 @@
 }
 
 .rpgui-container.framed {
+    margin: 2em;
+    position: static;
+}
+
+.rpgui-container.framed-golden {
     margin: 2em;
     position: static;
 }
