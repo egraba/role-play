@@ -18,5 +18,11 @@
 
         <h2>Objective</h2>
         {{ story.objective|linebreaks }}
+
+        <div class="rpgui-center">
+            <a href={% url 'story-update' story.slug %}>
+                <button class="rpgui-button"><p>Edit your story</p></button>
+            </a>
+        </div>
     </div>
 {% endblock content %}
