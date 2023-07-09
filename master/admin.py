@@ -4,7 +4,9 @@ import master.models as mmodels
 
 
 class StoryAdmin(admin.ModelAdmin):
-    fields = ["title", "synopsis", "main_conflict"]
+    fields = ["title", "slug", "synopsis", "main_conflict"]
+    list_display = ["title", "slug"]
+    prepopulated_fields = {"slug": ("title",)}
 
 
 admin.site.register(mmodels.Story, StoryAdmin)

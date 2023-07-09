@@ -5,4 +5,4 @@ import master.models as mmodels
 
 class DetailStoryView(DetailView):
     model = mmodels.Story
-    template_name = "story.html"
+    template_name = "master/story.html"

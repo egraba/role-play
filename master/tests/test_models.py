@@ -19,6 +19,16 @@ class StoryModelTest(TestCase):
         max_length = story._meta.get_field("title").max_length
         self.assertEqual(max_length, 50)
 
+    def test_slug_type(self):
+        story = mmodels.Story.objects.last()
+        slug = story._meta.get_field("slug")
+        self.assertTrue(slug, models.SlugField)
+
+    def test_slug_max_length(self):
+        story = mmodels.Story.objects.last()
+        max_length = story._meta.get_field("slug").max_length
+        self.assertEqual(max_length, 50)
+
     def test_synopsis_type(self):
         story = mmodels.Story.objects.last()
         synopsis = story._meta.get_field("synopsis")
