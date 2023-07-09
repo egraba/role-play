@@ -34,7 +34,7 @@ table {
     padding-bottom: 0;
 }
 
-.form, .info {
+.form.rpgui-container.framed-golden, .info {
     width: 50%;
     margin-top: 10%;
     margin-left: 25%;
