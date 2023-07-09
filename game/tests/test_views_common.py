@@ -2,12 +2,11 @@ import random
 from datetime import datetime, timezone
 
 from django.contrib.auth.models import User
-from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.test import TestCase
 from django.urls import reverse
 
-import game.forms as gforms
+import character.models as cmodels
 import game.models as gmodels
 import game.views.common as gvcommon
 import master.models as mmodels
@@ -58,7 +57,7 @@ class IndexViewTest(TestCase):
         user = User.objects.create(username=utils.generate_random_name(5))
         user.set_password("pwd")
         user.save()
-        character = gmodels.Character.objects.create(
+        character = cmodels.Character.objects.create(
             name=utils.generate_random_name(8), user=user
         )
         self.client.login(username=user.username, password="pwd")
@@ -135,68 +134,6 @@ class ListGameViewTest(TestCase):
                 last_date = game.start_date
 
 
-class ListCharacterViewTest(TestCase):
-    path_name = "character-list"
-
-    @classmethod
-    def setUpTestData(cls):
-        number_of_characters = 22
-        for i in range(number_of_characters):
-            user = User.objects.create(username=utils.generate_random_name(5))
-            user.set_password("pwd")
-            user.save()
-            gmodels.Character.objects.create(
-                name=utils.generate_random_string(20),
-                race=random.choice(gmodels.Character.Race.choices)[0],
-                user=user,
-            )
-
-    def test_view_mapping(self):
-        response = self.client.get(reverse(self.path_name))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.resolver_match.func.view_class, gvcommon.ListCharacterView
-        )
-
-    def test_template_mapping(self):
-        response = self.client.get(reverse(self.path_name))
-        self.assertTemplateUsed(response, "game/characterlist.html")
-
-    def test_pagination_size(self):
-        self.user = User.objects.last()
-        self.client.login(username=self.user.username, password="pwd")
-
-        response = self.client.get(reverse(self.path_name))
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue("is_paginated" in response.context)
-        self.assertTrue(response.context["is_paginated"])
-        self.assertEqual(len(response.context["character_list"]), 20)
-
-    def test_pagination_size_next_page(self):
-        self.user = User.objects.last()
-        self.client.login(username=self.user.username, password="pwd")
-
-        response = self.client.get(reverse(self.path_name) + "?page=2")
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue("is_paginated" in response.context)
-        self.assertTrue(response.context["is_paginated"])
-        self.assertEqual(len(response.context["character_list"]), 2)
-
-    def test_ordering(self):
-        self.user = User.objects.last()
-        self.client.login(username=self.user.username, password="pwd")
-
-        response = self.client.get(reverse(self.path_name))
-        self.assertEqual(response.status_code, 200)
-        xp = 0
-        for character in response.context["character_list"]:
-            if xp == 0:
-                xp = character.xp
-            else:
-                self.assertTrue(xp >= character.xp)
-                xp = character.xp
-
-
 class GameViewTest(TestCase):
     path_name = "game"
 
@@ -221,10 +158,9 @@ class GameViewTest(TestCase):
             )
         number_of_characters = 2
         for i in range(number_of_characters):
-            character = gmodels.Character.objects.create(
-                game=game,
+            character = cmodels.Character.objects.create(
                 name=f"{game.name} character{i}",
-                race=random.choice(gmodels.Character.Race.choices)[0],
+                race=random.choice(cmodels.Character.Race.choices)[0],
             )
             gmodels.PendingAction.objects.create(
                 game=game,
@@ -305,7 +241,7 @@ class GameViewTest(TestCase):
         for i in range(number_of_games):
             game = gmodels.Game.objects.create(name=f"other_game{i}")
             gmodels.Tale.objects.create(game=game)
-            character = gmodels.Character.objects.create(
+            character = cmodels.Character.objects.create(
                 game=game, name=f"character{i}"
             )
             gmodels.Event.objects.create(game=game)
@@ -318,7 +254,7 @@ class GameViewTest(TestCase):
         tale_list = gmodels.Tale.objects.filter(game__name="game1")
         tale = tale_list.last()
         self.assertEqual(response.context["tale"], tale)
-        character_list = gmodels.Character.objects.filter(game__name="game1")
+        character_list = cmodels.Character.objects.filter(game__name="game1")
         self.assertQuerySetEqual(
             list(response.context["character_list"]), character_list
         )
@@ -335,13 +271,13 @@ class GameViewTest(TestCase):
         for i in range(number_of_games):
             game = gmodels.Game.objects.create(name=f"other_game{i}")
             gmodels.Tale.objects.create(game=game)
-            character = gmodels.Character.objects.create(
+            character = cmodels.Character.objects.create(
                 game=game, name=f"character{i}"
             )
             gmodels.Event.objects.create(game=game)
             gmodels.PendingAction.objects.create(game=game, character=character)
 
-        player = gmodels.Character.objects.filter(name="game1 character1").get()
+        player = cmodels.Character.objects.filter(name="game1 character1").get()
         player.user = self.user
         player.save()
         self.client.logout()
@@ -362,24 +298,6 @@ class GameViewTest(TestCase):
         # issubset() is used because of pagination.
         self.assertTrue(set(response.context["event_list"]).issubset(set(event_list)))
         self.assertEqual(response.context["player"], player)
-
-
-class CharacterViewTest(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        gmodels.Character.objects.create()
-
-    def test_view_mapping(self):
-        character = gmodels.Character.objects.last()
-        response = self.client.get(character.get_absolute_url())
-        self.assertEqual(
-            response.resolver_match.func.view_class, gvcommon.DetailCharacterView
-        )
-
-    def test_template_mapping(self):
-        character = gmodels.Character.objects.last()
-        response = self.client.get(character.get_absolute_url())
-        self.assertTemplateUsed(response, "game/character.html")
 
 
 class CreateGameViewTest(TestCase):
@@ -421,58 +339,3 @@ class CreateGameViewTest(TestCase):
         self.assertEqual(tale.message, "The Master created the story.")
         self.assertEqual(tale.content, self.story.synopsis)
         self.assertRedirects(response, reverse("game", args=[game.id]))
-
-
-class CreateCharacterViewTest(TestCase):
-    path_name = "character-create"
-
-    @classmethod
-    def setUpTestData(cls):
-        user = User.objects.create(username=utils.generate_random_name(5))
-        user.set_password("pwd")
-        user.save()
-
-    def setUp(self):
-        self.user = User.objects.last()
-        self.client.login(username=self.user.username, password="pwd")
-
-    def test_view_mapping(self):
-        response = self.client.get(reverse(self.path_name))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.resolver_match.func.view_class, gvcommon.CreateCharacterView
-        )
-
-    def test_template_mapping(self):
-        response = self.client.get(reverse(self.path_name))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "game/createcharacter.html")
-
-    def test_character_creation_no_existing_character(self):
-        name = utils.generate_random_name(10)
-        race = random.choice(gmodels.Character.Race.choices)[0]
-        data = {"name": f"{name}", "race": f"{race}"}
-        form = gforms.CreateCharacterForm(data)
-        self.assertTrue(form.is_valid())
-
-        response = self.client.post(
-            reverse(self.path_name),
-            data=form.cleaned_data,
-        )
-        self.assertEqual(response.status_code, 302)
-        character = gmodels.Character.objects.last()
-        self.assertRedirects(response, character.get_absolute_url())
-        self.assertEqual(character.name, form.cleaned_data["name"])
-        self.assertEqual(character.race, form.cleaned_data["race"])
-        self.assertEqual(character.xp, 0)
-        self.assertEqual(character.hp, 100)
-        self.assertEqual(character.max_hp, 100)
-        self.assertEqual(character.user, self.user)
-
-    def test_character_creation_already_existing_character(self):
-        gmodels.Character.objects.create(
-            name=utils.generate_random_name(5), user=self.user
-        )
-        response = self.client.get(reverse(self.path_name))
-        self.assertEqual(response.status_code, 403)
-        self.assertRaises(PermissionDenied)
