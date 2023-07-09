@@ -3,12 +3,20 @@
 {% block content %}
     <div class="rpgui-container framed">
         <h1>{{ story }}</h1>
+
         <hr class="golden" />
+
         <h2>Synopis</h2>
-        <p class="rpgui-container framed-grey">{{ story.synopsis }}</p>
+        {{ story.synopsis|linebreaks }}
+
+        <hr />
+
         <h2>Main conflict</h2>
-        <p class="rpgui-container framed-grey">{{ story.main_conflict }}</p>
+        {{ story.main_conflict|linebreaks }}
+
+        <hr />
+
         <h2>Objective</h2>
-        <p class="rpgui-container framed-grey">{{ story.objective }}</p>
+        {{ story.objective|linebreaks }}
     </div>
 {% endblock content %}
