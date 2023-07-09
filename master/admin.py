@@ -3,8 +3,8 @@ from django.contrib import admin
 import master.models as mmodels
 
 
-class BackgroundStoryAdmin(admin.ModelAdmin):
-    fields = ["name", "status", "master"]
+class StoryAdmin(admin.ModelAdmin):
+    fields = ["title", "synopsis", "main_conflict"]
 
 
-admin.site.register(mmodels.Story, BackgroundStoryAdmin)
+admin.site.register(mmodels.Story, StoryAdmin)
