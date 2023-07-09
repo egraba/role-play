@@ -9,6 +9,7 @@ from django.views.generic import CreateView, FormView, ListView, UpdateView
 from django_eventstream import send_event
 from django_fsm import TransitionNotAllowed
 
+import character.models as cmodels
 import game.forms as gforms
 import game.models as gmodels
 import game.utils as gutils
@@ -16,7 +17,7 @@ import game.views.mixins as gmixins
 
 
 class InviteCharacterView(UserPassesTestMixin, ListView, gmixins.GameContextMixin):
-    model = gmodels.Character
+    model = cmodels.Character
     paginate_by = 10
     ordering = ["-xp"]
     template_name = "game/invitecharacter.html"
@@ -31,7 +32,7 @@ class InviteCharacterView(UserPassesTestMixin, ListView, gmixins.GameContextMixi
 class InviteCharacterConfirmView(
     UserPassesTestMixin, UpdateView, gmixins.GameContextMixin
 ):
-    model = gmodels.Character
+    model = cmodels.Character
     fields = []
     template_name = "game/invitecharacterconfirm.html"
 

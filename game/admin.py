@@ -8,11 +8,6 @@ class GameAdmin(admin.ModelAdmin):
     list_display = ["name", "status", "master", "start_date", "end_date"]
 
 
-class CharacterAdmin(admin.ModelAdmin):
-    fields = ["game", "name", "race", "user"]
-    list_display = ["name", "race", "game", "user"]
-
-
 class TaleAdmin(admin.ModelAdmin):
     fields = ["game", "description"]
     list_display = ["game", "content", "date"]
@@ -29,7 +24,6 @@ class PendingActionAdmin(admin.ModelAdmin):
 
 
 admin.site.register(gmodels.Game, GameAdmin)
-admin.site.register(gmodels.Character, CharacterAdmin)
 admin.site.register(gmodels.Tale, TaleAdmin)
 admin.site.register(gmodels.Event, EventAdmin)
 admin.site.register(gmodels.PendingAction, PendingActionAdmin)

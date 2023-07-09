@@ -1,10 +1,10 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from django.views.generic import CreateView, DetailView, ListView, TemplateView
+from django.views.generic import CreateView, ListView, TemplateView
 
-import game.forms as gforms
+import character.models as cmodels
 import game.models as gmodels
 import game.views.mixins as gmixins
 import master.models as mmodels
@@ -17,8 +17,8 @@ class IndexView(TemplateView):
         context = super().get_context_data(**kwargs)
         if self.request.user.is_authenticated:
             try:
-                context["user_character"] = gmodels.Character.objects.get(
-                    user=self.request.user
+                context["user_character"] = cmodels.Character.objects.get(
+                    player__user=self.request.user
                 )
             except ObjectDoesNotExist:
                 pass
@@ -54,18 +54,6 @@ class GameView(LoginRequiredMixin, ListView, gmixins.GameContextMixin):
         return super().get_queryset().filter(game=self.game.id)
 
 
-class ListCharacterView(ListView):
-    model = gmodels.Character
-    paginate_by = 20
-    ordering = ["-xp"]
-    template_name = "game/characterlist.html"
-
-
-class DetailCharacterView(DetailView):
-    model = gmodels.Character
-    template_name = "game/character.html"
-
-
 class CreateGameView(LoginRequiredMixin, CreateView):
     model = gmodels.Game
     fields = []
@@ -91,27 +79,3 @@ class CreateGameView(LoginRequiredMixin, CreateView):
         tale.content = story.synopsis
         tale.save()
         return HttpResponseRedirect(game.get_absolute_url())
-
-
-class CreateCharacterView(LoginRequiredMixin, CreateView):
-    model = gmodels.Character
-    form_class = gforms.CreateCharacterForm
-    template_name = "game/createcharacter.html"
-
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, *args, **kwargs)
-        try:
-            # It is not possible for a user to have several characters.
-            gmodels.Character.objects.filter(user=self.request.user).get()
-            raise PermissionDenied
-        except ObjectDoesNotExist:
-            pass
-
-    def get_success_url(self):
-        return self.object.get_absolute_url()
-
-    def form_valid(self, form):
-        character = form.save(commit=False)
-        character.user = self.request.user
-        character.save()
-        return super().form_valid(form)

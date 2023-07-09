@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     "daphne",
     "game.apps.GameConfig",
     "master.apps.MasterConfig",
+    "character.apps.CharacterConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
