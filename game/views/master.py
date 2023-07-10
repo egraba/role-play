@@ -26,7 +26,7 @@ class InviteCharacterView(UserPassesTestMixin, ListView, gmixins.GameContextMixi
         return self.is_user_master()
 
     def get_queryset(self):
-        return super().get_queryset().filter(game=None)
+        return super().get_queryset().filter(player__game=None)
 
 
 class InviteCharacterConfirmView(
@@ -216,8 +216,10 @@ class DamageView(
             damage.message = (
                 f"{self.character} was hit: -{damage.hp} HP! {self.character} is dead."
             )
-            # The character removed from the game.
-            self.character.game = None
+            # The player removed from the game.
+            player = gmodels.Player.objects.get(character=self.character)
+            player.game = None
+            player.save()
             # The character is healed when remove from the game,
             # so that they can join another game.
             self.character.hp = self.character.max_hp

@@ -17,7 +17,7 @@ def get_master_email(username):
 
 
 def get_players_emails(game):
-    players = gmodels.Character.objects.filter(game=game)
+    players = gmodels.Player.objects.filter(game=game)
     return {
         player.user.email
         for player in players
