@@ -8,10 +8,11 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
+import character.models as cmodels
 import game.forms as gforms
 import game.models as gmodels
 import game.views.player as gvplayer
-from game.tests import utils
+import utils.random as utils
 
 
 class DiceLaunchViewTest(TestCase):
@@ -25,12 +26,12 @@ class DiceLaunchViewTest(TestCase):
 
         game = gmodels.Game.objects.create()
         # A game can only start with a minimum number of characters.
-        number_of_characters = 2
-        for i in range(number_of_characters):
-            character = gmodels.Character.objects.create(
+        number_of_players = 2
+        for i in range(number_of_players):
+            character = cmodels.Character.objects.create(
                 name=utils.generate_random_name(5),
-                game=game,
             )
+            gmodels.Player.objects.create(game=game, character=character)
             gmodels.PendingAction.objects.create(game=game, character=character)
         game.start()
         game.save()
@@ -44,7 +45,7 @@ class DiceLaunchViewTest(TestCase):
 
     def test_view_mapping(self):
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(
                 self.path_name,
@@ -61,7 +62,7 @@ class DiceLaunchViewTest(TestCase):
 
     def test_template_mapping(self):
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(
                 self.path_name,
@@ -76,7 +77,7 @@ class DiceLaunchViewTest(TestCase):
 
     def test_game_not_exists(self):
         game_id = random.randint(10000, 99999)
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(
                 self.path_name,
@@ -106,7 +107,7 @@ class DiceLaunchViewTest(TestCase):
 
     def test_context_data(self):
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(
                 self.path_name,
@@ -122,7 +123,7 @@ class DiceLaunchViewTest(TestCase):
 
     def test_game_is_under_preparation(self):
         game = gmodels.Game.objects.create(name=utils.generate_random_string(20))
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(
                 self.path_name,
@@ -137,7 +138,7 @@ class DiceLaunchViewTest(TestCase):
 
     def test_game_is_finished(self):
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         game.end()
         game.save()
         response = self.client.get(
@@ -154,7 +155,7 @@ class DiceLaunchViewTest(TestCase):
 
     def test_dice_launch(self):
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         response = self.client.post(
             reverse(
                 self.path_name,
@@ -196,11 +197,11 @@ class DiceLaunchSuccessViewTest(TestCase):
         user.save()
 
         game = gmodels.Game.objects.create()
-        character = gmodels.Character.objects.create(
+        character = cmodels.Character.objects.create(
             name=utils.generate_random_name(100),
-            game=game,
-            race=random.choice(gmodels.Character.Race.choices)[0],
+            race=random.choice(cmodels.Character.Race.choices)[0],
         )
+        gmodels.Player.objects.create(game=game, character=character)
         gmodels.DiceLaunch.objects.create(
             game=game, character=character, score=random.randint(1, 20)
         )
@@ -211,7 +212,7 @@ class DiceLaunchSuccessViewTest(TestCase):
 
     def test_view_mapping(self):
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         dice_launch = gmodels.DiceLaunch.objects.last()
         response = self.client.get(
             reverse(
@@ -229,7 +230,7 @@ class DiceLaunchSuccessViewTest(TestCase):
 
     def test_template_mapping(self):
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         dice_launch = gmodels.DiceLaunch.objects.last()
         response = self.client.get(
             reverse(
@@ -245,7 +246,7 @@ class DiceLaunchSuccessViewTest(TestCase):
 
     def test_game_not_exists(self):
         game_id = random.randint(10000, 99999)
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         dice_launch = gmodels.DiceLaunch.objects.last()
         response = self.client.get(
             reverse(
@@ -279,7 +280,7 @@ class DiceLaunchSuccessViewTest(TestCase):
 
     def test_view_content(self):
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         dice_launch = gmodels.DiceLaunch.objects.last()
         response = self.client.get(
             reverse(
@@ -311,12 +312,12 @@ class ChoiceViewTest(TestCase):
 
         game = gmodels.Game.objects.create()
         # A game can only start with a minimum number of characters.
-        number_of_characters = 2
-        for i in range(number_of_characters):
-            character = gmodels.Character.objects.create(
+        number_of_players = 2
+        for i in range(number_of_players):
+            character = cmodels.Character.objects.create(
                 name=utils.generate_random_name(5),
-                game=game,
             )
+            gmodels.Player.objects.create(game=game, character=character)
             gmodels.PendingAction.objects.create(game=game, character=character)
         game.start()
         game.save()
@@ -330,7 +331,7 @@ class ChoiceViewTest(TestCase):
 
     def test_view_mapping(self):
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(
                 self.path_name,
@@ -345,7 +346,7 @@ class ChoiceViewTest(TestCase):
 
     def test_template_mapping(self):
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(
                 self.path_name,
@@ -360,7 +361,7 @@ class ChoiceViewTest(TestCase):
 
     def test_game_not_exists(self):
         game_id = random.randint(10000, 99999)
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(
                 self.path_name,
@@ -390,7 +391,7 @@ class ChoiceViewTest(TestCase):
 
     def test_context_data(self):
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(
                 self.path_name,
@@ -406,7 +407,7 @@ class ChoiceViewTest(TestCase):
 
     def test_game_is_under_preparation(self):
         game = gmodels.Game.objects.create(name=utils.generate_random_string(20))
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(
                 self.path_name,
@@ -421,7 +422,7 @@ class ChoiceViewTest(TestCase):
 
     def test_game_is_finished(self):
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         game.end()
         game.save()
         response = self.client.get(
@@ -443,7 +444,7 @@ class ChoiceViewTest(TestCase):
         self.assertTrue(form.is_valid())
 
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         response = self.client.post(
             reverse(
                 self.path_name,

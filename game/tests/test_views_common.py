@@ -10,7 +10,7 @@ import character.models as cmodels
 import game.models as gmodels
 import game.views.common as gvcommon
 import master.models as mmodels
-from game.tests import utils
+import utils.random as utils
 
 
 class IndexViewTest(TestCase):
