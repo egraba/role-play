@@ -4,8 +4,9 @@ from django.db import models
 from django.test import TestCase
 from django.utils import timezone
 
+import character.models as cmodels
 import game.models as gmodels
-from game.tests import utils
+import utils.random as utils
 
 
 class GameModelTest(TestCase):
@@ -49,10 +50,13 @@ class GameModelTest(TestCase):
     def test_is_ongoing(self):
         game = gmodels.Game.objects.last()
         self.assertFalse(game.is_ongoing())
-        number_of_characters = 5
-        for i in range(number_of_characters):
-            gmodels.Character.objects.create(
-                game=game, name=utils.generate_random_name(5)
+        number_of_players = 5
+        for i in range(number_of_players):
+            gmodels.Player.objects.create(
+                game=game,
+                character=cmodels.Character.objects.create(
+                    name=utils.generate_random_name(5)
+                ),
             )
         game.start()
         game.save()
@@ -122,7 +126,7 @@ class PendingActionModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         game = gmodels.Game.objects.create()
-        character = gmodels.Character.objects.get_or_create(id=1)[0]
+        character = cmodels.Character.objects.get_or_create(id=1)[0]
         gmodels.PendingAction.objects.create(game=game, character=character)
 
     def test_character_type(self):
@@ -149,7 +153,7 @@ class XpIncreaseModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         game = gmodels.Game.objects.create()
-        character = gmodels.Character.objects.create()
+        character = cmodels.Character.objects.create()
         gmodels.XpIncrease.objects.create(
             game=game, character=character, xp=random.randint(1, 20)
         )
@@ -168,7 +172,7 @@ class DamageModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         game = gmodels.Game.objects.create()
-        character = gmodels.Character.objects.create()
+        character = cmodels.Character.objects.create()
         gmodels.Damage.objects.create(
             game=game, character=character, hp=random.randint(1, 20)
         )
@@ -187,7 +191,7 @@ class HealingModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         game = gmodels.Game.objects.create()
-        character = gmodels.Character.objects.create()
+        character = cmodels.Character.objects.create()
         gmodels.Healing.objects.create(
             game=game, character=character, hp=random.randint(1, 20)
         )
@@ -206,7 +210,7 @@ class DiceLaunchModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         game = gmodels.Game.objects.create()
-        character = gmodels.Character.objects.create()
+        character = cmodels.Character.objects.create()
         gmodels.DiceLaunch.objects.create(
             game=game, character=character, score=random.randint(1, 20)
         )
@@ -230,26 +234,25 @@ class ChoiceModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         game = gmodels.Game.objects.create()
-        character = gmodels.Character.objects.create()
+        character = cmodels.Character.objects.create()
         gmodels.Choice.objects.create(
             game=game, character=character, selection=utils.generate_random_string(50)
         )
 
+    def setUp(self):
+        self.choice = gmodels.Choice.objects.last()
+
     def test_character_type(self):
-        choice = gmodels.Choice.objects.last()
-        character = choice._meta.get_field("character")
+        character = self.choice._meta.get_field("character")
         self.assertTrue(character, models.ForeignKey)
 
     def test_selection_type(self):
-        choice = gmodels.Choice.objects.last()
-        selection = choice._meta.get_field("selection")
+        selection = self.choice._meta.get_field("selection")
         self.assertTrue(selection, models.SmallIntegerField)
 
     def test_selection_max_length(self):
-        choice = gmodels.Choice.objects.last()
-        max_length = choice._meta.get_field("selection").max_length
+        max_length = self.choice._meta.get_field("selection").max_length
         self.assertEqual(max_length, 50)
 
     def test_str(self):
-        choice = gmodels.Choice.objects.last()
-        self.assertEqual(str(choice), choice.selection)
+        self.assertEqual(str(self.choice), self.choice.selection)

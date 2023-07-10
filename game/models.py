@@ -38,8 +38,8 @@ class Game(models.Model):
         return reverse("game", args=(self.id,))
 
     def can_start(self):
-        number_of_characters = cmodels.Character.objects.filter(game=self).count()
-        return number_of_characters >= 2
+        number_of_players = Player.objects.filter(game=self).count()
+        return number_of_players >= 2
 
     @transition(
         field=status,
@@ -53,9 +53,9 @@ class Game(models.Model):
     @transition(field=status, source=Status.ONGOING, target=Status.FINISHED)
     def end(self):
         self.end_date = timezone.now()
-        for character in cmodels.Character.objects.filter(game=self):
-            character.game = None
-            character.save()
+        for player in Player.objects.filter(game=self):
+            player.game = None
+            player.save()
 
     def is_ongoing(self):
         return self.status == self.Status.ONGOING
