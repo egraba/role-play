@@ -14,56 +14,51 @@ class GameModelTest(TestCase):
     def setUpTestData(cls):
         gmodels.Game.objects.create(name=utrandom.ascii_letters_string(50))
 
+    def setUp(self):
+        self.game = gmodels.Game.objects.last()
+
     def test_name_type(self):
-        game = gmodels.Game.objects.last()
-        name = game._meta.get_field("name")
+        name = self.game._meta.get_field("name")
         self.assertTrue(name, models.CharField)
 
     def test_name_max_length(self):
-        game = gmodels.Game.objects.last()
-        max_length = game._meta.get_field("name").max_length
+        max_length = self.game._meta.get_field("name").max_length
         self.assertEqual(max_length, 50)
 
     def test_start_date_type(self):
-        game = gmodels.Game.objects.last()
-        start_date = game._meta.get_field("start_date")
+        start_date = self.game._meta.get_field("start_date")
         self.assertTrue(start_date, models.DateTimeField)
 
     def test_end_date_type(self):
-        game = gmodels.Game.objects.last()
-        end_date = game._meta.get_field("end_date")
+        end_date = self.game._meta.get_field("end_date")
         self.assertTrue(end_date, models.DateTimeField)
 
     def test_end_date_default_value(self):
-        game = gmodels.Game.objects.last()
-        self.assertEqual(game.end_date, None)
+        self.assertEqual(self.game.end_date, None)
 
     def test_status_type(self):
-        game = gmodels.Game.objects.last()
-        status = game._meta.get_field("status")
+        status = self.game._meta.get_field("status")
         self.assertTrue(status, models.CharField)
 
     def test_str_is_name(self):
-        game = gmodels.Game.objects.last()
-        self.assertEqual(str(game), game.name)
+        self.assertEqual(str(self.game), self.game.name)
 
     def test_is_ongoing(self):
-        game = gmodels.Game.objects.last()
-        self.assertFalse(game.is_ongoing())
+        self.assertFalse(self.game.is_ongoing())
         number_of_players = 5
         for i in range(number_of_players):
             gmodels.Player.objects.create(
-                game=game,
+                game=self.game,
                 character=cmodels.Character.objects.create(
                     name=utrandom.ascii_letters_string(5)
                 ),
             )
-        game.start()
-        game.save()
-        self.assertTrue(game.is_ongoing())
-        game.end()
-        game.save()
-        self.assertFalse(game.is_ongoing())
+        self.game.start()
+        self.game.save()
+        self.assertTrue(self.game.is_ongoing())
+        self.game.end()
+        self.game.save()
+        self.assertFalse(self.game.is_ongoing())
 
 
 class EventModelTest(TestCase):
