@@ -57,9 +57,8 @@ class IndexViewTest(TestCase):
         user = User.objects.create(username=utils.generate_random_name(5))
         user.set_password("pwd")
         user.save()
-        character = cmodels.Character.objects.create(
-            name=utils.generate_random_name(8), user=user
-        )
+        character = cmodels.Character.objects.create(name=utils.generate_random_name(8))
+        gmodels.Player.objects.create(character=character, user=user)
         self.client.login(username=user.username, password="pwd")
 
         response = self.client.get(reverse(self.path_name))
@@ -241,9 +240,8 @@ class GameViewTest(TestCase):
         for i in range(number_of_games):
             game = gmodels.Game.objects.create(name=f"other_game{i}")
             gmodels.Tale.objects.create(game=game)
-            character = cmodels.Character.objects.create(
-                game=game, name=f"character{i}"
-            )
+            character = cmodels.Character.objects.create(name=f"character{i}")
+            gmodels.Player.objects.create(game=game, character=character)
             gmodels.Event.objects.create(game=game)
             gmodels.PendingAction.objects.create(game=game, character=character)
 
@@ -254,7 +252,7 @@ class GameViewTest(TestCase):
         tale_list = gmodels.Tale.objects.filter(game__name="game1")
         tale = tale_list.last()
         self.assertEqual(response.context["tale"], tale)
-        character_list = cmodels.Character.objects.filter(game__name="game1")
+        character_list = cmodels.Character.objects.filter(player__game__name="game1")
         self.assertQuerySetEqual(
             list(response.context["character_list"]), character_list
         )
@@ -271,13 +269,12 @@ class GameViewTest(TestCase):
         for i in range(number_of_games):
             game = gmodels.Game.objects.create(name=f"other_game{i}")
             gmodels.Tale.objects.create(game=game)
-            character = cmodels.Character.objects.create(
-                game=game, name=f"character{i}"
-            )
+            character = cmodels.Character.objects.create(name=f"character{i}")
+            gmodels.Player.objects.create(game=game, character=character)
             gmodels.Event.objects.create(game=game)
             gmodels.PendingAction.objects.create(game=game, character=character)
 
-        player = cmodels.Character.objects.filter(name="game1 character1").get()
+        player = gmodels.Player.objects.filter(character__name="character1").get()
         player.user = self.user
         player.save()
         self.client.logout()
@@ -290,7 +287,7 @@ class GameViewTest(TestCase):
         tale_list = gmodels.Tale.objects.filter(game__name="game1")
         tale = tale_list.last()
         self.assertEqual(response.context["tale"], tale)
-        character_list = gmodels.Character.objects.filter(game__name="game1")
+        character_list = cmodels.Character.objects.filter(player__game__name="game1")
         self.assertQuerySetEqual(
             list(response.context["character_list"]), character_list
         )
