@@ -7,20 +7,20 @@ import character.models as cmodels
 
 class DetailCharacterView(DetailView):
     model = cmodels.Character
-    template_name = "game/character.html"
+    template_name = "character/character.html"
 
 
 class ListCharacterView(ListView):
     model = cmodels.Character
     paginate_by = 20
     ordering = ["-xp"]
-    template_name = "game/characterlist.html"
+    template_name = "character/character_list.html"
 
 
 class CreateCharacterView(LoginRequiredMixin, CreateView):
     model = cmodels.Character
     form_class = cforms.CreateCharacterForm
-    template_name = "game/createcharacter.html"
+    template_name = "character/character_create.html"
 
     def get_success_url(self):
         return self.object.get_absolute_url()

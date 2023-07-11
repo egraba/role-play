@@ -25,7 +25,7 @@ class DetailCharacterViewTest(TestCase):
     def test_template_mapping(self):
         character = cmodels.Character.objects.last()
         response = self.client.get(character.get_absolute_url())
-        self.assertTemplateUsed(response, "game/character.html")
+        self.assertTemplateUsed(response, "character/character.html")
 
 
 class ListCharacterViewTest(TestCase):
@@ -52,7 +52,7 @@ class ListCharacterViewTest(TestCase):
 
     def test_template_mapping(self):
         response = self.client.get(reverse(self.path_name))
-        self.assertTemplateUsed(response, "game/characterlist.html")
+        self.assertTemplateUsed(response, "character/character_list.html")
 
     def test_pagination_size(self):
         self.user = User.objects.last()
@@ -112,7 +112,7 @@ class CreateCharacterViewTest(TestCase):
     def test_template_mapping(self):
         response = self.client.get(reverse(self.path_name))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "game/createcharacter.html")
+        self.assertTemplateUsed(response, "character/character_create.html")
 
     def test_character_creation(self):
         name = utrandom.ascii_letters_string(10)
