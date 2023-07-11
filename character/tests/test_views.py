@@ -8,12 +8,18 @@ import character.forms as cforms
 import character.models as cmodels
 import character.views as cviews
 import utils.testing.random as utrandom
+import utils.testing.users as utusers
 
 
 class DetailCharacterViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
+        utusers.create_user()
         cmodels.Character.objects.create()
+
+    def setUp(self):
+        self.user = User.objects.last()
+        self.client.login(username=self.user.username, password="pwd")
 
     def test_view_mapping(self):
         character = cmodels.Character.objects.last()

@@ -5,7 +5,7 @@ import character.forms as cforms
 import character.models as cmodels
 
 
-class DetailCharacterView(DetailView):
+class DetailCharacterView(LoginRequiredMixin, DetailView):
     model = cmodels.Character
     template_name = "character/character.html"
 
