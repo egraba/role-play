@@ -105,9 +105,7 @@ class CharacterCreateViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create(username=utrandom.ascii_letters_string(5))
-        user.set_password("pwd")
-        user.save()
+        utusers.create_user()
 
     def setUp(self):
         self.user = User.objects.last()
