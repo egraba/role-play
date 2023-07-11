@@ -67,33 +67,30 @@ class EventModelTest(TestCase):
         game = gmodels.Game.objects.create()
         gmodels.Event.objects.create(game=game)
 
+    def setUp(self):
+        self.event = gmodels.Event.objects.last()
+
     def test_game_type(self):
-        event = gmodels.Event.objects.last()
-        game = event._meta.get_field("game")
+        game = self.event._meta.get_field("game")
         self.assertTrue(game, models.ForeignKey)
 
     def test_date_type(self):
-        event = gmodels.Event.objects.last()
-        date = event._meta.get_field("date")
+        date = self.event._meta.get_field("date")
         self.assertTrue(date, models.DateTimeField)
 
     def test_date_default_value(self):
-        event = gmodels.Event.objects.last()
-        self.assertEqual(event.date.second, timezone.now().second)
+        self.assertEqual(self.event.date.second, timezone.now().second)
 
     def test_message_type(self):
-        event = gmodels.Event.objects.last()
-        message = event._meta.get_field("message")
+        message = self.event._meta.get_field("message")
         self.assertTrue(message, models.CharField)
 
     def test_message_max_length(self):
-        event = gmodels.Event.objects.last()
-        max_length = event._meta.get_field("message").max_length
+        max_length = self.event._meta.get_field("message").max_length
         self.assertEqual(max_length, 100)
 
     def test_str(self):
-        event = gmodels.Event.objects.last()
-        self.assertEqual(str(event), event.message)
+        self.assertEqual(str(self.event), self.event.message)
 
 
 class TaleModelTest(TestCase):
