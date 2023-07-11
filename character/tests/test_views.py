@@ -42,9 +42,6 @@ class CharacterListViewTest(TestCase):
         utusers.create_user()
         number_of_characters = 22
         for i in range(number_of_characters):
-            user = User.objects.create(username=utrandom.ascii_letters_string(5))
-            user.set_password("pwd")
-            user.save()
             cmodels.Character.objects.create(
                 name=utrandom.ascii_letters_string(20),
                 race=random.choice(cmodels.Character.Race.choices)[0],
@@ -66,9 +63,6 @@ class CharacterListViewTest(TestCase):
         self.assertTemplateUsed(response, "character/character_list.html")
 
     def test_pagination_size(self):
-        self.user = User.objects.last()
-        self.client.login(username=self.user.username, password="pwd")
-
         response = self.client.get(reverse(self.path_name))
         self.assertEqual(response.status_code, 200)
         self.assertTrue("is_paginated" in response.context)
@@ -76,9 +70,6 @@ class CharacterListViewTest(TestCase):
         self.assertEqual(len(response.context["character_list"]), 20)
 
     def test_pagination_size_next_page(self):
-        self.user = User.objects.last()
-        self.client.login(username=self.user.username, password="pwd")
-
         response = self.client.get(reverse(self.path_name) + "?page=2")
         self.assertEqual(response.status_code, 200)
         self.assertTrue("is_paginated" in response.context)
@@ -86,9 +77,6 @@ class CharacterListViewTest(TestCase):
         self.assertEqual(len(response.context["character_list"]), 2)
 
     def test_ordering(self):
-        self.user = User.objects.last()
-        self.client.login(username=self.user.username, password="pwd")
-
         response = self.client.get(reverse(self.path_name))
         self.assertEqual(response.status_code, 200)
         xp = 0
@@ -98,6 +86,12 @@ class CharacterListViewTest(TestCase):
             else:
                 self.assertTrue(xp >= character.xp)
                 xp = character.xp
+
+    def test_content_no_existing_character(self):
+        cmodels.Character.objects.all().delete()
+        response = self.client.get(reverse(self.path_name))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "There is no character available...")
 
 
 class CharacterCreateViewTest(TestCase):
