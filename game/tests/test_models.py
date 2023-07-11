@@ -169,14 +169,15 @@ class DamageModelTest(TestCase):
             game=game, character=character, hp=random.randint(1, 20)
         )
 
+    def setUp(self):
+        self.damage = gmodels.Damage.objects.last()
+
     def test_hp_type(self):
-        damage = gmodels.Damage.objects.last()
-        hp = damage._meta.get_field("hp")
+        hp = self.damage._meta.get_field("hp")
         self.assertTrue(hp, models.SmallIntegerField)
 
     def test_str(self):
-        damage = gmodels.Damage.objects.last()
-        self.assertEqual(str(damage), str(damage.hp))
+        self.assertEqual(str(self.damage), str(self.damage.hp))
 
 
 class HealingModelTest(TestCase):
