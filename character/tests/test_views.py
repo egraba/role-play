@@ -39,6 +39,7 @@ class ListCharacterViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
+        utusers.create_user()
         number_of_characters = 22
         for i in range(number_of_characters):
             user = User.objects.create(username=utrandom.ascii_letters_string(5))
@@ -48,6 +49,10 @@ class ListCharacterViewTest(TestCase):
                 name=utrandom.ascii_letters_string(20),
                 race=random.choice(cmodels.Character.Race.choices)[0],
             )
+
+    def setUp(self):
+        self.user = User.objects.last()
+        self.client.login(username=self.user.username, password="pwd")
 
     def test_view_mapping(self):
         response = self.client.get(reverse(self.path_name))

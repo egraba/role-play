@@ -10,7 +10,7 @@ class DetailCharacterView(LoginRequiredMixin, DetailView):
     template_name = "character/character.html"
 
 
-class ListCharacterView(ListView):
+class ListCharacterView(LoginRequiredMixin, ListView):
     model = cmodels.Character
     paginate_by = 20
     ordering = ["-xp"]
