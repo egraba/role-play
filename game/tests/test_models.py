@@ -149,14 +149,15 @@ class XpIncreaseModelTest(TestCase):
             game=game, character=character, xp=random.randint(1, 20)
         )
 
+    def setUp(self):
+        self.xp_increase = gmodels.XpIncrease.objects.last()
+
     def test_hp_type(self):
-        xp_increase = gmodels.XpIncrease.objects.last()
-        xp = xp_increase._meta.get_field("xp")
+        xp = self.xp_increase._meta.get_field("xp")
         self.assertTrue(xp, models.SmallIntegerField)
 
     def test_str(self):
-        xp_increase = gmodels.XpIncrease.objects.last()
-        self.assertEqual(str(xp_increase), str(xp_increase.xp))
+        self.assertEqual(str(self.xp_increase), str(self.xp_increase.xp))
 
 
 class DamageModelTest(TestCase):
