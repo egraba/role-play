@@ -10,7 +10,7 @@ import character.models as cmodels
 import game.models as gmodels
 import game.views.common as gvcommon
 import master.models as mmodels
-import utils.random as utils
+import utils.testing.random as utrandom
 
 
 class IndexViewTest(TestCase):
@@ -37,7 +37,7 @@ class IndexViewTest(TestCase):
         self.assertNotContains(response, "View your character")
 
     def test_content_logged_user_no_character(self):
-        user = User.objects.create(username=utils.generate_random_name(5))
+        user = User.objects.create(username=utrandom.ascii_letters_string(5))
         user.set_password("pwd")
         user.save()
         self.client.login(username=user.username, password="pwd")
@@ -54,10 +54,12 @@ class IndexViewTest(TestCase):
             response.context["user_character"]
 
     def test_content_logged_user_existing_character(self):
-        user = User.objects.create(username=utils.generate_random_name(5))
+        user = User.objects.create(username=utrandom.ascii_letters_string(5))
         user.set_password("pwd")
         user.save()
-        character = cmodels.Character.objects.create(name=utils.generate_random_name(8))
+        character = cmodels.Character.objects.create(
+            name=utrandom.ascii_letters_string(8)
+        )
         gmodels.Player.objects.create(character=character, user=user)
         self.client.login(username=user.username, password="pwd")
 
@@ -77,14 +79,14 @@ class ListGameViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create(username=utils.generate_random_name(5))
+        user = User.objects.create(username=utrandom.ascii_letters_string(5))
         user.set_password("pwd")
         user.save()
 
         number_of_games = 22
         for i in range(number_of_games):
             gmodels.Game.objects.create(
-                name=utils.generate_random_string(20),
+                name=utrandom.printable_string(20),
                 start_date=datetime.now(tz=timezone.utc),
                 master=user,
             )
@@ -138,7 +140,7 @@ class GameViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create(username=utils.generate_random_name(5))
+        user = User.objects.create(username=utrandom.ascii_letters_string(5))
         user.set_password("pwd")
         user.save()
 
@@ -302,10 +304,10 @@ class CreateGameViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create(username=utils.generate_random_name(5))
+        user = User.objects.create(username=utrandom.ascii_letters_string(5))
         user.set_password("pwd")
         user.save()
-        mmodels.Story.objects.create(title=utils.generate_random_name(20))
+        mmodels.Story.objects.create(title=utrandom.ascii_letters_string(20))
 
     def setUp(self):
         self.user = User.objects.last()

@@ -7,7 +7,7 @@ from django.urls import reverse
 import character.forms as cforms
 import character.models as cmodels
 import character.views as cviews
-import utils.random as utils
+import utils.testing.random as utrandom
 
 
 class DetailCharacterViewTest(TestCase):
@@ -35,11 +35,11 @@ class ListCharacterViewTest(TestCase):
     def setUpTestData(cls):
         number_of_characters = 22
         for i in range(number_of_characters):
-            user = User.objects.create(username=utils.generate_random_name(5))
+            user = User.objects.create(username=utrandom.ascii_letters_string(5))
             user.set_password("pwd")
             user.save()
             cmodels.Character.objects.create(
-                name=utils.generate_random_string(20),
+                name=utrandom.ascii_letters_string(20),
                 race=random.choice(cmodels.Character.Race.choices)[0],
             )
 
@@ -94,7 +94,7 @@ class CreateCharacterViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create(username=utils.generate_random_name(5))
+        user = User.objects.create(username=utrandom.ascii_letters_string(5))
         user.set_password("pwd")
         user.save()
 
@@ -115,7 +115,7 @@ class CreateCharacterViewTest(TestCase):
         self.assertTemplateUsed(response, "game/createcharacter.html")
 
     def test_character_creation(self):
-        name = utils.generate_random_name(10)
+        name = utrandom.ascii_letters_string(10)
         race = random.choice(cmodels.Character.Race.choices)[0]
         data = {"name": f"{name}", "race": f"{race}"}
         form = cforms.CreateCharacterForm(data)

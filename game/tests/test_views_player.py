@@ -12,7 +12,7 @@ import character.models as cmodels
 import game.forms as gforms
 import game.models as gmodels
 import game.views.player as gvplayer
-import utils.random as utils
+import utils.testing.random as utrandom
 
 
 class DiceLaunchViewTest(TestCase):
@@ -20,7 +20,7 @@ class DiceLaunchViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create(username=utils.generate_random_name(5))
+        user = User.objects.create(username=utrandom.ascii_letters_string(5))
         user.set_password("pwd")
         user.save()
 
@@ -29,7 +29,7 @@ class DiceLaunchViewTest(TestCase):
         number_of_players = 2
         for i in range(number_of_players):
             character = cmodels.Character.objects.create(
-                name=utils.generate_random_name(5),
+                name=utrandom.ascii_letters_string(5),
             )
             gmodels.Player.objects.create(game=game, character=character)
             gmodels.PendingAction.objects.create(game=game, character=character)
@@ -122,7 +122,7 @@ class DiceLaunchViewTest(TestCase):
         self.assertEqual(response.context["character"], character)
 
     def test_game_is_under_preparation(self):
-        game = gmodels.Game.objects.create(name=utils.generate_random_string(20))
+        game = gmodels.Game.objects.create(name=utrandom.printable_string(20))
         character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(
@@ -192,13 +192,13 @@ class DiceLaunchSuccessViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create(username=utils.generate_random_name(5))
+        user = User.objects.create(username=utrandom.ascii_letters_string(5))
         user.set_password("pwd")
         user.save()
 
         game = gmodels.Game.objects.create()
         character = cmodels.Character.objects.create(
-            name=utils.generate_random_name(100),
+            name=utrandom.ascii_letters_string(100),
             race=random.choice(cmodels.Character.Race.choices)[0],
         )
         gmodels.Player.objects.create(game=game, character=character)
@@ -306,7 +306,7 @@ class ChoiceViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create(username=utils.generate_random_name(5))
+        user = User.objects.create(username=utrandom.ascii_letters_string(5))
         user.set_password("pwd")
         user.save()
 
@@ -315,7 +315,7 @@ class ChoiceViewTest(TestCase):
         number_of_players = 2
         for i in range(number_of_players):
             character = cmodels.Character.objects.create(
-                name=utils.generate_random_name(5),
+                name=utrandom.ascii_letters_string(5),
             )
             gmodels.Player.objects.create(game=game, character=character)
             gmodels.PendingAction.objects.create(game=game, character=character)
@@ -406,7 +406,7 @@ class ChoiceViewTest(TestCase):
         self.assertEqual(response.context["character"], character)
 
     def test_game_is_under_preparation(self):
-        game = gmodels.Game.objects.create(name=utils.generate_random_string(20))
+        game = gmodels.Game.objects.create(name=utrandom.printable_string(20))
         character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(
@@ -438,7 +438,7 @@ class ChoiceViewTest(TestCase):
         self.assertRaises(PermissionDenied)
 
     def test_choice(self):
-        selection = utils.generate_random_string(50)
+        selection = utrandom.printable_string(50)
         data = {"selection": f"{selection}"}
         form = gforms.ChoiceForm(data)
         self.assertTrue(form.is_valid())

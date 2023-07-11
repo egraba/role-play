@@ -2,9 +2,9 @@ import random
 import string
 
 
-def generate_random_string(length):
+def printable_string(length):
     return "".join(random.choice(string.printable) for i in range(length))
 
 
-def generate_random_name(length):
+def ascii_letters_string(length):
     return "".join(random.choice(string.ascii_letters) for i in range(length))

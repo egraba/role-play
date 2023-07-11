@@ -6,13 +6,13 @@ from django.utils import timezone
 
 import character.models as cmodels
 import game.models as gmodels
-import utils.random as utils
+import utils.testing.random as utrandom
 
 
 class GameModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        gmodels.Game.objects.create(name=utils.generate_random_string(50))
+        gmodels.Game.objects.create(name=utrandom.ascii_letters_string(50))
 
     def test_name_type(self):
         game = gmodels.Game.objects.last()
@@ -55,7 +55,7 @@ class GameModelTest(TestCase):
             gmodels.Player.objects.create(
                 game=game,
                 character=cmodels.Character.objects.create(
-                    name=utils.generate_random_name(5)
+                    name=utrandom.ascii_letters_string(5)
                 ),
             )
         game.start()
@@ -236,7 +236,7 @@ class ChoiceModelTest(TestCase):
         game = gmodels.Game.objects.create()
         character = cmodels.Character.objects.create()
         gmodels.Choice.objects.create(
-            game=game, character=character, selection=utils.generate_random_string(50)
+            game=game, character=character, selection=utrandom.printable_string(50)
         )
 
     def setUp(self):

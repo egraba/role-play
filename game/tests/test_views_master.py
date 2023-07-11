@@ -13,7 +13,7 @@ import character.models as cmodels
 import game.forms as gforms
 import game.models as gmodels
 import game.views.master as gvmaster
-import utils.random as utils
+import utils.testing.random as utrandom
 
 
 class InviteCharacterViewTest(TestCase):
@@ -21,7 +21,7 @@ class InviteCharacterViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create(username=utils.generate_random_name(5))
+        user = User.objects.create(username=utrandom.ascii_letters_string(5))
         user.set_password("pwd")
         user.save()
 
@@ -30,13 +30,13 @@ class InviteCharacterViewTest(TestCase):
         number_of_players_without_game = 12
         for i in range(number_of_players_with_game):
             character = cmodels.Character.objects.create(
-                name=utils.generate_random_name(10),
+                name=utrandom.ascii_letters_string(10),
                 race=random.choice(cmodels.Character.Race.choices)[0],
             )
             gmodels.Player.objects.create(game=game, character=character)
         for i in range(number_of_players_without_game):
             character = cmodels.Character.objects.create(
-                name=utils.generate_random_name(10),
+                name=utrandom.ascii_letters_string(10),
                 race=random.choice(cmodels.Character.Race.choices)[0],
                 xp=random.randint(1, 100),
             )
@@ -118,14 +118,18 @@ class InviteCharacterConfirmViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create(username=utils.generate_random_name(5))
+        user = User.objects.create(username=utrandom.ascii_letters_string(5))
         user.set_password("pwd")
         user.save()
 
         game = gmodels.Game.objects.create(master=user)
-        character = cmodels.Character.objects.create(name=utils.generate_random_name(5))
+        character = cmodels.Character.objects.create(
+            name=utrandom.ascii_letters_string(5)
+        )
         gmodels.Player.objects.create(game=game, character=character)
-        character = cmodels.Character.objects.create(name=utils.generate_random_name(5))
+        character = cmodels.Character.objects.create(
+            name=utrandom.ascii_letters_string(5)
+        )
         gmodels.Player.objects.create(game=game, character=character)
 
     def setUp(self):
@@ -182,7 +186,7 @@ class StartGameViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create(username=utils.generate_random_name(5))
+        user = User.objects.create(username=utrandom.ascii_letters_string(5))
         user.set_password("pwd")
         user.save()
 
@@ -217,7 +221,7 @@ class StartGameViewTest(TestCase):
         number_of_players = 2
         for i in range(number_of_players):
             character = cmodels.Character.objects.create(
-                name=utils.generate_random_name(5)
+                name=utrandom.ascii_letters_string(5)
             )
             gmodels.Player.objects.create(game=game, character=character)
         response = self.client.post(reverse(self.path_name, args=[game.id]))
@@ -235,7 +239,7 @@ class StartGameViewTest(TestCase):
         number_of_players = 1
         for i in range(number_of_players):
             character = cmodels.Character.objects.create(
-                name=utils.generate_random_name(5)
+                name=utrandom.ascii_letters_string(5)
             )
             gmodels.Player.objects.create(game=game, character=character)
         response = self.client.post(reverse(self.path_name, args=[game.id]))
@@ -251,7 +255,7 @@ class EndGameViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create(username=utils.generate_random_name(5))
+        user = User.objects.create(username=utrandom.ascii_letters_string(5))
         user.set_password("pwd")
         user.save()
 
@@ -284,7 +288,7 @@ class EndGameViewTest(TestCase):
         number_of_players = 5
         for i in range(number_of_players):
             character = cmodels.Character.objects.create(
-                name=utils.generate_random_name(5)
+                name=utrandom.ascii_letters_string(5)
             )
             gmodels.Player.objects.create(game=game, character=character)
         game.start()
@@ -312,13 +316,17 @@ class CreateTaleViewTest(TestCase):
         user = User.objects.create(username="user-tale")
         user.set_password("pwd")
         user.save()
-        User.objects.create(username=utils.generate_random_name(5))
-        User.objects.create(username=utils.generate_random_name(5))
+        User.objects.create(username=utrandom.ascii_letters_string(5))
+        User.objects.create(username=utrandom.ascii_letters_string(5))
 
         game = gmodels.Game.objects.create(name="game-tale", master=user)
-        character = cmodels.Character.objects.create(name=utils.generate_random_name(5))
+        character = cmodels.Character.objects.create(
+            name=utrandom.ascii_letters_string(5)
+        )
         gmodels.Player.objects.create(game=game, character=character)
-        character = cmodels.Character.objects.create(name=utils.generate_random_name(5))
+        character = cmodels.Character.objects.create(
+            name=utrandom.ascii_letters_string(5)
+        )
         gmodels.Player.objects.create(game=game, character=character)
         game.start()
         game.save()
@@ -371,7 +379,7 @@ class CreateTaleViewTest(TestCase):
         self.assertRaises(PermissionDenied)
 
     def test_tale_creation(self):
-        content = utils.generate_random_string(100)
+        content = utrandom.printable_string(100)
         data = {"content": f"{content}"}
         form = gforms.CreateTaleForm(data)
         self.assertTrue(form.is_valid())
@@ -393,16 +401,20 @@ class CreatePendingActionViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create(username=utils.generate_random_name(5))
+        user = User.objects.create(username=utrandom.ascii_letters_string(5))
         user.set_password("pwd")
         user.save()
 
         game = gmodels.Game.objects.create(
-            name=utils.generate_random_string(20), master=user
+            name=utrandom.printable_string(20), master=user
         )
-        character = cmodels.Character.objects.create(name=utils.generate_random_name(5))
+        character = cmodels.Character.objects.create(
+            name=utrandom.ascii_letters_string(5)
+        )
         gmodels.Player.objects.create(game=game, character=character)
-        character = cmodels.Character.objects.create(name=utils.generate_random_name(5))
+        character = cmodels.Character.objects.create(
+            name=utrandom.ascii_letters_string(5)
+        )
         gmodels.Player.objects.create(game=game, character=character)
         game.start()
         game.save()
@@ -522,16 +534,20 @@ class IncreaseXpViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create(username=utils.generate_random_name(5))
+        user = User.objects.create(username=utrandom.ascii_letters_string(5))
         user.set_password("pwd")
         user.save()
 
         game = gmodels.Game.objects.create(
-            name=utils.generate_random_string(20), master=user
+            name=utrandom.printable_string(20), master=user
         )
-        character = cmodels.Character.objects.create(name=utils.generate_random_name(5))
+        character = cmodels.Character.objects.create(
+            name=utrandom.ascii_letters_string(5)
+        )
         gmodels.Player.objects.create(game=game, character=character)
-        character = cmodels.Character.objects.create(name=utils.generate_random_name(5))
+        character = cmodels.Character.objects.create(
+            name=utrandom.ascii_letters_string(5)
+        )
         gmodels.Player.objects.create(game=game, character=character)
         game.start()
         game.save()
@@ -648,16 +664,20 @@ class DamageViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create(username=utils.generate_random_name(5))
+        user = User.objects.create(username=utrandom.ascii_letters_string(5))
         user.set_password("pwd")
         user.save()
 
         game = gmodels.Game.objects.create(
-            name=utils.generate_random_string(20), master=user
+            name=utrandom.printable_string(20), master=user
         )
-        character = cmodels.Character.objects.create(name=utils.generate_random_name(5))
+        character = cmodels.Character.objects.create(
+            name=utrandom.ascii_letters_string(5)
+        )
         gmodels.Player.objects.create(game=game, character=character)
-        character = cmodels.Character.objects.create(name=utils.generate_random_name(5))
+        character = cmodels.Character.objects.create(
+            name=utrandom.ascii_letters_string(5)
+        )
         gmodels.Player.objects.create(game=game, character=character)
         game.start()
         game.save()
@@ -799,19 +819,19 @@ class HealViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create(username=utils.generate_random_name(5))
+        user = User.objects.create(username=utrandom.ascii_letters_string(5))
         user.set_password("pwd")
         user.save()
 
         game = gmodels.Game.objects.create(
-            name=utils.generate_random_string(20), master=user
+            name=utrandom.printable_string(20), master=user
         )
         character = cmodels.Character.objects.create(
-            name=utils.generate_random_name(5), hp=1
+            name=utrandom.ascii_letters_string(5), hp=1
         )
         gmodels.Player.objects.create(game=game, character=character)
         character = cmodels.Character.objects.create(
-            name=utils.generate_random_name(5), hp=1
+            name=utrandom.ascii_letters_string(5), hp=1
         )
         gmodels.Player.objects.create(game=game, character=character)
         game.start()
