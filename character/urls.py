@@ -5,17 +5,17 @@ import character.views as cviews
 urlpatterns = [
     path(
         "character/<int:pk>",
-        cviews.DetailCharacterView.as_view(),
+        cviews.CharacterDetailView.as_view(),
         name="character-detail",
     ),
     path(
         "characters",
-        cviews.ListCharacterView.as_view(),
+        cviews.CharacterListView.as_view(),
         name="character-list",
     ),
     path(
         "create_character",
-        cviews.CreateCharacterView.as_view(),
+        cviews.CharacterCreateView.as_view(),
         name="character-create",
     ),
 ]

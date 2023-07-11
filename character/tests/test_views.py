@@ -11,7 +11,7 @@ import utils.testing.random as utrandom
 import utils.testing.users as utusers
 
 
-class DetailCharacterViewTest(TestCase):
+class CharacterDetailViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         utusers.create_user()
@@ -25,7 +25,7 @@ class DetailCharacterViewTest(TestCase):
         character = cmodels.Character.objects.last()
         response = self.client.get(character.get_absolute_url())
         self.assertEqual(
-            response.resolver_match.func.view_class, cviews.DetailCharacterView
+            response.resolver_match.func.view_class, cviews.CharacterDetailView
         )
 
     def test_template_mapping(self):
@@ -34,7 +34,7 @@ class DetailCharacterViewTest(TestCase):
         self.assertTemplateUsed(response, "character/character.html")
 
 
-class ListCharacterViewTest(TestCase):
+class CharacterListViewTest(TestCase):
     path_name = "character-list"
 
     @classmethod
@@ -58,7 +58,7 @@ class ListCharacterViewTest(TestCase):
         response = self.client.get(reverse(self.path_name))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            response.resolver_match.func.view_class, cviews.ListCharacterView
+            response.resolver_match.func.view_class, cviews.CharacterListView
         )
 
     def test_template_mapping(self):
@@ -100,7 +100,7 @@ class ListCharacterViewTest(TestCase):
                 xp = character.xp
 
 
-class CreateCharacterViewTest(TestCase):
+class CharacterCreateViewTest(TestCase):
     path_name = "character-create"
 
     @classmethod
@@ -117,7 +117,7 @@ class CreateCharacterViewTest(TestCase):
         response = self.client.get(reverse(self.path_name))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            response.resolver_match.func.view_class, cviews.CreateCharacterView
+            response.resolver_match.func.view_class, cviews.CharacterCreateView
         )
 
     def test_template_mapping(self):

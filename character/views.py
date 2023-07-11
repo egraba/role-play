@@ -5,19 +5,19 @@ import character.forms as cforms
 import character.models as cmodels
 
 
-class DetailCharacterView(LoginRequiredMixin, DetailView):
+class CharacterDetailView(LoginRequiredMixin, DetailView):
     model = cmodels.Character
     template_name = "character/character.html"
 
 
-class ListCharacterView(LoginRequiredMixin, ListView):
+class CharacterListView(LoginRequiredMixin, ListView):
     model = cmodels.Character
     paginate_by = 20
     ordering = ["-xp"]
     template_name = "character/character_list.html"
 
 
-class CreateCharacterView(LoginRequiredMixin, CreateView):
+class CharacterCreateView(LoginRequiredMixin, CreateView):
     model = cmodels.Character
     form_class = cforms.CreateCharacterForm
     template_name = "character/character_create.html"
