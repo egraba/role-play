@@ -209,19 +209,19 @@ class DiceLaunchModelTest(TestCase):
             game=game, character=character, score=random.randint(1, 20)
         )
 
+    def setUp(self):
+        self.dice_launch = gmodels.DiceLaunch.objects.last()
+
     def test_character_type(self):
-        dice_launch = gmodels.DiceLaunch.objects.last()
-        character = dice_launch._meta.get_field("character")
+        character = self.dice_launch._meta.get_field("character")
         self.assertTrue(character, models.ForeignKey)
 
     def test_score_type(self):
-        dice_launch = gmodels.DiceLaunch.objects.last()
-        score = dice_launch._meta.get_field("score")
+        score = self.dice_launch._meta.get_field("score")
         self.assertTrue(score, models.SmallIntegerField)
 
     def test_str(self):
-        dice_launch = gmodels.DiceLaunch.objects.last()
-        self.assertEqual(str(dice_launch), str(dice_launch.score))
+        self.assertEqual(str(self.dice_launch), str(self.dice_launch.score))
 
 
 class ChoiceModelTest(TestCase):
