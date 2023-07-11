@@ -189,14 +189,15 @@ class HealingModelTest(TestCase):
             game=game, character=character, hp=random.randint(1, 20)
         )
 
+    def setUp(self):
+        self.healing = gmodels.Healing.objects.last()
+
     def test_hp_type(self):
-        healing = gmodels.Healing.objects.last()
-        hp = healing._meta.get_field("hp")
+        hp = self.healing._meta.get_field("hp")
         self.assertTrue(hp, models.SmallIntegerField)
 
     def test_str(self):
-        healing = gmodels.Healing.objects.last()
-        self.assertEqual(str(healing), str(healing.hp))
+        self.assertEqual(str(self.healing), str(self.healing.hp))
 
 
 class DiceLaunchModelTest(TestCase):
