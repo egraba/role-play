@@ -12,15 +12,15 @@ class DetailStoryView(DetailView):
 class ListStoryView(ListView):
     model = mmodels.Story
     paginate_by = 20
-    template_name = "master/storylist.html"
+    template_name = "master/story_list.html"
 
 
 class CreateStoryView(CreateView):
     form_class = mforms.CreateStoryForm
-    template_name = "master/createstory.html"
+    template_name = "master/story_create.html"
 
 
 class UpdateStoryView(UpdateView):
     model = mmodels.Story
     fields = ["synopsis", "main_conflict", "objective"]
-    template_name = "master/updatestory.html"
+    template_name = "master/story_update.html"
