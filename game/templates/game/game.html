@@ -52,11 +52,13 @@
                     <tr>
                         <td><a href={{ character.get_absolute_url }}>{{ character.name }}</a></td>
                         <td><p>
-                            {% if user.id == character.user.id %}
-                                (you)
-                            {% else %}
-                                {{ character.user }}
-                            {% endif %}
+                            {% with character_user=character.player.user %}
+                                {% if user == character_user %}
+                                    (you)
+                                {% else %}
+                                    {{ character_user }}
+                                {% endif %}
+                            {% endwith %}
                         </p></td>
                         <td><p>{{ character.get_race_display }}</p></td>
                         <td><p>{{ character.xp }}</p></td>
