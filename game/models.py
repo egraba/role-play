@@ -62,9 +62,12 @@ class Game(models.Model):
 
 
 class Player(models.Model):
-    game = models.ForeignKey(Game, on_delete=models.SET_NULL, null=True, blank=True)
-    character = models.OneToOneField(cmodels.Character, on_delete=models.CASCADE)
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
+    character = models.OneToOneField(cmodels.Character, on_delete=models.CASCADE)
+    game = models.ForeignKey(Game, on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return self.user.username
 
 
 class Event(models.Model):
