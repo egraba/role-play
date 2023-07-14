@@ -202,6 +202,12 @@ class GameViewTest(TestCase):
 
     def test_ordering_character_name_ascending(self):
         game = gmodels.Game.objects.last()
+        number_of_characters = 3
+        for i in range(number_of_characters):
+            character = cmodels.Character.objects.create(
+                name=utrandom.ascii_letters_string(7)
+            )
+            gmodels.Player.objects.create(character=character, game=game)
         response = self.client.get(reverse("game", args=[game.id]))
         self.assertEqual(response.status_code, 200)
         last_name = ""

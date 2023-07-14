@@ -45,6 +45,7 @@ class CharacterListViewTest(TestCase):
             cmodels.Character.objects.create(
                 name=utrandom.ascii_letters_string(20),
                 race=random.choice(cmodels.Character.Race.choices)[0],
+                xp=random.randint(1, 1000),
             )
 
     def setUp(self):
