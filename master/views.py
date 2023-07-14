@@ -18,11 +18,11 @@ class StoryListView(LoginRequiredMixin, ListView):
 
 
 class StoryCreateView(LoginRequiredMixin, CreateView):
-    form_class = mforms.CreateStoryForm
+    form_class = mforms.StoryCreateForm
     template_name = "master/story_create.html"
 
 
 class StoryUpdateView(LoginRequiredMixin, UpdateView):
     model = mmodels.Story
-    fields = ["synopsis", "main_conflict", "objective"]
+    form_class = mforms.StoryUpdateForm
     template_name = "master/story_update.html"

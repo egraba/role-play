@@ -113,7 +113,7 @@ class StoryCreateViewTest(TestCase):
             "main_conflict": f"{main_conflict}",
             "objective": f"{objective}",
         }
-        form = mforms.CreateStoryForm(data)
+        form = mforms.StoryCreateForm(data)
         self.assertTrue(form.is_valid())
 
         response = self.client.post(
@@ -127,3 +127,52 @@ class StoryCreateViewTest(TestCase):
         self.assertEqual(story.synopsis, form.cleaned_data["synopsis"])
         self.assertEqual(story.main_conflict, form.cleaned_data["main_conflict"])
         self.assertEqual(story.objective, form.cleaned_data["objective"])
+
+
+class StoryUpdateViewTest(TestCase):
+    path_name = "story-update"
+
+    @classmethod
+    def setUpTestData(cls):
+        utusers.create_user()
+        mmodels.Story.objects.create(title=utrandom.ascii_letters_string(10))
+
+    def setUp(self):
+        self.user = User.objects.last()
+        self.client.login(username=self.user.username, password="pwd")
+
+    def test_view_mapping(self):
+        story = mmodels.Story.objects.last()
+        response = self.client.get(reverse(self.path_name, args=(story.slug,)))
+        self.assertEqual(
+            response.resolver_match.func.view_class, mviews.StoryUpdateView
+        )
+
+    def test_template_mapping(self):
+        story = mmodels.Story.objects.last()
+        response = self.client.get(reverse(self.path_name, args=(story.slug,)))
+        self.assertTemplateUsed(response, "master/story_update.html")
+
+    def test_story_update(self):
+        synopsis = utrandom.printable_string(800)
+        main_conflict = utrandom.printable_string(800)
+        objective = utrandom.printable_string(400)
+        data = {
+            "synopsis": f"{synopsis}",
+            "main_conflict": f"{main_conflict}",
+            "objective": f"{objective}",
+        }
+        form = mforms.StoryUpdateForm(data)
+        self.assertTrue(form.is_valid())
+
+        story = mmodels.Story.objects.last()
+        response = self.client.post(
+            reverse(self.path_name, args=(story.slug,)),
+            data=form.cleaned_data,
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, story.get_absolute_url())
+        story = mmodels.Story.objects.last()
+        self.assertEqual(story.synopsis, data["synopsis"])
+        self.assertEqual(story.main_conflict, data["main_conflict"])
+        self.assertEqual(story.objective, data["objective"])
