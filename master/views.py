@@ -13,6 +13,7 @@ class StoryDetailView(LoginRequiredMixin, DetailView):
 class StoryListView(LoginRequiredMixin, ListView):
     model = mmodels.Story
     paginate_by = 20
+    ordering = ["title"]
     template_name = "master/story_list.html"
 
 
