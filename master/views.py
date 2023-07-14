@@ -4,23 +4,23 @@ import master.forms as mforms
 import master.models as mmodels
 
 
-class DetailStoryView(DetailView):
+class StoryDetailView(DetailView):
     model = mmodels.Story
     template_name = "master/story.html"
 
 
-class ListStoryView(ListView):
+class StoryListView(ListView):
     model = mmodels.Story
     paginate_by = 20
     template_name = "master/story_list.html"
 
 
-class CreateStoryView(CreateView):
+class StoryCreateView(CreateView):
     form_class = mforms.CreateStoryForm
     template_name = "master/story_create.html"
 
 
-class UpdateStoryView(UpdateView):
+class StoryUpdateView(UpdateView):
     model = mmodels.Story
     fields = ["synopsis", "main_conflict", "objective"]
     template_name = "master/story_update.html"
