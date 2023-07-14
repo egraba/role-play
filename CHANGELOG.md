@@ -4,7 +4,7 @@
 
 ### Added
 * The game master can create background stories before starting a game
-* The project is more modular (character app, refactored testing)
+* The project is more modular (character app, refactored testing, etc.)
 
 ## v0.3.0 - 2023-07-07
 
