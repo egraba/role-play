@@ -1,5 +1,6 @@
 import random
 
+from django.contrib.auth.models import User
 from django.db import models
 from django.test import TestCase
 from django.utils import timezone
@@ -59,6 +60,35 @@ class GameModelTest(TestCase):
         self.game.end()
         self.game.save()
         self.assertFalse(self.game.is_ongoing())
+
+
+class PlayerModelTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        user = User.objects.create(username=utrandom.ascii_letters_string(18))
+        character = cmodels.Character.objects.create(
+            name=utrandom.ascii_letters_string(18)
+        )
+        game = gmodels.Game.objects.create()
+        gmodels.Player.objects.create(user=user, character=character, game=game)
+
+    def setUp(self):
+        self.player = gmodels.Player.objects.last()
+
+    def test_user_type(self):
+        user = self.player._meta.get_field("user")
+        self.assertTrue(user, models.ForeignKey)
+
+    def test_character_type(self):
+        character = self.player._meta.get_field("character")
+        self.assertTrue(character, models.ForeignKey)
+
+    def test_game_type(self):
+        game = self.player._meta.get_field("game")
+        self.assertTrue(game, models.ForeignKey)
+
+    def test_str(self):
+        self.assertEqual(str(self.player), self.player.user.username)
 
 
 class EventModelTest(TestCase):
