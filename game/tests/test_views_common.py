@@ -126,9 +126,9 @@ class ListGameViewTest(TestCase):
 
         response = self.client.get(reverse(self.path_name))
         self.assertEqual(response.status_code, 200)
-        last_date = 0
+        last_date = datetime.now(tz=timezone.utc).second
         for game in response.context["game_list"]:
-            if last_date == 0:
+            if last_date == datetime.now(tz=timezone.utc).second:
                 last_date = game.start_date
             else:
                 self.assertTrue(last_date >= game.start_date)
