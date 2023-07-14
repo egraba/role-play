@@ -3,6 +3,7 @@ from django.views.generic import CreateView, DetailView, ListView
 
 import character.forms as cforms
 import character.models as cmodels
+import game.models as gmodels
 
 
 class CharacterDetailView(LoginRequiredMixin, DetailView):
@@ -26,7 +27,6 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
         return self.object.get_absolute_url()
 
     def form_valid(self, form):
-        character = form.save(commit=False)
-        character.user = self.request.user
-        character.save()
+        character = form.save()
+        gmodels.Player.objects.create(character=character, user=self.request.user)
         return super().form_valid(form)
