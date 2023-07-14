@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
 
+import master.forms as mforms
 import master.models as mmodels
 import master.views as mviews
 import utils.testing.random as utrandom
@@ -77,3 +78,52 @@ class StoryListViewTest(TestCase):
             else:
                 self.assertTrue(title <= story.title)
                 title = story.title
+
+
+class StoryCreateViewTest(TestCase):
+    path_name = "story-create"
+
+    @classmethod
+    def setUpTestData(cls):
+        utusers.create_user()
+        mmodels.Story.objects.create(title=utrandom.ascii_letters_string(10))
+
+    def setUp(self):
+        self.user = User.objects.last()
+        self.client.login(username=self.user.username, password="pwd")
+
+    def test_view_mapping(self):
+        response = self.client.get(reverse(self.path_name))
+        self.assertEqual(
+            response.resolver_match.func.view_class, mviews.StoryCreateView
+        )
+
+    def test_template_mapping(self):
+        response = self.client.get(reverse(self.path_name))
+        self.assertTemplateUsed(response, "master/story_create.html")
+
+    def test_story_creation(self):
+        title = utrandom.ascii_letters_string(10)
+        synopsis = utrandom.printable_string(800)
+        main_conflict = utrandom.printable_string(800)
+        objective = utrandom.printable_string(400)
+        data = {
+            "title": f"{title}",
+            "synopsis": f"{synopsis}",
+            "main_conflict": f"{main_conflict}",
+            "objective": f"{objective}",
+        }
+        form = mforms.CreateStoryForm(data)
+        self.assertTrue(form.is_valid())
+
+        response = self.client.post(
+            reverse(self.path_name),
+            data=form.cleaned_data,
+        )
+        self.assertEqual(response.status_code, 302)
+        story = mmodels.Story.objects.last()
+        self.assertRedirects(response, story.get_absolute_url())
+        self.assertEqual(story.title, form.cleaned_data["title"])
+        self.assertEqual(story.synopsis, form.cleaned_data["synopsis"])
+        self.assertEqual(story.main_conflict, form.cleaned_data["main_conflict"])
+        self.assertEqual(story.objective, form.cleaned_data["objective"])
