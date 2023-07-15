@@ -5,6 +5,9 @@ profile = "black"
 plugins = [
     'django_coverage_plugin',
 ]
+omit = [
+    "manage.py",
+]
 
 [tool.poetry]
 name = "role-play"
