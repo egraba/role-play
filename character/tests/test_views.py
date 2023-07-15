@@ -7,6 +7,7 @@ from django.urls import reverse
 import character.forms as cforms
 import character.models as cmodels
 import character.views as cviews
+import game.models as gmodels
 import utils.testing.random as utrandom
 import utils.testing.users as utusers
 
@@ -93,6 +94,17 @@ class CharacterListViewTest(TestCase):
         response = self.client.get(reverse(self.path_name))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "There is no character available...")
+
+    def test_content_character_is_in_game(self):
+        cmodels.Character.objects.all().delete()
+        character = cmodels.Character.objects.create(
+            name=utrandom.ascii_letters_string(5)
+        )
+        game = gmodels.Game.objects.create(name=utrandom.ascii_letters_string(5))
+        gmodels.Player.objects.create(character=character, game=game)
+        response = self.client.get(reverse(self.path_name))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, game.name)
 
 
 class CharacterCreateViewTest(TestCase):

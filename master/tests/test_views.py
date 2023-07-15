@@ -79,6 +79,11 @@ class StoryListViewTest(TestCase):
                 self.assertTrue(title <= story.title)
                 title = story.title
 
+    def test_content_no_story(self):
+        mmodels.Story.objects.all().delete()
+        response = self.client.get(reverse(self.path_name))
+        self.assertContains(response, "There is no story available...")
+
 
 class StoryCreateViewTest(TestCase):
     path_name = "story-create"
