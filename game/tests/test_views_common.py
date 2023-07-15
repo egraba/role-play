@@ -74,7 +74,7 @@ class IndexViewTest(TestCase):
         self.assertEqual(response.context["user_character"], character)
 
 
-class ListGameViewTest(TestCase):
+class GameListViewTest(TestCase):
     path_name = "game-list"
 
     @classmethod
@@ -94,7 +94,7 @@ class ListGameViewTest(TestCase):
     def test_view_mapping(self):
         response = self.client.get(reverse(self.path_name))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.resolver_match.func.view_class, gvcommon.ListGameView)
+        self.assertEqual(response.resolver_match.func.view_class, gvcommon.GameListView)
 
     def test_template_mapping(self):
         response = self.client.get(reverse(self.path_name))
@@ -133,6 +133,14 @@ class ListGameViewTest(TestCase):
             else:
                 self.assertTrue(last_date >= game.start_date)
                 last_date = game.start_date
+
+    def test_content_no_game(self):
+        self.user = User.objects.last()
+        self.client.login(username=self.user.username, password="pwd")
+        gmodels.Game.objects.all().delete()
+
+        response = self.client.get(reverse(self.path_name))
+        self.assertContains(response, "There is no game available...")
 
 
 class GameViewTest(TestCase):
@@ -305,7 +313,7 @@ class GameViewTest(TestCase):
         self.assertEqual(response.context["player"], player)
 
 
-class CreateGameViewTest(TestCase):
+class GameCreateViewTest(TestCase):
     path_name = "game-create"
 
     @classmethod
@@ -324,7 +332,7 @@ class CreateGameViewTest(TestCase):
         response = self.client.get(reverse(self.path_name, args=(self.story.slug,)))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            response.resolver_match.func.view_class, gvcommon.CreateGameView
+            response.resolver_match.func.view_class, gvcommon.GameCreateView
         )
 
     def test_template_mapping(self):

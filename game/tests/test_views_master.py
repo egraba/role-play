@@ -16,7 +16,7 @@ import game.views.master as gvmaster
 import utils.testing.random as utrandom
 
 
-class InviteCharacterViewTest(TestCase):
+class CharacterInviteViewTest(TestCase):
     path_name = "game-invite-character"
 
     @classmethod
@@ -51,7 +51,7 @@ class InviteCharacterViewTest(TestCase):
         response = self.client.get(reverse(self.path_name, args=[game.id]))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            response.resolver_match.func.view_class, gvmaster.InviteCharacterView
+            response.resolver_match.func.view_class, gvmaster.CharacterInviteView
         )
 
     def test_template_mapping(self):
@@ -113,7 +113,7 @@ class InviteCharacterViewTest(TestCase):
         self.assertFalse(response.context["character_list"])
 
 
-class InviteCharacterConfirmViewTest(TestCase):
+class CharacterInviteConfirmViewTest(TestCase):
     path_name = "game-invite-character-confirm"
 
     @classmethod
@@ -144,7 +144,7 @@ class InviteCharacterConfirmViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            response.resolver_match.func.view_class, gvmaster.InviteCharacterConfirmView
+            response.resolver_match.func.view_class, gvmaster.CharacterInviteConfirmView
         )
 
     def test_template_mapping(self):
@@ -181,7 +181,7 @@ class InviteCharacterConfirmViewTest(TestCase):
         self.assertEqual(event.message, f"{character} was added to the game.")
 
 
-class StartGameViewTest(TestCase):
+class GameStartViewTest(TestCase):
     path_name = "game-start"
 
     @classmethod
@@ -201,7 +201,7 @@ class StartGameViewTest(TestCase):
         response = self.client.get(reverse(self.path_name, args=[game.id]))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            response.resolver_match.func.view_class, gvmaster.StartGameView
+            response.resolver_match.func.view_class, gvmaster.GameStartView
         )
 
     def test_template_mapping(self):
@@ -250,7 +250,7 @@ class StartGameViewTest(TestCase):
         self.assertRedirects(response, reverse("game-start-error", args=(game.id,)))
 
 
-class EndGameViewTest(TestCase):
+class GameEndViewTest(TestCase):
     path_name = "game-end"
 
     @classmethod
@@ -269,7 +269,7 @@ class EndGameViewTest(TestCase):
         game = gmodels.Game.objects.last()
         response = self.client.get(reverse(self.path_name, args=[game.id]))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.resolver_match.func.view_class, gvmaster.EndGameView)
+        self.assertEqual(response.resolver_match.func.view_class, gvmaster.GameEndView)
 
     def test_template_mapping(self):
         game = gmodels.Game.objects.last()
@@ -308,7 +308,7 @@ class EndGameViewTest(TestCase):
         self.assertEqual(event.message, "The game ended.")
 
 
-class CreateTaleViewTest(TestCase):
+class TaleCreateViewTest(TestCase):
     path_name = "tale-create"
 
     @classmethod
@@ -343,7 +343,7 @@ class CreateTaleViewTest(TestCase):
         response = self.client.get(reverse(self.path_name, args=[game.id]))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            response.resolver_match.func.view_class, gvmaster.CreateTaleView
+            response.resolver_match.func.view_class, gvmaster.TaleCreateView
         )
 
     def test_template_mapping(self):
@@ -396,7 +396,7 @@ class CreateTaleViewTest(TestCase):
         self.assertRedirects(response, reverse("game", args=[game.id]))
 
 
-class CreatePendingActionViewTest(TestCase):
+class PendingActionCreateViewTest(TestCase):
     path_name = "pendingaction-create"
 
     @classmethod
@@ -434,7 +434,7 @@ class CreatePendingActionViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            response.resolver_match.func.view_class, gvmaster.CreatePendingActionView
+            response.resolver_match.func.view_class, gvmaster.PendingActionCreateView
         )
 
     def test_template_mapping(self):
@@ -529,7 +529,7 @@ class CreatePendingActionViewTest(TestCase):
         self.assertRaises(PermissionDenied)
 
 
-class IncreaseXpViewTest(TestCase):
+class XpIncreaseViewTest(TestCase):
     path_name = "xpincrease-create"
 
     @classmethod
@@ -567,7 +567,7 @@ class IncreaseXpViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            response.resolver_match.func.view_class, gvmaster.IncreaseXpView
+            response.resolver_match.func.view_class, gvmaster.XpIncreaseView
         )
 
     def test_template_mapping(self):
@@ -851,7 +851,7 @@ class HealViewTest(TestCase):
             reverse(self.path_name, args=[game.id, character.id])
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.resolver_match.func.view_class, gvmaster.HealView)
+        self.assertEqual(response.resolver_match.func.view_class, gvmaster.HealingView)
 
     def test_template_mapping(self):
         game = gmodels.Game.objects.last()

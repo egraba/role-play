@@ -25,7 +25,7 @@ class IndexView(TemplateView):
         return context
 
 
-class ListGameView(ListView):
+class GameListView(ListView):
     model = gmodels.Game
     paginate_by = 20
     ordering = ["-start_date"]
@@ -54,7 +54,7 @@ class GameView(LoginRequiredMixin, ListView, gmixins.GameContextMixin):
         return super().get_queryset().filter(game=self.game.id)
 
 
-class CreateGameView(LoginRequiredMixin, CreateView):
+class GameCreateView(LoginRequiredMixin, CreateView):
     model = gmodels.Game
     fields = []
     template_name = "game/game_create.html"

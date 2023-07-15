@@ -16,7 +16,7 @@ import game.utils as gutils
 import game.views.mixins as gmixins
 
 
-class InviteCharacterView(UserPassesTestMixin, ListView, gmixins.GameContextMixin):
+class CharacterInviteView(UserPassesTestMixin, ListView, gmixins.GameContextMixin):
     model = cmodels.Character
     paginate_by = 10
     ordering = ["-xp"]
@@ -29,7 +29,7 @@ class InviteCharacterView(UserPassesTestMixin, ListView, gmixins.GameContextMixi
         return super().get_queryset().filter(player__game=None)
 
 
-class InviteCharacterConfirmView(
+class CharacterInviteConfirmView(
     UserPassesTestMixin, UpdateView, gmixins.GameContextMixin
 ):
     model = cmodels.Character
@@ -51,7 +51,7 @@ class InviteCharacterConfirmView(
         return HttpResponseRedirect(reverse("game", args=(self.game.id,)))
 
 
-class StartGameView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
+class GameStartView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
     fields = []
     template_name = "game/game_start.html"
 
@@ -73,7 +73,7 @@ class StartGameView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
         return HttpResponseRedirect(reverse("game", args=(game.id,)))
 
 
-class StartGameErrorView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
+class GameStartErrorView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
     fields = []
     template_name = "game/game_start_error.html"
 
@@ -81,7 +81,7 @@ class StartGameErrorView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
         return self.is_user_master()
 
 
-class EndGameView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
+class GameEndView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
     fields = []
     template_name = "game/game_end.html"
 
@@ -100,7 +100,7 @@ class EndGameView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
         return HttpResponseRedirect(reverse("game", args=(game.id,)))
 
 
-class CreateTaleView(UserPassesTestMixin, FormView, gmixins.EventContextMixin):
+class TaleCreateView(UserPassesTestMixin, FormView, gmixins.EventContextMixin):
     model = gmodels.Tale
     fields = ["description"]
     template_name = "game/tale_create.html"
@@ -128,7 +128,7 @@ class CreateTaleView(UserPassesTestMixin, FormView, gmixins.EventContextMixin):
         return super().form_valid(form)
 
 
-class CreatePendingActionView(
+class PendingActionCreateView(
     UserPassesTestMixin,
     CreateView,
     gmixins.EventContextMixin,
@@ -162,7 +162,7 @@ class CreatePendingActionView(
         return super().form_valid(form)
 
 
-class IncreaseXpView(
+class XpIncreaseView(
     UserPassesTestMixin,
     FormView,
     gmixins.EventContextMixin,
@@ -232,7 +232,7 @@ class DamageView(
         return super().form_valid(form)
 
 
-class HealView(
+class HealingView(
     UserPassesTestMixin,
     FormView,
     gmixins.EventContextMixin,
