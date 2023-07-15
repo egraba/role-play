@@ -58,7 +58,7 @@ class InviteCharacterViewTest(TestCase):
         game = gmodels.Game.objects.last()
         response = self.client.get(reverse(self.path_name, args=[game.id]))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "game/invitecharacter.html")
+        self.assertTemplateUsed(response, "game/character_invite.html")
 
     def test_pagination_size(self):
         game = gmodels.Game.objects.last()
@@ -154,7 +154,7 @@ class InviteCharacterConfirmViewTest(TestCase):
             reverse(self.path_name, args=[game.id, character.id])
         )
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "game/invitecharacterconfirm.html")
+        self.assertTemplateUsed(response, "game/character_invite_confirm.html")
 
     def test_game_not_exists(self):
         game_id = random.randint(10000, 99999)
@@ -208,7 +208,7 @@ class StartGameViewTest(TestCase):
         game = gmodels.Game.objects.last()
         response = self.client.get(reverse(self.path_name, args=[game.id]))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "game/startgame.html")
+        self.assertTemplateUsed(response, "game/game_start.html")
 
     def test_game_not_exists(self):
         game_id = random.randint(10000, 99999)
@@ -275,7 +275,7 @@ class EndGameViewTest(TestCase):
         game = gmodels.Game.objects.last()
         response = self.client.get(reverse(self.path_name, args=[game.id]))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "game/endgame.html")
+        self.assertTemplateUsed(response, "game/game_end.html")
 
     def test_game_not_exists(self):
         game_id = random.randint(10000, 99999)
@@ -350,7 +350,7 @@ class CreateTaleViewTest(TestCase):
         game = gmodels.Game.objects.last()
         response = self.client.get(reverse(self.path_name, args=[game.id]))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "game/createtale.html")
+        self.assertTemplateUsed(response, "game/tale_create.html")
 
     def test_game_not_exists(self):
         game_id = random.randint(10000, 99999)
@@ -444,7 +444,7 @@ class CreatePendingActionViewTest(TestCase):
             reverse(self.path_name, args=[game.id, character.id])
         )
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "game/creatependingaction.html")
+        self.assertTemplateUsed(response, "game/pending_action_create.html")
 
     def test_game_not_exists(self):
         game_id = random.randint(10000, 99999)

@@ -20,7 +20,7 @@ class InviteCharacterView(UserPassesTestMixin, ListView, gmixins.GameContextMixi
     model = cmodels.Character
     paginate_by = 10
     ordering = ["-xp"]
-    template_name = "game/invitecharacter.html"
+    template_name = "game/character_invite.html"
 
     def test_func(self):
         return self.is_user_master()
@@ -34,7 +34,7 @@ class InviteCharacterConfirmView(
 ):
     model = cmodels.Character
     fields = []
-    template_name = "game/invitecharacterconfirm.html"
+    template_name = "game/character_invite_confirm.html"
 
     def test_func(self):
         return self.is_user_master()
@@ -53,7 +53,7 @@ class InviteCharacterConfirmView(
 
 class StartGameView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
     fields = []
-    template_name = "game/startgame.html"
+    template_name = "game/game_start.html"
 
     def test_func(self):
         return self.is_user_master()
@@ -75,7 +75,7 @@ class StartGameView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
 
 class StartGameErrorView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
     fields = []
-    template_name = "game/startgameerror.html"
+    template_name = "game/game_start_error.html"
 
     def test_func(self):
         return self.is_user_master()
@@ -83,7 +83,7 @@ class StartGameErrorView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
 
 class EndGameView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
     fields = []
-    template_name = "game/endgame.html"
+    template_name = "game/game_end.html"
 
     def test_func(self):
         return self.is_user_master()
@@ -103,7 +103,7 @@ class EndGameView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
 class CreateTaleView(UserPassesTestMixin, FormView, gmixins.EventContextMixin):
     model = gmodels.Tale
     fields = ["description"]
-    template_name = "game/createtale.html"
+    template_name = "game/tale_create.html"
     form_class = gforms.CreateTaleForm
 
     def test_func(self):
@@ -136,7 +136,7 @@ class CreatePendingActionView(
 ):
     model = gmodels.PendingAction
     form_class = gforms.CreatePendingActionForm
-    template_name = "game/creatependingaction.html"
+    template_name = "game/pending_action_create.html"
 
     def test_func(self):
         return self.is_user_master()

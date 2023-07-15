@@ -98,7 +98,7 @@ class ListGameViewTest(TestCase):
 
     def test_template_mapping(self):
         response = self.client.get(reverse(self.path_name))
-        self.assertTemplateUsed(response, "game/gamelist.html")
+        self.assertTemplateUsed(response, "game/game_list.html")
 
     def test_pagination_size(self):
         self.user = User.objects.last()
@@ -330,7 +330,7 @@ class CreateGameViewTest(TestCase):
     def test_template_mapping(self):
         response = self.client.get(reverse(self.path_name, args=(self.story.slug,)))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "game/creategame.html")
+        self.assertTemplateUsed(response, "game/game_create.html")
 
     def test_game_creation(self):
         response = self.client.post(reverse(self.path_name, args=(self.story.slug,)))

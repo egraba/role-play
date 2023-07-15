@@ -29,7 +29,7 @@ class ListGameView(ListView):
     model = gmodels.Game
     paginate_by = 20
     ordering = ["-start_date"]
-    template_name = "game/gamelist.html"
+    template_name = "game/game_list.html"
 
 
 class GameView(LoginRequiredMixin, ListView, gmixins.GameContextMixin):
@@ -57,7 +57,7 @@ class GameView(LoginRequiredMixin, ListView, gmixins.GameContextMixin):
 class CreateGameView(LoginRequiredMixin, CreateView):
     model = gmodels.Game
     fields = []
-    template_name = "game/creategame.html"
+    template_name = "game/game_create.html"
 
     def get_success_url(self):
         return self.object.get_absolute_url()
