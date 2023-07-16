@@ -313,6 +313,21 @@ class GameViewTest(TestCase):
         self.assertTrue(set(response.context["event_list"]).issubset(set(event_list)))
         self.assertEqual(response.context["player"], player)
 
+    def test_content_character_is_current_user(self):
+        game = gmodels.Game.objects.get(name="game1")
+        character = cmodels.Character.objects.last()
+        gmodels.Player.objects.create(user=self.user, character=character, game=game)
+        response = self.client.get(reverse("game", args=[game.id]))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "(you)")
+
+    def test_content_no_events(self):
+        game = gmodels.Game.objects.last()
+        gmodels.Event.objects.filter(game=game).delete()
+        response = self.client.get(reverse("game", args=[game.id]))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "The story did not start yet...")
+
 
 class GameCreateViewTest(TestCase):
     path_name = "game-create"

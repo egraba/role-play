@@ -25,6 +25,7 @@ class CharacterDetailViewTest(TestCase):
     def test_view_mapping(self):
         character = cmodels.Character.objects.last()
         response = self.client.get(character.get_absolute_url())
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.resolver_match.func.view_class, cviews.CharacterDetailView
         )
@@ -32,7 +33,16 @@ class CharacterDetailViewTest(TestCase):
     def test_template_mapping(self):
         character = cmodels.Character.objects.last()
         response = self.client.get(character.get_absolute_url())
+        self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "character/character.html")
+
+    def test_content_character_is_in_game(self):
+        character = cmodels.Character.objects.last()
+        game = gmodels.Game.objects.create(name=utrandom.ascii_letters_string(5))
+        gmodels.Player.objects.create(character=character, game=game)
+        response = self.client.get(character.get_absolute_url())
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, game.name)
 
 
 class CharacterListViewTest(TestCase):

@@ -15,11 +15,13 @@
 
         <hr/>
 
-        {% if character.game %}
-            <p>Ongoing game: <a href={% url 'game' character.game.id %}>{{ character.game }}</p>
-        {% else %}
-            <p>This character is not part of a game...</p>
-        {% endif %}
+        {% with game=character.player.game %}
+            {% if game %}
+                <p>Ongoing game: <a href={% url 'game' game.id %}>{{ game }}</p>
+            {% else %}
+                <p>This character is not part of any game...</p>
+            {% endif %}
+        {% endwith%}
 
     </div>
 {% endblock%}
