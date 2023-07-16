@@ -1,137 +1,100 @@
 import random
 
+from django.contrib.auth.models import User
 from django.db import models
 from django.test import TestCase
 from django.utils import timezone
 
+import character.models as cmodels
 import game.models as gmodels
-from game.tests import utils
+import utils.testing.random as utrandom
 
 
 class GameModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        gmodels.Game.objects.create(name=utils.generate_random_string(50))
+        gmodels.Game.objects.create(name=utrandom.ascii_letters_string(50))
+
+    def setUp(self):
+        self.game = gmodels.Game.objects.last()
 
     def test_name_type(self):
-        game = gmodels.Game.objects.last()
-        name = game._meta.get_field("name")
+        name = self.game._meta.get_field("name")
         self.assertTrue(name, models.CharField)
 
     def test_name_max_length(self):
-        game = gmodels.Game.objects.last()
-        max_length = game._meta.get_field("name").max_length
+        max_length = self.game._meta.get_field("name").max_length
         self.assertEqual(max_length, 50)
 
     def test_start_date_type(self):
-        game = gmodels.Game.objects.last()
-        start_date = game._meta.get_field("start_date")
+        start_date = self.game._meta.get_field("start_date")
         self.assertTrue(start_date, models.DateTimeField)
 
     def test_end_date_type(self):
-        game = gmodels.Game.objects.last()
-        end_date = game._meta.get_field("end_date")
+        end_date = self.game._meta.get_field("end_date")
         self.assertTrue(end_date, models.DateTimeField)
 
     def test_end_date_default_value(self):
-        game = gmodels.Game.objects.last()
-        self.assertEqual(game.end_date, None)
+        self.assertEqual(self.game.end_date, None)
 
     def test_status_type(self):
-        game = gmodels.Game.objects.last()
-        status = game._meta.get_field("status")
+        status = self.game._meta.get_field("status")
         self.assertTrue(status, models.CharField)
 
     def test_str_is_name(self):
-        game = gmodels.Game.objects.last()
-        self.assertEqual(str(game), game.name)
+        self.assertEqual(str(self.game), self.game.name)
 
-    def test_is_ongoing(self):
-        game = gmodels.Game.objects.last()
-        self.assertFalse(game.is_ongoing())
-        number_of_characters = 5
-        for i in range(number_of_characters):
-            gmodels.Character.objects.create(
-                game=game, name=utils.generate_random_name(5)
+    def test_status_methods(self):
+        self.assertTrue(self.game.is_under_preparation())
+        self.assertFalse(self.game.is_ongoing())
+        self.assertFalse(self.game.is_finished())
+        number_of_players = 5
+        for i in range(number_of_players):
+            gmodels.Player.objects.create(
+                game=self.game,
+                character=cmodels.Character.objects.create(
+                    name=utrandom.ascii_letters_string(5)
+                ),
             )
-        game.start()
-        game.save()
-        self.assertTrue(game.is_ongoing())
-        game.end()
-        game.save()
-        self.assertFalse(game.is_ongoing())
+        self.game.start()
+        self.game.save()
+        self.assertFalse(self.game.is_under_preparation())
+        self.assertTrue(self.game.is_ongoing())
+        self.assertFalse(self.game.is_finished())
+        self.game.end()
+        self.game.save()
+        self.assertFalse(self.game.is_under_preparation())
+        self.assertFalse(self.game.is_ongoing())
+        self.assertTrue(self.game.is_finished())
 
 
-class CharacterModelTest(TestCase):
+class PlayerModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        gmodels.Character.objects.create()
+        user = User.objects.create(username=utrandom.ascii_letters_string(18))
+        character = cmodels.Character.objects.create(
+            name=utrandom.ascii_letters_string(18)
+        )
+        game = gmodels.Game.objects.create()
+        gmodels.Player.objects.create(user=user, character=character, game=game)
 
-    def test_game_type(self):
-        character = gmodels.Character.objects.last()
-        game = character._meta.get_field("game")
-        self.assertTrue(game, models.ForeignKey)
-
-    def test_name_type(self):
-        character = gmodels.Character.objects.last()
-        name = character._meta.get_field("name")
-        self.assertTrue(name, models.CharField)
-
-    def test_name_max_length(self):
-        character = gmodels.Character.objects.last()
-        max_length = character._meta.get_field("name").max_length
-        self.assertEqual(max_length, 100)
-
-    def test_name_uniqueness(self):
-        character = gmodels.Character.objects.last()
-        is_unique = character._meta.get_field("name").unique
-        self.assertTrue(is_unique)
-
-    def test_race_type(self):
-        character = gmodels.Character.objects.last()
-        race = character._meta.get_field("race")
-        self.assertTrue(race, models.CharField)
-
-    def test_race_max_length(self):
-        character = gmodels.Character.objects.last()
-        max_length = character._meta.get_field("race").max_length
-        self.assertEqual(max_length, 1)
-
-    def test_xp_type(self):
-        character = gmodels.Character.objects.last()
-        xp = character._meta.get_field("xp")
-        self.assertTrue(xp, models.SmallIntegerField)
-
-    def test_xp_default_value(self):
-        character = gmodels.Character.objects.last()
-        self.assertEqual(character.xp, 0)
-
-    def test_hp_type(self):
-        character = gmodels.Character.objects.last()
-        hp = character._meta.get_field("hp")
-        self.assertTrue(hp, models.SmallIntegerField)
-
-    def test_hp_default_value(self):
-        character = gmodels.Character.objects.last()
-        self.assertEqual(character.hp, 100)
-
-    def test_max_hp_type(self):
-        character = gmodels.Character.objects.last()
-        max_hp = character._meta.get_field("max_hp")
-        self.assertTrue(max_hp, models.SmallIntegerField)
-
-    def test_max_hp_default_value(self):
-        character = gmodels.Character.objects.last()
-        self.assertEqual(character.max_hp, 100)
+    def setUp(self):
+        self.player = gmodels.Player.objects.last()
 
     def test_user_type(self):
-        character = gmodels.Character.objects.last()
-        user = character._meta.get_field("user")
-        self.assertTrue(user, models.OneToOneField)
+        user = self.player._meta.get_field("user")
+        self.assertTrue(user, models.ForeignKey)
+
+    def test_character_type(self):
+        character = self.player._meta.get_field("character")
+        self.assertTrue(character, models.ForeignKey)
+
+    def test_game_type(self):
+        game = self.player._meta.get_field("game")
+        self.assertTrue(game, models.ForeignKey)
 
     def test_str(self):
-        character = gmodels.Character.objects.last()
-        self.assertEqual(str(character), character.name)
+        self.assertEqual(str(self.player), self.player.user.username)
 
 
 class EventModelTest(TestCase):
@@ -140,33 +103,30 @@ class EventModelTest(TestCase):
         game = gmodels.Game.objects.create()
         gmodels.Event.objects.create(game=game)
 
+    def setUp(self):
+        self.event = gmodels.Event.objects.last()
+
     def test_game_type(self):
-        event = gmodels.Event.objects.last()
-        game = event._meta.get_field("game")
+        game = self.event._meta.get_field("game")
         self.assertTrue(game, models.ForeignKey)
 
     def test_date_type(self):
-        event = gmodels.Event.objects.last()
-        date = event._meta.get_field("date")
+        date = self.event._meta.get_field("date")
         self.assertTrue(date, models.DateTimeField)
 
     def test_date_default_value(self):
-        event = gmodels.Event.objects.last()
-        self.assertEqual(event.date.second, timezone.now().second)
+        self.assertEqual(self.event.date.second, timezone.now().second)
 
     def test_message_type(self):
-        event = gmodels.Event.objects.last()
-        message = event._meta.get_field("message")
+        message = self.event._meta.get_field("message")
         self.assertTrue(message, models.CharField)
 
     def test_message_max_length(self):
-        event = gmodels.Event.objects.last()
-        max_length = event._meta.get_field("message").max_length
+        max_length = self.event._meta.get_field("message").max_length
         self.assertEqual(max_length, 100)
 
     def test_str(self):
-        event = gmodels.Event.objects.last()
-        self.assertEqual(str(event), event.message)
+        self.assertEqual(str(self.event), self.event.message)
 
 
 class TaleModelTest(TestCase):
@@ -175,153 +135,154 @@ class TaleModelTest(TestCase):
         game = gmodels.Game.objects.create()
         gmodels.Tale.objects.create(game=game)
 
+    def setUp(self):
+        self.tale = gmodels.Tale.objects.last()
+
     def test_content_type(self):
-        tale = gmodels.Tale.objects.last()
-        content = tale._meta.get_field("content")
+        content = self.tale._meta.get_field("content")
         self.assertTrue(content, models.CharField)
 
     def test_content_max_length(self):
-        tale = gmodels.Tale.objects.last()
-        max_length = tale._meta.get_field("content").max_length
+        max_length = self.tale._meta.get_field("content").max_length
         self.assertEqual(max_length, 1000)
 
     def test_str(self):
-        tale = gmodels.Tale.objects.last()
-        self.assertEqual(str(tale), tale.content)
+        self.assertEqual(str(self.tale), self.tale.content)
 
 
 class PendingActionModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         game = gmodels.Game.objects.create()
-        character = gmodels.Character.objects.get_or_create(id=1)[0]
+        character = cmodels.Character.objects.get_or_create(id=1)[0]
         gmodels.PendingAction.objects.create(game=game, character=character)
 
+    def setUp(self):
+        self.pending_action = gmodels.PendingAction.objects.last()
+
     def test_character_type(self):
-        pending_action = gmodels.PendingAction.objects.last()
-        character = pending_action._meta.get_field("character")
+        character = self.pending_action._meta.get_field("character")
         self.assertTrue(character, models.OneToOneField)
 
     def test_action_type_type(self):
-        pending_action = gmodels.PendingAction.objects.last()
-        action_type = pending_action._meta.get_field("action_type")
+        action_type = self.pending_action._meta.get_field("action_type")
         self.assertTrue(action_type, models.CharField)
 
     def test_action_type_max_length(self):
-        pending_action = gmodels.PendingAction.objects.last()
-        max_length = pending_action._meta.get_field("action_type").max_length
+        max_length = self.pending_action._meta.get_field("action_type").max_length
         self.assertEqual(max_length, 1)
 
     def test_str(self):
-        pending_action = gmodels.PendingAction.objects.last()
-        self.assertEqual(str(pending_action), pending_action.action_type)
+        self.assertEqual(str(self.pending_action), self.pending_action.action_type)
 
 
 class XpIncreaseModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         game = gmodels.Game.objects.create()
-        character = gmodels.Character.objects.create()
+        character = cmodels.Character.objects.create()
         gmodels.XpIncrease.objects.create(
             game=game, character=character, xp=random.randint(1, 20)
         )
 
+    def setUp(self):
+        self.xp_increase = gmodels.XpIncrease.objects.last()
+
     def test_hp_type(self):
-        xp_increase = gmodels.XpIncrease.objects.last()
-        xp = xp_increase._meta.get_field("xp")
+        xp = self.xp_increase._meta.get_field("xp")
         self.assertTrue(xp, models.SmallIntegerField)
 
     def test_str(self):
-        xp_increase = gmodels.XpIncrease.objects.last()
-        self.assertEqual(str(xp_increase), str(xp_increase.xp))
+        self.assertEqual(str(self.xp_increase), str(self.xp_increase.xp))
 
 
 class DamageModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         game = gmodels.Game.objects.create()
-        character = gmodels.Character.objects.create()
+        character = cmodels.Character.objects.create()
         gmodels.Damage.objects.create(
             game=game, character=character, hp=random.randint(1, 20)
         )
 
+    def setUp(self):
+        self.damage = gmodels.Damage.objects.last()
+
     def test_hp_type(self):
-        damage = gmodels.Damage.objects.last()
-        hp = damage._meta.get_field("hp")
+        hp = self.damage._meta.get_field("hp")
         self.assertTrue(hp, models.SmallIntegerField)
 
     def test_str(self):
-        damage = gmodels.Damage.objects.last()
-        self.assertEqual(str(damage), str(damage.hp))
+        self.assertEqual(str(self.damage), str(self.damage.hp))
 
 
 class HealingModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         game = gmodels.Game.objects.create()
-        character = gmodels.Character.objects.create()
+        character = cmodels.Character.objects.create()
         gmodels.Healing.objects.create(
             game=game, character=character, hp=random.randint(1, 20)
         )
 
+    def setUp(self):
+        self.healing = gmodels.Healing.objects.last()
+
     def test_hp_type(self):
-        healing = gmodels.Healing.objects.last()
-        hp = healing._meta.get_field("hp")
+        hp = self.healing._meta.get_field("hp")
         self.assertTrue(hp, models.SmallIntegerField)
 
     def test_str(self):
-        healing = gmodels.Healing.objects.last()
-        self.assertEqual(str(healing), str(healing.hp))
+        self.assertEqual(str(self.healing), str(self.healing.hp))
 
 
 class DiceLaunchModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         game = gmodels.Game.objects.create()
-        character = gmodels.Character.objects.create()
+        character = cmodels.Character.objects.create()
         gmodels.DiceLaunch.objects.create(
             game=game, character=character, score=random.randint(1, 20)
         )
 
+    def setUp(self):
+        self.dice_launch = gmodels.DiceLaunch.objects.last()
+
     def test_character_type(self):
-        dice_launch = gmodels.DiceLaunch.objects.last()
-        character = dice_launch._meta.get_field("character")
+        character = self.dice_launch._meta.get_field("character")
         self.assertTrue(character, models.ForeignKey)
 
     def test_score_type(self):
-        dice_launch = gmodels.DiceLaunch.objects.last()
-        score = dice_launch._meta.get_field("score")
+        score = self.dice_launch._meta.get_field("score")
         self.assertTrue(score, models.SmallIntegerField)
 
     def test_str(self):
-        dice_launch = gmodels.DiceLaunch.objects.last()
-        self.assertEqual(str(dice_launch), str(dice_launch.score))
+        self.assertEqual(str(self.dice_launch), str(self.dice_launch.score))
 
 
 class ChoiceModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         game = gmodels.Game.objects.create()
-        character = gmodels.Character.objects.create()
+        character = cmodels.Character.objects.create()
         gmodels.Choice.objects.create(
-            game=game, character=character, selection=utils.generate_random_string(50)
+            game=game, character=character, selection=utrandom.printable_string(50)
         )
 
+    def setUp(self):
+        self.choice = gmodels.Choice.objects.last()
+
     def test_character_type(self):
-        choice = gmodels.Choice.objects.last()
-        character = choice._meta.get_field("character")
+        character = self.choice._meta.get_field("character")
         self.assertTrue(character, models.ForeignKey)
 
     def test_selection_type(self):
-        choice = gmodels.Choice.objects.last()
-        selection = choice._meta.get_field("selection")
+        selection = self.choice._meta.get_field("selection")
         self.assertTrue(selection, models.SmallIntegerField)
 
     def test_selection_max_length(self):
-        choice = gmodels.Choice.objects.last()
-        max_length = choice._meta.get_field("selection").max_length
+        max_length = self.choice._meta.get_field("selection").max_length
         self.assertEqual(max_length, 50)
 
     def test_str(self):
-        choice = gmodels.Choice.objects.last()
-        self.assertEqual(str(choice), choice.selection)
+        self.assertEqual(str(self.choice), self.choice.selection)

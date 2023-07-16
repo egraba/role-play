@@ -23,13 +23,19 @@
             {% for character in page_obj %}
                 <tr>
                     <td><a href={{ character.get_absolute_url }}>{{ character }}</a></td>
-                    <td><p>{{ character.user }}</p></td>
+                    {% with user=character.player.user %}
+                        <td><p>{{ user }}</p></td>
+                    {% endwith %}
                     <td><p>{{ character.get_race_display }}</p></td>
                     <td><p>{{ character.xp }}</p></td>
                     <td>
-                        {% if character.game %}
-                            <a href={{ character.game.get_absolute_url }}>{{ character.game }}</a>
-                        {% endif %}
+                        {% with game=character.player.game %}
+                            {% if game %}
+                                <a href={{ game.get_absolute_url }}>{{ game }}</a>
+                            {% else %}
+                                <p>-</p>
+                            {% endif %}
+                        {% endwith %}
                     </td>
                 </tr>
             {% empty %}

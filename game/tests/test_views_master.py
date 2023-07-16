@@ -9,36 +9,38 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
+import character.models as cmodels
 import game.forms as gforms
 import game.models as gmodels
 import game.views.master as gvmaster
-from game.tests import utils
+import utils.testing.random as utrandom
 
 
-class InviteCharacterViewTest(TestCase):
+class CharacterInviteViewTest(TestCase):
     path_name = "game-invite-character"
 
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create(username=utils.generate_random_name(5))
+        user = User.objects.create(username=utrandom.ascii_letters_string(5))
         user.set_password("pwd")
         user.save()
 
         game = gmodels.Game.objects.create(master=user)
-        number_of_characters_with_game = 5
-        number_of_characters_without_game = 12
-        for i in range(number_of_characters_with_game):
-            gmodels.Character.objects.create(
-                name=utils.generate_random_name(10),
-                game=game,
-                race=random.choice(gmodels.Character.Race.choices)[0],
+        number_of_players_with_game = 5
+        number_of_players_without_game = 12
+        for i in range(number_of_players_with_game):
+            character = cmodels.Character.objects.create(
+                name=utrandom.ascii_letters_string(10),
+                race=random.choice(cmodels.Character.Race.choices)[0],
             )
-        for i in range(number_of_characters_without_game):
-            gmodels.Character.objects.create(
-                name=utils.generate_random_name(10),
-                race=random.choice(gmodels.Character.Race.choices)[0],
+            gmodels.Player.objects.create(game=game, character=character)
+        for i in range(number_of_players_without_game):
+            character = cmodels.Character.objects.create(
+                name=utrandom.ascii_letters_string(10),
+                race=random.choice(cmodels.Character.Race.choices)[0],
                 xp=random.randint(1, 100),
             )
+            gmodels.Player.objects.create(character=character)
 
     def setUp(self):
         self.user = User.objects.last()
@@ -49,14 +51,14 @@ class InviteCharacterViewTest(TestCase):
         response = self.client.get(reverse(self.path_name, args=[game.id]))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            response.resolver_match.func.view_class, gvmaster.InviteCharacterView
+            response.resolver_match.func.view_class, gvmaster.CharacterInviteView
         )
 
     def test_template_mapping(self):
         game = gmodels.Game.objects.last()
         response = self.client.get(reverse(self.path_name, args=[game.id]))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "game/invitecharacter.html")
+        self.assertTemplateUsed(response, "game/character_invite.html")
 
     def test_pagination_size(self):
         game = gmodels.Game.objects.last()
@@ -94,7 +96,7 @@ class InviteCharacterViewTest(TestCase):
 
     def test_context_data(self):
         game = gmodels.Game.objects.last()
-        character_list = gmodels.Character.objects.filter(game=None)
+        character_list = cmodels.Character.objects.filter(player__game=None)
         response = self.client.get(reverse(self.path_name, args=(game.id,)))
         self.assertTrue(
             set(response.context["character_list"]).issubset(character_list)
@@ -102,25 +104,33 @@ class InviteCharacterViewTest(TestCase):
 
     def test_context_data_all_characters_already_assigned(self):
         game = gmodels.Game.objects.last()
-        character_list = gmodels.Character.objects.filter(game=None)
+        character_list = cmodels.Character.objects.filter(player__game=None)
         for character in character_list:
-            character.game = game
-            character.save()
+            player = gmodels.Player.objects.get(character=character)
+            player.game = game
+            player.save()
         response = self.client.get(reverse(self.path_name, args=(game.id,)))
         self.assertFalse(response.context["character_list"])
 
 
-class InviteCharacterConfirmViewTest(TestCase):
+class CharacterInviteConfirmViewTest(TestCase):
     path_name = "game-invite-character-confirm"
 
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create(username=utils.generate_random_name(5))
+        user = User.objects.create(username=utrandom.ascii_letters_string(5))
         user.set_password("pwd")
         user.save()
 
-        gmodels.Game.objects.create(master=user)
-        gmodels.Character.objects.create(name=utils.generate_random_name(5))
+        game = gmodels.Game.objects.create(master=user)
+        character = cmodels.Character.objects.create(
+            name=utrandom.ascii_letters_string(5)
+        )
+        gmodels.Player.objects.create(game=game, character=character)
+        character = cmodels.Character.objects.create(
+            name=utrandom.ascii_letters_string(5)
+        )
+        gmodels.Player.objects.create(game=game, character=character)
 
     def setUp(self):
         self.user = User.objects.last()
@@ -128,27 +138,27 @@ class InviteCharacterConfirmViewTest(TestCase):
 
     def test_view_mapping(self):
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(self.path_name, args=[game.id, character.id])
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            response.resolver_match.func.view_class, gvmaster.InviteCharacterConfirmView
+            response.resolver_match.func.view_class, gvmaster.CharacterInviteConfirmView
         )
 
     def test_template_mapping(self):
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(self.path_name, args=[game.id, character.id])
         )
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "game/invitecharacterconfirm.html")
+        self.assertTemplateUsed(response, "game/character_invite_confirm.html")
 
     def test_game_not_exists(self):
         game_id = random.randint(10000, 99999)
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(self.path_name, args=[game_id, character.id])
         )
@@ -157,26 +167,26 @@ class InviteCharacterConfirmViewTest(TestCase):
 
     def test_character_added_to_game(self):
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         response = self.client.post(
             reverse(self.path_name, args=[game.id, character.id])
         )
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse("game", args=[game.id]))
-        character = gmodels.Character.objects.last()
-        self.assertEqual(character.game, game)
+        character = cmodels.Character.objects.last()
+        self.assertEqual(character.player.game, game)
         event = gmodels.Event.objects.last()
         self.assertLessEqual(event.date.second - timezone.now().second, 2)
         self.assertEqual(event.game, game)
         self.assertEqual(event.message, f"{character} was added to the game.")
 
 
-class StartGameViewTest(TestCase):
+class GameStartViewTest(TestCase):
     path_name = "game-start"
 
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create(username=utils.generate_random_name(5))
+        user = User.objects.create(username=utrandom.ascii_letters_string(5))
         user.set_password("pwd")
         user.save()
 
@@ -191,14 +201,14 @@ class StartGameViewTest(TestCase):
         response = self.client.get(reverse(self.path_name, args=[game.id]))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            response.resolver_match.func.view_class, gvmaster.StartGameView
+            response.resolver_match.func.view_class, gvmaster.GameStartView
         )
 
     def test_template_mapping(self):
         game = gmodels.Game.objects.last()
         response = self.client.get(reverse(self.path_name, args=[game.id]))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "game/startgame.html")
+        self.assertTemplateUsed(response, "game/game_start.html")
 
     def test_game_not_exists(self):
         game_id = random.randint(10000, 99999)
@@ -208,11 +218,12 @@ class StartGameViewTest(TestCase):
 
     def test_game_start_ok(self):
         game = gmodels.Game.objects.last()
-        number_of_characters = 2
-        for i in range(number_of_characters):
-            gmodels.Character.objects.create(
-                game=game, name=utils.generate_random_name(5)
+        number_of_players = 2
+        for i in range(number_of_players):
+            character = cmodels.Character.objects.create(
+                name=utrandom.ascii_letters_string(5)
             )
+            gmodels.Player.objects.create(game=game, character=character)
         response = self.client.post(reverse(self.path_name, args=[game.id]))
         self.assertEqual(response.status_code, 302)
         game = gmodels.Game.objects.last()
@@ -225,11 +236,12 @@ class StartGameViewTest(TestCase):
 
     def test_game_start_not_enough_characters(self):
         game = gmodels.Game.objects.last()
-        number_of_characters = 1
-        for i in range(number_of_characters):
-            gmodels.Character.objects.create(
-                game=game, name=utils.generate_random_name(5)
+        number_of_players = 1
+        for i in range(number_of_players):
+            character = cmodels.Character.objects.create(
+                name=utrandom.ascii_letters_string(5)
             )
+            gmodels.Player.objects.create(game=game, character=character)
         response = self.client.post(reverse(self.path_name, args=[game.id]))
         self.assertEqual(response.status_code, 302)
         self.assertRaises(PermissionDenied)
@@ -238,12 +250,12 @@ class StartGameViewTest(TestCase):
         self.assertRedirects(response, reverse("game-start-error", args=(game.id,)))
 
 
-class EndGameViewTest(TestCase):
+class GameEndViewTest(TestCase):
     path_name = "game-end"
 
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create(username=utils.generate_random_name(5))
+        user = User.objects.create(username=utrandom.ascii_letters_string(5))
         user.set_password("pwd")
         user.save()
 
@@ -257,13 +269,13 @@ class EndGameViewTest(TestCase):
         game = gmodels.Game.objects.last()
         response = self.client.get(reverse(self.path_name, args=[game.id]))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.resolver_match.func.view_class, gvmaster.EndGameView)
+        self.assertEqual(response.resolver_match.func.view_class, gvmaster.GameEndView)
 
     def test_template_mapping(self):
         game = gmodels.Game.objects.last()
         response = self.client.get(reverse(self.path_name, args=[game.id]))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "game/endgame.html")
+        self.assertTemplateUsed(response, "game/game_end.html")
 
     def test_game_not_exists(self):
         game_id = random.randint(10000, 99999)
@@ -273,11 +285,12 @@ class EndGameViewTest(TestCase):
 
     def test_game_end_ok(self):
         game = gmodels.Game.objects.last()
-        number_of_characters = 5
-        for i in range(number_of_characters):
-            gmodels.Character.objects.create(
-                game=game, name=utils.generate_random_name(5)
+        number_of_players = 5
+        for i in range(number_of_players):
+            character = cmodels.Character.objects.create(
+                name=utrandom.ascii_letters_string(5)
             )
+            gmodels.Player.objects.create(game=game, character=character)
         game.start()
         game.save()
 
@@ -286,14 +299,16 @@ class EndGameViewTest(TestCase):
         game = gmodels.Game.objects.last()
         self.assertEqual(game.status, "F")
         self.assertLessEqual(game.end_date.second - timezone.now().second, 2)
-        self.assertTrue(gmodels.Character.objects.filter(game=game).count() == 0)
+        self.assertTrue(
+            cmodels.Character.objects.filter(player__game=game).count() == 0
+        )
         event = gmodels.Event.objects.last()
         self.assertLessEqual(event.date.second - timezone.now().second, 2)
         self.assertEqual(event.game, game)
         self.assertEqual(event.message, "The game ended.")
 
 
-class CreateTaleViewTest(TestCase):
+class TaleCreateViewTest(TestCase):
     path_name = "tale-create"
 
     @classmethod
@@ -301,16 +316,18 @@ class CreateTaleViewTest(TestCase):
         user = User.objects.create(username="user-tale")
         user.set_password("pwd")
         user.save()
-        player1 = User.objects.create(username=utils.generate_random_name(5))
-        player2 = User.objects.create(username=utils.generate_random_name(5))
+        User.objects.create(username=utrandom.ascii_letters_string(5))
+        User.objects.create(username=utrandom.ascii_letters_string(5))
 
         game = gmodels.Game.objects.create(name="game-tale", master=user)
-        gmodels.Character.objects.create(
-            game=game, name=utils.generate_random_name(5), user=player1
+        character = cmodels.Character.objects.create(
+            name=utrandom.ascii_letters_string(5)
         )
-        gmodels.Character.objects.create(
-            game=game, name=utils.generate_random_name(5), user=player2
+        gmodels.Player.objects.create(game=game, character=character)
+        character = cmodels.Character.objects.create(
+            name=utrandom.ascii_letters_string(5)
         )
+        gmodels.Player.objects.create(game=game, character=character)
         game.start()
         game.save()
 
@@ -326,14 +343,14 @@ class CreateTaleViewTest(TestCase):
         response = self.client.get(reverse(self.path_name, args=[game.id]))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            response.resolver_match.func.view_class, gvmaster.CreateTaleView
+            response.resolver_match.func.view_class, gvmaster.TaleCreateView
         )
 
     def test_template_mapping(self):
         game = gmodels.Game.objects.last()
         response = self.client.get(reverse(self.path_name, args=[game.id]))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "game/createtale.html")
+        self.assertTemplateUsed(response, "game/tale_create.html")
 
     def test_game_not_exists(self):
         game_id = random.randint(10000, 99999)
@@ -362,7 +379,7 @@ class CreateTaleViewTest(TestCase):
         self.assertRaises(PermissionDenied)
 
     def test_tale_creation(self):
-        content = utils.generate_random_string(100)
+        content = utrandom.printable_string(100)
         data = {"content": f"{content}"}
         form = gforms.CreateTaleForm(data)
         self.assertTrue(form.is_valid())
@@ -379,20 +396,26 @@ class CreateTaleViewTest(TestCase):
         self.assertRedirects(response, reverse("game", args=[game.id]))
 
 
-class CreatePendingActionViewTest(TestCase):
+class PendingActionCreateViewTest(TestCase):
     path_name = "pendingaction-create"
 
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create(username=utils.generate_random_name(5))
+        user = User.objects.create(username=utrandom.ascii_letters_string(5))
         user.set_password("pwd")
         user.save()
 
         game = gmodels.Game.objects.create(
-            name=utils.generate_random_string(20), master=user
+            name=utrandom.printable_string(20), master=user
         )
-        gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
-        gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
+        character = cmodels.Character.objects.create(
+            name=utrandom.ascii_letters_string(5)
+        )
+        gmodels.Player.objects.create(game=game, character=character)
+        character = cmodels.Character.objects.create(
+            name=utrandom.ascii_letters_string(5)
+        )
+        gmodels.Player.objects.create(game=game, character=character)
         game.start()
         game.save()
 
@@ -405,27 +428,27 @@ class CreatePendingActionViewTest(TestCase):
 
     def test_view_mapping(self):
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(self.path_name, args=[game.id, character.id])
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            response.resolver_match.func.view_class, gvmaster.CreatePendingActionView
+            response.resolver_match.func.view_class, gvmaster.PendingActionCreateView
         )
 
     def test_template_mapping(self):
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(self.path_name, args=[game.id, character.id])
         )
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "game/creatependingaction.html")
+        self.assertTemplateUsed(response, "game/pending_action_create.html")
 
     def test_game_not_exists(self):
         game_id = random.randint(10000, 99999)
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(self.path_name, args=[game_id, character.id])
         )
@@ -443,7 +466,7 @@ class CreatePendingActionViewTest(TestCase):
 
     def test_context_data(self):
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(self.path_name, args=[game.id, character.id])
         )
@@ -453,7 +476,7 @@ class CreatePendingActionViewTest(TestCase):
 
     def test_game_is_under_preparation(self):
         game = gmodels.Game.objects.create()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(self.path_name, args=[game.id, character.id])
         )
@@ -462,7 +485,7 @@ class CreatePendingActionViewTest(TestCase):
 
     def test_game_is_finished(self):
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         game.end()
         game.save()
 
@@ -478,7 +501,7 @@ class CreatePendingActionViewTest(TestCase):
         form = gforms.CreatePendingActionForm(data)
         self.assertTrue(form.is_valid())
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
 
         response = self.client.post(
             reverse(self.path_name, args=[game.id, character.id]),
@@ -497,7 +520,7 @@ class CreatePendingActionViewTest(TestCase):
 
     def test_pending_action_creation_ko_character_has_pending_actions(self):
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         gmodels.PendingAction.objects.create(game=game, character=character)
         response = self.client.get(
             reverse(self.path_name, args=[game.id, character.id]),
@@ -506,20 +529,26 @@ class CreatePendingActionViewTest(TestCase):
         self.assertRaises(PermissionDenied)
 
 
-class IncreaseXpViewTest(TestCase):
+class XpIncreaseViewTest(TestCase):
     path_name = "xpincrease-create"
 
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create(username=utils.generate_random_name(5))
+        user = User.objects.create(username=utrandom.ascii_letters_string(5))
         user.set_password("pwd")
         user.save()
 
         game = gmodels.Game.objects.create(
-            name=utils.generate_random_string(20), master=user
+            name=utrandom.printable_string(20), master=user
         )
-        gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
-        gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
+        character = cmodels.Character.objects.create(
+            name=utrandom.ascii_letters_string(5)
+        )
+        gmodels.Player.objects.create(game=game, character=character)
+        character = cmodels.Character.objects.create(
+            name=utrandom.ascii_letters_string(5)
+        )
+        gmodels.Player.objects.create(game=game, character=character)
         game.start()
         game.save()
 
@@ -532,18 +561,18 @@ class IncreaseXpViewTest(TestCase):
 
     def test_view_mapping(self):
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(self.path_name, args=[game.id, character.id])
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            response.resolver_match.func.view_class, gvmaster.IncreaseXpView
+            response.resolver_match.func.view_class, gvmaster.XpIncreaseView
         )
 
     def test_template_mapping(self):
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(self.path_name, args=[game.id, character.id])
         )
@@ -552,7 +581,7 @@ class IncreaseXpViewTest(TestCase):
 
     def test_game_not_exists(self):
         game_id = random.randint(10000, 99999)
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(self.path_name, args=[game_id, character.id])
         )
@@ -570,7 +599,7 @@ class IncreaseXpViewTest(TestCase):
 
     def test_context_data(self):
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(self.path_name, args=[game.id, character.id])
         )
@@ -580,7 +609,7 @@ class IncreaseXpViewTest(TestCase):
 
     def test_game_is_under_preparation(self):
         game = gmodels.Game.objects.create()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(self.path_name, args=[game.id, character.id])
         )
@@ -589,7 +618,7 @@ class IncreaseXpViewTest(TestCase):
 
     def test_game_is_finished(self):
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         game.end()
         game.save()
         response = self.client.get(
@@ -604,7 +633,7 @@ class IncreaseXpViewTest(TestCase):
         form = gforms.IncreaseXpForm(data)
         self.assertTrue(form.is_valid())
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
 
         response = self.client.post(
             reverse(self.path_name, args=[game.id, character.id]),
@@ -635,15 +664,21 @@ class DamageViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create(username=utils.generate_random_name(5))
+        user = User.objects.create(username=utrandom.ascii_letters_string(5))
         user.set_password("pwd")
         user.save()
 
         game = gmodels.Game.objects.create(
-            name=utils.generate_random_string(20), master=user
+            name=utrandom.printable_string(20), master=user
         )
-        gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
-        gmodels.Character.objects.create(game=game, name=utils.generate_random_name(5))
+        character = cmodels.Character.objects.create(
+            name=utrandom.ascii_letters_string(5)
+        )
+        gmodels.Player.objects.create(game=game, character=character)
+        character = cmodels.Character.objects.create(
+            name=utrandom.ascii_letters_string(5)
+        )
+        gmodels.Player.objects.create(game=game, character=character)
         game.start()
         game.save()
 
@@ -656,7 +691,7 @@ class DamageViewTest(TestCase):
 
     def test_view_mapping(self):
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(self.path_name, args=[game.id, character.id])
         )
@@ -665,7 +700,7 @@ class DamageViewTest(TestCase):
 
     def test_template_mapping(self):
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(self.path_name, args=[game.id, character.id])
         )
@@ -674,7 +709,7 @@ class DamageViewTest(TestCase):
 
     def test_game_not_exists(self):
         game_id = random.randint(10000, 99999)
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(self.path_name, args=[game_id, character.id])
         )
@@ -692,7 +727,7 @@ class DamageViewTest(TestCase):
 
     def test_context_data(self):
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(self.path_name, args=[game.id, character.id])
         )
@@ -702,7 +737,7 @@ class DamageViewTest(TestCase):
 
     def test_game_is_under_preparation(self):
         game = gmodels.Game.objects.create()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(self.path_name, args=[game.id, character.id])
         )
@@ -711,7 +746,7 @@ class DamageViewTest(TestCase):
 
     def test_game_is_finished(self):
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         game.end()
         game.save()
         response = self.client.get(
@@ -726,7 +761,7 @@ class DamageViewTest(TestCase):
         form = gforms.DamageForm(data)
         self.assertTrue(form.is_valid())
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
 
         response = self.client.post(
             reverse(self.path_name, args=[game.id, character.id]),
@@ -757,7 +792,7 @@ class DamageViewTest(TestCase):
         form = gforms.DamageForm(data)
         self.assertTrue(form.is_valid())
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
 
         response = self.client.post(
             reverse(self.path_name, args=[game.id, character.id]),
@@ -773,8 +808,8 @@ class DamageViewTest(TestCase):
             f"{character} was hit: -{damage.hp} HP! {character} is dead.",
         )
         self.assertEqual(damage.hp, form.cleaned_data["hp"])
-        character = gmodels.Character.objects.last()
-        self.assertIsNone(character.game)
+        character = cmodels.Character.objects.last()
+        self.assertIsNone(character.player.game)
         self.assertEqual(character.hp, character.max_hp)
         self.assertRedirects(response, reverse("game", args=[game.id]))
 
@@ -784,19 +819,21 @@ class HealViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create(username=utils.generate_random_name(5))
+        user = User.objects.create(username=utrandom.ascii_letters_string(5))
         user.set_password("pwd")
         user.save()
 
         game = gmodels.Game.objects.create(
-            name=utils.generate_random_string(20), master=user
+            name=utrandom.printable_string(20), master=user
         )
-        gmodels.Character.objects.create(
-            game=game, name=utils.generate_random_name(5), hp=1
+        character = cmodels.Character.objects.create(
+            name=utrandom.ascii_letters_string(5), hp=1
         )
-        gmodels.Character.objects.create(
-            game=game, name=utils.generate_random_name(5), hp=1
+        gmodels.Player.objects.create(game=game, character=character)
+        character = cmodels.Character.objects.create(
+            name=utrandom.ascii_letters_string(5), hp=1
         )
+        gmodels.Player.objects.create(game=game, character=character)
         game.start()
         game.save()
 
@@ -809,16 +846,16 @@ class HealViewTest(TestCase):
 
     def test_view_mapping(self):
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(self.path_name, args=[game.id, character.id])
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.resolver_match.func.view_class, gvmaster.HealView)
+        self.assertEqual(response.resolver_match.func.view_class, gvmaster.HealingView)
 
     def test_template_mapping(self):
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(self.path_name, args=[game.id, character.id])
         )
@@ -827,7 +864,7 @@ class HealViewTest(TestCase):
 
     def test_game_not_exists(self):
         game_id = random.randint(10000, 99999)
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(self.path_name, args=[game_id, character.id])
         )
@@ -845,7 +882,7 @@ class HealViewTest(TestCase):
 
     def test_context_data(self):
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(self.path_name, args=[game.id, character.id])
         )
@@ -855,7 +892,7 @@ class HealViewTest(TestCase):
 
     def test_game_is_under_preparation(self):
         game = gmodels.Game.objects.create()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(self.path_name, args=[game.id, character.id])
         )
@@ -864,7 +901,7 @@ class HealViewTest(TestCase):
 
     def test_game_is_finished(self):
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
         game.end()
         game.save()
         response = self.client.get(
@@ -879,7 +916,7 @@ class HealViewTest(TestCase):
         form = gforms.HealForm(data)
         self.assertTrue(form.is_valid())
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
 
         response = self.client.post(
             reverse(self.path_name, args=[game.id, character.id]),
@@ -910,7 +947,7 @@ class HealViewTest(TestCase):
         form = gforms.HealForm(data)
         self.assertTrue(form.is_valid())
         game = gmodels.Game.objects.last()
-        character = gmodels.Character.objects.last()
+        character = cmodels.Character.objects.last()
 
         response = self.client.post(
             reverse(self.path_name, args=[game.id, character.id]),

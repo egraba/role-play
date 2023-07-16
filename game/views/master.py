@@ -9,39 +9,41 @@ from django.views.generic import CreateView, FormView, ListView, UpdateView
 from django_eventstream import send_event
 from django_fsm import TransitionNotAllowed
 
+import character.models as cmodels
 import game.forms as gforms
 import game.models as gmodels
 import game.utils as gutils
 import game.views.mixins as gmixins
 
 
-class InviteCharacterView(UserPassesTestMixin, ListView, gmixins.GameContextMixin):
-    model = gmodels.Character
+class CharacterInviteView(UserPassesTestMixin, ListView, gmixins.GameContextMixin):
+    model = cmodels.Character
     paginate_by = 10
     ordering = ["-xp"]
-    template_name = "game/invitecharacter.html"
+    template_name = "game/character_invite.html"
 
     def test_func(self):
         return self.is_user_master()
 
     def get_queryset(self):
-        return super().get_queryset().filter(game=None)
+        return super().get_queryset().filter(player__game=None)
 
 
-class InviteCharacterConfirmView(
+class CharacterInviteConfirmView(
     UserPassesTestMixin, UpdateView, gmixins.GameContextMixin
 ):
-    model = gmodels.Character
+    model = cmodels.Character
     fields = []
-    template_name = "game/invitecharacterconfirm.html"
+    template_name = "game/character_invite_confirm.html"
 
     def test_func(self):
         return self.is_user_master()
 
     def post(self, request, *args, **kwargs):
         character = self.get_object()
-        character.game = self.game
-        character.save()
+        player = gmodels.Player.objects.get(character=character)
+        player.game = self.game
+        player.save()
         event = gmodels.Event.objects.create(game=self.game)
         event.date = timezone.now()
         event.message = f"{character} was added to the game."
@@ -49,9 +51,9 @@ class InviteCharacterConfirmView(
         return HttpResponseRedirect(reverse("game", args=(self.game.id,)))
 
 
-class StartGameView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
+class GameStartView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
     fields = []
-    template_name = "game/startgame.html"
+    template_name = "game/game_start.html"
 
     def test_func(self):
         return self.is_user_master()
@@ -71,17 +73,17 @@ class StartGameView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
         return HttpResponseRedirect(reverse("game", args=(game.id,)))
 
 
-class StartGameErrorView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
+class GameStartErrorView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
     fields = []
-    template_name = "game/startgameerror.html"
+    template_name = "game/game_start_error.html"
 
     def test_func(self):
         return self.is_user_master()
 
 
-class EndGameView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
+class GameEndView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
     fields = []
-    template_name = "game/endgame.html"
+    template_name = "game/game_end.html"
 
     def test_func(self):
         return self.is_user_master()
@@ -98,10 +100,10 @@ class EndGameView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
         return HttpResponseRedirect(reverse("game", args=(game.id,)))
 
 
-class CreateTaleView(UserPassesTestMixin, FormView, gmixins.EventContextMixin):
+class TaleCreateView(UserPassesTestMixin, FormView, gmixins.EventContextMixin):
     model = gmodels.Tale
     fields = ["description"]
-    template_name = "game/createtale.html"
+    template_name = "game/tale_create.html"
     form_class = gforms.CreateTaleForm
 
     def test_func(self):
@@ -126,7 +128,7 @@ class CreateTaleView(UserPassesTestMixin, FormView, gmixins.EventContextMixin):
         return super().form_valid(form)
 
 
-class CreatePendingActionView(
+class PendingActionCreateView(
     UserPassesTestMixin,
     CreateView,
     gmixins.EventContextMixin,
@@ -134,7 +136,7 @@ class CreatePendingActionView(
 ):
     model = gmodels.PendingAction
     form_class = gforms.CreatePendingActionForm
-    template_name = "game/creatependingaction.html"
+    template_name = "game/pending_action_create.html"
 
     def test_func(self):
         return self.is_user_master()
@@ -160,7 +162,7 @@ class CreatePendingActionView(
         return super().form_valid(form)
 
 
-class IncreaseXpView(
+class XpIncreaseView(
     UserPassesTestMixin,
     FormView,
     gmixins.EventContextMixin,
@@ -215,8 +217,10 @@ class DamageView(
             damage.message = (
                 f"{self.character} was hit: -{damage.hp} HP! {self.character} is dead."
             )
-            # The character removed from the game.
-            self.character.game = None
+            # The player removed from the game.
+            player = gmodels.Player.objects.get(character=self.character)
+            player.game = None
+            player.save()
             # The character is healed when remove from the game,
             # so that they can join another game.
             self.character.hp = self.character.max_hp
@@ -228,7 +232,7 @@ class DamageView(
         return super().form_valid(form)
 
 
-class HealView(
+class HealingView(
     UserPassesTestMixin,
     FormView,
     gmixins.EventContextMixin,
