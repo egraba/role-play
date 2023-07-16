@@ -11,6 +11,7 @@ import game.models as gmodels
 import game.views.common as gvcommon
 import master.models as mmodels
 import utils.testing.random as utrandom
+import utils.testing.users as utusers
 
 
 class IndexViewTest(TestCase):
@@ -344,6 +345,7 @@ class GameCreateViewTest(TestCase):
         response = self.client.post(reverse(self.path_name, args=(self.story.slug,)))
         self.assertEqual(response.status_code, 302)
         game = gmodels.Game.objects.last()
+        self.assertRedirects(response, game.get_absolute_url())
         self.assertEqual(game.name, self.story.title)
         self.assertEqual(game.status, "P")
         self.assertEqual(game.master, self.user)
@@ -351,4 +353,33 @@ class GameCreateViewTest(TestCase):
         self.assertEqual(tale.game, game)
         self.assertEqual(tale.message, "The Master created the story.")
         self.assertEqual(tale.content, self.story.synopsis)
-        self.assertRedirects(response, reverse("game", args=[game.id]))
+
+    def test_game_creation_story_does_not_exist(self):
+        fake_slug = utrandom.ascii_letters_string(5)
+        response = self.client.post(reverse(self.path_name, args=(fake_slug,)))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("game-create-error", args=(fake_slug,)))
+
+
+class GameCreateErrorViewTest(TestCase):
+    path_name = "game-create-error"
+    fake_slug = utrandom.ascii_letters_string(5)
+
+    @classmethod
+    def setUpTestData(cls):
+        utusers.create_user()
+
+    def setUp(self):
+        self.user = User.objects.last()
+        self.client.login(username=self.user.username, password="pwd")
+
+    def test_view_mapping(self):
+        response = self.client.get(reverse(self.path_name, args=(self.fake_slug,)))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.resolver_match.func.view_class, gvcommon.GameCreateErrorView
+        )
+
+    def test_template_mapping(self):
+        response = self.client.get(reverse(self.path_name, args=(self.fake_slug,)))
+        self.assertTemplateUsed(response, "game/game_create_error.html")

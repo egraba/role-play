@@ -63,12 +63,14 @@ class GameCreateView(LoginRequiredMixin, CreateView):
         return self.object.get_absolute_url()
 
     def post(self, request, *args, **kwargs):
-        game = gmodels.Game()
         story_slug = self.kwargs["story_slug"]
         try:
             story = mmodels.Story.objects.get(slug=story_slug)
         except ObjectDoesNotExist:
-            return HttpResponseRedirect(reverse("game-create-error", args=(game.id,)))
+            return HttpResponseRedirect(
+                reverse("game-create-error", args=(story_slug,))
+            )
+        game = gmodels.Game()
         game.name = story.title
         game.story = story
         game.master = self.request.user
@@ -79,3 +81,7 @@ class GameCreateView(LoginRequiredMixin, CreateView):
         tale.content = story.synopsis
         tale.save()
         return HttpResponseRedirect(game.get_absolute_url())
+
+
+class GameCreateErrorView(LoginRequiredMixin, TemplateView):
+    template_name = "game/game_create_error.html"

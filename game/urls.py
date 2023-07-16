@@ -12,6 +12,11 @@ urlpatterns = [
         name="game-create",
     ),
     path(
+        "create_game/<slug:story_slug>/error",
+        common.GameCreateErrorView.as_view(),
+        name="game-create-error",
+    ),
+    path(
         "<int:game_id>/invite_character",
         master.CharacterInviteView.as_view(),
         name="game-invite-character",
