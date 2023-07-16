@@ -3,8 +3,9 @@
 ## Unreleased
 
 ### Added
-* The game master can create background stories before starting a game
+* Upgrade project's libraries to their latest versions
 * The project is more modular (character app, refactored testing, etc.)
+* The game master can create background stories before starting a game
 
 ## v0.3.0 - 2023-07-07
 
