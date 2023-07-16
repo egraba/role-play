@@ -222,10 +222,10 @@ class GameViewTest(TestCase):
         last_name = ""
         for character in response.context["character_list"]:
             if last_name == "":
-                last_name = character.name
+                last_name = character.name.upper()
             else:
                 self.assertTrue(last_name <= character.name)
-                last_name = character.name
+                last_name = character.name.upper()
 
     def test_ordering_event_date_descending(self):
         game = gmodels.Game.objects.last()

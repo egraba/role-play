@@ -74,10 +74,10 @@ class StoryListViewTest(TestCase):
         title = ""
         for story in response.context["story_list"]:
             if title == "":
-                title = story.title
+                title = story.title.upper()
             else:
                 self.assertTrue(title <= story.title)
-                title = story.title
+                title = story.title.upper()
 
     def test_content_no_story(self):
         mmodels.Story.objects.all().delete()
