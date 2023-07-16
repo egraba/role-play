@@ -149,11 +149,9 @@ class GameViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create(username=utrandom.ascii_letters_string(5))
-        user.set_password("pwd")
-        user.save()
+        master = utusers.create_user("master")
 
-        game = gmodels.Game.objects.create(name="game1", master=user)
+        game = gmodels.Game.objects.create(name="game1", master=master)
         number_of_events = 22
         for i in range(number_of_events):
             gmodels.Event.objects.create(
@@ -172,7 +170,8 @@ class GameViewTest(TestCase):
                 name=f"{game.name} character{i}",
                 race=random.choice(cmodels.Character.Race.choices)[0],
             )
-            gmodels.Player.objects.create(character=character, game=game)
+            user = User.objects.create(username=f"user{i}")
+            gmodels.Player.objects.create(user=user, character=character, game=game)
             gmodels.PendingAction.objects.create(
                 game=game,
                 character=character,
@@ -181,7 +180,7 @@ class GameViewTest(TestCase):
             )
 
     def setUp(self):
-        self.user = User.objects.last()
+        self.user = User.objects.get(username="master")
         self.client.login(username=self.user.username, password="pwd")
 
     def test_view_mapping(self):
@@ -341,12 +340,14 @@ class GameViewTest(TestCase):
 
     def test_content_pending_action_launch_dice(self):
         game = gmodels.Game.objects.get(name="game1")
+        self.client.login(username="user0")
         response = self.client.get(game.get_absolute_url())
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Launch dice")
 
     def test_content_pending_action_make_choice(self):
         game = gmodels.Game.objects.get(name="game1")
+        self.client.login(username="user1")
         response = self.client.get(game.get_absolute_url())
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Make choice")
