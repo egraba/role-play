@@ -153,7 +153,7 @@ class GameViewTest(TestCase):
         user.set_password("pwd")
         user.save()
 
-        game = gmodels.Game.objects.create(name="game1")
+        game = gmodels.Game.objects.create(name="game1", master=user)
         number_of_events = 22
         for i in range(number_of_events):
             gmodels.Event.objects.create(
@@ -172,10 +172,11 @@ class GameViewTest(TestCase):
                 name=f"{game.name} character{i}",
                 race=random.choice(cmodels.Character.Race.choices)[0],
             )
+            gmodels.Player.objects.create(character=character, game=game)
             gmodels.PendingAction.objects.create(
                 game=game,
                 character=character,
-                action_type=random.choice(gmodels.PendingAction.ActionType.choices)[0],
+                action_type=gmodels.PendingAction.ActionType.choices[i][0],
                 message=f"{game.name} pending_action{i}",
             )
 
@@ -314,9 +315,11 @@ class GameViewTest(TestCase):
         self.assertEqual(response.context["player"], player)
 
     def test_content_character_is_current_user(self):
-        game = gmodels.Game.objects.get(name="game1")
-        character = cmodels.Character.objects.last()
-        gmodels.Player.objects.create(user=self.user, character=character, game=game)
+        player = gmodels.Player.objects.last()
+        character = cmodels.Character.objects.get(player=player)
+        player.user = self.user
+        player.save()
+        game = gmodels.Game.objects.get(player__character=character)
         response = self.client.get(reverse("game", args=[game.id]))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "(you)")
@@ -327,6 +330,26 @@ class GameViewTest(TestCase):
         response = self.client.get(reverse("game", args=[game.id]))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "The story did not start yet...")
+
+    def test_content_game_is_finished(self):
+        game = gmodels.Game.objects.create(
+            master=self.user, status=gmodels.Game.Status.FINISHED
+        )
+        response = self.client.get(game.get_absolute_url())
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "The game is finished.")
+
+    def test_content_pending_action_launch_dice(self):
+        game = gmodels.Game.objects.get(name="game1")
+        response = self.client.get(game.get_absolute_url())
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Launch dice")
+
+    def test_content_pending_action_make_choice(self):
+        game = gmodels.Game.objects.get(name="game1")
+        response = self.client.get(game.get_absolute_url())
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Make choice")
 
 
 class GameCreateViewTest(TestCase):

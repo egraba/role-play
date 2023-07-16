@@ -69,7 +69,7 @@
                             {% endif %}
                         </p></td>
                     </tr>
-                    {% if game.master.id == user.id and game.get_status_display == "Ongoing" %}
+                    {% if game.master.id == user.id and game.is_ongoing %}
                         <tr><td colspan="6">
                             <div class ="rpgui-center inline">
                                 {% if not character.pendingaction %}
@@ -99,26 +99,22 @@
 
         {% if game.master.id == user.id %}
             <div class="rpgui-center inline">
-                {% if game.get_status_display == "Under preparation" %}
+                {% if game.is_under_preparation %}
                     <a href={% url 'game-invite-character' game.id %}>
                         <button class="rpgui-button"><p>Invite a character</p></button>
                     </a>
-                {% else %}
-                    <button disabled class="rpgui-button"><p>Invite a character</p></button>
-                {% endif %}
-                {% if game.get_status_display == "Under preparation" %}
                     <a href={% url 'game-start' game.id %}>
                         <button class="rpgui-button"><p>Start the game</p></button>
                     </a>
                     <button disabled class="rpgui-button"><p>End the game</p></button>
-                {% elif game.get_status_display == "Ongoing" %}
+                {% elif game.is_ongoing %}
+                    <button disabled class="rpgui-button"><p>Invite a character</p></button>
                     <button disabled class="rpgui-button"><p>Start the game</p></button>
                     <a href={% url 'game-end' game.id %}>
                         <button class="rpgui-button"><p>End the game</p></button>
                     </a>
                 {% else %}
-                    <button disabled class="rpgui-button"><p>Start the game</p></button>
-                    <button disabled class="rpgui-button"><p>End the game</p></button>
+                    <p>The game is finished.</p>
                 {% endif%}
             </div>
         {% endif %}
@@ -137,7 +133,7 @@
         </div>
         {% include 'pagination.html' %}
 
-        {% if game.get_status_display == "Ongoing" %}
+        {% if game.is_ongoing %}
             <div id="actions" class="rpgui-center">
                 {% if game.master.id == user.id %}
                     <a href={% url 'tale-create' game.id %}>

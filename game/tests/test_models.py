@@ -44,8 +44,10 @@ class GameModelTest(TestCase):
     def test_str_is_name(self):
         self.assertEqual(str(self.game), self.game.name)
 
-    def test_is_ongoing(self):
+    def test_status_methods(self):
+        self.assertTrue(self.game.is_under_preparation())
         self.assertFalse(self.game.is_ongoing())
+        self.assertFalse(self.game.is_finished())
         number_of_players = 5
         for i in range(number_of_players):
             gmodels.Player.objects.create(
@@ -56,10 +58,14 @@ class GameModelTest(TestCase):
             )
         self.game.start()
         self.game.save()
+        self.assertFalse(self.game.is_under_preparation())
         self.assertTrue(self.game.is_ongoing())
+        self.assertFalse(self.game.is_finished())
         self.game.end()
         self.game.save()
+        self.assertFalse(self.game.is_under_preparation())
         self.assertFalse(self.game.is_ongoing())
+        self.assertTrue(self.game.is_finished())
 
 
 class PlayerModelTest(TestCase):

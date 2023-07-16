@@ -57,8 +57,14 @@ class Game(models.Model):
             player.game = None
             player.save()
 
+    def is_under_preparation(self):
+        return self.status == self.Status.UNDER_PREPARATION
+
     def is_ongoing(self):
         return self.status == self.Status.ONGOING
+
+    def is_finished(self):
+        return self.status == self.Status.FINISHED
 
 
 class Player(models.Model):
