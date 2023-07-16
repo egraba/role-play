@@ -59,9 +59,6 @@ class GameCreateView(LoginRequiredMixin, CreateView):
     fields = []
     template_name = "game/game_create.html"
 
-    def get_success_url(self):
-        return self.object.get_absolute_url()
-
     def post(self, request, *args, **kwargs):
         story_slug = self.kwargs["story_slug"]
         try:
