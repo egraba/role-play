@@ -52,9 +52,6 @@ class Game(models.Model):
     @transition(field=status, source=Status.ONGOING, target=Status.FINISHED)
     def end(self):
         self.end_date = timezone.now()
-        for player in Player.objects.filter(game=self):
-            player.game = None
-            player.save()
 
     def is_under_preparation(self):
         return self.status == self.Status.UNDER_PREPARATION
@@ -75,9 +72,9 @@ class Master(models.Model):
 
 
 class Player(models.Model):
-    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     character = models.OneToOneField(cmodels.Character, on_delete=models.CASCADE)
-    game = models.ForeignKey(Game, on_delete=models.SET_NULL, null=True, blank=True)
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.user.username

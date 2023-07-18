@@ -54,7 +54,9 @@ class GameModelTest(TestCase):
         self.assertFalse(self.game.is_finished())
         number_of_players = 5
         for i in range(number_of_players):
+            user = User.objects.create(username=utrandom.ascii_letters_string(7))
             gmodels.Player.objects.create(
+                user=user,
                 game=self.game,
                 character=cmodels.Character.objects.create(
                     name=utrandom.ascii_letters_string(5)
