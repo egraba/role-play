@@ -19,7 +19,6 @@ class Game(models.Model):
     story = models.ForeignKey(
         mmodels.Story, on_delete=models.SET_NULL, null=True, blank=True
     )
-    master = models.OneToOneField(mmodels.Master, on_delete=models.CASCADE)
     start_date = models.DateTimeField(null=True, blank=True)
     end_date = models.DateTimeField(null=True, blank=True)
     status = FSMField(
@@ -65,6 +64,14 @@ class Game(models.Model):
 
     def is_finished(self):
         return self.status == self.Status.FINISHED
+
+
+class Master(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    game = models.OneToOneField(Game, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.user.username
 
 
 class Player(models.Model):
