@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.functions import Upper
 from django.urls import reverse
@@ -11,6 +12,7 @@ class Character(models.Model):
         DWARF = "D", "Dwarf"
 
     name = models.CharField(max_length=100, unique=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     race = models.CharField(max_length=1, choices=Race.choices)
     xp = models.SmallIntegerField(default=0)
     hp = models.SmallIntegerField(default=100)

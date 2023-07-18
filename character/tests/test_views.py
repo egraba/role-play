@@ -15,8 +15,8 @@ import utils.testing.users as utusers
 class CharacterDetailViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        utusers.create_user()
-        cmodels.Character.objects.create()
+        user = utusers.create_user()
+        cmodels.Character.objects.create(user=user)
 
     def setUp(self):
         self.user = User.objects.last()
@@ -39,7 +39,7 @@ class CharacterDetailViewTest(TestCase):
     def test_content_character_is_in_game(self):
         character = cmodels.Character.objects.last()
         game = gmodels.Game.objects.create(name=utrandom.ascii_letters_string(5))
-        gmodels.Player.objects.create(character=character, game=game)
+        gmodels.Player.objects.create(user=self.user, character=character, game=game)
         response = self.client.get(character.get_absolute_url())
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, game.name)
@@ -50,11 +50,12 @@ class CharacterListViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        utusers.create_user()
+        user = utusers.create_user()
         number_of_characters = 22
         for i in range(number_of_characters):
             cmodels.Character.objects.create(
                 name=utrandom.ascii_letters_string(20),
+                user=user,
                 race=random.choice(cmodels.Character.Race.choices)[0],
                 xp=random.randint(1, 1000),
             )
@@ -108,10 +109,11 @@ class CharacterListViewTest(TestCase):
     def test_content_character_is_in_game(self):
         cmodels.Character.objects.all().delete()
         character = cmodels.Character.objects.create(
-            name=utrandom.ascii_letters_string(5)
+            name=utrandom.ascii_letters_string(5),
+            user=self.user,
         )
         game = gmodels.Game.objects.create(name=utrandom.ascii_letters_string(5))
-        gmodels.Player.objects.create(character=character, game=game)
+        gmodels.Player.objects.create(user=self.user, character=character, game=game)
         response = self.client.get(reverse(self.path_name))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, game.name)
