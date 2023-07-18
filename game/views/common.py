@@ -18,7 +18,7 @@ class IndexView(TemplateView):
         if self.request.user.is_authenticated:
             try:
                 context["user_character"] = cmodels.Character.objects.get(
-                    player__user=self.request.user
+                    user=self.request.user
                 )
             except ObjectDoesNotExist:
                 pass
@@ -70,8 +70,8 @@ class GameCreateView(LoginRequiredMixin, CreateView):
         game = gmodels.Game()
         game.name = story.title
         game.story = story
-        game.master = self.request.user
         game.save()
+        gmodels.Master.objects.create(user=self.request.user, game=game)
         tale = gmodels.Tale()
         tale.game = game
         tale.message = "The Master created the story."
