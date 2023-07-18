@@ -10,6 +10,7 @@ import character.models as cmodels
 import game.models as gmodels
 import game.views.common as gvcommon
 import master.models as mmodels
+import utils.testing.factories as utfactories
 import utils.testing.random as utrandom
 import utils.testing.users as utusers
 
@@ -38,9 +39,7 @@ class IndexViewTest(TestCase):
         self.assertNotContains(response, "View your character")
 
     def test_content_logged_user_no_character(self):
-        user = User.objects.create(username=utrandom.ascii_letters_string(5))
-        user.set_password("pwd")
-        user.save()
+        user = utfactories.UserFactory()
         self.client.login(username=user.username, password="pwd")
 
         response = self.client.get(reverse(self.path_name))
@@ -55,9 +54,7 @@ class IndexViewTest(TestCase):
             response.context["user_character"]
 
     def test_content_logged_user_existing_character(self):
-        user = User.objects.create(username=utrandom.ascii_letters_string(5))
-        user.set_password("pwd")
-        user.save()
+        user = utfactories.UserFactory()
         character = cmodels.Character.objects.create(
             name=utrandom.ascii_letters_string(8)
         )
@@ -80,9 +77,7 @@ class GameListViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create(username=utrandom.ascii_letters_string(5))
-        user.set_password("pwd")
-        user.save()
+        user = utfactories.UserFactory()
 
         number_of_games = 22
         for i in range(number_of_games):
@@ -149,9 +144,9 @@ class GameViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        master = utusers.create_user("master")
+        user = utfactories.UserFactory()
 
-        game = gmodels.Game.objects.create(name="game1", master=master)
+        game = gmodels.Game.objects.create(name="game1", master=user)
         number_of_events = 22
         for i in range(number_of_events):
             gmodels.Event.objects.create(
