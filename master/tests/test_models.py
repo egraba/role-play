@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 from django.test import TestCase
 
@@ -54,3 +55,20 @@ class StoryModelTest(TestCase):
 
     def test_str(self):
         self.assertEqual(str(self.story), self.story.title)
+
+
+class MasterModelTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        user = User.objects.create()
+        mmodels.Master.objects.create(user=user)
+
+    def setUp(self):
+        self.master = mmodels.Master.objects.last()
+
+    def test_user_type(self):
+        user = self.master._meta.get_field("user")
+        self.assertTrue(user, models.OneToOneField)
+
+    def test_str(self):
+        self.assertEqual(str(self.master), self.master.user.username)
