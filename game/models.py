@@ -19,7 +19,7 @@ class Game(models.Model):
     story = models.ForeignKey(
         mmodels.Story, on_delete=models.SET_NULL, null=True, blank=True
     )
-    master = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    master = models.OneToOneField(mmodels.Master, on_delete=models.CASCADE)
     start_date = models.DateTimeField(null=True, blank=True)
     end_date = models.DateTimeField(null=True, blank=True)
     status = FSMField(

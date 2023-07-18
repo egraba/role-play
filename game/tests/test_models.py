@@ -7,13 +7,18 @@ from django.utils import timezone
 
 import character.models as cmodels
 import game.models as gmodels
+import master.models as mmodels
 import utils.testing.random as utrandom
 
 
 class GameModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        gmodels.Game.objects.create(name=utrandom.ascii_letters_string(50))
+        user = User.objects.create()
+        master = mmodels.Master.objects.create(user=user)
+        gmodels.Game.objects.create(
+            name=utrandom.ascii_letters_string(50), master=master
+        )
 
     def setUp(self):
         self.game = gmodels.Game.objects.last()
@@ -25,6 +30,14 @@ class GameModelTest(TestCase):
     def test_name_max_length(self):
         max_length = self.game._meta.get_field("name").max_length
         self.assertEqual(max_length, 50)
+
+    def test_story_type(self):
+        story = self.game._meta.get_field("story")
+        self.assertTrue(story, models.ForeignKey)
+
+    def test_master_type(self):
+        master = self.game._meta.get_field("master")
+        self.assertTrue(master, models.OneToOneField)
 
     def test_start_date_type(self):
         start_date = self.game._meta.get_field("start_date")
@@ -71,12 +84,14 @@ class GameModelTest(TestCase):
 class PlayerModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create(username=utrandom.ascii_letters_string(18))
+        user_player = User.objects.create(username=utrandom.ascii_letters_string(18))
         character = cmodels.Character.objects.create(
             name=utrandom.ascii_letters_string(18)
         )
-        game = gmodels.Game.objects.create()
-        gmodels.Player.objects.create(user=user, character=character, game=game)
+        user_master = User.objects.create()
+        master = mmodels.Master.objects.create(user=user_master)
+        game = gmodels.Game.objects.create(master=master)
+        gmodels.Player.objects.create(user=user_player, character=character, game=game)
 
     def setUp(self):
         self.player = gmodels.Player.objects.last()
@@ -100,7 +115,9 @@ class PlayerModelTest(TestCase):
 class EventModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        game = gmodels.Game.objects.create()
+        user = User.objects.create()
+        master = mmodels.Master.objects.create(user=user)
+        game = gmodels.Game.objects.create(master=master)
         gmodels.Event.objects.create(game=game)
 
     def setUp(self):
@@ -132,7 +149,9 @@ class EventModelTest(TestCase):
 class TaleModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        game = gmodels.Game.objects.create()
+        user = User.objects.create()
+        master = mmodels.Master.objects.create(user=user)
+        game = gmodels.Game.objects.create(master=master)
         gmodels.Tale.objects.create(game=game)
 
     def setUp(self):
@@ -153,7 +172,9 @@ class TaleModelTest(TestCase):
 class PendingActionModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        game = gmodels.Game.objects.create()
+        user = User.objects.create()
+        master = mmodels.Master.objects.create(user=user)
+        game = gmodels.Game.objects.create(master=master)
         character = cmodels.Character.objects.get_or_create(id=1)[0]
         gmodels.PendingAction.objects.create(game=game, character=character)
 
@@ -179,7 +200,9 @@ class PendingActionModelTest(TestCase):
 class XpIncreaseModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        game = gmodels.Game.objects.create()
+        user = User.objects.create()
+        master = mmodels.Master.objects.create(user=user)
+        game = gmodels.Game.objects.create(master=master)
         character = cmodels.Character.objects.create()
         gmodels.XpIncrease.objects.create(
             game=game, character=character, xp=random.randint(1, 20)
@@ -199,7 +222,9 @@ class XpIncreaseModelTest(TestCase):
 class DamageModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        game = gmodels.Game.objects.create()
+        user = User.objects.create()
+        master = mmodels.Master.objects.create(user=user)
+        game = gmodels.Game.objects.create(master=master)
         character = cmodels.Character.objects.create()
         gmodels.Damage.objects.create(
             game=game, character=character, hp=random.randint(1, 20)
@@ -219,7 +244,9 @@ class DamageModelTest(TestCase):
 class HealingModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        game = gmodels.Game.objects.create()
+        user = User.objects.create()
+        master = mmodels.Master.objects.create(user=user)
+        game = gmodels.Game.objects.create(master=master)
         character = cmodels.Character.objects.create()
         gmodels.Healing.objects.create(
             game=game, character=character, hp=random.randint(1, 20)
@@ -239,7 +266,9 @@ class HealingModelTest(TestCase):
 class DiceLaunchModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        game = gmodels.Game.objects.create()
+        user = User.objects.create()
+        master = mmodels.Master.objects.create(user=user)
+        game = gmodels.Game.objects.create(master=master)
         character = cmodels.Character.objects.create()
         gmodels.DiceLaunch.objects.create(
             game=game, character=character, score=random.randint(1, 20)
@@ -263,7 +292,9 @@ class DiceLaunchModelTest(TestCase):
 class ChoiceModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        game = gmodels.Game.objects.create()
+        user = User.objects.create()
+        master = mmodels.Master.objects.create(user=user)
+        game = gmodels.Game.objects.create(master=master)
         character = cmodels.Character.objects.create()
         gmodels.Choice.objects.create(
             game=game, character=character, selection=utrandom.printable_string(50)
