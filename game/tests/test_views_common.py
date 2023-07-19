@@ -133,36 +133,22 @@ class GameViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        user = utfactories.UserFactory(username="master")
+        utfactories.UserFactory(username="master")
 
-        game = gmodels.Game.objects.create(name="game1")
+        game = utfactories.GameFactory()
         number_of_events = 22
         for i in range(number_of_events):
-            gmodels.Event.objects.create(
-                game=game,
-                message=f"{game.name} event{i}",
-            )
+            utfactories.EventFactory(game=game)
         number_of_tales = 3
         for i in range(number_of_tales):
-            gmodels.Tale.objects.create(
-                game=game,
-                content=f"{game.name} tail{i}",
-            )
-        number_of_characters = 2
+            utfactories.TaleFactory(game=game)
+        number_of_characters = 8
         for i in range(number_of_characters):
-            character = cmodels.Character.objects.create(
-                name=f"{game.name} character{i}",
-                user=user,
-                race=random.choice(cmodels.Character.Race.choices)[0],
+            character = utfactories.CharacterFactory()
+            gmodels.Player.objects.create(
+                user=character.user, character=character, game=game
             )
-            user = User.objects.create(username=f"user{i}")
-            gmodels.Player.objects.create(user=user, character=character, game=game)
-            gmodels.PendingAction.objects.create(
-                game=game,
-                character=character,
-                action_type=gmodels.PendingAction.ActionType.choices[i][0],
-                message=f"{game.name} pending_action{i}",
-            )
+            utfactories.PendingActionFactory(game=game, character=character)
 
     def setUp(self):
         self.user = User.objects.get(username="master")
@@ -170,17 +156,17 @@ class GameViewTest(TestCase):
 
     def test_view_mapping(self):
         game = gmodels.Game.objects.last()
-        response = self.client.get(reverse("game", args=[game.id]))
+        response = self.client.get(game.get_absolute_url())
         self.assertEqual(response.resolver_match.func.view_class, gvcommon.GameView)
 
     def test_template_mapping(self):
         game = gmodels.Game.objects.last()
-        response = self.client.get(reverse("game", args=[game.id]))
+        response = self.client.get(game.get_absolute_url())
         self.assertTemplateUsed(response, "game/game.html")
 
     def test_pagination_size(self):
         game = gmodels.Game.objects.last()
-        response = self.client.get(reverse("game", args=[game.id]))
+        response = self.client.get(game.get_absolute_url())
         self.assertEqual(response.status_code, 200)
         self.assertTrue("is_paginated" in response.context)
         self.assertTrue(response.context["is_paginated"])
@@ -188,21 +174,15 @@ class GameViewTest(TestCase):
 
     def test_pagination_size_next_page(self):
         game = gmodels.Game.objects.last()
-        response = self.client.get(reverse("game", args=[game.id]) + "?page=2")
+        response = self.client.get(game.get_absolute_url() + "?page=2")
         self.assertEqual(response.status_code, 200)
         self.assertTrue("is_paginated" in response.context)
         self.assertTrue(response.context["is_paginated"])
-        self.assertEqual(len(response.context["event_list"]), 7)  # Inherited events
+        self.assertEqual(len(response.context["event_list"]), 13)  # Inherited events
 
     def test_ordering_character_name_ascending(self):
         game = gmodels.Game.objects.last()
-        number_of_characters = 3
-        for i in range(number_of_characters):
-            character = utfactories.CharacterFactory()
-            gmodels.Player.objects.create(
-                character=character, game=game, user=character.user
-            )
-        response = self.client.get(reverse("game", args=[game.id]))
+        response = self.client.get(game.get_absolute_url())
         self.assertEqual(response.status_code, 200)
         last_name = ""
         for character in response.context["character_list"]:
@@ -214,7 +194,7 @@ class GameViewTest(TestCase):
 
     def test_ordering_event_date_descending(self):
         game = gmodels.Game.objects.last()
-        response = self.client.get(reverse("game", args=[game.id]))
+        response = self.client.get(game.get_absolute_url())
         self.assertEqual(response.status_code, 200)
         last_date = 0
         for event in response.context["event_list"]:
@@ -232,35 +212,24 @@ class GameViewTest(TestCase):
 
     def test_game_last_tale(self):
         game = gmodels.Game.objects.last()
-        tale = gmodels.Tale.objects.create(game=game)
-        response = self.client.get(reverse("game", args=[game.id]))
+        tale = gmodels.Tale.objects.filter(game=game).last()
+        response = self.client.get(game.get_absolute_url())
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context["tale"], tale)
 
     def test_context_data_master(self):
-        number_of_games = 3
-        for i in range(number_of_games):
-            game = gmodels.Game.objects.create(name=f"other_game{i}")
-            gmodels.Tale.objects.create(game=game)
-            character = utfactories.CharacterFactory(name=f"character{i}")
-            gmodels.Player.objects.create(
-                game=game, character=character, user=character.user
-            )
-            gmodels.Event.objects.create(game=game)
-            gmodels.PendingAction.objects.create(game=game, character=character)
-
-        game = gmodels.Game.objects.filter(name="game1").last()
-        response = self.client.get(reverse("game", args=[game.id]))
+        game = gmodels.Game.objects.last()
+        response = self.client.get(game.get_absolute_url())
         self.assertEqual(response.status_code, 200)
 
-        tale_list = gmodels.Tale.objects.filter(game__name="game1")
+        tale_list = gmodels.Tale.objects.filter(game=game)
         tale = tale_list.last()
         self.assertEqual(response.context["tale"], tale)
-        character_list = cmodels.Character.objects.filter(player__game__name="game1")
+        character_list = cmodels.Character.objects.filter(player__game=game)
         self.assertQuerySetEqual(
             list(response.context["character_list"]), character_list
         )
-        event_list = gmodels.Event.objects.filter(game__name="game1")
+        event_list = gmodels.Event.objects.filter(game=game)
         # issubset() is used because of pagination.
         self.assertTrue(set(response.context["event_list"]).issubset(set(event_list)))
         with self.assertRaises(KeyError):
@@ -269,37 +238,26 @@ class GameViewTest(TestCase):
             response.context["pending_action"]
 
     def test_context_data_player(self):
-        number_of_games = 3
-        for i in range(number_of_games):
-            game = gmodels.Game.objects.create(name=f"other_game{i}")
-            gmodels.Tale.objects.create(game=game)
-            character = utfactories.CharacterFactory(name=f"character{i}")
-            gmodels.Player.objects.create(
-                game=game, character=character, user=character.user
-            )
-            gmodels.Event.objects.create(game=game)
-            gmodels.PendingAction.objects.create(game=game, character=character)
-
-        player = gmodels.Player.objects.filter(character__name="character1").get()
-        player.user = self.user
-        player.save()
         self.client.logout()
-        self.client.login(username=self.user.username, password="pwd")
-
-        game = gmodels.Game.objects.filter(name="game1").last()
-        response = self.client.get(reverse("game", args=[game.id]))
+        # Log as a player
+        game = gmodels.Game.objects.last()
+        character = cmodels.Character.objects.filter(player__game=game).last()
+        user = character.user
+        self.client.login(username=user.username, password="pwd")
+        response = self.client.get(game.get_absolute_url())
         self.assertEqual(response.status_code, 200)
 
-        tale_list = gmodels.Tale.objects.filter(game__name="game1")
+        tale_list = gmodels.Tale.objects.filter(game=game)
         tale = tale_list.last()
         self.assertEqual(response.context["tale"], tale)
-        character_list = cmodels.Character.objects.filter(player__game__name="game1")
+        character_list = cmodels.Character.objects.filter(player__game=game)
         self.assertQuerySetEqual(
             list(response.context["character_list"]), character_list
         )
-        event_list = gmodels.Event.objects.filter(game__name="game1")
+        event_list = gmodels.Event.objects.filter(game=game)
         # issubset() is used because of pagination.
         self.assertTrue(set(response.context["event_list"]).issubset(set(event_list)))
+        player = gmodels.Player.objects.get(game=game, user=user)
         self.assertEqual(response.context["player"], player)
 
     def test_content_character_is_current_user(self):
@@ -308,14 +266,14 @@ class GameViewTest(TestCase):
         player.user = self.user
         player.save()
         game = gmodels.Game.objects.get(player__character=character)
-        response = self.client.get(reverse("game", args=[game.id]))
+        response = self.client.get(game.get_absolute_url())
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "(you)")
 
     def test_content_no_events(self):
         game = gmodels.Game.objects.last()
         gmodels.Event.objects.filter(game=game).delete()
-        response = self.client.get(reverse("game", args=[game.id]))
+        response = self.client.get(game.get_absolute_url())
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "The story did not start yet...")
 
@@ -327,15 +285,21 @@ class GameViewTest(TestCase):
         self.assertContains(response, "The game is finished.")
 
     def test_content_pending_action_launch_dice(self):
-        game = gmodels.Game.objects.get(name="game1")
-        self.client.login(username="user0")
+        dice_launch = gmodels.PendingAction.objects.filter(action_type="D").last()
+        game = dice_launch.game
+        character = dice_launch.character
+        user = User.objects.get(character=character)
+        self.client.login(username=user.username, password="pwd")
         response = self.client.get(game.get_absolute_url())
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Launch dice")
 
     def test_content_pending_action_make_choice(self):
-        game = gmodels.Game.objects.get(name="game1")
-        self.client.login(username="user1")
+        choice = gmodels.PendingAction.objects.filter(action_type="C").last()
+        game = choice.game
+        character = choice.character
+        user = User.objects.get(character=character)
+        self.client.login(username=user.username, password="pwd")
         response = self.client.get(game.get_absolute_url())
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Make choice")

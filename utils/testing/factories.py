@@ -1,3 +1,5 @@
+import string
+
 import factory
 import factory.fuzzy
 from django.contrib.auth.models import User
@@ -27,6 +29,32 @@ class GameFactory(factory.django.DjangoModelFactory):
         model = gmodels.Game
 
     name = factory.Sequence(lambda n: f"game{n}")
+
+
+class EventFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = gmodels.Event
+
+    message = factory.fuzzy.FuzzyText(length=50, chars=string.printable, prefix="event")
+
+
+class TaleFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = gmodels.Tale
+
+    message = factory.fuzzy.FuzzyText(length=50, chars=string.printable, prefix="tale")
+
+
+class PendingActionFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = gmodels.PendingAction
+
+    action_type = factory.Sequence(
+        lambda n: gmodels.PendingAction.ActionType.choices[n % 2][0]
+    )
+    message = factory.fuzzy.FuzzyText(
+        length=50, chars=string.printable, prefix="pending_action"
+    )
 
 
 class CharacterFactory(factory.django.DjangoModelFactory):
