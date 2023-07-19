@@ -54,9 +54,8 @@ class IndexViewTest(TestCase):
             response.context["user_character"]
 
     def test_content_logged_user_existing_character(self):
-        user = utfactories.UserFactory()
-        character = utfactories.CharacterFactory(user=user)
-        self.client.login(username=user.username, password="pwd")
+        character = utfactories.CharacterFactory()
+        self.client.login(username=character.user.username, password="pwd")
 
         response = self.client.get(reverse(self.path_name))
         self.assertEqual(response.status_code, 200)
