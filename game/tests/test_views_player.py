@@ -12,6 +12,7 @@ import character.models as cmodels
 import game.forms as gforms
 import game.models as gmodels
 import game.views.player as gvplayer
+import utils.testing.factories as utfactories
 import utils.testing.random as utrandom
 
 
@@ -20,38 +21,34 @@ class DiceLaunchViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create(username=utrandom.ascii_letters_string(5))
-        user.set_password("pwd")
-        user.save()
-
-        game = gmodels.Game.objects.create()
+        game = utfactories.GameFactory()
         # A game can only start with a minimum number of characters.
         number_of_players = 2
         for i in range(number_of_players):
-            character = cmodels.Character.objects.create(
-                name=utrandom.ascii_letters_string(5),
+            character = utfactories.CharacterFactory()
+            gmodels.Player.objects.create(
+                game=game, character=character, user=character.user
             )
-            gmodels.Player.objects.create(game=game, character=character)
-            gmodels.PendingAction.objects.create(game=game, character=character)
+            utfactories.PendingActionFactory(game=game, character=character)
         game.start()
         game.save()
 
     def setUp(self):
         self.user = User.objects.last()
         self.client.login(username=self.user.username, password="pwd")
+        self.game = gmodels.Game.objects.last()
+        self.character = cmodels.Character.objects.last()
 
     def tearDown(self):
         cache.clear()
 
     def test_view_mapping(self):
-        game = gmodels.Game.objects.last()
-        character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(
                 self.path_name,
                 args=(
-                    game.id,
-                    character.id,
+                    self.game.id,
+                    self.character.id,
                 ),
             )
         )
@@ -61,14 +58,12 @@ class DiceLaunchViewTest(TestCase):
         )
 
     def test_template_mapping(self):
-        game = gmodels.Game.objects.last()
-        character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(
                 self.path_name,
                 args=(
-                    game.id,
-                    character.id,
+                    self.game.id,
+                    self.character.id,
                 ),
             )
         )
@@ -77,13 +72,12 @@ class DiceLaunchViewTest(TestCase):
 
     def test_game_not_exists(self):
         game_id = random.randint(10000, 99999)
-        character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(
                 self.path_name,
                 args=(
                     game_id,
-                    character.id,
+                    self.character.id,
                 ),
             )
         )
@@ -91,13 +85,12 @@ class DiceLaunchViewTest(TestCase):
         self.assertRaises(Http404)
 
     def test_character_not_exists(self):
-        game = gmodels.Game.objects.last()
         character_id = random.randint(10000, 99999)
         response = self.client.get(
             reverse(
                 self.path_name,
                 args=(
-                    game.id,
+                    self.game.id,
                     character_id,
                 ),
             )
@@ -106,30 +99,28 @@ class DiceLaunchViewTest(TestCase):
         self.assertRaises(Http404)
 
     def test_context_data(self):
-        game = gmodels.Game.objects.last()
-        character = cmodels.Character.objects.last()
         response = self.client.get(
             reverse(
                 self.path_name,
                 args=(
-                    game.id,
-                    character.id,
+                    self.game.id,
+                    self.character.id,
                 ),
             )
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context["game"], game)
-        self.assertEqual(response.context["character"], character)
+        self.assertEqual(response.context["game"], self.game)
+        self.assertEqual(response.context["character"], self.character)
 
     def test_game_is_under_preparation(self):
-        game = gmodels.Game.objects.create(name=utrandom.printable_string(20))
-        character = cmodels.Character.objects.last()
+        self.game.status = "P"
+        self.game.save()
         response = self.client.get(
             reverse(
                 self.path_name,
                 args=(
-                    game.id,
-                    character.id,
+                    self.game.id,
+                    self.character.id,
                 ),
             )
         )
@@ -137,16 +128,14 @@ class DiceLaunchViewTest(TestCase):
         self.assertRaises(PermissionDenied)
 
     def test_game_is_finished(self):
-        game = gmodels.Game.objects.last()
-        character = cmodels.Character.objects.last()
-        game.end()
-        game.save()
+        self.game.end()
+        self.game.save()
         response = self.client.get(
             reverse(
                 self.path_name,
                 args=(
-                    game.id,
-                    character.id,
+                    self.game.id,
+                    self.character.id,
                 ),
             )
         )
@@ -154,14 +143,12 @@ class DiceLaunchViewTest(TestCase):
         self.assertRaises(PermissionDenied)
 
     def test_dice_launch(self):
-        game = gmodels.Game.objects.last()
-        character = cmodels.Character.objects.last()
         response = self.client.post(
             reverse(
                 self.path_name,
                 args=(
-                    game.id,
-                    character.id,
+                    self.game.id,
+                    self.character.id,
                 ),
             )
         )
@@ -172,17 +159,17 @@ class DiceLaunchViewTest(TestCase):
             reverse(
                 "dicelaunch-success",
                 args=(
-                    game.id,
-                    character.id,
+                    self.game.id,
+                    self.character.id,
                     dice_launch.id,
                 ),
             ),
         )
-        self.assertEqual(dice_launch.game, game)
+        self.assertEqual(dice_launch.game, self.game)
         self.assertLessEqual(dice_launch.date.second - timezone.now().second, 2)
         self.assertEqual(
             dice_launch.message,
-            f"{character} launched a dice: score is {dice_launch.score}!",
+            f"{self.character} launched a dice: score is {dice_launch.score}!",
         )
         self.assertIsNotNone(dice_launch.score)
 
