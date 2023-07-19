@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 
 import character.models as cmodels
 import game.models as gmodels
+import master.models as mmodels
 
 
 class UserFactory(factory.django.DjangoModelFactory):
@@ -34,3 +35,11 @@ class CharacterFactory(factory.django.DjangoModelFactory):
 
     name = factory.Sequence(lambda n: f"character{n}")
     user = factory.SubFactory(UserFactory)
+
+
+class StoryFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = mmodels.Story
+        django_get_or_create = ("title",)
+
+    title = "My story"

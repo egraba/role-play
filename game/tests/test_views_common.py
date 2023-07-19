@@ -9,7 +9,6 @@ from django.urls import reverse
 import character.models as cmodels
 import game.models as gmodels
 import game.views.common as gvcommon
-import master.models as mmodels
 import utils.testing.factories as utfactories
 import utils.testing.random as utrandom
 import utils.testing.users as utusers
@@ -346,17 +345,10 @@ class GameViewTest(TestCase):
 class GameCreateViewTest(TestCase):
     path_name = "game-create"
 
-    @classmethod
-    def setUpTestData(cls):
-        user = User.objects.create(username=utrandom.ascii_letters_string(5))
-        user.set_password("pwd")
-        user.save()
-        mmodels.Story.objects.create(title=utrandom.ascii_letters_string(20))
-
     def setUp(self):
-        self.user = User.objects.last()
+        self.user = utfactories.UserFactory(username="game-create")
         self.client.login(username=self.user.username, password="pwd")
-        self.story = mmodels.Story.objects.last()
+        self.story = utfactories.StoryFactory()
 
     def test_view_mapping(self):
         response = self.client.get(reverse(self.path_name, args=(self.story.slug,)))
