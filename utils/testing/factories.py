@@ -57,6 +57,13 @@ class PendingActionFactory(factory.django.DjangoModelFactory):
     )
 
 
+class DiceLaunchFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = gmodels.DiceLaunch
+
+    score = factory.fuzzy.FuzzyInteger(1, 20)
+
+
 class CharacterFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = cmodels.Character

@@ -179,35 +179,28 @@ class DiceLaunchSuccessViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create(username=utrandom.ascii_letters_string(5))
-        user.set_password("pwd")
-        user.save()
-
-        game = gmodels.Game.objects.create()
-        character = cmodels.Character.objects.create(
-            name=utrandom.ascii_letters_string(100),
-            race=random.choice(cmodels.Character.Race.choices)[0],
+        game = utfactories.GameFactory()
+        character = utfactories.CharacterFactory()
+        gmodels.Player.objects.create(
+            game=game, character=character, user=character.user
         )
-        gmodels.Player.objects.create(game=game, character=character)
-        gmodels.DiceLaunch.objects.create(
-            game=game, character=character, score=random.randint(1, 20)
-        )
+        utfactories.DiceLaunchFactory(game=game, character=character)
 
     def setUp(self):
         self.user = User.objects.last()
         self.client.login(username=self.user.username, password="pwd")
+        self.game = gmodels.Game.objects.last()
+        self.character = cmodels.Character.objects.last()
+        self.dice_launch = gmodels.DiceLaunch.objects.last()
 
     def test_view_mapping(self):
-        game = gmodels.Game.objects.last()
-        character = cmodels.Character.objects.last()
-        dice_launch = gmodels.DiceLaunch.objects.last()
         response = self.client.get(
             reverse(
                 self.path_name,
                 args=(
-                    game.id,
-                    character.id,
-                    dice_launch.id,
+                    self.game.id,
+                    self.character.id,
+                    self.dice_launch.id,
                 ),
             )
         )
@@ -216,16 +209,13 @@ class DiceLaunchSuccessViewTest(TestCase):
         )
 
     def test_template_mapping(self):
-        game = gmodels.Game.objects.last()
-        character = cmodels.Character.objects.last()
-        dice_launch = gmodels.DiceLaunch.objects.last()
         response = self.client.get(
             reverse(
                 self.path_name,
                 args=(
-                    game.id,
-                    character.id,
-                    dice_launch.id,
+                    self.game.id,
+                    self.character.id,
+                    self.dice_launch.id,
                 ),
             )
         )
@@ -233,15 +223,13 @@ class DiceLaunchSuccessViewTest(TestCase):
 
     def test_game_not_exists(self):
         game_id = random.randint(10000, 99999)
-        character = cmodels.Character.objects.last()
-        dice_launch = gmodels.DiceLaunch.objects.last()
         response = self.client.get(
             reverse(
                 self.path_name,
                 args=(
                     game_id,
-                    character.id,
-                    dice_launch.id,
+                    self.character.id,
+                    self.dice_launch.id,
                 ),
             )
         )
@@ -249,16 +237,14 @@ class DiceLaunchSuccessViewTest(TestCase):
         self.assertRaises(Http404)
 
     def test_character_not_exists(self):
-        game = gmodels.Game.objects.last()
         character_id = random.randint(10000, 99999)
-        dice_launch = gmodels.DiceLaunch.objects.last()
         response = self.client.get(
             reverse(
                 self.path_name,
                 args=(
-                    game.id,
+                    self.game.id,
                     character_id,
-                    dice_launch.id,
+                    self.dice_launch.id,
                 ),
             )
         )
@@ -266,25 +252,22 @@ class DiceLaunchSuccessViewTest(TestCase):
         self.assertRaises(Http404)
 
     def test_view_content(self):
-        game = gmodels.Game.objects.last()
-        character = cmodels.Character.objects.last()
-        dice_launch = gmodels.DiceLaunch.objects.last()
         response = self.client.get(
             reverse(
                 self.path_name,
                 args=(
-                    game.id,
-                    character.id,
-                    dice_launch.id,
+                    self.game.id,
+                    self.character.id,
+                    self.dice_launch.id,
                 ),
             )
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context["game"], game)
-        self.assertEqual(response.context["character"], character)
-        self.assertEqual(response.context["dice_launch"], dice_launch)
+        self.assertEqual(response.context["game"], self.game)
+        self.assertEqual(response.context["character"], self.character)
+        self.assertEqual(response.context["dice_launch"], self.dice_launch)
         self.assertContains(
-            response, f"{character.name}, your score is: {dice_launch.score}!"
+            response, f"{self.character.name}, your score is: {self.dice_launch.score}!"
         )
 
 
