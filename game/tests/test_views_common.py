@@ -11,7 +11,6 @@ import game.models as gmodels
 import game.views.common as gvcommon
 import utils.testing.factories as utfactories
 import utils.testing.random as utrandom
-import utils.testing.users as utusers
 
 
 class IndexViewTest(TestCase):
@@ -386,12 +385,8 @@ class GameCreateErrorViewTest(TestCase):
     path_name = "game-create-error"
     fake_slug = utrandom.ascii_letters_string(5)
 
-    @classmethod
-    def setUpTestData(cls):
-        utusers.create_user()
-
     def setUp(self):
-        self.user = User.objects.last()
+        self.user = utfactories.UserFactory(username="game-create-error")
         self.client.login(username=self.user.username, password="pwd")
 
     def test_view_mapping(self):
