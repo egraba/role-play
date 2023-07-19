@@ -153,36 +153,32 @@ class GameViewTest(TestCase):
     def setUp(self):
         self.user = User.objects.get(username="master")
         self.client.login(username=self.user.username, password="pwd")
+        self.game = gmodels.Game.objects.last()
 
     def test_view_mapping(self):
-        game = gmodels.Game.objects.last()
-        response = self.client.get(game.get_absolute_url())
+        response = self.client.get(self.game.get_absolute_url())
         self.assertEqual(response.resolver_match.func.view_class, gvcommon.GameView)
 
     def test_template_mapping(self):
-        game = gmodels.Game.objects.last()
-        response = self.client.get(game.get_absolute_url())
+        response = self.client.get(self.game.get_absolute_url())
         self.assertTemplateUsed(response, "game/game.html")
 
     def test_pagination_size(self):
-        game = gmodels.Game.objects.last()
-        response = self.client.get(game.get_absolute_url())
+        response = self.client.get(self.game.get_absolute_url())
         self.assertEqual(response.status_code, 200)
         self.assertTrue("is_paginated" in response.context)
         self.assertTrue(response.context["is_paginated"])
         self.assertEqual(len(response.context["event_list"]), 20)
 
     def test_pagination_size_next_page(self):
-        game = gmodels.Game.objects.last()
-        response = self.client.get(game.get_absolute_url() + "?page=2")
+        response = self.client.get(self.game.get_absolute_url() + "?page=2")
         self.assertEqual(response.status_code, 200)
         self.assertTrue("is_paginated" in response.context)
         self.assertTrue(response.context["is_paginated"])
         self.assertEqual(len(response.context["event_list"]), 13)  # Inherited events
 
     def test_ordering_character_name_ascending(self):
-        game = gmodels.Game.objects.last()
-        response = self.client.get(game.get_absolute_url())
+        response = self.client.get(self.game.get_absolute_url())
         self.assertEqual(response.status_code, 200)
         last_name = ""
         for character in response.context["character_list"]:
@@ -193,8 +189,7 @@ class GameViewTest(TestCase):
                 last_name = character.name.upper()
 
     def test_ordering_event_date_descending(self):
-        game = gmodels.Game.objects.last()
-        response = self.client.get(game.get_absolute_url())
+        response = self.client.get(self.game.get_absolute_url())
         self.assertEqual(response.status_code, 200)
         last_date = 0
         for event in response.context["event_list"]:
@@ -211,25 +206,23 @@ class GameViewTest(TestCase):
         self.assertRaises(Http404)
 
     def test_game_last_tale(self):
-        game = gmodels.Game.objects.last()
-        tale = gmodels.Tale.objects.filter(game=game).last()
-        response = self.client.get(game.get_absolute_url())
+        tale = gmodels.Tale.objects.filter(game=self.game).last()
+        response = self.client.get(self.game.get_absolute_url())
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context["tale"], tale)
 
     def test_context_data_master(self):
-        game = gmodels.Game.objects.last()
-        response = self.client.get(game.get_absolute_url())
+        response = self.client.get(self.game.get_absolute_url())
         self.assertEqual(response.status_code, 200)
 
-        tale_list = gmodels.Tale.objects.filter(game=game)
+        tale_list = gmodels.Tale.objects.filter(game=self.game)
         tale = tale_list.last()
         self.assertEqual(response.context["tale"], tale)
-        character_list = cmodels.Character.objects.filter(player__game=game)
+        character_list = cmodels.Character.objects.filter(player__game=self.game)
         self.assertQuerySetEqual(
             list(response.context["character_list"]), character_list
         )
-        event_list = gmodels.Event.objects.filter(game=game)
+        event_list = gmodels.Event.objects.filter(game=self.game)
         # issubset() is used because of pagination.
         self.assertTrue(set(response.context["event_list"]).issubset(set(event_list)))
         with self.assertRaises(KeyError):
@@ -240,40 +233,38 @@ class GameViewTest(TestCase):
     def test_context_data_player(self):
         self.client.logout()
         # Log as a player
-        game = gmodels.Game.objects.last()
-        character = cmodels.Character.objects.filter(player__game=game).last()
+        character = cmodels.Character.objects.filter(player__game=self.game).last()
         user = character.user
         self.client.login(username=user.username, password="pwd")
-        response = self.client.get(game.get_absolute_url())
+        response = self.client.get(self.game.get_absolute_url())
         self.assertEqual(response.status_code, 200)
 
-        tale_list = gmodels.Tale.objects.filter(game=game)
+        tale_list = gmodels.Tale.objects.filter(game=self.game)
         tale = tale_list.last()
         self.assertEqual(response.context["tale"], tale)
-        character_list = cmodels.Character.objects.filter(player__game=game)
+        character_list = cmodels.Character.objects.filter(player__game=self.game)
         self.assertQuerySetEqual(
             list(response.context["character_list"]), character_list
         )
-        event_list = gmodels.Event.objects.filter(game=game)
+        event_list = gmodels.Event.objects.filter(game=self.game)
         # issubset() is used because of pagination.
         self.assertTrue(set(response.context["event_list"]).issubset(set(event_list)))
-        player = gmodels.Player.objects.get(game=game, user=user)
+        player = gmodels.Player.objects.get(game=self.game, user=user)
         self.assertEqual(response.context["player"], player)
 
     def test_content_character_is_current_user(self):
-        player = gmodels.Player.objects.last()
-        character = cmodels.Character.objects.get(player=player)
-        player.user = self.user
-        player.save()
-        game = gmodels.Game.objects.get(player__character=character)
-        response = self.client.get(game.get_absolute_url())
+        self.client.logout()
+        # Log as a player
+        character = cmodels.Character.objects.filter(player__game=self.game).last()
+        user = character.user
+        self.client.login(username=user.username, password="pwd")
+        response = self.client.get(self.game.get_absolute_url())
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "(you)")
 
     def test_content_no_events(self):
-        game = gmodels.Game.objects.last()
-        gmodels.Event.objects.filter(game=game).delete()
-        response = self.client.get(game.get_absolute_url())
+        gmodels.Event.objects.filter(game=self.game).delete()
+        response = self.client.get(self.game.get_absolute_url())
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "The story did not start yet...")
 
