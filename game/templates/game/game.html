@@ -97,7 +97,7 @@
             {% endfor %}
         </div>
 
-        {% if game.master.id == user.id %}
+        {% if game.master.user.id == user.id %}
             <div class="rpgui-center inline">
                 {% if game.is_under_preparation %}
                     <a href={% url 'game-invite-character' game.id %}>
@@ -135,7 +135,7 @@
 
         {% if game.is_ongoing %}
             <div id="actions" class="rpgui-center">
-                {% if game.master.id == user.id %}
+                {% if game.master.user.id == user.id %}
                     <a href={% url 'tale-create' game.id %}>
                         <button class="rpgui-button"><p>Continue the story</p></button>
                     </a>

@@ -55,10 +55,7 @@ class IndexViewTest(TestCase):
 
     def test_content_logged_user_existing_character(self):
         user = utfactories.UserFactory()
-        character = cmodels.Character.objects.create(
-            name=utrandom.ascii_letters_string(8)
-        )
-        gmodels.Player.objects.create(character=character, user=user)
+        character = utfactories.CharacterFactory(user=user)
         self.client.login(username=user.username, password="pwd")
 
         response = self.client.get(reverse(self.path_name))
@@ -77,15 +74,10 @@ class GameListViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        user = utfactories.UserFactory()
-
+        utfactories.UserFactory()
         number_of_games = 22
         for i in range(number_of_games):
-            gmodels.Game.objects.create(
-                name=utrandom.printable_string(20),
-                start_date=datetime.now(tz=timezone.utc),
-                master=user,
-            )
+            utfactories.GameFactory(start_date=datetime.now(tz=timezone.utc))
 
     def test_view_mapping(self):
         response = self.client.get(reverse(self.path_name))
@@ -144,9 +136,9 @@ class GameViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        user = utfactories.UserFactory()
+        user = utfactories.UserFactory(username="master")
 
-        game = gmodels.Game.objects.create(name="game1", master=user)
+        game = gmodels.Game.objects.create(name="game1")
         number_of_events = 22
         for i in range(number_of_events):
             gmodels.Event.objects.create(
@@ -163,6 +155,7 @@ class GameViewTest(TestCase):
         for i in range(number_of_characters):
             character = cmodels.Character.objects.create(
                 name=f"{game.name} character{i}",
+                user=user,
                 race=random.choice(cmodels.Character.Race.choices)[0],
             )
             user = User.objects.create(username=f"user{i}")
@@ -208,10 +201,10 @@ class GameViewTest(TestCase):
         game = gmodels.Game.objects.last()
         number_of_characters = 3
         for i in range(number_of_characters):
-            character = cmodels.Character.objects.create(
-                name=utrandom.ascii_letters_string(7)
+            character = utfactories.CharacterFactory()
+            gmodels.Player.objects.create(
+                character=character, game=game, user=character.user
             )
-            gmodels.Player.objects.create(character=character, game=game)
         response = self.client.get(reverse("game", args=[game.id]))
         self.assertEqual(response.status_code, 200)
         last_name = ""
@@ -252,8 +245,10 @@ class GameViewTest(TestCase):
         for i in range(number_of_games):
             game = gmodels.Game.objects.create(name=f"other_game{i}")
             gmodels.Tale.objects.create(game=game)
-            character = cmodels.Character.objects.create(name=f"character{i}")
-            gmodels.Player.objects.create(game=game, character=character)
+            character = utfactories.CharacterFactory(name=f"character{i}")
+            gmodels.Player.objects.create(
+                game=game, character=character, user=character.user
+            )
             gmodels.Event.objects.create(game=game)
             gmodels.PendingAction.objects.create(game=game, character=character)
 
@@ -281,8 +276,10 @@ class GameViewTest(TestCase):
         for i in range(number_of_games):
             game = gmodels.Game.objects.create(name=f"other_game{i}")
             gmodels.Tale.objects.create(game=game)
-            character = cmodels.Character.objects.create(name=f"character{i}")
-            gmodels.Player.objects.create(game=game, character=character)
+            character = utfactories.CharacterFactory(name=f"character{i}")
+            gmodels.Player.objects.create(
+                game=game, character=character, user=character.user
+            )
             gmodels.Event.objects.create(game=game)
             gmodels.PendingAction.objects.create(game=game, character=character)
 
@@ -326,9 +323,8 @@ class GameViewTest(TestCase):
         self.assertContains(response, "The story did not start yet...")
 
     def test_content_game_is_finished(self):
-        game = gmodels.Game.objects.create(
-            master=self.user, status=gmodels.Game.Status.FINISHED
-        )
+        game = gmodels.Game.objects.create(status=gmodels.Game.Status.FINISHED)
+        gmodels.Master.objects.create(game=game, user=self.user)
         response = self.client.get(game.get_absolute_url())
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "The game is finished.")
@@ -382,7 +378,7 @@ class GameCreateViewTest(TestCase):
         self.assertRedirects(response, game.get_absolute_url())
         self.assertEqual(game.name, self.story.title)
         self.assertEqual(game.status, "P")
-        self.assertEqual(game.master, self.user)
+        self.assertEqual(game.master.user, self.user)
         tale = gmodels.Tale.objects.last()
         self.assertEqual(tale.game, game)
         self.assertEqual(tale.message, "The Master created the story.")
