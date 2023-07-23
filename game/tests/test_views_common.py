@@ -133,9 +133,7 @@ class GameViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        utfactories.UserFactory(username="master")
-
-        game = utfactories.GameFactory()
+        game = utfactories.GameFactory(master__user__username="master")
         number_of_events = 22
         for i in range(number_of_events):
             utfactories.EventFactory(game=game)
@@ -269,9 +267,10 @@ class GameViewTest(TestCase):
         self.assertContains(response, "The story did not start yet...")
 
     def test_content_game_is_finished(self):
-        game = gmodels.Game.objects.create(status=gmodels.Game.Status.FINISHED)
-        gmodels.Master.objects.create(game=game, user=self.user)
-        response = self.client.get(game.get_absolute_url())
+        self.game.start()
+        self.game.end()
+        self.game.save()
+        response = self.client.get(self.game.get_absolute_url())
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "The game is finished.")
 

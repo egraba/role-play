@@ -97,7 +97,7 @@
             {% endfor %}
         </div>
 
-        {% if game.master.user.id == user.id %}
+        {% if user.is_authenticated and user == game.master.user %}
             <div class="rpgui-center inline">
                 {% if game.is_under_preparation %}
                     <a href={% url 'game-invite-character' game.id %}>

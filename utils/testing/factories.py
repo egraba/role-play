@@ -15,13 +15,14 @@ class UserFactory(factory.django.DjangoModelFactory):
         django_get_or_create = ("username",)
 
     username = factory.fuzzy.FuzzyText()
+    password = factory.django.Password("pwd")
 
-    @classmethod
-    def _create(cls, model_class, *args, **kwargs):
-        user = model_class(*args, **kwargs)
-        user.set_password("pwd")
-        user.save()
-        return user
+
+class MasterFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = gmodels.Master
+
+    user = factory.SubFactory(UserFactory)
 
 
 class GameFactory(factory.django.DjangoModelFactory):
@@ -29,6 +30,7 @@ class GameFactory(factory.django.DjangoModelFactory):
         model = gmodels.Game
 
     name = factory.Sequence(lambda n: f"game{n}")
+    master = factory.RelatedFactory(MasterFactory, factory_related_name="game")
 
 
 class EventFactory(factory.django.DjangoModelFactory):
