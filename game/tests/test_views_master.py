@@ -13,6 +13,7 @@ import character.models as cmodels
 import game.forms as gforms
 import game.models as gmodels
 import game.views.master as gvmaster
+import utils.testing.factories as utfactories
 import utils.testing.random as utrandom
 
 
@@ -21,64 +22,49 @@ class CharacterInviteViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create(username=utrandom.ascii_letters_string(5))
-        user.set_password("pwd")
-        user.save()
-
-        game = gmodels.Game.objects.create(master=user)
-        number_of_players_with_game = 5
-        number_of_players_without_game = 12
-        for i in range(number_of_players_with_game):
-            character = cmodels.Character.objects.create(
-                name=utrandom.ascii_letters_string(10),
-                race=random.choice(cmodels.Character.Race.choices)[0],
-            )
-            gmodels.Player.objects.create(game=game, character=character)
-        for i in range(number_of_players_without_game):
-            character = cmodels.Character.objects.create(
-                name=utrandom.ascii_letters_string(10),
-                race=random.choice(cmodels.Character.Race.choices)[0],
-                xp=random.randint(1, 100),
-            )
-            gmodels.Player.objects.create(character=character)
+        game = utfactories.GameFactory(master__user__username="master")
+        number_of_characters_in_a_game = 5
+        number_of_characters_not_in_a_game = 12
+        for i in range(number_of_characters_in_a_game):
+            utfactories.PlayerFactory(game=game)
+        for i in range(number_of_characters_not_in_a_game):
+            utfactories.CharacterFactory()
 
     def setUp(self):
-        self.user = User.objects.last()
+        self.user = User.objects.get(username="master")
         self.client.login(username=self.user.username, password="pwd")
+        self.game = gmodels.Game.objects.last()
 
     def test_view_mapping(self):
-        game = gmodels.Game.objects.last()
-        response = self.client.get(reverse(self.path_name, args=[game.id]))
+        response = self.client.get(reverse(self.path_name, args=(self.game.id,)))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.resolver_match.func.view_class, gvmaster.CharacterInviteView
         )
 
     def test_template_mapping(self):
-        game = gmodels.Game.objects.last()
-        response = self.client.get(reverse(self.path_name, args=[game.id]))
+        response = self.client.get(reverse(self.path_name, args=(self.game.id,)))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "game/character_invite.html")
 
     def test_pagination_size(self):
-        game = gmodels.Game.objects.last()
-        response = self.client.get(reverse(self.path_name, args=[game.id]))
+        response = self.client.get(reverse(self.path_name, args=(self.game.id,)))
         self.assertEqual(response.status_code, 200)
         self.assertTrue("is_paginated" in response.context)
         self.assertTrue(response.context["is_paginated"])
         self.assertEqual(len(response.context["character_list"]), 10)
 
     def test_pagination_size_next_page(self):
-        game = gmodels.Game.objects.last()
-        response = self.client.get(reverse(self.path_name, args=[game.id]) + "?page=2")
+        response = self.client.get(
+            reverse(self.path_name, args=(self.game.id,)) + "?page=2"
+        )
         self.assertEqual(response.status_code, 200)
         self.assertTrue("is_paginated" in response.context)
         self.assertTrue(response.context["is_paginated"])
         self.assertEqual(len(response.context["character_list"]), 2)
 
     def test_ordering(self):
-        game = gmodels.Game.objects.last()
-        response = self.client.get(reverse(self.path_name, args=[game.id]))
+        response = self.client.get(reverse(self.path_name, args=(self.game.id,)))
         self.assertEqual(response.status_code, 200)
         last_xp = 0
         for character in response.context["character_list"]:
@@ -90,26 +76,20 @@ class CharacterInviteViewTest(TestCase):
 
     def test_game_not_exists(self):
         game_id = random.randint(10000, 99999)
-        response = self.client.get(reverse(self.path_name, args=[game_id]))
+        response = self.client.get(reverse(self.path_name, args=(game_id,)))
         self.assertEqual(response.status_code, 404)
         self.assertRaises(Http404)
 
     def test_context_data(self):
-        game = gmodels.Game.objects.last()
         character_list = cmodels.Character.objects.filter(player__game=None)
-        response = self.client.get(reverse(self.path_name, args=(game.id,)))
+        response = self.client.get(reverse(self.path_name, args=(self.game.id,)))
         self.assertTrue(
             set(response.context["character_list"]).issubset(character_list)
         )
 
     def test_context_data_all_characters_already_assigned(self):
-        game = gmodels.Game.objects.last()
-        character_list = cmodels.Character.objects.filter(player__game=None)
-        for character in character_list:
-            player = gmodels.Player.objects.get(character=character)
-            player.game = game
-            player.save()
-        response = self.client.get(reverse(self.path_name, args=(game.id,)))
+        cmodels.Character.objects.filter(player=None).delete()
+        response = self.client.get(reverse(self.path_name, args=(self.game.id,)))
         self.assertFalse(response.context["character_list"])
 
 

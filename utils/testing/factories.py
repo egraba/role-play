@@ -74,6 +74,14 @@ class CharacterFactory(factory.django.DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
 
 
+class PlayerFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = gmodels.Player
+
+    character = factory.SubFactory(CharacterFactory)
+    user = factory.SubFactory(UserFactory)
+
+
 class StoryFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = mmodels.Story
