@@ -28,14 +28,14 @@ class GameContextMixin(ContextMixin, View):
         return context
 
     def is_user_master(self):
-        return self.request.user == self.game.master
+        return self.request.user == self.game.master.user
 
 
 class GameStatusControlMixin(UpdateView):
     model = gmodels.Game
 
     def is_user_master(self):
-        return self.request.user == self.get_object().master
+        return self.request.user == self.get_object().master.user
 
 
 class CharacterContextMixin(ContextMixin, View):
