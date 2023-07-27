@@ -45,7 +45,9 @@ class GameView(LoginRequiredMixin, ListView, gmixins.GameContextMixin):
             player__game=self.game.id
         ).order_by("name")
         try:
-            context["player"] = gmodels.Player.objects.get(user=self.request.user)
+            context["player"] = gmodels.Player.objects.get(
+                character__user=self.request.user
+            )
         except ObjectDoesNotExist:
             pass
         return context

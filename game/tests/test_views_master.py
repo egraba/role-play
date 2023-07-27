@@ -98,29 +98,24 @@ class CharacterInviteConfirmViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create(username=utrandom.ascii_letters_string(5))
-        user.set_password("pwd")
-        user.save()
-
-        game = gmodels.Game.objects.create(master=user)
-        character = cmodels.Character.objects.create(
-            name=utrandom.ascii_letters_string(5)
-        )
-        gmodels.Player.objects.create(game=game, character=character)
-        character = cmodels.Character.objects.create(
-            name=utrandom.ascii_letters_string(5)
-        )
-        gmodels.Player.objects.create(game=game, character=character)
+        game = utfactories.GameFactory(master__user__username="master")
+        utfactories.PlayerFactory(game=game)
 
     def setUp(self):
-        self.user = User.objects.last()
+        self.user = User.objects.get(username="master")
         self.client.login(username=self.user.username, password="pwd")
+        self.game = gmodels.Game.objects.last()
+        self.character = cmodels.Character.objects.get(player__game=self.game)
 
     def test_view_mapping(self):
-        game = gmodels.Game.objects.last()
-        character = cmodels.Character.objects.last()
         response = self.client.get(
-            reverse(self.path_name, args=[game.id, character.id])
+            reverse(
+                self.path_name,
+                args=(
+                    self.game.id,
+                    self.character.id,
+                ),
+            )
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
@@ -128,36 +123,49 @@ class CharacterInviteConfirmViewTest(TestCase):
         )
 
     def test_template_mapping(self):
-        game = gmodels.Game.objects.last()
-        character = cmodels.Character.objects.last()
         response = self.client.get(
-            reverse(self.path_name, args=[game.id, character.id])
+            reverse(
+                self.path_name,
+                args=(
+                    self.game.id,
+                    self.character.id,
+                ),
+            )
         )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "game/character_invite_confirm.html")
 
     def test_game_not_exists(self):
         game_id = random.randint(10000, 99999)
-        character = cmodels.Character.objects.last()
         response = self.client.get(
-            reverse(self.path_name, args=[game_id, character.id])
+            reverse(
+                self.path_name,
+                args=(
+                    game_id,
+                    self.character.id,
+                ),
+            )
         )
         self.assertEqual(response.status_code, 404)
         self.assertRaises(Http404)
 
     def test_character_added_to_game(self):
-        game = gmodels.Game.objects.last()
-        character = cmodels.Character.objects.last()
+        character = utfactories.CharacterFactory()
         response = self.client.post(
-            reverse(self.path_name, args=[game.id, character.id])
+            reverse(
+                self.path_name,
+                args=(
+                    self.game.id,
+                    character.id,
+                ),
+            )
         )
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse("game", args=[game.id]))
-        character = cmodels.Character.objects.last()
-        self.assertEqual(character.player.game, game)
+        self.assertRedirects(response, reverse("game", args=(self.game.id,)))
+        self.assertEqual(self.character.player.game, self.game)
         event = gmodels.Event.objects.last()
         self.assertLessEqual(event.date.second - timezone.now().second, 2)
-        self.assertEqual(event.game, game)
+        self.assertEqual(event.game, self.game)
         self.assertEqual(event.message, f"{character} was added to the game.")
 
 

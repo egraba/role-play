@@ -9,7 +9,7 @@ class GameAdmin(admin.ModelAdmin):
 
 
 class PlayerAdmin(admin.ModelAdmin):
-    fields = ["user", "character", "game"]
+    fields = ["character", "game"]
     list_display = fields
 
 

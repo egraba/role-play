@@ -41,9 +41,7 @@ class CharacterInviteConfirmView(
 
     def post(self, request, *args, **kwargs):
         character = self.get_object()
-        gmodels.Player.objects.create(
-            character=character, user=character.user, game=self.game
-        )
+        gmodels.Player.objects.create(character=character, game=self.game)
         event = gmodels.Event.objects.create(game=self.game)
         event.date = timezone.now()
         event.message = f"{character} was added to the game."

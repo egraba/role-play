@@ -79,7 +79,6 @@ class PlayerFactory(factory.django.DjangoModelFactory):
         model = gmodels.Player
 
     character = factory.SubFactory(CharacterFactory)
-    user = factory.SubFactory(UserFactory)
 
 
 class StoryFactory(factory.django.DjangoModelFactory):

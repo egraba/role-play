@@ -72,7 +72,6 @@ class Master(models.Model):
 
 
 class Player(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
     character = models.OneToOneField(cmodels.Character, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
 
