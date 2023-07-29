@@ -119,7 +119,7 @@ class TaleCreateView(UserPassesTestMixin, FormView, gmixins.EventContextMixin):
         send_mail(
             f"[{self.game}] The Master updated the story.",
             f"The Master said:\n{tale.content}",
-            gutils.get_master_email(self.game.master.username),
+            gutils.get_master_email(self.game.master.user.username),
             gutils.get_players_emails(game=self.game),
         )
         send_event("game", "message", {"game": self.game.id, "refresh": "tale"})

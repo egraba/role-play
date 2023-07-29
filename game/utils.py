@@ -19,7 +19,7 @@ def get_master_email(username):
 def get_players_emails(game):
     players = gmodels.Player.objects.filter(game=game)
     return {
-        player.user.email
+        player.character.user.email
         for player in players
-        if player.user is not None and player.user.email != ""
+        if player.character.user is not None and player.character.user.email != ""
     }

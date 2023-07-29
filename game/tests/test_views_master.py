@@ -301,68 +301,56 @@ class TaleCreateViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create(username="user-tale")
-        user.set_password("pwd")
-        user.save()
-        User.objects.create(username=utrandom.ascii_letters_string(5))
-        User.objects.create(username=utrandom.ascii_letters_string(5))
-
-        game = gmodels.Game.objects.create(name="game-tale", master=user)
-        character = cmodels.Character.objects.create(
-            name=utrandom.ascii_letters_string(5)
-        )
-        gmodels.Player.objects.create(game=game, character=character)
-        character = cmodels.Character.objects.create(
-            name=utrandom.ascii_letters_string(5)
-        )
-        gmodels.Player.objects.create(game=game, character=character)
+        game = utfactories.GameFactory(master__user__username="master")
+        number_of_players = 3
+        for _ in range(number_of_players):
+            utfactories.PlayerFactory(game=game)
         game.start()
         game.save()
 
     def setUp(self):
-        self.user = User.objects.get(username="user-tale")
+        self.user = User.objects.get(username="master")
         self.client.login(username=self.user.username, password="pwd")
+        self.game = gmodels.Game.objects.last()
+        self.character = cmodels.Character.objects.last()
 
     def tearDown(self):
         cache.clear()
 
     def test_view_mapping(self):
-        game = gmodels.Game.objects.last()
-        response = self.client.get(reverse(self.path_name, args=[game.id]))
+        response = self.client.get(reverse(self.path_name, args=(self.game.id,)))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.resolver_match.func.view_class, gvmaster.TaleCreateView
         )
 
     def test_template_mapping(self):
-        game = gmodels.Game.objects.last()
-        response = self.client.get(reverse(self.path_name, args=[game.id]))
+        response = self.client.get(reverse(self.path_name, args=(self.game.id,)))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "game/tale_create.html")
 
     def test_game_not_exists(self):
         game_id = random.randint(10000, 99999)
-        response = self.client.get(reverse(self.path_name, args=[game_id]))
+        response = self.client.get(reverse(self.path_name, args=(game_id,)))
         self.assertEqual(response.status_code, 404)
         self.assertRaises(Http404)
 
     def test_context_data(self):
-        game = gmodels.Game.objects.last()
-        response = self.client.get(reverse(self.path_name, args=[game.id]))
+        response = self.client.get(reverse(self.path_name, args=(self.game.id,)))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context["game"], game)
+        self.assertEqual(response.context["game"], self.game)
 
     def test_game_is_under_preparation(self):
-        game = gmodels.Game.objects.create()
-        response = self.client.get(reverse(self.path_name, args=[game.id]))
+        self.game.status = "P"
+        self.game.save()
+        response = self.client.get(reverse(self.path_name, args=(self.game.id,)))
         self.assertEqual(response.status_code, 403)
         self.assertRaises(PermissionDenied)
 
     def test_game_is_finished(self):
-        game = gmodels.Game.objects.last()
-        game.end()
-        game.save()
-        response = self.client.get(reverse(self.path_name, args=[game.id]))
+        self.game.end()
+        self.game.save()
+        response = self.client.get(reverse(self.path_name, args=(self.game.id,)))
         self.assertEqual(response.status_code, 403)
         self.assertRaises(PermissionDenied)
 
@@ -371,17 +359,16 @@ class TaleCreateViewTest(TestCase):
         data = {"content": f"{content}"}
         form = gforms.CreateTaleForm(data)
         self.assertTrue(form.is_valid())
-        game = gmodels.Game.objects.get(name="game-tale")
 
         response = self.client.post(
-            reverse(self.path_name, args=[game.id]), data=form.cleaned_data
+            reverse(self.path_name, args=(self.game.id,)), data=form.cleaned_data
         )
         self.assertEqual(response.status_code, 302)
-        tale = gmodels.Tale.objects.filter(game=game).last()
-        self.assertEqual(tale.game, game)
+        tale = gmodels.Tale.objects.filter(game=self.game).last()
+        self.assertEqual(tale.game, self.game)
         self.assertEqual(tale.message, "The Master updated the story.")
         self.assertEqual(tale.content, form.cleaned_data["content"])
-        self.assertRedirects(response, reverse("game", args=[game.id]))
+        self.assertRedirects(response, self.game.get_absolute_url())
 
 
 class PendingActionCreateViewTest(TestCase):
