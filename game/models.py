@@ -37,8 +37,7 @@ class Game(models.Model):
         return reverse("game", args=(self.id,))
 
     def can_start(self):
-        number_of_players = self.player_set.count()
-        return number_of_players >= 2
+        return self.player_set.count() >= 2
 
     @transition(
         field=status,
@@ -52,6 +51,7 @@ class Game(models.Model):
     @transition(field=status, source=Status.ONGOING, target=Status.FINISHED)
     def end(self):
         self.end_date = timezone.now()
+        self.player_set.all().delete()
 
     def is_under_preparation(self):
         return self.status == self.Status.UNDER_PREPARATION
