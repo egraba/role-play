@@ -652,93 +652,104 @@ class DamageViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create(username=utrandom.ascii_letters_string(5))
-        user.set_password("pwd")
-        user.save()
-
-        game = gmodels.Game.objects.create(
-            name=utrandom.printable_string(20), master=user
-        )
-        character = cmodels.Character.objects.create(
-            name=utrandom.ascii_letters_string(5)
-        )
-        gmodels.Player.objects.create(game=game, character=character)
-        character = cmodels.Character.objects.create(
-            name=utrandom.ascii_letters_string(5)
-        )
-        gmodels.Player.objects.create(game=game, character=character)
+        game = utfactories.GameFactory(master__user__username="master")
+        number_of_players = 3
+        for _ in range(number_of_players):
+            utfactories.PlayerFactory(game=game)
         game.start()
         game.save()
 
     def setUp(self):
-        self.user = User.objects.last()
+        self.user = User.objects.get(username="master")
         self.client.login(username=self.user.username, password="pwd")
+        self.game = gmodels.Game.objects.last()
+        self.character = cmodels.Character.objects.last()
 
     def tearDown(self):
         cache.clear()
 
     def test_view_mapping(self):
-        game = gmodels.Game.objects.last()
-        character = cmodels.Character.objects.last()
         response = self.client.get(
-            reverse(self.path_name, args=[game.id, character.id])
+            reverse(
+                self.path_name,
+                args=(
+                    self.game.id,
+                    self.character.id,
+                ),
+            )
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.resolver_match.func.view_class, gvmaster.DamageView)
 
     def test_template_mapping(self):
-        game = gmodels.Game.objects.last()
-        character = cmodels.Character.objects.last()
         response = self.client.get(
-            reverse(self.path_name, args=[game.id, character.id])
+            reverse(
+                self.path_name,
+                args=(
+                    self.game.id,
+                    self.character.id,
+                ),
+            )
         )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "game/damage.html")
 
     def test_game_not_exists(self):
         game_id = random.randint(10000, 99999)
-        character = cmodels.Character.objects.last()
         response = self.client.get(
-            reverse(self.path_name, args=[game_id, character.id])
+            reverse(self.path_name, args=[game_id, self.character.id])
         )
         self.assertEqual(response.status_code, 404)
         self.assertRaises(Http404)
 
     def test_character_not_exists(self):
-        game = gmodels.Game.objects.last()
         character_id = random.randint(10000, 99999)
         response = self.client.get(
-            reverse(self.path_name, args=[game.id, character_id])
+            reverse(self.path_name, args=[self.game.id, character_id])
         )
         self.assertEqual(response.status_code, 404)
         self.assertRaises(Http404)
 
     def test_context_data(self):
-        game = gmodels.Game.objects.last()
-        character = cmodels.Character.objects.last()
         response = self.client.get(
-            reverse(self.path_name, args=[game.id, character.id])
+            reverse(
+                self.path_name,
+                args=(
+                    self.game.id,
+                    self.character.id,
+                ),
+            )
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context["game"], game)
-        self.assertEqual(response.context["character"], character)
+        self.assertEqual(response.context["game"], self.game)
+        self.assertEqual(response.context["character"], self.character)
 
     def test_game_is_under_preparation(self):
-        game = gmodels.Game.objects.create()
-        character = cmodels.Character.objects.last()
+        self.game.status = "P"
+        self.game.save()
         response = self.client.get(
-            reverse(self.path_name, args=[game.id, character.id])
+            reverse(
+                self.path_name,
+                args=(
+                    self.game.id,
+                    self.character.id,
+                ),
+            )
         )
         self.assertEqual(response.status_code, 403)
         self.assertRaises(PermissionDenied)
 
     def test_game_is_finished(self):
-        game = gmodels.Game.objects.last()
-        character = cmodels.Character.objects.last()
-        game.end()
-        game.save()
+        self.game.end()
+        self.game.save()
         response = self.client.get(
-            reverse(self.path_name, args=[game.id, character.id])
+            reverse(
+                self.path_name,
+                args=(
+                    self.game.id,
+                    self.character.id,
+                ),
+            )
         )
         self.assertEqual(response.status_code, 403)
         self.assertRaises(PermissionDenied)
@@ -748,24 +759,28 @@ class DamageViewTest(TestCase):
         data = {"hp": f"{hp}"}
         form = gforms.DamageForm(data)
         self.assertTrue(form.is_valid())
-        game = gmodels.Game.objects.last()
-        character = cmodels.Character.objects.last()
 
         response = self.client.post(
-            reverse(self.path_name, args=[game.id, character.id]),
+            reverse(
+                self.path_name,
+                args=(
+                    self.game.id,
+                    self.character.id,
+                ),
+            ),
             data=form.cleaned_data,
         )
         self.assertEqual(response.status_code, 302)
         damage = gmodels.Damage.objects.last()
-        self.assertEqual(damage.game, game)
-        self.assertEqual(damage.character, character)
+        self.assertEqual(damage.game, self.game)
+        self.assertEqual(damage.character, self.character)
         self.assertLessEqual(damage.date.second - timezone.now().second, 2)
         self.assertEqual(
             damage.message,
-            f"{character} was hit: -{damage.hp} HP!",
+            f"{self.character} was hit: -{damage.hp} HP!",
         )
         self.assertEqual(damage.hp, form.cleaned_data["hp"])
-        self.assertRedirects(response, reverse("game", args=[game.id]))
+        self.assertRedirects(response, self.game.get_absolute_url())
 
     def test_creation_ko_invalid_form(self):
         hp = random.randint(-20, 0)
@@ -779,27 +794,30 @@ class DamageViewTest(TestCase):
         data = {"hp": f"{hp}"}
         form = gforms.DamageForm(data)
         self.assertTrue(form.is_valid())
-        game = gmodels.Game.objects.last()
-        character = cmodels.Character.objects.last()
 
         response = self.client.post(
-            reverse(self.path_name, args=[game.id, character.id]),
+            reverse(
+                self.path_name,
+                args=(
+                    self.game.id,
+                    self.character.id,
+                ),
+            ),
             data=form.cleaned_data,
         )
         self.assertEqual(response.status_code, 302)
         damage = gmodels.Damage.objects.last()
-        self.assertEqual(damage.game, game)
-        self.assertEqual(damage.character, character)
+        self.assertEqual(damage.game, self.game)
+        self.assertEqual(damage.character, self.character)
         self.assertLessEqual(damage.date.second - timezone.now().second, 2)
         self.assertEqual(
             damage.message,
-            f"{character} was hit: -{damage.hp} HP! {character} is dead.",
+            f"{self.character} was hit: -{damage.hp} HP! {self.character} is dead.",
         )
         self.assertEqual(damage.hp, form.cleaned_data["hp"])
-        character = cmodels.Character.objects.last()
-        self.assertIsNone(character.player.game)
-        self.assertEqual(character.hp, character.max_hp)
-        self.assertRedirects(response, reverse("game", args=[game.id]))
+        self.assertFalse(hasattr(self.character, "player"))
+        self.assertEqual(self.character.hp, self.character.max_hp)
+        self.assertRedirects(response, self.game.get_absolute_url())
 
 
 class HealViewTest(TestCase):

@@ -215,10 +215,8 @@ class DamageView(
             damage.message = (
                 f"{self.character} was hit: -{damage.hp} HP! {self.character} is dead."
             )
-            # The player removed from the game.
-            player = gmodels.Player.objects.get(character=self.character)
-            player.game = None
-            player.save()
+            # The player is removed from the game.
+            gmodels.Player.objects.get(character=self.character).delete()
             # The character is healed when remove from the game,
             # so that they can join another game.
             self.character.hp = self.character.max_hp
