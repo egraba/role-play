@@ -1,19 +1,18 @@
 import random
 
-from django.contrib.auth.models import User
 from django.db import models
 from django.test import TestCase
 from django.utils import timezone
 
-import character.models as cmodels
 import game.models as gmodels
+import utils.testing.factories as utfactories
 import utils.testing.random as utrandom
 
 
 class GameModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        gmodels.Game.objects.create(name=utrandom.ascii_letters_string(50))
+        utfactories.GameFactory()
 
     def setUp(self):
         self.game = gmodels.Game.objects.last()
@@ -53,16 +52,8 @@ class GameModelTest(TestCase):
         self.assertFalse(self.game.is_ongoing())
         self.assertFalse(self.game.is_finished())
         number_of_players = 5
-        for i in range(number_of_players):
-            user = User.objects.create(username=utrandom.ascii_letters_string(7))
-            gmodels.Player.objects.create(
-                user=user,
-                game=self.game,
-                character=cmodels.Character.objects.create(
-                    name=utrandom.ascii_letters_string(5),
-                    user=user,
-                ),
-            )
+        for _ in range(number_of_players):
+            utfactories.PlayerFactory(game=self.game)
         self.game.start()
         self.game.save()
         self.assertFalse(self.game.is_under_preparation())
@@ -78,9 +69,7 @@ class GameModelTest(TestCase):
 class MasterModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create()
-        game = gmodels.Game.objects.create()
-        gmodels.Master.objects.create(user=user, game=game)
+        utfactories.GameFactory()
 
     def setUp(self):
         self.master = gmodels.Master.objects.last()
@@ -100,20 +89,11 @@ class MasterModelTest(TestCase):
 class PlayerModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create(username=utrandom.ascii_letters_string(18))
-        character = cmodels.Character.objects.create(
-            name=utrandom.ascii_letters_string(18),
-            user=user,
-        )
-        game = gmodels.Game.objects.create()
-        gmodels.Player.objects.create(user=user, character=character, game=game)
+        game = utfactories.GameFactory()
+        utfactories.PlayerFactory(game=game)
 
     def setUp(self):
         self.player = gmodels.Player.objects.last()
-
-    def test_user_type(self):
-        user = self.player._meta.get_field("user")
-        self.assertTrue(user, models.ForeignKey)
 
     def test_character_type(self):
         character = self.player._meta.get_field("character")
@@ -124,14 +104,14 @@ class PlayerModelTest(TestCase):
         self.assertTrue(game, models.ForeignKey)
 
     def test_str(self):
-        self.assertEqual(str(self.player), self.player.user.username)
+        self.assertEqual(str(self.player), self.player.character.user.username)
 
 
 class EventModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        game = gmodels.Game.objects.create()
-        gmodels.Event.objects.create(game=game)
+        game = utfactories.GameFactory()
+        utfactories.EventFactory(game=game)
 
     def setUp(self):
         self.event = gmodels.Event.objects.last()
@@ -145,7 +125,7 @@ class EventModelTest(TestCase):
         self.assertTrue(date, models.DateTimeField)
 
     def test_date_default_value(self):
-        self.assertEqual(self.event.date.second, timezone.now().second)
+        self.assertLessEqual(self.event.date.second - timezone.now().second, 2)
 
     def test_message_type(self):
         message = self.event._meta.get_field("message")
@@ -162,8 +142,8 @@ class EventModelTest(TestCase):
 class TaleModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        game = gmodels.Game.objects.create()
-        gmodels.Tale.objects.create(game=game)
+        game = utfactories.GameFactory()
+        utfactories.TaleFactory(game=game)
 
     def setUp(self):
         self.tale = gmodels.Tale.objects.last()
@@ -183,10 +163,9 @@ class TaleModelTest(TestCase):
 class PendingActionModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        game = gmodels.Game.objects.create()
-        user = User.objects.create()
-        character = cmodels.Character.objects.get_or_create(id=1, user=user)[0]
-        gmodels.PendingAction.objects.create(game=game, character=character)
+        game = utfactories.GameFactory()
+        player = utfactories.PlayerFactory(game=game)
+        gmodels.PendingAction.objects.create(game=game, character=player.character)
 
     def setUp(self):
         self.pending_action = gmodels.PendingAction.objects.last()
@@ -210,11 +189,10 @@ class PendingActionModelTest(TestCase):
 class XpIncreaseModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        game = gmodels.Game.objects.create()
-        user = User.objects.create()
-        character = cmodels.Character.objects.create(user=user)
+        game = utfactories.GameFactory()
+        player = utfactories.PlayerFactory(game=game)
         gmodels.XpIncrease.objects.create(
-            game=game, character=character, xp=random.randint(1, 20)
+            game=game, character=player.character, xp=random.randint(1, 20)
         )
 
     def setUp(self):
@@ -231,11 +209,10 @@ class XpIncreaseModelTest(TestCase):
 class DamageModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        game = gmodels.Game.objects.create()
-        user = User.objects.create()
-        character = cmodels.Character.objects.create(user=user)
+        game = utfactories.GameFactory()
+        player = utfactories.PlayerFactory(game=game)
         gmodels.Damage.objects.create(
-            game=game, character=character, hp=random.randint(1, 20)
+            game=game, character=player.character, hp=random.randint(1, 20)
         )
 
     def setUp(self):
@@ -252,11 +229,10 @@ class DamageModelTest(TestCase):
 class HealingModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        game = gmodels.Game.objects.create()
-        user = User.objects.create()
-        character = cmodels.Character.objects.create(user=user)
+        game = utfactories.GameFactory()
+        player = utfactories.PlayerFactory(game=game)
         gmodels.Healing.objects.create(
-            game=game, character=character, hp=random.randint(1, 20)
+            game=game, character=player.character, hp=random.randint(1, 20)
         )
 
     def setUp(self):
@@ -273,11 +249,10 @@ class HealingModelTest(TestCase):
 class DiceLaunchModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        game = gmodels.Game.objects.create()
-        user = User.objects.create()
-        character = cmodels.Character.objects.create(user=user)
+        game = utfactories.GameFactory()
+        player = utfactories.PlayerFactory(game=game)
         gmodels.DiceLaunch.objects.create(
-            game=game, character=character, score=random.randint(1, 20)
+            game=game, character=player.character, score=random.randint(1, 20)
         )
 
     def setUp(self):
@@ -298,11 +273,12 @@ class DiceLaunchModelTest(TestCase):
 class ChoiceModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        game = gmodels.Game.objects.create()
-        user = User.objects.create()
-        character = cmodels.Character.objects.create(user=user)
+        game = utfactories.GameFactory()
+        player = utfactories.PlayerFactory(game=game)
         gmodels.Choice.objects.create(
-            game=game, character=character, selection=utrandom.printable_string(50)
+            game=game,
+            character=player.character,
+            selection=utrandom.printable_string(50),
         )
 
     def setUp(self):

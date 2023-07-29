@@ -95,7 +95,7 @@ class GameEndView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
         event.date = timezone.now()
         event.message = "The game ended."
         event.save()
-        return HttpResponseRedirect(reverse("game", args=(game.id,)))
+        return HttpResponseRedirect(game.get_absolute_url())
 
 
 class TaleCreateView(UserPassesTestMixin, FormView, gmixins.EventContextMixin):

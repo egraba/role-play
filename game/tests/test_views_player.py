@@ -24,12 +24,9 @@ class DiceLaunchViewTest(TestCase):
         game = utfactories.GameFactory()
         # A game can only start with a minimum number of characters.
         number_of_players = 2
-        for i in range(number_of_players):
-            character = utfactories.CharacterFactory()
-            gmodels.Player.objects.create(
-                game=game, character=character, user=character.user
-            )
-            utfactories.PendingActionFactory(game=game, character=character)
+        for _ in range(number_of_players):
+            player = utfactories.PlayerFactory(game=game)
+            utfactories.PendingActionFactory(game=game, character=player.character)
         game.start()
         game.save()
 
@@ -180,11 +177,10 @@ class DiceLaunchSuccessViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         game = utfactories.GameFactory()
-        character = utfactories.CharacterFactory()
-        gmodels.Player.objects.create(
-            game=game, character=character, user=character.user
-        )
-        utfactories.DiceLaunchFactory(game=game, character=character)
+        number_of_players = 2
+        for _ in range(number_of_players):
+            player = utfactories.PlayerFactory(game=game)
+            utfactories.DiceLaunchFactory(game=game, character=player.character)
 
     def setUp(self):
         self.user = User.objects.last()
@@ -279,12 +275,9 @@ class ChoiceViewTest(TestCase):
         game = utfactories.GameFactory()
         # A game can only start with a minimum number of characters.
         number_of_players = 2
-        for i in range(number_of_players):
-            character = utfactories.CharacterFactory()
-            gmodels.Player.objects.create(
-                game=game, character=character, user=character.user
-            )
-            utfactories.PendingActionFactory(game=game, character=character)
+        for _ in range(number_of_players):
+            player = utfactories.PlayerFactory(game=game)
+            utfactories.PendingActionFactory(game=game, character=player.character)
         game.start()
         game.save()
 

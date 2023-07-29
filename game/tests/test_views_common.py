@@ -2,6 +2,7 @@ import random
 from datetime import datetime, timezone
 
 from django.contrib.auth.models import User
+from django.core.cache import cache
 from django.http import Http404
 from django.test import TestCase
 from django.urls import reverse
@@ -71,7 +72,6 @@ class GameListViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        utfactories.UserFactory()
         number_of_games = 22
         for i in range(number_of_games):
             utfactories.GameFactory(start_date=datetime.now(tz=timezone.utc))
@@ -129,29 +129,27 @@ class GameListViewTest(TestCase):
 
 
 class GameViewTest(TestCase):
-    path_name = "game"
-
     @classmethod
     def setUpTestData(cls):
-        game = utfactories.GameFactory(master__user__username="master")
+        game = utfactories.GameFactory(master__user__username="master-game-view")
         number_of_events = 22
-        for i in range(number_of_events):
+        for _ in range(number_of_events):
             utfactories.EventFactory(game=game)
         number_of_tales = 3
-        for i in range(number_of_tales):
+        for _ in range(number_of_tales):
             utfactories.TaleFactory(game=game)
-        number_of_characters = 8
-        for i in range(number_of_characters):
-            character = utfactories.CharacterFactory()
-            gmodels.Player.objects.create(
-                user=character.user, character=character, game=game
-            )
-            utfactories.PendingActionFactory(game=game, character=character)
+        number_of_players = 8
+        for _ in range(number_of_players):
+            player = utfactories.PlayerFactory(game=game)
+            utfactories.PendingActionFactory(game=game, character=player.character)
 
     def setUp(self):
-        self.user = User.objects.get(username="master")
+        self.user = User.objects.get(username="master-game-view")
         self.client.login(username=self.user.username, password="pwd")
         self.game = gmodels.Game.objects.last()
+
+    def tearDown(self):
+        cache.clear()
 
     def test_view_mapping(self):
         response = self.client.get(self.game.get_absolute_url())
@@ -247,7 +245,7 @@ class GameViewTest(TestCase):
         event_list = gmodels.Event.objects.filter(game=self.game)
         # issubset() is used because of pagination.
         self.assertTrue(set(response.context["event_list"]).issubset(set(event_list)))
-        player = gmodels.Player.objects.get(game=self.game, user=user)
+        player = gmodels.Player.objects.get(game=self.game, character__user=user)
         self.assertEqual(response.context["player"], player)
 
     def test_content_character_is_current_user(self):

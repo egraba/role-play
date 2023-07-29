@@ -52,7 +52,7 @@
                     <tr>
                         <td><a href={{ character.get_absolute_url }}>{{ character.name }}</a></td>
                         <td><p>
-                            {% with character_user=character.player.user %}
+                            {% with character_user=character.user %}
                                 {% if user == character_user %}
                                     (you)
                                 {% else %}
