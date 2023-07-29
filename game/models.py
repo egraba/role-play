@@ -37,7 +37,7 @@ class Game(models.Model):
         return reverse("game", args=(self.id,))
 
     def can_start(self):
-        number_of_players = Player.objects.filter(game=self).count()
+        number_of_players = self.player_set.count()
         return number_of_players >= 2
 
     @transition(
@@ -76,7 +76,7 @@ class Player(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.user.username
+        return self.character.user.username
 
 
 class Event(models.Model):

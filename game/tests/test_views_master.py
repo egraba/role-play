@@ -174,68 +174,55 @@ class GameStartViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        user = User.objects.create(username=utrandom.ascii_letters_string(5))
-        user.set_password("pwd")
-        user.save()
-
-        gmodels.Game.objects.create(master=user)
+        utfactories.GameFactory(master__user__username="master")
 
     def setUp(self):
-        self.user = User.objects.last()
+        self.user = User.objects.get(username="master")
         self.client.login(username=self.user.username, password="pwd")
+        self.game = gmodels.Game.objects.last()
 
     def test_view_mapping(self):
-        game = gmodels.Game.objects.last()
-        response = self.client.get(reverse(self.path_name, args=[game.id]))
+        response = self.client.get(reverse(self.path_name, args=(self.game.id,)))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.resolver_match.func.view_class, gvmaster.GameStartView
         )
 
     def test_template_mapping(self):
-        game = gmodels.Game.objects.last()
-        response = self.client.get(reverse(self.path_name, args=[game.id]))
+        response = self.client.get(reverse(self.path_name, args=(self.game.id,)))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "game/game_start.html")
 
     def test_game_not_exists(self):
         game_id = random.randint(10000, 99999)
-        response = self.client.get(reverse(self.path_name, args=[game_id]))
+        response = self.client.get(reverse(self.path_name, args=(game_id,)))
         self.assertEqual(response.status_code, 404)
         self.assertRaises(Http404)
 
     def test_game_start_ok(self):
-        game = gmodels.Game.objects.last()
         number_of_players = 2
-        for i in range(number_of_players):
-            character = cmodels.Character.objects.create(
-                name=utrandom.ascii_letters_string(5)
-            )
-            gmodels.Player.objects.create(game=game, character=character)
-        response = self.client.post(reverse(self.path_name, args=[game.id]))
+        for _ in range(number_of_players):
+            utfactories.PlayerFactory(game=self.game)
+        response = self.client.post(reverse(self.path_name, args=(self.game.id,)))
         self.assertEqual(response.status_code, 302)
-        game = gmodels.Game.objects.last()
-        self.assertEqual(game.status, "O")
-        self.assertLessEqual(game.start_date.second - timezone.now().second, 2)
+        # Need to query the game again.
+        self.game = gmodels.Game.objects.last()
+        self.assertTrue(self.game.is_ongoing())
+        self.assertLessEqual(self.game.start_date.second - timezone.now().second, 2)
         event = gmodels.Event.objects.last()
         self.assertLessEqual(event.date.second - timezone.now().second, 2)
-        self.assertEqual(event.game, game)
+        self.assertEqual(event.game, self.game)
         self.assertEqual(event.message, "The game started.")
 
     def test_game_start_not_enough_characters(self):
-        game = gmodels.Game.objects.last()
-        number_of_players = 1
-        for i in range(number_of_players):
-            character = cmodels.Character.objects.create(
-                name=utrandom.ascii_letters_string(5)
-            )
-            gmodels.Player.objects.create(game=game, character=character)
-        response = self.client.post(reverse(self.path_name, args=[game.id]))
+        utfactories.PlayerFactory(game=self.game)
+        response = self.client.post(reverse(self.path_name, args=(self.game.id,)))
         self.assertEqual(response.status_code, 302)
         self.assertRaises(PermissionDenied)
-        game = gmodels.Game.objects.last()
-        self.assertEqual(game.status, "P")
-        self.assertRedirects(response, reverse("game-start-error", args=(game.id,)))
+        self.assertTrue(self.game.is_under_preparation())
+        self.assertRedirects(
+            response, reverse("game-start-error", args=(self.game.id,))
+        )
 
 
 class GameEndViewTest(TestCase):

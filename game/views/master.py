@@ -68,7 +68,7 @@ class GameStartView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
             event.save()
         except TransitionNotAllowed:
             return HttpResponseRedirect(reverse("game-start-error", args=(game.id,)))
-        return HttpResponseRedirect(reverse("game", args=(game.id,)))
+        return HttpResponseRedirect(game.get_absolute_url())
 
 
 class GameStartErrorView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
