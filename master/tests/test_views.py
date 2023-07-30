@@ -1,12 +1,12 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
+from faker import Faker
 
 import master.forms as mforms
 import master.models as mmodels
 import master.views as mviews
 import utils.testing.factories as utfactories
-import utils.testing.random as utrandom
 
 
 class StoryDetailViewTest(TestCase):
@@ -108,10 +108,11 @@ class StoryCreateViewTest(TestCase):
         self.assertTemplateUsed(response, "master/story_create.html")
 
     def test_story_creation(self):
-        title = utrandom.ascii_letters_string(10)
-        synopsis = utrandom.printable_string(800)
-        main_conflict = utrandom.printable_string(800)
-        objective = utrandom.printable_string(400)
+        fake = Faker()
+        title = fake.text(max_nb_chars=10)
+        synopsis = fake.text(max_nb_chars=900)
+        main_conflict = fake.text(max_nb_chars=800)
+        objective = fake.text(max_nb_chars=400)
         data = {
             "title": f"{title}",
             "synopsis": f"{synopsis}",
@@ -159,9 +160,10 @@ class StoryUpdateViewTest(TestCase):
         self.assertTemplateUsed(response, "master/story_update.html")
 
     def test_story_update(self):
-        synopsis = utrandom.printable_string(800)
-        main_conflict = utrandom.printable_string(800)
-        objective = utrandom.printable_string(400)
+        fake = Faker()
+        synopsis = fake.text(max_nb_chars=900)
+        main_conflict = fake.text(max_nb_chars=800)
+        objective = fake.text(max_nb_chars=400)
         data = {
             "synopsis": f"{synopsis}",
             "main_conflict": f"{main_conflict}",

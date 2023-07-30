@@ -8,13 +8,13 @@ from django.http import Http404
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
+from faker import Faker
 
 import character.models as cmodels
 import game.forms as gforms
 import game.models as gmodels
 import game.views.master as gvmaster
 import utils.testing.factories as utfactories
-import utils.testing.random as utrandom
 
 
 class CharacterInviteViewTest(TestCase):
@@ -333,7 +333,8 @@ class TaleCreateViewTest(TestCase):
         self.assertRaises(PermissionDenied)
 
     def test_tale_creation(self):
-        content = utrandom.printable_string(100)
+        fake = Faker()
+        content = fake.text(100)
         data = {"content": f"{content}"}
         form = gforms.CreateTaleForm(data)
         self.assertTrue(form.is_valid())

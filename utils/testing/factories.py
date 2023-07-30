@@ -66,12 +66,16 @@ class DiceLaunchFactory(factory.django.DjangoModelFactory):
     score = factory.fuzzy.FuzzyInteger(1, 20)
 
 
+RACES = [race[0] for race in cmodels.Character.Race.choices]
+
+
 class CharacterFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = cmodels.Character
 
     name = factory.Sequence(lambda n: f"character{n}")
     user = factory.SubFactory(UserFactory)
+    race = factory.fuzzy.FuzzyChoice(RACES)
 
 
 class PlayerFactory(factory.django.DjangoModelFactory):

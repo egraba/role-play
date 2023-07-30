@@ -3,12 +3,12 @@ import random
 from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
+from faker import Faker
 
 import character.forms as cforms
 import character.models as cmodels
 import character.views as cviews
 import utils.testing.factories as utfactories
-import utils.testing.random as utrandom
 
 
 class CharacterDetailViewTest(TestCase):
@@ -130,7 +130,8 @@ class CharacterCreateViewTest(TestCase):
         self.assertTemplateUsed(response, "character/character_create.html")
 
     def test_character_creation(self):
-        name = utrandom.ascii_letters_string(10)
+        fake = Faker()
+        name = fake.name()
         race = random.choice(cmodels.Character.Race.choices)[0]
         data = {"name": f"{name}", "race": f"{race}"}
         form = cforms.CreateCharacterForm(data)
