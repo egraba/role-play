@@ -86,4 +86,4 @@ class StoryFactory(factory.django.DjangoModelFactory):
         model = mmodels.Story
         django_get_or_create = ("title",)
 
-    title = "My story"
+    title = factory.Sequence(lambda n: f"story{n}")

@@ -9,7 +9,6 @@ import character.models as cmodels
 import character.views as cviews
 import utils.testing.factories as utfactories
 import utils.testing.random as utrandom
-import utils.testing.users as utusers
 
 
 class CharacterDetailViewTest(TestCase):
@@ -112,7 +111,7 @@ class CharacterCreateViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        utusers.create_user()
+        utfactories.CharacterFactory()
 
     def setUp(self):
         self.user = User.objects.last()

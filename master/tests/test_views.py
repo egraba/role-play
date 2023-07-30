@@ -5,15 +5,15 @@ from django.urls import reverse
 import master.forms as mforms
 import master.models as mmodels
 import master.views as mviews
+import utils.testing.factories as utfactories
 import utils.testing.random as utrandom
-import utils.testing.users as utusers
 
 
 class StoryDetailViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        utusers.create_user()
-        mmodels.Story.objects.create(title=utrandom.ascii_letters_string(10))
+        utfactories.UserFactory()
+        utfactories.StoryFactory()
 
     def setUp(self):
         self.user = User.objects.last()
@@ -37,10 +37,10 @@ class StoryListViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        utusers.create_user()
+        utfactories.UserFactory()
         number_of_stories = 22
         for i in range(number_of_stories):
-            mmodels.Story.objects.create(title=utrandom.ascii_letters_string(10))
+            utfactories.StoryFactory()
 
     def setUp(self):
         self.user = User.objects.last()
@@ -90,8 +90,8 @@ class StoryCreateViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        utusers.create_user()
-        mmodels.Story.objects.create(title=utrandom.ascii_letters_string(10))
+        utfactories.UserFactory()
+        utfactories.StoryFactory()
 
     def setUp(self):
         self.user = User.objects.last()
@@ -139,8 +139,8 @@ class StoryUpdateViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        utusers.create_user()
-        mmodels.Story.objects.create(title=utrandom.ascii_letters_string(10))
+        utfactories.UserFactory()
+        utfactories.StoryFactory()
 
     def setUp(self):
         self.user = User.objects.last()
