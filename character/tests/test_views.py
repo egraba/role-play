@@ -7,7 +7,7 @@ from django.urls import reverse
 import character.forms as cforms
 import character.models as cmodels
 import character.views as cviews
-import game.models as gmodels
+import utils.testing.factories as utfactories
 import utils.testing.random as utrandom
 import utils.testing.users as utusers
 
@@ -15,32 +15,29 @@ import utils.testing.users as utusers
 class CharacterDetailViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        utusers.create_user()
-        cmodels.Character.objects.create()
+        utfactories.CharacterFactory()
 
     def setUp(self):
         self.user = User.objects.last()
         self.client.login(username=self.user.username, password="pwd")
+        self.character = cmodels.Character.objects.last()
 
     def test_view_mapping(self):
-        character = cmodels.Character.objects.last()
-        response = self.client.get(character.get_absolute_url())
+        response = self.client.get(self.character.get_absolute_url())
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.resolver_match.func.view_class, cviews.CharacterDetailView
         )
 
     def test_template_mapping(self):
-        character = cmodels.Character.objects.last()
-        response = self.client.get(character.get_absolute_url())
+        response = self.client.get(self.character.get_absolute_url())
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "character/character.html")
 
     def test_content_character_is_in_game(self):
-        character = cmodels.Character.objects.last()
-        game = gmodels.Game.objects.create(name=utrandom.ascii_letters_string(5))
-        gmodels.Player.objects.create(character=character, game=game)
-        response = self.client.get(character.get_absolute_url())
+        game = utfactories.GameFactory()
+        utfactories.PlayerFactory(game=game, character=self.character)
+        response = self.client.get(self.character.get_absolute_url())
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, game.name)
 
@@ -50,14 +47,9 @@ class CharacterListViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        utusers.create_user()
         number_of_characters = 22
-        for i in range(number_of_characters):
-            cmodels.Character.objects.create(
-                name=utrandom.ascii_letters_string(20),
-                race=random.choice(cmodels.Character.Race.choices)[0],
-                xp=random.randint(1, 1000),
-            )
+        for _ in range(number_of_characters):
+            utfactories.CharacterFactory()
 
     def setUp(self):
         self.user = User.objects.last()
@@ -106,12 +98,10 @@ class CharacterListViewTest(TestCase):
         self.assertContains(response, "There is no character available...")
 
     def test_content_character_is_in_game(self):
+        # To avoid pagination.
         cmodels.Character.objects.all().delete()
-        character = cmodels.Character.objects.create(
-            name=utrandom.ascii_letters_string(5)
-        )
-        game = gmodels.Game.objects.create(name=utrandom.ascii_letters_string(5))
-        gmodels.Player.objects.create(character=character, game=game)
+        game = utfactories.GameFactory()
+        utfactories.PlayerFactory(game=game)
         response = self.client.get(reverse(self.path_name))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, game.name)

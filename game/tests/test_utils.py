@@ -1,12 +1,10 @@
 import os
 
-from django.contrib.auth.models import User
 from django.test import TestCase
 from email_validator import validate_email
 
-import character.models as cmodels
-import game.models as gmodels
 import game.utils as gutils
+import utils.testing.factories as utfactories
 import utils.testing.random as utrandom
 
 
@@ -27,9 +25,9 @@ class GetMasterEmailTest(TestCase):
 
 class GetPlayersEmailsTest(TestCase):
     def test_all_users_have_email(self):
-        game = gmodels.Game.objects.create(name=utrandom.ascii_letters_string(30))
+        game = utfactories.GameFactory()
         emails = set()
-        for i in range(5):
+        for _ in range(5):
             email = (
                 utrandom.ascii_letters_string(5)
                 + "@"
@@ -37,13 +35,11 @@ class GetPlayersEmailsTest(TestCase):
                 + ".com"
             )
             emails.add(email)
-            user = User.objects.create(username=f"user{i}", email=email)
-            character = cmodels.Character.objects.create(name=f"character{i}")
-            gmodels.Player.objects.create(game=game, character=character, user=user)
+            utfactories.PlayerFactory(game=game, character__user__email=email)
         self.assertEqual(gutils.get_players_emails(game), emails)
 
     def test_some_emails_missing(self):
-        game = gmodels.Game.objects.create(name=utrandom.ascii_letters_string(30))
+        game = utfactories.GameFactory()
         emails = set()
         for i in range(5):
             if i % 2 == 0:
@@ -54,17 +50,13 @@ class GetPlayersEmailsTest(TestCase):
                     + ".com"
                 )
                 emails.add(email)
-                user = User.objects.create(username=f"user{i}", email=email)
-                character = cmodels.Character.objects.create(name=f"character{i}")
-                gmodels.Player.objects.create(game=game, character=character, user=user)
+                utfactories.PlayerFactory(game=game, character__user__email=email)
             else:
-                user = User.objects.create(username=f"user{i}")
-                character = cmodels.Character.objects.create(name=f"character{i}")
-                gmodels.Player.objects.create(game=game, character=character, user=user)
+                utfactories.PlayerFactory(game=game)
         self.assertEqual(gutils.get_players_emails(game), emails)
 
     def test_same_emails(self):
-        game = gmodels.Game.objects.create(name=utrandom.ascii_letters_string(30))
+        game = utfactories.GameFactory()
         emails = set()
         email = (
             utrandom.ascii_letters_string(5)
@@ -74,7 +66,5 @@ class GetPlayersEmailsTest(TestCase):
         )
         emails.add(email)
         for i in range(5):
-            user = User.objects.create(username=f"user{i}", email=email)
-            character = cmodels.Character.objects.create(name=f"character{i}")
-            gmodels.Player.objects.create(game=game, character=character, user=user)
+            utfactories.PlayerFactory(game=game, character__user__email=email)
         self.assertEqual(gutils.get_players_emails(game), emails)

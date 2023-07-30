@@ -19,7 +19,6 @@ class Game(models.Model):
     story = models.ForeignKey(
         mmodels.Story, on_delete=models.SET_NULL, null=True, blank=True
     )
-    master = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     start_date = models.DateTimeField(null=True, blank=True)
     end_date = models.DateTimeField(null=True, blank=True)
     status = FSMField(
@@ -38,8 +37,7 @@ class Game(models.Model):
         return reverse("game", args=(self.id,))
 
     def can_start(self):
-        number_of_players = Player.objects.filter(game=self).count()
-        return number_of_players >= 2
+        return self.player_set.count() >= 2
 
     @transition(
         field=status,
@@ -53,9 +51,7 @@ class Game(models.Model):
     @transition(field=status, source=Status.ONGOING, target=Status.FINISHED)
     def end(self):
         self.end_date = timezone.now()
-        for player in Player.objects.filter(game=self):
-            player.game = None
-            player.save()
+        self.player_set.all().delete()
 
     def is_under_preparation(self):
         return self.status == self.Status.UNDER_PREPARATION
@@ -67,13 +63,20 @@ class Game(models.Model):
         return self.status == self.Status.FINISHED
 
 
-class Player(models.Model):
-    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
-    character = models.OneToOneField(cmodels.Character, on_delete=models.CASCADE)
-    game = models.ForeignKey(Game, on_delete=models.SET_NULL, null=True, blank=True)
+class Master(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    game = models.OneToOneField(Game, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.user.username
+
+
+class Player(models.Model):
+    character = models.OneToOneField(cmodels.Character, on_delete=models.CASCADE)
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.character.user.username
 
 
 class Event(models.Model):

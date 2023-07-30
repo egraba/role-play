@@ -41,9 +41,7 @@ class CharacterInviteConfirmView(
 
     def post(self, request, *args, **kwargs):
         character = self.get_object()
-        player = gmodels.Player.objects.get(character=character)
-        player.game = self.game
-        player.save()
+        gmodels.Player.objects.create(character=character, game=self.game)
         event = gmodels.Event.objects.create(game=self.game)
         event.date = timezone.now()
         event.message = f"{character} was added to the game."
@@ -70,7 +68,7 @@ class GameStartView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
             event.save()
         except TransitionNotAllowed:
             return HttpResponseRedirect(reverse("game-start-error", args=(game.id,)))
-        return HttpResponseRedirect(reverse("game", args=(game.id,)))
+        return HttpResponseRedirect(game.get_absolute_url())
 
 
 class GameStartErrorView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
@@ -97,7 +95,7 @@ class GameEndView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
         event.date = timezone.now()
         event.message = "The game ended."
         event.save()
-        return HttpResponseRedirect(reverse("game", args=(game.id,)))
+        return HttpResponseRedirect(game.get_absolute_url())
 
 
 class TaleCreateView(UserPassesTestMixin, FormView, gmixins.EventContextMixin):
@@ -121,7 +119,7 @@ class TaleCreateView(UserPassesTestMixin, FormView, gmixins.EventContextMixin):
         send_mail(
             f"[{self.game}] The Master updated the story.",
             f"The Master said:\n{tale.content}",
-            gutils.get_master_email(self.game.master.username),
+            gutils.get_master_email(self.game.master.user.username),
             gutils.get_players_emails(game=self.game),
         )
         send_event("game", "message", {"game": self.game.id, "refresh": "tale"})
@@ -217,10 +215,8 @@ class DamageView(
             damage.message = (
                 f"{self.character} was hit: -{damage.hp} HP! {self.character} is dead."
             )
-            # The player removed from the game.
-            player = gmodels.Player.objects.get(character=self.character)
-            player.game = None
-            player.save()
+            # The player is removed from the game.
+            gmodels.Player.objects.get(character=self.character).delete()
             # The character is healed when remove from the game,
             # so that they can join another game.
             self.character.hp = self.character.max_hp

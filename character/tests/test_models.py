@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 from django.test import TestCase
 
@@ -7,7 +8,8 @@ import character.models as cmodels
 class CharacterModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cmodels.Character.objects.create()
+        user = User.objects.create()
+        cmodels.Character.objects.create(user=user)
 
     def setUp(self):
         self.character = cmodels.Character.objects.last()
@@ -23,6 +25,10 @@ class CharacterModelTest(TestCase):
     def test_name_uniqueness(self):
         is_unique = self.character._meta.get_field("name").unique
         self.assertTrue(is_unique)
+
+    def test_user_type(self):
+        user = self.character._meta.get_field("user")
+        self.assertTrue(user, models.OneToOneField)
 
     def test_race_type(self):
         race = self.character._meta.get_field("race")

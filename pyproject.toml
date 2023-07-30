@@ -39,6 +39,7 @@ black = "*"
 coverage = "*"
 django-coverage-plugin = "*"
 django-debug-toolbar = "*"
+factory_boy = "*"
 pre-commit = "*"
 
 [build-system]
