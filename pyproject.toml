@@ -40,6 +40,7 @@ coverage = "*"
 django-coverage-plugin = "*"
 django-debug-toolbar = "*"
 factory_boy = "*"
+faker = "*"
 pre-commit = "*"
 
 [build-system]

@@ -1,19 +1,19 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
+from faker import Faker
 
 import master.forms as mforms
 import master.models as mmodels
 import master.views as mviews
-import utils.testing.random as utrandom
-import utils.testing.users as utusers
+import utils.testing.factories as utfactories
 
 
 class StoryDetailViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        utusers.create_user()
-        mmodels.Story.objects.create(title=utrandom.ascii_letters_string(10))
+        utfactories.UserFactory()
+        utfactories.StoryFactory()
 
     def setUp(self):
         self.user = User.objects.last()
@@ -37,10 +37,10 @@ class StoryListViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        utusers.create_user()
+        utfactories.UserFactory()
         number_of_stories = 22
         for i in range(number_of_stories):
-            mmodels.Story.objects.create(title=utrandom.ascii_letters_string(10))
+            utfactories.StoryFactory()
 
     def setUp(self):
         self.user = User.objects.last()
@@ -90,8 +90,8 @@ class StoryCreateViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        utusers.create_user()
-        mmodels.Story.objects.create(title=utrandom.ascii_letters_string(10))
+        utfactories.UserFactory()
+        utfactories.StoryFactory()
 
     def setUp(self):
         self.user = User.objects.last()
@@ -108,10 +108,11 @@ class StoryCreateViewTest(TestCase):
         self.assertTemplateUsed(response, "master/story_create.html")
 
     def test_story_creation(self):
-        title = utrandom.ascii_letters_string(10)
-        synopsis = utrandom.printable_string(800)
-        main_conflict = utrandom.printable_string(800)
-        objective = utrandom.printable_string(400)
+        fake = Faker()
+        title = fake.text(max_nb_chars=10)
+        synopsis = fake.text(max_nb_chars=900)
+        main_conflict = fake.text(max_nb_chars=800)
+        objective = fake.text(max_nb_chars=400)
         data = {
             "title": f"{title}",
             "synopsis": f"{synopsis}",
@@ -139,8 +140,8 @@ class StoryUpdateViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        utusers.create_user()
-        mmodels.Story.objects.create(title=utrandom.ascii_letters_string(10))
+        utfactories.UserFactory()
+        utfactories.StoryFactory()
 
     def setUp(self):
         self.user = User.objects.last()
@@ -159,9 +160,10 @@ class StoryUpdateViewTest(TestCase):
         self.assertTemplateUsed(response, "master/story_update.html")
 
     def test_story_update(self):
-        synopsis = utrandom.printable_string(800)
-        main_conflict = utrandom.printable_string(800)
-        objective = utrandom.printable_string(400)
+        fake = Faker()
+        synopsis = fake.text(max_nb_chars=900)
+        main_conflict = fake.text(max_nb_chars=800)
+        objective = fake.text(max_nb_chars=400)
         data = {
             "synopsis": f"{synopsis}",
             "main_conflict": f"{main_conflict}",

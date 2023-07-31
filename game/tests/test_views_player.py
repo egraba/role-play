@@ -7,13 +7,13 @@ from django.http import Http404
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
+from faker import Faker
 
 import character.models as cmodels
 import game.forms as gforms
 import game.models as gmodels
 import game.views.player as gvplayer
 import utils.testing.factories as utfactories
-import utils.testing.random as utrandom
 
 
 class DiceLaunchViewTest(TestCase):
@@ -389,7 +389,8 @@ class ChoiceViewTest(TestCase):
         self.assertRaises(PermissionDenied)
 
     def test_choice(self):
-        selection = utrandom.printable_string(50)
+        fake = Faker()
+        selection = fake.text(50)
         data = {"selection": f"{selection}"}
         form = gforms.ChoiceForm(data)
         self.assertTrue(form.is_valid())

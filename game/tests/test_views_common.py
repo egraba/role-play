@@ -6,12 +6,12 @@ from django.core.cache import cache
 from django.http import Http404
 from django.test import TestCase
 from django.urls import reverse
+from faker import Faker
 
 import character.models as cmodels
 import game.models as gmodels
 import game.views.common as gvcommon
 import utils.testing.factories as utfactories
-import utils.testing.random as utrandom
 
 
 class IndexViewTest(TestCase):
@@ -327,7 +327,8 @@ class GameCreateViewTest(TestCase):
         self.assertEqual(tale.content, self.story.synopsis)
 
     def test_game_creation_story_does_not_exist(self):
-        fake_slug = utrandom.ascii_letters_string(5)
+        fake = Faker()
+        fake_slug = fake.slug()
         response = self.client.post(reverse(self.path_name, args=(fake_slug,)))
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse("game-create-error", args=(fake_slug,)))
@@ -335,7 +336,8 @@ class GameCreateViewTest(TestCase):
 
 class GameCreateErrorViewTest(TestCase):
     path_name = "game-create-error"
-    fake_slug = utrandom.ascii_letters_string(5)
+    fake = Faker()
+    fake_slug = fake.slug()
 
     def setUp(self):
         self.user = utfactories.UserFactory(username="game-create-error")

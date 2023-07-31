@@ -3,10 +3,10 @@ import random
 from django.db import models
 from django.test import TestCase
 from django.utils import timezone
+from faker import Faker
 
 import game.models as gmodels
 import utils.testing.factories as utfactories
-import utils.testing.random as utrandom
 
 
 class GameModelTest(TestCase):
@@ -275,10 +275,11 @@ class ChoiceModelTest(TestCase):
     def setUpTestData(cls):
         game = utfactories.GameFactory()
         player = utfactories.PlayerFactory(game=game)
+        fake = Faker()
         gmodels.Choice.objects.create(
             game=game,
             character=player.character,
-            selection=utrandom.printable_string(50),
+            selection=fake.text(max_nb_chars=50),
         )
 
     def setUp(self):
