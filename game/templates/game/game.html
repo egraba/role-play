@@ -2,6 +2,9 @@
 {% load static %}
 
 {% block content %}
+    <script src={% static 'django_eventstream/eventsource.min.js' %}></script>
+    <script src={% static 'django_eventstream/reconnecting-eventsource.js' %}></script>
+
     <script>
         var es = new ReconnectingEventSource('/events/');
 
