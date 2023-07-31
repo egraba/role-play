@@ -1,7 +1,6 @@
-import string
+import random
 
 import factory
-import factory.fuzzy
 from django.contrib.auth.models import User
 
 import character.models as cmodels
@@ -14,7 +13,7 @@ class UserFactory(factory.django.DjangoModelFactory):
         model = User
         django_get_or_create = ("username",)
 
-    username = factory.fuzzy.FuzzyText()
+    username = factory.Faker("profile", fields=["username"])
     password = factory.django.Password("pwd")
 
 
@@ -37,14 +36,14 @@ class EventFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = gmodels.Event
 
-    message = factory.fuzzy.FuzzyText(length=50, chars=string.printable, prefix="event")
+    message = factory.Faker("text", max_nb_chars=50)
 
 
 class TaleFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = gmodels.Tale
 
-    message = factory.fuzzy.FuzzyText(length=50, chars=string.printable, prefix="tale")
+    message = factory.Faker("text", max_nb_chars=50)
 
 
 class PendingActionFactory(factory.django.DjangoModelFactory):
@@ -54,19 +53,14 @@ class PendingActionFactory(factory.django.DjangoModelFactory):
     action_type = factory.Sequence(
         lambda n: gmodels.PendingAction.ActionType.choices[n % 2][0]
     )
-    message = factory.fuzzy.FuzzyText(
-        length=50, chars=string.printable, prefix="pending_action"
-    )
+    message = factory.Faker("text", max_nb_chars=50)
 
 
 class DiceLaunchFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = gmodels.DiceLaunch
 
-    score = factory.fuzzy.FuzzyInteger(1, 20)
-
-
-RACES = [race[0] for race in cmodels.Character.Race.choices]
+    score = factory.Faker("random_int", min=1, max=20)
 
 
 class CharacterFactory(factory.django.DjangoModelFactory):
@@ -75,7 +69,7 @@ class CharacterFactory(factory.django.DjangoModelFactory):
 
     name = factory.Sequence(lambda n: f"character{n}")
     user = factory.SubFactory(UserFactory)
-    race = factory.fuzzy.FuzzyChoice(RACES)
+    race = random.choice(cmodels.Character.Race.choices)[0]
 
 
 class PlayerFactory(factory.django.DjangoModelFactory):
