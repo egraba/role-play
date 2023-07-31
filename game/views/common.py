@@ -70,7 +70,8 @@ class GameCreateView(LoginRequiredMixin, CreateView):
                 reverse("game-create-error", args=(story_slug,))
             )
         game = gmodels.Game()
-        game.name = story.title
+        game.save()
+        game.name = f"{story.title} #{game.id}"
         game.story = story
         game.save()
         gmodels.Master.objects.create(user=self.request.user, game=game)

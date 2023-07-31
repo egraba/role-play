@@ -23,7 +23,7 @@ class GameModelTest(TestCase):
 
     def test_name_max_length(self):
         max_length = self.game._meta.get_field("name").max_length
-        self.assertEqual(max_length, 50)
+        self.assertEqual(max_length, 100)
 
     def test_story_type(self):
         story = self.game._meta.get_field("story")
@@ -76,7 +76,7 @@ class MasterModelTest(TestCase):
 
     def test_user_type(self):
         user = self.master._meta.get_field("user")
-        self.assertTrue(user, models.OneToOneField)
+        self.assertTrue(user, models.ForeignKey)
 
     def test_game_type(self):
         game = self.master._meta.get_field("game")
