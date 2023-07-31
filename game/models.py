@@ -15,7 +15,7 @@ class Game(models.Model):
         ONGOING = "O", "Ongoing"
         FINISHED = "F", "Finished"
 
-    name = models.CharField(max_length=50, unique=True)
+    name = models.CharField(max_length=100)
     story = models.ForeignKey(
         mmodels.Story, on_delete=models.SET_NULL, null=True, blank=True
     )
@@ -64,7 +64,7 @@ class Game(models.Model):
 
 
 class Master(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     game = models.OneToOneField(Game, on_delete=models.CASCADE)
 
     def __str__(self):

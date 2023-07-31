@@ -318,7 +318,7 @@ class GameCreateViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         game = gmodels.Game.objects.last()
         self.assertRedirects(response, game.get_absolute_url())
-        self.assertEqual(game.name, self.story.title)
+        self.assertEqual(game.name, f"{self.story.title} #{game.id}")
         self.assertEqual(game.status, "P")
         self.assertEqual(game.master.user, self.user)
         tale = gmodels.Tale.objects.last()
