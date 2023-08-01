@@ -30,11 +30,11 @@
 
         <hr class="golden"/>
 
-        <h2>Master's message</h2>
+        <h2>Tale</h2>
         <img class="rpgui-icon wizard" src={% static 'images/wizard.png' %}>
         <div id="tale"><p >{{ tale|linebreaks }}</p></div>
 
-        <hr/>
+        <hr />
 
         <div id="characters">
             <h2>Characters</h2>
@@ -122,20 +122,6 @@
             </div>
         {% endif %}
 
-        <hr />
-
-        <div id="events">
-            <h2>Game events</h2>
-            <div class="rpgui-container framed-grey">
-                {% for event in event_list %}
-                    <p>{{ event.date }}, {{ event.message }}</p>
-                {% empty %}
-                    <p>The story did not start yet...</p>
-                {% endfor %}
-            </div>
-        </div>
-        {% include 'pagination.html' %}
-
         {% if game.is_ongoing %}
             <div id="actions" class="rpgui-center">
                 {% if game.master.user.id == user.id %}
@@ -161,6 +147,21 @@
                 {% endif %}
             </div>
         {% endif %}
+
+        <hr />
+
+        <div id="events">
+            <h2>Game events</h2>
+            <div class="rpgui-container framed-grey">
+                {% for event in event_list %}
+                    <p>{{ event.date }}, {{ event.message }}</p>
+                {% empty %}
+                    <p>The story did not start yet...</p>
+                {% endfor %}
+            </div>
+        </div>
+        {% include 'pagination.html' %}
+
 
         <div class="rpgui-center inline">
             <img class="rpgui-icon" style="transform: scaleX(-1)" src={% static 'images/mini-skull.png' %}>
