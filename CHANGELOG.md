@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Added
+* Various UX/UI improvements
 * Upgrade project's libraries to their latest versions
 * The project is more modular (character app, refactored testing, etc.)
 * The game master can create background stories before starting a game
