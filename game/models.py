@@ -112,6 +112,17 @@ class PendingAction(Event):
         return self.action_type
 
 
+class Instruction(Event):
+    content = models.TextField(max_length=1000)
+    player = models.ForeignKey(Player, on_delete=models.SET_NULL, null=True, blank=True)
+    pending_action = models.ForeignKey(
+        PendingAction, on_delete=models.SET_NULL, null=True, blank=True
+    )
+
+    def __str__(self):
+        return self.instruction
+
+
 class Action(Event):
     character = models.ForeignKey(cmodels.Character, on_delete=models.CASCADE)
 
