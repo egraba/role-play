@@ -120,7 +120,7 @@ class Instruction(Event):
     )
 
     def __str__(self):
-        return self.instruction
+        return self.content
 
 
 class Action(Event):

@@ -31,8 +31,13 @@
         <hr class="golden"/>
 
         <h2>Tale</h2>
-        <img class="rpgui-icon wizard" src={% static 'images/wizard.png' %}>
         <div id="tale"><p >{{ tale|linebreaks }}</p></div>
+
+        <hr />
+
+        <h2>Master's instructions</h2>
+        <img class="rpgui-icon wizard" src={% static 'images/wizard.png' %}>
+        <div id="instruction"><p >{{ instruction|linebreaks }}</p></div>
 
         <hr />
 
@@ -127,6 +132,9 @@
                 {% if game.master.user.id == user.id %}
                     <a href={% url 'tale-create' game.id %}>
                         <button class="rpgui-button"><p>Continue the story</p></button>
+                    </a>
+                    <a href={% url 'instruction-create' game.id %}>
+                        <button class="rpgui-button"><p>Give an instruction</p></button>
                     </a>
                 {% endif %}
                 {% if player.pendingaction %}
