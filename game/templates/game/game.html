@@ -79,7 +79,7 @@
                             {% endif %}
                         </p></td>
                     </tr>
-                    {% if game.master.id == user.id and game.is_ongoing %}
+                    {% if game.master.user == user and game.is_ongoing %}
                         <tr><td colspan="6">
                             <div class ="rpgui-center inline">
                                 {% if not character.pendingaction %}
