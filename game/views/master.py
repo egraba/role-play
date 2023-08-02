@@ -128,7 +128,7 @@ class TaleCreateView(UserPassesTestMixin, FormView, gmixins.EventContextMixin):
 
 class InstructionCreateView(UserPassesTestMixin, CreateView, gmixins.EventContextMixin):
     model = gmodels.Instruction
-    fields = ["content", "player", "pending_action"]
+    fields = ["content"]
     template_name = "game/instruction_create.html"
 
     def test_func(self):

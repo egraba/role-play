@@ -114,10 +114,6 @@ class PendingAction(Event):
 
 class Instruction(Event):
     content = models.TextField(max_length=1000)
-    player = models.ForeignKey(Player, on_delete=models.SET_NULL, null=True, blank=True)
-    pending_action = models.ForeignKey(
-        PendingAction, on_delete=models.SET_NULL, null=True, blank=True
-    )
 
     def __str__(self):
         return self.content
