@@ -126,6 +126,26 @@ class TaleCreateView(UserPassesTestMixin, FormView, gmixins.EventContextMixin):
         return super().form_valid(form)
 
 
+class InstructionCreateView(UserPassesTestMixin, CreateView, gmixins.EventContextMixin):
+    model = gmodels.Instruction
+    fields = ["content"]
+    template_name = "game/instruction_create.html"
+
+    def test_func(self):
+        return self.is_user_master()
+
+    def get_success_url(self):
+        return self.game.get_absolute_url()
+
+    def form_valid(self, form):
+        instruction = form.save(commit=False)
+        instruction.game = self.game
+        instruction.message = "The Master gave an instruction."
+        instruction.save()
+        send_event("game", "message", {"game": self.game.id, "refresh": "instruction"})
+        return super().form_valid(form)
+
+
 class PendingActionCreateView(
     UserPassesTestMixin,
     CreateView,

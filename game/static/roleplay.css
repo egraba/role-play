@@ -65,7 +65,7 @@ table {
     margin-right: 1em;
 }
 
-#tale {
+#tale, #instruction {
     min-height: 120px;
 }
 

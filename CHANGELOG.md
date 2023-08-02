@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Added
+* Master is now able to give instruction separately from updating tale
 * Various UX/UI improvements
 * Upgrade project's libraries to their latest versions
 * The project is more modular (character app, refactored testing, etc.)
