@@ -1,5 +1,4 @@
-import random
-
+import dice
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView
@@ -33,7 +32,7 @@ class DiceLaunchView(
         dice_launch = form.save(commit=False)
         dice_launch.game = self.game
         dice_launch.character = self.character
-        dice_launch.score = random.randint(1, 20)
+        dice_launch.score = dice.roll("d20")
         dice_launch.message = (
             f"{self.character} launched a dice: score is {dice_launch.score}!"
         )
