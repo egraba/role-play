@@ -79,7 +79,7 @@
                             {% endif %}
                         </p></td>
                     </tr>
-                    {% if game.master.id == user.id and game.is_ongoing %}
+                    {% if game.master.user == user and game.is_ongoing %}
                         <tr><td colspan="6">
                             <div class ="rpgui-center inline">
                                 {% if not character.pendingaction %}
@@ -131,7 +131,7 @@
 
         {% if game.is_ongoing %}
             <div id="actions" class="rpgui-center">
-                {% if game.master.user.id == user.id %}
+                {% if game.master.user == user %}
                     <a href={% url 'tale-create' game.id %}>
                         <button class="rpgui-button"><p>Continue the story</p></button>
                     </a>
@@ -139,18 +139,18 @@
                         <button class="rpgui-button"><p>Give an instruction</p></button>
                     </a>
                 {% endif %}
-                {% if player.pendingaction %}
-                    {% if player.pendingaction.get_action_type_display == "Launch dice" %}
-                        <a class="character-action" href={% url 'dicelaunch-create' game.id player.id %}>
+                {% if player.character.pendingaction %}
+                    {% if player.character.pendingaction.get_action_type_display == "Launch dice" %}
+                        <a class="character-action" href={% url 'dicelaunch-create' game.id player.character.id %}>
                             <button class="rpgui-button">
-                                <p>{{ player.pendingaction.get_action_type_display }}</p>
+                                <p>{{ player.character.pendingaction.get_action_type_display }}</p>
                             </button>
                         </a>
                     {% endif %}
-                    {% if player.pendingaction.get_action_type_display == "Make choice" %}
-                        <a class="character-action" href={% url 'choice-create' game.id player.id %}>
+                    {% if player.character.pendingaction.get_action_type_display == "Make choice" %}
+                        <a class="character-action" href={% url 'choice-create' game.id player.character.id %}>
                             <button class="rpgui-button">
-                                <p>{{ player.pendingaction.get_action_type_display }}</p>
+                                <p>{{ player.character.pendingaction.get_action_type_display }}</p>
                             </button>
                         </a>
                     {% endif %}
