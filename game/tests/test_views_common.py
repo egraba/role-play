@@ -216,7 +216,7 @@ class GameViewTest(TestCase):
         self.assertEqual(response.context["tale"], tale)
         character_list = cmodels.Character.objects.filter(player__game=self.game)
         self.assertQuerySetEqual(
-            list(response.context["character_list"]), character_list
+            list(response.context["character_list"]), list(character_list)
         )
         event_list = gmodels.Event.objects.filter(game=self.game)
         # issubset() is used because of pagination.
@@ -240,7 +240,7 @@ class GameViewTest(TestCase):
         self.assertEqual(response.context["tale"], tale)
         character_list = cmodels.Character.objects.filter(player__game=self.game)
         self.assertQuerySetEqual(
-            list(response.context["character_list"]), character_list
+            list(response.context["character_list"]), list(character_list)
         )
         event_list = gmodels.Event.objects.filter(game=self.game)
         # issubset() is used because of pagination.
