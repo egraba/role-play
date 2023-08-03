@@ -32,7 +32,7 @@ class DiceLaunchView(
         dice_launch = form.save(commit=False)
         dice_launch.game = self.game
         dice_launch.character = self.character
-        dice_launch.score = dice.roll("d20")
+        dice_launch.score = dice.roll("d20").pop()  # To be sure to be an int.
         dice_launch.message = (
             f"{self.character} launched a dice: score is {dice_launch.score}!"
         )
