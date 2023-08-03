@@ -1,5 +1,6 @@
 import random
 
+import dice
 import factory
 from django.contrib.auth.models import User
 
@@ -60,7 +61,7 @@ class DiceLaunchFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = gmodels.DiceLaunch
 
-    score = factory.Faker("random_int", min=1, max=20)
+    score = dice.roll("d20")
 
 
 class CharacterFactory(factory.django.DjangoModelFactory):
