@@ -111,13 +111,9 @@
                     <a href={% url 'game-start' game.id %}>
                         <button class="rpgui-button"><p>Start the game</p></button>
                     </a>
-                    <button disabled class="rpgui-button"><p>End the game</p></button>
                 {% elif game.is_ongoing %}
                     <button disabled class="rpgui-button"><p>Invite a character</p></button>
                     <button disabled class="rpgui-button"><p>Start the game</p></button>
-                    <a href={% url 'game-end' game.id %}>
-                        <button class="rpgui-button"><p>End the game</p></button>
-                    </a>
                 {% else %}
                     <p>The game is finished.</p>
                 {% endif%}
