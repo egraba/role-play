@@ -32,7 +32,7 @@ table {
     table-layout: fixed;
 }
 
-.character.rpgui-container.framed-grey {
+.rpgui-container.framed-grey {
     position: relative;
     padding-top: 0;
     padding-bottom: 0;
@@ -75,4 +75,8 @@ table {
 
 ul.errorlist {
     list-style: none;
+}
+
+#characters {
+    width: 33em;
 }
