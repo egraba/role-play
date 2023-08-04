@@ -36,14 +36,6 @@
         <h2>Quest</h2>
         <div id="tale" class="rpgui-container framed-golden-2"><p >{{ tale|linebreaks }}</p></div>
 
-        <hr />
-
-        <h2>Master's instructions</h2>
-        <img class="rpgui-icon wizard" src={% static 'images/wizard.png' %}>
-        <div id="instruction"><p >{{ instruction|linebreaks }}</p></div>
-
-        <hr />
-
         <div id="characters">
             <h2>Characters</h2>
             {% if character_list %}
