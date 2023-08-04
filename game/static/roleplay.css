@@ -1,6 +1,10 @@
 .rpgui-content {
     background: #222;
     overflow-y: scroll;
+    transform: scale(0.7);
+    transform-origin: 0 0;
+    position: absolute;
+    width: 142.857143%;
 }
 
 .rpgui-content .title {
