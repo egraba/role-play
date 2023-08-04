@@ -102,20 +102,15 @@
             {% endfor %}
         </div>
 
-        {% if user.is_authenticated and user == game.master.user %}
-            <div class="rpgui-center inline">
+        {% if game.master.user == user %}
+            <div class="rpgui-center">
+                <a href={% url 'game-invite-character' game.id %}>
+                    <button class="rpgui-button"><p>Invite a character</p></button>
+                </a>
                 {% if game.is_under_preparation %}
-                    <a href={% url 'game-invite-character' game.id %}>
-                        <button class="rpgui-button"><p>Invite a character</p></button>
-                    </a>
                     <a href={% url 'game-start' game.id %}>
                         <button class="rpgui-button"><p>Start the game</p></button>
                     </a>
-                {% elif game.is_ongoing %}
-                    <button disabled class="rpgui-button"><p>Invite a character</p></button>
-                    <button disabled class="rpgui-button"><p>Start the game</p></button>
-                {% else %}
-                    <p>The game is finished.</p>
                 {% endif%}
             </div>
         {% endif %}
