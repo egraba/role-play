@@ -12,7 +12,7 @@
             const obj = JSON.parse(e.data)
             if (obj.game === {{game.id}}) {
                 if (obj.refresh === "tale") {
-                    $("#tale").load(window.location.href + " #tale");
+                    $("#quest").load(window.location.href + " #quest");
                 } else if (obj.refresh === "instruction") {
                     $("#instruction").load(window.location.href + " #instruction");
                 } else if (obj.refresh === "event") {
@@ -34,7 +34,7 @@
         <br />
 
         <h2>Quest</h2>
-        <div id="tale" class="rpgui-container framed-golden-2"><p >{{ tale|linebreaks }}</p></div>
+        <div id="quest" class="rpgui-container framed-golden-2"><p >{{ tale|linebreaks }}</p></div>
 
         <div id="events" class="rpgui-container framed-grey">
             <h3>Game events</h3>
