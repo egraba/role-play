@@ -2,26 +2,65 @@
 {% load static %}
 
 {% block content %}
-    <script src={% static 'django_eventstream/eventsource.min.js' %}></script>
-    <script src={% static 'django_eventstream/reconnecting-eventsource.js' %}></script>
-
     <script>
-        var es = new ReconnectingEventSource('/events/');
+        const url = 'ws://' + window.location.host + '/ws/chat/' + {{ game.id }} + '/';
+        const chatSocket = new WebSocket(url);
 
-        es.addEventListener('message', function (e) {
-            const obj = JSON.parse(e.data)
-            if (obj.game === {{game.id}}) {
-                if (obj.refresh === "tale") {
-                    $("#quest").load(window.location.href + " #quest");
-                } else if (obj.refresh === "instruction") {
-                    $("#instruction").load(window.location.href + " #instruction");
-                } else if (obj.refresh === "event") {
-                    $("#events").load(window.location.href + " #events");
-                    $("#actions").load(window.location.href + " #actions");
-                    $("#characters").load(window.location.href + " #characters");
-                }
+        chatSocket.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            const chat = document.getElementById('chat');
+            chat.innerHTML += data.user
+            + ' (' + new Date(data.datetime).toLocaleString('en-US', {
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+            }) + '): '
+            + data.message + '\n';
+            chat.scrollTop = chat.scrollHeight;
+        };
+
+        chatSocket.onclose = function(event) {
+            console.error('Chat socket closed unexpectedly');
+        };
+
+        const chat = document.getElementById('chat');
+        const input = document.getElementById('chat-message-input');
+        const submitButton = document.getElementById('chat-message-submit');
+
+        {% for message in message_list %}
+            chat.innerHTML += '{{ message.user }} ('
+            + new Date('{{ message.date|date:"M d, Y" }}').toLocaleString('en-US', {
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+            }) + '): '
+            chat.innerHTML += '{{ message.content }}' + '\n';
+        {% empty %}
+            chat.innerHTML = '';
+        {% endfor %}
+
+        submitButton.addEventListener('click', function(event) {
+            const message = input.value;
+            if (message) {
+                chatSocket.send(JSON.stringify({
+                    'message': message
+                }));
+                input.value = '';
+                input.focus();
             }
-        }, false);
+        });
+
+        input.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                submitButton.click();
+            }
+        });
+        input.focus();
     </script>
 
     <div class="rpgui-container framed">
