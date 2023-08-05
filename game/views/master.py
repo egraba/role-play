@@ -6,7 +6,6 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.views.generic import CreateView, FormView, ListView, UpdateView
-from django_eventstream import send_event
 from django_fsm import TransitionNotAllowed
 
 import character.models as cmodels
@@ -122,7 +121,6 @@ class TaleCreateView(UserPassesTestMixin, FormView, gmixins.EventContextMixin):
             gutils.get_master_email(self.game.master.user.username),
             gutils.get_players_emails(game=self.game),
         )
-        send_event("game", "message", {"game": self.game.id, "refresh": "tale"})
         return super().form_valid(form)
 
 
@@ -142,7 +140,6 @@ class InstructionCreateView(UserPassesTestMixin, CreateView, gmixins.EventContex
         instruction.game = self.game
         instruction.message = "The Master gave an instruction."
         instruction.save()
-        send_event("game", "message", {"game": self.game.id, "refresh": "instruction"})
         return super().form_valid(form)
 
 
