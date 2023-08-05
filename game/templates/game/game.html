@@ -46,6 +46,16 @@
                 {% endfor %}
             </div>
 
+            <div id="messaging">
+                <p>
+                    <label>Message:</label>
+                    <input id="message-input" type="text">
+                </p>
+                <div class="rpgui-center">
+                    <button id="message-submit" class="rpgui-button" type="submit"><p>Send</p></button>
+                </div>
+            </div>
+
             <div id="characters" class="rpgui-container framed-grey">
                 <h3>Characters</h3>
                 {% for character in character_list %}
