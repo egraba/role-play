@@ -4,7 +4,6 @@ from django.http import Http404
 from django.views.generic import UpdateView, View
 from django.views.generic.edit import FormMixin
 from django.views.generic.list import ContextMixin
-from django_eventstream import send_event
 
 import character.models as cmodels
 import game.models as gmodels
@@ -66,7 +65,6 @@ class EventContextMixin(GameContextMixin, FormMixin):
             raise PermissionDenied()
 
     def form_valid(self, form):
-        send_event("game", "message", {"game": self.game.id, "refresh": "event"})
         return super().form_valid(form)
 
     def is_user_master(self):
