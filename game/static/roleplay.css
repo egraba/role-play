@@ -69,7 +69,7 @@ ul.errorlist {
 
 #game {
     position: relative;
-    height: 42em;
+    height: 52em;
 }
 
 #events {
@@ -77,6 +77,13 @@ ul.errorlist {
     left: 35em;
     width: 102em;
     height: 40em;
+}
+
+#messaging {
+    position: relative;
+    top: 42em;
+    left: 36em;
+    width: 100em;
 }
 
 #characters {
