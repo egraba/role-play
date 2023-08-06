@@ -34,8 +34,8 @@ class GameListView(ListView):
 
 class GameView(LoginRequiredMixin, ListView, gmixins.GameContextMixin):
     model = gmodels.Event
-    paginate_by = 20
-    ordering = ["-date"]
+    paginate_by = 10
+    ordering = ["date"]
     template_name = "game/game.html"
 
     def get_context_data(self, **kwargs):
