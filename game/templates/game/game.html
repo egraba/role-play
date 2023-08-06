@@ -19,6 +19,11 @@
         <div id="game">
             <div id="events" class="rpgui-container framed-grey">
                 <h3>Game events</h3>
+                {% for event in event_list %}
+                    <p>{{ event.date|naturaltime }}, {{ event.message }}</p>
+                {% empty %}
+                    <p>The story did not start yet...</p>
+                {% endfor %}
             </div>
 
             <div id="messaging">
@@ -97,16 +102,8 @@
         const input = document.getElementById('message-input');
         const submitButton = document.getElementById('message-submit');
 
-        {% for event in event_list %}
-            events.innerHTML += '<p>{{ event.date|naturaltime }}, {{ event.message }}</p>'
-        {% empty %}
-            events.innerHTML += '<p>The story did not start yet...</p>';
-        {% endfor %}
-
         eventsSocket.onmessage = function(event) {
-            const data = JSON.parse(event.data);
-            events.innerHTML += '<p>' + 'now, ' + data.message + '</p>';
-            events.scrollTop = events.scrollHeight;
+            $( "#events" ).load(" #events > *")
         };
 
         eventsSocket.onclose = function(event) {
