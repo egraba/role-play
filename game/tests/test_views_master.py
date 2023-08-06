@@ -225,55 +225,6 @@ class GameStartViewTest(TestCase):
         )
 
 
-class GameEndViewTest(TestCase):
-    path_name = "game-end"
-
-    @classmethod
-    def setUpTestData(cls):
-        utfactories.GameFactory(master__user__username="master")
-
-    def setUp(self):
-        self.user = User.objects.get(username="master")
-        self.client.login(username=self.user.username, password="pwd")
-        self.game = gmodels.Game.objects.last()
-
-    def test_view_mapping(self):
-        response = self.client.get(reverse(self.path_name, args=(self.game.id,)))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.resolver_match.func.view_class, gvmaster.GameEndView)
-
-    def test_template_mapping(self):
-        response = self.client.get(reverse(self.path_name, args=(self.game.id,)))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "game/game_end.html")
-
-    def test_game_not_exists(self):
-        game_id = random.randint(10000, 99999)
-        response = self.client.get(reverse(self.path_name, args=(game_id,)))
-        self.assertEqual(response.status_code, 404)
-        self.assertRaises(Http404)
-
-    def test_game_end_ok(self):
-        number_of_players = 5
-        for _ in range(number_of_players):
-            utfactories.PlayerFactory(game=self.game)
-        self.game.start()
-        self.game.save()
-
-        response = self.client.post(reverse(self.path_name, args=(self.game.id,)))
-        self.assertEqual(response.status_code, 302)
-        self.game = gmodels.Game.objects.last()
-        self.assertTrue(self.game.is_finished())
-        self.assertLessEqual(self.game.end_date.second - timezone.now().second, 2)
-        self.assertTrue(
-            cmodels.Character.objects.filter(player__game=self.game).count() == 0
-        )
-        event = gmodels.Event.objects.last()
-        self.assertLessEqual(event.date.second - timezone.now().second, 2)
-        self.assertEqual(event.game, self.game)
-        self.assertEqual(event.message, "The game ended.")
-
-
 class TaleCreateViewTest(TestCase):
     path_name = "tale-create"
 
@@ -320,13 +271,6 @@ class TaleCreateViewTest(TestCase):
 
     def test_game_is_under_preparation(self):
         self.game.status = "P"
-        self.game.save()
-        response = self.client.get(reverse(self.path_name, args=(self.game.id,)))
-        self.assertEqual(response.status_code, 403)
-        self.assertRaises(PermissionDenied)
-
-    def test_game_is_finished(self):
-        self.game.end()
         self.game.save()
         response = self.client.get(reverse(self.path_name, args=(self.game.id,)))
         self.assertEqual(response.status_code, 403)
@@ -431,21 +375,6 @@ class PendingActionCreateViewTest(TestCase):
 
     def test_game_is_under_preparation(self):
         self.game.status = "P"
-        self.game.save()
-        response = self.client.get(
-            reverse(
-                self.path_name,
-                args=(
-                    self.game.id,
-                    self.character.id,
-                ),
-            )
-        )
-        self.assertEqual(response.status_code, 403)
-        self.assertRaises(PermissionDenied)
-
-    def test_game_is_finished(self):
-        self.game.end()
         self.game.save()
         response = self.client.get(
             reverse(
@@ -607,21 +536,6 @@ class XpIncreaseViewTest(TestCase):
         self.assertEqual(response.status_code, 403)
         self.assertRaises(PermissionDenied)
 
-    def test_game_is_finished(self):
-        self.game.end()
-        self.game.save()
-        response = self.client.get(
-            reverse(
-                self.path_name,
-                args=(
-                    self.game.id,
-                    self.character.id,
-                ),
-            )
-        )
-        self.assertEqual(response.status_code, 403)
-        self.assertRaises(PermissionDenied)
-
     def test_creation_ok(self):
         xp = random.randint(1, 20)
         data = {"xp": f"{xp}"}
@@ -737,21 +651,6 @@ class DamageViewTest(TestCase):
 
     def test_game_is_under_preparation(self):
         self.game.status = "P"
-        self.game.save()
-        response = self.client.get(
-            reverse(
-                self.path_name,
-                args=(
-                    self.game.id,
-                    self.character.id,
-                ),
-            )
-        )
-        self.assertEqual(response.status_code, 403)
-        self.assertRaises(PermissionDenied)
-
-    def test_game_is_finished(self):
-        self.game.end()
         self.game.save()
         response = self.client.get(
             reverse(
@@ -895,15 +794,6 @@ class HealViewTest(TestCase):
 
     def test_game_is_under_preparation(self):
         self.game.status = "P"
-        self.game.save()
-        response = self.client.get(
-            reverse(self.path_name, args=[self.game.id, self.character.id])
-        )
-        self.assertEqual(response.status_code, 403)
-        self.assertRaises(PermissionDenied)
-
-    def test_game_is_finished(self):
-        self.game.end()
         self.game.save()
         response = self.client.get(
             reverse(self.path_name, args=[self.game.id, self.character.id])

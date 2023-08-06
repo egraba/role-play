@@ -264,14 +264,6 @@ class GameViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "The story did not start yet...")
 
-    def test_content_game_is_finished(self):
-        self.game.start()
-        self.game.end()
-        self.game.save()
-        response = self.client.get(self.game.get_absolute_url())
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "The game is finished.")
-
     def test_content_pending_action_launch_dice(self):
         dice_launch = gmodels.PendingAction.objects.filter(action_type="D").last()
         game = dice_launch.game
