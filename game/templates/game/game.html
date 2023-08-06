@@ -20,7 +20,7 @@
             <div id="events" class="rpgui-container framed-grey">
                 <h3>Game events</h3>
                 {% for event in event_list %}
-                    <p>{{ event.date|naturaltime }}, {{ event.message }}</p>
+                    <p>{{ event.date|naturaltime }}, {{ event.message }} {{ event.instruction.content }}</p>
                 {% empty %}
                     <p>The story did not start yet...</p>
                 {% endfor %}
