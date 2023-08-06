@@ -2,66 +2,6 @@
 {% load static %}
 
 {% block content %}
-    <script>
-        const url = 'ws://' + window.location.host + '/ws/chat/' + {{ game.id }} + '/';
-        const chatSocket = new WebSocket(url);
-
-        chatSocket.onmessage = function(event) {
-            const data = JSON.parse(event.data);
-            const chat = document.getElementById('chat');
-            chat.innerHTML += data.user
-            + ' (' + new Date(data.datetime).toLocaleString('en-US', {
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric',
-                hour: 'numeric',
-                minute: 'numeric',
-            }) + '): '
-            + data.message + '\n';
-            chat.scrollTop = chat.scrollHeight;
-        };
-
-        chatSocket.onclose = function(event) {
-            console.error('Chat socket closed unexpectedly');
-        };
-
-        const chat = document.getElementById('chat');
-        const input = document.getElementById('chat-message-input');
-        const submitButton = document.getElementById('chat-message-submit');
-
-        {% for message in message_list %}
-            chat.innerHTML += '{{ message.user }} ('
-            + new Date('{{ message.date|date:"M d, Y" }}').toLocaleString('en-US', {
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric',
-                hour: 'numeric',
-                minute: 'numeric',
-            }) + '): '
-            chat.innerHTML += '{{ message.content }}' + '\n';
-        {% empty %}
-            chat.innerHTML = '';
-        {% endfor %}
-
-        submitButton.addEventListener('click', function(event) {
-            const message = input.value;
-            if (message) {
-                chatSocket.send(JSON.stringify({
-                    'message': message
-                }));
-                input.value = '';
-                input.focus();
-            }
-        });
-
-        input.addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                submitButton.click();
-            }
-        });
-        input.focus();
-    </script>
 
     <div class="rpgui-container framed">
         <h1 id="title" class="title">{{ game }}</h1>
@@ -78,11 +18,6 @@
         <div id="game">
             <div id="events" class="rpgui-container framed-grey">
                 <h3>Game events</h3>
-                {% for event in event_list %}
-                    <p>{{ event.date|timesince }} ago, {{ event.message }}</p>
-                {% empty %}
-                    <p>The story did not start yet...</p>
-                {% endfor %}
             </div>
 
             <div id="messaging">
@@ -153,4 +88,57 @@
             <img class="rpgui-icon" src={% static 'images/mini-skull.png' %}>
         </div>
     </div>
+
+    <script>
+        const url = 'ws://' + window.location.host + '/ws/events/' + {{ game.id }} + '/';
+        const eventsSocket = new WebSocket(url);
+        const events = document.getElementById('events');
+        const input = document.getElementById('message-input');
+        const submitButton = document.getElementById('message-submit');
+
+        {% for event in event_list %}
+            events.innerHTML += '<p>{{ event.date|timesince }} ago, {{ event.message }}</p>'
+        {% empty %}
+            events.innerHTML += '<p>The story did not start yet...</p>';
+        {% endfor %}
+
+        eventsSocket.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            events.innerHTML += data.user
+            + ' (' + new Date(data.datetime).toLocaleString('en-US', {
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+            }) + '): '
+            + data.message + '\n';
+            events.scrollTop = events.scrollHeight;
+        };
+
+        eventsSocket.onclose = function(event) {
+            console.error('Events socket closed unexpectedly...');
+        };
+
+
+        submitButton.addEventListener('click', function(event) {
+            const message = input.value;
+            if (message) {
+                eventsSocket.send(JSON.stringify({
+                    'message': message
+                }));
+                input.value = '';
+                input.focus();
+            }
+        });
+
+        input.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                submitButton.click();
+            }
+        });
+        input.focus();
+    </script>
+
 {% endblock %}
