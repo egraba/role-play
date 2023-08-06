@@ -86,7 +86,7 @@ class Event(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=["date"]),
+            models.Index(fields=["-date"]),
         ]
 
     def __str__(self):
