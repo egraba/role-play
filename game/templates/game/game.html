@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load humanize %}
 
 {% block content %}
 
@@ -97,29 +98,20 @@
         const submitButton = document.getElementById('message-submit');
 
         {% for event in event_list %}
-            events.innerHTML += '<p>{{ event.date|timesince }} ago, {{ event.message }}</p>'
+            events.innerHTML += '<p>{{ event.date|naturaltime }}, {{ event.message }}</p>'
         {% empty %}
             events.innerHTML += '<p>The story did not start yet...</p>';
         {% endfor %}
 
         eventsSocket.onmessage = function(event) {
             const data = JSON.parse(event.data);
-            events.innerHTML += data.user
-            + ' (' + new Date(data.datetime).toLocaleString('en-US', {
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric',
-                hour: 'numeric',
-                minute: 'numeric',
-            }) + '): '
-            + data.message + '\n';
+            events.innerHTML += '<p>' + 'now, ' + data.message + '</p>';
             events.scrollTop = events.scrollHeight;
         };
 
         eventsSocket.onclose = function(event) {
             console.error('Events socket closed unexpectedly...');
         };
-
 
         submitButton.addEventListener('click', function(event) {
             const message = input.value;
