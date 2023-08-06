@@ -20,7 +20,7 @@
             <div id="events" class="rpgui-container framed-grey">
                 <h3>Game events</h3>
                 {% for event in event_list %}
-                    <p>{{ event.date|naturaltime }}, {{ event.message }} {{ event.instruction.content }} {{ event.choice.selection }}</p>
+                    <p>{{ event.date|naturaltime }}, {{ event.message }} {{ event.instruction.content }} {{ event.choice.selection }} {{ event.dicelaunch.score }}</p>
                 {% empty %}
                     <p>The story did not start yet...</p>
                 {% endfor %}
@@ -33,6 +33,7 @@
                 </p>
                 <div class="rpgui-center">
                     <button id="message-submit" class="rpgui-button" type="submit"><p>Send</p></button>
+                    <button id="dice-launch-submit" class="rpgui-button" type="submit"><p>Launch dice</p></button>
                 </div>
             </div>
 
@@ -96,6 +97,7 @@
         const events = document.getElementById('events');
         const input = document.getElementById('message-input');
         const submitButton = document.getElementById('message-submit');
+        const submitDiceLaunchButton = document.getElementById('dice-launch-submit');
 
         eventsSocket.onmessage = function(event) {
             $( "#events" ).load(" #events > *")
@@ -123,6 +125,12 @@
             }
         });
         input.focus();
+
+        submitDiceLaunchButton.addEventListener('click', function(event) {
+            eventsSocket.send(JSON.stringify({
+                'message': "dice_launch"
+            }));
+        });
     </script>
 
 {% endblock %}

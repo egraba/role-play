@@ -1,5 +1,6 @@
 import json
 
+import dice
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.contrib.auth.models import User
@@ -41,6 +42,13 @@ class EventsConsumer(AsyncWebsocketConsumer):
                     "content": message,
                 },
             )
+        elif message == "dice_launch":
+            await self.channel_layer.group_send(
+                self.game_group_name,
+                {
+                    "type": "player_dice_launch",
+                },
+            )
         else:
             await self.channel_layer.group_send(
                 self.game_group_name,
@@ -57,6 +65,16 @@ class EventsConsumer(AsyncWebsocketConsumer):
             game=self.game,
             message=message,
             content=content,
+        )
+        await self.send(text_data=json.dumps(event))
+
+    async def player_dice_launch(self, event):
+        message = f"[{self.player_user}] launched a dice: score is: "
+        await database_sync_to_async(gmodels.DiceLaunch.objects.create)(
+            game=self.game,
+            message=message,
+            character=self.character,
+            score=dice.roll("d20"),
         )
         await self.send(text_data=json.dumps(event))
 
