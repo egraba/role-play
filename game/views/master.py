@@ -78,25 +78,6 @@ class GameStartErrorView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
         return self.is_user_master()
 
 
-class GameEndView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
-    fields = []
-    template_name = "game/game_end.html"
-
-    def test_func(self):
-        return self.is_user_master()
-
-    def post(self, request, *args, **kwargs):
-        game = self.get_object()
-        game.end()
-        game.save()
-        cache.set(f"game{game.id}", game)
-        event = gmodels.Event.objects.create(game=game)
-        event.date = timezone.now()
-        event.message = "The game ended."
-        event.save()
-        return HttpResponseRedirect(game.get_absolute_url())
-
-
 class TaleCreateView(UserPassesTestMixin, FormView, gmixins.EventContextMixin):
     model = gmodels.Tale
     fields = ["description"]

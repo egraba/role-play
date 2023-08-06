@@ -13,14 +13,12 @@ class Game(models.Model):
     class Status(models.TextChoices):
         UNDER_PREPARATION = "P", "Under preparation"
         ONGOING = "O", "Ongoing"
-        FINISHED = "F", "Finished"
 
     name = models.CharField(max_length=100)
     story = models.ForeignKey(
         mmodels.Story, on_delete=models.SET_NULL, null=True, blank=True
     )
     start_date = models.DateTimeField(null=True, blank=True)
-    end_date = models.DateTimeField(null=True, blank=True)
     status = FSMField(
         max_length=1, choices=Status.choices, default=Status.UNDER_PREPARATION
     )
@@ -48,19 +46,11 @@ class Game(models.Model):
     def start(self):
         self.start_date = timezone.now()
 
-    @transition(field=status, source=Status.ONGOING, target=Status.FINISHED)
-    def end(self):
-        self.end_date = timezone.now()
-        self.player_set.all().delete()
-
     def is_under_preparation(self):
         return self.status == self.Status.UNDER_PREPARATION
 
     def is_ongoing(self):
         return self.status == self.Status.ONGOING
-
-    def is_finished(self):
-        return self.status == self.Status.FINISHED
 
 
 class Master(models.Model):
