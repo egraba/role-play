@@ -2,7 +2,6 @@ import json
 
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
-from django.utils import timezone
 
 import game.models as gmodels
 
@@ -20,20 +19,21 @@ class EventsConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         message = text_data_json["message"]
-        now = timezone.now()
         await self.channel_layer.group_send(
             self.game_group_name,
             {
-                "type": "game_event",
-                "date": now.isoformat(),
-                "message": message,
+                "type": "master_instruction",
+                "content": message,
             },
         )
 
-    async def game_event(self, event):
-        message = event["message"]
+    async def master_instruction(self, event):
+        message = "the Master said: "
+        content = event["content"]
         game = await database_sync_to_async(gmodels.Game.objects.get)(id=self.game_id)
-        await database_sync_to_async(gmodels.Event.objects.create)(
-            game=game, message=message
+        await database_sync_to_async(gmodels.Instruction.objects.create)(
+            game=game,
+            message=message,
+            content=content,
         )
         await self.send(text_data=json.dumps(event))
