@@ -7,9 +7,11 @@ on:
     branches: [ "main" ]
 
 env:
+  DJANGO_SETTINGS_MODULE: role_play.settings.local
   PGUSER: ciuser
   REDISHOST: 127.0.0.1
   REDISPORT: 6379
+  REDIS_URL: redis://127.0.0.1
   PGPASSWORD: ${{secrets.PGPASSWORD}}
   PGHOST: 127.0.0.1
   PGPORT: 5432
