@@ -6,6 +6,7 @@
         <p>Are you sure to add the following character?</p>
         <div class="rpgui-container framed-grey">
             <p>Name: {{ character }}</p>
+            <p>User: {{ character.user }}</p>
             <p>Race: {{ character.get_race_display }}</p>
             <p>XP: {{ character.xp }}</p>
         </div>

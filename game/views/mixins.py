@@ -4,13 +4,22 @@ from django.http import Http404
 from django.views.generic import UpdateView, View
 from django.views.generic.edit import FormMixin
 from django.views.generic.list import ContextMixin
-from django_eventstream import send_event
 
 import character.models as cmodels
 import game.models as gmodels
 
 
 class GameContextMixin(ContextMixin, View):
+    def is_user_master(self):
+        return self.request.user == self.game.master.user
+
+    def is_user_player(self):
+        try:
+            self.game.player_set.get(character__user=self.request.user)
+            return True
+        except ObjectDoesNotExist:
+            return False
+
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
         game_id = self.kwargs["game_id"]
@@ -21,14 +30,13 @@ class GameContextMixin(ContextMixin, View):
                 cache.set(f"game{game_id}", self.game)
         except ObjectDoesNotExist:
             raise Http404(f"Game [{game_id}] does not exist...")
+        if not self.is_user_master() and not self.is_user_player():
+            raise PermissionDenied
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["game"] = self.game
         return context
-
-    def is_user_master(self):
-        return self.request.user == self.game.master.user
 
 
 class GameStatusControlMixin(UpdateView):
@@ -66,7 +74,6 @@ class EventContextMixin(GameContextMixin, FormMixin):
             raise PermissionDenied()
 
     def form_valid(self, form):
-        send_event("game", "message", {"game": self.game.id, "refresh": "event"})
         return super().form_valid(form)
 
     def is_user_master(self):

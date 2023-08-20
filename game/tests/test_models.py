@@ -33,13 +33,6 @@ class GameModelTest(TestCase):
         start_date = self.game._meta.get_field("start_date")
         self.assertTrue(start_date, models.DateTimeField)
 
-    def test_end_date_type(self):
-        end_date = self.game._meta.get_field("end_date")
-        self.assertTrue(end_date, models.DateTimeField)
-
-    def test_end_date_default_value(self):
-        self.assertEqual(self.game.end_date, None)
-
     def test_status_type(self):
         status = self.game._meta.get_field("status")
         self.assertTrue(status, models.CharField)
@@ -48,9 +41,11 @@ class GameModelTest(TestCase):
         self.assertEqual(str(self.game), self.game.name)
 
     def test_status_methods(self):
+        # Under preparation
         self.assertTrue(self.game.is_under_preparation())
         self.assertFalse(self.game.is_ongoing())
-        self.assertFalse(self.game.is_finished())
+
+        # Ongoing
         number_of_players = 5
         for _ in range(number_of_players):
             utfactories.PlayerFactory(game=self.game)
@@ -58,12 +53,6 @@ class GameModelTest(TestCase):
         self.game.save()
         self.assertFalse(self.game.is_under_preparation())
         self.assertTrue(self.game.is_ongoing())
-        self.assertFalse(self.game.is_finished())
-        self.game.end()
-        self.game.save()
-        self.assertFalse(self.game.is_under_preparation())
-        self.assertFalse(self.game.is_ongoing())
-        self.assertTrue(self.game.is_finished())
 
 
 class MasterModelTest(TestCase):

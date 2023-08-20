@@ -1,14 +1,14 @@
 .rpgui-content {
     background: #222;
     overflow-y: scroll;
-}
-
-.rpgui-content .title {
-    font-size: x-large;
+    transform: scale(0.7);
+    transform-origin: 0 0;
+    position: absolute;
+    width: 142.857143%;
 }
 
 .rpgui-container.framed {
-    margin: 2em;
+    margin: 1em;
     position: static;
 }
 
@@ -28,7 +28,7 @@ table {
     table-layout: fixed;
 }
 
-.character.rpgui-container.framed-grey {
+.rpgui-container.framed-grey {
     position: relative;
     padding-top: 0;
     padding-bottom: 0;
@@ -59,16 +59,42 @@ table {
     margin-bottom: 1em;
 }
 
-.wizard {
-    height: auto;
-    float: left;
-    margin-right: 1em;
-}
-
-#tale, #instruction {
+#quest {
     min-height: 120px;
 }
 
 ul.errorlist {
     list-style: none;
+}
+
+#game {
+    position: relative;
+}
+
+#events {
+    left: 47em;
+    box-sizing: border-box;
+    width: calc(100% - 45em - 2em);
+    height: 31em;
+}
+
+#messaging {
+    position: relative;
+    left: 47em;
+    box-sizing: border-box;
+    width: calc(100% - 45em - 2em);
+}
+
+#panel {
+    position: absolute;
+    top: 0;
+}
+
+#characters {
+    width: 45em;
+    margin-bottom: 1em;
+}
+
+#master {
+    width: 45em;
 }

@@ -1,6 +1,6 @@
 from django.urls import path
 
-from game.views import common, master, player
+from game.views import common, master
 
 urlpatterns = [
     path("", common.IndexView.as_view(), name="index"),
@@ -37,11 +37,6 @@ urlpatterns = [
         name="game-start-error",
     ),
     path(
-        "<int:pk>/end_game",
-        master.GameEndView.as_view(),
-        name="game-end",
-    ),
-    path(
         "<int:game_id>/create_tale",
         master.TaleCreateView.as_view(),
         name="tale-create",
@@ -70,20 +65,5 @@ urlpatterns = [
         "<int:game_id>/character/<int:character_id>/heal",
         master.HealingView.as_view(),
         name="healing-create",
-    ),
-    path(
-        "<int:game_id>/character/<int:character_id>/launch_dice/",
-        player.DiceLaunchView.as_view(),
-        name="dicelaunch-create",
-    ),
-    path(
-        "<int:game_id>/character/<int:character_id>/launch_dice/<int:action_id>/success/",
-        player.DiceLaunchSuccessView.as_view(),
-        name="dicelaunch-success",
-    ),
-    path(
-        "<int:game_id>/character/<int:character_id>/make_choice/",
-        player.ChoiceView.as_view(),
-        name="choice-create",
     ),
 ]

@@ -1,3 +1,5 @@
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
@@ -6,7 +8,6 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.views.generic import CreateView, FormView, ListView, UpdateView
-from django_eventstream import send_event
 from django_fsm import TransitionNotAllowed
 
 import character.models as cmodels
@@ -46,6 +47,12 @@ class CharacterInviteConfirmView(
         event.date = timezone.now()
         event.message = f"{character} was added to the game."
         event.save()
+        send_mail(
+            f"The Master invited you to join. [{self.game}]",
+            f"{character}, the Master you to join. [{self.game}]",
+            self.game.master.user.email,
+            [character.user.email],
+        )
         return HttpResponseRedirect(reverse("game", args=(self.game.id,)))
 
 
@@ -64,8 +71,13 @@ class GameStartView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
             cache.set(f"game{game.id}", game)
             event = gmodels.Event.objects.create(game=game)
             event.date = timezone.now()
-            event.message = "The game started."
+            event.message = "the game started."
             event.save()
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                f"game_{game.id}_events",
+                {"type": "master.start", "content": ""},
+            )
         except TransitionNotAllowed:
             return HttpResponseRedirect(reverse("game-start-error", args=(game.id,)))
         return HttpResponseRedirect(game.get_absolute_url())
@@ -77,25 +89,6 @@ class GameStartErrorView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
 
     def test_func(self):
         return self.is_user_master()
-
-
-class GameEndView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
-    fields = []
-    template_name = "game/game_end.html"
-
-    def test_func(self):
-        return self.is_user_master()
-
-    def post(self, request, *args, **kwargs):
-        game = self.get_object()
-        game.end()
-        game.save()
-        cache.set(f"game{game.id}", game)
-        event = gmodels.Event.objects.create(game=game)
-        event.date = timezone.now()
-        event.message = "The game ended."
-        event.save()
-        return HttpResponseRedirect(game.get_absolute_url())
 
 
 class TaleCreateView(UserPassesTestMixin, FormView, gmixins.EventContextMixin):
@@ -113,16 +106,20 @@ class TaleCreateView(UserPassesTestMixin, FormView, gmixins.EventContextMixin):
     def form_valid(self, form):
         tale = gmodels.Tale()
         tale.game = self.game
-        tale.message = "The Master updated the story."
+        tale.message = "the Master updated the story."
         tale.content = form.cleaned_data["content"]
         tale.save()
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            f"game_{self.game.id}_events",
+            {"type": "master.tale", "content": ""},
+        )
         send_mail(
             f"[{self.game}] The Master updated the story.",
             f"The Master said:\n{tale.content}",
             gutils.get_master_email(self.game.master.user.username),
             gutils.get_players_emails(game=self.game),
         )
-        send_event("game", "message", {"game": self.game.id, "refresh": "tale"})
         return super().form_valid(form)
 
 
@@ -142,7 +139,6 @@ class InstructionCreateView(UserPassesTestMixin, CreateView, gmixins.EventContex
         instruction.game = self.game
         instruction.message = "The Master gave an instruction."
         instruction.save()
-        send_event("game", "message", {"game": self.game.id, "refresh": "instruction"})
         return super().form_valid(form)
 
 

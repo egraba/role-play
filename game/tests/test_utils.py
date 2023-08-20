@@ -36,19 +36,6 @@ class GetPlayersEmailsTest(TestCase):
             utfactories.PlayerFactory(game=game, character__user__email=email)
         self.assertEqual(gutils.get_players_emails(game), emails)
 
-    def test_some_emails_missing(self):
-        fake = Faker()
-        game = utfactories.GameFactory()
-        emails = set()
-        for i in range(5):
-            if i % 2 == 0:
-                email = fake.email()
-                emails.add(email)
-                utfactories.PlayerFactory(game=game, character__user__email=email)
-            else:
-                utfactories.PlayerFactory(game=game)
-        self.assertEqual(gutils.get_players_emails(game), emails)
-
     def test_same_emails(self):
         fake = Faker()
         game = utfactories.GameFactory()
