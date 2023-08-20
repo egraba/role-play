@@ -212,7 +212,7 @@ class GameStartViewTest(TestCase):
         event = gmodels.Event.objects.last()
         self.assertLessEqual(event.date.second - timezone.now().second, 2)
         self.assertEqual(event.game, self.game)
-        self.assertEqual(event.message, "The game started.")
+        self.assertEqual(event.message, "the game started.")
 
     def test_game_start_not_enough_characters(self):
         utfactories.PlayerFactory(game=self.game)
@@ -289,7 +289,7 @@ class TaleCreateViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         tale = gmodels.Tale.objects.filter(game=self.game).last()
         self.assertEqual(tale.game, self.game)
-        self.assertEqual(tale.message, "The Master updated the story.")
+        self.assertEqual(tale.message, "the Master updated the story.")
         self.assertEqual(tale.content, form.cleaned_data["content"])
         self.assertRedirects(response, self.game.get_absolute_url())
 

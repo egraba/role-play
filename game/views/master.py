@@ -1,3 +1,5 @@
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
@@ -45,6 +47,12 @@ class CharacterInviteConfirmView(
         event.date = timezone.now()
         event.message = f"{character} was added to the game."
         event.save()
+        send_mail(
+            f"The Master invited you to join. [{self.game}]",
+            f"{character}, the Master you to join. [{self.game}]",
+            self.game.master.user.email,
+            [character.user.email],
+        )
         return HttpResponseRedirect(reverse("game", args=(self.game.id,)))
 
 
@@ -63,8 +71,13 @@ class GameStartView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
             cache.set(f"game{game.id}", game)
             event = gmodels.Event.objects.create(game=game)
             event.date = timezone.now()
-            event.message = "The game started."
+            event.message = "the game started."
             event.save()
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                f"game_{game.id}_events",
+                {"type": "master.start", "content": ""},
+            )
         except TransitionNotAllowed:
             return HttpResponseRedirect(reverse("game-start-error", args=(game.id,)))
         return HttpResponseRedirect(game.get_absolute_url())
@@ -93,9 +106,14 @@ class TaleCreateView(UserPassesTestMixin, FormView, gmixins.EventContextMixin):
     def form_valid(self, form):
         tale = gmodels.Tale()
         tale.game = self.game
-        tale.message = "The Master updated the story."
+        tale.message = "the Master updated the story."
         tale.content = form.cleaned_data["content"]
         tale.save()
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            f"game_{self.game.id}_events",
+            {"type": "master.tale", "content": ""},
+        )
         send_mail(
             f"[{self.game}] The Master updated the story.",
             f"The Master said:\n{tale.content}",

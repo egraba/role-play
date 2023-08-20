@@ -10,30 +10,34 @@
         <hr class="golden"/>
 
         <h1>Available characters</h1>
-        {% for character in character_list %}
-            <div class="character rpgui-container framed-grey">
-                <p>
-                    <a href={{ character.get_absolute_url }} style="width:100em">{{ character.name }}</a>
-                    Race: {{ character.get_race_display }},
-                    XP: {{ character.xp }}
-                    <a href={% url 'game-invite-character-confirm' game.id character.id %}><button class="rpgui-button" method="post"><p>Invite</p></button></a>
-                </p>
-            </div>
-        {% empty %}
-            <p>There is no character available...</p>
-        {% endfor %}
+        <table class="rpgui-container framed-grey">
+            {% if page_obj %}
+                <tr>
+                    <th><p>Name</p></th>
+                    <th><p>User</p></th>
+                    <th><p>Race</p></th>
+                    <th><p>XP</p></th>
+                </tr>
+            {% endif %}
+            {% for character in page_obj %}
+                <tr>
+                    <td><a href={{ character.get_absolute_url }}>{{ character }}</a></td>
+                    <td><p>{{ character.user }}</p></td>
+                    <td><p>{{ character.get_race_display }}</p></td>
+                    <td><p>{{ character.xp }}</p></td>
+                    <td>
+                        <a href={% url 'game-invite-character-confirm' game.id character.id %}>
+                            <button class="rpgui-button" method="post"><p>Invite</p></button>
+                        </a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td><p>There is no character available...</p></td></tr>
+            {% endfor %}
+        </table>
+
         <div class="rpgui-center">
-            <p>
-                {% if page_obj.has_previous %}
-                    <a href="?page=1">&laquo; First</a>
-                    <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
-                {% endif %}
-                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-                {% if page_obj.has_next %}
-                    <a href="?page={{ page_obj.next_page_number }}">Next</a>
-                    <a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
-                {% endif %}
-            </p>
+            {% include 'pagination.html' %}
         </div>
     </div>
 {% endblock%}

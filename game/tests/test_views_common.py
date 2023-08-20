@@ -73,8 +73,15 @@ class GameListViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         number_of_games = 22
-        for i in range(number_of_games):
-            utfactories.GameFactory(start_date=datetime.now(tz=timezone.utc))
+        for _ in range(number_of_games):
+            utfactories.GameFactory(
+                start_date=datetime.now(tz=timezone.utc),
+                master__user__username="master-game-list-view",
+            )
+
+    def setUp(self):
+        self.user = User.objects.last()
+        self.client.login(username=self.user.username, password="pwd")
 
     def test_view_mapping(self):
         response = self.client.get(reverse(self.path_name))
@@ -106,7 +113,7 @@ class GameListViewTest(TestCase):
         self.assertEqual(len(response.context["game_list"]), 2)
 
     def test_ordering(self):
-        self.user = User.objects.last()
+        self.user = User.objects.get(username="master-game-list-view")
         self.client.login(username=self.user.username, password="pwd")
 
         response = self.client.get(reverse(self.path_name))
@@ -171,7 +178,7 @@ class GameViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue("is_paginated" in response.context)
         self.assertTrue(response.context["is_paginated"])
-        self.assertEqual(len(response.context["event_list"]), 5)  # Inherited events
+        self.assertEqual(len(response.context["event_list"]), 6)  # Inherited events
 
     def test_ordering_character_name_ascending(self):
         response = self.client.get(self.game.get_absolute_url())
@@ -263,16 +270,6 @@ class GameViewTest(TestCase):
         response = self.client.get(self.game.get_absolute_url())
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "The story did not start yet...")
-
-    def test_content_pending_action_launch_dice(self):
-        dice_launch = gmodels.PendingAction.objects.filter(action_type="D").last()
-        game = dice_launch.game
-        character = dice_launch.character
-        user = User.objects.get(character=character)
-        self.client.login(username=user.username, password="pwd")
-        response = self.client.get(game.get_absolute_url())
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Launch dice")
 
 
 class GameCreateViewTest(TestCase):

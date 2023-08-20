@@ -10,6 +10,16 @@ import game.models as gmodels
 
 
 class GameContextMixin(ContextMixin, View):
+    def is_user_master(self):
+        return self.request.user == self.game.master.user
+
+    def is_user_player(self):
+        try:
+            self.game.player_set.get(character__user=self.request.user)
+            return True
+        except ObjectDoesNotExist:
+            return False
+
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
         game_id = self.kwargs["game_id"]
@@ -20,14 +30,13 @@ class GameContextMixin(ContextMixin, View):
                 cache.set(f"game{game_id}", self.game)
         except ObjectDoesNotExist:
             raise Http404(f"Game [{game_id}] does not exist...")
+        if not self.is_user_master() and not self.is_user_player():
+            raise PermissionDenied
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["game"] = self.game
         return context
-
-    def is_user_master(self):
-        return self.request.user == self.game.master.user
 
 
 class GameStatusControlMixin(UpdateView):

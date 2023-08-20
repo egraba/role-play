@@ -9,20 +9,34 @@ https://docs.djangoproject.com/en/4.1/howto/deployment/asgi/
 
 import os
 
+from django.core.asgi import get_asgi_application
+from django.urls import re_path
+
+# Initialize Django ASGI application early to ensure the AppRegistry
+# is populated before importing code that may import ORM models.
+django_asgi_app = get_asgi_application()
+
 from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.security.websocket import AllowedHostsOriginValidator
-from django.core.asgi import get_asgi_application
 
-from game import routing
+from game.consumers import GameEventsConsumer
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "role_play.settings")
 
 application = ProtocolTypeRouter(
     {
-        "http": get_asgi_application(),
+        "http": django_asgi_app,
         "websocket": AllowedHostsOriginValidator(
-            AuthMiddlewareStack(URLRouter(routing.websocket_urlpatterns))
+            AuthMiddlewareStack(
+                URLRouter(
+                    [
+                        re_path(
+                            r"^events/(?P<game_id>\w+)/$", GameEventsConsumer.as_asgi()
+                        ),
+                    ]
+                )
+            )
         ),
     }
 )

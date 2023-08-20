@@ -1,90 +1,102 @@
-import json
-
 import dice
-from channels.db import database_sync_to_async
-from channels.generic.websocket import AsyncWebsocketConsumer
-from django.contrib.auth.models import User
+from asgiref.sync import async_to_sync
+from channels.exceptions import DenyConnection
+from channels.generic.websocket import JsonWebsocketConsumer
+from django.core.cache import cache
+from django.core.exceptions import ObjectDoesNotExist
+from django.utils import timezone
 
 import character.models as cmodels
 import game.models as gmodels
 
 
-class EventsConsumer(AsyncWebsocketConsumer):
-    async def connect(self):
+class GameEventsConsumer(JsonWebsocketConsumer):
+    def connect(self):
         self.user = self.scope["user"]
         game_id = self.scope["url_route"]["kwargs"]["game_id"]
-        self.game = await database_sync_to_async(gmodels.Game.objects.get)(id=game_id)
-        self.master_user = await database_sync_to_async(User.objects.get)(
-            master__game=self.game
+        try:
+            self.game = cache.get(f"game{game_id}")
+            if not self.game:
+                self.game = gmodels.Game.objects.get(id=game_id)
+                cache.set(f"game{game_id}", self.game)
+        except ObjectDoesNotExist:
+            raise DenyConnection(f"Game [{game_id}] not found...")
+            self.close()
+        self.game_group_name = f"game_{self.game.id}_events"
+        async_to_sync(self.channel_layer.group_add)(
+            self.game_group_name, self.channel_name
         )
-        self.player_user = await database_sync_to_async(User.objects.get)(
-            character__player__game=self.game, character__user=self.user
-        )
-        self.character = await database_sync_to_async(cmodels.Character.objects.get)(
-            user=self.user
+        self.accept()
+
+    def disconnect(self, close_code):
+        async_to_sync(self.channel_layer.group_discard)(
+            self.game_group_name, self.channel_name
         )
 
-        self.game_group_name = f"events_{self.game.id}"
-        await self.channel_layer.group_add(self.game_group_name, self.channel_name)
-        await self.accept()
+    def receive_json(self, content):
+        date = timezone.now().isoformat()
+        match content["type"]:
+            case "master.instruction":
+                message = "the Master said: "
+                gmodels.Instruction.objects.create(
+                    game=self.game,
+                    date=date,
+                    message=message,
+                    content=content["content"],
+                )
+            case "master.start":
+                message = "the game started."
+            case "master.tale":
+                message = "the Master updated the story."
+            case "player.choice":
+                try:
+                    character = cmodels.Character.objects.get(user=self.user)
+                except ObjectDoesNotExist:
+                    raise DenyConnection(
+                        f"Character of user [{self.user}] not found..."
+                    )
+                    self.close()
+                message = f"[{ self.user }] said: "
+                gmodels.Choice.objects.create(
+                    game=self.game,
+                    date=date,
+                    message=message,
+                    character=character,
+                    selection=content["content"],
+                )
+            case "player.dice.launch":
+                try:
+                    character = cmodels.Character.objects.get(user=self.user)
+                except ObjectDoesNotExist:
+                    raise DenyConnection(
+                        f"Character of user [{self.user}] not found..."
+                    )
+                    self.close()
+                message = f"[{ self.user }] launched a dice: "
+                score = dice.roll("d20")
+                content["content"] = score
+                gmodels.DiceLaunch.objects.create(
+                    game=self.game,
+                    date=date,
+                    message=message,
+                    character=character,
+                    score=score,
+                )
+        content.update({"date": date})
+        content.update({"message": message})
+        async_to_sync(self.channel_layer.group_send)(self.game_group_name, content)
 
-    async def disconnect(self, close_code):
-        await self.channel_layer.group_discard(self.game_group_name, self.channel_name)
+    def master_instruction(self, event):
+        self.send_json(event)
 
-    async def receive(self, text_data):
-        text_data_json = json.loads(text_data)
-        message = text_data_json["message"]
-        if self.master_user == self.user:
-            await self.channel_layer.group_send(
-                self.game_group_name,
-                {
-                    "type": "master_instruction",
-                    "content": message,
-                },
-            )
-        elif message == "dice_launch":
-            await self.channel_layer.group_send(
-                self.game_group_name,
-                {
-                    "type": "player_dice_launch",
-                },
-            )
-        else:
-            await self.channel_layer.group_send(
-                self.game_group_name,
-                {
-                    "type": "player_choice",
-                    "selection": message,
-                },
-            )
+    def master_tale(self, event):
+        self.send_json(event)
 
-    async def master_instruction(self, event):
-        message = "the Master said: "
-        content = event["content"]
-        await database_sync_to_async(gmodels.Instruction.objects.create)(
-            game=self.game,
-            message=message,
-            content=content,
-        )
-        await self.send(text_data=json.dumps(event))
+    def master_start(self, event):
+        self.send_json(event)
 
-    async def player_dice_launch(self, event):
-        message = f"[{self.player_user}] launched a dice: score is: "
-        await database_sync_to_async(gmodels.DiceLaunch.objects.create)(
-            game=self.game,
-            message=message,
-            character=self.character,
-            score=dice.roll("d20"),
-        )
-        await self.send(text_data=json.dumps(event))
+    def player_choice(self, event):
+        self.send_json(event)
 
-    async def player_choice(self, event):
-        message = f"[{self.player_user}] said: "
-        selection = event["selection"]
-        await database_sync_to_async(gmodels.Choice.objects.create)(
-            game=self.game,
-            message=message,
-            character=self.character,
-            selection=selection,
-        )
-        await self.send(text_data=json.dumps(event))
+    def player_dice_launch(self, event):
+        self.send_json(event)

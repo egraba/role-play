@@ -19,69 +19,88 @@
         <div id="game">
             <div id="events" class="rpgui-container framed-grey">
                 <h3>Game events</h3>
-                {% for event in event_list %}
-                    <p>{{ event.date|naturaltime }}, {{ event.message }} {{ event.instruction.content }} {{ event.choice.selection }} {{ event.dicelaunch.score }}</p>
-                {% empty %}
-                    <p>The story did not start yet...</p>
-                {% endfor %}
-            </div>
-
-            <div id="messaging">
-                <p>
-                    <label>Message:</label>
-                    <input id="message-input" type="text">
-                </p>
-                <div class="rpgui-center">
-                    <button id="message-submit" class="rpgui-button" type="submit"><p>Send</p></button>
-                    <button id="dice-launch-submit" class="rpgui-button" type="submit"><p>Launch dice</p></button>
+                <div id="event-list">
+                    {% for event in event_list reversed %}
+                        <p>{{ event.date|naturaltime }}, {{ event.message }} {{ event.instruction.content }} {{ event.choice.selection }} {{ event.dicelaunch.score }}</p>
+                    {% empty %}
+                        <p>The story did not start yet...</p>
+                    {% endfor %}
                 </div>
             </div>
 
-            <div id="characters" class="rpgui-container framed-grey">
-                <h3>Characters</h3>
-                {% for character in character_list %}
-                    {% with character_user=character.user %}
-                        <p>
-                            <a href={{ character.get_absolute_url }}>{{ character }}</a>
-                            {% if character_user == user %}
-                                (played by you)
-                            {% else %}
-                                (played by {{ character_user }})
-                            {% endif %}
-                        </p>
-                    {% endwith %}
-                {% empty %}
+            {% if game.is_ongoing %}
+                <div id="messaging">
+                    <p>
+                        <label>Message:</label>
+                        <input id="message-input" type="text">
+                    </p>
                     <div class="rpgui-center">
-                        <p>There is no character for this game...</p>
-                    </div>
-                {% endfor %}
-                <div class="rpgui-center">
-                    <a href={% url 'game-invite-character' game.id %}>
-                        <button class="rpgui-button"><p>Invite a character</p></button>
-                    </a>
-                </div>
-            </div>
-
-            {% if game.master.user == user %}
-                <div id="master" class="rpgui-container framed-grey">
-                    <h3>Master's panel</h3>
-                    <div class="rpgui-center">
-                        {% if game.is_under_preparation %}
-                            <p>
-                                <a href={% url 'game-start' game.id %}>
-                                    <button class="rpgui-button"><p>Start the game</p></button>
-                                </a>
-                            </p>
-                        {% elif game.is_ongoing %}
-                            <p>
-                                <a href={% url 'tale-create' game.id %}>
-                                    <button class="rpgui-button"><p>Update the quest</p></button>
-                                </a>
-                            </p>
+                        {% if game.master.user == user %}
+                            <button id="master-message-submit" class="rpgui-button" type="submit">
+                                <p>Send</p>
+                            </button>
+                        {% else %}
+                            <button id="player-message-submit" class="rpgui-button" type="submit">
+                                <p>Send</p>
+                            </button>
+                            <button id="dice-launch-submit" class="rpgui-button" type="submit">
+                                <p>Launch dice</p>
+                            </button>
                         {% endif %}
                     </div>
                 </div>
             {% endif %}
+
+            <div id="panel">
+                <div id="characters" class="rpgui-container framed-grey">
+                    <h3>Characters</h3>
+                    {% for character in character_list %}
+                        {% with character_user=character.user %}
+                            <p>
+                                <a href={{ character.get_absolute_url }}>{{ character }}</a>
+                                {% if character_user == user %}
+                                    (played by you)
+                                {% else %}
+                                    (played by {{ character_user }})
+                                {% endif %}
+                            </p>
+                        {% endwith %}
+                    {% empty %}
+                        <div class="rpgui-center">
+                            <p>There is no character for this game...</p>
+                        </div>
+                    {% endfor %}
+                    {% if game.master.user == user %}
+                        <div class="rpgui-center">
+                            <a href={% url 'game-invite-character' game.id %}>
+                                <button class="rpgui-button"><p>Invite a character</p></button>
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+
+                {% if game.master.user == user %}
+                    <div id="master" class="rpgui-container framed-grey">
+                        <h3>Master's panel</h3>
+                        <div class="rpgui-center">
+                            {% if game.is_under_preparation %}
+                                <p>
+                                    <a href={% url 'game-start' game.id %}>
+                                        <button class="rpgui-button"><p>Start the game</p></button>
+                                    </a>
+                                </p>
+                            {% elif game.is_ongoing %}
+                                <p>
+                                    <a href={% url 'tale-create' game.id %}>
+                                        <button class="rpgui-button"><p>Update the quest</p></button>
+                                    </a>
+                                </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
         </div>
 
         <div class="rpgui-center inline">
@@ -91,46 +110,85 @@
         </div>
     </div>
 
+    <script src="https://momentjs.com/downloads/moment.js"></script>
     <script>
-        const url = 'ws://' + window.location.host + '/ws/events/' + {{ game.id }} + '/';
+        var url = 'ws://' + window.location.host + '/events/' + {{ game.id }} + '/';
         const eventsSocket = new WebSocket(url);
-        const events = document.getElementById('events');
+        const eventList = document.getElementById('event-list');
         const input = document.getElementById('message-input');
-        const submitButton = document.getElementById('message-submit');
-        const submitDiceLaunchButton = document.getElementById('dice-launch-submit');
+        const masterSendButton = document.getElementById('master-message-submit');
+        const playerSendButton = document.getElementById('player-message-submit');
+        const playerDiceLaunchButton = document.getElementById('dice-launch-submit');
 
         eventsSocket.onmessage = function(event) {
-            $( "#events" ).load(" #events > *")
+            message = JSON.parse(event.data)
+            eventList.innerHTML += '<p>' + moment(message["date"]).fromNow() + ', ' + message["message"] + message["content"] + '</p>'
+            lines = eventList.innerHTML.split('</p>');
+            if (lines.length > 10) {
+                lines.splice(0, 1);
+                eventList.innerHTML = lines.join('\n');
+            }
+            if (message["type"] === "master.tale") {
+                $("#quest").load(" #quest > *");
+            }
         };
 
         eventsSocket.onclose = function(event) {
             console.error('Events socket closed unexpectedly...');
         };
 
-        submitButton.addEventListener('click', function(event) {
-            const message = input.value;
-            if (message) {
-                eventsSocket.send(JSON.stringify({
-                    'message': message
-                }));
-                input.value = '';
-                input.focus();
-            }
-        });
+        if (masterSendButton !== null) {
+            masterSendButton.addEventListener('click', function(event) {
+                const message = input.value;
+                if (message) {
+                    eventsSocket.send(JSON.stringify({
+                        'type': 'master.instruction',
+                        'content': message,
+                    }));
+                    input.value = '';
+                    input.focus();
+                }
+            });
 
-        input.addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                submitButton.click();
-            }
-        });
+            input.addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    masterSendButton.click();
+                }
+            });
+        }
+
+        if (playerSendButton !== null) {
+            playerSendButton.addEventListener('click', function(event) {
+                const message = input.value;
+                if (message) {
+                    eventsSocket.send(JSON.stringify({
+                        'type': 'player.choice',
+                        'content': message
+                    }));
+                    input.value = '';
+                    input.focus();
+                }
+            });
+
+            input.addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    playerSendButton.click();
+                }
+            });
+        }
+
+        if (playerDiceLaunchButton !== null) {
+            playerDiceLaunchButton.addEventListener('click', function(event) {
+                eventsSocket.send(JSON.stringify({
+                    'type': 'player.dice.launch',
+                }));
+            });
+        }
+
         input.focus();
 
-        submitDiceLaunchButton.addEventListener('click', function(event) {
-            eventsSocket.send(JSON.stringify({
-                'message': "dice_launch"
-            }));
-        });
     </script>
 
 {% endblock %}
