@@ -5,9 +5,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 
-
-# Application definition
-
 INSTALLED_APPS = [
     "daphne",
     "game.apps.GameConfig",
@@ -36,9 +33,7 @@ MIDDLEWARE = [
 ROOT_URLCONF = "role_play.urls"
 
 # Channels
-
 ASGI_APPLICATION = "role_play.asgi.application"
-
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
@@ -48,9 +43,7 @@ CHANNEL_LAYERS = {
     },
 }
 
-
 # Database
-
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
@@ -62,28 +55,20 @@ DATABASES = {
     }
 }
 
-
 # Cache
-
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
         "LOCATION": os.environ["REDIS_URL"],
     }
 }
-
 SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
 
-
 # Authentication
-
 LOGIN_REDIRECT_URL = "/game"
-
 LOGOUT_REDIRECT_URL = "/game"
 
-
 # Password validation
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -99,22 +84,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
-
 LANGUAGE_CODE = "en-us"
-
 TIME_ZONE = "UTC"
-
 USE_I18N = True
-
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
-
 STATIC_URL = "static/"
 
 # Default primary key field type
-
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

@@ -8,10 +8,9 @@ INSTALLED_APPS += [
     "debug_toolbar",
 ]
 
-LOCAL_MIDDLEWARE = [
+MIDDLEWARE = [
     "debug_toolbar.middleware.DebugToolbarMiddleware",
-]
-MIDDLEWARE = LOCAL_MIDDLEWARE + MIDDLEWARE
+] + MIDDLEWARE
 
 TEMPLATES = [
     {
@@ -32,7 +31,7 @@ TEMPLATES = [
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
-# Django Debug Toolbar
+# Necessary for Django Debug Toolbar
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
