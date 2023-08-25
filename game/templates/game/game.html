@@ -112,7 +112,12 @@
 
     <script src="https://momentjs.com/downloads/moment.js"></script>
     <script>
-        var url = 'ws://' + window.location.host + '/events/' + {{ game.id }} + '/';
+        if (window.location.protocol === 'https:') {
+            wsProtocol = 'wss://'
+        } else {
+            wsProtocol = 'ws://'
+        }
+        var url = wsProtocol + window.location.host + '/events/' + {{ game.id }} + '/';
         const eventsSocket = new WebSocket(url);
         const eventList = document.getElementById('event-list');
         const input = document.getElementById('message-input');
