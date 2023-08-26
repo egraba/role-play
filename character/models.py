@@ -7,7 +7,7 @@ from django.urls import reverse
 class Character(models.Model):
     class Race(models.TextChoices):
         HUMAN = "H", "Human"
-        ORC = "O", "Orc"
+        HALFLING = "G", "Halfling"
         ELF = "E", "Elf"
         DWARF = "D", "Dwarf"
 
