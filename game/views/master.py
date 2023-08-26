@@ -2,7 +2,6 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.cache import cache
-from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
@@ -91,11 +90,11 @@ class GameStartErrorView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
         return self.is_user_master()
 
 
-class TaleCreateView(UserPassesTestMixin, FormView, gmixins.EventContextMixin):
-    model = gmodels.Tale
+class QuestCreateView(UserPassesTestMixin, FormView, gmixins.EventContextMixin):
+    model = gmodels.Quest
     fields = ["description"]
-    template_name = "game/tale_create.html"
-    form_class = gforms.CreateTaleForm
+    template_name = "game/quest_create.html"
+    form_class = gforms.CreateQuestForm
 
     def test_func(self):
         return self.is_user_master()
@@ -104,19 +103,19 @@ class TaleCreateView(UserPassesTestMixin, FormView, gmixins.EventContextMixin):
         return reverse_lazy("game", args=(self.game.id,))
 
     def form_valid(self, form):
-        tale = gmodels.Tale()
-        tale.game = self.game
-        tale.message = "the Master updated the story."
-        tale.content = form.cleaned_data["content"]
-        tale.save()
+        quest = gmodels.Quest()
+        quest.game = self.game
+        quest.message = "the Master updated the campaign."
+        quest.content = form.cleaned_data["content"]
+        quest.save()
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
             f"game_{self.game.id}_events",
-            {"type": "master.tale", "content": ""},
+            {"type": "master.quest", "content": ""},
         )
         send_mail(
-            f"[{self.game}] The Master updated the story.",
-            f"The Master said:\n{tale.content}",
+            f"[{self.game}] The Master updated the quest.",
+            f"The Master said:\n{quest.content}",
             gutils.get_master_email(self.game.master.user.username),
             gutils.get_players_emails(game=self.game),
         )
@@ -139,40 +138,6 @@ class InstructionCreateView(UserPassesTestMixin, CreateView, gmixins.EventContex
         instruction.game = self.game
         instruction.message = "The Master gave an instruction."
         instruction.save()
-        return super().form_valid(form)
-
-
-class PendingActionCreateView(
-    UserPassesTestMixin,
-    CreateView,
-    gmixins.EventContextMixin,
-    gmixins.CharacterContextMixin,
-):
-    model = gmodels.PendingAction
-    form_class = gforms.CreatePendingActionForm
-    template_name = "game/pending_action_create.html"
-
-    def test_func(self):
-        return self.is_user_master()
-
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, *args, **kwargs)
-        try:
-            gmodels.PendingAction.objects.get(character=self.character)
-            raise PermissionDenied
-        except ObjectDoesNotExist:
-            pass
-
-    def get_success_url(self):
-        return reverse_lazy("game", args=(self.game.id,))
-
-    def form_valid(self, form):
-        pending_action = form.save(commit=False)
-        pending_action.game = self.game
-        pending_action.character = self.character
-        pending_action.date = timezone.now()
-        pending_action.message = f"{self.character} needs to perform an action: {pending_action.get_action_type_display()}"
-        pending_action.save()
         return super().form_valid(form)
 
 

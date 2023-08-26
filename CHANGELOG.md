@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Added
+* DnD: implement basic rules
 * Game is more reactive, when players take actions
 * Master is now able to give instruction separately from updating tale
 * Various UX/UI improvements

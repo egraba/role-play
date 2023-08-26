@@ -139,16 +139,15 @@ class GameViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         game = utfactories.GameFactory(master__user__username="master-game-view")
-        number_of_events = 4
+        number_of_events = 10
         for _ in range(number_of_events):
             utfactories.EventFactory(game=game)
-        number_of_tales = 3
-        for _ in range(number_of_tales):
-            utfactories.TaleFactory(game=game)
+        number_of_quests = 3
+        for _ in range(number_of_quests):
+            utfactories.QuestFactory(game=game)
         number_of_players = 8
         for _ in range(number_of_players):
-            player = utfactories.PlayerFactory(game=game)
-            utfactories.PendingActionFactory(game=game, character=player.character)
+            utfactories.PlayerFactory(game=game)
 
     def setUp(self):
         self.user = User.objects.get(username="master-game-view")
@@ -178,7 +177,7 @@ class GameViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue("is_paginated" in response.context)
         self.assertTrue(response.context["is_paginated"])
-        self.assertEqual(len(response.context["event_list"]), 6)  # Inherited events
+        self.assertEqual(len(response.context["event_list"]), 4)  # Inherited events
 
     def test_ordering_character_name_ascending(self):
         response = self.client.get(self.game.get_absolute_url())
@@ -208,19 +207,19 @@ class GameViewTest(TestCase):
         self.assertEqual(response.status_code, 404)
         self.assertRaises(Http404)
 
-    def test_game_last_tale(self):
-        tale = gmodels.Tale.objects.filter(game=self.game).last()
+    def test_game_last_quest(self):
+        quest = gmodels.Quest.objects.filter(game=self.game).last()
         response = self.client.get(self.game.get_absolute_url())
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context["tale"], tale)
+        self.assertEqual(response.context["quest"], quest)
 
     def test_context_data_master(self):
         response = self.client.get(self.game.get_absolute_url())
         self.assertEqual(response.status_code, 200)
 
-        tale_list = gmodels.Tale.objects.filter(game=self.game)
-        tale = tale_list.last()
-        self.assertEqual(response.context["tale"], tale)
+        quest_list = gmodels.Quest.objects.filter(game=self.game)
+        quest = quest_list.last()
+        self.assertEqual(response.context["quest"], quest)
         character_list = cmodels.Character.objects.filter(player__game=self.game)
         self.assertQuerySetEqual(
             list(response.context["character_list"]), list(character_list)
@@ -230,8 +229,6 @@ class GameViewTest(TestCase):
         self.assertTrue(set(response.context["event_list"]).issubset(set(event_list)))
         with self.assertRaises(KeyError):
             response.context["player"]
-        with self.assertRaises(KeyError):
-            response.context["pending_action"]
 
     def test_context_data_player(self):
         self.client.logout()
@@ -242,9 +239,9 @@ class GameViewTest(TestCase):
         response = self.client.get(self.game.get_absolute_url())
         self.assertEqual(response.status_code, 200)
 
-        tale_list = gmodels.Tale.objects.filter(game=self.game)
-        tale = tale_list.last()
-        self.assertEqual(response.context["tale"], tale)
+        quest_list = gmodels.Quest.objects.filter(game=self.game)
+        quest = quest_list.last()
+        self.assertEqual(response.context["quest"], quest)
         character_list = cmodels.Character.objects.filter(player__game=self.game)
         self.assertQuerySetEqual(
             list(response.context["character_list"]), list(character_list)
@@ -269,7 +266,7 @@ class GameViewTest(TestCase):
         gmodels.Event.objects.filter(game=self.game).delete()
         response = self.client.get(self.game.get_absolute_url())
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "The story did not start yet...")
+        self.assertContains(response, "The campaign did not start yet...")
 
 
 class GameCreateViewTest(TestCase):
@@ -278,34 +275,34 @@ class GameCreateViewTest(TestCase):
     def setUp(self):
         self.user = utfactories.UserFactory(username="game-create")
         self.client.login(username=self.user.username, password="pwd")
-        self.story = utfactories.StoryFactory()
+        self.campaign = utfactories.CampaignFactory()
 
     def test_view_mapping(self):
-        response = self.client.get(reverse(self.path_name, args=(self.story.slug,)))
+        response = self.client.get(reverse(self.path_name, args=(self.campaign.slug,)))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.resolver_match.func.view_class, gvcommon.GameCreateView
         )
 
     def test_template_mapping(self):
-        response = self.client.get(reverse(self.path_name, args=(self.story.slug,)))
+        response = self.client.get(reverse(self.path_name, args=(self.campaign.slug,)))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "game/game_create.html")
 
     def test_game_creation(self):
-        response = self.client.post(reverse(self.path_name, args=(self.story.slug,)))
+        response = self.client.post(reverse(self.path_name, args=(self.campaign.slug,)))
         self.assertEqual(response.status_code, 302)
         game = gmodels.Game.objects.last()
         self.assertRedirects(response, game.get_absolute_url())
-        self.assertEqual(game.name, f"{self.story.title} #{game.id}")
+        self.assertEqual(game.name, f"{self.campaign.title} #{game.id}")
         self.assertEqual(game.status, "P")
         self.assertEqual(game.master.user, self.user)
-        tale = gmodels.Tale.objects.last()
-        self.assertEqual(tale.game, game)
-        self.assertEqual(tale.message, "The Master created the story.")
-        self.assertEqual(tale.content, self.story.synopsis)
+        quest = gmodels.Quest.objects.last()
+        self.assertEqual(quest.game, game)
+        self.assertEqual(quest.message, "The Master created the campaign.")
+        self.assertEqual(quest.content, self.campaign.synopsis)
 
-    def test_game_creation_story_does_not_exist(self):
+    def test_game_creation_campaign_does_not_exist(self):
         fake = Faker()
         fake_slug = fake.slug()
         response = self.client.post(reverse(self.path_name, args=(fake_slug,)))

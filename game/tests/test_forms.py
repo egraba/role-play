@@ -5,13 +5,13 @@ import character.forms as cforms
 import game.forms as gforms
 
 
-class CreateTaleFormTest(TestCase):
+class CreateQuestFormTest(TestCase):
     def test_content_type(self):
-        form = gforms.CreateTaleForm()
+        form = gforms.CreateQuestForm()
         self.assertIsInstance(form.fields["content"].widget, forms.Textarea)
 
     def test_content_max_length(self):
-        form = gforms.CreateTaleForm()
+        form = gforms.CreateQuestForm()
         self.assertEqual(form.fields["content"].max_length, 1000)
 
 

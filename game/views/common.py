@@ -49,7 +49,7 @@ class GameView(LoginRequiredMixin, ListView, gmixins.GameContextMixin):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["tale"] = gmodels.Tale.objects.filter(game=self.game.id).last()
+        context["quest"] = gmodels.Quest.objects.filter(game=self.game.id).last()
         context["instruction"] = gmodels.Instruction.objects.filter(
             game=self.game.id
         ).last()
@@ -74,24 +74,24 @@ class GameCreateView(LoginRequiredMixin, CreateView):
     template_name = "game/game_create.html"
 
     def post(self, request, *args, **kwargs):
-        story_slug = self.kwargs["story_slug"]
+        campaign_slug = self.kwargs["campaign_slug"]
         try:
-            story = mmodels.Story.objects.get(slug=story_slug)
+            campaign = mmodels.Campaign.objects.get(slug=campaign_slug)
         except ObjectDoesNotExist:
             return HttpResponseRedirect(
-                reverse("game-create-error", args=(story_slug,))
+                reverse("game-create-error", args=(campaign_slug,))
             )
         game = gmodels.Game()
         game.save()
-        game.name = f"{story.title} #{game.id}"
-        game.story = story
+        game.name = f"{campaign.title} #{game.id}"
+        game.campaign = campaign
         game.save()
         gmodels.Master.objects.create(user=self.request.user, game=game)
-        tale = gmodels.Tale()
-        tale.game = game
-        tale.message = "The Master created the story."
-        tale.content = story.synopsis
-        tale.save()
+        quest = gmodels.Quest()
+        quest.game = game
+        quest.message = "The Master created the campaign."
+        quest.content = campaign.synopsis
+        quest.save()
         return HttpResponseRedirect(game.get_absolute_url())
 
 

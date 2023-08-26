@@ -25,9 +25,9 @@ class GameModelTest(TestCase):
         max_length = self.game._meta.get_field("name").max_length
         self.assertEqual(max_length, 100)
 
-    def test_story_type(self):
-        story = self.game._meta.get_field("story")
-        self.assertTrue(story, models.ForeignKey)
+    def test_campaign_type(self):
+        campaign = self.game._meta.get_field("campaign")
+        self.assertTrue(campaign, models.ForeignKey)
 
     def test_start_date_type(self):
         start_date = self.game._meta.get_field("start_date")
@@ -128,51 +128,25 @@ class EventModelTest(TestCase):
         self.assertEqual(str(self.event), self.event.message)
 
 
-class TaleModelTest(TestCase):
+class QuestModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         game = utfactories.GameFactory()
-        utfactories.TaleFactory(game=game)
+        utfactories.QuestFactory(game=game)
 
     def setUp(self):
-        self.tale = gmodels.Tale.objects.last()
+        self.quest = gmodels.Quest.objects.last()
 
     def test_content_type(self):
-        content = self.tale._meta.get_field("content")
+        content = self.quest._meta.get_field("content")
         self.assertTrue(content, models.CharField)
 
     def test_content_max_length(self):
-        max_length = self.tale._meta.get_field("content").max_length
+        max_length = self.quest._meta.get_field("content").max_length
         self.assertEqual(max_length, 1000)
 
     def test_str(self):
-        self.assertEqual(str(self.tale), self.tale.content)
-
-
-class PendingActionModelTest(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        game = utfactories.GameFactory()
-        player = utfactories.PlayerFactory(game=game)
-        gmodels.PendingAction.objects.create(game=game, character=player.character)
-
-    def setUp(self):
-        self.pending_action = gmodels.PendingAction.objects.last()
-
-    def test_character_type(self):
-        character = self.pending_action._meta.get_field("character")
-        self.assertTrue(character, models.OneToOneField)
-
-    def test_action_type_type(self):
-        action_type = self.pending_action._meta.get_field("action_type")
-        self.assertTrue(action_type, models.CharField)
-
-    def test_action_type_max_length(self):
-        max_length = self.pending_action._meta.get_field("action_type").max_length
-        self.assertEqual(max_length, 1)
-
-    def test_str(self):
-        self.assertEqual(str(self.pending_action), self.pending_action.action_type)
+        self.assertEqual(str(self.quest), self.quest.content)
 
 
 class XpIncreaseModelTest(TestCase):

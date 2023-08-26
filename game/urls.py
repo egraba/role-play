@@ -7,12 +7,12 @@ urlpatterns = [
     path("games", common.GameListView.as_view(), name="game-list"),
     path("<int:game_id>/", common.GameView.as_view(), name="game"),
     path(
-        "create_game/<slug:story_slug>",
+        "create_game/<slug:campaign_slug>",
         common.GameCreateView.as_view(),
         name="game-create",
     ),
     path(
-        "create_game/<slug:story_slug>/error",
+        "create_game/<slug:campaign_slug>/error",
         common.GameCreateErrorView.as_view(),
         name="game-create-error",
     ),
@@ -37,14 +37,9 @@ urlpatterns = [
         name="game-start-error",
     ),
     path(
-        "<int:game_id>/create_tale",
-        master.TaleCreateView.as_view(),
-        name="tale-create",
-    ),
-    path(
-        "<int:game_id>/character/<int:character_id>/add_pending_action",
-        master.PendingActionCreateView.as_view(),
-        name="pendingaction-create",
+        "<int:game_id>/create_quest",
+        master.QuestCreateView.as_view(),
+        name="quest-create",
     ),
     path(
         "<int:game_id>/create_instruction",

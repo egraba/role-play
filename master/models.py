@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.utils.text import slugify
 
 
-class Story(models.Model):
+class Campaign(models.Model):
     title = models.CharField(max_length=50, unique=True)
     slug = models.SlugField(max_length=50, unique=True)
     synopsis = models.TextField(
@@ -30,7 +30,7 @@ class Story(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse("story-detail", kwargs={"slug": self.slug})
+        return reverse("campaign-detail", kwargs={"slug": self.slug})
 
     def save(self, *args, **kwargs):
         if not self.slug:

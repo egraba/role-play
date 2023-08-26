@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="rpgui-container framed">
+        <h1>{{ campaign }}</h1>
+        <div class="rpgui-center">
+            <a href={% url 'campaign-list' %}>- Return to campaign list -</a>
+        </div>
+
+        <hr class="golden" />
+
+        <h2>Synopsis</h2>
+        {{ campaign.synopsis|linebreaks }}
+
+        <hr />
+
+        <h2>Main conflict</h2>
+        {{ campaign.main_conflict|linebreaks }}
+
+        <hr />
+
+        <h2>Objective</h2>
+        {{ campaign.objective|linebreaks }}
+
+        <div class="rpgui-center">
+            <a href={% url 'campaign-update' campaign.slug %}>
+                <button class="rpgui-button"><p>Edit your campaign</p></button>
+            </a>
+            <a href={% url 'game-create' campaign.slug %}>
+                <button class="rpgui-button"><p>Create a game from this campaign</p></button>
+            </a>
+        </div>
+    </div>
+{% endblock content %}

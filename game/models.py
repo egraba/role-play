@@ -15,8 +15,8 @@ class Game(models.Model):
         ONGOING = "O", "Ongoing"
 
     name = models.CharField(max_length=100)
-    story = models.ForeignKey(
-        mmodels.Story, on_delete=models.SET_NULL, null=True, blank=True
+    campaign = models.ForeignKey(
+        mmodels.Campaign, on_delete=models.SET_NULL, null=True, blank=True
     )
     start_date = models.DateTimeField(null=True, blank=True)
     status = FSMField(
@@ -83,23 +83,11 @@ class Event(models.Model):
         return self.message
 
 
-class Tale(Event):
+class Quest(Event):
     content = models.CharField(max_length=1000)
 
     def __str__(self):
         return self.content
-
-
-class PendingAction(Event):
-    class ActionType(models.TextChoices):
-        LAUNCH_DICE = "D", "Launch dice"
-        MAKE_CHOICE = "C", "Make choice"
-
-    character = models.OneToOneField(cmodels.Character, on_delete=models.CASCADE)
-    action_type = models.CharField(max_length=1, choices=ActionType.choices)
-
-    def __str__(self):
-        return self.action_type
 
 
 class Instruction(Event):

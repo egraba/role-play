@@ -16,19 +16,19 @@
                     <th><p>Title</p></th>
                 </tr>
             {% endif %}
-            {% for story in page_obj %}
+            {% for campaign in page_obj %}
                 <tr>
-                    <td><a href={{ story.get_absolute_url }}>{{ story }}</a></td>
+                    <td><a href={{ campaign.get_absolute_url }}>{{ campaign }}</a></td>
                 </tr>
             {% empty %}
-                <tr><td><p>There is no story available...</p></td></tr>
+                <tr><td><p>There is no campaign available...</p></td></tr>
             {% endfor %}
         </table>
 
         <div class="rpgui-center">
             {% include 'pagination.html' %}
-            <a href={% url 'story-create' %}>
-                <button class="rpgui-button"><p>Create a new story</p></button>
+            <a href={% url 'campaign-create' %}>
+                <button class="rpgui-button"><p>Create a new campaign</p></button>
             </a>
         </div>
     </div>

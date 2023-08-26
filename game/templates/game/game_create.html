@@ -8,7 +8,7 @@
                 {% csrf_token %}
                 <button class="rpgui-button" type="submit"><p>Yes</p></button>
             </form>
-            <a href={{ story.get_absolute_url }}><button class="rpgui-button"><p>No</p></button></a>
+            <a href={{ campaign.get_absolute_url }}><button class="rpgui-button"><p>No</p></button></a>
         </div>
     </div>
 {% endblock%}
