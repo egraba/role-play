@@ -14,6 +14,7 @@ class Character(models.Model):
     name = models.CharField(max_length=100, unique=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     race = models.CharField(max_length=1, choices=Race.choices)
+    level = models.SmallIntegerField(default=1)
     xp = models.SmallIntegerField(default=0)
     hp = models.SmallIntegerField(default=100)
     max_hp = models.SmallIntegerField(default=100)
