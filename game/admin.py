@@ -13,7 +13,7 @@ class PlayerAdmin(admin.ModelAdmin):
     list_display = fields
 
 
-class TaleAdmin(admin.ModelAdmin):
+class QuestAdmin(admin.ModelAdmin):
     fields = ["game", "description"]
     list_display = ["game", "content", "date"]
 
@@ -25,5 +25,5 @@ class EventAdmin(admin.ModelAdmin):
 
 admin.site.register(gmodels.Game, GameAdmin)
 admin.site.register(gmodels.Player, PlayerAdmin)
-admin.site.register(gmodels.Tale, TaleAdmin)
+admin.site.register(gmodels.Quest, QuestAdmin)
 admin.site.register(gmodels.Event, EventAdmin)

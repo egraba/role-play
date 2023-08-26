@@ -14,7 +14,7 @@
         <br />
 
         <h2>Quest</h2>
-        <div id="quest" class="rpgui-container framed-golden-2"><p >{{ tale|linebreaks }}</p></div>
+        <div id="quest" class="rpgui-container framed-golden-2"><p >{{ quest|linebreaks }}</p></div>
 
         <div id="game">
             <div id="events" class="rpgui-container framed-grey">
@@ -91,7 +91,7 @@
                                 </p>
                             {% elif game.is_ongoing %}
                                 <p>
-                                    <a href={% url 'tale-create' game.id %}>
+                                    <a href={% url 'quest-create' game.id %}>
                                         <button class="rpgui-button"><p>Update the quest</p></button>
                                     </a>
                                 </p>
@@ -133,7 +133,7 @@
                 lines.splice(0, 1);
                 eventList.innerHTML = lines.join('\n');
             }
-            if (message["type"] === "master.tale") {
+            if (message["type"] === "master.quest") {
                 $("#quest").load(" #quest > *");
             }
         };

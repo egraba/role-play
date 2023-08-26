@@ -142,9 +142,9 @@ class GameViewTest(TestCase):
         number_of_events = 10
         for _ in range(number_of_events):
             utfactories.EventFactory(game=game)
-        number_of_tales = 3
-        for _ in range(number_of_tales):
-            utfactories.TaleFactory(game=game)
+        number_of_quests = 3
+        for _ in range(number_of_quests):
+            utfactories.QuestFactory(game=game)
         number_of_players = 8
         for _ in range(number_of_players):
             utfactories.PlayerFactory(game=game)
@@ -207,19 +207,19 @@ class GameViewTest(TestCase):
         self.assertEqual(response.status_code, 404)
         self.assertRaises(Http404)
 
-    def test_game_last_tale(self):
-        tale = gmodels.Tale.objects.filter(game=self.game).last()
+    def test_game_last_quest(self):
+        quest = gmodels.Quest.objects.filter(game=self.game).last()
         response = self.client.get(self.game.get_absolute_url())
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context["tale"], tale)
+        self.assertEqual(response.context["quest"], quest)
 
     def test_context_data_master(self):
         response = self.client.get(self.game.get_absolute_url())
         self.assertEqual(response.status_code, 200)
 
-        tale_list = gmodels.Tale.objects.filter(game=self.game)
-        tale = tale_list.last()
-        self.assertEqual(response.context["tale"], tale)
+        quest_list = gmodels.Quest.objects.filter(game=self.game)
+        quest = quest_list.last()
+        self.assertEqual(response.context["quest"], quest)
         character_list = cmodels.Character.objects.filter(player__game=self.game)
         self.assertQuerySetEqual(
             list(response.context["character_list"]), list(character_list)
@@ -239,9 +239,9 @@ class GameViewTest(TestCase):
         response = self.client.get(self.game.get_absolute_url())
         self.assertEqual(response.status_code, 200)
 
-        tale_list = gmodels.Tale.objects.filter(game=self.game)
-        tale = tale_list.last()
-        self.assertEqual(response.context["tale"], tale)
+        quest_list = gmodels.Quest.objects.filter(game=self.game)
+        quest = quest_list.last()
+        self.assertEqual(response.context["quest"], quest)
         character_list = cmodels.Character.objects.filter(player__game=self.game)
         self.assertQuerySetEqual(
             list(response.context["character_list"]), list(character_list)
@@ -297,10 +297,10 @@ class GameCreateViewTest(TestCase):
         self.assertEqual(game.name, f"{self.story.title} #{game.id}")
         self.assertEqual(game.status, "P")
         self.assertEqual(game.master.user, self.user)
-        tale = gmodels.Tale.objects.last()
-        self.assertEqual(tale.game, game)
-        self.assertEqual(tale.message, "The Master created the story.")
-        self.assertEqual(tale.content, self.story.synopsis)
+        quest = gmodels.Quest.objects.last()
+        self.assertEqual(quest.game, game)
+        self.assertEqual(quest.message, "The Master created the story.")
+        self.assertEqual(quest.content, self.story.synopsis)
 
     def test_game_creation_story_does_not_exist(self):
         fake = Faker()

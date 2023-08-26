@@ -3,7 +3,7 @@ from django import forms
 import game.models as gmodels
 
 
-class CreateTaleForm(forms.Form):
+class CreateQuestForm(forms.Form):
     content = forms.CharField(widget=forms.Textarea, max_length=1000)
 
 

@@ -90,11 +90,11 @@ class GameStartErrorView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
         return self.is_user_master()
 
 
-class TaleCreateView(UserPassesTestMixin, FormView, gmixins.EventContextMixin):
-    model = gmodels.Tale
+class QuestCreateView(UserPassesTestMixin, FormView, gmixins.EventContextMixin):
+    model = gmodels.Quest
     fields = ["description"]
-    template_name = "game/tale_create.html"
-    form_class = gforms.CreateTaleForm
+    template_name = "game/quest_create.html"
+    form_class = gforms.CreateQuestForm
 
     def test_func(self):
         return self.is_user_master()
@@ -103,19 +103,19 @@ class TaleCreateView(UserPassesTestMixin, FormView, gmixins.EventContextMixin):
         return reverse_lazy("game", args=(self.game.id,))
 
     def form_valid(self, form):
-        tale = gmodels.Tale()
-        tale.game = self.game
-        tale.message = "the Master updated the story."
-        tale.content = form.cleaned_data["content"]
-        tale.save()
+        quest = gmodels.Quest()
+        quest.game = self.game
+        quest.message = "the Master updated the story."
+        quest.content = form.cleaned_data["content"]
+        quest.save()
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
             f"game_{self.game.id}_events",
-            {"type": "master.tale", "content": ""},
+            {"type": "master.quest", "content": ""},
         )
         send_mail(
-            f"[{self.game}] The Master updated the story.",
-            f"The Master said:\n{tale.content}",
+            f"[{self.game}] The Master updated the quest.",
+            f"The Master said:\n{quest.content}",
             gutils.get_master_email(self.game.master.user.username),
             gutils.get_players_emails(game=self.game),
         )

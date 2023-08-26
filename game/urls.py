@@ -37,9 +37,9 @@ urlpatterns = [
         name="game-start-error",
     ),
     path(
-        "<int:game_id>/create_tale",
-        master.TaleCreateView.as_view(),
-        name="tale-create",
+        "<int:game_id>/create_quest",
+        master.QuestCreateView.as_view(),
+        name="quest-create",
     ),
     path(
         "<int:game_id>/create_instruction",

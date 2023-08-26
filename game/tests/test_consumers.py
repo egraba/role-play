@@ -49,7 +49,7 @@ class GameEventsConsumerTest(TransactionTestCase):
 
         await communicator.disconnect()
 
-    async def test_master_tale(self):
+    async def test_master_quest(self):
         communicator = WebsocketCommunicator(
             self.application, f"/events/{self.game.id}/"
         )
@@ -60,15 +60,15 @@ class GameEventsConsumerTest(TransactionTestCase):
 
         await communicator.send_json_to(
             {
-                "type": "master.tale",
+                "type": "master.quest",
                 "content": "some content",
             }
         )
         response = await communicator.receive_json_from()
         expected_json = {
-            "type": "master.tale",
+            "type": "master.quest",
             "date": ANY,
-            "message": "the Master updated the story.",
+            "message": "the Master updated the quest.",
             "content": "some content",
         }
         assert response == expected_json

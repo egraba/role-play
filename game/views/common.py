@@ -49,7 +49,7 @@ class GameView(LoginRequiredMixin, ListView, gmixins.GameContextMixin):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["tale"] = gmodels.Tale.objects.filter(game=self.game.id).last()
+        context["quest"] = gmodels.Quest.objects.filter(game=self.game.id).last()
         context["instruction"] = gmodels.Instruction.objects.filter(
             game=self.game.id
         ).last()
@@ -87,11 +87,11 @@ class GameCreateView(LoginRequiredMixin, CreateView):
         game.story = story
         game.save()
         gmodels.Master.objects.create(user=self.request.user, game=game)
-        tale = gmodels.Tale()
-        tale.game = game
-        tale.message = "The Master created the story."
-        tale.content = story.synopsis
-        tale.save()
+        quest = gmodels.Quest()
+        quest.game = game
+        quest.message = "The Master created the story."
+        quest.content = story.synopsis
+        quest.save()
         return HttpResponseRedirect(game.get_absolute_url())
 
 

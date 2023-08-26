@@ -128,25 +128,25 @@ class EventModelTest(TestCase):
         self.assertEqual(str(self.event), self.event.message)
 
 
-class TaleModelTest(TestCase):
+class QuestModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         game = utfactories.GameFactory()
-        utfactories.TaleFactory(game=game)
+        utfactories.QuestFactory(game=game)
 
     def setUp(self):
-        self.tale = gmodels.Tale.objects.last()
+        self.quest = gmodels.Quest.objects.last()
 
     def test_content_type(self):
-        content = self.tale._meta.get_field("content")
+        content = self.quest._meta.get_field("content")
         self.assertTrue(content, models.CharField)
 
     def test_content_max_length(self):
-        max_length = self.tale._meta.get_field("content").max_length
+        max_length = self.quest._meta.get_field("content").max_length
         self.assertEqual(max_length, 1000)
 
     def test_str(self):
-        self.assertEqual(str(self.tale), self.tale.content)
+        self.assertEqual(str(self.quest), self.quest.content)
 
 
 class XpIncreaseModelTest(TestCase):

@@ -225,8 +225,8 @@ class GameStartViewTest(TestCase):
         )
 
 
-class TaleCreateViewTest(TestCase):
-    path_name = "tale-create"
+class QuestCreateViewTest(TestCase):
+    path_name = "quest-create"
 
     @classmethod
     def setUpTestData(cls):
@@ -250,13 +250,13 @@ class TaleCreateViewTest(TestCase):
         response = self.client.get(reverse(self.path_name, args=(self.game.id,)))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            response.resolver_match.func.view_class, gvmaster.TaleCreateView
+            response.resolver_match.func.view_class, gvmaster.QuestCreateView
         )
 
     def test_template_mapping(self):
         response = self.client.get(reverse(self.path_name, args=(self.game.id,)))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "game/tale_create.html")
+        self.assertTemplateUsed(response, "game/quest_create.html")
 
     def test_game_not_exists(self):
         game_id = random.randint(10000, 99999)
@@ -276,21 +276,21 @@ class TaleCreateViewTest(TestCase):
         self.assertEqual(response.status_code, 403)
         self.assertRaises(PermissionDenied)
 
-    def test_tale_creation(self):
+    def test_quest_creation(self):
         fake = Faker()
         content = fake.text(100)
         data = {"content": f"{content}"}
-        form = gforms.CreateTaleForm(data)
+        form = gforms.CreateQuestForm(data)
         self.assertTrue(form.is_valid())
 
         response = self.client.post(
             reverse(self.path_name, args=(self.game.id,)), data=form.cleaned_data
         )
         self.assertEqual(response.status_code, 302)
-        tale = gmodels.Tale.objects.filter(game=self.game).last()
-        self.assertEqual(tale.game, self.game)
-        self.assertEqual(tale.message, "the Master updated the story.")
-        self.assertEqual(tale.content, form.cleaned_data["content"])
+        quest = gmodels.Quest.objects.filter(game=self.game).last()
+        self.assertEqual(quest.game, self.game)
+        self.assertEqual(quest.message, "the Master updated the story.")
+        self.assertEqual(quest.content, form.cleaned_data["content"])
         self.assertRedirects(response, self.game.get_absolute_url())
 
 

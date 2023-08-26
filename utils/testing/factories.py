@@ -33,9 +33,9 @@ class StoryFactory(factory.django.DjangoModelFactory):
     synopsis = factory.Faker("paragraph", nb_sentences=10)
 
 
-class TaleFactory(factory.django.DjangoModelFactory):
+class QuestFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = gmodels.Tale
+        model = gmodels.Quest
 
     message = "The Master created the story."
     content = factory.Faker("paragraph", nb_sentences=10)
@@ -48,7 +48,7 @@ class GameFactory(factory.django.DjangoModelFactory):
     name = factory.Sequence(lambda n: f"game{n}")
     story = factory.SubFactory(StoryFactory)
     master = factory.RelatedFactory(MasterFactory, factory_related_name="game")
-    tale = factory.RelatedFactory(TaleFactory, factory_related_name="game")
+    quest = factory.RelatedFactory(QuestFactory, factory_related_name="game")
 
 
 class EventFactory(factory.django.DjangoModelFactory):

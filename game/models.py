@@ -83,7 +83,7 @@ class Event(models.Model):
         return self.message
 
 
-class Tale(Event):
+class Quest(Event):
     content = models.CharField(max_length=1000)
 
     def __str__(self):
