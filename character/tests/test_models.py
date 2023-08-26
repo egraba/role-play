@@ -66,5 +66,12 @@ class CharacterModelTest(TestCase):
     def test_max_hp_default_value(self):
         self.assertEqual(self.character.max_hp, 100)
 
+    def test_proficiency_bonus_type(self):
+        pb = self.character._meta.get_field("proficiency_bonus")
+        self.assertTrue(pb, models.SmallIntegerField)
+
+    def test_proficiency_bonus_default_value(self):
+        self.assertEqual(self.character.proficiency_bonus, 2)
+
     def test_str(self):
         self.assertEqual(str(self.character), self.character.name)

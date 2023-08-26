@@ -18,6 +18,7 @@ class Character(models.Model):
     xp = models.SmallIntegerField(default=0)
     hp = models.SmallIntegerField(default=100)
     max_hp = models.SmallIntegerField(default=100)
+    proficiency_bonus = models.SmallIntegerField(default=2)
 
     class Meta:
         indexes = [
