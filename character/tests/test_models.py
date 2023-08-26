@@ -123,5 +123,12 @@ class CharacterModelTest(TestCase):
     def test_charisma_default_value(self):
         self.assertEqual(self.character.charisma, 0)
 
+    def test_gender_type(self):
+        gender = self.character._meta.get_field("gender")
+        self.assertTrue(gender, models.CharField)
+
+    def test_gender_default_value(self):
+        self.assertEqual(self.character.gender, cmodels.Character.Gender.MALE)
+
     def test_str(self):
         self.assertEqual(str(self.character), self.character.name)

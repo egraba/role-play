@@ -14,6 +14,11 @@ class Character(models.Model):
     class Class(models.TextChoices):
         FIGHTER = "F", "Fighter"
 
+    class Gender(models.TextChoices):
+        MALE = "M", "Male"
+        FEMALE = "F", "Female"
+        UNDEFINED = "U", "Undefined"
+
     name = models.CharField(max_length=100, unique=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     race = models.CharField(max_length=1, choices=Race.choices)
@@ -31,6 +36,7 @@ class Character(models.Model):
     intelligence = models.SmallIntegerField(default=0)
     wisdom = models.SmallIntegerField(default=0)
     charisma = models.SmallIntegerField(default=0)
+    gender = models.CharField(max_length=1, choices=Gender.choices, default=Gender.MALE)
 
     class Meta:
         indexes = [
