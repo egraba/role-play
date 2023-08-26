@@ -11,9 +11,13 @@ class Character(models.Model):
         ELF = "E", "Elf"
         DWARF = "D", "Dwarf"
 
+    class Class(models.TextChoices):
+        FIGHTER = "F", "Fighter"
+
     name = models.CharField(max_length=100, unique=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     race = models.CharField(max_length=1, choices=Race.choices)
+    class_name = models.CharField(max_length=1, choices=Class.choices)
     level = models.SmallIntegerField(default=1)
     xp = models.SmallIntegerField(default=0)
     hp = models.SmallIntegerField(default=100)

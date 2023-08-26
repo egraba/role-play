@@ -38,6 +38,14 @@ class CharacterModelTest(TestCase):
         max_length = self.character._meta.get_field("race").max_length
         self.assertEqual(max_length, 1)
 
+    def test_class_name_type(self):
+        class_name = self.character._meta.get_field("class_name")
+        self.assertTrue(class_name, models.CharField)
+
+    def test_class_name_max_length(self):
+        max_length = self.character._meta.get_field("class_name").max_length
+        self.assertEqual(max_length, 1)
+
     def test_level_type(self):
         level = self.character._meta.get_field("level")
         self.assertTrue(level, models.SmallIntegerField)
