@@ -266,7 +266,7 @@ class GameViewTest(TestCase):
         gmodels.Event.objects.filter(game=self.game).delete()
         response = self.client.get(self.game.get_absolute_url())
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "The story did not start yet...")
+        self.assertContains(response, "The campaign did not start yet...")
 
 
 class GameCreateViewTest(TestCase):
@@ -275,34 +275,34 @@ class GameCreateViewTest(TestCase):
     def setUp(self):
         self.user = utfactories.UserFactory(username="game-create")
         self.client.login(username=self.user.username, password="pwd")
-        self.story = utfactories.StoryFactory()
+        self.campaign = utfactories.CampaignFactory()
 
     def test_view_mapping(self):
-        response = self.client.get(reverse(self.path_name, args=(self.story.slug,)))
+        response = self.client.get(reverse(self.path_name, args=(self.campaign.slug,)))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.resolver_match.func.view_class, gvcommon.GameCreateView
         )
 
     def test_template_mapping(self):
-        response = self.client.get(reverse(self.path_name, args=(self.story.slug,)))
+        response = self.client.get(reverse(self.path_name, args=(self.campaign.slug,)))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "game/game_create.html")
 
     def test_game_creation(self):
-        response = self.client.post(reverse(self.path_name, args=(self.story.slug,)))
+        response = self.client.post(reverse(self.path_name, args=(self.campaign.slug,)))
         self.assertEqual(response.status_code, 302)
         game = gmodels.Game.objects.last()
         self.assertRedirects(response, game.get_absolute_url())
-        self.assertEqual(game.name, f"{self.story.title} #{game.id}")
+        self.assertEqual(game.name, f"{self.campaign.title} #{game.id}")
         self.assertEqual(game.status, "P")
         self.assertEqual(game.master.user, self.user)
         quest = gmodels.Quest.objects.last()
         self.assertEqual(quest.game, game)
-        self.assertEqual(quest.message, "The Master created the story.")
-        self.assertEqual(quest.content, self.story.synopsis)
+        self.assertEqual(quest.message, "The Master created the campaign.")
+        self.assertEqual(quest.content, self.campaign.synopsis)
 
-    def test_game_creation_story_does_not_exist(self):
+    def test_game_creation_campaign_does_not_exist(self):
         fake = Faker()
         fake_slug = fake.slug()
         response = self.client.post(reverse(self.path_name, args=(fake_slug,)))

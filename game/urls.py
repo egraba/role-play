@@ -7,12 +7,12 @@ urlpatterns = [
     path("games", common.GameListView.as_view(), name="game-list"),
     path("<int:game_id>/", common.GameView.as_view(), name="game"),
     path(
-        "create_game/<slug:story_slug>",
+        "create_game/<slug:campaign_slug>",
         common.GameCreateView.as_view(),
         name="game-create",
     ),
     path(
-        "create_game/<slug:story_slug>/error",
+        "create_game/<slug:campaign_slug>/error",
         common.GameCreateErrorView.as_view(),
         name="game-create-error",
     ),

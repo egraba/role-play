@@ -25,9 +25,9 @@ class GameModelTest(TestCase):
         max_length = self.game._meta.get_field("name").max_length
         self.assertEqual(max_length, 100)
 
-    def test_story_type(self):
-        story = self.game._meta.get_field("story")
-        self.assertTrue(story, models.ForeignKey)
+    def test_campaign_type(self):
+        campaign = self.game._meta.get_field("campaign")
+        self.assertTrue(campaign, models.ForeignKey)
 
     def test_start_date_type(self):
         start_date = self.game._meta.get_field("start_date")

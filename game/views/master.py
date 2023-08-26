@@ -105,7 +105,7 @@ class QuestCreateView(UserPassesTestMixin, FormView, gmixins.EventContextMixin):
     def form_valid(self, form):
         quest = gmodels.Quest()
         quest.game = self.game
-        quest.message = "the Master updated the story."
+        quest.message = "the Master updated the campaign."
         quest.content = form.cleaned_data["content"]
         quest.save()
         channel_layer = get_channel_layer()

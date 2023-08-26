@@ -74,23 +74,23 @@ class GameCreateView(LoginRequiredMixin, CreateView):
     template_name = "game/game_create.html"
 
     def post(self, request, *args, **kwargs):
-        story_slug = self.kwargs["story_slug"]
+        campaign_slug = self.kwargs["campaign_slug"]
         try:
-            story = mmodels.Story.objects.get(slug=story_slug)
+            campaign = mmodels.Campaign.objects.get(slug=campaign_slug)
         except ObjectDoesNotExist:
             return HttpResponseRedirect(
-                reverse("game-create-error", args=(story_slug,))
+                reverse("game-create-error", args=(campaign_slug,))
             )
         game = gmodels.Game()
         game.save()
-        game.name = f"{story.title} #{game.id}"
-        game.story = story
+        game.name = f"{campaign.title} #{game.id}"
+        game.campaign = campaign
         game.save()
         gmodels.Master.objects.create(user=self.request.user, game=game)
         quest = gmodels.Quest()
         quest.game = game
-        quest.message = "The Master created the story."
-        quest.content = story.synopsis
+        quest.message = "The Master created the campaign."
+        quest.content = campaign.synopsis
         quest.save()
         return HttpResponseRedirect(game.get_absolute_url())
 

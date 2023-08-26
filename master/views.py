@@ -5,24 +5,24 @@ import master.forms as mforms
 import master.models as mmodels
 
 
-class StoryDetailView(LoginRequiredMixin, DetailView):
-    model = mmodels.Story
-    template_name = "master/story.html"
+class CampaignDetailView(LoginRequiredMixin, DetailView):
+    model = mmodels.Campaign
+    template_name = "master/campaign.html"
 
 
-class StoryListView(LoginRequiredMixin, ListView):
-    model = mmodels.Story
+class CampaignListView(LoginRequiredMixin, ListView):
+    model = mmodels.Campaign
     paginate_by = 20
     ordering = ["title"]
-    template_name = "master/story_list.html"
+    template_name = "master/campaign_list.html"
 
 
-class StoryCreateView(LoginRequiredMixin, CreateView):
-    form_class = mforms.StoryCreateForm
-    template_name = "master/story_create.html"
+class CampaignCreateView(LoginRequiredMixin, CreateView):
+    form_class = mforms.CampaignCreateForm
+    template_name = "master/campaign_create.html"
 
 
-class StoryUpdateView(LoginRequiredMixin, UpdateView):
-    model = mmodels.Story
-    form_class = mforms.StoryUpdateForm
-    template_name = "master/story_update.html"
+class CampaignUpdateView(LoginRequiredMixin, UpdateView):
+    model = mmodels.Campaign
+    form_class = mforms.CampaignUpdateForm
+    template_name = "master/campaign_update.html"

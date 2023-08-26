@@ -15,8 +15,8 @@ class Game(models.Model):
         ONGOING = "O", "Ongoing"
 
     name = models.CharField(max_length=100)
-    story = models.ForeignKey(
-        mmodels.Story, on_delete=models.SET_NULL, null=True, blank=True
+    campaign = models.ForeignKey(
+        mmodels.Campaign, on_delete=models.SET_NULL, null=True, blank=True
     )
     start_date = models.DateTimeField(null=True, blank=True)
     status = FSMField(

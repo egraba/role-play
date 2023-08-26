@@ -289,7 +289,7 @@ class QuestCreateViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         quest = gmodels.Quest.objects.filter(game=self.game).last()
         self.assertEqual(quest.game, self.game)
-        self.assertEqual(quest.message, "the Master updated the story.")
+        self.assertEqual(quest.message, "the Master updated the campaign.")
         self.assertEqual(quest.content, form.cleaned_data["content"])
         self.assertRedirects(response, self.game.get_absolute_url())
 

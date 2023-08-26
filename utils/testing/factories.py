@@ -24,12 +24,12 @@ class MasterFactory(factory.django.DjangoModelFactory):
     user = factory.SubFactory(UserFactory)
 
 
-class StoryFactory(factory.django.DjangoModelFactory):
+class CampaignFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = mmodels.Story
+        model = mmodels.Campaign
         django_get_or_create = ("title",)
 
-    title = factory.Sequence(lambda n: f"story{n}")
+    title = factory.Sequence(lambda n: f"campaign{n}")
     synopsis = factory.Faker("paragraph", nb_sentences=10)
 
 
@@ -37,7 +37,7 @@ class QuestFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = gmodels.Quest
 
-    message = "The Master created the story."
+    message = "The Master created the campaign."
     content = factory.Faker("paragraph", nb_sentences=10)
 
 
@@ -46,7 +46,7 @@ class GameFactory(factory.django.DjangoModelFactory):
         model = gmodels.Game
 
     name = factory.Sequence(lambda n: f"game{n}")
-    story = factory.SubFactory(StoryFactory)
+    campaign = factory.SubFactory(CampaignFactory)
     master = factory.RelatedFactory(MasterFactory, factory_related_name="game")
     quest = factory.RelatedFactory(QuestFactory, factory_related_name="game")
 

@@ -23,7 +23,7 @@
                     {% for event in event_list reversed %}
                         <p>{{ event.date|naturaltime }}, {{ event.message }} {{ event.instruction.content }} {{ event.choice.selection }} {{ event.dicelaunch.score }}</p>
                     {% empty %}
-                        <p>The story did not start yet...</p>
+                        <p>The campaign did not start yet...</p>
                     {% endfor %}
                 </div>
             </div>
