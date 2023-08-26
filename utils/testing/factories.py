@@ -58,16 +58,6 @@ class EventFactory(factory.django.DjangoModelFactory):
     message = factory.Faker("text", max_nb_chars=50)
 
 
-class PendingActionFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = gmodels.PendingAction
-
-    action_type = factory.Sequence(
-        lambda n: gmodels.PendingAction.ActionType.choices[n % 2][0]
-    )
-    message = factory.Faker("text", max_nb_chars=50)
-
-
 class DiceLaunchFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = gmodels.DiceLaunch

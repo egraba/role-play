@@ -7,15 +7,6 @@ class CreateTaleForm(forms.Form):
     content = forms.CharField(widget=forms.Textarea, max_length=1000)
 
 
-class CreatePendingActionForm(forms.ModelForm):
-    class Meta:
-        model = gmodels.PendingAction
-        fields = ["action_type"]
-        widgets = {
-            "action_type": forms.Select(attrs={"class": "rpgui-dropdown"}),
-        }
-
-
 class IncreaseXpForm(forms.ModelForm):
     class Meta:
         model = gmodels.XpIncrease

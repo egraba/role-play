@@ -42,11 +42,6 @@ urlpatterns = [
         name="tale-create",
     ),
     path(
-        "<int:game_id>/character/<int:character_id>/add_pending_action",
-        master.PendingActionCreateView.as_view(),
-        name="pendingaction-create",
-    ),
-    path(
         "<int:game_id>/create_instruction",
         master.InstructionCreateView.as_view(),
         name="instruction-create",

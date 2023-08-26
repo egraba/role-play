@@ -149,32 +149,6 @@ class TaleModelTest(TestCase):
         self.assertEqual(str(self.tale), self.tale.content)
 
 
-class PendingActionModelTest(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        game = utfactories.GameFactory()
-        player = utfactories.PlayerFactory(game=game)
-        gmodels.PendingAction.objects.create(game=game, character=player.character)
-
-    def setUp(self):
-        self.pending_action = gmodels.PendingAction.objects.last()
-
-    def test_character_type(self):
-        character = self.pending_action._meta.get_field("character")
-        self.assertTrue(character, models.OneToOneField)
-
-    def test_action_type_type(self):
-        action_type = self.pending_action._meta.get_field("action_type")
-        self.assertTrue(action_type, models.CharField)
-
-    def test_action_type_max_length(self):
-        max_length = self.pending_action._meta.get_field("action_type").max_length
-        self.assertEqual(max_length, 1)
-
-    def test_str(self):
-        self.assertEqual(str(self.pending_action), self.pending_action.action_type)
-
-
 class XpIncreaseModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):

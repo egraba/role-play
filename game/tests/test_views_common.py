@@ -139,7 +139,7 @@ class GameViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         game = utfactories.GameFactory(master__user__username="master-game-view")
-        number_of_events = 4
+        number_of_events = 10
         for _ in range(number_of_events):
             utfactories.EventFactory(game=game)
         number_of_tales = 3
@@ -147,8 +147,7 @@ class GameViewTest(TestCase):
             utfactories.TaleFactory(game=game)
         number_of_players = 8
         for _ in range(number_of_players):
-            player = utfactories.PlayerFactory(game=game)
-            utfactories.PendingActionFactory(game=game, character=player.character)
+            utfactories.PlayerFactory(game=game)
 
     def setUp(self):
         self.user = User.objects.get(username="master-game-view")
@@ -178,7 +177,7 @@ class GameViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue("is_paginated" in response.context)
         self.assertTrue(response.context["is_paginated"])
-        self.assertEqual(len(response.context["event_list"]), 6)  # Inherited events
+        self.assertEqual(len(response.context["event_list"]), 4)  # Inherited events
 
     def test_ordering_character_name_ascending(self):
         response = self.client.get(self.game.get_absolute_url())
@@ -230,8 +229,6 @@ class GameViewTest(TestCase):
         self.assertTrue(set(response.context["event_list"]).issubset(set(event_list)))
         with self.assertRaises(KeyError):
             response.context["player"]
-        with self.assertRaises(KeyError):
-            response.context["pending_action"]
 
     def test_context_data_player(self):
         self.client.logout()

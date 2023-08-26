@@ -2,7 +2,6 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.cache import cache
-from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
@@ -139,40 +138,6 @@ class InstructionCreateView(UserPassesTestMixin, CreateView, gmixins.EventContex
         instruction.game = self.game
         instruction.message = "The Master gave an instruction."
         instruction.save()
-        return super().form_valid(form)
-
-
-class PendingActionCreateView(
-    UserPassesTestMixin,
-    CreateView,
-    gmixins.EventContextMixin,
-    gmixins.CharacterContextMixin,
-):
-    model = gmodels.PendingAction
-    form_class = gforms.CreatePendingActionForm
-    template_name = "game/pending_action_create.html"
-
-    def test_func(self):
-        return self.is_user_master()
-
-    def setup(self, request, *args, **kwargs):
-        super().setup(request, *args, **kwargs)
-        try:
-            gmodels.PendingAction.objects.get(character=self.character)
-            raise PermissionDenied
-        except ObjectDoesNotExist:
-            pass
-
-    def get_success_url(self):
-        return reverse_lazy("game", args=(self.game.id,))
-
-    def form_valid(self, form):
-        pending_action = form.save(commit=False)
-        pending_action.game = self.game
-        pending_action.character = self.character
-        pending_action.date = timezone.now()
-        pending_action.message = f"{self.character} needs to perform an action: {pending_action.get_action_type_display()}"
-        pending_action.save()
         return super().form_valid(form)
 
 
