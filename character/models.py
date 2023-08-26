@@ -23,6 +23,12 @@ class Character(models.Model):
     hp = models.SmallIntegerField(default=100)
     max_hp = models.SmallIntegerField(default=100)
     proficiency_bonus = models.SmallIntegerField(default=2)
+    strength = models.SmallIntegerField(default=0)
+    dexterity = models.SmallIntegerField(default=0)
+    constitution = models.SmallIntegerField(default=0)
+    intelligence = models.SmallIntegerField(default=0)
+    wisdom = models.SmallIntegerField(default=0)
+    charisma = models.SmallIntegerField(default=0)
 
     class Meta:
         indexes = [

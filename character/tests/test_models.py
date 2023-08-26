@@ -81,5 +81,47 @@ class CharacterModelTest(TestCase):
     def test_proficiency_bonus_default_value(self):
         self.assertEqual(self.character.proficiency_bonus, 2)
 
+    def test_strength_type(self):
+        strength = self.character._meta.get_field("strength")
+        self.assertTrue(strength, models.SmallIntegerField)
+
+    def test_strength_default_value(self):
+        self.assertEqual(self.character.strength, 0)
+
+    def test_dexterity_type(self):
+        dexterity = self.character._meta.get_field("dexterity")
+        self.assertTrue(dexterity, models.SmallIntegerField)
+
+    def test_dexterity_default_value(self):
+        self.assertEqual(self.character.dexterity, 0)
+
+    def test_constitution_type(self):
+        constitution = self.character._meta.get_field("constitution")
+        self.assertTrue(constitution, models.SmallIntegerField)
+
+    def test_constitution_default_value(self):
+        self.assertEqual(self.character.constitution, 0)
+
+    def test_intelligence_type(self):
+        intelligence = self.character._meta.get_field("intelligence")
+        self.assertTrue(intelligence, models.SmallIntegerField)
+
+    def test_intelligence_default_value(self):
+        self.assertEqual(self.character.intelligence, 0)
+
+    def test_wisdom_type(self):
+        wisdom = self.character._meta.get_field("wisdom")
+        self.assertTrue(wisdom, models.SmallIntegerField)
+
+    def test_wisdom_default_value(self):
+        self.assertEqual(self.character.wisdom, 0)
+
+    def test_charisma_type(self):
+        charisma = self.character._meta.get_field("charisma")
+        self.assertTrue(charisma, models.SmallIntegerField)
+
+    def test_charisma_default_value(self):
+        self.assertEqual(self.character.charisma, 0)
+
     def test_str(self):
         self.assertEqual(str(self.character), self.character.name)
