@@ -23,9 +23,6 @@ class Campaign(models.Model):
         achieving an objective, or reaching a certain point in the map.""",
     )
 
-    class Meta:
-        verbose_name_plural = "stories"
-
     def __str__(self):
         return self.title
 
