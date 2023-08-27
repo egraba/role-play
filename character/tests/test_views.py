@@ -1,10 +1,9 @@
-import random
-
 from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
 from faker import Faker
 
+import character.abilities as abilities
 import character.forms as cforms
 import character.models as cmodels
 import character.views as cviews
@@ -132,9 +131,23 @@ class CharacterCreateViewTest(TestCase):
     def test_character_creation(self):
         fake = Faker()
         name = fake.name()
-        race = random.choice(cmodels.Character.Race.choices)[0]
-        data = {"name": f"{name}", "race": f"{race}"}
+        race = fake.enum(enum_cls=cmodels.Character.Race)
+        class_name = fake.enum(enum_cls=cmodels.Character.Class)
+        gender = fake.enum(enum_cls=cmodels.Character.Gender)
+        data = {
+            "name": f"{name}",
+            "race": f"{race}",
+            "class_name": f"{class_name}",
+            "strength": abilities.scores[0][0],
+            "dexterity": abilities.scores[1][0],
+            "constitution": abilities.scores[2][0],
+            "intelligence": abilities.scores[3][0],
+            "wisdom": abilities.scores[4][0],
+            "charisma": abilities.scores[5][0],
+            "gender": f"{gender}",
+        }
         form = cforms.CreateCharacterForm(data)
+        print(form.errors)
         self.assertTrue(form.is_valid())
 
         response = self.client.post(
