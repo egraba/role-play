@@ -48,3 +48,16 @@ class Character(models.Model):
 
     def get_absolute_url(self):
         return reverse("character-detail", args=(self.id,))
+
+
+class Inventory(models.Model):
+    character = models.ForeignKey(Character, on_delete=models.CASCADE)
+    capacity = models.SmallIntegerField(default=0)
+    gp = models.SmallIntegerField(default=0)
+
+
+class Equipment(models.Model):
+    inventory = models.ForeignKey(
+        Inventory, on_delete=models.SET_NULL, null=True, blank=True
+    )
+    weight = models.SmallIntegerField()
