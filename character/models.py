@@ -4,6 +4,15 @@ from django.db.models.functions import Upper
 from django.urls import reverse
 
 
+class Advancement(models.Model):
+    xp = models.IntegerField()
+    level = models.SmallIntegerField(unique=True)
+    proficiency_bonus = models.SmallIntegerField()
+
+    def __str__(self):
+        return str(self.level)
+
+
 class Character(models.Model):
     class Race(models.TextChoices):
         HUMAN = "H", "Human"
@@ -50,14 +59,13 @@ class Character(models.Model):
     def get_absolute_url(self):
         return reverse("character-detail", args=(self.id,))
 
-
-class Advancement(models.Model):
-    xp = models.IntegerField()
-    level = models.SmallIntegerField(unique=True)
-    proficiency_bonus = models.SmallIntegerField()
-
-    def __str__(self):
-        return str(self.level)
+    def increase_xp(self, xp):
+        self.xp += xp
+        next_level = self.level + 1
+        advancement = Advancement.objects.get(level=next_level)
+        if self.xp >= advancement.xp:
+            self.level = next_level
+            self.proficiency_bonus += advancement.proficiency_bonus
 
 
 class Inventory(models.Model):
