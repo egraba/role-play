@@ -26,7 +26,7 @@ class Character(models.Model):
         max_length=1, choices=Class.choices, verbose_name="class"
     )
     level = models.SmallIntegerField(default=1)
-    xp = models.SmallIntegerField(default=0)
+    xp = models.IntegerField(default=0)
     hp = models.SmallIntegerField(default=100)
     max_hp = models.SmallIntegerField(default=100)
     proficiency_bonus = models.SmallIntegerField(default=2)
@@ -52,7 +52,7 @@ class Character(models.Model):
 
 
 class Advancement(models.Model):
-    xp = models.SmallIntegerField()
+    xp = models.IntegerField()
     level = models.SmallIntegerField(unique=True)
     proficiency_bonus = models.SmallIntegerField()
 

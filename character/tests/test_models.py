@@ -55,7 +55,7 @@ class CharacterModelTest(TestCase):
 
     def test_xp_type(self):
         xp = self.character._meta.get_field("xp")
-        self.assertTrue(xp, models.SmallIntegerField)
+        self.assertTrue(xp, models.IntegerField)
 
     def test_xp_default_value(self):
         self.assertEqual(self.character.xp, 0)
