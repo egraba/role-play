@@ -51,6 +51,15 @@ class Character(models.Model):
         return reverse("character-detail", args=(self.id,))
 
 
+class Advancement(models.Model):
+    xp = models.SmallIntegerField()
+    level = models.SmallIntegerField(unique=True)
+    proficiency_bonus = models.SmallIntegerField()
+
+    def __str__(self):
+        return str(self.level)
+
+
 class Inventory(models.Model):
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
     capacity = models.SmallIntegerField(default=0)
