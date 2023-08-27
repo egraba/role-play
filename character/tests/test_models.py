@@ -130,5 +130,12 @@ class CharacterModelTest(TestCase):
     def test_gender_default_value(self):
         self.assertEqual(self.character.gender, cmodels.Character.Gender.MALE)
 
+    def test_ac_type(self):
+        ac = self.character._meta.get_field("ac")
+        self.assertTrue(ac, models.SmallIntegerField)
+
+    def test_ac_default_value(self):
+        self.assertEqual(self.character.ac, 0)
+
     def test_str(self):
         self.assertEqual(str(self.character), self.character.name)

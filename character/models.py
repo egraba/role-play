@@ -37,6 +37,7 @@ class Character(models.Model):
     wisdom = models.SmallIntegerField(default=0)
     charisma = models.SmallIntegerField(default=0)
     gender = models.CharField(max_length=1, choices=Gender.choices, default=Gender.MALE)
+    ac = models.SmallIntegerField(default=0)
 
     class Meta:
         indexes = [
