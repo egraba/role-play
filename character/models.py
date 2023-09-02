@@ -59,13 +59,22 @@ class Character(models.Model):
     def get_absolute_url(self):
         return reverse("character-detail", args=(self.id,))
 
-    def increase_xp(self, xp):
-        self.xp += xp
+    def _check_level_increase(self):
         next_level = self.level + 1
         advancement = Advancement.objects.get(level=next_level)
         if self.xp >= advancement.xp:
-            self.level = next_level
-            self.proficiency_bonus += advancement.proficiency_bonus
+            return True
+        return False
+
+    def _increase_level(self):
+        self.level += 1
+        advancement = Advancement.objects.get(level=self.level)
+        self.proficiency_bonus += advancement.proficiency_bonus
+
+    def increase_xp(self, xp):
+        self.xp += xp
+        while self._check_level_increase():
+            self._increase_level()
 
 
 class Inventory(models.Model):
