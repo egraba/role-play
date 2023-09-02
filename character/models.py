@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.core.cache import cache
 from django.db import models
 from django.db.models.functions import Upper
 from django.urls import reverse
@@ -61,14 +62,20 @@ class Character(models.Model):
 
     def _check_level_increase(self):
         next_level = self.level + 1
-        advancement = Advancement.objects.get(level=next_level)
+        advancement = cache.get(f"advancement_{next_level}")
+        if not advancement:
+            advancement = Advancement.objects.get(level=next_level)
+            cache.set(f"advancement_{next_level}", advancement)
         if self.xp >= advancement.xp:
             return True
         return False
 
     def _increase_level(self):
         self.level += 1
-        advancement = Advancement.objects.get(level=self.level)
+        advancement = cache.get(f"advancement_{self.level}")
+        if not advancement:
+            advancement = Advancement.objects.get(level=self.level)
+            cache.set(f"advancement_{self.level}", advancement)
         self.proficiency_bonus += advancement.proficiency_bonus
 
     def increase_xp(self, xp):
