@@ -155,9 +155,11 @@ class CharacterModelTest(TestCase):
         new_xp = fake.random_int(min=300, max=500)
         old_xp = self.character.xp
         old_level = self.character.level
+        old_bonus = self.character.proficiency_bonus
         self.character.increase_xp(new_xp)
         self.assertEqual(self.character.xp, old_xp + new_xp)
         self.assertEqual(self.character.level, old_level + 1)
+        self.assertEqual(self.character.proficiency_bonus, old_bonus + 2)
 
     def test_xp_increase_several_level_increase(self):
         new_xp = 50_000
@@ -165,3 +167,4 @@ class CharacterModelTest(TestCase):
         self.character.increase_xp(new_xp)
         self.assertEqual(self.character.xp, old_xp + new_xp)
         self.assertEqual(self.character.level, 9)
+        self.assertEqual(self.character.proficiency_bonus, 24)
