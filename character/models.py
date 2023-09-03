@@ -129,3 +129,14 @@ class RacialTrait(models.Model):
     alignment = models.CharField(max_length=1, choices=Alignment.choices)
     size = models.CharField(max_length=1, choices=Size.choices)
     speed = models.SmallIntegerField()
+
+
+class Language(models.Model):
+    class Name(models.TextChoices):
+        COMMON = "C", "Common"
+        DWARVISH = "D", "Dwarvish"
+        ELVISH = "E", "Elvish"
+        HALFLING = "H", "Halfling"
+
+    name = models.CharField(max_length=1, choices=Name.choices)
+    racial_trait = models.ForeignKey(RacialTrait, on_delete=models.CASCADE)
