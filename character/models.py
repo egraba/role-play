@@ -123,6 +123,14 @@ class Language(models.Model):
     name = models.CharField(max_length=1, choices=Name.choices)
 
 
+class Ability(models.Model):
+    name = models.CharField(max_length=20, unique=True)
+    description = models.TextField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+
 class RacialTrait(models.Model):
     class Alignment(models.TextChoices):
         LAWFUL = "L", "Lawful"
@@ -140,3 +148,4 @@ class RacialTrait(models.Model):
     size = models.CharField(max_length=1, choices=Size.choices)
     speed = models.SmallIntegerField()
     languages = models.ManyToManyField(Language)
+    abilities = models.ManyToManyField(Ability)
