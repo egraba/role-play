@@ -1,3 +1,4 @@
+# Dwarf
 - model: character.racialtrait
   pk: 1
   fields:
@@ -7,6 +8,7 @@
     alignment: L
     size: M
     speed: 25
+# Elf
 - model: character.racialtrait
   pk: 2
   fields:
@@ -16,6 +18,7 @@
     alignment: F
     size: M
     speed: 30
+# Halfling
 - model: character.racialtrait
   pk: 3
   fields:
@@ -25,6 +28,7 @@
     alignment: L
     size: S
     speed: 25
+# Human
 - model: character.racialtrait
   pk: 4
   fields:
@@ -34,3 +38,59 @@
     alignment: N
     size: M
     speed: 30
+
+# Common
+- model: character.language
+  pk: 1
+  fields:
+    name: C
+# Dwarvish
+- model: character.language
+  pk: 2
+  fields:
+    name: D
+# Elvish
+- model: character.language
+  pk: 3
+  fields:
+    name: E
+# Halfling
+- model: character.language
+  pk: 4
+  fields:
+    name: H
+
+# Dwarves speak Common and Dwarvish
+- model: character.racialtrait_languages
+  pk: 1
+  fields:
+    racialtrait: 1
+    language: 1
+- model: character.racialtrait_languages
+  pk: 2
+  fields:
+    racialtrait: 1
+    language: 2
+# Elves speak Elvish
+- model: character.racialtrait_languages
+  pk: 3
+  fields:
+    racialtrait: 2
+    language: 3
+# Halflings speak Common and Halfling
+- model: character.racialtrait_languages
+  pk: 4
+  fields:
+    racialtrait: 3
+    language: 1
+- model: character.racialtrait_languages
+  pk: 4
+  fields:
+    racialtrait: 3
+    language: 4
+# Humans speak Common
+- model: character.racialtrait_languages
+  pk: 4
+  fields:
+    racialtrait: 4
+    language: 1
