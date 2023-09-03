@@ -14,13 +14,14 @@ class Advancement(models.Model):
         return str(self.level)
 
 
-class Character(models.Model):
-    class Race(models.TextChoices):
-        HUMAN = "H", "Human"
-        HALFLING = "G", "Halfling"
-        ELF = "E", "Elf"
-        DWARF = "D", "Dwarf"
+class Race(models.TextChoices):
+    HUMAN = "H", "Human"
+    HALFLING = "G", "Halfling"
+    ELF = "E", "Elf"
+    DWARF = "D", "Dwarf"
 
+
+class Character(models.Model):
     class Class(models.TextChoices):
         FIGHTER = "F", "Fighter"
 
@@ -110,3 +111,17 @@ class Weapon(Equipment):
         RANGED = "R", "Ranged"
 
     distance = models.CharField(max_length=1, choices=Distance.choices)
+
+
+class RacialTrait(models.Model):
+    class Alignment(models.TextChoices):
+        LAWFUL = "L", "Lawful"
+        FREEDOM = "F", "Freedom"
+        NONE = "N", "None"
+
+    race = models.CharField(max_length=1, choices=Race.choices)
+    adult_age = models.SmallIntegerField()
+    life_expectancy = models.SmallIntegerField()
+    alignment = models.CharField(max_length=1, choices=Alignment.choices)
+    size = models.SmallIntegerField()
+    speed = models.SmallIntegerField()

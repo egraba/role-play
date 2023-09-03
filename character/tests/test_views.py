@@ -131,7 +131,7 @@ class CharacterCreateViewTest(TestCase):
     def test_character_creation(self):
         fake = Faker()
         name = fake.name()
-        race = fake.enum(enum_cls=cmodels.Character.Race)
+        race = fake.enum(enum_cls=cmodels.Race)
         class_name = fake.enum(enum_cls=cmodels.Character.Class)
         gender = fake.enum(enum_cls=cmodels.Character.Gender)
         data = {
