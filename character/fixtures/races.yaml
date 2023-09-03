@@ -1,0 +1,36 @@
+- model: character.racialtrait
+  pk: 1
+  fields:
+    race: D
+    adult_age: 50
+    life_expectancy: 350
+    alignment: L
+    size: M
+    speed: 25
+- model: character.racialtrait
+  pk: 2
+  fields:
+    race: E
+    adult_age: 100
+    life_expectancy: 750
+    alignment: F
+    size: M
+    speed: 30
+- model: character.racialtrait
+  pk: 3
+  fields:
+    race: G
+    adult_age: 20
+    life_expectancy: 150
+    alignment: L
+    size: S
+    speed: 25
+- model: character.racialtrait
+  pk: 4
+  fields:
+    race: H
+    adult_age: 20
+    life_expectancy: 90
+    alignment: N
+    size: M
+    speed: 30

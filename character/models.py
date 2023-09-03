@@ -119,9 +119,13 @@ class RacialTrait(models.Model):
         FREEDOM = "F", "Freedom"
         NONE = "N", "None"
 
+    class Size(models.TextChoices):
+        SMALL = "S", "Small"
+        MEDIUM = "M", "Medium"
+
     race = models.CharField(max_length=1, choices=Race.choices)
     adult_age = models.SmallIntegerField()
     life_expectancy = models.SmallIntegerField()
     alignment = models.CharField(max_length=1, choices=Alignment.choices)
-    size = models.SmallIntegerField()
+    size = models.CharField(max_length=1, choices=Size.choices)
     speed = models.SmallIntegerField()
