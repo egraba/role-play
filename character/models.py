@@ -130,6 +130,10 @@ class Ability(models.Model):
     name = models.CharField(max_length=30, unique=True)
     description = models.TextField(max_length=50)
 
+    class Meta:
+        verbose_name_plural = "abilities"
+        ordering = ["name"]
+
     def __str__(self):
         return self.name
 

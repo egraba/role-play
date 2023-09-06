@@ -13,5 +13,11 @@ class AdvancementAdmin(admin.ModelAdmin):
     list_display = ["xp", "level", "proficiency_bonus"]
 
 
+class AbilityAdmin(admin.ModelAdmin):
+    fields = ["name", "description"]
+    list_display = ["name", "description"]
+
+
 admin.site.register(cmodels.Character, CharacterAdmin)
 admin.site.register(cmodels.Advancement, AdvancementAdmin)
+admin.site.register(cmodels.Ability, AbilityAdmin)
