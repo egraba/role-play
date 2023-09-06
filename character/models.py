@@ -10,6 +10,9 @@ class Advancement(models.Model):
     level = models.SmallIntegerField(unique=True)
     proficiency_bonus = models.SmallIntegerField()
 
+    class Meta:
+        ordering = ["xp"]
+
     def __str__(self):
         return str(self.level)
 
