@@ -8,6 +8,12 @@
     alignment: L
     size: M
     speed: 25
+- model: character.abilityscoreincrease
+  pk: 1
+  fields:
+    racial_trait: 1
+    ability: constitution
+    increase: 2
 # Elf
 - model: character.racialtrait
   pk: 2
@@ -18,6 +24,12 @@
     alignment: F
     size: M
     speed: 30
+- model: character.abilityscoreincrease
+  pk: 2
+  fields:
+    racial_trait: 2
+    ability: dexterity
+    increase: 2
 # Halfling
 - model: character.racialtrait
   pk: 3
@@ -28,6 +40,12 @@
     alignment: L
     size: S
     speed: 25
+- model: character.abilityscoreincrease
+  pk: 3
+  fields:
+    racial_trait: 3
+    ability: dexterity
+    increase: 2
 # Human
 - model: character.racialtrait
   pk: 4
@@ -38,6 +56,42 @@
     alignment: N
     size: M
     speed: 30
+- model: character.abilityscoreincrease
+  pk: 4
+  fields:
+    racial_trait: 4
+    ability: strength
+    increase: 1
+- model: character.abilityscoreincrease
+  pk: 5
+  fields:
+    racial_trait: 4
+    ability: dexterity
+    increase: 1
+- model: character.abilityscoreincrease
+  pk: 6
+  fields:
+    racial_trait: 4
+    ability: constitution
+    increase: 1
+- model: character.abilityscoreincrease
+  pk: 7
+  fields:
+    racial_trait: 4
+    ability: intelligence
+    increase: 1
+- model: character.abilityscoreincrease
+  pk: 8
+  fields:
+    racial_trait: 4
+    ability: wisdom
+    increase: 1
+- model: character.abilityscoreincrease
+  pk: 9
+  fields:
+    racial_trait: 4
+    ability: charisma
+    increase: 1
 
 # Common
 - model: character.language
