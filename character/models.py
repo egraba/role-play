@@ -24,6 +24,39 @@ class Race(models.TextChoices):
     DWARF = "D", "Dwarf"
 
 
+class Alignment(models.TextChoices):
+    LAWFUL = "L", "Lawful"
+    FREEDOM = "F", "Freedom"
+    NONE = "N", "None"
+
+
+class Size(models.TextChoices):
+    SMALL = "S", "Small"
+    MEDIUM = "M", "Medium"
+
+
+class Language(models.Model):
+    class Name(models.TextChoices):
+        COMMON = "C", "Common"
+        DWARVISH = "D", "Dwarvish"
+        ELVISH = "E", "Elvish"
+        HALFLING = "H", "Halfling"
+
+    name = models.CharField(max_length=1, choices=Name.choices)
+
+
+class Ability(models.Model):
+    name = models.CharField(max_length=30, unique=True)
+    description = models.TextField(max_length=50)
+
+    class Meta:
+        verbose_name_plural = "abilities"
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+
 class Character(models.Model):
     class Class(models.TextChoices):
         FIGHTER = "F", "Fighter"
@@ -52,6 +85,15 @@ class Character(models.Model):
     charisma = models.SmallIntegerField(default=0)
     gender = models.CharField(max_length=1, choices=Gender.choices, default=Gender.MALE)
     ac = models.SmallIntegerField(default=0)
+    adult_age = models.SmallIntegerField(null=True, blank=True)
+    life_expectancy = models.SmallIntegerField(null=True, blank=True)
+    alignment = models.CharField(
+        max_length=1, choices=Alignment.choices, null=True, blank=True
+    )
+    size = models.CharField(max_length=1, choices=Size.choices, null=True, blank=True)
+    speed = models.SmallIntegerField(null=True, blank=True)
+    languages = models.ManyToManyField(Language)
+    abilities = models.ManyToManyField(Ability)
 
     class Meta:
         indexes = [
@@ -116,39 +158,8 @@ class Weapon(Equipment):
     distance = models.CharField(max_length=1, choices=Distance.choices)
 
 
-class Language(models.Model):
-    class Name(models.TextChoices):
-        COMMON = "C", "Common"
-        DWARVISH = "D", "Dwarvish"
-        ELVISH = "E", "Elvish"
-        HALFLING = "H", "Halfling"
-
-    name = models.CharField(max_length=1, choices=Name.choices)
-
-
-class Ability(models.Model):
-    name = models.CharField(max_length=30, unique=True)
-    description = models.TextField(max_length=50)
-
-    class Meta:
-        verbose_name_plural = "abilities"
-        ordering = ["name"]
-
-    def __str__(self):
-        return self.name
-
-
 class RacialTrait(models.Model):
-    class Alignment(models.TextChoices):
-        LAWFUL = "L", "Lawful"
-        FREEDOM = "F", "Freedom"
-        NONE = "N", "None"
-
-    class Size(models.TextChoices):
-        SMALL = "S", "Small"
-        MEDIUM = "M", "Medium"
-
-    race = models.CharField(max_length=1, choices=Race.choices)
+    race = models.CharField(max_length=1, choices=Race.choices, unique=True)
     adult_age = models.SmallIntegerField()
     life_expectancy = models.SmallIntegerField()
     alignment = models.CharField(max_length=1, choices=Alignment.choices)
