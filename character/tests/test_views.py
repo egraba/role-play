@@ -133,7 +133,7 @@ class CharacterCreateViewTest(TestCase):
         fake = Faker()
         name = fake.name()
         race = fake.enum(enum_cls=cmodels.Race)
-        class_name = fake.enum(enum_cls=cmodels.Character.Class)
+        class_name = fake.enum(enum_cls=cmodels.Class)
         gender = fake.enum(enum_cls=cmodels.Character.Gender)
         data = {
             "name": f"{name}",
@@ -169,7 +169,7 @@ class CharacterCreateViewTest(TestCase):
         fake = Faker()
         name = fake.name()
         race = cmodels.Race.DWARF
-        class_name = fake.enum(enum_cls=cmodels.Character.Class)
+        class_name = fake.enum(enum_cls=cmodels.Class)
         gender = fake.enum(enum_cls=cmodels.Character.Gender)
         data = {
             "name": f"{name}",
@@ -230,7 +230,7 @@ class CharacterCreateViewTest(TestCase):
         fake = Faker()
         name = fake.name()
         race = cmodels.Race.ELF
-        class_name = fake.enum(enum_cls=cmodels.Character.Class)
+        class_name = fake.enum(enum_cls=cmodels.Class)
         gender = fake.enum(enum_cls=cmodels.Character.Gender)
         data = {
             "name": f"{name}",
@@ -285,7 +285,7 @@ class CharacterCreateViewTest(TestCase):
         fake = Faker()
         name = fake.name()
         race = cmodels.Race.HALFLING
-        class_name = fake.enum(enum_cls=cmodels.Character.Class)
+        class_name = fake.enum(enum_cls=cmodels.Class)
         gender = fake.enum(enum_cls=cmodels.Character.Gender)
         data = {
             "name": f"{name}",
@@ -340,7 +340,7 @@ class CharacterCreateViewTest(TestCase):
         fake = Faker()
         name = fake.name()
         race = cmodels.Race.HUMAN
-        class_name = fake.enum(enum_cls=cmodels.Character.Class)
+        class_name = fake.enum(enum_cls=cmodels.Class)
         gender = fake.enum(enum_cls=cmodels.Character.Gender)
         data = {
             "name": f"{name}",
