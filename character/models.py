@@ -60,10 +60,14 @@ class Ability(models.Model):
         return self.name
 
 
-class Character(models.Model):
-    class Class(models.TextChoices):
-        FIGHTER = "F", "Fighter"
+class Class(models.TextChoices):
+    CLERIC = "C", "Cleric"
+    FIGHTER = "F", "Fighter"
+    ROGUE = "R", "Rogue"
+    WIZARD = "W", "Wizard"
 
+
+class Character(models.Model):
     class Gender(models.TextChoices):
         MALE = "M", "Male"
         FEMALE = "F", "Female"
