@@ -7,7 +7,7 @@ from django.urls import reverse
 
 class Advancement(models.Model):
     xp = models.IntegerField()
-    level = models.SmallIntegerField(unique=True)
+    level = models.SmallIntegerField(primary_key=True)
     proficiency_bonus = models.SmallIntegerField()
 
     class Meta:
