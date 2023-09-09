@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Added
+* DnD: implement races and their racial traits
 * DnD: implement basic rules
 * Game is more reactive, when players take actions
 * Master is now able to give instruction separately from updating tale
