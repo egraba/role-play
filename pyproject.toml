@@ -31,6 +31,7 @@ django-fsm = "*"
 email-validator = "*"
 gunicorn = "*"
 psycopg = {extras = ["binary"], version = "*"}
+pyyaml = "*"
 redis = "*"
 whitenoise = "*"
 

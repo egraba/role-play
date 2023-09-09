@@ -28,5 +28,24 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         character = form.save(commit=False)
         character.user = self.request.user
+        # Apply racial traits
+        racial_trait = cmodels.RacialTrait.objects.get(race=character.race)
+        character.adult_age = racial_trait.adult_age
+        character.life_expectancy = racial_trait.life_expectancy
+        character.alignment = racial_trait.alignment
+        character.size = racial_trait.size
+        character.speed = racial_trait.speed
+        character.save()
+        character.languages.set(racial_trait.languages.all())
+        character.abilities.set(racial_trait.abilities.all())
+        # Apply ability score increases
+        ability_score_increases = cmodels.AbilityScoreIncrease.objects.filter(
+            racial_trait__race=racial_trait.race
+        )
+        for asi in ability_score_increases:
+            if hasattr(character, asi.ability):
+                old_value = getattr(character, asi.ability)
+                new_value = old_value + asi.increase
+                setattr(character, asi.ability, new_value)
         character.save()
         return super().form_valid(form)

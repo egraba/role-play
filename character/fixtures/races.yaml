@@ -1,0 +1,216 @@
+# Dwarf
+- model: character.racialtrait
+  pk: 1
+  fields:
+    race: D
+    adult_age: 50
+    life_expectancy: 350
+    alignment: L
+    size: M
+    speed: 25
+- model: character.abilityscoreincrease
+  pk: 1
+  fields:
+    racial_trait: 1
+    ability: constitution
+    increase: 2
+# Elf
+- model: character.racialtrait
+  pk: 2
+  fields:
+    race: E
+    adult_age: 100
+    life_expectancy: 750
+    alignment: F
+    size: M
+    speed: 30
+- model: character.abilityscoreincrease
+  pk: 2
+  fields:
+    racial_trait: 2
+    ability: dexterity
+    increase: 2
+# Halfling
+- model: character.racialtrait
+  pk: 3
+  fields:
+    race: G
+    adult_age: 20
+    life_expectancy: 150
+    alignment: L
+    size: S
+    speed: 25
+- model: character.abilityscoreincrease
+  pk: 3
+  fields:
+    racial_trait: 3
+    ability: dexterity
+    increase: 2
+# Human
+- model: character.racialtrait
+  pk: 4
+  fields:
+    race: H
+    adult_age: 20
+    life_expectancy: 90
+    alignment: N
+    size: M
+    speed: 30
+- model: character.abilityscoreincrease
+  pk: 4
+  fields:
+    racial_trait: 4
+    ability: strength
+    increase: 1
+- model: character.abilityscoreincrease
+  pk: 5
+  fields:
+    racial_trait: 4
+    ability: dexterity
+    increase: 1
+- model: character.abilityscoreincrease
+  pk: 6
+  fields:
+    racial_trait: 4
+    ability: constitution
+    increase: 1
+- model: character.abilityscoreincrease
+  pk: 7
+  fields:
+    racial_trait: 4
+    ability: intelligence
+    increase: 1
+- model: character.abilityscoreincrease
+  pk: 8
+  fields:
+    racial_trait: 4
+    ability: wisdom
+    increase: 1
+- model: character.abilityscoreincrease
+  pk: 9
+  fields:
+    racial_trait: 4
+    ability: charisma
+    increase: 1
+
+# Common
+- model: character.language
+  pk: 1
+  fields:
+    name: C
+# Dwarvish
+- model: character.language
+  pk: 2
+  fields:
+    name: D
+# Elvish
+- model: character.language
+  pk: 3
+  fields:
+    name: E
+# Halfling
+- model: character.language
+  pk: 4
+  fields:
+    name: H
+
+# Dwarves speak Common and Dwarvish
+- model: character.racialtrait_languages
+  pk: 1
+  fields:
+    racialtrait: 1
+    language: 1
+- model: character.racialtrait_languages
+  pk: 2
+  fields:
+    racialtrait: 1
+    language: 2
+# Elves speak Elvish
+- model: character.racialtrait_languages
+  pk: 3
+  fields:
+    racialtrait: 2
+    language: 3
+# Halflings speak Common and Halfling
+- model: character.racialtrait_languages
+  pk: 4
+  fields:
+    racialtrait: 3
+    language: 1
+- model: character.racialtrait_languages
+  pk: 5
+  fields:
+    racialtrait: 3
+    language: 4
+# Humans speak Common
+- model: character.racialtrait_languages
+  pk: 6
+  fields:
+    racialtrait: 4
+    language: 1
+
+# Dwarves' abilities
+- model: character.racialtrait_abilities
+  pk: 1
+  fields:
+    racialtrait: 1
+    ability: 1
+- model: character.racialtrait_abilities
+  pk: 2
+  fields:
+    racialtrait: 1
+    ability: 2
+- model: character.racialtrait_abilities
+  pk: 3
+  fields:
+    racialtrait: 1
+    ability: 3
+- model: character.racialtrait_abilities
+  pk: 4
+  fields:
+    racialtrait: 1
+    ability: 4
+- model: character.racialtrait_abilities
+  pk: 5
+  fields:
+    racialtrait: 1
+    ability: 5
+
+# Elves' abilities
+- model: character.racialtrait_abilities
+  pk: 6
+  fields:
+    racialtrait: 2
+    ability: 1
+- model: character.racialtrait_abilities
+  pk: 7
+  fields:
+    racialtrait: 2
+    ability: 6
+- model: character.racialtrait_abilities
+  pk: 8
+  fields:
+    racialtrait: 2
+    ability: 7
+- model: character.racialtrait_abilities
+  pk: 9
+  fields:
+    racialtrait: 2
+    ability: 8
+
+# Halflings' abilities
+- model: character.racialtrait_abilities
+  pk: 10
+  fields:
+    racialtrait: 3
+    ability: 9
+- model: character.racialtrait_abilities
+  pk: 11
+  fields:
+    racialtrait: 3
+    ability: 10
+- model: character.racialtrait_abilities
+  pk: 12
+  fields:
+    racialtrait: 3
+    ability: 11
