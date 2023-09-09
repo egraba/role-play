@@ -148,3 +148,69 @@
   fields:
     racialtrait: 4
     language: 1
+
+# Dwarves' abilities
+- model: character.racialtrait_abilities
+  pk: 1
+  fields:
+    racialtrait: 1
+    ability: 1
+- model: character.racialtrait_abilities
+  pk: 2
+  fields:
+    racialtrait: 1
+    ability: 2
+- model: character.racialtrait_abilities
+  pk: 3
+  fields:
+    racialtrait: 1
+    ability: 3
+- model: character.racialtrait_abilities
+  pk: 4
+  fields:
+    racialtrait: 1
+    ability: 4
+- model: character.racialtrait_abilities
+  pk: 5
+  fields:
+    racialtrait: 1
+    ability: 5
+
+# Elves' abilities
+- model: character.racialtrait_abilities
+  pk: 6
+  fields:
+    racialtrait: 2
+    ability: 1
+- model: character.racialtrait_abilities
+  pk: 7
+  fields:
+    racialtrait: 2
+    ability: 6
+- model: character.racialtrait_abilities
+  pk: 8
+  fields:
+    racialtrait: 2
+    ability: 7
+- model: character.racialtrait_abilities
+  pk: 9
+  fields:
+    racialtrait: 2
+    ability: 8
+
+# Halflings' abilities
+- model: character.racialtrait_abilities
+  pk: 10
+  fields:
+    racialtrait: 3
+    ability: 9
+- model: character.racialtrait_abilities
+  pk: 11
+  fields:
+    racialtrait: 3
+    ability: 10
+- model: character.racialtrait_abilities
+  pk: 12
+  fields:
+    racialtrait: 3
+    ability: 11
