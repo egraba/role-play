@@ -198,3 +198,14 @@ class ClassFeature(models.Model):
     hit_points = models.ManyToManyField(HitPoint)
     proficiencies = models.ManyToManyField(Proficiency)
     equipment = models.ManyToManyField(Equipment)
+
+
+class ClassAdvancement(models.Model):
+    level = models.SmallIntegerField(unique=True)
+    proficiency_bonus = models.SmallIntegerField()
+
+    class Meta:
+        ordering = ["level"]
+
+    def __str__(self):
+        return str(self.level)
