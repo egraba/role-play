@@ -203,3 +203,10 @@ class CharacterCreateViewTest(TestCase):
         self.assertEqual(character.charisma, abilities.scores[5][0])
 
         self.assertEqual(character.speed, 25)
+
+        common = cmodels.Language.objects.get(name=cmodels.Language.Name.COMMON)
+        dwarvish = cmodels.Language.objects.get(name=cmodels.Language.Name.DWARVISH)
+        languages = set()
+        languages.add(common)
+        languages.add(dwarvish)
+        self.assertEqual(set(character.languages.all()), languages)

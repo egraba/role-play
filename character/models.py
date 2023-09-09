@@ -42,7 +42,10 @@ class Language(models.Model):
         ELVISH = "E", "Elvish"
         HALFLING = "H", "Halfling"
 
-    name = models.CharField(max_length=1, choices=Name.choices)
+    name = models.CharField(max_length=1, choices=Name.choices, unique=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Ability(models.Model):
