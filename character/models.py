@@ -150,19 +150,8 @@ class Equipment(models.Model):
     )
     weight = models.SmallIntegerField()
 
-    class Meta:
-        abstract = True
-
     def __str__(self):
         return self.name
-
-
-class Weapon(Equipment):
-    class Distance(models.TextChoices):
-        MELEE = "M", "Melee"
-        RANGED = "R", "Ranged"
-
-    distance = models.CharField(max_length=1, choices=Distance.choices)
 
 
 class RacialTrait(models.Model):
@@ -188,3 +177,24 @@ class AbilityScoreIncrease(models.Model):
     racial_trait = models.ForeignKey(RacialTrait, on_delete=models.CASCADE)
     ability = models.CharField(max_length=20, choices=Ability.choices)
     increase = models.SmallIntegerField()
+
+
+class HitPoint(models.Model):
+    hit_dice = models.CharField(max_length=5)
+    hit_points_first_level = models.CharField(max_length=20)
+    hit_points_higher_levels = models.CharField(max_length=20)
+
+
+class Proficiency(models.Model):
+    armor = models.TextField(max_length=50)
+    weapons = models.TextField(max_length=50)
+    tools = models.TextField(max_length=50)
+    saving_throws = models.TextField(max_length=50)
+    skills = models.TextField(max_length=50)
+
+
+class ClassFeature(models.Model):
+    class_name = models.CharField(max_length=1, choices=Class.choices, unique=True)
+    hit_points = models.ManyToManyField(HitPoint)
+    proficiencies = models.ManyToManyField(Proficiency)
+    equipment = models.ManyToManyField(Equipment)
