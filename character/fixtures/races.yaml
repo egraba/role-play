@@ -138,13 +138,13 @@
     racialtrait: 3
     language: 1
 - model: character.racialtrait_languages
-  pk: 4
+  pk: 5
   fields:
     racialtrait: 3
     language: 4
 # Humans speak Common
 - model: character.racialtrait_languages
-  pk: 4
+  pk: 6
   fields:
     racialtrait: 4
     language: 1

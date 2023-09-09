@@ -129,7 +129,7 @@ class CharacterCreateViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "character/character_create.html")
 
-    def test_character_creation(self):
+    def test_character_creation_common(self):
         fake = Faker()
         name = fake.name()
         race = fake.enum(enum_cls=cmodels.Race)
@@ -224,4 +224,114 @@ class CharacterCreateViewTest(TestCase):
         abtls.add(dwarven_combat_training)
         abtls.add(tool_proficiency)
         abtls.add(stonecunning)
+        self.assertEqual(set(character.abilities.all()), abtls)
+
+    def test_character_creation_elf(self):
+        fake = Faker()
+        name = fake.name()
+        race = cmodels.Race.ELF
+        class_name = fake.enum(enum_cls=cmodels.Character.Class)
+        gender = fake.enum(enum_cls=cmodels.Character.Gender)
+        data = {
+            "name": f"{name}",
+            "race": f"{race}",
+            "class_name": f"{class_name}",
+            "strength": abilities.scores[0][0],
+            "dexterity": abilities.scores[1][0],
+            "constitution": abilities.scores[2][0],
+            "intelligence": abilities.scores[3][0],
+            "wisdom": abilities.scores[4][0],
+            "charisma": abilities.scores[5][0],
+            "gender": f"{gender}",
+        }
+        form = cforms.CreateCharacterForm(data)
+        print(form.errors)
+        self.assertTrue(form.is_valid())
+
+        response = self.client.post(
+            reverse(self.path_name),
+            data=form.cleaned_data,
+        )
+        self.assertEqual(response.status_code, 302)
+        character = cmodels.Character.objects.last()
+        self.assertRedirects(response, character.get_absolute_url())
+
+        self.assertEqual(character.strength, abilities.scores[0][0])
+        self.assertEqual(character.dexterity, abilities.scores[1][0] + 2)
+        self.assertEqual(character.constitution, abilities.scores[2][0])
+        self.assertEqual(character.intelligence, abilities.scores[3][0])
+        self.assertEqual(character.wisdom, abilities.scores[4][0])
+        self.assertEqual(character.charisma, abilities.scores[5][0])
+
+        self.assertEqual(character.speed, 30)
+
+        elvish = cmodels.Language.objects.get(name=cmodels.Language.Name.ELVISH)
+        languages = set()
+        languages.add(elvish)
+        self.assertEqual(set(character.languages.all()), languages)
+
+        darkvision = cmodels.Ability.objects.get(name="Darkvision")
+        keen_senses = cmodels.Ability.objects.get(name="Keen Senses")
+        fey_ancestry = cmodels.Ability.objects.get(name="Fey Ancestry")
+        trance = cmodels.Ability.objects.get(name="Trance")
+        abtls = set()
+        abtls.add(darkvision)
+        abtls.add(keen_senses)
+        abtls.add(fey_ancestry)
+        abtls.add(trance)
+        self.assertEqual(set(character.abilities.all()), abtls)
+
+    def test_character_creation_halfling(self):
+        fake = Faker()
+        name = fake.name()
+        race = cmodels.Race.HALFLING
+        class_name = fake.enum(enum_cls=cmodels.Character.Class)
+        gender = fake.enum(enum_cls=cmodels.Character.Gender)
+        data = {
+            "name": f"{name}",
+            "race": f"{race}",
+            "class_name": f"{class_name}",
+            "strength": abilities.scores[0][0],
+            "dexterity": abilities.scores[1][0],
+            "constitution": abilities.scores[2][0],
+            "intelligence": abilities.scores[3][0],
+            "wisdom": abilities.scores[4][0],
+            "charisma": abilities.scores[5][0],
+            "gender": f"{gender}",
+        }
+        form = cforms.CreateCharacterForm(data)
+        print(form.errors)
+        self.assertTrue(form.is_valid())
+
+        response = self.client.post(
+            reverse(self.path_name),
+            data=form.cleaned_data,
+        )
+        self.assertEqual(response.status_code, 302)
+        character = cmodels.Character.objects.last()
+        self.assertRedirects(response, character.get_absolute_url())
+
+        self.assertEqual(character.strength, abilities.scores[0][0])
+        self.assertEqual(character.dexterity, abilities.scores[1][0] + 2)
+        self.assertEqual(character.constitution, abilities.scores[2][0])
+        self.assertEqual(character.intelligence, abilities.scores[3][0])
+        self.assertEqual(character.wisdom, abilities.scores[4][0])
+        self.assertEqual(character.charisma, abilities.scores[5][0])
+
+        self.assertEqual(character.speed, 25)
+
+        common = cmodels.Language.objects.get(name=cmodels.Language.Name.COMMON)
+        halfling = cmodels.Language.objects.get(name=cmodels.Language.Name.HALFLING)
+        languages = set()
+        languages.add(common)
+        languages.add(halfling)
+        self.assertEqual(set(character.languages.all()), languages)
+
+        lucky = cmodels.Ability.objects.get(name="Lucky")
+        brave = cmodels.Ability.objects.get(name="Brave")
+        halfling_nimbleness = cmodels.Ability.objects.get(name="Halfling Nimbleness")
+        abtls = set()
+        abtls.add(lucky)
+        abtls.add(brave)
+        abtls.add(halfling_nimbleness)
         self.assertEqual(set(character.abilities.all()), abtls)
