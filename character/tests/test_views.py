@@ -107,6 +107,7 @@ class CharacterListViewTest(TestCase):
 
 class CharacterCreateViewTest(TestCase):
     path_name = "character-create"
+    fixtures = ["races"]
 
     @classmethod
     def setUpTestData(cls):
@@ -157,8 +158,48 @@ class CharacterCreateViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         character = cmodels.Character.objects.last()
         self.assertRedirects(response, character.get_absolute_url())
+
         self.assertEqual(character.name, form.cleaned_data["name"])
         self.assertEqual(character.race, form.cleaned_data["race"])
         self.assertEqual(character.xp, 0)
         self.assertEqual(character.hp, 100)
         self.assertEqual(character.max_hp, 100)
+
+    def test_character_creation_dwarf(self):
+        fake = Faker()
+        name = fake.name()
+        race = cmodels.Race.DWARF
+        class_name = fake.enum(enum_cls=cmodels.Character.Class)
+        gender = fake.enum(enum_cls=cmodels.Character.Gender)
+        data = {
+            "name": f"{name}",
+            "race": f"{race}",
+            "class_name": f"{class_name}",
+            "strength": abilities.scores[0][0],
+            "dexterity": abilities.scores[1][0],
+            "constitution": abilities.scores[2][0],
+            "intelligence": abilities.scores[3][0],
+            "wisdom": abilities.scores[4][0],
+            "charisma": abilities.scores[5][0],
+            "gender": f"{gender}",
+        }
+        form = cforms.CreateCharacterForm(data)
+        print(form.errors)
+        self.assertTrue(form.is_valid())
+
+        response = self.client.post(
+            reverse(self.path_name),
+            data=form.cleaned_data,
+        )
+        self.assertEqual(response.status_code, 302)
+        character = cmodels.Character.objects.last()
+        self.assertRedirects(response, character.get_absolute_url())
+
+        self.assertEqual(character.strength, abilities.scores[0][0])
+        self.assertEqual(character.dexterity, abilities.scores[1][0])
+        self.assertEqual(character.constitution, abilities.scores[2][0] + 2)
+        self.assertEqual(character.intelligence, abilities.scores[3][0])
+        self.assertEqual(character.wisdom, abilities.scores[4][0])
+        self.assertEqual(character.charisma, abilities.scores[5][0])
+
+        self.assertEqual(character.speed, 25)

@@ -11,6 +11,12 @@ class CreateCharacterForm(forms.ModelForm):
             "name",
             "race",
             "class_name",
+            "strength",
+            "dexterity",
+            "constitution",
+            "intelligence",
+            "wisdom",
+            "charisma",
         ]
         widgets = {
             "race": forms.Select(attrs={"class": "rpgui-dropdown"}),
@@ -49,8 +55,8 @@ class CreateCharacterForm(forms.ModelForm):
     )
 
     def clean(self):
-        cleaned_data = super().clean()
+        self.cleaned_data = super().clean()
         # The ability scores must be unique per ability.
-        if len(cleaned_data) != len(set(cleaned_data.values())):
+        if len(self.cleaned_data) != len(set(self.cleaned_data.values())):
             raise forms.ValidationError("Each ability must have a different score...")
         pass
