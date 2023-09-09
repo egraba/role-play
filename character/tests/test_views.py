@@ -107,7 +107,7 @@ class CharacterListViewTest(TestCase):
 
 class CharacterCreateViewTest(TestCase):
     path_name = "character-create"
-    fixtures = ["races"]
+    fixtures = ["races", "abilities"]
 
     @classmethod
     def setUpTestData(cls):
@@ -210,3 +210,18 @@ class CharacterCreateViewTest(TestCase):
         languages.add(common)
         languages.add(dwarvish)
         self.assertEqual(set(character.languages.all()), languages)
+
+        darkvision = cmodels.Ability.objects.get(name="Darkvision")
+        dwarven_resilience = cmodels.Ability.objects.get(name="Dwarven Resilience")
+        dwarven_combat_training = cmodels.Ability.objects.get(
+            name="Dwarven Combat Training"
+        )
+        tool_proficiency = cmodels.Ability.objects.get(name="Tool Proficiency")
+        stonecunning = cmodels.Ability.objects.get(name="Stonecunning")
+        abtls = set()
+        abtls.add(darkvision)
+        abtls.add(dwarven_resilience)
+        abtls.add(dwarven_combat_training)
+        abtls.add(tool_proficiency)
+        abtls.add(stonecunning)
+        self.assertEqual(set(character.abilities.all()), abtls)
