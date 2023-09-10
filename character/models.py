@@ -208,11 +208,10 @@ class ClassFeature(models.Model):
 
 class ClassAdvancement(models.Model):
     class_name = models.CharField(max_length=1, choices=Class.choices)
-    level = models.SmallIntegerField(primary_key=True)
+    level = models.SmallIntegerField()
     proficiency_bonus = models.SmallIntegerField()
 
     class Meta:
-        unique_together = (("class_name", "level"),)
         ordering = ["class_name"]
 
     def __str__(self):
