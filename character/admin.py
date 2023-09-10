@@ -4,8 +4,8 @@ import character.models as cmodels
 
 
 class CharacterAdmin(admin.ModelAdmin):
-    fields = ["name", "user", "race"]
-    list_display = ["name", "user", "race", "xp"]
+    fields = ["name", "user", "race", "class_name"]
+    list_display = ["name", "user", "race", "class_name", "level", "xp"]
 
 
 class AdvancementAdmin(admin.ModelAdmin):
