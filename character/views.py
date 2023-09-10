@@ -1,6 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import CreateView, DetailView, ListView
 
+import character.abilities as abilities
 import character.forms as cforms
 import character.models as cmodels
 
@@ -47,5 +48,22 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
                 old_value = getattr(character, asi.ability)
                 new_value = old_value + asi.increase
                 setattr(character, asi.ability, new_value)
+        # Compute ability modifiers
+        character.strength_modifier = abilities.compute_ability_modifier(
+            character.strength
+        )
+        character.dexterity_modifier = abilities.compute_ability_modifier(
+            character.dexterity
+        )
+        character.constitution_modifier = abilities.compute_ability_modifier(
+            character.constitution
+        )
+        character.intelligence_modifier = abilities.compute_ability_modifier(
+            character.intelligence
+        )
+        character.wisdom_modifier = abilities.compute_ability_modifier(character.wisdom)
+        character.charisma_modifier = abilities.compute_ability_modifier(
+            character.charisma
+        )
         character.save()
         return super().form_valid(form)
