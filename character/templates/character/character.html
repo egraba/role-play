@@ -9,17 +9,36 @@
 
         <hr class="golden"/>
 
-        <p>Race: {{ character.get_race_display }}</p>
-        <p>XP: {{ character.xp }}</p>
-        <p>HP: {{ character.hp }} / {{ character.max_hp }}</p>
+        <table class="rpgui-container framed-grey">
+            <tr>
+                <th><p>User</p></th>
+                <th><p>Race</p></th>
+                <th><p>Class</p></th>
+                <th><p>Alignment</p></th>
+                <th><p>Level</p></th>
+                <th><p>XP</p></th>
+            </tr>
+            <tr>
+                <td><p>{{ character.user.username }}</p></td>
+                <td><p>{{ character.get_race_display }}</p></td>
+                <td><p>{{ character.get_class_name_display }}</p></td>
+                <td><p>{{ character.get_alignment_display }}</p></td>
+                <td><p>{{ character.level }}</p></td>
+                <td><p>{{ character.xp }}</p></td>
+            </tr>
+        </table>
+
+        <p>Proficiency bonus: {{ character.proficiency_bonus }}</p>
 
         <h3>Abilities</h3>
-        <p>Strength: {{ character.strength }}</p>
-        <p>Dexterity: {{ character.dexterity }}</p>
-        <p>Constitution: {{ character.constitution }}</p>
-        <p>Intelligence: {{ character.intelligence }}</p>
-        <p>Wisdom: {{ character.wisdom }}</p>
-        <p>Charisma: {{ character.charisma }}</p>
+        <div class="rpgui-container framed-grey">
+            <p>Strength: {{ character.strength }}</p>
+            <p>Dexterity: {{ character.dexterity }}</p>
+            <p>Constitution: {{ character.constitution }}</p>
+            <p>Intelligence: {{ character.intelligence }}</p>
+            <p>Wisdom: {{ character.wisdom }}</p>
+            <p>Charisma: {{ character.charisma }}</p>
+        </div>
         {% for ability in character.abilities.all %}
             <p>{{ ability }}</p>
         {% empty %}
@@ -30,6 +49,12 @@
         {% for language in character.languages.all %}
             <p>{{ language.get_name_display }}</p>
         {% endfor %}
+
+        <h3>HP</h3>
+        <div class="rpgui-center">
+            <p>Current HP: {{ character.hp }} / Maximum HP: {{ character.max_hp }}</p>
+            <div id="hp-bar" data-value="{% widthratio character.hp character.max_hp 1 %}" class="rpgui-progress red"></div>
+        </div>
 
         <hr/>
 
