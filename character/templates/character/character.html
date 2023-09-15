@@ -31,10 +31,11 @@
         <p>Proficiency bonus: {{ character.proficiency_bonus }}</p>
 
         <h3>Abilities</h3>
-        <table class="rpgui-container framed-grey">
+        <table id="abilities">
             <tr>
-                <td>
+                <td id="coreabilities" class="rpgui-container framed-golden">
                     <table>
+                        <tr><th colspan="3"><h4>Core abilities</h4></th></tr>
                         <tr>
                             <th><p>Strength</p></th>
                             <td><p>{{ character.strength }}</p></td>
@@ -67,11 +68,17 @@
                         </tr>
                     </table>
                 </td>
-                <td>
+                <td id="additionalabilities" class="rpgui-container framed-golden">
                     <table>
+                        <colgroup>
+                            <col id="ability">
+                            <col>
+                        </colgroup>
+                        <tr><th colspan="2"><h4>Additional abilities</h4></th></tr>
                         {% for ability in character.abilities.all %}
                             <tr>
-                                <td><p>{{ ability }}</p></td>
+                                <th><p>{{ ability }}</p></th>
+                                <td><p>{{ ability.description }}</p></td>
                             </tr>
                         {% empty %}
                             <tr>

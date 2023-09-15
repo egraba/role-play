@@ -98,3 +98,23 @@ ul.errorlist {
 #master {
     width: 45em;
 }
+
+#abilities {
+    border-spacing: 2em;
+}
+
+#coreabilities {
+    width: 25%;
+}
+
+#additionalabilities {
+    vertical-align: top;
+}
+
+#additionalabilities #ability {
+    width: 20%;
+}
+
+#additionalabilities td {
+    text-align: left;
+}
