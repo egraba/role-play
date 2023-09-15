@@ -31,19 +31,58 @@
         <p>Proficiency bonus: {{ character.proficiency_bonus }}</p>
 
         <h3>Abilities</h3>
-        <div class="rpgui-container framed-grey">
-            <p>Strength: {{ character.strength }}</p>
-            <p>Dexterity: {{ character.dexterity }}</p>
-            <p>Constitution: {{ character.constitution }}</p>
-            <p>Intelligence: {{ character.intelligence }}</p>
-            <p>Wisdom: {{ character.wisdom }}</p>
-            <p>Charisma: {{ character.charisma }}</p>
-        </div>
-        {% for ability in character.abilities.all %}
-            <p>{{ ability }}</p>
-        {% empty %}
-            <p>-</p>
-        {% endfor %}
+        <table class="rpgui-container framed-grey">
+            <tr>
+                <td>
+                    <table>
+                        <tr>
+                            <th><p>Strength</p></th>
+                            <td><p>{{ character.strength }}</p></td>
+                            <td><p>({{ character.strength_modifier }})</p></td>
+                        </tr>
+                        <tr>
+                            <th><p>Dexterity</p></th>
+                            <td><p>{{ character.dexterity }}</p></td>
+                            <td><p>({{ character.dexterity_modifier }})</p></td>
+                        </tr>
+                        <tr>
+                            <th><p>Constitution</p></th>
+                            <td><p>{{ character.constitution }}</p></td>
+                            <td><p>({{ character.constitution_modifier }})</p></td>
+                        </tr>
+                        <tr>
+                            <th><p>Intelligence</p></th>
+                            <td><p>{{ character.intelligence }}</p></td>
+                            <td><p>({{ character.intelligence_modifier }})</p></td>
+                        </tr>
+                        <tr>
+                            <th><p>Wisdom</p></th>
+                            <td><p>{{ character.wisdom }}</p></td>
+                            <td><p>({{ character.wisdom_modifier }})</p></td>
+                        </tr>
+                        <tr>
+                            <th><p>Charisma</p></th>
+                            <td><p>{{ character.charisma }}</p></td>
+                            <td><p>({{ character.charisma_modifier }})</p></td>
+                        </tr>
+                    </table>
+                </td>
+                <td>
+                    <table>
+                        {% for ability in character.abilities.all %}
+                            <tr>
+                                <td><p>{{ ability }}</p></td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td><p>-</p></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </td>
+            </tr>
+        </table>
+
 
         <h3>Languages</h3>
         {% for language in character.languages.all %}
