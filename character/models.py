@@ -90,6 +90,12 @@ class Character(models.Model):
     intelligence = models.SmallIntegerField(default=0)
     wisdom = models.SmallIntegerField(default=0)
     charisma = models.SmallIntegerField(default=0)
+    strength_modifier = models.SmallIntegerField(default=0)
+    dexterity_modifier = models.SmallIntegerField(default=0)
+    constitution_modifier = models.SmallIntegerField(default=0)
+    intelligence_modifier = models.SmallIntegerField(default=0)
+    wisdom_modifier = models.SmallIntegerField(default=0)
+    charisma_modifier = models.SmallIntegerField(default=0)
     gender = models.CharField(max_length=1, choices=Gender.choices, default=Gender.MALE)
     ac = models.SmallIntegerField(default=0)
     adult_age = models.SmallIntegerField(null=True, blank=True)
@@ -202,11 +208,10 @@ class ClassFeature(models.Model):
 
 class ClassAdvancement(models.Model):
     class_name = models.CharField(max_length=1, choices=Class.choices)
-    level = models.SmallIntegerField(primary_key=True)
+    level = models.SmallIntegerField()
     proficiency_bonus = models.SmallIntegerField()
 
     class Meta:
-        unique_together = (("class_name", "level"),)
         ordering = ["class_name"]
 
     def __str__(self):
