@@ -370,3 +370,143 @@ class CharacterCreateViewTest(TestCase):
 
         abtls = set()
         self.assertEqual(set(character.abilities.all()), abtls)
+
+    def test_character_creation_cleric(self):
+        fake = Faker()
+        name = fake.name()
+        race = fake.enum(enum_cls=cmodels.Race)
+        class_name = cmodels.Class.CLERIC
+        gender = fake.enum(enum_cls=cmodels.Character.Gender)
+        data = {
+            "name": f"{name}",
+            "race": f"{race}",
+            "class_name": f"{class_name}",
+            "strength": abilities.scores[0][0],
+            "dexterity": abilities.scores[1][0],
+            "constitution": abilities.scores[2][0],
+            "intelligence": abilities.scores[3][0],
+            "wisdom": abilities.scores[4][0],
+            "charisma": abilities.scores[5][0],
+            "gender": f"{gender}",
+        }
+        form = cforms.CreateCharacterForm(data)
+        print(form.errors)
+        self.assertTrue(form.is_valid())
+
+        response = self.client.post(
+            reverse(self.path_name),
+            data=form.cleaned_data,
+        )
+        self.assertEqual(response.status_code, 302)
+        character = cmodels.Character.objects.last()
+        self.assertRedirects(response, character.get_absolute_url())
+
+        self.assertEqual(character.hit_dice, "1d8")
+
+        hp = 100 + 8 + character.constitution_modifier
+        self.assertEqual(character.hp, hp)
+
+    def test_character_creation_fighter(self):
+        fake = Faker()
+        name = fake.name()
+        race = fake.enum(enum_cls=cmodels.Race)
+        class_name = cmodels.Class.FIGHTER
+        gender = fake.enum(enum_cls=cmodels.Character.Gender)
+        data = {
+            "name": f"{name}",
+            "race": f"{race}",
+            "class_name": f"{class_name}",
+            "strength": abilities.scores[0][0],
+            "dexterity": abilities.scores[1][0],
+            "constitution": abilities.scores[2][0],
+            "intelligence": abilities.scores[3][0],
+            "wisdom": abilities.scores[4][0],
+            "charisma": abilities.scores[5][0],
+            "gender": f"{gender}",
+        }
+        form = cforms.CreateCharacterForm(data)
+        print(form.errors)
+        self.assertTrue(form.is_valid())
+
+        response = self.client.post(
+            reverse(self.path_name),
+            data=form.cleaned_data,
+        )
+        self.assertEqual(response.status_code, 302)
+        character = cmodels.Character.objects.last()
+        self.assertRedirects(response, character.get_absolute_url())
+
+        self.assertEqual(character.hit_dice, "1d10")
+
+        hp = 100 + 10 + character.constitution_modifier
+        self.assertEqual(character.hp, hp)
+
+    def test_character_creation_rogue(self):
+        fake = Faker()
+        name = fake.name()
+        race = fake.enum(enum_cls=cmodels.Race)
+        class_name = cmodels.Class.ROGUE
+        gender = fake.enum(enum_cls=cmodels.Character.Gender)
+        data = {
+            "name": f"{name}",
+            "race": f"{race}",
+            "class_name": f"{class_name}",
+            "strength": abilities.scores[0][0],
+            "dexterity": abilities.scores[1][0],
+            "constitution": abilities.scores[2][0],
+            "intelligence": abilities.scores[3][0],
+            "wisdom": abilities.scores[4][0],
+            "charisma": abilities.scores[5][0],
+            "gender": f"{gender}",
+        }
+        form = cforms.CreateCharacterForm(data)
+        print(form.errors)
+        self.assertTrue(form.is_valid())
+
+        response = self.client.post(
+            reverse(self.path_name),
+            data=form.cleaned_data,
+        )
+        self.assertEqual(response.status_code, 302)
+        character = cmodels.Character.objects.last()
+        self.assertRedirects(response, character.get_absolute_url())
+
+        self.assertEqual(character.hit_dice, "1d8")
+
+        hp = 100 + 8 + character.constitution_modifier
+        self.assertEqual(character.hp, hp)
+
+    def test_character_creation_wizard(self):
+        fake = Faker()
+        name = fake.name()
+        race = fake.enum(enum_cls=cmodels.Race)
+        class_name = cmodels.Class.WIZARD
+        gender = fake.enum(enum_cls=cmodels.Character.Gender)
+        data = {
+            "name": f"{name}",
+            "race": f"{race}",
+            "class_name": f"{class_name}",
+            "strength": abilities.scores[0][0],
+            "dexterity": abilities.scores[1][0],
+            "constitution": abilities.scores[2][0],
+            "intelligence": abilities.scores[3][0],
+            "wisdom": abilities.scores[4][0],
+            "charisma": abilities.scores[5][0],
+            "gender": f"{gender}",
+        }
+        form = cforms.CreateCharacterForm(data)
+        print(form.errors)
+        self.assertTrue(form.is_valid())
+
+        response = self.client.post(
+            reverse(self.path_name),
+            data=form.cleaned_data,
+        )
+        self.assertEqual(response.status_code, 302)
+        character = cmodels.Character.objects.last()
+        self.assertRedirects(response, character.get_absolute_url())
+
+        self.assertEqual(character.hit_dice, "1d6")
+
+        hp = 100 + 6 + character.constitution_modifier
+        self.assertEqual(character.hp, hp)
