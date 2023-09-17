@@ -69,6 +69,7 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
     def _apply_class_features(self, character, class_feature):
         character.hit_dice = class_feature.hit_dice
         character.hp += class_feature.hp_first_level
+        character.hp += character.constitution_modifier
         character.max_hp = character.hp
 
     def form_valid(self, form):
