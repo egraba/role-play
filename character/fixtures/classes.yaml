@@ -483,3 +483,37 @@
     class_name: W
     level: 20
     proficiency_bonus: 6
+
+# Class features
+# Cleric
+- model: character.classfeature
+  pk: 1
+  fields:
+    class_name: C
+    hit_dice: 1d8
+    hp_first_level: 8
+    hp_higher_levels: 5
+# Fighter
+- model: character.classfeature
+  pk: 2
+  fields:
+    class_name: F
+    hit_dice: 1d10
+    hp_first_level: 10
+    hp_higher_levels: 6
+# Rogue
+- model: character.classfeature
+  pk: 3
+  fields:
+    class_name: R
+    hit_dice: 1d8
+    hp_first_level: 8
+    hp_higher_levels: 5
+# Wizard
+- model: character.classfeature
+  pk: 4
+  fields:
+    class_name: W
+    hit_dice: 1d6
+    hp_first_level: 6
+    hp_higher_levels: 4

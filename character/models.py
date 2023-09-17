@@ -185,12 +185,6 @@ class AbilityScoreIncrease(models.Model):
     increase = models.SmallIntegerField()
 
 
-class HitPoint(models.Model):
-    hit_dice = models.CharField(max_length=5)
-    hit_points_first_level = models.CharField(max_length=20)
-    hit_points_higher_levels = models.CharField(max_length=20)
-
-
 class Proficiency(models.Model):
     armor = models.TextField(max_length=50)
     weapons = models.TextField(max_length=50)
@@ -201,7 +195,9 @@ class Proficiency(models.Model):
 
 class ClassFeature(models.Model):
     class_name = models.CharField(max_length=1, choices=Class.choices, unique=True)
-    hit_points = models.ManyToManyField(HitPoint)
+    hit_dice = models.CharField(max_length=5)
+    hp_first_level = models.SmallIntegerField()
+    hp_higher_levels = models.SmallIntegerField()
     proficiencies = models.ManyToManyField(Proficiency)
     equipment = models.ManyToManyField(Equipment)
 
