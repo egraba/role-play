@@ -48,6 +48,18 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
                     new_value = old_value + asi.increase
                     setattr(character, asi.ability, new_value)
 
+    def _compute_ability_modifiers(self, character):
+        character.strength_modifier = abilities.compute_modifier(character.strength)
+        character.dexterity_modifier = abilities.compute_modifier(character.dexterity)
+        character.constitution_modifier = abilities.compute_modifier(
+            character.constitution
+        )
+        character.intelligence_modifier = abilities.compute_modifier(
+            character.intelligence
+        )
+        character.wisdom_modifier = abilities.compute_modifier(character.wisdom)
+        character.charisma_modifier = abilities.compute_modifier(character.charisma)
+
     def form_valid(self, form):
         character = form.save(commit=False)
         character.user = self.request.user
@@ -55,24 +67,7 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
         racial_trait = cmodels.RacialTrait.objects.get(race=character.race)
         self._apply_racial_traits(character, racial_trait)
         self._apply_ability_score_increases(character, racial_trait)
-
-        # Compute ability modifiers
-        character.strength_modifier = abilities.compute_ability_modifier(
-            character.strength
-        )
-        character.dexterity_modifier = abilities.compute_ability_modifier(
-            character.dexterity
-        )
-        character.constitution_modifier = abilities.compute_ability_modifier(
-            character.constitution
-        )
-        character.intelligence_modifier = abilities.compute_ability_modifier(
-            character.intelligence
-        )
-        character.wisdom_modifier = abilities.compute_ability_modifier(character.wisdom)
-        character.charisma_modifier = abilities.compute_ability_modifier(
-            character.charisma
-        )
+        self._compute_ability_modifiers(character)
 
         # Apply class advancement for Level 1
         class_advancement = cmodels.ClassAdvancement.objects.get(
