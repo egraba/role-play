@@ -42,22 +42,24 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
         character.languages.set(racial_trait.languages.all())
         character.abilities.set(racial_trait.abilities.all())
 
+    def _apply_ability_score_increases(self, character, racial_trait):
+        ability_score_increases = cmodels.AbilityScoreIncrease.objects.filter(
+            racial_trait__race=racial_trait.race
+        )
+        if ability_score_increases is not None:
+            for asi in ability_score_increases:
+                if hasattr(character, asi.ability):
+                    old_value = getattr(character, asi.ability)
+                    new_value = old_value + asi.increase
+                    setattr(character, asi.ability, new_value)
+
     def form_valid(self, form):
         character = form.save(commit=False)
         character.user = self.request.user
 
         racial_trait = cmodels.RacialTrait.objects.get(race=character.race)
         self._apply_racial_traits(character, racial_trait)
-
-        # Apply ability score increases
-        ability_score_increases = AbilityScoreIncrease.objects.filter(
-            racial_trait__race=racial_trait.race
-        )
-        for asi in ability_score_increases:
-            if hasattr(character, asi.ability):
-                old_value = getattr(character, asi.ability)
-                new_value = old_value + asi.increase
-                setattr(character, asi.ability, new_value)
+        self._apply_ability_score_increases(character, racial_trait)
 
         # Compute ability modifiers
         character.strength_modifier = abilities.compute_ability_modifier(
