@@ -110,6 +110,7 @@ class Character(models.Model):
     languages = models.ManyToManyField(Language)
     abilities = models.ManyToManyField(Ability)
     hit_dice = models.CharField(max_length=5, default="1d8")
+    hp_increase = models.SmallIntegerField(default=0)
 
     class Meta:
         indexes = [
@@ -139,9 +140,14 @@ class Character(models.Model):
             advancement = Advancement.objects.get(level=self.level)
             cache.set(f"advancement_{self.level}", advancement)
         self.proficiency_bonus += advancement.proficiency_bonus
+
+        # Increase hit dice
         dice = Dice(str(self.hit_dice))
         dice.throws += 1
         self.hit_dice = dice
+
+        # Increase HP
+        self.max_hp += self.hp_increase
 
     def increase_xp(self, xp):
         self.xp += xp
