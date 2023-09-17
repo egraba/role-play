@@ -101,9 +101,11 @@
             <p>Current HP: {{ character.hp }} / Maximum HP: {{ character.max_hp }}</p>
             <div id="hp-bar" data-value="{% widthratio character.hp character.max_hp 1 %}" class="rpgui-progress red"></div>
         </div>
+        <br />
 
         <hr/>
 
+        <h3>Game</h3>
         {% with game=character.player.game %}
             {% if game %}
                 <p>Ongoing game: <a href={% url 'game' game.id %}>{{ game }}</p>
