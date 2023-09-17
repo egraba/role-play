@@ -83,4 +83,5 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
         self._apply_class_advancement(character, 1)
 
         character.save()
+
         return super().form_valid(form)
