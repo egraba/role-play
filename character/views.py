@@ -60,6 +60,12 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
         character.wisdom_modifier = abilities.compute_modifier(character.wisdom)
         character.charisma_modifier = abilities.compute_modifier(character.charisma)
 
+    def _apply_class_advancement(self, character, level):
+        class_advancement = cmodels.ClassAdvancement.objects.get(
+            class_name=character.class_name, level=1
+        )
+        character.proficiency_bonus += class_advancement.proficiency_bonus
+
     def form_valid(self, form):
         character = form.save(commit=False)
         character.user = self.request.user
@@ -68,12 +74,8 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
         self._apply_racial_traits(character, racial_trait)
         self._apply_ability_score_increases(character, racial_trait)
         self._compute_ability_modifiers(character)
-
         # Apply class advancement for Level 1
-        class_advancement = cmodels.ClassAdvancement.objects.get(
-            class_name=character.class_name, level=1
-        )
-        character.proficiency_bonus += class_advancement.proficiency_bonus
+        self._apply_class_advancement(character, 1)
 
         character.save()
         return super().form_valid(form)
