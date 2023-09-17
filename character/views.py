@@ -66,16 +66,27 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
         )
         character.proficiency_bonus += class_advancement.proficiency_bonus
 
+    def _apply_class_features(self, character, class_feature):
+        character.hit_dice = class_feature.hit_dice
+        character.hp += class_feature.hp_first_level
+        character.max_hp = character.hp
+
     def form_valid(self, form):
         character = form.save(commit=False)
         character.user = self.request.user
 
+        # Racial traits
         racial_trait = cmodels.RacialTrait.objects.get(race=character.race)
         self._apply_racial_traits(character, racial_trait)
         self._apply_ability_score_increases(character, racial_trait)
         self._compute_ability_modifiers(character)
-        # Apply class advancement for Level 1
-        self._apply_class_advancement(character, 1)
+
+        # Class features
+        self._apply_class_advancement(character, level=1)
+        class_feature = cmodels.ClassFeature.objects.get(
+            class_name=character.class_name
+        )
+        self._apply_class_features(character, class_feature)
 
         character.save()
 

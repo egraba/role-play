@@ -162,8 +162,9 @@ class CharacterCreateViewTest(TestCase):
         self.assertEqual(character.name, form.cleaned_data["name"])
         self.assertEqual(character.race, form.cleaned_data["race"])
         self.assertEqual(character.xp, 0)
-        self.assertEqual(character.hp, 100)
-        self.assertEqual(character.max_hp, 100)
+        self.assertGreaterEqual(character.hp, 100)
+        self.assertGreaterEqual(character.max_hp, 100)
+        self.assertEqual(character.hp, character.max_hp)
 
     def test_character_creation_dwarf(self):
         fake = Faker()
