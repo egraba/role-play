@@ -107,6 +107,7 @@ class Character(models.Model):
     speed = models.SmallIntegerField(null=True, blank=True)
     languages = models.ManyToManyField(Language)
     abilities = models.ManyToManyField(Ability)
+    hit_dice = models.CharField(max_length=5, default="1d8")
 
     class Meta:
         indexes = [
