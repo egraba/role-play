@@ -31,20 +31,23 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         return self.object.get_absolute_url()
 
-    def form_valid(self, form):
-        character = form.save(commit=False)
-        character.user = self.request.user
-
-        # Apply racial traits
-        racial_trait = RacialTrait.objects.get(race=character.race)
+    def _apply_racial_traits(self, character, racial_trait):
         character.adult_age = racial_trait.adult_age
         character.life_expectancy = racial_trait.life_expectancy
         character.alignment = racial_trait.alignment
         character.size = racial_trait.size
         character.speed = racial_trait.speed
+        # Need to save before setting many-to-many relationships
         character.save()
         character.languages.set(racial_trait.languages.all())
         character.abilities.set(racial_trait.abilities.all())
+
+    def form_valid(self, form):
+        character = form.save(commit=False)
+        character.user = self.request.user
+
+        racial_trait = cmodels.RacialTrait.objects.get(race=character.race)
+        self._apply_racial_traits(character, racial_trait)
 
         # Apply ability score increases
         ability_score_increases = AbilityScoreIncrease.objects.filter(
