@@ -4,6 +4,8 @@ from django.db import models
 from django.db.models.functions import Upper
 from django.urls import reverse
 
+import utils.dice as dice
+
 
 class Advancement(models.Model):
     xp = models.IntegerField()
@@ -137,6 +139,7 @@ class Character(models.Model):
             advancement = Advancement.objects.get(level=self.level)
             cache.set(f"advancement_{self.level}", advancement)
         self.proficiency_bonus += advancement.proficiency_bonus
+        self.hit_dice = dice.add_throws(self.hit_dice, 1)
 
     def increase_xp(self, xp):
         self.xp += xp
