@@ -30,6 +30,7 @@ django = "~=4.2"
 django-fsm = "*"
 email-validator = "*"
 gunicorn = "*"
+invoke = "*"
 psycopg = {extras = ["binary"], version = "*"}
 pyyaml = "*"
 redis = "*"
