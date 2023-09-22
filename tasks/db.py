@@ -2,9 +2,9 @@ from invoke import task
 
 
 @task
-def flush(c):
-    """Flush the DB"""
-    c.run("python manage.py flush")
+def reset(c):
+    """Reset the DB"""
+    c.run("python manage.py reset_db")
 
 
 @task
