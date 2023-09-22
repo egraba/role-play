@@ -8,6 +8,12 @@ def clean(c):
         c.run(f"rm -rf {pattern}")
 
 
-@task
+@task(clean)
+def build(c):
+    c.run("poetry install")
+    c.run("python manage.py migrate")
+
+
+@task(build)
 def run(c):
     c.run("python manage.py runserver")
