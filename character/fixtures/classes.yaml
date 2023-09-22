@@ -493,6 +493,14 @@
     hit_dice: 1d8
     hp_first_level: 8
     hp_higher_levels: 5
+- model: character.proficiency
+  pk: 1
+  fields:
+    class_feature: 1
+    armor: Light armor, medium armor, shields
+    weapons: Simple weapons
+    tools: None
+    saving_throws: Wisdom, Charisma
 # Fighter
 - model: character.classfeature
   pk: 2
@@ -501,6 +509,14 @@
     hit_dice: 1d10
     hp_first_level: 10
     hp_higher_levels: 6
+- model: character.proficiency
+  pk: 2
+  fields:
+    class_feature: 2
+    armor: All armor, shields
+    weapons: Simple weapons, martial weapons
+    tools: None
+    saving_throws: Strength, Constitution
 # Rogue
 - model: character.classfeature
   pk: 3
@@ -509,6 +525,14 @@
     hit_dice: 1d8
     hp_first_level: 8
     hp_higher_levels: 5
+- model: character.proficiency
+  pk: 3
+  fields:
+    class_feature: 3
+    armor: Light armor
+    weapons: Simple weapons, hand crossbows, longswords, rapiers, shortswords
+    tools: Thieves’ tools
+    saving_throws: Dexterity, Intelligence
 # Wizard
 - model: character.classfeature
   pk: 4
@@ -517,3 +541,11 @@
     hit_dice: 1d6
     hp_first_level: 6
     hp_higher_levels: 4
+- model: character.proficiency
+  pk: 4
+  fields:
+    class_feature: 4
+    armor: None
+    weapons: Daggers, darts, slings, quarterstaffs, light crossbows
+    tools: None
+    saving_throws: Intelligence, Wisdom

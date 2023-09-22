@@ -197,21 +197,24 @@ class AbilityScoreIncrease(models.Model):
     increase = models.SmallIntegerField()
 
 
-class Proficiency(models.Model):
-    armor = models.TextField(max_length=50)
-    weapons = models.TextField(max_length=50)
-    tools = models.TextField(max_length=50)
-    saving_throws = models.TextField(max_length=50)
-    skills = models.TextField(max_length=50)
-
-
 class ClassFeature(models.Model):
     class_name = models.CharField(max_length=1, choices=Class.choices, unique=True)
     hit_dice = models.CharField(max_length=5)
     hp_first_level = models.SmallIntegerField()
     hp_higher_levels = models.SmallIntegerField()
-    proficiencies = models.ManyToManyField(Proficiency)
     equipment = models.ManyToManyField(Equipment)
+
+
+class Proficiency(models.Model):
+    class_feature = models.ForeignKey(ClassFeature, on_delete=models.CASCADE)
+    armor = models.TextField(max_length=50, blank=True, null=True)
+    weapons = models.TextField(max_length=50, blank=True, null=True)
+    tools = models.TextField(max_length=50, blank=True, null=True)
+    saving_throws = models.TextField(max_length=50, blank=True, null=True)
+    skills = models.TextField(max_length=50, blank=True, null=True)
+
+    class Meta:
+        verbose_name_plural = "proficiencies"
 
 
 class ClassAdvancement(models.Model):
