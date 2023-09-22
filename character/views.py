@@ -72,6 +72,9 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
         character.hp += character.constitution_modifier
         character.max_hp = character.hp
         character.hp_increase = class_feature.hp_higher_levels
+        proficiencies = cmodels.Proficiencies.objects.get(class_feature=class_feature)
+        proficiencies.character = character
+        proficiencies.save()
 
     def form_valid(self, form):
         character = form.save(commit=False)

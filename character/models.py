@@ -205,16 +205,27 @@ class ClassFeature(models.Model):
     equipment = models.ManyToManyField(Equipment)
 
 
-class Proficiency(models.Model):
-    class_feature = models.ForeignKey(ClassFeature, on_delete=models.CASCADE)
+class Proficiencies(models.Model):
+    character = models.OneToOneField(
+        Character, on_delete=models.SET_NULL, blank=True, null=True
+    )
+    class_feature = models.OneToOneField(
+        ClassFeature, on_delete=models.SET_NULL, blank=True, null=True
+    )
     armor = models.TextField(max_length=50, blank=True, null=True)
     weapons = models.TextField(max_length=50, blank=True, null=True)
     tools = models.TextField(max_length=50, blank=True, null=True)
     saving_throws = models.TextField(max_length=50, blank=True, null=True)
     skills = models.TextField(max_length=50, blank=True, null=True)
 
-    class Meta:
-        verbose_name_plural = "proficiencies"
+    def __str__(self):
+        return f"""
+            Armor: {self.armor}
+            Weapons: {self.weapons}
+            Tools: {self.tools}
+            Saving throws: {self.saving_throws}
+            Skills: {self.skills}
+            """
 
 
 class ClassAdvancement(models.Model):

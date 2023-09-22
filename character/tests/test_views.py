@@ -419,6 +419,13 @@ class CharacterCreateViewTest(TestCase):
         hp = 100 + 8 + character.constitution_modifier
         self.assertEqual(character.hp, hp)
 
+        self.assertEqual(
+            character.proficiencies.armor, "Light armor, medium armor, shields"
+        )
+        self.assertEqual(character.proficiencies.weapons, "Simple weapons")
+        self.assertEqual(character.proficiencies.tools, "None")
+        self.assertEqual(character.proficiencies.saving_throws, "Wisdom, Charisma")
+
     def test_character_creation_fighter(self):
         fake = Faker()
         name = fake.name()
@@ -453,6 +460,16 @@ class CharacterCreateViewTest(TestCase):
 
         hp = 100 + 10 + character.constitution_modifier
         self.assertEqual(character.hp, hp)
+
+        self.assertEqual(character.proficiencies.armor, "All armor, shields")
+        self.assertEqual(
+            character.proficiencies.weapons,
+            "Simple weapons, martial weapons",
+        )
+        self.assertEqual(character.proficiencies.tools, "None")
+        self.assertEqual(
+            character.proficiencies.saving_throws, "Strength, Constitution"
+        )
 
     def test_character_creation_rogue(self):
         fake = Faker()
@@ -489,6 +506,16 @@ class CharacterCreateViewTest(TestCase):
         hp = 100 + 8 + character.constitution_modifier
         self.assertEqual(character.hp, hp)
 
+        self.assertEqual(character.proficiencies.armor, "Light armor")
+        self.assertEqual(
+            character.proficiencies.weapons,
+            "Simple weapons, hand crossbows, longswords, rapiers, shortswords",
+        )
+        self.assertEqual(character.proficiencies.tools, "Thieves' tools")
+        self.assertEqual(
+            character.proficiencies.saving_throws, "Dexterity, Intelligence"
+        )
+
     def test_character_creation_wizard(self):
         fake = Faker()
         name = fake.name()
@@ -523,3 +550,11 @@ class CharacterCreateViewTest(TestCase):
 
         hp = 100 + 6 + character.constitution_modifier
         self.assertEqual(character.hp, hp)
+
+        self.assertEqual(character.proficiencies.armor, "None")
+        self.assertEqual(
+            character.proficiencies.weapons,
+            "Daggers, darts, slings, quarterstaffs, light crossbows",
+        )
+        self.assertEqual(character.proficiencies.tools, "None")
+        self.assertEqual(character.proficiencies.saving_throws, "Intelligence, Wisdom")
