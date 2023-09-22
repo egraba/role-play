@@ -12,7 +12,6 @@ def clean(c):
 @task(clean)
 def build(c):
     """Load libraries and apply database migrations"""
-    c.run("poetry install")
     c.run("python manage.py migrate")
 
 
