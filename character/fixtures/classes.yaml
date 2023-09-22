@@ -493,7 +493,7 @@
     hit_dice: 1d8
     hp_first_level: 8
     hp_higher_levels: 5
-- model: character.proficiency
+- model: character.proficiencies
   pk: 1
   fields:
     class_feature: 1
@@ -509,7 +509,7 @@
     hit_dice: 1d10
     hp_first_level: 10
     hp_higher_levels: 6
-- model: character.proficiency
+- model: character.proficiencies
   pk: 2
   fields:
     class_feature: 2
@@ -525,13 +525,13 @@
     hit_dice: 1d8
     hp_first_level: 8
     hp_higher_levels: 5
-- model: character.proficiency
+- model: character.proficiencies
   pk: 3
   fields:
     class_feature: 3
     armor: Light armor
     weapons: Simple weapons, hand crossbows, longswords, rapiers, shortswords
-    tools: Thieves’ tools
+    tools: Thieves' tools
     saving_throws: Dexterity, Intelligence
 # Wizard
 - model: character.classfeature
@@ -541,7 +541,7 @@
     hit_dice: 1d6
     hp_first_level: 6
     hp_higher_levels: 4
-- model: character.proficiency
+- model: character.proficiencies
   pk: 4
   fields:
     class_feature: 4
