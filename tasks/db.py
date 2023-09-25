@@ -10,10 +10,9 @@ def reset(c):
 @task
 def load_settings(c):
     """Load app settings"""
-    c.run("python manage.py loaddata abilities")
-    c.run("python manage.py loaddata advancement")
-    c.run("python manage.py loaddata races")
-    c.run("python manage.py loaddata classes")
+    patterns = ["abilities", "advancement", "races", "classes"]
+    for pattern in patterns:
+        c.run(f"python manage.py loaddata {pattern}")
 
 
 @task(load_settings)
