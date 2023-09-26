@@ -57,6 +57,15 @@ major_version_zero = true
 [tool.pytest.ini_options]
 python_files = ["test_*.py", "*_test.py", "testing/python/*.py"]
 
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+tag_format = "v$version"
+version_scheme = "semver"
+version_provider = "poetry"
+update_changelog_on_bump = true
+major_version_zero = true
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
