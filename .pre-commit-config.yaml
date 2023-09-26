@@ -30,3 +30,9 @@ repos:
   rev: v2.2.5
   hooks:
   - id: codespell
+- repo: https://github.com/commitizen-tools/commitizen
+  rev: 3.10.0
+  hooks:
+    - id: commitizen
+    - id: commitizen-branch
+      stages: [push]
