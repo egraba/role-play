@@ -2,7 +2,6 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.cache import cache
-from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
@@ -114,10 +113,10 @@ class QuestCreateView(UserPassesTestMixin, FormView, gmixins.EventContextMixin):
             f"game_{self.game.id}_events",
             {"type": "master.quest", "content": ""},
         )
-        send_mail(
+        tasks.send_email.delay(
             f"[{self.game}] The Master updated the quest.",
             f"The Master said:\n{quest.content}",
-            gutils.get_master_email(self.game.master.user.username),
+            self.game.master.user.email,
             gutils.get_players_emails(game=self.game),
         )
         return super().form_valid(form)
