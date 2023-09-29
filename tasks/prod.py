@@ -16,3 +16,9 @@ def deploy(c):
     c.run(
         "poetry run daphne role_play.asgi:application -b 0.0.0.0 -p $PORT --access-log -"
     )
+
+
+@task
+def run_worker(c):
+    """Run Celery worker"""
+    c.run("celery -A role_play worker -l INFO")
