@@ -8,6 +8,7 @@ from django.utils import timezone
 
 import character.models as cmodels
 import game.models as gmodels
+import game.tasks as tasks
 
 
 class GameEventsConsumer(JsonWebsocketConsumer):
@@ -38,8 +39,8 @@ class GameEventsConsumer(JsonWebsocketConsumer):
         match content["type"]:
             case "master.instruction":
                 message = "the Master said: "
-                gmodels.Instruction.objects.create(
-                    game=self.game,
+                tasks.store_master_instruction.delay(
+                    game_id=self.game.id,
                     date=date,
                     message=message,
                     content=content["content"],
