@@ -12,7 +12,7 @@ from django_fsm import TransitionNotAllowed
 import character.models as cmodels
 import game.forms as gforms
 import game.models as gmodels
-import game.tasks as gtasks
+import game.tasks as tasks
 import game.utils as gutils
 import game.views.mixins as gmixins
 
@@ -47,9 +47,9 @@ class CharacterInviteConfirmView(
         event.date = timezone.now()
         event.message = f"{character} was added to the game."
         event.save()
-        gtasks.send_email.delay(
-            f"The Master invited you to join. [{self.game}]",
-            f"{character}, the Master you to join. [{self.game}]",
+        tasks.send_email.delay(
+            f"The Master invited you to join [{self.game}].",
+            f"{character}, the Master invited you to join [{self.game}].",
             self.game.master.user.email,
             [character.user.email],
         )
