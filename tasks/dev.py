@@ -25,3 +25,9 @@ def build(c):
 def run(c):
     """Run the app"""
     c.run("python manage.py runserver")
+
+
+@task
+def run_worker(c):
+    """Run Celery worker"""
+    c.run("celery -A role_play worker -l INFO")
