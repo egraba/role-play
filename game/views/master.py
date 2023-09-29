@@ -47,10 +47,10 @@ class CharacterInviteConfirmView(
         event.message = f"{character} was added to the game."
         event.save()
         tasks.send_email.delay(
-            f"The Master invited you to join [{self.game}].",
-            f"{character}, the Master invited you to join [{self.game}].",
-            self.game.master.user.email,
-            [character.user.email],
+            subject=f"The Master invited you to join [{self.game}].",
+            message=f"{character}, the Master invited you to join [{self.game}].",
+            from_email=self.game.master.user.email,
+            recipient_list=[character.user.email],
         )
         return HttpResponseRedirect(reverse("game", args=(self.game.id,)))
 
@@ -114,10 +114,10 @@ class QuestCreateView(UserPassesTestMixin, FormView, gmixins.EventContextMixin):
             {"type": "master.quest", "content": ""},
         )
         tasks.send_email.delay(
-            f"[{self.game}] The Master updated the quest.",
-            f"The Master said:\n{quest.content}",
-            self.game.master.user.email,
-            gutils.get_players_emails(game=self.game),
+            subject=f"[{self.game}] The Master updated the quest.",
+            message=f"The Master said:\n{quest.content}",
+            from_email=self.game.master.user.email,
+            recipient_list=gutils.get_players_emails(game=self.game),
         )
         return super().form_valid(form)
 
