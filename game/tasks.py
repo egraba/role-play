@@ -1,6 +1,7 @@
 from celery import shared_task
 from django.core.mail import send_mail
 
+import character.models as cmodels
 import game.models as gmodels
 
 
@@ -17,4 +18,17 @@ def store_master_instruction(game_id, date, message, content):
         date=date,
         message=message,
         content=content,
+    )
+
+
+@shared_task
+def store_player_choice(game_id, date, message, character_id, selection):
+    game = gmodels.Game.objects.get(id=game_id)
+    character = cmodels.Character.objects.get(id=character_id)
+    gmodels.Choice.objects.create(
+        game=game,
+        date=date,
+        message=message,
+        character=character,
+        selection=selection,
     )

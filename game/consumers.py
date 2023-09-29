@@ -58,11 +58,11 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                     )
                     self.close()
                 message = f"[{ self.user }] said: "
-                gmodels.Choice.objects.create(
-                    game=self.game,
+                tasks.store_player_choice.delay(
+                    game_id=self.game.id,
                     date=date,
                     message=message,
-                    character=character,
+                    character_id=character.id,
                     selection=content["content"],
                 )
             case "player.dice.launch":
