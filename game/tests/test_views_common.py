@@ -8,7 +8,7 @@ from django.test import TestCase
 from django.urls import reverse
 from faker import Faker
 
-from character.models import Character
+from character.models.character import Character
 from game.models import Event, Game, Player, Quest
 from game.views.common import (
     GameCreateErrorView,
