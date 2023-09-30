@@ -74,13 +74,13 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                     )
                     self.close()
                 message = f"[{ self.user }] launched a dice: "
-                score = dice.roll("d20")
+                score = int(dice.roll("d20"))
                 content["content"] = score
-                gmodels.DiceLaunch.objects.create(
-                    game=self.game,
+                tasks.store_player_dice_launch.delay(
+                    game_id=self.game.id,
                     date=date,
                     message=message,
-                    character=character,
+                    character_id=character.id,
                     score=score,
                 )
         content.update({"date": date})

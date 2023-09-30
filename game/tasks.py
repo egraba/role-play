@@ -32,3 +32,16 @@ def store_player_choice(game_id, date, message, character_id, selection):
         character=character,
         selection=selection,
     )
+
+
+@shared_task
+def store_player_dice_launch(game_id, date, message, character_id, score):
+    game = gmodels.Game.objects.get(id=game_id)
+    character = cmodels.Character.objects.get(id=character_id)
+    gmodels.DiceLaunch.objects.create(
+        game=game,
+        date=date,
+        message=message,
+        character=character,
+        score=score,
+    )
