@@ -8,6 +8,7 @@ from django.utils import timezone
 
 import character.models as cmodels
 import game.models as gmodels
+import game.tasks as tasks
 
 
 class GameEventsConsumer(JsonWebsocketConsumer):
@@ -38,8 +39,8 @@ class GameEventsConsumer(JsonWebsocketConsumer):
         match content["type"]:
             case "master.instruction":
                 message = "the Master said: "
-                gmodels.Instruction.objects.create(
-                    game=self.game,
+                tasks.store_master_instruction.delay(
+                    game_id=self.game.id,
                     date=date,
                     message=message,
                     content=content["content"],
@@ -57,11 +58,11 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                     )
                     self.close()
                 message = f"[{ self.user }] said: "
-                gmodels.Choice.objects.create(
-                    game=self.game,
+                tasks.store_player_choice.delay(
+                    game_id=self.game.id,
                     date=date,
                     message=message,
-                    character=character,
+                    character_id=character.id,
                     selection=content["content"],
                 )
             case "player.dice.launch":
@@ -73,13 +74,13 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                     )
                     self.close()
                 message = f"[{ self.user }] launched a dice: "
-                score = dice.roll("d20")
+                score = int(dice.roll("d20"))
                 content["content"] = score
-                gmodels.DiceLaunch.objects.create(
-                    game=self.game,
+                tasks.store_player_dice_launch.delay(
+                    game_id=self.game.id,
                     date=date,
                     message=message,
-                    character=character,
+                    character_id=character.id,
                     score=score,
                 )
         content.update({"date": date})

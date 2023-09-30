@@ -66,6 +66,11 @@ CACHES = {
 }
 SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
 
+# Celery
+CELERY_BROKER_URL = os.environ["REDIS_URL"]
+CELERY_RESULT_BACKEND = os.environ["REDIS_URL"]
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+
 # Authentication
 LOGIN_REDIRECT_URL = "/game"
 LOGOUT_REDIRECT_URL = "/game"

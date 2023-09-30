@@ -21,6 +21,7 @@ packages = [{include = "role_play"}]
 [tool.poetry.dependencies]
 python = "^3.11"
 async-timeout = "*"
+celery = "*"
 channels = "*"
 channels-redis = "*"
 daphne = "*"
