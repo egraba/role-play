@@ -4,9 +4,9 @@ from django.urls import reverse
 from faker import Faker
 
 import character.abilities as abilities
-import character.forms as cforms
 import character.views as cviews
 import utils.testing.factories as utfactories
+from character.forms import CreateCharacterForm
 from character.models.character import Character
 from character.models.classes import Class
 from character.models.races import Ability, Language, Race
@@ -149,7 +149,7 @@ class CharacterCreateViewTest(TestCase):
             "charisma": abilities.scores[5][0],
             "gender": f"{gender}",
         }
-        form = cforms.CreateCharacterForm(data)
+        form = CreateCharacterForm(data)
         self.assertTrue(form.is_valid())
 
         response = self.client.post(
@@ -185,7 +185,7 @@ class CharacterCreateViewTest(TestCase):
             "charisma": abilities.scores[5][0],
             "gender": f"{gender}",
         }
-        form = cforms.CreateCharacterForm(data)
+        form = CreateCharacterForm(data)
         self.assertTrue(form.is_valid())
 
         response = self.client.post(
@@ -243,7 +243,7 @@ class CharacterCreateViewTest(TestCase):
             "charisma": abilities.scores[5][0],
             "gender": f"{gender}",
         }
-        form = cforms.CreateCharacterForm(data)
+        form = CreateCharacterForm(data)
         self.assertTrue(form.is_valid())
 
         response = self.client.post(
@@ -297,7 +297,7 @@ class CharacterCreateViewTest(TestCase):
             "charisma": abilities.scores[5][0],
             "gender": f"{gender}",
         }
-        form = cforms.CreateCharacterForm(data)
+        form = CreateCharacterForm(data)
         self.assertTrue(form.is_valid())
 
         response = self.client.post(
@@ -351,7 +351,7 @@ class CharacterCreateViewTest(TestCase):
             "charisma": abilities.scores[5][0],
             "gender": f"{gender}",
         }
-        form = cforms.CreateCharacterForm(data)
+        form = CreateCharacterForm(data)
         self.assertTrue(form.is_valid())
 
         response = self.client.post(
@@ -397,7 +397,7 @@ class CharacterCreateViewTest(TestCase):
             "charisma": abilities.scores[5][0],
             "gender": f"{gender}",
         }
-        form = cforms.CreateCharacterForm(data)
+        form = CreateCharacterForm(data)
         self.assertTrue(form.is_valid())
 
         response = self.client.post(
@@ -438,7 +438,7 @@ class CharacterCreateViewTest(TestCase):
             "charisma": abilities.scores[5][0],
             "gender": f"{gender}",
         }
-        form = cforms.CreateCharacterForm(data)
+        form = CreateCharacterForm(data)
         self.assertTrue(form.is_valid())
 
         response = self.client.post(
@@ -482,7 +482,7 @@ class CharacterCreateViewTest(TestCase):
             "charisma": abilities.scores[5][0],
             "gender": f"{gender}",
         }
-        form = cforms.CreateCharacterForm(data)
+        form = CreateCharacterForm(data)
         self.assertTrue(form.is_valid())
 
         response = self.client.post(
@@ -526,7 +526,7 @@ class CharacterCreateViewTest(TestCase):
             "charisma": abilities.scores[5][0],
             "gender": f"{gender}",
         }
-        form = cforms.CreateCharacterForm(data)
+        form = CreateCharacterForm(data)
         self.assertTrue(form.is_valid())
 
         response = self.client.post(

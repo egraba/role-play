@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import CreateView, DetailView, ListView
 
 import character.abilities as abilities
-import character.forms as cforms
+from character.forms import CreateCharacterForm
 from character.models.character import Character
 from character.models.classes import ClassAdvancement, ClassFeature, Proficiencies
 from character.models.races import AbilityScoreIncrease, RacialTrait
@@ -22,7 +22,7 @@ class CharacterListView(LoginRequiredMixin, ListView):
 
 class CharacterCreateView(LoginRequiredMixin, CreateView):
     model = Character
-    form_class = cforms.CreateCharacterForm
+    form_class = CreateCharacterForm
     template_name = "character/character_create.html"
 
     def get_success_url(self):
