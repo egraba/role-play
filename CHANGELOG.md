@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Added
+* Celery is now used as task queue system
 * DnD: implement races and their racial traits
 * DnD: implement basic rules
 * Game is more reactive, when players take actions
