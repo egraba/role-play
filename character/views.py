@@ -63,7 +63,7 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
         character.charisma_modifier = abilities.compute_modifier(character.charisma)
 
     def _apply_class_advancement(self, character, level):
-        class_advancement = cmodels.ClassAdvancement.objects.get(
+        class_advancement = ClassAdvancement.objects.get(
             class_name=character.class_name, level=1
         )
         character.proficiency_bonus += class_advancement.proficiency_bonus
