@@ -12,11 +12,16 @@ import game.forms as gforms
 import game.models as gmodels
 import game.tasks as tasks
 import game.utils as gutils
-import game.views.mixins as gmixins
 from character.models.character import Character
+from character.views.mixins import CharacterContextMixin
+from game.views.mixins import (
+    EventContextMixin,
+    GameContextMixin,
+    GameStatusControlMixin,
+)
 
 
-class CharacterInviteView(UserPassesTestMixin, ListView, gmixins.GameContextMixin):
+class CharacterInviteView(UserPassesTestMixin, ListView, GameContextMixin):
     model = Character
     paginate_by = 10
     ordering = ["-xp"]
@@ -29,9 +34,7 @@ class CharacterInviteView(UserPassesTestMixin, ListView, gmixins.GameContextMixi
         return super().get_queryset().filter(player__game=None)
 
 
-class CharacterInviteConfirmView(
-    UserPassesTestMixin, UpdateView, gmixins.GameContextMixin
-):
+class CharacterInviteConfirmView(UserPassesTestMixin, UpdateView, GameContextMixin):
     model = Character
     fields = []
     template_name = "game/character_invite_confirm.html"
@@ -55,7 +58,7 @@ class CharacterInviteConfirmView(
         return HttpResponseRedirect(reverse("game", args=(self.game.id,)))
 
 
-class GameStartView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
+class GameStartView(UserPassesTestMixin, GameStatusControlMixin):
     fields = []
     template_name = "game/game_start.html"
 
@@ -82,7 +85,7 @@ class GameStartView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
         return HttpResponseRedirect(game.get_absolute_url())
 
 
-class GameStartErrorView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
+class GameStartErrorView(UserPassesTestMixin, GameStatusControlMixin):
     fields = []
     template_name = "game/game_start_error.html"
 
@@ -90,7 +93,7 @@ class GameStartErrorView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
         return self.is_user_master()
 
 
-class QuestCreateView(UserPassesTestMixin, FormView, gmixins.EventContextMixin):
+class QuestCreateView(UserPassesTestMixin, FormView, EventContextMixin):
     model = gmodels.Quest
     fields = ["description"]
     template_name = "game/quest_create.html"
@@ -122,7 +125,7 @@ class QuestCreateView(UserPassesTestMixin, FormView, gmixins.EventContextMixin):
         return super().form_valid(form)
 
 
-class InstructionCreateView(UserPassesTestMixin, CreateView, gmixins.EventContextMixin):
+class InstructionCreateView(UserPassesTestMixin, CreateView, EventContextMixin):
     model = gmodels.Instruction
     fields = ["content"]
     template_name = "game/instruction_create.html"
@@ -144,8 +147,8 @@ class InstructionCreateView(UserPassesTestMixin, CreateView, gmixins.EventContex
 class XpIncreaseView(
     UserPassesTestMixin,
     FormView,
-    gmixins.EventContextMixin,
-    gmixins.CharacterContextMixin,
+    EventContextMixin,
+    CharacterContextMixin,
 ):
     model = gmodels.XpIncrease
     form_class = gforms.IncreaseXpForm
@@ -174,8 +177,8 @@ class XpIncreaseView(
 class DamageView(
     UserPassesTestMixin,
     FormView,
-    gmixins.EventContextMixin,
-    gmixins.CharacterContextMixin,
+    EventContextMixin,
+    CharacterContextMixin,
 ):
     model = gmodels.Damage
     form_class = gforms.DamageForm
@@ -212,8 +215,8 @@ class DamageView(
 class HealingView(
     UserPassesTestMixin,
     FormView,
-    gmixins.EventContextMixin,
-    gmixins.CharacterContextMixin,
+    EventContextMixin,
+    CharacterContextMixin,
 ):
     form_class = gforms.HealForm
     template_name = "game/heal.html"

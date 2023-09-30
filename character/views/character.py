@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse
 from django.views.generic import CreateView, DetailView, ListView
 
 import character.abilities as abilities
@@ -26,7 +27,7 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
     template_name = "character/character_create.html"
 
     def get_success_url(self):
-        return self.object.get_absolute_url()
+        return reverse("chose-equipment", args=(self.object.id,))
 
     def _apply_racial_traits(self, character, racial_trait):
         character.adult_age = racial_trait.adult_age
