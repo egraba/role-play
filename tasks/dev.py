@@ -12,7 +12,7 @@ def clean(c):
 @task
 def make_migrations(c):
     """Make Django migrations"""
-    c.run("python manage.py makemigrations")
+    c.run("python manage.py makemigrations", pty=True)
 
 
 @task(clean)
