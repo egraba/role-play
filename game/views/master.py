@@ -2,7 +2,6 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.cache import cache
-from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
@@ -12,6 +11,7 @@ from django_fsm import TransitionNotAllowed
 import character.models as cmodels
 import game.forms as gforms
 import game.models as gmodels
+import game.tasks as tasks
 import game.utils as gutils
 import game.views.mixins as gmixins
 
@@ -46,11 +46,11 @@ class CharacterInviteConfirmView(
         event.date = timezone.now()
         event.message = f"{character} was added to the game."
         event.save()
-        send_mail(
-            f"The Master invited you to join. [{self.game}]",
-            f"{character}, the Master you to join. [{self.game}]",
-            self.game.master.user.email,
-            [character.user.email],
+        tasks.send_email.delay(
+            subject=f"The Master invited you to join [{self.game}].",
+            message=f"{character}, the Master invited you to join [{self.game}].",
+            from_email=self.game.master.user.email,
+            recipient_list=[character.user.email],
         )
         return HttpResponseRedirect(reverse("game", args=(self.game.id,)))
 
@@ -113,11 +113,11 @@ class QuestCreateView(UserPassesTestMixin, FormView, gmixins.EventContextMixin):
             f"game_{self.game.id}_events",
             {"type": "master.quest", "content": ""},
         )
-        send_mail(
-            f"[{self.game}] The Master updated the quest.",
-            f"The Master said:\n{quest.content}",
-            gutils.get_master_email(self.game.master.user.username),
-            gutils.get_players_emails(game=self.game),
+        tasks.send_email.delay(
+            subject=f"[{self.game}] The Master updated the quest.",
+            message=f"The Master said:\n{quest.content}",
+            from_email=self.game.master.user.email,
+            recipient_list=gutils.get_players_emails(game=self.game),
         )
         return super().form_valid(form)
 
