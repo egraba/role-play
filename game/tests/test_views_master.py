@@ -10,11 +10,11 @@ from django.urls import reverse
 from django.utils import timezone
 from faker import Faker
 
-import character.models as cmodels
 import game.forms as gforms
 import game.models as gmodels
 import game.views.master as gvmaster
 import utils.testing.factories as utfactories
+from character.models.character import Character
 
 
 class CharacterInviteViewTest(TestCase):
@@ -81,14 +81,14 @@ class CharacterInviteViewTest(TestCase):
         self.assertRaises(Http404)
 
     def test_context_data(self):
-        character_list = cmodels.Character.objects.filter(player__game=None)
+        character_list = Character.objects.filter(player__game=None)
         response = self.client.get(reverse(self.path_name, args=(self.game.id,)))
         self.assertTrue(
             set(response.context["character_list"]).issubset(character_list)
         )
 
     def test_context_data_all_characters_already_assigned(self):
-        cmodels.Character.objects.filter(player=None).delete()
+        Character.objects.filter(player=None).delete()
         response = self.client.get(reverse(self.path_name, args=(self.game.id,)))
         self.assertFalse(response.context["character_list"])
 
@@ -105,7 +105,7 @@ class CharacterInviteConfirmViewTest(TestCase):
         self.user = User.objects.get(username="master")
         self.client.login(username=self.user.username, password="pwd")
         self.game = gmodels.Game.objects.last()
-        self.character = cmodels.Character.objects.get(player__game=self.game)
+        self.character = Character.objects.get(player__game=self.game)
 
     def test_view_mapping(self):
         response = self.client.get(
@@ -241,7 +241,7 @@ class QuestCreateViewTest(TestCase):
         self.user = User.objects.get(username="master")
         self.client.login(username=self.user.username, password="pwd")
         self.game = gmodels.Game.objects.last()
-        self.character = cmodels.Character.objects.last()
+        self.character = Character.objects.last()
 
     def tearDown(self):
         cache.clear()
@@ -310,7 +310,7 @@ class XpIncreaseViewTest(TestCase):
         self.user = User.objects.get(username="master")
         self.client.login(username=self.user.username, password="pwd")
         self.game = gmodels.Game.objects.last()
-        self.character = cmodels.Character.objects.last()
+        self.character = Character.objects.last()
 
     def tearDown(self):
         cache.clear()
@@ -452,7 +452,7 @@ class DamageViewTest(TestCase):
         self.user = User.objects.get(username="master")
         self.client.login(username=self.user.username, password="pwd")
         self.game = gmodels.Game.objects.last()
-        self.character = cmodels.Character.objects.last()
+        self.character = Character.objects.last()
 
     def tearDown(self):
         cache.clear()
@@ -610,7 +610,7 @@ class HealViewTest(TestCase):
         self.user = User.objects.get(username="master")
         self.client.login(username=self.user.username, password="pwd")
         self.game = gmodels.Game.objects.last()
-        self.character = cmodels.Character.objects.last()
+        self.character = Character.objects.last()
         # The character needs to have low HP, in order to be healed.
         self.character.hp = 1
         self.character.save()

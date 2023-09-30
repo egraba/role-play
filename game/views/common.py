@@ -5,10 +5,10 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views.generic import CreateView, ListView, TemplateView
 
-import character.models as cmodels
 import game.models as gmodels
 import game.views.mixins as gmixins
 import master.models as mmodels
+from character.models.character import Character
 
 
 class IndexView(TemplateView):
@@ -18,7 +18,7 @@ class IndexView(TemplateView):
         context = super().get_context_data(**kwargs)
         if self.request.user.is_authenticated:
             try:
-                context["user_character"] = cmodels.Character.objects.get(
+                context["user_character"] = Character.objects.get(
                     user=self.request.user
                 )
             except ObjectDoesNotExist:
@@ -53,7 +53,7 @@ class GameView(LoginRequiredMixin, ListView, gmixins.GameContextMixin):
         context["instruction"] = gmodels.Instruction.objects.filter(
             game=self.game.id
         ).last()
-        context["character_list"] = cmodels.Character.objects.filter(
+        context["character_list"] = Character.objects.filter(
             player__game=self.game.id
         ).order_by("name")
         try:

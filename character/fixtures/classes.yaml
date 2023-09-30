@@ -490,6 +490,10 @@
   pk: 1
   fields:
     class_name: C
+- model: character.hitpoints
+  pk: 1
+  fields:
+    class_feature: 1
     hit_dice: 1d8
     hp_first_level: 8
     hp_higher_levels: 5
@@ -506,6 +510,10 @@
   pk: 2
   fields:
     class_name: F
+- model: character.hitpoints
+  pk: 2
+  fields:
+    class_feature: 2
     hit_dice: 1d10
     hp_first_level: 10
     hp_higher_levels: 6
@@ -522,6 +530,10 @@
   pk: 3
   fields:
     class_name: R
+- model: character.hitpoints
+  pk: 3
+  fields:
+    class_feature: 3
     hit_dice: 1d8
     hp_first_level: 8
     hp_higher_levels: 5
@@ -538,6 +550,10 @@
   pk: 4
   fields:
     class_name: W
+- model: character.hitpoints
+  pk: 4
+  fields:
+    class_feature: 4
     hit_dice: 1d6
     hp_first_level: 6
     hp_higher_levels: 4
