@@ -430,6 +430,8 @@ class CharacterCreateViewTest(TestCase):
         self.assertEqual(character.proficiencies.tools, "None")
         self.assertEqual(character.proficiencies.saving_throws, "Wisdom, Charisma")
 
+        print(character.inventory)
+
     def test_character_creation_fighter(self):
         fake = Faker()
         name = fake.name()
