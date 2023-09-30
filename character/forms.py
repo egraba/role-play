@@ -1,7 +1,7 @@
 from django import forms
 
 import character.abilities as abilities
-from character.models import Character
+from character.models.character import Character
 
 
 class CreateCharacterForm(forms.ModelForm):

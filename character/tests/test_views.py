@@ -4,6 +4,9 @@ from django.urls import reverse
 from faker import Faker
 
 import character.abilities as abilities
+from character.models.character import Character
+from character.models.classes import Class
+from character.models.races import Ability, Language, Race
 from character.forms import CreateCharacterForm
 from character.models import Ability, Character, Class, Language, Race
 from character.views import CharacterCreateView, CharacterDetailView, CharacterListView
@@ -374,9 +377,9 @@ class CharacterCreateViewTest(TestCase):
     def test_character_creation_cleric(self):
         fake = Faker()
         name = fake.name()
-        race = fake.enum(enum_cls=cmodels.Race)
-        class_name = cmodels.Class.CLERIC
-        gender = fake.enum(enum_cls=cmodels.Character.Gender)
+        race = fake.enum(enum_cls=Race)
+        class_name = Class.CLERIC
+        gender = fake.enum(enum_cls=Character.Gender)
         data = {
             "name": f"{name}",
             "race": f"{race}",
@@ -390,7 +393,6 @@ class CharacterCreateViewTest(TestCase):
             "gender": f"{gender}",
         }
         form = cforms.CreateCharacterForm(data)
-        print(form.errors)
         self.assertTrue(form.is_valid())
 
         response = self.client.post(
@@ -398,7 +400,7 @@ class CharacterCreateViewTest(TestCase):
             data=form.cleaned_data,
         )
         self.assertEqual(response.status_code, 302)
-        character = cmodels.Character.objects.last()
+        character = Character.objects.last()
         self.assertRedirects(response, character.get_absolute_url())
 
         self.assertEqual(character.hit_dice, "1d8")
@@ -416,9 +418,9 @@ class CharacterCreateViewTest(TestCase):
     def test_character_creation_fighter(self):
         fake = Faker()
         name = fake.name()
-        race = fake.enum(enum_cls=cmodels.Race)
-        class_name = cmodels.Class.FIGHTER
-        gender = fake.enum(enum_cls=cmodels.Character.Gender)
+        race = fake.enum(enum_cls=Race)
+        class_name = Class.FIGHTER
+        gender = fake.enum(enum_cls=Character.Gender)
         data = {
             "name": f"{name}",
             "race": f"{race}",
@@ -432,7 +434,6 @@ class CharacterCreateViewTest(TestCase):
             "gender": f"{gender}",
         }
         form = cforms.CreateCharacterForm(data)
-        print(form.errors)
         self.assertTrue(form.is_valid())
 
         response = self.client.post(
@@ -440,7 +441,7 @@ class CharacterCreateViewTest(TestCase):
             data=form.cleaned_data,
         )
         self.assertEqual(response.status_code, 302)
-        character = cmodels.Character.objects.last()
+        character = Character.objects.last()
         self.assertRedirects(response, character.get_absolute_url())
 
         self.assertEqual(character.hit_dice, "1d10")
@@ -461,9 +462,9 @@ class CharacterCreateViewTest(TestCase):
     def test_character_creation_rogue(self):
         fake = Faker()
         name = fake.name()
-        race = fake.enum(enum_cls=cmodels.Race)
-        class_name = cmodels.Class.ROGUE
-        gender = fake.enum(enum_cls=cmodels.Character.Gender)
+        race = fake.enum(enum_cls=Race)
+        class_name = Class.ROGUE
+        gender = fake.enum(enum_cls=Character.Gender)
         data = {
             "name": f"{name}",
             "race": f"{race}",
@@ -477,7 +478,6 @@ class CharacterCreateViewTest(TestCase):
             "gender": f"{gender}",
         }
         form = cforms.CreateCharacterForm(data)
-        print(form.errors)
         self.assertTrue(form.is_valid())
 
         response = self.client.post(
@@ -485,7 +485,7 @@ class CharacterCreateViewTest(TestCase):
             data=form.cleaned_data,
         )
         self.assertEqual(response.status_code, 302)
-        character = cmodels.Character.objects.last()
+        character = Character.objects.last()
         self.assertRedirects(response, character.get_absolute_url())
 
         self.assertEqual(character.hit_dice, "1d8")
@@ -506,9 +506,9 @@ class CharacterCreateViewTest(TestCase):
     def test_character_creation_wizard(self):
         fake = Faker()
         name = fake.name()
-        race = fake.enum(enum_cls=cmodels.Race)
-        class_name = cmodels.Class.WIZARD
-        gender = fake.enum(enum_cls=cmodels.Character.Gender)
+        race = fake.enum(enum_cls=Race)
+        class_name = Class.WIZARD
+        gender = fake.enum(enum_cls=Character.Gender)
         data = {
             "name": f"{name}",
             "race": f"{race}",
@@ -522,7 +522,6 @@ class CharacterCreateViewTest(TestCase):
             "gender": f"{gender}",
         }
         form = cforms.CreateCharacterForm(data)
-        print(form.errors)
         self.assertTrue(form.is_valid())
 
         response = self.client.post(
@@ -530,7 +529,7 @@ class CharacterCreateViewTest(TestCase):
             data=form.cleaned_data,
         )
         self.assertEqual(response.status_code, 302)
-        character = cmodels.Character.objects.last()
+        character = Character.objects.last()
         self.assertRedirects(response, character.get_absolute_url())
 
         self.assertEqual(character.hit_dice, "1d6")

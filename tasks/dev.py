@@ -31,3 +31,9 @@ def run(c):
 def run_worker(c):
     """Run Celery worker"""
     c.run("celery -A role_play worker -l INFO", pty=True)
+
+
+@task
+def shell(c):
+    """Launch Django shell"""
+    c.run("python manage.py shell")

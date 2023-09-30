@@ -3,8 +3,8 @@ from django.db import models
 from django.test import TestCase
 from faker import Faker
 
+from character.models.character import Character
 from utils.dices import Dice
-from character.models import Character
 
 
 class CharacterModelTest(TestCase):

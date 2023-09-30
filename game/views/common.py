@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views.generic import CreateView, ListView, TemplateView
 
-from character.models import Character
+from character.models.character import Character
 from game.models import Event, Game, Instruction, Master, Player, Quest
 from game.views.mixins import GameContextMixin
 from master.models import Campaign

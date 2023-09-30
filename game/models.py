@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django_fsm import FSMField, transition
 
-from character.models import Character
+from character.models.character import Character
 from master.models import Campaign
 
 
