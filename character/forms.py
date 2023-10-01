@@ -71,7 +71,7 @@ class ChoseEquipmentForm(forms.Form):
     class Armor(models.TextChoices):
         SCALE_MAIL = "Scale mail"
         LEATHER_ARMOR = "Leather armor"
-        CHAIN_MAIL = "chain mail"
+        CHAIN_MAIL = "Chain mail"
 
     weapon = forms.ChoiceField(
         choices=Weapon.choices, widget=forms.Select(attrs={"class": "rpgui-dropdown"})
