@@ -11,7 +11,6 @@ class Equipment(models.Model):
     inventory = models.ForeignKey(
         Inventory, on_delete=models.SET_NULL, null=True, blank=True
     )
-    weight = models.SmallIntegerField()
 
     def __str__(self):
         return self.name

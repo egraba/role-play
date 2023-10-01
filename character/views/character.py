@@ -6,12 +6,18 @@ import character.abilities as abilities
 from character.forms import CreateCharacterForm
 from character.models.character import Character
 from character.models.classes import ClassAdvancement, ClassFeature, Proficiencies
+from character.models.equipment import Equipment, Inventory
 from character.models.races import AbilityScoreIncrease, RacialTrait
 
 
 class CharacterDetailView(LoginRequiredMixin, DetailView):
     model = Character
     template_name = "character/character.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["inventory"] = Equipment.objects.filter(inventory=self.object.inventory)
+        return context
 
 
 class CharacterListView(LoginRequiredMixin, ListView):
@@ -95,5 +101,8 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
         self._apply_class_features(character, class_feature)
 
         character.save()
+
+        # Inventory
+        Inventory.objects.create(character=character)
 
         return super().form_valid(form)
