@@ -54,28 +54,45 @@ class ChoseEquipmentView(LoginRequiredMixin, CharacterContextMixin, FormView):
             case Class.FIGHTER:
                 equipment["weapon_list"] = []
                 equipment["armor_list"] = []
+                equipment["pack_list"] = []
+                equipment["holy_symbol_list"] = []
             case Class.ROGUE:
                 equipment["weapon_list"] = []
                 equipment["armor_list"] = []
+                equipment["pack_list"] = []
+                equipment["holy_symbol_list"] = []
             case Class.WIZARD:
                 equipment["weapon_list"] = []
                 equipment["armor_list"] = []
+                equipment["pack_list"] = []
+                equipment["holy_symbol_list"] = []
         return equipment
 
     def form_valid(self, form):
         weapon_name = form.cleaned_data["weapon"]
         Equipment.objects.create(name=weapon_name, inventory=self.character.inventory)
+
         armor_name = form.cleaned_data["armor"]
         Equipment.objects.create(name=armor_name, inventory=self.character.inventory)
+
         pack_name = form.cleaned_data["pack"]
         Equipment.objects.create(name=pack_name, inventory=self.character.inventory)
+
         holy_symbol_name = form.cleaned_data["holy_symbol"]
         Equipment.objects.create(
             name=holy_symbol_name, inventory=self.character.inventory
         )
+
         # Some equipment is added without selection, depending on character's class.
         match self.character.class_name:
             case Class.CLERIC:
+                Equipment.objects.create(
+                    name=Weapon.Name.CROSSBOW_LIGHT, inventory=self.character.inventory
+                )
+                Equipment.objects.create(
+                    name=AdventuringGear.Name.CROSSBOW_BOLTS,
+                    inventory=self.character.inventory,
+                )
                 Equipment.objects.create(
                     name=Armor.Name.SHIELD, inventory=self.character.inventory
                 )
