@@ -3,7 +3,13 @@ from django.views.generic import FormView
 
 from character.forms import ChoseEquipmentForm
 from character.models.classes import Class
-from character.models.equipment import AdventuringGear, Armor, EquipmentPack, Weapon
+from character.models.equipment import (
+    AdventuringGear,
+    Armor,
+    Equipment,
+    EquipmentPack,
+    Weapon,
+)
 from character.views.mixins import CharacterContextMixin
 
 
@@ -58,7 +64,19 @@ class ChoseEquipmentView(LoginRequiredMixin, CharacterContextMixin, FormView):
 
     def form_valid(self, form):
         weapon_name = form.cleaned_data["weapon"]
-        Weapon.objects.create(name=weapon_name, inventory=self.character.inventory)
+        Equipment.objects.create(name=weapon_name, inventory=self.character.inventory)
         armor_name = form.cleaned_data["armor"]
-        Armor.objects.create(name=armor_name, inventory=self.character.inventory)
+        Equipment.objects.create(name=armor_name, inventory=self.character.inventory)
+        pack_name = form.cleaned_data["pack"]
+        Equipment.objects.create(name=pack_name, inventory=self.character.inventory)
+        holy_symbol_name = form.cleaned_data["holy_symbol"]
+        Equipment.objects.create(
+            name=holy_symbol_name, inventory=self.character.inventory
+        )
+        # Some equipment is added without selection, depending on character's class.
+        match self.character.class_name:
+            case Class.CLERIC:
+                Equipment.objects.create(
+                    name=Armor.Name.SHIELD, inventory=self.character.inventory
+                )
         return super().form_valid(form)
