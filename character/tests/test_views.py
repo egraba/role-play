@@ -4,12 +4,16 @@ from django.urls import reverse
 from faker import Faker
 
 import character.abilities as abilities
-import character.views as cviews
 import utils.testing.factories as utfactories
 from character.forms import CreateCharacterForm
 from character.models.character import Character
 from character.models.classes import Class
 from character.models.races import Ability, Language, Race
+from character.views.character import (
+    CharacterCreateView,
+    CharacterDetailView,
+    CharacterListView,
+)
 
 
 class CharacterDetailViewTest(TestCase):
@@ -25,9 +29,7 @@ class CharacterDetailViewTest(TestCase):
     def test_view_mapping(self):
         response = self.client.get(self.character.get_absolute_url())
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.resolver_match.func.view_class, cviews.CharacterDetailView
-        )
+        self.assertEqual(response.resolver_match.func.view_class, CharacterDetailView)
 
     def test_template_mapping(self):
         response = self.client.get(self.character.get_absolute_url())
@@ -58,9 +60,7 @@ class CharacterListViewTest(TestCase):
     def test_view_mapping(self):
         response = self.client.get(reverse(self.path_name))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.resolver_match.func.view_class, cviews.CharacterListView
-        )
+        self.assertEqual(response.resolver_match.func.view_class, CharacterListView)
 
     def test_template_mapping(self):
         response = self.client.get(reverse(self.path_name))
@@ -122,9 +122,7 @@ class CharacterCreateViewTest(TestCase):
     def test_view_mapping(self):
         response = self.client.get(reverse(self.path_name))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.resolver_match.func.view_class, cviews.CharacterCreateView
-        )
+        self.assertEqual(response.resolver_match.func.view_class, CharacterCreateView)
 
     def test_template_mapping(self):
         response = self.client.get(reverse(self.path_name))
@@ -158,7 +156,9 @@ class CharacterCreateViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         character = Character.objects.last()
-        self.assertRedirects(response, character.get_absolute_url())
+        self.assertRedirects(
+            response, reverse("choose-equipment", args=(character.id,))
+        )
 
         self.assertEqual(character.name, form.cleaned_data["name"])
         self.assertEqual(character.race, form.cleaned_data["race"])
@@ -194,7 +194,9 @@ class CharacterCreateViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         character = Character.objects.last()
-        self.assertRedirects(response, character.get_absolute_url())
+        self.assertRedirects(
+            response, reverse("choose-equipment", args=(character.id,))
+        )
 
         self.assertEqual(character.strength, abilities.scores[0][0])
         self.assertEqual(character.dexterity, abilities.scores[1][0])
@@ -252,7 +254,9 @@ class CharacterCreateViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         character = Character.objects.last()
-        self.assertRedirects(response, character.get_absolute_url())
+        self.assertRedirects(
+            response, reverse("choose-equipment", args=(character.id,))
+        )
 
         self.assertEqual(character.strength, abilities.scores[0][0])
         self.assertEqual(character.dexterity, abilities.scores[1][0] + 2)
@@ -306,7 +310,9 @@ class CharacterCreateViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         character = Character.objects.last()
-        self.assertRedirects(response, character.get_absolute_url())
+        self.assertRedirects(
+            response, reverse("choose-equipment", args=(character.id,))
+        )
 
         self.assertEqual(character.strength, abilities.scores[0][0])
         self.assertEqual(character.dexterity, abilities.scores[1][0] + 2)
@@ -360,7 +366,9 @@ class CharacterCreateViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         character = Character.objects.last()
-        self.assertRedirects(response, character.get_absolute_url())
+        self.assertRedirects(
+            response, reverse("choose-equipment", args=(character.id,))
+        )
 
         self.assertEqual(character.strength, abilities.scores[0][0] + 1)
         self.assertEqual(character.dexterity, abilities.scores[1][0] + 1)
@@ -406,7 +414,9 @@ class CharacterCreateViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         character = Character.objects.last()
-        self.assertRedirects(response, character.get_absolute_url())
+        self.assertRedirects(
+            response, reverse("choose-equipment", args=(character.id,))
+        )
 
         self.assertEqual(character.hit_dice, "1d8")
 
@@ -419,8 +429,6 @@ class CharacterCreateViewTest(TestCase):
         self.assertEqual(character.proficiencies.weapons, "Simple weapons")
         self.assertEqual(character.proficiencies.tools, "None")
         self.assertEqual(character.proficiencies.saving_throws, "Wisdom, Charisma")
-
-        print(character.inventory)
 
     def test_character_creation_fighter(self):
         fake = Faker()
@@ -449,7 +457,9 @@ class CharacterCreateViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         character = Character.objects.last()
-        self.assertRedirects(response, character.get_absolute_url())
+        self.assertRedirects(
+            response, reverse("choose-equipment", args=(character.id,))
+        )
 
         self.assertEqual(character.hit_dice, "1d10")
 
@@ -493,7 +503,9 @@ class CharacterCreateViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         character = Character.objects.last()
-        self.assertRedirects(response, character.get_absolute_url())
+        self.assertRedirects(
+            response, reverse("choose-equipment", args=(character.id,))
+        )
 
         self.assertEqual(character.hit_dice, "1d8")
 
@@ -537,7 +549,9 @@ class CharacterCreateViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         character = Character.objects.last()
-        self.assertRedirects(response, character.get_absolute_url())
+        self.assertRedirects(
+            response, reverse("choose-equipment", args=(character.id,))
+        )
 
         self.assertEqual(character.hit_dice, "1d6")
 

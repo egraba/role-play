@@ -1,5 +1,4 @@
 from django import forms
-from django.db import models
 
 import character.abilities as abilities
 from character.models.character import Character
@@ -64,18 +63,20 @@ class CreateCharacterForm(forms.ModelForm):
 
 
 class ChoseEquipmentForm(forms.Form):
-    class Weapon(models.TextChoices):
-        MACE = "Mace"
-        WARHAMMER = "warhammer"
-
-    class Armor(models.TextChoices):
-        SCALE_MAIL = "Scale mail"
-        LEATHER_ARMOR = "Leather armor"
-        CHAIN_MAIL = "Chain mail"
-
-    weapon = forms.ChoiceField(
-        choices=Weapon.choices, widget=forms.Select(attrs={"class": "rpgui-dropdown"})
-    )
-    armor = forms.ChoiceField(
-        choices=Armor.choices, widget=forms.Select(attrs={"class": "rpgui-dropdown"})
-    )
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        try:
+            weapon_list = self.initial["weapon_list"]
+            armor_list = self.initial["armor_list"]
+        except KeyError:
+            raise forms.ValidationError(
+                "An error occurred retrieving available equipment..."
+            )
+        self.fields["weapon"] = forms.ChoiceField(
+            choices=weapon_list,
+            widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
+        )
+        self.fields["armor"] = forms.ChoiceField(
+            choices=armor_list,
+            widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
+        )
