@@ -1,5 +1,4 @@
 from django import forms
-from django.db import models
 
 from character.models.character import Character
 from character.utils.abilities import AbilityScore
