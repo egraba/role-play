@@ -3,7 +3,7 @@ from django.views.generic import FormView
 
 from character.forms import ChoseEquipmentForm
 from character.models.classes import Class
-from character.models.equipment import Armor, EquipmentPack, Weapon
+from character.models.equipment import AdventuringGear, Armor, EquipmentPack, Weapon
 from character.views.mixins import CharacterContextMixin
 
 
@@ -37,6 +37,13 @@ class ChoseEquipmentView(LoginRequiredMixin, CharacterContextMixin, FormView):
                     for pack in EquipmentPack.Name.choices
                     if EquipmentPack.Name.PRIESTS_PACK in pack
                     or EquipmentPack.Name.EXPLORERS_PACK in pack
+                ]
+                equipment["holy_symbol_list"] = [
+                    holy_symbol
+                    for holy_symbol in AdventuringGear.Name.choices
+                    if AdventuringGear.Name.AMULET in holy_symbol
+                    or AdventuringGear.Name.EMBLEM in holy_symbol
+                    or AdventuringGear.Name.RELIQUARY in holy_symbol
                 ]
             case Class.FIGHTER:
                 equipment["weapon_list"] = []
