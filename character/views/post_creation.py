@@ -3,7 +3,7 @@ from django.views.generic import FormView
 
 from character.forms import ChoseEquipmentForm
 from character.models.classes import Class
-from character.models.equipment import Armor, Weapon
+from character.models.equipment import Armor, EquipmentPack, Weapon
 from character.views.mixins import CharacterContextMixin
 
 
@@ -31,6 +31,12 @@ class ChoseEquipmentView(LoginRequiredMixin, CharacterContextMixin, FormView):
                     if Armor.Name.SCALE_MAIL in armor
                     or Armor.Name.LEATHER in armor
                     or Armor.Name.CHAIN_MAIL in armor
+                ]
+                equipment["pack_list"] = [
+                    pack
+                    for pack in EquipmentPack.Name.choices
+                    if EquipmentPack.Name.PRIESTS_PACK in pack
+                    or EquipmentPack.Name.EXPLORERS_PACK in pack
                 ]
             case Class.FIGHTER:
                 equipment["weapon_list"] = []

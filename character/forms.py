@@ -68,6 +68,7 @@ class ChoseEquipmentForm(forms.Form):
         try:
             weapon_list = self.initial["weapon_list"]
             armor_list = self.initial["armor_list"]
+            pack_list = self.initial["pack_list"]
         except KeyError:
             raise forms.ValidationError(
                 "An error occurred retrieving available equipment..."
@@ -78,5 +79,9 @@ class ChoseEquipmentForm(forms.Form):
         )
         self.fields["armor"] = forms.ChoiceField(
             choices=armor_list,
+            widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
+        )
+        self.fields["pack"] = forms.ChoiceField(
+            choices=pack_list,
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
