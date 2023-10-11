@@ -98,7 +98,7 @@ class Armor(models.Model):
         return self.name
 
 
-class EquipmentPack(models.Model):
+class Pack(models.Model):
     class Name(models.TextChoices):
         BURGLARS_PACK = "Burglar's Pack"
         DIPLOMATS_PACK = "Diplomat's Pack"

@@ -3,7 +3,7 @@ from django.views.generic import FormView
 
 from character.forms import ChoseEquipmentForm
 from character.models.classes import Class
-from character.models.equipment import Armor, Equipment, EquipmentPack, Gear, Weapon
+from character.models.equipment import Armor, Equipment, Gear, Pack, Weapon
 from character.views.mixins import CharacterContextMixin
 
 
@@ -34,9 +34,9 @@ class ChoseEquipmentView(LoginRequiredMixin, CharacterContextMixin, FormView):
                 ]
                 equipment["pack_list"] = [
                     pack
-                    for pack in EquipmentPack.Name.choices
-                    if EquipmentPack.Name.PRIESTS_PACK in pack
-                    or EquipmentPack.Name.EXPLORERS_PACK in pack
+                    for pack in Pack.Name.choices
+                    if Pack.Name.PRIESTS_PACK in pack
+                    or Pack.Name.EXPLORERS_PACK in pack
                 ]
                 equipment["gear_list"] = [
                     gear
@@ -51,9 +51,9 @@ class ChoseEquipmentView(LoginRequiredMixin, CharacterContextMixin, FormView):
                 equipment["armor_list"] = []
                 equipment["pack_list"] = [
                     pack
-                    for pack in EquipmentPack.Name.choices
-                    if EquipmentPack.Name.DUNGEONEERS_PACK in pack
-                    or EquipmentPack.Name.EXPLORERS_PACK in pack
+                    for pack in Pack.Name.choices
+                    if Pack.Name.DUNGEONEERS_PACK in pack
+                    or Pack.Name.EXPLORERS_PACK in pack
                 ]
                 equipment["gear_list"] = []
 
@@ -66,9 +66,9 @@ class ChoseEquipmentView(LoginRequiredMixin, CharacterContextMixin, FormView):
                 equipment["armor_list"] = []
                 equipment["pack_list"] = [
                     pack
-                    for pack in EquipmentPack.Name.choices
-                    if EquipmentPack.Name.BURGLARS_PACK in pack
-                    or EquipmentPack.Name.DUNGEONEERS_PACK in pack
+                    for pack in Pack.Name.choices
+                    if Pack.Name.BURGLARS_PACK in pack
+                    or Pack.Name.DUNGEONEERS_PACK in pack
                 ]
                 equipment["gear_list"] = []
 
@@ -82,9 +82,9 @@ class ChoseEquipmentView(LoginRequiredMixin, CharacterContextMixin, FormView):
                 equipment["armor_list"] = []
                 equipment["pack_list"] = [
                     pack
-                    for pack in EquipmentPack.Name.choices
-                    if EquipmentPack.Name.SCHOLARS_PACK in pack
-                    or EquipmentPack.Name.EXPLORERS_PACK in pack
+                    for pack in Pack.Name.choices
+                    if Pack.Name.SCHOLARS_PACK in pack
+                    or Pack.Name.EXPLORERS_PACK in pack
                 ]
                 equipment["gear_list"] = [
                     gear

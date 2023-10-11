@@ -202,26 +202,26 @@
     name: Shield
     armor_type: SH
 
-# Equipment packs
-- model: character.equipmentpack
+# Packs
+- model: character.pack
   fields:
     name: Burglar's Pack
-- model: character.equipmentpack
+- model: character.pack
   fields:
     name: Diplomat's Pack
-- model: character.equipmentpack
+- model: character.pack
   fields:
     name: Dungeoneer's Pack
-- model: character.equipmentpack
+- model: character.pack
   fields:
     name: Entertainer's Pack
-- model: character.equipmentpack
+- model: character.pack
   fields:
     name: Explorer's Pack
-- model: character.equipmentpack
+- model: character.pack
   fields:
     name: Priest's Pack
-- model: character.equipmentpack
+- model: character.pack
   fields:
     name: Scholar's Pack
 
