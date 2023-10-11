@@ -114,7 +114,7 @@ class EquipmentPack(models.Model):
         return self.name
 
 
-class AdventuringGear(models.Model):
+class Gear(models.Model):
     class Name(models.TextChoices):
         ABACUS = "Abacus"
         ACID = "Acid"

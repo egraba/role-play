@@ -3,13 +3,7 @@ from django.views.generic import FormView
 
 from character.forms import ChoseEquipmentForm
 from character.models.classes import Class
-from character.models.equipment import (
-    AdventuringGear,
-    Armor,
-    Equipment,
-    EquipmentPack,
-    Weapon,
-)
+from character.models.equipment import Armor, Equipment, EquipmentPack, Gear, Weapon
 from character.views.mixins import CharacterContextMixin
 
 
@@ -46,10 +40,10 @@ class ChoseEquipmentView(LoginRequiredMixin, CharacterContextMixin, FormView):
                 ]
                 equipment["gear_list"] = [
                     gear
-                    for gear in AdventuringGear.Name.choices
-                    if AdventuringGear.Name.AMULET in gear
-                    or AdventuringGear.Name.EMBLEM in gear
-                    or AdventuringGear.Name.RELIQUARY in gear
+                    for gear in Gear.Name.choices
+                    if Gear.Name.AMULET in gear
+                    or Gear.Name.EMBLEM in gear
+                    or Gear.Name.RELIQUARY in gear
                 ]
 
             case Class.FIGHTER:
@@ -94,13 +88,13 @@ class ChoseEquipmentView(LoginRequiredMixin, CharacterContextMixin, FormView):
                 ]
                 equipment["gear_list"] = [
                     gear
-                    for gear in AdventuringGear.Name.choices
-                    if AdventuringGear.Name.COMPONENT_POUCH in gear
-                    or AdventuringGear.Name.CRYSTAL in gear
-                    or AdventuringGear.Name.ORB in gear
-                    or AdventuringGear.Name.ROD in gear
-                    or AdventuringGear.Name.STAFF in gear
-                    or AdventuringGear.Name.WAND in gear
+                    for gear in Gear.Name.choices
+                    if Gear.Name.COMPONENT_POUCH in gear
+                    or Gear.Name.CRYSTAL in gear
+                    or Gear.Name.ORB in gear
+                    or Gear.Name.ROD in gear
+                    or Gear.Name.STAFF in gear
+                    or Gear.Name.WAND in gear
                 ]
         return equipment
 
@@ -124,7 +118,7 @@ class ChoseEquipmentView(LoginRequiredMixin, CharacterContextMixin, FormView):
                     name=Weapon.Name.CROSSBOW_LIGHT, inventory=self.character.inventory
                 )
                 Equipment.objects.create(
-                    name=AdventuringGear.Name.CROSSBOW_BOLTS,
+                    name=Gear.Name.CROSSBOW_BOLTS,
                     inventory=self.character.inventory,
                 )
                 Equipment.objects.create(
@@ -136,7 +130,7 @@ class ChoseEquipmentView(LoginRequiredMixin, CharacterContextMixin, FormView):
                     name=Weapon.Name.SHORTBOW, inventory=self.character.inventory
                 )
                 Equipment.objects.create(
-                    name=AdventuringGear.Name.QUIVER, inventory=self.character.inventory
+                    name=Gear.Name.QUIVER, inventory=self.character.inventory
                 )
                 Equipment.objects.create(
                     name=Armor.Name.LEATHER, inventory=self.character.inventory
@@ -150,7 +144,7 @@ class ChoseEquipmentView(LoginRequiredMixin, CharacterContextMixin, FormView):
 
             case Class.WIZARD:
                 Equipment.objects.create(
-                    name=AdventuringGear.Name.SPELLBOOK,
+                    name=Gear.Name.SPELLBOOK,
                     inventory=self.character.inventory,
                 )
         return super().form_valid(form)

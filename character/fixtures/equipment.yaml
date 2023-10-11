@@ -225,308 +225,308 @@
   fields:
     name: Scholar's Pack
 
-# Adventuring Gear
-- model: character.adventuringgear
+# Gear
+- model: character.gear
   fields:
     name: Abacus
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Acid
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Alchemist's fire
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Arrows
     gear_type: AM
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Blowgun needles
     gear_type: AM
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Crossbow bolts
     gear_type: AM
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Sling bullets
     gear_type: AM
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Antitoxin
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Crystal
     gear_type: AF
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Orb
     gear_type: AF
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Rod
     gear_type: AF
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Staff
     gear_type: AF
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Wand
     gear_type: AF
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Backpack
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Ball bearings
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Basket
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Bedroll
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Bell
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Blanket
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Block and tackle
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Book
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Bottle, glass
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Caltrops
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Candle
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Case, crossbow bolt
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Case, map or scroll
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Chain
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Chalk
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Chest
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Climber's kit
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Clothes, common
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Clothes, costume
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Clothes, fine
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Clothes, traveler's
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Component pouch
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Crowbar
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Sprig of mistletoe
     gear_type: DF
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Totem
     gear_type: DF
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Wooden staff
     gear_type: DF
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Yew wand
     gear_type: DF
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Fishing tackle
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Flask or tankard
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Grappling hook
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Hammer
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Hammer, sledge
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Healer's kit
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Amulet
     gear_type: HS
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Emblem
     gear_type: HS
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Reliquary
     gear_type: HS
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Holy water
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Hourglass
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Hunting trap
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Ink
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Ink pen
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Jug or pitcher
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Ladder
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Lamp
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Lantern, bullseye
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Lantern, hooded
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Magnifying glass
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Manacles
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Mess kit
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Mirror, steel
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Oil
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Paper
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Parchment
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Perfume
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Pick, miner's
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Piton
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Poison, basic
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Pole
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Pot, iron
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Potion of healing
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Pouch
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Quiver
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Ram, portable
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Rations
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Robes
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Rope, hempen
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Rope, silk
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Sack
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Scale, merchant's
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Sealing wax
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Shovel
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Signal whistle
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Signet ring
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Soap
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Spellbook
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Spikes, iron
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Spyglass
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Tent, two-person
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Tinderbox
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Torch
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Vial
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Waterskin
-- model: character.adventuringgear
+- model: character.gear
   fields:
     name: Whetstone
