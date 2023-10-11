@@ -57,9 +57,18 @@ class ChoseEquipmentView(LoginRequiredMixin, CharacterContextMixin, FormView):
                 equipment["pack_list"] = []
                 equipment["holy_symbol_list"] = []
             case Class.ROGUE:
-                equipment["weapon_list"] = []
+                equipment["weapon_list"] = [
+                    weapon
+                    for weapon in Weapon.Name.choices
+                    if Weapon.Name.RAPIER in weapon or Weapon.Name.SHORTSWORD in weapon
+                ]
                 equipment["armor_list"] = []
-                equipment["pack_list"] = []
+                equipment["pack_list"] = [
+                    pack
+                    for pack in EquipmentPack.Name.choices
+                    if EquipmentPack.Name.BURGLARS_PACK in pack
+                    or EquipmentPack.Name.DUNGEONEERS_PACK in pack
+                ]
                 equipment["holy_symbol_list"] = []
             case Class.WIZARD:
                 equipment["weapon_list"] = []
@@ -95,5 +104,22 @@ class ChoseEquipmentView(LoginRequiredMixin, CharacterContextMixin, FormView):
                 )
                 Equipment.objects.create(
                     name=Armor.Name.SHIELD, inventory=self.character.inventory
+                )
+
+            case Class.ROGUE:
+                Equipment.objects.create(
+                    name=Weapon.Name.SHORTBOW, inventory=self.character.inventory
+                )
+                Equipment.objects.create(
+                    name=AdventuringGear.Name.QUIVER, inventory=self.character.inventory
+                )
+                Equipment.objects.create(
+                    name=Armor.Name.LEATHER, inventory=self.character.inventory
+                )
+                Equipment.objects.create(
+                    name=Weapon.Name.DAGGER, inventory=self.character.inventory
+                )
+                Equipment.objects.create(
+                    name=Weapon.Name.DAGGER, inventory=self.character.inventory
                 )
         return super().form_valid(form)
