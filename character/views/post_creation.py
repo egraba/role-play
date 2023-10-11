@@ -44,13 +44,14 @@ class ChoseEquipmentView(LoginRequiredMixin, CharacterContextMixin, FormView):
                     if EquipmentPack.Name.PRIESTS_PACK in pack
                     or EquipmentPack.Name.EXPLORERS_PACK in pack
                 ]
-                equipment["holy_symbol_list"] = [
-                    holy_symbol
-                    for holy_symbol in AdventuringGear.Name.choices
-                    if AdventuringGear.Name.AMULET in holy_symbol
-                    or AdventuringGear.Name.EMBLEM in holy_symbol
-                    or AdventuringGear.Name.RELIQUARY in holy_symbol
+                equipment["gear_list"] = [
+                    gear
+                    for gear in AdventuringGear.Name.choices
+                    if AdventuringGear.Name.AMULET in gear
+                    or AdventuringGear.Name.EMBLEM in gear
+                    or AdventuringGear.Name.RELIQUARY in gear
                 ]
+
             case Class.FIGHTER:
                 equipment["weapon_list"] = []
                 equipment["armor_list"] = []
@@ -60,7 +61,8 @@ class ChoseEquipmentView(LoginRequiredMixin, CharacterContextMixin, FormView):
                     if EquipmentPack.Name.DUNGEONEERS_PACK in pack
                     or EquipmentPack.Name.EXPLORERS_PACK in pack
                 ]
-                equipment["holy_symbol_list"] = []
+                equipment["gear_list"] = []
+
             case Class.ROGUE:
                 equipment["weapon_list"] = [
                     weapon
@@ -74,12 +76,32 @@ class ChoseEquipmentView(LoginRequiredMixin, CharacterContextMixin, FormView):
                     if EquipmentPack.Name.BURGLARS_PACK in pack
                     or EquipmentPack.Name.DUNGEONEERS_PACK in pack
                 ]
-                equipment["holy_symbol_list"] = []
+                equipment["gear_list"] = []
+
             case Class.WIZARD:
-                equipment["weapon_list"] = []
+                equipment["weapon_list"] = [
+                    weapon
+                    for weapon in Weapon.Name.choices
+                    if Weapon.Name.QUARTERSTAFF in weapon
+                    or Weapon.Name.DAGGER in weapon
+                ]
                 equipment["armor_list"] = []
-                equipment["pack_list"] = []
-                equipment["holy_symbol_list"] = []
+                equipment["pack_list"] = [
+                    pack
+                    for pack in EquipmentPack.Name.choices
+                    if EquipmentPack.Name.SCHOLARS_PACK in pack
+                    or EquipmentPack.Name.EXPLORERS_PACK in pack
+                ]
+                equipment["gear_list"] = [
+                    gear
+                    for gear in AdventuringGear.Name.choices
+                    if AdventuringGear.Name.COMPONENT_POUCH in gear
+                    or AdventuringGear.Name.CRYSTAL in gear
+                    or AdventuringGear.Name.ORB in gear
+                    or AdventuringGear.Name.ROD in gear
+                    or AdventuringGear.Name.STAFF in gear
+                    or AdventuringGear.Name.WAND in gear
+                ]
         return equipment
 
     def form_valid(self, form):
@@ -92,10 +114,8 @@ class ChoseEquipmentView(LoginRequiredMixin, CharacterContextMixin, FormView):
         pack_name = form.cleaned_data["pack"]
         Equipment.objects.create(name=pack_name, inventory=self.character.inventory)
 
-        holy_symbol_name = form.cleaned_data["holy_symbol"]
-        Equipment.objects.create(
-            name=holy_symbol_name, inventory=self.character.inventory
-        )
+        gear_name = form.cleaned_data["gear"]
+        Equipment.objects.create(name=gear_name, inventory=self.character.inventory)
 
         # Some equipment is added without selection, depending on character's class.
         match self.character.class_name:
@@ -126,5 +146,11 @@ class ChoseEquipmentView(LoginRequiredMixin, CharacterContextMixin, FormView):
                 )
                 Equipment.objects.create(
                     name=Weapon.Name.DAGGER, inventory=self.character.inventory
+                )
+
+            case Class.WIZARD:
+                Equipment.objects.create(
+                    name=AdventuringGear.Name.SPELLBOOK,
+                    inventory=self.character.inventory,
                 )
         return super().form_valid(form)
