@@ -54,7 +54,12 @@ class ChoseEquipmentView(LoginRequiredMixin, CharacterContextMixin, FormView):
             case Class.FIGHTER:
                 equipment["weapon_list"] = []
                 equipment["armor_list"] = []
-                equipment["pack_list"] = []
+                equipment["pack_list"] = [
+                    pack
+                    for pack in EquipmentPack.Name.choices
+                    if EquipmentPack.Name.DUNGEONEERS_PACK in pack
+                    or EquipmentPack.Name.EXPLORERS_PACK in pack
+                ]
                 equipment["holy_symbol_list"] = []
             case Class.ROGUE:
                 equipment["weapon_list"] = [
