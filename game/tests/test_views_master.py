@@ -14,7 +14,7 @@ import character.models as cmodels
 import game.forms as gforms
 import game.models as gmodels
 import game.views.master as gvmaster
-import utils.testing.factories as utfactories
+from utils.testing.factories import CharacterFactory, GameFactory, PlayerFactory
 
 
 class CharacterInviteViewTest(TestCase):
@@ -22,13 +22,13 @@ class CharacterInviteViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        game = utfactories.GameFactory(master__user__username="master")
+        game = GameFactory(master__user__username="master")
         number_of_characters_in_a_game = 5
         number_of_characters_not_in_a_game = 12
         for i in range(number_of_characters_in_a_game):
-            utfactories.PlayerFactory(game=game)
+            PlayerFactory(game=game)
         for i in range(number_of_characters_not_in_a_game):
-            utfactories.CharacterFactory()
+            CharacterFactory()
 
     def setUp(self):
         self.user = User.objects.get(username="master")
@@ -98,8 +98,8 @@ class CharacterInviteConfirmViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        game = utfactories.GameFactory(master__user__username="master")
-        utfactories.PlayerFactory(game=game)
+        game = GameFactory(master__user__username="master")
+        PlayerFactory(game=game)
 
     def setUp(self):
         self.user = User.objects.get(username="master")
@@ -150,7 +150,7 @@ class CharacterInviteConfirmViewTest(TestCase):
         self.assertRaises(Http404)
 
     def test_character_added_to_game(self):
-        character = utfactories.CharacterFactory()
+        character = CharacterFactory()
         response = self.client.post(
             reverse(
                 self.path_name,
@@ -174,7 +174,7 @@ class GameStartViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        utfactories.GameFactory(master__user__username="master")
+        GameFactory(master__user__username="master")
 
     def setUp(self):
         self.user = User.objects.get(username="master")
@@ -202,7 +202,7 @@ class GameStartViewTest(TestCase):
     def test_game_start_ok(self):
         number_of_players = 2
         for _ in range(number_of_players):
-            utfactories.PlayerFactory(game=self.game)
+            PlayerFactory(game=self.game)
         response = self.client.post(reverse(self.path_name, args=(self.game.id,)))
         self.assertEqual(response.status_code, 302)
         # Need to query the game again.
@@ -215,7 +215,7 @@ class GameStartViewTest(TestCase):
         self.assertEqual(event.message, "the game started.")
 
     def test_game_start_not_enough_characters(self):
-        utfactories.PlayerFactory(game=self.game)
+        PlayerFactory(game=self.game)
         response = self.client.post(reverse(self.path_name, args=(self.game.id,)))
         self.assertEqual(response.status_code, 302)
         self.assertRaises(PermissionDenied)
@@ -230,10 +230,10 @@ class QuestCreateViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        game = utfactories.GameFactory(master__user__username="master")
+        game = GameFactory(master__user__username="master")
         number_of_players = 3
         for _ in range(number_of_players):
-            utfactories.PlayerFactory(game=game)
+            PlayerFactory(game=game)
         game.start()
         game.save()
 
@@ -299,10 +299,10 @@ class XpIncreaseViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        game = utfactories.GameFactory(master__user__username="master")
+        game = GameFactory(master__user__username="master")
         number_of_players = 3
         for _ in range(number_of_players):
-            utfactories.PlayerFactory(game=game)
+            PlayerFactory(game=game)
         game.start()
         game.save()
 
@@ -441,10 +441,10 @@ class DamageViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        game = utfactories.GameFactory(master__user__username="master")
+        game = GameFactory(master__user__username="master")
         number_of_players = 3
         for _ in range(number_of_players):
-            utfactories.PlayerFactory(game=game)
+            PlayerFactory(game=game)
         game.start()
         game.save()
 
@@ -599,10 +599,10 @@ class HealViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        game = utfactories.GameFactory(master__user__username="master")
+        game = GameFactory(master__user__username="master")
         number_of_players = 3
         for _ in range(number_of_players):
-            utfactories.PlayerFactory(game=game)
+            PlayerFactory(game=game)
         game.start()
         game.save()
 

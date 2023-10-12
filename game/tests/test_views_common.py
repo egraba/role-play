@@ -11,7 +11,15 @@ from faker import Faker
 import character.models as cmodels
 import game.models as gmodels
 import game.views.common as gvcommon
-import utils.testing.factories as utfactories
+from utils.testing.factories import (
+    CampaignFactory,
+    CharacterFactory,
+    EventFactory,
+    GameFactory,
+    PlayerFactory,
+    QuestFactory,
+    UserFactory,
+)
 
 
 class IndexViewTest(TestCase):
@@ -38,7 +46,7 @@ class IndexViewTest(TestCase):
         self.assertNotContains(response, "View your character")
 
     def test_content_logged_user_no_character(self):
-        user = utfactories.UserFactory()
+        user = UserFactory()
         self.client.login(username=user.username, password="pwd")
 
         response = self.client.get(reverse(self.path_name))
@@ -53,7 +61,7 @@ class IndexViewTest(TestCase):
             response.context["user_character"]
 
     def test_content_logged_user_existing_character(self):
-        character = utfactories.CharacterFactory()
+        character = CharacterFactory()
         self.client.login(username=character.user.username, password="pwd")
 
         response = self.client.get(reverse(self.path_name))
@@ -74,7 +82,7 @@ class GameListViewTest(TestCase):
     def setUpTestData(cls):
         number_of_games = 22
         for _ in range(number_of_games):
-            utfactories.GameFactory(
+            GameFactory(
                 start_date=datetime.now(tz=timezone.utc),
                 master__user__username="master-game-list-view",
             )
@@ -138,16 +146,16 @@ class GameListViewTest(TestCase):
 class GameViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        game = utfactories.GameFactory(master__user__username="master-game-view")
+        game = GameFactory(master__user__username="master-game-view")
         number_of_events = 10
         for _ in range(number_of_events):
-            utfactories.EventFactory(game=game)
+            EventFactory(game=game)
         number_of_quests = 3
         for _ in range(number_of_quests):
-            utfactories.QuestFactory(game=game)
+            QuestFactory(game=game)
         number_of_players = 8
         for _ in range(number_of_players):
-            utfactories.PlayerFactory(game=game)
+            PlayerFactory(game=game)
 
     def setUp(self):
         self.user = User.objects.get(username="master-game-view")
@@ -273,9 +281,9 @@ class GameCreateViewTest(TestCase):
     path_name = "game-create"
 
     def setUp(self):
-        self.user = utfactories.UserFactory(username="game-create")
+        self.user = UserFactory(username="game-create")
         self.client.login(username=self.user.username, password="pwd")
-        self.campaign = utfactories.CampaignFactory()
+        self.campaign = CampaignFactory()
 
     def test_view_mapping(self):
         response = self.client.get(reverse(self.path_name, args=(self.campaign.slug,)))
@@ -316,7 +324,7 @@ class GameCreateErrorViewTest(TestCase):
     fake_slug = fake.slug()
 
     def setUp(self):
-        self.user = utfactories.UserFactory(username="game-create-error")
+        self.user = UserFactory(username="game-create-error")
         self.client.login(username=self.user.username, password="pwd")
 
     def test_view_mapping(self):

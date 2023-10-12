@@ -3,7 +3,6 @@ from django.test import TestCase
 from django.urls import reverse
 from faker import Faker
 
-import utils.testing.factories as utfactories
 from master.forms import CampaignCreateForm, CampaignUpdateForm
 from master.models import Campaign
 from master.views import (
@@ -12,13 +11,14 @@ from master.views import (
     CampaignListView,
     CampaignUpdateView,
 )
+from utils.testing.factories import CampaignFactory, UserFactory
 
 
 class CampaignDetailViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        utfactories.UserFactory()
-        utfactories.CampaignFactory()
+        UserFactory()
+        CampaignFactory()
 
     def setUp(self):
         self.user = User.objects.last()
@@ -40,10 +40,10 @@ class CampaignListViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        utfactories.UserFactory()
+        UserFactory()
         number_of_stories = 22
         for i in range(number_of_stories):
-            utfactories.CampaignFactory()
+            CampaignFactory()
 
     def setUp(self):
         self.user = User.objects.last()
@@ -93,8 +93,8 @@ class CampaignCreateViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        utfactories.UserFactory()
-        utfactories.CampaignFactory()
+        UserFactory()
+        CampaignFactory()
 
     def setUp(self):
         self.user = User.objects.last()
@@ -141,8 +141,8 @@ class CampaignUpdateViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        utfactories.UserFactory()
-        utfactories.CampaignFactory()
+        UserFactory()
+        CampaignFactory()
 
     def setUp(self):
         self.user = User.objects.last()

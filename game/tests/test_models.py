@@ -6,13 +6,18 @@ from django.utils import timezone
 from faker import Faker
 
 import game.models as gmodels
-import utils.testing.factories as utfactories
+from utils.testing.factories import (
+    EventFactory,
+    GameFactory,
+    PlayerFactory,
+    QuestFactory,
+)
 
 
 class GameModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        utfactories.GameFactory()
+        GameFactory()
 
     def setUp(self):
         self.game = gmodels.Game.objects.last()
@@ -48,7 +53,7 @@ class GameModelTest(TestCase):
         # Ongoing
         number_of_players = 5
         for _ in range(number_of_players):
-            utfactories.PlayerFactory(game=self.game)
+            PlayerFactory(game=self.game)
         self.game.start()
         self.game.save()
         self.assertFalse(self.game.is_under_preparation())
@@ -58,7 +63,7 @@ class GameModelTest(TestCase):
 class MasterModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        utfactories.GameFactory()
+        GameFactory()
 
     def setUp(self):
         self.master = gmodels.Master.objects.last()
@@ -78,8 +83,8 @@ class MasterModelTest(TestCase):
 class PlayerModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        game = utfactories.GameFactory()
-        utfactories.PlayerFactory(game=game)
+        game = GameFactory()
+        PlayerFactory(game=game)
 
     def setUp(self):
         self.player = gmodels.Player.objects.last()
@@ -99,8 +104,8 @@ class PlayerModelTest(TestCase):
 class EventModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        game = utfactories.GameFactory()
-        utfactories.EventFactory(game=game)
+        game = GameFactory()
+        EventFactory(game=game)
 
     def setUp(self):
         self.event = gmodels.Event.objects.last()
@@ -131,8 +136,8 @@ class EventModelTest(TestCase):
 class QuestModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        game = utfactories.GameFactory()
-        utfactories.QuestFactory(game=game)
+        game = GameFactory()
+        QuestFactory(game=game)
 
     def setUp(self):
         self.quest = gmodels.Quest.objects.last()
@@ -152,8 +157,8 @@ class QuestModelTest(TestCase):
 class XpIncreaseModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        game = utfactories.GameFactory()
-        player = utfactories.PlayerFactory(game=game)
+        game = GameFactory()
+        player = PlayerFactory(game=game)
         gmodels.XpIncrease.objects.create(
             game=game, character=player.character, xp=random.randint(1, 20)
         )
@@ -172,8 +177,8 @@ class XpIncreaseModelTest(TestCase):
 class DamageModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        game = utfactories.GameFactory()
-        player = utfactories.PlayerFactory(game=game)
+        game = GameFactory()
+        player = PlayerFactory(game=game)
         gmodels.Damage.objects.create(
             game=game, character=player.character, hp=random.randint(1, 20)
         )
@@ -192,8 +197,8 @@ class DamageModelTest(TestCase):
 class HealingModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        game = utfactories.GameFactory()
-        player = utfactories.PlayerFactory(game=game)
+        game = GameFactory()
+        player = PlayerFactory(game=game)
         gmodels.Healing.objects.create(
             game=game, character=player.character, hp=random.randint(1, 20)
         )
@@ -212,8 +217,8 @@ class HealingModelTest(TestCase):
 class DiceLaunchModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        game = utfactories.GameFactory()
-        player = utfactories.PlayerFactory(game=game)
+        game = GameFactory()
+        player = PlayerFactory(game=game)
         gmodels.DiceLaunch.objects.create(
             game=game, character=player.character, score=random.randint(1, 20)
         )
@@ -236,8 +241,8 @@ class DiceLaunchModelTest(TestCase):
 class ChoiceModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        game = utfactories.GameFactory()
-        player = utfactories.PlayerFactory(game=game)
+        game = GameFactory()
+        player = PlayerFactory(game=game)
         fake = Faker()
         gmodels.Choice.objects.create(
             game=game,
