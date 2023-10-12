@@ -8,7 +8,7 @@ from django.views.generic import CreateView, ListView, TemplateView
 import character.models as cmodels
 import game.models as gmodels
 import game.views.mixins as gmixins
-import master.models as mmodels
+from master.models import Campaign
 
 
 class IndexView(TemplateView):
@@ -76,7 +76,7 @@ class GameCreateView(LoginRequiredMixin, CreateView):
     def post(self, request, *args, **kwargs):
         campaign_slug = self.kwargs["campaign_slug"]
         try:
-            campaign = mmodels.Campaign.objects.get(slug=campaign_slug)
+            campaign = Campaign.objects.get(slug=campaign_slug)
         except ObjectDoesNotExist:
             return HttpResponseRedirect(
                 reverse("game-create-error", args=(campaign_slug,))

@@ -3,10 +3,15 @@ from django.test import TestCase
 from django.urls import reverse
 from faker import Faker
 
-import master.forms as mforms
-import master.models as mmodels
-import master.views as mviews
 import utils.testing.factories as utfactories
+from master.forms import CampaignCreateForm, CampaignUpdateForm
+from master.models import Campaign
+from master.views import (
+    CampaignCreateView,
+    CampaignDetailView,
+    CampaignListView,
+    CampaignUpdateView,
+)
 
 
 class CampaignDetailViewTest(TestCase):
@@ -20,14 +25,12 @@ class CampaignDetailViewTest(TestCase):
         self.client.login(username=self.user.username, password="pwd")
 
     def test_view_mapping(self):
-        campaign = mmodels.Campaign.objects.last()
+        campaign = Campaign.objects.last()
         response = self.client.get(campaign.get_absolute_url())
-        self.assertEqual(
-            response.resolver_match.func.view_class, mviews.CampaignDetailView
-        )
+        self.assertEqual(response.resolver_match.func.view_class, CampaignDetailView)
 
     def test_template_mapping(self):
-        campaign = mmodels.Campaign.objects.last()
+        campaign = Campaign.objects.last()
         response = self.client.get(campaign.get_absolute_url())
         self.assertTemplateUsed(response, "master/campaign.html")
 
@@ -48,9 +51,7 @@ class CampaignListViewTest(TestCase):
 
     def test_view_mapping(self):
         response = self.client.get(reverse(self.path_name))
-        self.assertEqual(
-            response.resolver_match.func.view_class, mviews.CampaignListView
-        )
+        self.assertEqual(response.resolver_match.func.view_class, CampaignListView)
 
     def test_template_mapping(self):
         response = self.client.get(reverse(self.path_name))
@@ -82,7 +83,7 @@ class CampaignListViewTest(TestCase):
                 title = campaign.title.upper()
 
     def test_content_no_campaign(self):
-        mmodels.Campaign.objects.all().delete()
+        Campaign.objects.all().delete()
         response = self.client.get(reverse(self.path_name))
         self.assertContains(response, "There is no campaign available...")
 
@@ -101,9 +102,7 @@ class CampaignCreateViewTest(TestCase):
 
     def test_view_mapping(self):
         response = self.client.get(reverse(self.path_name))
-        self.assertEqual(
-            response.resolver_match.func.view_class, mviews.CampaignCreateView
-        )
+        self.assertEqual(response.resolver_match.func.view_class, CampaignCreateView)
 
     def test_template_mapping(self):
         response = self.client.get(reverse(self.path_name))
@@ -121,7 +120,7 @@ class CampaignCreateViewTest(TestCase):
             "main_conflict": f"{main_conflict}",
             "objective": f"{objective}",
         }
-        form = mforms.CampaignCreateForm(data)
+        form = CampaignCreateForm(data)
         self.assertTrue(form.is_valid())
 
         response = self.client.post(
@@ -129,7 +128,7 @@ class CampaignCreateViewTest(TestCase):
             data=form.cleaned_data,
         )
         self.assertEqual(response.status_code, 302)
-        campaign = mmodels.Campaign.objects.last()
+        campaign = Campaign.objects.last()
         self.assertRedirects(response, campaign.get_absolute_url())
         self.assertEqual(campaign.title, form.cleaned_data["title"])
         self.assertEqual(campaign.synopsis, form.cleaned_data["synopsis"])
@@ -150,14 +149,12 @@ class CampaignUpdateViewTest(TestCase):
         self.client.login(username=self.user.username, password="pwd")
 
     def test_view_mapping(self):
-        campaign = mmodels.Campaign.objects.last()
+        campaign = Campaign.objects.last()
         response = self.client.get(reverse(self.path_name, args=(campaign.slug,)))
-        self.assertEqual(
-            response.resolver_match.func.view_class, mviews.CampaignUpdateView
-        )
+        self.assertEqual(response.resolver_match.func.view_class, CampaignUpdateView)
 
     def test_template_mapping(self):
-        campaign = mmodels.Campaign.objects.last()
+        campaign = Campaign.objects.last()
         response = self.client.get(reverse(self.path_name, args=(campaign.slug,)))
         self.assertTemplateUsed(response, "master/campaign_update.html")
 
@@ -171,17 +168,17 @@ class CampaignUpdateViewTest(TestCase):
             "main_conflict": f"{main_conflict}",
             "objective": f"{objective}",
         }
-        form = mforms.CampaignUpdateForm(data)
+        form = CampaignUpdateForm(data)
         self.assertTrue(form.is_valid())
 
-        campaign = mmodels.Campaign.objects.last()
+        campaign = Campaign.objects.last()
         response = self.client.post(
             reverse(self.path_name, args=(campaign.slug,)),
             data=form.cleaned_data,
         )
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, campaign.get_absolute_url())
-        campaign = mmodels.Campaign.objects.last()
+        campaign = Campaign.objects.last()
         self.assertEqual(campaign.synopsis, form.cleaned_data["synopsis"])
         self.assertEqual(campaign.main_conflict, form.cleaned_data["main_conflict"])
         self.assertEqual(campaign.objective, form.cleaned_data["objective"])

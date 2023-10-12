@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 import character.models as cmodels
 import game.models as gmodels
-import master.models as mmodels
+from master.models import Campaign
 
 
 class UserFactory(factory.django.DjangoModelFactory):
@@ -26,7 +26,7 @@ class MasterFactory(factory.django.DjangoModelFactory):
 
 class CampaignFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = mmodels.Campaign
+        model = Campaign
         django_get_or_create = ("title",)
 
     title = factory.Sequence(lambda n: f"campaign{n}")
