@@ -3,7 +3,7 @@ import factory
 from django.contrib.auth.models import User
 
 import character.models as cmodels
-import game.models as gmodels
+from game.models import DiceLaunch, Event, Game, Master, Player, Quest
 from master.models import Campaign
 
 
@@ -19,7 +19,7 @@ class UserFactory(factory.django.DjangoModelFactory):
 
 class MasterFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = gmodels.Master
+        model = Master
 
     user = factory.SubFactory(UserFactory)
 
@@ -35,7 +35,7 @@ class CampaignFactory(factory.django.DjangoModelFactory):
 
 class QuestFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = gmodels.Quest
+        model = Quest
 
     message = "The Master created the campaign."
     content = factory.Faker("paragraph", nb_sentences=10)
@@ -43,7 +43,7 @@ class QuestFactory(factory.django.DjangoModelFactory):
 
 class GameFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = gmodels.Game
+        model = Game
 
     name = factory.Sequence(lambda n: f"game{n}")
     campaign = factory.SubFactory(CampaignFactory)
@@ -53,14 +53,14 @@ class GameFactory(factory.django.DjangoModelFactory):
 
 class EventFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = gmodels.Event
+        model = Event
 
     message = factory.Faker("text", max_nb_chars=50)
 
 
 class DiceLaunchFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = gmodels.DiceLaunch
+        model = DiceLaunch
 
     score = dice.roll("d20")
 
@@ -79,6 +79,6 @@ class CharacterFactory(factory.django.DjangoModelFactory):
 
 class PlayerFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = gmodels.Player
+        model = Player
 
     character = factory.SubFactory(CharacterFactory)

@@ -1,7 +1,7 @@
 from django.test import TestCase
 from faker import Faker
 
-import game.utils as gutils
+from game.utils import get_players_emails
 from utils.testing.factories import GameFactory, PlayerFactory
 
 
@@ -14,7 +14,7 @@ class GetPlayersEmailsTest(TestCase):
             email = fake.email()
             emails.add(email)
             PlayerFactory(game=game, character__user__email=email)
-        self.assertEqual(gutils.get_players_emails(game), list(emails))
+        self.assertEqual(get_players_emails(game), list(emails))
 
     def test_same_emails(self):
         fake = Faker()
@@ -24,4 +24,4 @@ class GetPlayersEmailsTest(TestCase):
         emails.add(email)
         for i in range(5):
             PlayerFactory(game=game, character__user__email=email)
-        self.assertEqual(gutils.get_players_emails(game), list(emails))
+        self.assertEqual(get_players_emails(game), list(emails))

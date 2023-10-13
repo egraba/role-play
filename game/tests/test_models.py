@@ -5,7 +5,18 @@ from django.test import TestCase
 from django.utils import timezone
 from faker import Faker
 
-import game.models as gmodels
+from game.models import (
+    Choice,
+    Damage,
+    DiceLaunch,
+    Event,
+    Game,
+    Healing,
+    Master,
+    Player,
+    Quest,
+    XpIncrease,
+)
 from utils.testing.factories import (
     EventFactory,
     GameFactory,
@@ -20,7 +31,7 @@ class GameModelTest(TestCase):
         GameFactory()
 
     def setUp(self):
-        self.game = gmodels.Game.objects.last()
+        self.game = Game.objects.last()
 
     def test_name_type(self):
         name = self.game._meta.get_field("name")
@@ -66,7 +77,7 @@ class MasterModelTest(TestCase):
         GameFactory()
 
     def setUp(self):
-        self.master = gmodels.Master.objects.last()
+        self.master = Master.objects.last()
 
     def test_user_type(self):
         user = self.master._meta.get_field("user")
@@ -87,7 +98,7 @@ class PlayerModelTest(TestCase):
         PlayerFactory(game=game)
 
     def setUp(self):
-        self.player = gmodels.Player.objects.last()
+        self.player = Player.objects.last()
 
     def test_character_type(self):
         character = self.player._meta.get_field("character")
@@ -108,7 +119,7 @@ class EventModelTest(TestCase):
         EventFactory(game=game)
 
     def setUp(self):
-        self.event = gmodels.Event.objects.last()
+        self.event = Event.objects.last()
 
     def test_game_type(self):
         game = self.event._meta.get_field("game")
@@ -140,7 +151,7 @@ class QuestModelTest(TestCase):
         QuestFactory(game=game)
 
     def setUp(self):
-        self.quest = gmodels.Quest.objects.last()
+        self.quest = Quest.objects.last()
 
     def test_content_type(self):
         content = self.quest._meta.get_field("content")
@@ -159,12 +170,12 @@ class XpIncreaseModelTest(TestCase):
     def setUpTestData(cls):
         game = GameFactory()
         player = PlayerFactory(game=game)
-        gmodels.XpIncrease.objects.create(
+        XpIncrease.objects.create(
             game=game, character=player.character, xp=random.randint(1, 20)
         )
 
     def setUp(self):
-        self.xp_increase = gmodels.XpIncrease.objects.last()
+        self.xp_increase = XpIncrease.objects.last()
 
     def test_hp_type(self):
         xp = self.xp_increase._meta.get_field("xp")
@@ -179,12 +190,12 @@ class DamageModelTest(TestCase):
     def setUpTestData(cls):
         game = GameFactory()
         player = PlayerFactory(game=game)
-        gmodels.Damage.objects.create(
+        Damage.objects.create(
             game=game, character=player.character, hp=random.randint(1, 20)
         )
 
     def setUp(self):
-        self.damage = gmodels.Damage.objects.last()
+        self.damage = Damage.objects.last()
 
     def test_hp_type(self):
         hp = self.damage._meta.get_field("hp")
@@ -199,12 +210,12 @@ class HealingModelTest(TestCase):
     def setUpTestData(cls):
         game = GameFactory()
         player = PlayerFactory(game=game)
-        gmodels.Healing.objects.create(
+        Healing.objects.create(
             game=game, character=player.character, hp=random.randint(1, 20)
         )
 
     def setUp(self):
-        self.healing = gmodels.Healing.objects.last()
+        self.healing = Healing.objects.last()
 
     def test_hp_type(self):
         hp = self.healing._meta.get_field("hp")
@@ -219,12 +230,12 @@ class DiceLaunchModelTest(TestCase):
     def setUpTestData(cls):
         game = GameFactory()
         player = PlayerFactory(game=game)
-        gmodels.DiceLaunch.objects.create(
+        DiceLaunch.objects.create(
             game=game, character=player.character, score=random.randint(1, 20)
         )
 
     def setUp(self):
-        self.dice_launch = gmodels.DiceLaunch.objects.last()
+        self.dice_launch = DiceLaunch.objects.last()
 
     def test_character_type(self):
         character = self.dice_launch._meta.get_field("character")
@@ -244,14 +255,14 @@ class ChoiceModelTest(TestCase):
         game = GameFactory()
         player = PlayerFactory(game=game)
         fake = Faker()
-        gmodels.Choice.objects.create(
+        Choice.objects.create(
             game=game,
             character=player.character,
             selection=fake.text(max_nb_chars=50),
         )
 
     def setUp(self):
-        self.choice = gmodels.Choice.objects.last()
+        self.choice = Choice.objects.last()
 
     def test_character_type(self):
         character = self.choice._meta.get_field("character")

@@ -6,7 +6,7 @@ from django.views.generic.edit import FormMixin
 from django.views.generic.list import ContextMixin
 
 import character.models as cmodels
-import game.models as gmodels
+from game.models import Game
 
 
 class GameContextMixin(ContextMixin, View):
@@ -26,7 +26,7 @@ class GameContextMixin(ContextMixin, View):
         try:
             self.game = cache.get(f"game{game_id}")
             if not self.game:
-                self.game = gmodels.Game.objects.get(id=game_id)
+                self.game = Game.objects.get(id=game_id)
                 cache.set(f"game{game_id}", self.game)
         except ObjectDoesNotExist:
             raise Http404(f"Game [{game_id}] does not exist...")
@@ -40,7 +40,7 @@ class GameContextMixin(ContextMixin, View):
 
 
 class GameStatusControlMixin(UpdateView):
-    model = gmodels.Game
+    model = Game
 
     def is_user_master(self):
         return self.request.user == self.get_object().master.user

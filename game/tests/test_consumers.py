@@ -6,8 +6,8 @@ from django.contrib.auth.models import User
 from django.test import TransactionTestCase
 from django.urls import re_path
 
-import game.models as gmodels
 from game.consumers import GameEventsConsumer
+from game.models import DiceLaunch
 from utils.testing.factories import CharacterFactory, GameFactory
 
 
@@ -128,8 +128,8 @@ class GameEventsConsumerTest(TransactionTestCase):
         await communicator.disconnect()
 
     def get_dice_launch_score(self):
-        print(gmodels.DiceLaunch.objects.last())
-        return gmodels.DiceLaunch.objects.last()
+        print(DiceLaunch.objects.last())
+        return DiceLaunch.objects.last()
 
     async def test_player_dice_launch(self):
         communicator = WebsocketCommunicator(
