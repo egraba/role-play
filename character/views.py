@@ -2,25 +2,30 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import CreateView, DetailView, ListView
 
 import character.abilities as abilities
-import character.forms as cforms
-import character.models as cmodels
+from character.forms import CreateCharacterForm
+from character.models import (
+    AbilityScoreIncrease,
+    Character,
+    ClassAdvancement,
+    RacialTrait,
+)
 
 
 class CharacterDetailView(LoginRequiredMixin, DetailView):
-    model = cmodels.Character
+    model = Character
     template_name = "character/character.html"
 
 
 class CharacterListView(LoginRequiredMixin, ListView):
-    model = cmodels.Character
+    model = Character
     paginate_by = 20
     ordering = ["-xp"]
     template_name = "character/character_list.html"
 
 
 class CharacterCreateView(LoginRequiredMixin, CreateView):
-    model = cmodels.Character
-    form_class = cforms.CreateCharacterForm
+    model = Character
+    form_class = CreateCharacterForm
     template_name = "character/character_create.html"
 
     def get_success_url(self):
@@ -31,7 +36,7 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
         character.user = self.request.user
 
         # Apply racial traits
-        racial_trait = cmodels.RacialTrait.objects.get(race=character.race)
+        racial_trait = RacialTrait.objects.get(race=character.race)
         character.adult_age = racial_trait.adult_age
         character.life_expectancy = racial_trait.life_expectancy
         character.alignment = racial_trait.alignment
@@ -42,7 +47,7 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
         character.abilities.set(racial_trait.abilities.all())
 
         # Apply ability score increases
-        ability_score_increases = cmodels.AbilityScoreIncrease.objects.filter(
+        ability_score_increases = AbilityScoreIncrease.objects.filter(
             racial_trait__race=racial_trait.race
         )
         for asi in ability_score_increases:
@@ -70,7 +75,7 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
         )
 
         # Apply class advancement for Level 1
-        class_advancement = cmodels.ClassAdvancement.objects.get(
+        class_advancement = ClassAdvancement.objects.get(
             class_name=character.class_name, level=1
         )
         character.proficiency_bonus += class_advancement.proficiency_bonus

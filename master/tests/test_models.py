@@ -1,16 +1,16 @@
 from django.db import models
 from django.test import TestCase
 
-import master.models as mmodels
+from master.models import Campaign
 
 
 class CampaignModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        mmodels.Campaign.objects.create()
+        Campaign.objects.create()
 
     def setUp(self):
-        self.campaign = mmodels.Campaign.objects.last()
+        self.campaign = Campaign.objects.last()
 
     def test_title_type(self):
         title = self.campaign._meta.get_field("title")

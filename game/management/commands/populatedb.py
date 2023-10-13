@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-import utils.testing.factories as utfactories
+from utils.testing.factories import CharacterFactory, GameFactory, UserFactory
 
 
 class Command(BaseCommand):
@@ -8,18 +8,18 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # Users
-        thomas = utfactories.UserFactory(username="thomas")  # The game master
-        eric = utfactories.UserFactory(username="eric")
-        seb = utfactories.UserFactory(username="seb")
+        thomas = UserFactory(username="thomas")  # The game master
+        eric = UserFactory(username="eric")
+        seb = UserFactory(username="seb")
 
         # Games
         for _ in range(5):
-            utfactories.GameFactory(master__user=thomas)
+            GameFactory(master__user=thomas)
 
         # Characters
-        utfactories.CharacterFactory(user=eric)
-        utfactories.CharacterFactory(user=seb)
+        CharacterFactory(user=eric)
+        CharacterFactory(user=seb)
         for _ in range(10):
-            utfactories.CharacterFactory()
+            CharacterFactory()
 
         self.stdout.write(self.style.SUCCESS("Successfully populated the database"))
