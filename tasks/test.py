@@ -5,18 +5,19 @@ from invoke import task
     help={
         "coverage": "Measure test coverage",
         "verbose": "Increase verbosity",
-        "test_label": "Module paths to test (i.e Django test_label option)",
+        "test_label": "Module paths to test",
     }
 )
-def run(c, coverage=False, verbose=False, test_label=None):
+def run(c, coverage=False, verbose=False, test_label=None, pty=True):
     """Test the app"""
+    cmd = "pytest --color=yes"
     cmd_options = ""
     if verbose:
-        cmd_options += "--verbosity=2"
+        cmd_options += "--verbose"
     if test_label:
         cmd_options += test_label
     if coverage:
-        c.run(f"coverage run manage.py test {cmd_options}")
+        c.run(f"coverage run -m {cmd} {cmd_options}")
         c.run("coverage html")
     else:
-        c.run(f"python manage.py test {cmd_options}")
+        c.run(f"{cmd} {cmd_options}")
