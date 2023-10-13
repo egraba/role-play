@@ -142,7 +142,6 @@ class CharacterCreateViewTest(TestCase):
             "gender": f"{gender}",
         }
         form = CreateCharacterForm(data)
-        print(form.errors)
         self.assertTrue(form.is_valid())
 
         response = self.client.post(
@@ -178,7 +177,6 @@ class CharacterCreateViewTest(TestCase):
             "gender": f"{gender}",
         }
         form = CreateCharacterForm(data)
-        print(form.errors)
         self.assertTrue(form.is_valid())
 
         response = self.client.post(
@@ -237,7 +235,6 @@ class CharacterCreateViewTest(TestCase):
             "gender": f"{gender}",
         }
         form = CreateCharacterForm(data)
-        print(form.errors)
         self.assertTrue(form.is_valid())
 
         response = self.client.post(
@@ -292,7 +289,6 @@ class CharacterCreateViewTest(TestCase):
             "gender": f"{gender}",
         }
         form = CreateCharacterForm(data)
-        print(form.errors)
         self.assertTrue(form.is_valid())
 
         response = self.client.post(
@@ -347,7 +343,6 @@ class CharacterCreateViewTest(TestCase):
             "gender": f"{gender}",
         }
         form = CreateCharacterForm(data)
-        print(form.errors)
         self.assertTrue(form.is_valid())
 
         response = self.client.post(
