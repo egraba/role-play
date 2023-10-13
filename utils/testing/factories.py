@@ -9,7 +9,6 @@ from game.models import DiceLaunch, Event, Game, Master, Player, Quest
 from master.models import Campaign
 
 
-
 class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = User
