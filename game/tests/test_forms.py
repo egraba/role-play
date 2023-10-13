@@ -1,7 +1,7 @@
 from django import forms
 from django.test import TestCase
 
-import character.forms as cforms
+from character.forms import CreateCharacterForm
 from game.forms import ChoiceForm, CreateQuestForm, DamageForm, HealForm, IncreaseXpForm
 
 
@@ -35,15 +35,15 @@ class HealFormTest(TestCase):
 
 class CreateCharacterFormTest(TestCase):
     def test_name_type(self):
-        form = cforms.CreateCharacterForm()
+        form = CreateCharacterForm()
         self.assertIsInstance(form.fields["name"].widget, forms.TextInput)
 
     def test_name_max_length(self):
-        form = cforms.CreateCharacterForm()
+        form = CreateCharacterForm()
         self.assertEqual(form.fields["name"].max_length, 100)
 
     def test_race_type(self):
-        form = cforms.CreateCharacterForm()
+        form = CreateCharacterForm()
         self.assertIsInstance(form.fields["race"].widget, forms.Select)
 
 

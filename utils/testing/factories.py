@@ -2,7 +2,7 @@ import dice
 import factory
 from django.contrib.auth.models import User
 
-import character.models as cmodels
+from character.models import Character, Class, Race
 from game.models import DiceLaunch, Event, Game, Master, Player, Quest
 from master.models import Campaign
 
@@ -67,13 +67,13 @@ class DiceLaunchFactory(factory.django.DjangoModelFactory):
 
 class CharacterFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = cmodels.Character
+        model = Character
         django_get_or_create = ("name",)
 
     name = factory.Sequence(lambda n: f"character{n}")
     user = factory.SubFactory(UserFactory)
-    race = factory.Faker("enum", enum_cls=cmodels.Race)
-    class_name = factory.Faker("enum", enum_cls=cmodels.Class)
+    race = factory.Faker("enum", enum_cls=Race)
+    class_name = factory.Faker("enum", enum_cls=Class)
     xp = factory.Faker("random_int")
 
 

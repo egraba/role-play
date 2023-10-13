@@ -3,7 +3,7 @@ from django.db import models
 from django.test import TestCase
 from faker import Faker
 
-import character.models as cmodels
+from character.models import Character
 
 
 class CharacterModelTest(TestCase):
@@ -12,10 +12,10 @@ class CharacterModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         user = User.objects.create()
-        cmodels.Character.objects.create(user=user)
+        Character.objects.create(user=user)
 
     def setUp(self):
-        self.character = cmodels.Character.objects.last()
+        self.character = Character.objects.last()
 
     def test_name_type(self):
         name = self.character._meta.get_field("name")
@@ -131,7 +131,7 @@ class CharacterModelTest(TestCase):
         self.assertTrue(gender, models.CharField)
 
     def test_gender_default_value(self):
-        self.assertEqual(self.character.gender, cmodels.Character.Gender.MALE)
+        self.assertEqual(self.character.gender, Character.Gender.MALE)
 
     def test_ac_type(self):
         ac = self.character._meta.get_field("ac")

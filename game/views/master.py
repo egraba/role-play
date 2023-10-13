@@ -8,7 +8,7 @@ from django.utils import timezone
 from django.views.generic import CreateView, FormView, ListView, UpdateView
 from django_fsm import TransitionNotAllowed
 
-import character.models as cmodels
+from character.models import Character
 from game.forms import CreateQuestForm, DamageForm, HealForm, IncreaseXpForm
 from game.models import Damage, Event, Instruction, Player, Quest, XpIncrease
 from game.tasks import send_email
@@ -22,7 +22,7 @@ from game.views.mixins import (
 
 
 class CharacterInviteView(UserPassesTestMixin, ListView, GameContextMixin):
-    model = cmodels.Character
+    model = Character
     paginate_by = 10
     ordering = ["-xp"]
     template_name = "game/character_invite.html"
@@ -35,7 +35,7 @@ class CharacterInviteView(UserPassesTestMixin, ListView, GameContextMixin):
 
 
 class CharacterInviteConfirmView(UserPassesTestMixin, UpdateView, GameContextMixin):
-    model = cmodels.Character
+    model = Character
     fields = []
     template_name = "game/character_invite_confirm.html"
 

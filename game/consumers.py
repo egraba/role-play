@@ -6,7 +6,7 @@ from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 
-import character.models as cmodels
+from character.models import Character
 from game.models import Game
 from game.tasks import (
     store_master_instruction,
@@ -55,7 +55,7 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                 message = "the Master updated the quest."
             case "player.choice":
                 try:
-                    character = cmodels.Character.objects.get(user=self.user)
+                    character = Character.objects.get(user=self.user)
                 except ObjectDoesNotExist:
                     raise DenyConnection(
                         f"Character of user [{self.user}] not found..."
@@ -71,7 +71,7 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                 )
             case "player.dice.launch":
                 try:
-                    character = cmodels.Character.objects.get(user=self.user)
+                    character = Character.objects.get(user=self.user)
                 except ObjectDoesNotExist:
                     raise DenyConnection(
                         f"Character of user [{self.user}] not found..."

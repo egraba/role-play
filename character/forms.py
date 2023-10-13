@@ -1,12 +1,12 @@
 from django import forms
 
 import character.abilities as abilities
-import character.models as cmodels
+from character.models import Character
 
 
 class CreateCharacterForm(forms.ModelForm):
     class Meta:
-        model = cmodels.Character
+        model = Character
         fields = [
             "name",
             "race",

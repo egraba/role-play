@@ -8,7 +8,7 @@ from django.test import TestCase
 from django.urls import reverse
 from faker import Faker
 
-import character.models as cmodels
+from character.models import Character
 from game.models import Event, Game, Player, Quest
 from game.views.common import (
     GameCreateErrorView,
@@ -234,7 +234,7 @@ class GameViewTest(TestCase):
         quest_list = Quest.objects.filter(game=self.game)
         quest = quest_list.last()
         self.assertEqual(response.context["quest"], quest)
-        character_list = cmodels.Character.objects.filter(player__game=self.game)
+        character_list = Character.objects.filter(player__game=self.game)
         self.assertQuerySetEqual(
             list(response.context["character_list"]), list(character_list)
         )
@@ -247,7 +247,7 @@ class GameViewTest(TestCase):
     def test_context_data_player(self):
         self.client.logout()
         # Log as a player
-        character = cmodels.Character.objects.filter(player__game=self.game).last()
+        character = Character.objects.filter(player__game=self.game).last()
         user = character.user
         self.client.login(username=user.username, password="pwd")
         response = self.client.get(self.game.get_absolute_url())
@@ -256,7 +256,7 @@ class GameViewTest(TestCase):
         quest_list = Quest.objects.filter(game=self.game)
         quest = quest_list.last()
         self.assertEqual(response.context["quest"], quest)
-        character_list = cmodels.Character.objects.filter(player__game=self.game)
+        character_list = Character.objects.filter(player__game=self.game)
         self.assertQuerySetEqual(
             list(response.context["character_list"]), list(character_list)
         )
@@ -269,7 +269,7 @@ class GameViewTest(TestCase):
     def test_content_character_is_current_user(self):
         self.client.logout()
         # Log as a player
-        character = cmodels.Character.objects.filter(player__game=self.game).last()
+        character = Character.objects.filter(player__game=self.game).last()
         user = character.user
         self.client.login(username=user.username, password="pwd")
         response = self.client.get(self.game.get_absolute_url())

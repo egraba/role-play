@@ -4,9 +4,9 @@ from django.urls import reverse
 from faker import Faker
 
 import character.abilities as abilities
-import character.forms as cforms
-import character.models as cmodels
-import character.views as cviews
+from character.forms import CreateCharacterForm
+from character.models import Ability, Character, Class, Language, Race
+from character.views import CharacterCreateView, CharacterDetailView, CharacterListView
 from utils.testing.factories import CharacterFactory, GameFactory, PlayerFactory
 
 
@@ -18,14 +18,12 @@ class CharacterDetailViewTest(TestCase):
     def setUp(self):
         self.user = User.objects.last()
         self.client.login(username=self.user.username, password="pwd")
-        self.character = cmodels.Character.objects.last()
+        self.character = Character.objects.last()
 
     def test_view_mapping(self):
         response = self.client.get(self.character.get_absolute_url())
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.resolver_match.func.view_class, cviews.CharacterDetailView
-        )
+        self.assertEqual(response.resolver_match.func.view_class, CharacterDetailView)
 
     def test_template_mapping(self):
         response = self.client.get(self.character.get_absolute_url())
@@ -56,9 +54,7 @@ class CharacterListViewTest(TestCase):
     def test_view_mapping(self):
         response = self.client.get(reverse(self.path_name))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.resolver_match.func.view_class, cviews.CharacterListView
-        )
+        self.assertEqual(response.resolver_match.func.view_class, CharacterListView)
 
     def test_template_mapping(self):
         response = self.client.get(reverse(self.path_name))
@@ -90,14 +86,14 @@ class CharacterListViewTest(TestCase):
                 xp = character.xp
 
     def test_content_no_existing_character(self):
-        cmodels.Character.objects.all().delete()
+        Character.objects.all().delete()
         response = self.client.get(reverse(self.path_name))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "There is no character available...")
 
     def test_content_character_is_in_game(self):
         # To avoid pagination.
-        cmodels.Character.objects.all().delete()
+        Character.objects.all().delete()
         game = GameFactory()
         PlayerFactory(game=game)
         response = self.client.get(reverse(self.path_name))
@@ -120,9 +116,7 @@ class CharacterCreateViewTest(TestCase):
     def test_view_mapping(self):
         response = self.client.get(reverse(self.path_name))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.resolver_match.func.view_class, cviews.CharacterCreateView
-        )
+        self.assertEqual(response.resolver_match.func.view_class, CharacterCreateView)
 
     def test_template_mapping(self):
         response = self.client.get(reverse(self.path_name))
@@ -132,9 +126,9 @@ class CharacterCreateViewTest(TestCase):
     def test_character_creation_common(self):
         fake = Faker()
         name = fake.name()
-        race = fake.enum(enum_cls=cmodels.Race)
-        class_name = fake.enum(enum_cls=cmodels.Class)
-        gender = fake.enum(enum_cls=cmodels.Character.Gender)
+        race = fake.enum(enum_cls=Race)
+        class_name = fake.enum(enum_cls=Class)
+        gender = fake.enum(enum_cls=Character.Gender)
         data = {
             "name": f"{name}",
             "race": f"{race}",
@@ -147,7 +141,7 @@ class CharacterCreateViewTest(TestCase):
             "charisma": abilities.scores[5][0],
             "gender": f"{gender}",
         }
-        form = cforms.CreateCharacterForm(data)
+        form = CreateCharacterForm(data)
         print(form.errors)
         self.assertTrue(form.is_valid())
 
@@ -156,7 +150,7 @@ class CharacterCreateViewTest(TestCase):
             data=form.cleaned_data,
         )
         self.assertEqual(response.status_code, 302)
-        character = cmodels.Character.objects.last()
+        character = Character.objects.last()
         self.assertRedirects(response, character.get_absolute_url())
 
         self.assertEqual(character.name, form.cleaned_data["name"])
@@ -168,9 +162,9 @@ class CharacterCreateViewTest(TestCase):
     def test_character_creation_dwarf(self):
         fake = Faker()
         name = fake.name()
-        race = cmodels.Race.DWARF
-        class_name = fake.enum(enum_cls=cmodels.Class)
-        gender = fake.enum(enum_cls=cmodels.Character.Gender)
+        race = Race.DWARF
+        class_name = fake.enum(enum_cls=Class)
+        gender = fake.enum(enum_cls=Character.Gender)
         data = {
             "name": f"{name}",
             "race": f"{race}",
@@ -183,7 +177,7 @@ class CharacterCreateViewTest(TestCase):
             "charisma": abilities.scores[5][0],
             "gender": f"{gender}",
         }
-        form = cforms.CreateCharacterForm(data)
+        form = CreateCharacterForm(data)
         print(form.errors)
         self.assertTrue(form.is_valid())
 
@@ -192,7 +186,7 @@ class CharacterCreateViewTest(TestCase):
             data=form.cleaned_data,
         )
         self.assertEqual(response.status_code, 302)
-        character = cmodels.Character.objects.last()
+        character = Character.objects.last()
         self.assertRedirects(response, character.get_absolute_url())
 
         self.assertEqual(character.strength, abilities.scores[0][0])
@@ -204,20 +198,18 @@ class CharacterCreateViewTest(TestCase):
 
         self.assertEqual(character.speed, 25)
 
-        common = cmodels.Language.objects.get(name=cmodels.Language.Name.COMMON)
-        dwarvish = cmodels.Language.objects.get(name=cmodels.Language.Name.DWARVISH)
+        common = Language.objects.get(name=Language.Name.COMMON)
+        dwarvish = Language.objects.get(name=Language.Name.DWARVISH)
         languages = set()
         languages.add(common)
         languages.add(dwarvish)
         self.assertEqual(set(character.languages.all()), languages)
 
-        darkvision = cmodels.Ability.objects.get(name="Darkvision")
-        dwarven_resilience = cmodels.Ability.objects.get(name="Dwarven Resilience")
-        dwarven_combat_training = cmodels.Ability.objects.get(
-            name="Dwarven Combat Training"
-        )
-        tool_proficiency = cmodels.Ability.objects.get(name="Tool Proficiency")
-        stonecunning = cmodels.Ability.objects.get(name="Stonecunning")
+        darkvision = Ability.objects.get(name="Darkvision")
+        dwarven_resilience = Ability.objects.get(name="Dwarven Resilience")
+        dwarven_combat_training = Ability.objects.get(name="Dwarven Combat Training")
+        tool_proficiency = Ability.objects.get(name="Tool Proficiency")
+        stonecunning = Ability.objects.get(name="Stonecunning")
         abtls = set()
         abtls.add(darkvision)
         abtls.add(dwarven_resilience)
@@ -229,9 +221,9 @@ class CharacterCreateViewTest(TestCase):
     def test_character_creation_elf(self):
         fake = Faker()
         name = fake.name()
-        race = cmodels.Race.ELF
-        class_name = fake.enum(enum_cls=cmodels.Class)
-        gender = fake.enum(enum_cls=cmodels.Character.Gender)
+        race = Race.ELF
+        class_name = fake.enum(enum_cls=Class)
+        gender = fake.enum(enum_cls=Character.Gender)
         data = {
             "name": f"{name}",
             "race": f"{race}",
@@ -244,7 +236,7 @@ class CharacterCreateViewTest(TestCase):
             "charisma": abilities.scores[5][0],
             "gender": f"{gender}",
         }
-        form = cforms.CreateCharacterForm(data)
+        form = CreateCharacterForm(data)
         print(form.errors)
         self.assertTrue(form.is_valid())
 
@@ -253,7 +245,7 @@ class CharacterCreateViewTest(TestCase):
             data=form.cleaned_data,
         )
         self.assertEqual(response.status_code, 302)
-        character = cmodels.Character.objects.last()
+        character = Character.objects.last()
         self.assertRedirects(response, character.get_absolute_url())
 
         self.assertEqual(character.strength, abilities.scores[0][0])
@@ -265,15 +257,15 @@ class CharacterCreateViewTest(TestCase):
 
         self.assertEqual(character.speed, 30)
 
-        elvish = cmodels.Language.objects.get(name=cmodels.Language.Name.ELVISH)
+        elvish = Language.objects.get(name=Language.Name.ELVISH)
         languages = set()
         languages.add(elvish)
         self.assertEqual(set(character.languages.all()), languages)
 
-        darkvision = cmodels.Ability.objects.get(name="Darkvision")
-        keen_senses = cmodels.Ability.objects.get(name="Keen Senses")
-        fey_ancestry = cmodels.Ability.objects.get(name="Fey Ancestry")
-        trance = cmodels.Ability.objects.get(name="Trance")
+        darkvision = Ability.objects.get(name="Darkvision")
+        keen_senses = Ability.objects.get(name="Keen Senses")
+        fey_ancestry = Ability.objects.get(name="Fey Ancestry")
+        trance = Ability.objects.get(name="Trance")
         abtls = set()
         abtls.add(darkvision)
         abtls.add(keen_senses)
@@ -284,9 +276,9 @@ class CharacterCreateViewTest(TestCase):
     def test_character_creation_halfling(self):
         fake = Faker()
         name = fake.name()
-        race = cmodels.Race.HALFLING
-        class_name = fake.enum(enum_cls=cmodels.Class)
-        gender = fake.enum(enum_cls=cmodels.Character.Gender)
+        race = Race.HALFLING
+        class_name = fake.enum(enum_cls=Class)
+        gender = fake.enum(enum_cls=Character.Gender)
         data = {
             "name": f"{name}",
             "race": f"{race}",
@@ -299,7 +291,7 @@ class CharacterCreateViewTest(TestCase):
             "charisma": abilities.scores[5][0],
             "gender": f"{gender}",
         }
-        form = cforms.CreateCharacterForm(data)
+        form = CreateCharacterForm(data)
         print(form.errors)
         self.assertTrue(form.is_valid())
 
@@ -308,7 +300,7 @@ class CharacterCreateViewTest(TestCase):
             data=form.cleaned_data,
         )
         self.assertEqual(response.status_code, 302)
-        character = cmodels.Character.objects.last()
+        character = Character.objects.last()
         self.assertRedirects(response, character.get_absolute_url())
 
         self.assertEqual(character.strength, abilities.scores[0][0])
@@ -320,16 +312,16 @@ class CharacterCreateViewTest(TestCase):
 
         self.assertEqual(character.speed, 25)
 
-        common = cmodels.Language.objects.get(name=cmodels.Language.Name.COMMON)
-        halfling = cmodels.Language.objects.get(name=cmodels.Language.Name.HALFLING)
+        common = Language.objects.get(name=Language.Name.COMMON)
+        halfling = Language.objects.get(name=Language.Name.HALFLING)
         languages = set()
         languages.add(common)
         languages.add(halfling)
         self.assertEqual(set(character.languages.all()), languages)
 
-        lucky = cmodels.Ability.objects.get(name="Lucky")
-        brave = cmodels.Ability.objects.get(name="Brave")
-        halfling_nimbleness = cmodels.Ability.objects.get(name="Halfling Nimbleness")
+        lucky = Ability.objects.get(name="Lucky")
+        brave = Ability.objects.get(name="Brave")
+        halfling_nimbleness = Ability.objects.get(name="Halfling Nimbleness")
         abtls = set()
         abtls.add(lucky)
         abtls.add(brave)
@@ -339,9 +331,9 @@ class CharacterCreateViewTest(TestCase):
     def test_character_creation_human(self):
         fake = Faker()
         name = fake.name()
-        race = cmodels.Race.HUMAN
-        class_name = fake.enum(enum_cls=cmodels.Class)
-        gender = fake.enum(enum_cls=cmodels.Character.Gender)
+        race = Race.HUMAN
+        class_name = fake.enum(enum_cls=Class)
+        gender = fake.enum(enum_cls=Character.Gender)
         data = {
             "name": f"{name}",
             "race": f"{race}",
@@ -354,7 +346,7 @@ class CharacterCreateViewTest(TestCase):
             "charisma": abilities.scores[5][0],
             "gender": f"{gender}",
         }
-        form = cforms.CreateCharacterForm(data)
+        form = CreateCharacterForm(data)
         print(form.errors)
         self.assertTrue(form.is_valid())
 
@@ -363,7 +355,7 @@ class CharacterCreateViewTest(TestCase):
             data=form.cleaned_data,
         )
         self.assertEqual(response.status_code, 302)
-        character = cmodels.Character.objects.last()
+        character = Character.objects.last()
         self.assertRedirects(response, character.get_absolute_url())
 
         self.assertEqual(character.strength, abilities.scores[0][0] + 1)
@@ -375,7 +367,7 @@ class CharacterCreateViewTest(TestCase):
 
         self.assertEqual(character.speed, 30)
 
-        common = cmodels.Language.objects.get(name=cmodels.Language.Name.COMMON)
+        common = Language.objects.get(name=Language.Name.COMMON)
         languages = set()
         languages.add(common)
         self.assertEqual(set(character.languages.all()), languages)

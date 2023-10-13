@@ -5,7 +5,7 @@ from django.views.generic import UpdateView, View
 from django.views.generic.edit import FormMixin
 from django.views.generic.list import ContextMixin
 
-import character.models as cmodels
+from character.models import Character
 from game.models import Game
 
 
@@ -53,7 +53,7 @@ class CharacterContextMixin(ContextMixin, View):
         try:
             self.character = cache.get(f"character{character_id}")
             if not self.character:
-                self.character = cmodels.Character.objects.get(id=character_id)
+                self.character = Character.objects.get(id=character_id)
                 cache.set(f"character{character_id}", self.character)
         except ObjectDoesNotExist:
             raise Http404(f"Character [{character_id}] does not exist...")
