@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-import game.models as gmodels
+from game.models import Event, Game, Player, Quest
 
 
 class GameAdmin(admin.ModelAdmin):
@@ -23,7 +23,7 @@ class EventAdmin(admin.ModelAdmin):
     list_display = ["game", "date", "message"]
 
 
-admin.site.register(gmodels.Game, GameAdmin)
-admin.site.register(gmodels.Player, PlayerAdmin)
-admin.site.register(gmodels.Quest, QuestAdmin)
-admin.site.register(gmodels.Event, EventAdmin)
+admin.site.register(Game, GameAdmin)
+admin.site.register(Player, PlayerAdmin)
+admin.site.register(Quest, QuestAdmin)
+admin.site.register(Event, EventAdmin)

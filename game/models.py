@@ -5,8 +5,8 @@ from django.urls import reverse
 from django.utils import timezone
 from django_fsm import FSMField, transition
 
-import master.models as mmodels
 from character.models.character import Character
+from master.models import Campaign
 
 
 class Game(models.Model):
@@ -16,7 +16,7 @@ class Game(models.Model):
 
     name = models.CharField(max_length=100)
     campaign = models.ForeignKey(
-        mmodels.Campaign, on_delete=models.SET_NULL, null=True, blank=True
+        Campaign, on_delete=models.SET_NULL, null=True, blank=True
     )
     start_date = models.DateTimeField(null=True, blank=True)
     status = FSMField(

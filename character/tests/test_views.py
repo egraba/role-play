@@ -4,7 +4,7 @@ from django.urls import reverse
 from faker import Faker
 
 import character.abilities as abilities
-import utils.testing.factories as utfactories
+from utils.testing.factories import CharacterFactory, GameFactory, PlayerFactory
 from character.forms import CreateCharacterForm
 from character.models.character import Character
 from character.models.classes import Class
@@ -19,7 +19,7 @@ from character.views.character import (
 class CharacterDetailViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        utfactories.CharacterFactory()
+        CharacterFactory()
 
     def setUp(self):
         self.user = User.objects.last()
@@ -37,8 +37,8 @@ class CharacterDetailViewTest(TestCase):
         self.assertTemplateUsed(response, "character/character.html")
 
     def test_content_character_is_in_game(self):
-        game = utfactories.GameFactory()
-        utfactories.PlayerFactory(game=game, character=self.character)
+        game = GameFactory()
+        PlayerFactory(game=game, character=self.character)
         response = self.client.get(self.character.get_absolute_url())
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, game.name)
@@ -51,7 +51,7 @@ class CharacterListViewTest(TestCase):
     def setUpTestData(cls):
         number_of_characters = 22
         for _ in range(number_of_characters):
-            utfactories.CharacterFactory()
+            CharacterFactory()
 
     def setUp(self):
         self.user = User.objects.last()
@@ -100,8 +100,8 @@ class CharacterListViewTest(TestCase):
     def test_content_character_is_in_game(self):
         # To avoid pagination.
         Character.objects.all().delete()
-        game = utfactories.GameFactory()
-        utfactories.PlayerFactory(game=game)
+        game = GameFactory()
+        PlayerFactory(game=game)
         response = self.client.get(reverse(self.path_name))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, game.name)
@@ -113,7 +113,7 @@ class CharacterCreateViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        utfactories.CharacterFactory()
+        CharacterFactory()
 
     def setUp(self):
         self.user = User.objects.last()

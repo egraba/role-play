@@ -1,15 +1,15 @@
 from django import forms
 
-import master.models as mmodels
+from master.models import Campaign
 
 
 class CampaignCreateForm(forms.ModelForm):
     class Meta:
-        model = mmodels.Campaign
+        model = Campaign
         exclude = ["slug"]
 
 
 class CampaignUpdateForm(forms.ModelForm):
     class Meta:
-        model = mmodels.Campaign
+        model = Campaign
         exclude = ["title", "slug"]
