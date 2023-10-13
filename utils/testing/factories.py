@@ -9,7 +9,6 @@ from character.models.classes import Class
 from character.models.races import Race
 
 
-
 class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = User
