@@ -128,7 +128,6 @@ class GameEventsConsumerTest(TransactionTestCase):
         await communicator.disconnect()
 
     def get_dice_launch_score(self):
-        print(DiceLaunch.objects.last())
         return DiceLaunch.objects.last()
 
     async def test_player_dice_launch(self):
