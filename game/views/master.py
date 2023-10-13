@@ -8,12 +8,12 @@ from django.utils import timezone
 from django.views.generic import CreateView, FormView, ListView, UpdateView
 from django_fsm import TransitionNotAllowed
 
+from character.models.character import Character
+from character.views.mixins import CharacterContextMixin
 from game.forms import CreateQuestForm, DamageForm, HealForm, IncreaseXpForm
 from game.models import Damage, Event, Instruction, Player, Quest, XpIncrease
 from game.tasks import send_email
 from game.utils import get_players_emails
-from character.models.character import Character
-from character.views.mixins import CharacterContextMixin
 from game.views.mixins import (
     EventContextMixin,
     GameContextMixin,
@@ -94,7 +94,7 @@ class GameStartErrorView(UserPassesTestMixin, GameStatusControlMixin):
 
 
 class QuestCreateView(UserPassesTestMixin, FormView, EventContextMixin):
-    model = gmodels.Quest
+    model = Quest
     fields = ["description"]
     template_name = "game/quest_create.html"
     form_class = CreateQuestForm
@@ -126,7 +126,7 @@ class QuestCreateView(UserPassesTestMixin, FormView, EventContextMixin):
 
 
 class InstructionCreateView(UserPassesTestMixin, CreateView, EventContextMixin):
-    model = gmodels.Instruction
+    model = Instruction
     fields = ["content"]
     template_name = "game/instruction_create.html"
 
