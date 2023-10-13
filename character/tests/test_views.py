@@ -4,12 +4,12 @@ from django.urls import reverse
 from faker import Faker
 
 import character.abilities as abilities
-import character.views as cviews
-from utils.testing.factories import CharacterFactory, GameFactory, PlayerFactory
 from character.forms import CreateCharacterForm
 from character.models.character import Character
 from character.models.classes import Class
 from character.models.races import Ability, Language, Race
+from character.views import CharacterCreateView, CharacterDetailView, CharacterListView
+from utils.testing.factories import CharacterFactory, GameFactory, PlayerFactory
 
 
 class CharacterDetailViewTest(TestCase):
