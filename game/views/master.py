@@ -8,16 +8,21 @@ from django.utils import timezone
 from django.views.generic import CreateView, FormView, ListView, UpdateView
 from django_fsm import TransitionNotAllowed
 
-import character.models as cmodels
-import game.forms as gforms
-import game.models as gmodels
-import game.tasks as tasks
-import game.utils as gutils
-import game.views.mixins as gmixins
+from character.models import Character
+from game.forms import CreateQuestForm, DamageForm, HealForm, IncreaseXpForm
+from game.models import Damage, Event, Instruction, Player, Quest, XpIncrease
+from game.tasks import send_email
+from game.utils import get_players_emails
+from game.views.mixins import (
+    CharacterContextMixin,
+    EventContextMixin,
+    GameContextMixin,
+    GameStatusControlMixin,
+)
 
 
-class CharacterInviteView(UserPassesTestMixin, ListView, gmixins.GameContextMixin):
-    model = cmodels.Character
+class CharacterInviteView(UserPassesTestMixin, ListView, GameContextMixin):
+    model = Character
     paginate_by = 10
     ordering = ["-xp"]
     template_name = "game/character_invite.html"
@@ -29,10 +34,8 @@ class CharacterInviteView(UserPassesTestMixin, ListView, gmixins.GameContextMixi
         return super().get_queryset().filter(player__game=None)
 
 
-class CharacterInviteConfirmView(
-    UserPassesTestMixin, UpdateView, gmixins.GameContextMixin
-):
-    model = cmodels.Character
+class CharacterInviteConfirmView(UserPassesTestMixin, UpdateView, GameContextMixin):
+    model = Character
     fields = []
     template_name = "game/character_invite_confirm.html"
 
@@ -41,12 +44,12 @@ class CharacterInviteConfirmView(
 
     def post(self, request, *args, **kwargs):
         character = self.get_object()
-        gmodels.Player.objects.create(character=character, game=self.game)
-        event = gmodels.Event.objects.create(game=self.game)
+        Player.objects.create(character=character, game=self.game)
+        event = Event.objects.create(game=self.game)
         event.date = timezone.now()
         event.message = f"{character} was added to the game."
         event.save()
-        tasks.send_email.delay(
+        send_email.delay(
             subject=f"The Master invited you to join [{self.game}].",
             message=f"{character}, the Master invited you to join [{self.game}].",
             from_email=self.game.master.user.email,
@@ -55,7 +58,7 @@ class CharacterInviteConfirmView(
         return HttpResponseRedirect(reverse("game", args=(self.game.id,)))
 
 
-class GameStartView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
+class GameStartView(UserPassesTestMixin, GameStatusControlMixin):
     fields = []
     template_name = "game/game_start.html"
 
@@ -68,7 +71,7 @@ class GameStartView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
             game.start()
             game.save()
             cache.set(f"game{game.id}", game)
-            event = gmodels.Event.objects.create(game=game)
+            event = Event.objects.create(game=game)
             event.date = timezone.now()
             event.message = "the game started."
             event.save()
@@ -82,7 +85,7 @@ class GameStartView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
         return HttpResponseRedirect(game.get_absolute_url())
 
 
-class GameStartErrorView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
+class GameStartErrorView(UserPassesTestMixin, GameStatusControlMixin):
     fields = []
     template_name = "game/game_start_error.html"
 
@@ -90,11 +93,11 @@ class GameStartErrorView(UserPassesTestMixin, gmixins.GameStatusControlMixin):
         return self.is_user_master()
 
 
-class QuestCreateView(UserPassesTestMixin, FormView, gmixins.EventContextMixin):
-    model = gmodels.Quest
+class QuestCreateView(UserPassesTestMixin, FormView, EventContextMixin):
+    model = Quest
     fields = ["description"]
     template_name = "game/quest_create.html"
-    form_class = gforms.CreateQuestForm
+    form_class = CreateQuestForm
 
     def test_func(self):
         return self.is_user_master()
@@ -103,7 +106,7 @@ class QuestCreateView(UserPassesTestMixin, FormView, gmixins.EventContextMixin):
         return reverse_lazy("game", args=(self.game.id,))
 
     def form_valid(self, form):
-        quest = gmodels.Quest()
+        quest = Quest()
         quest.game = self.game
         quest.message = "the Master updated the campaign."
         quest.content = form.cleaned_data["content"]
@@ -113,17 +116,17 @@ class QuestCreateView(UserPassesTestMixin, FormView, gmixins.EventContextMixin):
             f"game_{self.game.id}_events",
             {"type": "master.quest", "content": ""},
         )
-        tasks.send_email.delay(
+        send_email.delay(
             subject=f"[{self.game}] The Master updated the quest.",
             message=f"The Master said:\n{quest.content}",
             from_email=self.game.master.user.email,
-            recipient_list=gutils.get_players_emails(game=self.game),
+            recipient_list=get_players_emails(game=self.game),
         )
         return super().form_valid(form)
 
 
-class InstructionCreateView(UserPassesTestMixin, CreateView, gmixins.EventContextMixin):
-    model = gmodels.Instruction
+class InstructionCreateView(UserPassesTestMixin, CreateView, EventContextMixin):
+    model = Instruction
     fields = ["content"]
     template_name = "game/instruction_create.html"
 
@@ -144,11 +147,11 @@ class InstructionCreateView(UserPassesTestMixin, CreateView, gmixins.EventContex
 class XpIncreaseView(
     UserPassesTestMixin,
     FormView,
-    gmixins.EventContextMixin,
-    gmixins.CharacterContextMixin,
+    EventContextMixin,
+    CharacterContextMixin,
 ):
-    model = gmodels.XpIncrease
-    form_class = gforms.IncreaseXpForm
+    model = XpIncrease
+    form_class = IncreaseXpForm
     template_name = "game/xp.html"
 
     def test_func(self):
@@ -174,11 +177,11 @@ class XpIncreaseView(
 class DamageView(
     UserPassesTestMixin,
     FormView,
-    gmixins.EventContextMixin,
-    gmixins.CharacterContextMixin,
+    EventContextMixin,
+    CharacterContextMixin,
 ):
-    model = gmodels.Damage
-    form_class = gforms.DamageForm
+    model = Damage
+    form_class = DamageForm
     template_name = "game/damage.html"
 
     def test_func(self):
@@ -197,7 +200,7 @@ class DamageView(
                 f"{self.character} was hit: -{damage.hp} HP! {self.character} is dead."
             )
             # The player is removed from the game.
-            gmodels.Player.objects.get(character=self.character).delete()
+            Player.objects.get(character=self.character).delete()
             # The character is healed when remove from the game,
             # so that they can join another game.
             self.character.hp = self.character.max_hp
@@ -212,10 +215,10 @@ class DamageView(
 class HealingView(
     UserPassesTestMixin,
     FormView,
-    gmixins.EventContextMixin,
-    gmixins.CharacterContextMixin,
+    EventContextMixin,
+    CharacterContextMixin,
 ):
-    form_class = gforms.HealForm
+    form_class = HealForm
     template_name = "game/heal.html"
 
     def test_func(self):

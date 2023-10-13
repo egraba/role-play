@@ -6,9 +6,13 @@ from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 
-import character.models as cmodels
-import game.models as gmodels
-import game.tasks as tasks
+from character.models import Character
+from game.models import Game
+from game.tasks import (
+    store_master_instruction,
+    store_player_choice,
+    store_player_dice_launch,
+)
 
 
 class GameEventsConsumer(JsonWebsocketConsumer):
@@ -18,7 +22,7 @@ class GameEventsConsumer(JsonWebsocketConsumer):
         try:
             self.game = cache.get(f"game{game_id}")
             if not self.game:
-                self.game = gmodels.Game.objects.get(id=game_id)
+                self.game = Game.objects.get(id=game_id)
                 cache.set(f"game{game_id}", self.game)
         except ObjectDoesNotExist:
             raise DenyConnection(f"Game [{game_id}] not found...")
@@ -39,7 +43,7 @@ class GameEventsConsumer(JsonWebsocketConsumer):
         match content["type"]:
             case "master.instruction":
                 message = "the Master said: "
-                tasks.store_master_instruction.delay(
+                store_master_instruction.delay(
                     game_id=self.game.id,
                     date=date,
                     message=message,
@@ -51,14 +55,14 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                 message = "the Master updated the quest."
             case "player.choice":
                 try:
-                    character = cmodels.Character.objects.get(user=self.user)
+                    character = Character.objects.get(user=self.user)
                 except ObjectDoesNotExist:
                     raise DenyConnection(
                         f"Character of user [{self.user}] not found..."
                     )
                     self.close()
                 message = f"[{ self.user }] said: "
-                tasks.store_player_choice.delay(
+                store_player_choice.delay(
                     game_id=self.game.id,
                     date=date,
                     message=message,
@@ -67,7 +71,7 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                 )
             case "player.dice.launch":
                 try:
-                    character = cmodels.Character.objects.get(user=self.user)
+                    character = Character.objects.get(user=self.user)
                 except ObjectDoesNotExist:
                     raise DenyConnection(
                         f"Character of user [{self.user}] not found..."
@@ -76,7 +80,7 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                 message = f"[{ self.user }] launched a dice: "
                 score = int(dice.roll("d20"))
                 content["content"] = score
-                tasks.store_player_dice_launch.delay(
+                store_player_dice_launch.delay(
                     game_id=self.game.id,
                     date=date,
                     message=message,

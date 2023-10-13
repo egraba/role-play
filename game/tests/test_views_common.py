@@ -8,10 +8,24 @@ from django.test import TestCase
 from django.urls import reverse
 from faker import Faker
 
-import character.models as cmodels
-import game.models as gmodels
-import game.views.common as gvcommon
-import utils.testing.factories as utfactories
+from character.models import Character
+from game.models import Event, Game, Player, Quest
+from game.views.common import (
+    GameCreateErrorView,
+    GameCreateView,
+    GameListView,
+    GameView,
+    IndexView,
+)
+from utils.testing.factories import (
+    CampaignFactory,
+    CharacterFactory,
+    EventFactory,
+    GameFactory,
+    PlayerFactory,
+    QuestFactory,
+    UserFactory,
+)
 
 
 class IndexViewTest(TestCase):
@@ -20,7 +34,7 @@ class IndexViewTest(TestCase):
     def test_view_mapping(self):
         response = self.client.get(reverse(self.path_name))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.resolver_match.func.view_class, gvcommon.IndexView)
+        self.assertEqual(response.resolver_match.func.view_class, IndexView)
 
     def test_template_mapping(self):
         response = self.client.get(reverse(self.path_name))
@@ -38,7 +52,7 @@ class IndexViewTest(TestCase):
         self.assertNotContains(response, "View your character")
 
     def test_content_logged_user_no_character(self):
-        user = utfactories.UserFactory()
+        user = UserFactory()
         self.client.login(username=user.username, password="pwd")
 
         response = self.client.get(reverse(self.path_name))
@@ -53,7 +67,7 @@ class IndexViewTest(TestCase):
             response.context["user_character"]
 
     def test_content_logged_user_existing_character(self):
-        character = utfactories.CharacterFactory()
+        character = CharacterFactory()
         self.client.login(username=character.user.username, password="pwd")
 
         response = self.client.get(reverse(self.path_name))
@@ -74,7 +88,7 @@ class GameListViewTest(TestCase):
     def setUpTestData(cls):
         number_of_games = 22
         for _ in range(number_of_games):
-            utfactories.GameFactory(
+            GameFactory(
                 start_date=datetime.now(tz=timezone.utc),
                 master__user__username="master-game-list-view",
             )
@@ -86,7 +100,7 @@ class GameListViewTest(TestCase):
     def test_view_mapping(self):
         response = self.client.get(reverse(self.path_name))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.resolver_match.func.view_class, gvcommon.GameListView)
+        self.assertEqual(response.resolver_match.func.view_class, GameListView)
 
     def test_template_mapping(self):
         response = self.client.get(reverse(self.path_name))
@@ -129,7 +143,7 @@ class GameListViewTest(TestCase):
     def test_content_no_game(self):
         self.user = User.objects.last()
         self.client.login(username=self.user.username, password="pwd")
-        gmodels.Game.objects.all().delete()
+        Game.objects.all().delete()
 
         response = self.client.get(reverse(self.path_name))
         self.assertContains(response, "There is no game available...")
@@ -138,28 +152,28 @@ class GameListViewTest(TestCase):
 class GameViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        game = utfactories.GameFactory(master__user__username="master-game-view")
+        game = GameFactory(master__user__username="master-game-view")
         number_of_events = 10
         for _ in range(number_of_events):
-            utfactories.EventFactory(game=game)
+            EventFactory(game=game)
         number_of_quests = 3
         for _ in range(number_of_quests):
-            utfactories.QuestFactory(game=game)
+            QuestFactory(game=game)
         number_of_players = 8
         for _ in range(number_of_players):
-            utfactories.PlayerFactory(game=game)
+            PlayerFactory(game=game)
 
     def setUp(self):
         self.user = User.objects.get(username="master-game-view")
         self.client.login(username=self.user.username, password="pwd")
-        self.game = gmodels.Game.objects.last()
+        self.game = Game.objects.last()
 
     def tearDown(self):
         cache.clear()
 
     def test_view_mapping(self):
         response = self.client.get(self.game.get_absolute_url())
-        self.assertEqual(response.resolver_match.func.view_class, gvcommon.GameView)
+        self.assertEqual(response.resolver_match.func.view_class, GameView)
 
     def test_template_mapping(self):
         response = self.client.get(self.game.get_absolute_url())
@@ -208,7 +222,7 @@ class GameViewTest(TestCase):
         self.assertRaises(Http404)
 
     def test_game_last_quest(self):
-        quest = gmodels.Quest.objects.filter(game=self.game).last()
+        quest = Quest.objects.filter(game=self.game).last()
         response = self.client.get(self.game.get_absolute_url())
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context["quest"], quest)
@@ -217,14 +231,14 @@ class GameViewTest(TestCase):
         response = self.client.get(self.game.get_absolute_url())
         self.assertEqual(response.status_code, 200)
 
-        quest_list = gmodels.Quest.objects.filter(game=self.game)
+        quest_list = Quest.objects.filter(game=self.game)
         quest = quest_list.last()
         self.assertEqual(response.context["quest"], quest)
-        character_list = cmodels.Character.objects.filter(player__game=self.game)
+        character_list = Character.objects.filter(player__game=self.game)
         self.assertQuerySetEqual(
             list(response.context["character_list"]), list(character_list)
         )
-        event_list = gmodels.Event.objects.filter(game=self.game)
+        event_list = Event.objects.filter(game=self.game)
         # issubset() is used because of pagination.
         self.assertTrue(set(response.context["event_list"]).issubset(set(event_list)))
         with self.assertRaises(KeyError):
@@ -233,29 +247,29 @@ class GameViewTest(TestCase):
     def test_context_data_player(self):
         self.client.logout()
         # Log as a player
-        character = cmodels.Character.objects.filter(player__game=self.game).last()
+        character = Character.objects.filter(player__game=self.game).last()
         user = character.user
         self.client.login(username=user.username, password="pwd")
         response = self.client.get(self.game.get_absolute_url())
         self.assertEqual(response.status_code, 200)
 
-        quest_list = gmodels.Quest.objects.filter(game=self.game)
+        quest_list = Quest.objects.filter(game=self.game)
         quest = quest_list.last()
         self.assertEqual(response.context["quest"], quest)
-        character_list = cmodels.Character.objects.filter(player__game=self.game)
+        character_list = Character.objects.filter(player__game=self.game)
         self.assertQuerySetEqual(
             list(response.context["character_list"]), list(character_list)
         )
-        event_list = gmodels.Event.objects.filter(game=self.game)
+        event_list = Event.objects.filter(game=self.game)
         # issubset() is used because of pagination.
         self.assertTrue(set(response.context["event_list"]).issubset(set(event_list)))
-        player = gmodels.Player.objects.get(game=self.game, character__user=user)
+        player = Player.objects.get(game=self.game, character__user=user)
         self.assertEqual(response.context["player"], player)
 
     def test_content_character_is_current_user(self):
         self.client.logout()
         # Log as a player
-        character = cmodels.Character.objects.filter(player__game=self.game).last()
+        character = Character.objects.filter(player__game=self.game).last()
         user = character.user
         self.client.login(username=user.username, password="pwd")
         response = self.client.get(self.game.get_absolute_url())
@@ -263,7 +277,7 @@ class GameViewTest(TestCase):
         self.assertContains(response, "played by you")
 
     def test_content_no_events(self):
-        gmodels.Event.objects.filter(game=self.game).delete()
+        Event.objects.filter(game=self.game).delete()
         response = self.client.get(self.game.get_absolute_url())
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "The campaign did not start yet...")
@@ -273,16 +287,14 @@ class GameCreateViewTest(TestCase):
     path_name = "game-create"
 
     def setUp(self):
-        self.user = utfactories.UserFactory(username="game-create")
+        self.user = UserFactory(username="game-create")
         self.client.login(username=self.user.username, password="pwd")
-        self.campaign = utfactories.CampaignFactory()
+        self.campaign = CampaignFactory()
 
     def test_view_mapping(self):
         response = self.client.get(reverse(self.path_name, args=(self.campaign.slug,)))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.resolver_match.func.view_class, gvcommon.GameCreateView
-        )
+        self.assertEqual(response.resolver_match.func.view_class, GameCreateView)
 
     def test_template_mapping(self):
         response = self.client.get(reverse(self.path_name, args=(self.campaign.slug,)))
@@ -292,12 +304,12 @@ class GameCreateViewTest(TestCase):
     def test_game_creation(self):
         response = self.client.post(reverse(self.path_name, args=(self.campaign.slug,)))
         self.assertEqual(response.status_code, 302)
-        game = gmodels.Game.objects.last()
+        game = Game.objects.last()
         self.assertRedirects(response, game.get_absolute_url())
         self.assertEqual(game.name, f"{self.campaign.title} #{game.id}")
         self.assertEqual(game.status, "P")
         self.assertEqual(game.master.user, self.user)
-        quest = gmodels.Quest.objects.last()
+        quest = Quest.objects.last()
         self.assertEqual(quest.game, game)
         self.assertEqual(quest.message, "The Master created the campaign.")
         self.assertEqual(quest.content, self.campaign.synopsis)
@@ -316,15 +328,13 @@ class GameCreateErrorViewTest(TestCase):
     fake_slug = fake.slug()
 
     def setUp(self):
-        self.user = utfactories.UserFactory(username="game-create-error")
+        self.user = UserFactory(username="game-create-error")
         self.client.login(username=self.user.username, password="pwd")
 
     def test_view_mapping(self):
         response = self.client.get(reverse(self.path_name, args=(self.fake_slug,)))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.resolver_match.func.view_class, gvcommon.GameCreateErrorView
-        )
+        self.assertEqual(response.resolver_match.func.view_class, GameCreateErrorView)
 
     def test_template_mapping(self):
         response = self.client.get(reverse(self.path_name, args=(self.fake_slug,)))

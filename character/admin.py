@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-import character.models as cmodels
+from character.models import Ability, Advancement, Character, ClassAdvancement
 
 
 class CharacterAdmin(admin.ModelAdmin):
@@ -24,7 +24,7 @@ class ClassAdvancementAdmin(admin.ModelAdmin):
     ordering = ["class_name", "level"]
 
 
-admin.site.register(cmodels.Character, CharacterAdmin)
-admin.site.register(cmodels.Advancement, AdvancementAdmin)
-admin.site.register(cmodels.Ability, AbilityAdmin)
-admin.site.register(cmodels.ClassAdvancement, ClassAdvancementAdmin)
+admin.site.register(Character, CharacterAdmin)
+admin.site.register(Advancement, AdvancementAdmin)
+admin.site.register(Ability, AbilityAdmin)
+admin.site.register(ClassAdvancement, ClassAdvancementAdmin)

@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.management.base import BaseCommand, CommandError
 
-import character.models as cmodels
+from character.models import Character
 
 
 class Command(BaseCommand):
@@ -18,7 +18,7 @@ class Command(BaseCommand):
         except ObjectDoesNotExist:
             raise CommandError(f"[{username}] doesn't exist...")
         try:
-            cmodels.Character.objects.filter(user=user).delete()
+            Character.objects.filter(user=user).delete()
         except ObjectDoesNotExist:
             raise CommandError(f"[{username}] doesn't have a character...")
 

@@ -10,11 +10,19 @@ from django.urls import reverse
 from django.utils import timezone
 from faker import Faker
 
-import character.models as cmodels
-import game.forms as gforms
-import game.models as gmodels
-import game.views.master as gvmaster
-import utils.testing.factories as utfactories
+from character.models import Character
+from game.forms import CreateQuestForm, DamageForm, HealForm, IncreaseXpForm
+from game.models import Damage, Event, Game, Healing, Quest, XpIncrease
+from game.views.master import (
+    CharacterInviteConfirmView,
+    CharacterInviteView,
+    DamageView,
+    GameStartView,
+    HealingView,
+    QuestCreateView,
+    XpIncreaseView,
+)
+from utils.testing.factories import CharacterFactory, GameFactory, PlayerFactory
 
 
 class CharacterInviteViewTest(TestCase):
@@ -22,25 +30,23 @@ class CharacterInviteViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        game = utfactories.GameFactory(master__user__username="master")
+        game = GameFactory(master__user__username="master")
         number_of_characters_in_a_game = 5
         number_of_characters_not_in_a_game = 12
         for i in range(number_of_characters_in_a_game):
-            utfactories.PlayerFactory(game=game)
+            PlayerFactory(game=game)
         for i in range(number_of_characters_not_in_a_game):
-            utfactories.CharacterFactory()
+            CharacterFactory()
 
     def setUp(self):
         self.user = User.objects.get(username="master")
         self.client.login(username=self.user.username, password="pwd")
-        self.game = gmodels.Game.objects.last()
+        self.game = Game.objects.last()
 
     def test_view_mapping(self):
         response = self.client.get(reverse(self.path_name, args=(self.game.id,)))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.resolver_match.func.view_class, gvmaster.CharacterInviteView
-        )
+        self.assertEqual(response.resolver_match.func.view_class, CharacterInviteView)
 
     def test_template_mapping(self):
         response = self.client.get(reverse(self.path_name, args=(self.game.id,)))
@@ -81,14 +87,14 @@ class CharacterInviteViewTest(TestCase):
         self.assertRaises(Http404)
 
     def test_context_data(self):
-        character_list = cmodels.Character.objects.filter(player__game=None)
+        character_list = Character.objects.filter(player__game=None)
         response = self.client.get(reverse(self.path_name, args=(self.game.id,)))
         self.assertTrue(
             set(response.context["character_list"]).issubset(character_list)
         )
 
     def test_context_data_all_characters_already_assigned(self):
-        cmodels.Character.objects.filter(player=None).delete()
+        Character.objects.filter(player=None).delete()
         response = self.client.get(reverse(self.path_name, args=(self.game.id,)))
         self.assertFalse(response.context["character_list"])
 
@@ -98,14 +104,14 @@ class CharacterInviteConfirmViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        game = utfactories.GameFactory(master__user__username="master")
-        utfactories.PlayerFactory(game=game)
+        game = GameFactory(master__user__username="master")
+        PlayerFactory(game=game)
 
     def setUp(self):
         self.user = User.objects.get(username="master")
         self.client.login(username=self.user.username, password="pwd")
-        self.game = gmodels.Game.objects.last()
-        self.character = cmodels.Character.objects.get(player__game=self.game)
+        self.game = Game.objects.last()
+        self.character = Character.objects.get(player__game=self.game)
 
     def test_view_mapping(self):
         response = self.client.get(
@@ -119,7 +125,7 @@ class CharacterInviteConfirmViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            response.resolver_match.func.view_class, gvmaster.CharacterInviteConfirmView
+            response.resolver_match.func.view_class, CharacterInviteConfirmView
         )
 
     def test_template_mapping(self):
@@ -150,7 +156,7 @@ class CharacterInviteConfirmViewTest(TestCase):
         self.assertRaises(Http404)
 
     def test_character_added_to_game(self):
-        character = utfactories.CharacterFactory()
+        character = CharacterFactory()
         response = self.client.post(
             reverse(
                 self.path_name,
@@ -163,7 +169,7 @@ class CharacterInviteConfirmViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse("game", args=(self.game.id,)))
         self.assertEqual(self.character.player.game, self.game)
-        event = gmodels.Event.objects.last()
+        event = Event.objects.last()
         self.assertLessEqual(event.date.second - timezone.now().second, 2)
         self.assertEqual(event.game, self.game)
         self.assertEqual(event.message, f"{character} was added to the game.")
@@ -174,19 +180,17 @@ class GameStartViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        utfactories.GameFactory(master__user__username="master")
+        GameFactory(master__user__username="master")
 
     def setUp(self):
         self.user = User.objects.get(username="master")
         self.client.login(username=self.user.username, password="pwd")
-        self.game = gmodels.Game.objects.last()
+        self.game = Game.objects.last()
 
     def test_view_mapping(self):
         response = self.client.get(reverse(self.path_name, args=(self.game.id,)))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.resolver_match.func.view_class, gvmaster.GameStartView
-        )
+        self.assertEqual(response.resolver_match.func.view_class, GameStartView)
 
     def test_template_mapping(self):
         response = self.client.get(reverse(self.path_name, args=(self.game.id,)))
@@ -202,20 +206,20 @@ class GameStartViewTest(TestCase):
     def test_game_start_ok(self):
         number_of_players = 2
         for _ in range(number_of_players):
-            utfactories.PlayerFactory(game=self.game)
+            PlayerFactory(game=self.game)
         response = self.client.post(reverse(self.path_name, args=(self.game.id,)))
         self.assertEqual(response.status_code, 302)
         # Need to query the game again.
-        self.game = gmodels.Game.objects.last()
+        self.game = Game.objects.last()
         self.assertTrue(self.game.is_ongoing())
         self.assertLessEqual(self.game.start_date.second - timezone.now().second, 2)
-        event = gmodels.Event.objects.last()
+        event = Event.objects.last()
         self.assertLessEqual(event.date.second - timezone.now().second, 2)
         self.assertEqual(event.game, self.game)
         self.assertEqual(event.message, "the game started.")
 
     def test_game_start_not_enough_characters(self):
-        utfactories.PlayerFactory(game=self.game)
+        PlayerFactory(game=self.game)
         response = self.client.post(reverse(self.path_name, args=(self.game.id,)))
         self.assertEqual(response.status_code, 302)
         self.assertRaises(PermissionDenied)
@@ -230,18 +234,18 @@ class QuestCreateViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        game = utfactories.GameFactory(master__user__username="master")
+        game = GameFactory(master__user__username="master")
         number_of_players = 3
         for _ in range(number_of_players):
-            utfactories.PlayerFactory(game=game)
+            PlayerFactory(game=game)
         game.start()
         game.save()
 
     def setUp(self):
         self.user = User.objects.get(username="master")
         self.client.login(username=self.user.username, password="pwd")
-        self.game = gmodels.Game.objects.last()
-        self.character = cmodels.Character.objects.last()
+        self.game = Game.objects.last()
+        self.character = Character.objects.last()
 
     def tearDown(self):
         cache.clear()
@@ -249,9 +253,7 @@ class QuestCreateViewTest(TestCase):
     def test_view_mapping(self):
         response = self.client.get(reverse(self.path_name, args=(self.game.id,)))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.resolver_match.func.view_class, gvmaster.QuestCreateView
-        )
+        self.assertEqual(response.resolver_match.func.view_class, QuestCreateView)
 
     def test_template_mapping(self):
         response = self.client.get(reverse(self.path_name, args=(self.game.id,)))
@@ -280,14 +282,14 @@ class QuestCreateViewTest(TestCase):
         fake = Faker()
         content = fake.text(100)
         data = {"content": f"{content}"}
-        form = gforms.CreateQuestForm(data)
+        form = CreateQuestForm(data)
         self.assertTrue(form.is_valid())
 
         response = self.client.post(
             reverse(self.path_name, args=(self.game.id,)), data=form.cleaned_data
         )
         self.assertEqual(response.status_code, 302)
-        quest = gmodels.Quest.objects.filter(game=self.game).last()
+        quest = Quest.objects.filter(game=self.game).last()
         self.assertEqual(quest.game, self.game)
         self.assertEqual(quest.message, "the Master updated the campaign.")
         self.assertEqual(quest.content, form.cleaned_data["content"])
@@ -299,18 +301,18 @@ class XpIncreaseViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        game = utfactories.GameFactory(master__user__username="master")
+        game = GameFactory(master__user__username="master")
         number_of_players = 3
         for _ in range(number_of_players):
-            utfactories.PlayerFactory(game=game)
+            PlayerFactory(game=game)
         game.start()
         game.save()
 
     def setUp(self):
         self.user = User.objects.get(username="master")
         self.client.login(username=self.user.username, password="pwd")
-        self.game = gmodels.Game.objects.last()
-        self.character = cmodels.Character.objects.last()
+        self.game = Game.objects.last()
+        self.character = Character.objects.last()
 
     def tearDown(self):
         cache.clear()
@@ -326,9 +328,7 @@ class XpIncreaseViewTest(TestCase):
             )
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.resolver_match.func.view_class, gvmaster.XpIncreaseView
-        )
+        self.assertEqual(response.resolver_match.func.view_class, XpIncreaseView)
 
     def test_template_mapping(self):
         response = self.client.get(
@@ -403,7 +403,7 @@ class XpIncreaseViewTest(TestCase):
     def test_creation_ok(self):
         xp = random.randint(1, 20)
         data = {"xp": f"{xp}"}
-        form = gforms.IncreaseXpForm(data)
+        form = IncreaseXpForm(data)
         self.assertTrue(form.is_valid())
 
         response = self.client.post(
@@ -417,7 +417,7 @@ class XpIncreaseViewTest(TestCase):
             data=form.cleaned_data,
         )
         self.assertEqual(response.status_code, 302)
-        xp_increase = gmodels.XpIncrease.objects.last()
+        xp_increase = XpIncrease.objects.last()
         self.assertEqual(xp_increase.game, self.game)
         self.assertEqual(xp_increase.character, self.character)
         self.assertLessEqual(xp_increase.date.second - timezone.now().second, 2)
@@ -431,7 +431,7 @@ class XpIncreaseViewTest(TestCase):
     def test_creation_ko_invalid_form(self):
         xp = random.randint(-20, 0)
         data = {"xp": f"{xp}"}
-        form = gforms.IncreaseXpForm(data)
+        form = IncreaseXpForm(data)
         self.assertFalse(form.is_valid())
         self.assertRaises(ValidationError)
 
@@ -441,18 +441,18 @@ class DamageViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        game = utfactories.GameFactory(master__user__username="master")
+        game = GameFactory(master__user__username="master")
         number_of_players = 3
         for _ in range(number_of_players):
-            utfactories.PlayerFactory(game=game)
+            PlayerFactory(game=game)
         game.start()
         game.save()
 
     def setUp(self):
         self.user = User.objects.get(username="master")
         self.client.login(username=self.user.username, password="pwd")
-        self.game = gmodels.Game.objects.last()
-        self.character = cmodels.Character.objects.last()
+        self.game = Game.objects.last()
+        self.character = Character.objects.last()
 
     def tearDown(self):
         cache.clear()
@@ -468,7 +468,7 @@ class DamageViewTest(TestCase):
             )
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.resolver_match.func.view_class, gvmaster.DamageView)
+        self.assertEqual(response.resolver_match.func.view_class, DamageView)
 
     def test_template_mapping(self):
         response = self.client.get(
@@ -531,7 +531,7 @@ class DamageViewTest(TestCase):
     def test_creation_ok(self):
         hp = random.randint(1, 20)
         data = {"hp": f"{hp}"}
-        form = gforms.DamageForm(data)
+        form = DamageForm(data)
         self.assertTrue(form.is_valid())
 
         response = self.client.post(
@@ -545,7 +545,7 @@ class DamageViewTest(TestCase):
             data=form.cleaned_data,
         )
         self.assertEqual(response.status_code, 302)
-        damage = gmodels.Damage.objects.last()
+        damage = Damage.objects.last()
         self.assertEqual(damage.game, self.game)
         self.assertEqual(damage.character, self.character)
         self.assertLessEqual(damage.date.second - timezone.now().second, 2)
@@ -559,14 +559,14 @@ class DamageViewTest(TestCase):
     def test_creation_ko_invalid_form(self):
         hp = random.randint(-20, 0)
         data = {"hp": f"{hp}"}
-        form = gforms.DamageForm(data)
+        form = DamageForm(data)
         self.assertFalse(form.is_valid())
         self.assertRaises(ValidationError)
 
     def test_death(self):
         hp = 1000
         data = {"hp": f"{hp}"}
-        form = gforms.DamageForm(data)
+        form = DamageForm(data)
         self.assertTrue(form.is_valid())
 
         response = self.client.post(
@@ -580,7 +580,7 @@ class DamageViewTest(TestCase):
             data=form.cleaned_data,
         )
         self.assertEqual(response.status_code, 302)
-        damage = gmodels.Damage.objects.last()
+        damage = Damage.objects.last()
         self.assertEqual(damage.game, self.game)
         self.assertEqual(damage.character, self.character)
         self.assertLessEqual(damage.date.second - timezone.now().second, 2)
@@ -599,18 +599,18 @@ class HealViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        game = utfactories.GameFactory(master__user__username="master")
+        game = GameFactory(master__user__username="master")
         number_of_players = 3
         for _ in range(number_of_players):
-            utfactories.PlayerFactory(game=game)
+            PlayerFactory(game=game)
         game.start()
         game.save()
 
     def setUp(self):
         self.user = User.objects.get(username="master")
         self.client.login(username=self.user.username, password="pwd")
-        self.game = gmodels.Game.objects.last()
-        self.character = cmodels.Character.objects.last()
+        self.game = Game.objects.last()
+        self.character = Character.objects.last()
         # The character needs to have low HP, in order to be healed.
         self.character.hp = 1
         self.character.save()
@@ -623,7 +623,7 @@ class HealViewTest(TestCase):
             reverse(self.path_name, args=[self.game.id, self.character.id])
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.resolver_match.func.view_class, gvmaster.HealingView)
+        self.assertEqual(response.resolver_match.func.view_class, HealingView)
 
     def test_template_mapping(self):
         response = self.client.get(
@@ -668,7 +668,7 @@ class HealViewTest(TestCase):
     def test_creation_ok(self):
         hp = random.randint(1, 20)
         data = {"hp": f"{hp}"}
-        form = gforms.HealForm(data)
+        form = HealForm(data)
         self.assertTrue(form.is_valid())
 
         response = self.client.post(
@@ -676,7 +676,7 @@ class HealViewTest(TestCase):
             data=form.cleaned_data,
         )
         self.assertEqual(response.status_code, 302)
-        healing = gmodels.Healing.objects.last()
+        healing = Healing.objects.last()
         self.assertEqual(healing.game, self.game)
         self.assertEqual(healing.character, self.character)
         self.assertLessEqual(healing.date.second - timezone.now().second, 2)
@@ -690,14 +690,14 @@ class HealViewTest(TestCase):
     def test_creation_ko_invalid_form(self):
         hp = random.randint(-20, 0)
         data = {"hp": f"{hp}"}
-        form = gforms.HealForm(data)
+        form = HealForm(data)
         self.assertFalse(form.is_valid())
         self.assertRaises(ValidationError)
 
     def test_healing_not_exceed_character_max_hp(self):
         hp = 1000
         data = {"hp": f"{hp}"}
-        form = gforms.HealForm(data)
+        form = HealForm(data)
         self.assertTrue(form.is_valid())
 
         response = self.client.post(
@@ -705,7 +705,7 @@ class HealViewTest(TestCase):
             data=form.cleaned_data,
         )
         self.assertEqual(response.status_code, 302)
-        healing = gmodels.Healing.objects.last()
+        healing = Healing.objects.last()
         self.assertEqual(healing.game, self.game)
         self.assertEqual(healing.character, self.character)
         self.assertLessEqual(healing.date.second - timezone.now().second, 2)

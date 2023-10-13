@@ -1,21 +1,21 @@
 from django.urls import path
 
-import character.views as cviews
+from character.views import CharacterCreateView, CharacterDetailView, CharacterListView
 
 urlpatterns = [
     path(
         "character/<int:pk>",
-        cviews.CharacterDetailView.as_view(),
+        CharacterDetailView.as_view(),
         name="character-detail",
     ),
     path(
         "characters",
-        cviews.CharacterListView.as_view(),
+        CharacterListView.as_view(),
         name="character-list",
     ),
     path(
         "create_character",
-        cviews.CharacterCreateView.as_view(),
+        CharacterCreateView.as_view(),
         name="character-create",
     ),
 ]
