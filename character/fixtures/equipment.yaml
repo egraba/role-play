@@ -530,3 +530,147 @@
 - model: character.gear
   fields:
     name: Whetstone
+
+# Tools
+- model: character.tool
+  fields:
+    name: Alchemist's supplies
+    tool_type: AT
+- model: character.tool
+  fields:
+    name: Brewer's supplies
+    tool_type: AT
+- model: character.tool
+  fields:
+    name: Calligrapher's supplies
+    tool_type: AT
+- model: character.tool
+  fields:
+    name: Carpenter's tools
+    tool_type: AT
+- model: character.tool
+  fields:
+    name: Cartographer's tools
+    tool_type: AT
+- model: character.tool
+  fields:
+    name: Cobbler's tools
+    tool_type: AT
+- model: character.tool
+  fields:
+    name: Cook's utensils
+    tool_type: AT
+- model: character.tool
+  fields:
+    name: Glassblower's tools
+    tool_type: AT
+- model: character.tool
+  fields:
+    name: Jeweler's tools
+    tool_type: AT
+- model: character.tool
+  fields:
+    name: Leatherworker's tools
+    tool_type: AT
+- model: character.tool
+  fields:
+    name: Mason's tools
+    tool_type: AT
+- model: character.tool
+  fields:
+    name: Painter's supplies
+    tool_type: AT
+- model: character.tool
+  fields:
+    name: Potter's tools
+    tool_type: AT
+- model: character.tool
+  fields:
+    name: Smith's tools
+    tool_type: AT
+- model: character.tool
+  fields:
+    name: Tinker's tools
+    tool_type: AT
+- model: character.tool
+  fields:
+    name: Weaver's tools
+    tool_type: AT
+- model: character.tool
+  fields:
+    name: Woodcarver's tools
+    tool_type: AT
+- model: character.tool
+  fields:
+    name: Disguise kit
+- model: character.tool
+  fields:
+    name: Forgery kit
+- model: character.tool
+  fields:
+    name: Dice set
+    tool_type: GS
+- model: character.tool
+  fields:
+    name: Dragonchess set
+    tool_type: GS
+- model: character.tool
+  fields:
+    name: Playing card set
+    tool_type: GS
+- model: character.tool
+  fields:
+    name: Three-Dragon Ante set
+    tool_type: GS
+- model: character.tool
+  fields:
+    name: Herbalism kit
+- model: character.tool
+  fields:
+    name: Bagpipes
+    tool_type: MU
+- model: character.tool
+  fields:
+    name: Drum
+    tool_type: MU
+- model: character.tool
+  fields:
+    name: Dulcimer
+    tool_type: MU
+- model: character.tool
+  fields:
+    name: Flute
+    tool_type: MU
+- model: character.tool
+  fields:
+    name: Lute
+    tool_type: MU
+- model: character.tool
+  fields:
+    name: Lyre
+    tool_type: MU
+- model: character.tool
+  fields:
+    name: Horn
+    tool_type: MU
+- model: character.tool
+  fields:
+    name: Pan flute
+    tool_type: MU
+- model: character.tool
+  fields:
+    name: Shawm
+    tool_type: MU
+- model: character.tool
+  fields:
+    name: Viol
+    tool_type: MU
+- model: character.tool
+  fields:
+    name: Navigator's tools
+- model: character.tool
+  fields:
+    name: Poisoner's kit
+- model: character.tool
+  fields:
+    name: "Thieves' tools"

@@ -7,7 +7,7 @@ class Inventory(models.Model):
 
 
 class Equipment(models.Model):
-    name = models.CharField(max_length=20)
+    name = models.CharField(max_length=30)
     inventory = models.ForeignKey(
         Inventory, on_delete=models.SET_NULL, null=True, blank=True
     )
@@ -62,7 +62,7 @@ class Weapon(models.Model):
         MARTIAL_MELEE = "MM", "Martial Melee"
         MARTIAL_RANGED = "MR", "Marial Ranged"
 
-    name = models.CharField(max_length=20, primary_key=True, choices=Name.choices)
+    name = models.CharField(max_length=30, primary_key=True, choices=Name.choices)
     weapon_type = models.CharField(max_length=2, choices=Type.choices)
 
     def __str__(self):
@@ -91,7 +91,7 @@ class Armor(models.Model):
         HEAVY_ARMOR = "HA", "Heavy Armor"
         SHIELD = "SH", "Shield"
 
-    name = models.CharField(max_length=20, primary_key=True, choices=Name.choices)
+    name = models.CharField(max_length=30, primary_key=True, choices=Name.choices)
     armor_type = models.CharField(max_length=2, choices=Type.choices)
 
     def __str__(self):
@@ -108,7 +108,7 @@ class Pack(models.Model):
         PRIESTS_PACK = "Priest's Pack"
         SCHOLARS_PACK = "Scholar's Pack"
 
-    name = models.CharField(max_length=20, primary_key=True, choices=Name.choices)
+    name = models.CharField(max_length=30, primary_key=True, choices=Name.choices)
 
     def __str__(self):
         return self.name
@@ -221,8 +221,61 @@ class Gear(models.Model):
         HOLY_SYMBOL = "HS", "Holy symbol"
         MISC = "MI", "Misc"
 
-    name = models.CharField(max_length=20, primary_key=True, choices=Name.choices)
+    name = models.CharField(max_length=30, primary_key=True, choices=Name.choices)
     gear_type = models.CharField(max_length=2, choices=Type.choices, default=Type.MISC)
+
+    def __str__(self):
+        return self.name
+
+
+class Tool(models.Model):
+    class Name(models.TextChoices):
+        ALCHEMISTS_SUPPLIES = "Alchemist's supplies"
+        BREWERS_SUPPLIES = "Brewer's supplies"
+        CALLIGRAPHERS_SUPPLIES = "Calligrapher's supplies"
+        CARPENTERS_TOOLS = "Carpenter's tools"
+        CARTOGRAPHERS_TOOLS = "Cartographer's tools"
+        COBBLERS_TOOLS = "Cobbler's tools"
+        COOKS_UTENSILS = "Cook's utensils"
+        GLASSBLOWERS_TOOLS = "Glassblower's tools"
+        JEWELERS_TOOLS = "Jeweler's tools"
+        LEATHERWORKERS_TOOLS = "Leatherworker's tools"
+        MASONS_TOOLS = "Mason's tools"
+        PAINTERS_SUPPLIES = "Painter's supplies"
+        POTTERS_TOOLS = "Potter's tools"
+        SMITHS_TOOLS = "Smith's tools"
+        TINKERS_TOOLS = "Tinker's tools"
+        WEAVERS_TOOLS = "Weaver's tools"
+        WOODCARVERS_TOOLS = "Woodcarver's tools"
+        DISGUISE_KIT = "Disguise kit"
+        FORGERY_KIT = "Forgery kit"
+        DICE_SET = "Dice set"
+        DRAGONCHESS_SET = "Dragonchess set"
+        PLAYING_CARD_SET = "Playing card set"
+        THREE_DRAGON_ANTE_SET = "Three-Dragon Ante set"
+        HERBALISM_KIT = "Herbalism kit"
+        BAGPIPES = "Bagpipes"
+        DRUM = "Drum"
+        DULCIMER = "Dulcimer"
+        FLUTE = "Flute"
+        LUTE = "Lute"
+        LYRE = "Lyre"
+        HORN = "Horn"
+        PAN_FLUTE = "Pan flute"
+        SHAWM = "Shawm"
+        VIOL = "Viol"
+        NAVIGATORS_TOOLS = "Navigator's tools"
+        POISONERS_KIT = "Poisoner's kit"
+        THIEVES_TOOLS = "Thieves' tools"
+
+    class Type(models.TextChoices):
+        ARTISANS_TOOLS = "AT", "Artisan's tools"
+        GAMING_SET = "GS", "Gaming set"
+        MUSICAL_INSTRUMENT = "MU", "Musical instrument"
+        MISC = "MI", "Misc"
+
+    name = models.CharField(max_length=30, primary_key=True, choices=Name.choices)
+    tool_type = models.CharField(max_length=2, choices=Type.choices, default=Type.MISC)
 
     def __str__(self):
         return self.name
