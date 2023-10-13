@@ -2,12 +2,8 @@
 profile = "black"
 
 [tool.coverage.run]
-plugins = [
-    'django_coverage_plugin',
-]
-omit = [
-    "manage.py",
-]
+plugins = ['django_coverage_plugin']
+omit = ["manage.py"]
 
 [tool.poetry]
 name = "role-play"
@@ -16,7 +12,7 @@ description = "Role playing game."
 authors = ["Eric Grabarczyk <eric.grabarczyk@gmail.com>"]
 license = "GNU Affero General Public License v3.0"
 readme = "README.md"
-packages = [{include = "role_play"}]
+packages = [{ include = "role_play" }]
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -33,7 +29,7 @@ django-fsm = "*"
 email-validator = "*"
 gunicorn = "*"
 invoke = "*"
-psycopg = {extras = ["binary"], version = "*"}
+psycopg = { extras = ["binary"], version = "*" }
 pyyaml = "*"
 redis = "*"
 whitenoise = "*"
@@ -47,7 +43,7 @@ django-debug-toolbar = "*"
 factory_boy = "*"
 faker = "*"
 pre-commit = "*"
-
+pytest-django = "*"
 
 [tool.commitizen]
 name = "cz_conventional_commits"
@@ -56,6 +52,9 @@ version_scheme = "semver"
 version_provider = "poetry"
 update_changelog_on_bump = true
 major_version_zero = true
+
+[tool.pytest.ini_options]
+python_files = ["test_*.py", "*_test.py", "testing/python/*.py"]
 
 [build-system]
 requires = ["poetry-core"]
