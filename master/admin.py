@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-import master.models as mmodels
+from master.models import Campaign
 
 
 class CampaignAdmin(admin.ModelAdmin):
@@ -9,4 +9,4 @@ class CampaignAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
 
 
-admin.site.register(mmodels.Campaign, CampaignAdmin)
+admin.site.register(Campaign, CampaignAdmin)

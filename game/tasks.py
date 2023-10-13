@@ -1,8 +1,8 @@
 from celery import shared_task
 from django.core.mail import send_mail
 
-import game.models as gmodels
 from character.models.character import Character
+from game.models import Choice, DiceLaunch, Game, Instruction
 
 
 @shared_task
@@ -12,8 +12,8 @@ def send_email(subject, message, from_email, recipient_list):
 
 @shared_task
 def store_master_instruction(game_id, date, message, content):
-    game = gmodels.Game.objects.get(id=game_id)
-    gmodels.Instruction.objects.create(
+    game = Game.objects.get(id=game_id)
+    Instruction.objects.create(
         game=game,
         date=date,
         message=message,
@@ -23,9 +23,9 @@ def store_master_instruction(game_id, date, message, content):
 
 @shared_task
 def store_player_choice(game_id, date, message, character_id, selection):
-    game = gmodels.Game.objects.get(id=game_id)
+    game = Game.objects.get(id=game_id)
     character = Character.objects.get(id=character_id)
-    gmodels.Choice.objects.create(
+    Choice.objects.create(
         game=game,
         date=date,
         message=message,
@@ -36,9 +36,9 @@ def store_player_choice(game_id, date, message, character_id, selection):
 
 @shared_task
 def store_player_dice_launch(game_id, date, message, character_id, score):
-    game = gmodels.Game.objects.get(id=game_id)
+    game = Game.objects.get(id=game_id)
     character = Character.objects.get(id=character_id)
-    gmodels.DiceLaunch.objects.create(
+    DiceLaunch.objects.create(
         game=game,
         date=date,
         message=message,

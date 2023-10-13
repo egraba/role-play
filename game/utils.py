@@ -1,8 +1,8 @@
-import game.models as gmodels
+from game.models import Player
 
 
 def get_players_emails(game):
-    players = gmodels.Player.objects.filter(game=game)
+    players = Player.objects.filter(game=game)
     email_set = {
         player.character.user.email
         for player in players

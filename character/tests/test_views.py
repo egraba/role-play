@@ -5,7 +5,7 @@ from faker import Faker
 
 import character.abilities as abilities
 import character.views as cviews
-import utils.testing.factories as utfactories
+from utils.testing.factories import CharacterFactory, GameFactory, PlayerFactory
 from character.forms import CreateCharacterForm
 from character.models.character import Character
 from character.models.classes import Class
@@ -15,7 +15,7 @@ from character.models.races import Ability, Language, Race
 class CharacterDetailViewTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        utfactories.CharacterFactory()
+        CharacterFactory()
 
     def setUp(self):
         self.user = User.objects.last()
@@ -25,9 +25,7 @@ class CharacterDetailViewTest(TestCase):
     def test_view_mapping(self):
         response = self.client.get(self.character.get_absolute_url())
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.resolver_match.func.view_class, cviews.CharacterDetailView
-        )
+        self.assertEqual(response.resolver_match.func.view_class, CharacterDetailView)
 
     def test_template_mapping(self):
         response = self.client.get(self.character.get_absolute_url())
@@ -35,8 +33,8 @@ class CharacterDetailViewTest(TestCase):
         self.assertTemplateUsed(response, "character/character.html")
 
     def test_content_character_is_in_game(self):
-        game = utfactories.GameFactory()
-        utfactories.PlayerFactory(game=game, character=self.character)
+        game = GameFactory()
+        PlayerFactory(game=game, character=self.character)
         response = self.client.get(self.character.get_absolute_url())
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, game.name)
@@ -49,7 +47,7 @@ class CharacterListViewTest(TestCase):
     def setUpTestData(cls):
         number_of_characters = 22
         for _ in range(number_of_characters):
-            utfactories.CharacterFactory()
+            CharacterFactory()
 
     def setUp(self):
         self.user = User.objects.last()
@@ -58,9 +56,7 @@ class CharacterListViewTest(TestCase):
     def test_view_mapping(self):
         response = self.client.get(reverse(self.path_name))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.resolver_match.func.view_class, cviews.CharacterListView
-        )
+        self.assertEqual(response.resolver_match.func.view_class, CharacterListView)
 
     def test_template_mapping(self):
         response = self.client.get(reverse(self.path_name))
@@ -100,8 +96,8 @@ class CharacterListViewTest(TestCase):
     def test_content_character_is_in_game(self):
         # To avoid pagination.
         Character.objects.all().delete()
-        game = utfactories.GameFactory()
-        utfactories.PlayerFactory(game=game)
+        game = GameFactory()
+        PlayerFactory(game=game)
         response = self.client.get(reverse(self.path_name))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, game.name)
@@ -113,7 +109,7 @@ class CharacterCreateViewTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        utfactories.CharacterFactory()
+        CharacterFactory()
 
     def setUp(self):
         self.user = User.objects.last()
@@ -122,9 +118,7 @@ class CharacterCreateViewTest(TestCase):
     def test_view_mapping(self):
         response = self.client.get(reverse(self.path_name))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.resolver_match.func.view_class, cviews.CharacterCreateView
-        )
+        self.assertEqual(response.resolver_match.func.view_class, CharacterCreateView)
 
     def test_template_mapping(self):
         response = self.client.get(reverse(self.path_name))
