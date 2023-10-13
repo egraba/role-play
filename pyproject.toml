@@ -66,6 +66,9 @@ version_provider = "poetry"
 update_changelog_on_bump = true
 major_version_zero = true
 
+[tool.pytest.ini_options]
+python_files = ["test_*.py", "*_test.py", "testing/python/*.py"]
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
