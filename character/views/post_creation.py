@@ -3,7 +3,7 @@ from django.views.generic import FormView
 
 from character.forms import ChoseEquipmentForm
 from character.models.classes import Class
-from character.models.equipment import Armor, Equipment, Gear, Pack, Weapon
+from character.models.equipment import Armor, Equipment, Gear, Pack, Tool, Weapon
 from character.views.mixins import CharacterContextMixin
 
 
@@ -140,6 +140,9 @@ class ChoseEquipmentView(LoginRequiredMixin, CharacterContextMixin, FormView):
                 )
                 Equipment.objects.create(
                     name=Weapon.Name.DAGGER, inventory=self.character.inventory
+                )
+                Equipment.objects.create(
+                    name=Tool.Name.THIEVES_TOOLS, inventory=self.character.inventory
                 )
 
             case Class.WIZARD:
