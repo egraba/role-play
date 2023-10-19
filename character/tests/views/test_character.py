@@ -157,7 +157,7 @@ class CharacterCreateViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         character = Character.objects.last()
         self.assertRedirects(
-            response, reverse("choose-equipment", args=(character.id,))
+            response, reverse("equipment-select", args=(character.id,))
         )
 
         self.assertEqual(character.name, form.cleaned_data["name"])
@@ -195,7 +195,7 @@ class CharacterCreateViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         character = Character.objects.last()
         self.assertRedirects(
-            response, reverse("choose-equipment", args=(character.id,))
+            response, reverse("equipment-select", args=(character.id,))
         )
 
         self.assertEqual(character.strength, abilities.scores[0][0])
@@ -255,7 +255,7 @@ class CharacterCreateViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         character = Character.objects.last()
         self.assertRedirects(
-            response, reverse("choose-equipment", args=(character.id,))
+            response, reverse("equipment-select", args=(character.id,))
         )
 
         self.assertEqual(character.strength, abilities.scores[0][0])
@@ -311,7 +311,7 @@ class CharacterCreateViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         character = Character.objects.last()
         self.assertRedirects(
-            response, reverse("choose-equipment", args=(character.id,))
+            response, reverse("equipment-select", args=(character.id,))
         )
 
         self.assertEqual(character.strength, abilities.scores[0][0])
@@ -367,7 +367,7 @@ class CharacterCreateViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         character = Character.objects.last()
         self.assertRedirects(
-            response, reverse("choose-equipment", args=(character.id,))
+            response, reverse("equipment-select", args=(character.id,))
         )
 
         self.assertEqual(character.strength, abilities.scores[0][0] + 1)
@@ -415,7 +415,7 @@ class CharacterCreateViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         character = Character.objects.last()
         self.assertRedirects(
-            response, reverse("choose-equipment", args=(character.id,))
+            response, reverse("equipment-select", args=(character.id,))
         )
 
         self.assertEqual(character.hit_dice, "1d8")
@@ -458,7 +458,7 @@ class CharacterCreateViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         character = Character.objects.last()
         self.assertRedirects(
-            response, reverse("choose-equipment", args=(character.id,))
+            response, reverse("equipment-select", args=(character.id,))
         )
 
         self.assertEqual(character.hit_dice, "1d10")
@@ -504,7 +504,7 @@ class CharacterCreateViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         character = Character.objects.last()
         self.assertRedirects(
-            response, reverse("choose-equipment", args=(character.id,))
+            response, reverse("equipment-select", args=(character.id,))
         )
 
         self.assertEqual(character.hit_dice, "1d8")
@@ -550,7 +550,7 @@ class CharacterCreateViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         character = Character.objects.last()
         self.assertRedirects(
-            response, reverse("choose-equipment", args=(character.id,))
+            response, reverse("equipment-select", args=(character.id,))
         )
 
         self.assertEqual(character.hit_dice, "1d6")

@@ -62,7 +62,7 @@ class CreateCharacterForm(forms.ModelForm):
         pass
 
 
-class ChoseEquipmentForm(forms.Form):
+class SelectEquipmentForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         try:

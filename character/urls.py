@@ -5,7 +5,7 @@ from character.views.character import (
     CharacterDetailView,
     CharacterListView,
 )
-from character.views.post_creation import ChoseEquipmentView
+from character.views.post_creation import SelectEquipmentView
 
 urlpatterns = [
     path(
@@ -24,8 +24,8 @@ urlpatterns = [
         name="character-create",
     ),
     path(
-        "<int:character_id>/chose_equipment",
-        ChoseEquipmentView.as_view(),
-        name="choose-equipment",
+        "<int:character_id>/select_equipment",
+        SelectEquipmentView.as_view(),
+        name="equipment-select",
     ),
 ]

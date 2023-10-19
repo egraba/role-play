@@ -33,7 +33,7 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
     template_name = "character/character_create.html"
 
     def get_success_url(self):
-        return reverse("choose-equipment", args=(self.object.id,))
+        return reverse("equipment-select", args=(self.object.id,))
 
     def _apply_racial_traits(self, character, racial_trait):
         character.adult_age = racial_trait.adult_age

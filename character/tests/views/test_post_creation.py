@@ -6,7 +6,7 @@ from utils.testing.factories import CharacterFactory
 
 
 @pytest.mark.django_db
-class TestChoseEquipmentView:
+class TestSelectEquipmentView:
     character = None
 
     @pytest.fixture(autouse=True)

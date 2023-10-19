@@ -1,15 +1,15 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import FormView
 
-from character.forms import ChoseEquipmentForm
+from character.forms import SelectEquipmentForm
 from character.models.classes import Class
 from character.models.equipment import Armor, Equipment, Gear, Pack, Tool, Weapon
 from character.views.mixins import CharacterContextMixin
 
 
-class ChoseEquipmentView(LoginRequiredMixin, CharacterContextMixin, FormView):
-    template_name = "character/choose_equipment.html"
-    form_class = ChoseEquipmentForm
+class SelectEquipmentView(LoginRequiredMixin, CharacterContextMixin, FormView):
+    template_name = "character/select_equipment.html"
+    form_class = SelectEquipmentForm
 
     def get_success_url(self):
         return self.character.get_absolute_url()
