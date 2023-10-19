@@ -7,8 +7,8 @@ from character.models.equipment import Armor, Equipment, Gear, Pack, Tool, Weapo
 from character.views.mixins import CharacterContextMixin
 
 
-class SelectEquipmentView(LoginRequiredMixin, CharacterContextMixin, FormView):
-    template_name = "character/select_equipment.html"
+class EquipmentSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
+    template_name = "character/equipment_select.html"
     form_class = SelectEquipmentForm
 
     def get_success_url(self):
