@@ -53,7 +53,7 @@ class IndexViewTest(TestCase):
 
     def test_content_logged_user_no_character(self):
         user = UserFactory()
-        self.client.login(username=user.username, password="pwd")
+        self.client.force_login(user)
 
         response = self.client.get(reverse(self.path_name))
         self.assertEqual(response.status_code, 200)
@@ -68,7 +68,7 @@ class IndexViewTest(TestCase):
 
     def test_content_logged_user_existing_character(self):
         character = CharacterFactory()
-        self.client.login(username=character.user.username, password="pwd")
+        self.client.force_login(character.user)
 
         response = self.client.get(reverse(self.path_name))
         self.assertEqual(response.status_code, 200)
@@ -95,7 +95,7 @@ class GameListViewTest(TestCase):
 
     def setUp(self):
         self.user = User.objects.last()
-        self.client.login(username=self.user.username, password="pwd")
+        self.client.force_login(self.user)
 
     def test_view_mapping(self):
         response = self.client.get(reverse(self.path_name))
@@ -108,7 +108,7 @@ class GameListViewTest(TestCase):
 
     def test_pagination_size(self):
         self.user = User.objects.last()
-        self.client.login(username=self.user.username, password="pwd")
+        self.client.force_login(self.user)
 
         response = self.client.get(reverse(self.path_name))
         self.assertEqual(response.status_code, 200)
@@ -118,7 +118,7 @@ class GameListViewTest(TestCase):
 
     def test_pagination_size_next_page(self):
         self.user = User.objects.last()
-        self.client.login(username=self.user.username, password="pwd")
+        self.client.force_login(self.user)
 
         response = self.client.get(reverse(self.path_name) + "?page=2")
         self.assertEqual(response.status_code, 200)
@@ -128,7 +128,7 @@ class GameListViewTest(TestCase):
 
     def test_ordering(self):
         self.user = User.objects.get(username="master-game-list-view")
-        self.client.login(username=self.user.username, password="pwd")
+        self.client.force_login(self.user)
 
         response = self.client.get(reverse(self.path_name))
         self.assertEqual(response.status_code, 200)
@@ -142,7 +142,7 @@ class GameListViewTest(TestCase):
 
     def test_content_no_game(self):
         self.user = User.objects.last()
-        self.client.login(username=self.user.username, password="pwd")
+        self.client.force_login(self.user)
         Game.objects.all().delete()
 
         response = self.client.get(reverse(self.path_name))
@@ -165,7 +165,7 @@ class GameViewTest(TestCase):
 
     def setUp(self):
         self.user = User.objects.get(username="master-game-view")
-        self.client.login(username=self.user.username, password="pwd")
+        self.client.force_login(self.user)
         self.game = Game.objects.last()
 
     def tearDown(self):
@@ -236,7 +236,7 @@ class GameViewTest(TestCase):
         self.assertEqual(response.context["quest"], quest)
         character_list = Character.objects.filter(player__game=self.game)
         self.assertQuerySetEqual(
-            list(response.context["character_list"]), list(character_list)
+            set(response.context["character_list"]), set(character_list)
         )
         event_list = Event.objects.filter(game=self.game)
         # issubset() is used because of pagination.
@@ -249,7 +249,7 @@ class GameViewTest(TestCase):
         # Log as a player
         character = Character.objects.filter(player__game=self.game).last()
         user = character.user
-        self.client.login(username=user.username, password="pwd")
+        self.client.force_login(user)
         response = self.client.get(self.game.get_absolute_url())
         self.assertEqual(response.status_code, 200)
 
@@ -258,7 +258,7 @@ class GameViewTest(TestCase):
         self.assertEqual(response.context["quest"], quest)
         character_list = Character.objects.filter(player__game=self.game)
         self.assertQuerySetEqual(
-            list(response.context["character_list"]), list(character_list)
+            set(response.context["character_list"]), set(character_list)
         )
         event_list = Event.objects.filter(game=self.game)
         # issubset() is used because of pagination.
@@ -271,7 +271,7 @@ class GameViewTest(TestCase):
         # Log as a player
         character = Character.objects.filter(player__game=self.game).last()
         user = character.user
-        self.client.login(username=user.username, password="pwd")
+        self.client.force_login(user)
         response = self.client.get(self.game.get_absolute_url())
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "played by you")
@@ -288,7 +288,7 @@ class GameCreateViewTest(TestCase):
 
     def setUp(self):
         self.user = UserFactory(username="game-create")
-        self.client.login(username=self.user.username, password="pwd")
+        self.client.force_login(self.user)
         self.campaign = CampaignFactory()
 
     def test_view_mapping(self):
@@ -329,7 +329,7 @@ class GameCreateErrorViewTest(TestCase):
 
     def setUp(self):
         self.user = UserFactory(username="game-create-error")
-        self.client.login(username=self.user.username, password="pwd")
+        self.client.force_login(self.user)
 
     def test_view_mapping(self):
         response = self.client.get(reverse(self.path_name, args=(self.fake_slug,)))

@@ -10,7 +10,7 @@ from invoke import task
 )
 def run(c, coverage=False, verbose=False, test_label=None, pty=True):
     """Test the app"""
-    cmd = "pytest --color=yes"
+    cmd = "pytest -n auto --color=yes"
     cmd_options = ""
     if verbose:
         cmd_options += "--verbose"

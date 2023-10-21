@@ -3,16 +3,18 @@
 ## Unreleased
 
 ### Added
-* Pytest is now used instead of Unittest
 * Celery is now used as task queue system
 * DnD: implement races and their racial traits
 * DnD: implement basic rules
 * Game is more reactive, when players take actions
 * Master is now able to give instruction separately from updating tale
+* The game master can create background stories before starting a game
+
+### Changed
+* Pytest is now used instead of Unittest
 * Various UX/UI improvements
 * Upgrade project's libraries to their latest versions
 * The project is more modular (character app, refactored testing, etc.)
-* The game master can create background stories before starting a game
 
 ## v0.3.0 - 2023-07-07
 
