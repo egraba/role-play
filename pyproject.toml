@@ -44,6 +44,7 @@ factory_boy = "*"
 faker = "*"
 pre-commit = "*"
 pytest-django = "*"
+pytest-xdist = "*"
 
 [tool.commitizen]
 name = "cz_conventional_commits"

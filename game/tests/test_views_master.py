@@ -40,7 +40,7 @@ class CharacterInviteViewTest(TestCase):
 
     def setUp(self):
         self.user = User.objects.get(username="master")
-        self.client.login(username=self.user.username, password="pwd")
+        self.client.force_login(self.user)
         self.game = Game.objects.last()
 
     def test_view_mapping(self):
@@ -109,7 +109,7 @@ class CharacterInviteConfirmViewTest(TestCase):
 
     def setUp(self):
         self.user = User.objects.get(username="master")
-        self.client.login(username=self.user.username, password="pwd")
+        self.client.force_login(self.user)
         self.game = Game.objects.last()
         self.character = Character.objects.get(player__game=self.game)
 
@@ -184,7 +184,7 @@ class GameStartViewTest(TestCase):
 
     def setUp(self):
         self.user = User.objects.get(username="master")
-        self.client.login(username=self.user.username, password="pwd")
+        self.client.force_login(self.user)
         self.game = Game.objects.last()
 
     def test_view_mapping(self):
@@ -243,7 +243,7 @@ class QuestCreateViewTest(TestCase):
 
     def setUp(self):
         self.user = User.objects.get(username="master")
-        self.client.login(username=self.user.username, password="pwd")
+        self.client.force_login(self.user)
         self.game = Game.objects.last()
         self.character = Character.objects.last()
 
@@ -310,7 +310,7 @@ class XpIncreaseViewTest(TestCase):
 
     def setUp(self):
         self.user = User.objects.get(username="master")
-        self.client.login(username=self.user.username, password="pwd")
+        self.client.force_login(self.user)
         self.game = Game.objects.last()
         self.character = Character.objects.last()
 
@@ -450,7 +450,7 @@ class DamageViewTest(TestCase):
 
     def setUp(self):
         self.user = User.objects.get(username="master")
-        self.client.login(username=self.user.username, password="pwd")
+        self.client.force_login(self.user)
         self.game = Game.objects.last()
         self.character = Character.objects.last()
 
@@ -608,7 +608,7 @@ class HealViewTest(TestCase):
 
     def setUp(self):
         self.user = User.objects.get(username="master")
-        self.client.login(username=self.user.username, password="pwd")
+        self.client.force_login(self.user)
         self.game = Game.objects.last()
         self.character = Character.objects.last()
         # The character needs to have low HP, in order to be healed.
