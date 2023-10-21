@@ -23,7 +23,7 @@ class CharacterDetailViewTest(TestCase):
 
     def setUp(self):
         self.user = User.objects.last()
-        self.client.login(username=self.user.username, password="pwd")
+        self.client.force_login(self.user)
         self.character = Character.objects.last()
 
     def test_view_mapping(self):
@@ -55,7 +55,7 @@ class CharacterListViewTest(TestCase):
 
     def setUp(self):
         self.user = User.objects.last()
-        self.client.login(username=self.user.username, password="pwd")
+        self.client.force_login(self.user)
 
     def test_view_mapping(self):
         response = self.client.get(reverse(self.path_name))
@@ -117,7 +117,7 @@ class CharacterCreateViewTest(TestCase):
 
     def setUp(self):
         self.user = User.objects.last()
-        self.client.login(username=self.user.username, password="pwd")
+        self.client.force_login(self.user)
 
     def test_view_mapping(self):
         response = self.client.get(reverse(self.path_name))
