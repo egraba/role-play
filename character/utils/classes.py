@@ -8,7 +8,7 @@ def _get_cleric_weapon_choices():
     queryset = Weapon.objects.filter(
         Q(name=Weapon.Name.MACE) | Q(name=Weapon.Name.WARHAMMER)
     )
-    choices = [weapon + weapon for weapon in queryset.values_list("name")]
+    choices = {weapon + weapon for weapon in queryset.values_list("name")}
     return choices
 
 
@@ -20,7 +20,7 @@ def _get_rogue_weapon_choices():
     queryset = Weapon.objects.filter(
         Q(name=Weapon.Name.RAPIER) | Q(name=Weapon.Name.SHORTSWORD)
     )
-    choices = [weapon + weapon for weapon in queryset.values_list("name")]
+    choices = {weapon + weapon for weapon in queryset.values_list("name")}
     return choices
 
 
@@ -28,7 +28,7 @@ def _get_wizard_weapon_choices():
     queryset = Weapon.objects.filter(
         Q(name=Weapon.Name.QUARTERSTAFF) | Q(name=Weapon.Name.DAGGER)
     )
-    choices = [weapon + weapon for weapon in queryset.values_list("name")]
+    choices = {weapon + weapon for weapon in queryset.values_list("name")}
     return choices
 
 
