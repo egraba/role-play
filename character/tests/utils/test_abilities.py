@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-import character.abilities as abilities
+from character.utils import abilities
 
 
 class AbilitiesTest(TestCase):
