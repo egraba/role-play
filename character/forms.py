@@ -2,6 +2,7 @@ from django import forms
 
 from character.models.character import Character
 from character.utils.abilities import AbilityScore
+from character.utils.classes import get_weapon_choices
 
 
 class CreateCharacterForm(forms.ModelForm):
@@ -65,28 +66,25 @@ class CreateCharacterForm(forms.ModelForm):
 class SelectEquipmentForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        try:
-            weapon_list = self.initial["weapon_list"]
-            armor_list = self.initial["armor_list"]
-            pack_list = self.initial["pack_list"]
-            gear_list = self.initial["gear_list"]
-        except KeyError:
-            raise forms.ValidationError(
-                "An error occurred retrieving available equipment..."
-            )
+
+        class_name = self.initial["class_name"]
+
         self.fields["weapon"] = forms.ChoiceField(
-            choices=weapon_list,
+            choices=get_weapon_choices(class_name),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
-        self.fields["armor"] = forms.ChoiceField(
+
+        """self.fields["armor"] = forms.ChoiceField(
             choices=armor_list,
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
+
         self.fields["pack"] = forms.ChoiceField(
             choices=pack_list,
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
+
         self.fields["gear"] = forms.ChoiceField(
             choices=gear_list,
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
-        )
+        )"""
