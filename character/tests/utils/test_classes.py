@@ -3,8 +3,8 @@ from django.core.management import call_command
 from django.core.management.commands import loaddata
 
 from character.models.classes import Class
-from character.models.equipment import Weapon
-from character.utils.classes import get_weapon_choices
+from character.models.equipment import Armor, Weapon
+from character.utils.classes import get_armor_choices, get_weapon_choices
 
 
 @pytest.fixture(autouse=True)
@@ -40,4 +40,14 @@ def test_get_weapon_choices_wizard():
     assert choices == {
         enum2textchoice(Weapon.Name.QUARTERSTAFF),
         enum2textchoice(Weapon.Name.DAGGER),
+    }
+
+
+@pytest.mark.django_db
+def test_get_armor_choices_cleric():
+    choices = get_armor_choices(Class.CLERIC)
+    assert choices == {
+        enum2textchoice(Armor.Name.SCALE_MAIL),
+        enum2textchoice(Armor.Name.LEATHER),
+        enum2textchoice(Armor.Name.CHAIN_MAIL),
     }

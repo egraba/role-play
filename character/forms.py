@@ -2,7 +2,7 @@ from django import forms
 
 from character.models.character import Character
 from character.utils.abilities import AbilityScore
-from character.utils.classes import get_weapon_choices
+from character.utils.classes import get_armor_choices, get_weapon_choices
 
 
 class CreateCharacterForm(forms.ModelForm):
@@ -74,12 +74,12 @@ class SelectEquipmentForm(forms.Form):
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
 
-        """self.fields["armor"] = forms.ChoiceField(
-            choices=armor_list,
+        self.fields["armor"] = forms.ChoiceField(
+            choices=get_armor_choices(class_name),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
 
-        self.fields["pack"] = forms.ChoiceField(
+        """self.fields["pack"] = forms.ChoiceField(
             choices=pack_list,
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
