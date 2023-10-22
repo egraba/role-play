@@ -7,7 +7,7 @@ from character.forms import CreateCharacterForm
 from character.models.character import Character
 from character.models.classes import Class
 from character.models.races import Ability, Language, Race
-from character.utils.abilities import scores
+from character.utils.abilities import AbilityScore
 from character.views.character import (
     CharacterCreateView,
     CharacterDetailView,
@@ -139,12 +139,12 @@ class CharacterCreateViewTest(TestCase):
             "name": f"{name}",
             "race": f"{race}",
             "class_name": f"{class_name}",
-            "strength": scores[0][0],
-            "dexterity": scores[1][0],
-            "constitution": scores[2][0],
-            "intelligence": scores[3][0],
-            "wisdom": scores[4][0],
-            "charisma": scores[5][0],
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
         }
         form = CreateCharacterForm(data)
@@ -177,12 +177,12 @@ class CharacterCreateViewTest(TestCase):
             "name": f"{name}",
             "race": f"{race}",
             "class_name": f"{class_name}",
-            "strength": scores[0][0],
-            "dexterity": scores[1][0],
-            "constitution": scores[2][0],
-            "intelligence": scores[3][0],
-            "wisdom": scores[4][0],
-            "charisma": scores[5][0],
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
         }
         form = CreateCharacterForm(data)
@@ -198,12 +198,12 @@ class CharacterCreateViewTest(TestCase):
             response, reverse("equipment-select", args=(character.id,))
         )
 
-        self.assertEqual(character.strength, scores[0][0])
-        self.assertEqual(character.dexterity, scores[1][0])
-        self.assertEqual(character.constitution, scores[2][0] + 2)
-        self.assertEqual(character.intelligence, scores[3][0])
-        self.assertEqual(character.wisdom, scores[4][0])
-        self.assertEqual(character.charisma, scores[5][0])
+        self.assertEqual(character.strength, AbilityScore.SCORE_10)
+        self.assertEqual(character.dexterity, AbilityScore.SCORE_12)
+        self.assertEqual(character.constitution, AbilityScore.SCORE_13 + 2)
+        self.assertEqual(character.intelligence, AbilityScore.SCORE_14)
+        self.assertEqual(character.wisdom, AbilityScore.SCORE_15)
+        self.assertEqual(character.charisma, AbilityScore.SCORE_8)
 
         self.assertEqual(character.speed, 25)
 
@@ -237,12 +237,12 @@ class CharacterCreateViewTest(TestCase):
             "name": f"{name}",
             "race": f"{race}",
             "class_name": f"{class_name}",
-            "strength": scores[0][0],
-            "dexterity": scores[1][0],
-            "constitution": scores[2][0],
-            "intelligence": scores[3][0],
-            "wisdom": scores[4][0],
-            "charisma": scores[5][0],
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
         }
         form = CreateCharacterForm(data)
@@ -258,12 +258,12 @@ class CharacterCreateViewTest(TestCase):
             response, reverse("equipment-select", args=(character.id,))
         )
 
-        self.assertEqual(character.strength, scores[0][0])
-        self.assertEqual(character.dexterity, scores[1][0] + 2)
-        self.assertEqual(character.constitution, scores[2][0])
-        self.assertEqual(character.intelligence, scores[3][0])
-        self.assertEqual(character.wisdom, scores[4][0])
-        self.assertEqual(character.charisma, scores[5][0])
+        self.assertEqual(character.strength, AbilityScore.SCORE_10)
+        self.assertEqual(character.dexterity, AbilityScore.SCORE_12 + 2)
+        self.assertEqual(character.constitution, AbilityScore.SCORE_13)
+        self.assertEqual(character.intelligence, AbilityScore.SCORE_14)
+        self.assertEqual(character.wisdom, AbilityScore.SCORE_15)
+        self.assertEqual(character.charisma, AbilityScore.SCORE_8)
 
         self.assertEqual(character.speed, 30)
 
@@ -293,12 +293,12 @@ class CharacterCreateViewTest(TestCase):
             "name": f"{name}",
             "race": f"{race}",
             "class_name": f"{class_name}",
-            "strength": scores[0][0],
-            "dexterity": scores[1][0],
-            "constitution": scores[2][0],
-            "intelligence": scores[3][0],
-            "wisdom": scores[4][0],
-            "charisma": scores[5][0],
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
         }
         form = CreateCharacterForm(data)
@@ -314,12 +314,12 @@ class CharacterCreateViewTest(TestCase):
             response, reverse("equipment-select", args=(character.id,))
         )
 
-        self.assertEqual(character.strength, scores[0][0])
-        self.assertEqual(character.dexterity, scores[1][0] + 2)
-        self.assertEqual(character.constitution, scores[2][0])
-        self.assertEqual(character.intelligence, scores[3][0])
-        self.assertEqual(character.wisdom, scores[4][0])
-        self.assertEqual(character.charisma, scores[5][0])
+        self.assertEqual(character.strength, AbilityScore.SCORE_10)
+        self.assertEqual(character.dexterity, AbilityScore.SCORE_12 + 2)
+        self.assertEqual(character.constitution, AbilityScore.SCORE_13)
+        self.assertEqual(character.intelligence, AbilityScore.SCORE_14)
+        self.assertEqual(character.wisdom, AbilityScore.SCORE_15)
+        self.assertEqual(character.charisma, AbilityScore.SCORE_8)
 
         self.assertEqual(character.speed, 25)
 
@@ -349,12 +349,12 @@ class CharacterCreateViewTest(TestCase):
             "name": f"{name}",
             "race": f"{race}",
             "class_name": f"{class_name}",
-            "strength": scores[0][0],
-            "dexterity": scores[1][0],
-            "constitution": scores[2][0],
-            "intelligence": scores[3][0],
-            "wisdom": scores[4][0],
-            "charisma": scores[5][0],
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
         }
         form = CreateCharacterForm(data)
@@ -370,12 +370,12 @@ class CharacterCreateViewTest(TestCase):
             response, reverse("equipment-select", args=(character.id,))
         )
 
-        self.assertEqual(character.strength, scores[0][0] + 1)
-        self.assertEqual(character.dexterity, scores[1][0] + 1)
-        self.assertEqual(character.constitution, scores[2][0] + 1)
-        self.assertEqual(character.intelligence, scores[3][0] + 1)
-        self.assertEqual(character.wisdom, scores[4][0] + 1)
-        self.assertEqual(character.charisma, scores[5][0] + 1)
+        self.assertEqual(character.strength, AbilityScore.SCORE_10 + 1)
+        self.assertEqual(character.dexterity, AbilityScore.SCORE_12 + 1)
+        self.assertEqual(character.constitution, AbilityScore.SCORE_13 + 1)
+        self.assertEqual(character.intelligence, AbilityScore.SCORE_14 + 1)
+        self.assertEqual(character.wisdom, AbilityScore.SCORE_15 + 1)
+        self.assertEqual(character.charisma, AbilityScore.SCORE_8 + 1)
 
         self.assertEqual(character.speed, 30)
 
@@ -397,12 +397,12 @@ class CharacterCreateViewTest(TestCase):
             "name": f"{name}",
             "race": f"{race}",
             "class_name": f"{class_name}",
-            "strength": scores[0][0],
-            "dexterity": scores[1][0],
-            "constitution": scores[2][0],
-            "intelligence": scores[3][0],
-            "wisdom": scores[4][0],
-            "charisma": scores[5][0],
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
         }
         form = CreateCharacterForm(data)
@@ -440,12 +440,12 @@ class CharacterCreateViewTest(TestCase):
             "name": f"{name}",
             "race": f"{race}",
             "class_name": f"{class_name}",
-            "strength": scores[0][0],
-            "dexterity": scores[1][0],
-            "constitution": scores[2][0],
-            "intelligence": scores[3][0],
-            "wisdom": scores[4][0],
-            "charisma": scores[5][0],
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
         }
         form = CreateCharacterForm(data)
@@ -486,12 +486,12 @@ class CharacterCreateViewTest(TestCase):
             "name": f"{name}",
             "race": f"{race}",
             "class_name": f"{class_name}",
-            "strength": scores[0][0],
-            "dexterity": scores[1][0],
-            "constitution": scores[2][0],
-            "intelligence": scores[3][0],
-            "wisdom": scores[4][0],
-            "charisma": scores[5][0],
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
         }
         form = CreateCharacterForm(data)
@@ -532,12 +532,12 @@ class CharacterCreateViewTest(TestCase):
             "name": f"{name}",
             "race": f"{race}",
             "class_name": f"{class_name}",
-            "strength": scores[0][0],
-            "dexterity": scores[1][0],
-            "constitution": scores[2][0],
-            "intelligence": scores[3][0],
-            "wisdom": scores[4][0],
-            "charisma": scores[5][0],
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
         }
         form = CreateCharacterForm(data)

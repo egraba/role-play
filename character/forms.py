@@ -1,7 +1,7 @@
 from django import forms
 
 from character.models.character import Character
-from character.utils.abilities import scores
+from character.utils.abilities import AbilityScore
 
 
 class CreateCharacterForm(forms.ModelForm):
@@ -24,32 +24,32 @@ class CreateCharacterForm(forms.ModelForm):
         }
 
     strength = forms.TypedChoiceField(
-        choices=scores,
+        choices=AbilityScore.choices,
         coerce=int,
         widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
     )
     dexterity = forms.TypedChoiceField(
-        choices=scores,
+        choices=AbilityScore.choices,
         coerce=int,
         widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
     )
     constitution = forms.TypedChoiceField(
-        choices=scores,
+        choices=AbilityScore.choices,
         coerce=int,
         widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
     )
     intelligence = forms.TypedChoiceField(
-        choices=scores,
+        choices=AbilityScore.choices,
         coerce=int,
         widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
     )
     wisdom = forms.TypedChoiceField(
-        choices=scores,
+        choices=AbilityScore.choices,
         coerce=int,
         widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
     )
     charisma = forms.TypedChoiceField(
-        choices=scores,
+        choices=AbilityScore.choices,
         coerce=int,
         widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
     )
