@@ -12,6 +12,10 @@ def _get_cleric_weapon_choices():
     return choices
 
 
+def _get_fighter_weapon_choices():
+    pass
+
+
 def _get_rogue_weapon_choices():
     queryset = Weapon.objects.filter(
         Q(name=Weapon.Name.RAPIER) | Q(name=Weapon.Name.SHORTSWORD)
@@ -34,7 +38,7 @@ def get_weapon_choices(class_name):
         case Class.CLERIC:
             weapon_choices = _get_cleric_weapon_choices()
         case Class.FIGHTER:
-            pass
+            weapon_choices = _get_fighter_weapon_choices()
         case Class.ROGUE:
             weapon_choices = _get_rogue_weapon_choices()
         case Class.WIZARD:
