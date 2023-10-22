@@ -7,7 +7,7 @@ from character.models.character import Character
 from character.models.classes import ClassAdvancement, ClassFeature, Proficiencies
 from character.models.equipment import Equipment, Inventory
 from character.models.races import AbilityScoreIncrease, RacialTrait
-from character.utils.abilities import compute_modifier
+from character.utils.abilities import compute_ability_modifier
 
 
 class CharacterDetailView(LoginRequiredMixin, DetailView):
@@ -58,12 +58,16 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
                     setattr(character, asi.ability, new_value)
 
     def _compute_ability_modifiers(self, character):
-        character.strength_modifier = compute_modifier(character.strength)
-        character.dexterity_modifier = compute_modifier(character.dexterity)
-        character.constitution_modifier = compute_modifier(character.constitution)
-        character.intelligence_modifier = compute_modifier(character.intelligence)
-        character.wisdom_modifier = compute_modifier(character.wisdom)
-        character.charisma_modifier = compute_modifier(character.charisma)
+        character.strength_modifier = compute_ability_modifier(character.strength)
+        character.dexterity_modifier = compute_ability_modifier(character.dexterity)
+        character.constitution_modifier = compute_ability_modifier(
+            character.constitution
+        )
+        character.intelligence_modifier = compute_ability_modifier(
+            character.intelligence
+        )
+        character.wisdom_modifier = compute_ability_modifier(character.wisdom)
+        character.charisma_modifier = compute_ability_modifier(character.charisma)
 
     def _apply_class_advancement(self, character, level):
         class_advancement = ClassAdvancement.objects.get(

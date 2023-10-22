@@ -10,5 +10,5 @@ class AbilityScore(models.IntegerChoices):
     SCORE_8 = 8
 
 
-def compute_modifier(ability_score):
+def compute_ability_modifier(ability_score):
     return (ability_score - 10) // 2
