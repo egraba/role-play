@@ -13,7 +13,7 @@ def _get_cleric_weapon_choices():
 
 
 def _get_fighter_weapon_choices():
-    pass
+    return {}
 
 
 def _get_rogue_weapon_choices():
@@ -128,3 +128,11 @@ def get_pack_choices(class_name):
         case Class.WIZARD:
             pack_choices = _get_wizard_pack_choices()
     return pack_choices
+
+
+def get_gear_choices(class_name):
+    gear_choices = []
+    match class_name:
+        case Class.WIZARD:
+            gear_choices = {}
+    return gear_choices
