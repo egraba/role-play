@@ -1,7 +1,7 @@
 from django.db.models import Q
 
 from character.models.classes import Class
-from character.models.equipment import Armor, Weapon
+from character.models.equipment import Armor, Pack, Weapon
 
 
 def _get_cleric_weapon_choices():
@@ -80,3 +80,51 @@ def get_armor_choices(class_name):
         case Class.WIZARD:
             armor_choices = _get_wizard_armor_choices()
     return armor_choices
+
+
+def _get_cleric_pack_choices():
+    queryset = Pack.objects.filter(
+        Q(name=Pack.Name.PRIESTS_PACK) | Q(name=Pack.Name.EXPLORERS_PACK)
+    )
+    choices = {armor + armor for armor in queryset.values_list("name")}
+    return choices
+
+
+def _get_fighter_pack_choices():
+    queryset = Pack.objects.filter(
+        Q(name=Pack.Name.DUNGEONEERS_PACK) | Q(name=Pack.Name.EXPLORERS_PACK)
+    )
+    choices = {armor + armor for armor in queryset.values_list("name")}
+    return choices
+
+
+def _get_rogue_pack_choices():
+    queryset = Pack.objects.filter(
+        Q(name=Pack.Name.BURGLARS_PACK)
+        | Q(name=Pack.Name.DUNGEONEERS_PACK)
+        | Q(name=Pack.Name.EXPLORERS_PACK)
+    )
+    choices = {armor + armor for armor in queryset.values_list("name")}
+    return choices
+
+
+def _get_wizard_pack_choices():
+    queryset = Pack.objects.filter(
+        Q(name=Pack.Name.SCHOLARS_PACK) | Q(name=Pack.Name.EXPLORERS_PACK)
+    )
+    choices = {armor + armor for armor in queryset.values_list("name")}
+    return choices
+
+
+def get_pack_choices(class_name):
+    pack_choices = []
+    match class_name:
+        case Class.CLERIC:
+            pack_choices = _get_cleric_pack_choices()
+        case Class.FIGHTER:
+            pack_choices = _get_fighter_pack_choices()
+        case Class.ROGUE:
+            pack_choices = _get_rogue_pack_choices()
+        case Class.WIZARD:
+            pack_choices = _get_wizard_pack_choices()
+    return pack_choices
