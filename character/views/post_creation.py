@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import FormView
 
-from character.forms import SelectEquipmentForm
+from character.forms.post_creation import SelectEquipmentForm
 from character.models.classes import Class
 from character.models.equipment import Armor, Equipment, Gear, Tool, Weapon
 from character.views.mixins import CharacterContextMixin
@@ -22,17 +22,25 @@ class EquipmentSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
         return initial
 
     def form_valid(self, form):
-        weapon_name = form.cleaned_data["weapon"]
-        Equipment.objects.create(name=weapon_name, inventory=self.character.inventory)
+        try:
+            weapon_name = form.cleaned_data["weapon"]
+            Equipment.objects.create(
+                name=weapon_name, inventory=self.character.inventory
+            )
 
-        armor_name = form.cleaned_data["armor"]
-        Equipment.objects.create(name=armor_name, inventory=self.character.inventory)
+            armor_name = form.cleaned_data["armor"]
+            Equipment.objects.create(
+                name=armor_name, inventory=self.character.inventory
+            )
 
-        pack_name = form.cleaned_data["pack"]
-        Equipment.objects.create(name=pack_name, inventory=self.character.inventory)
+            pack_name = form.cleaned_data["pack"]
+            Equipment.objects.create(name=pack_name, inventory=self.character.inventory)
 
-        gear_name = form.cleaned_data["gear"]
-        Equipment.objects.create(name=gear_name, inventory=self.character.inventory)
+            gear_name = form.cleaned_data["gear"]
+            Equipment.objects.create(name=gear_name, inventory=self.character.inventory)
+        except KeyError:
+            # The form is different per class.
+            pass
 
         # Some equipment is added without selection, depending on character's class.
         match self.character.class_name:

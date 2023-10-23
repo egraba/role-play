@@ -3,7 +3,7 @@ from django.test import TestCase
 from django.urls import reverse
 from faker import Faker
 
-from character.forms import CreateCharacterForm
+from character.forms.character import CreateCharacterForm
 from character.models.character import Character
 from character.models.classes import Class
 from character.models.races import Ability, Language, Race

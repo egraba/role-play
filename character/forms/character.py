@@ -2,7 +2,6 @@ from django import forms
 
 from character.models.character import Character
 from character.utils.abilities import AbilityScore
-from character.utils.classes import get_armor_choices, get_weapon_choices
 
 
 class CreateCharacterForm(forms.ModelForm):
@@ -61,30 +60,3 @@ class CreateCharacterForm(forms.ModelForm):
         if len(self.cleaned_data) != len(set(self.cleaned_data.values())):
             raise forms.ValidationError("Each ability must have a different score...")
         pass
-
-
-class SelectEquipmentForm(forms.Form):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        class_name = self.initial["class_name"]
-
-        self.fields["weapon"] = forms.ChoiceField(
-            choices=get_weapon_choices(class_name),
-            widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
-        )
-
-        self.fields["armor"] = forms.ChoiceField(
-            choices=get_armor_choices(class_name),
-            widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
-        )
-
-        """self.fields["pack"] = forms.ChoiceField(
-            choices=pack_list,
-            widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
-        )
-
-        self.fields["gear"] = forms.ChoiceField(
-            choices=gear_list,
-            widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
-        )"""

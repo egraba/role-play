@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.views.generic import CreateView, DetailView, ListView
 
-from character.forms import CreateCharacterForm
+from character.forms.character import CreateCharacterForm
 from character.models.character import Character
 from character.models.classes import ClassAdvancement, ClassFeature, Proficiencies
 from character.models.equipment import Equipment, Inventory
