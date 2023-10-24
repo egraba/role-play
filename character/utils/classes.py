@@ -4,7 +4,7 @@ from character.models.classes import Class
 from character.models.equipment import Armor, Pack, Weapon
 
 
-def _get_cleric_weapon_choices():
+def _get_cleric_weapon1_choices():
     queryset = Weapon.objects.filter(
         Q(name=Weapon.Name.MACE) | Q(name=Weapon.Name.WARHAMMER)
     )
@@ -32,11 +32,11 @@ def _get_wizard_weapon_choices():
     return choices
 
 
-def get_weapon_choices(class_name):
+def get_weapon1_choices(class_name):
     weapon_choices = []
     match class_name:
         case Class.CLERIC:
-            weapon_choices = _get_cleric_weapon_choices()
+            weapon_choices = _get_cleric_weapon1_choices()
         case Class.FIGHTER:
             weapon_choices = _get_fighter_weapon_choices()
         case Class.ROGUE:
@@ -80,6 +80,30 @@ def get_armor_choices(class_name):
         case Class.WIZARD:
             armor_choices = _get_wizard_armor_choices()
     return armor_choices
+
+
+def _get_cleric_weapon2_choices():
+    queryset = Weapon.objects.filter(
+        Q(name=Weapon.Name.CROSSBOW_LIGHT)
+        | Q(weapon_type=Weapon.Type.SIMPLE_MELEE)
+        | Q(weapon_type=Weapon.Type.SIMPLE_RANGED)
+    )
+    choices = {weapon + weapon for weapon in queryset.values_list("name")}
+    return choices
+
+
+def get_weapon2_choices(class_name):
+    weapon_choices = []
+    match class_name:
+        case Class.CLERIC:
+            weapon_choices = _get_cleric_weapon2_choices()
+        case Class.FIGHTER:
+            weapon_choices = _get_fighter_weapon_choices()
+        case Class.ROGUE:
+            weapon_choices = _get_rogue_weapon_choices()
+        case Class.WIZARD:
+            weapon_choices = _get_wizard_weapon_choices()
+    return weapon_choices
 
 
 def _get_cleric_pack_choices():
