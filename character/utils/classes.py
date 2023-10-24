@@ -12,8 +12,14 @@ def _get_cleric_weapon1_choices():
     return choices
 
 
-def _get_fighter_weapon_choices():
-    return {}
+def _get_fighter_weapon1_choices():
+    choices = set()
+    chain_mail = Armor.objects.get(name=Armor.Name.CHAIN_MAIL).name
+    choices.add((chain_mail, chain_mail))
+    leather = Armor.objects.get(name=Armor.Name.LEATHER).name
+    longbow = Weapon.objects.get(name=Weapon.Name.LONGBOW).name
+    choices.add(((leather, leather), (longbow, longbow)))
+    return choices
 
 
 def _get_rogue_weapon_choices():
@@ -38,7 +44,7 @@ def get_weapon1_choices(class_name):
         case Class.CLERIC:
             weapon_choices = _get_cleric_weapon1_choices()
         case Class.FIGHTER:
-            weapon_choices = _get_fighter_weapon_choices()
+            weapon_choices = _get_fighter_weapon1_choices()
         case Class.ROGUE:
             weapon_choices = _get_rogue_weapon_choices()
         case Class.WIZARD:
@@ -92,17 +98,42 @@ def _get_cleric_weapon2_choices():
     return choices
 
 
+def _get_fighter_weapon2_choices():
+    queryset = Weapon.objects.filter(
+        Q(weapon_type=Weapon.Type.MARTIAL_MELEE)
+        | Q(weapon_type=Weapon.Type.MARTIAL_RANGED)
+    )
+    choices = {weapon + weapon for weapon in queryset.values_list("name")}
+    return choices
+
+
 def get_weapon2_choices(class_name):
     weapon_choices = []
     match class_name:
         case Class.CLERIC:
             weapon_choices = _get_cleric_weapon2_choices()
         case Class.FIGHTER:
-            weapon_choices = _get_fighter_weapon_choices()
+            weapon_choices = _get_fighter_weapon2_choices()
         case Class.ROGUE:
             weapon_choices = _get_rogue_weapon_choices()
         case Class.WIZARD:
             weapon_choices = _get_wizard_weapon_choices()
+    return weapon_choices
+
+
+def _get_fighter_weapon3_choices():
+    queryset = Weapon.objects.filter(
+        Q(name=Weapon.Name.CROSSBOW_LIGHT) | Q(name=Weapon.Name.HANDAXE)
+    )
+    choices = {weapon + weapon for weapon in queryset.values_list("name")}
+    return choices
+
+
+def get_weapon3_choices(class_name):
+    weapon_choices = []
+    match class_name:
+        case Class.FIGHTER:
+            weapon_choices = _get_fighter_weapon3_choices()
     return weapon_choices
 
 
