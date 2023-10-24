@@ -1,9 +1,10 @@
 import pytest
 
 from character.models.classes import Class
-from character.models.equipment import Armor, Pack, Weapon
+from character.models.equipment import Armor, Gear, Pack, Weapon
 from character.utils.classes import (
     get_armor_choices,
+    get_gear_choices,
     get_pack_choices,
     get_weapon1_choices,
     get_weapon2_choices,
@@ -164,4 +165,17 @@ def test_get_pack_choices_wizard():
     assert choices == {
         enum2textchoice(Pack.Name.SCHOLARS_PACK),
         enum2textchoice(Pack.Name.EXPLORERS_PACK),
+    }
+
+
+@pytest.mark.django_db
+def test_get_gear_choices_wizard():
+    choices = get_gear_choices(Class.WIZARD)
+    assert choices == {
+        enum2textchoice(Gear.Name.COMPONENT_POUCH),
+        enum2textchoice(Gear.Name.CRYSTAL),
+        enum2textchoice(Gear.Name.ORB),
+        enum2textchoice(Gear.Name.ROD),
+        enum2textchoice(Gear.Name.STAFF),
+        enum2textchoice(Gear.Name.WAND),
     }

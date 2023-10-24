@@ -1,7 +1,7 @@
 from django.db.models import Q
 
 from character.models.classes import Class
-from character.models.equipment import Armor, Pack, Weapon
+from character.models.equipment import Armor, Gear, Pack, Weapon
 
 
 def _get_cleric_weapon1_choices():
@@ -193,9 +193,17 @@ def get_pack_choices(class_name):
     return pack_choices
 
 
+def _get_wizard_gear_choices(class_name):
+    queryset = Gear.objects.filter(
+        Q(name=Gear.Name.COMPONENT_POUCH) | Q(gear_type=Gear.Type.ARCANE_FOCUS)
+    )
+    choices = {gear + gear for gear in queryset.values_list("name")}
+    return choices
+
+
 def get_gear_choices(class_name):
     gear_choices = []
     match class_name:
         case Class.WIZARD:
-            gear_choices = {}
+            gear_choices = _get_wizard_gear_choices(class_name)
     return gear_choices
