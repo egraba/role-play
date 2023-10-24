@@ -113,6 +113,15 @@ def test_get_weapon2_choices_fighter(equipment):
 
 
 @pytest.mark.django_db
+def test_get_weapon2_choices_rogue(equipment):
+    choices = get_weapon2_choices(Class.ROGUE)
+    assert choices == {
+        enum2textchoice(Weapon.Name.SHORTBOW),
+        enum2textchoice(Weapon.Name.SHORTSWORD),
+    }
+
+
+@pytest.mark.django_db
 def test_get_weapon3_choices_fighter(equipment):
     choices = get_weapon3_choices(Class.FIGHTER)
     assert choices == {

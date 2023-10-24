@@ -107,6 +107,14 @@ def _get_fighter_weapon2_choices():
     return choices
 
 
+def _get_rogue_weapon2_choices():
+    queryset = Weapon.objects.filter(
+        Q(name=Weapon.Name.SHORTBOW) | Q(name=Weapon.Name.SHORTSWORD)
+    )
+    choices = {weapon + weapon for weapon in queryset.values_list("name")}
+    return choices
+
+
 def get_weapon2_choices(class_name):
     weapon_choices = []
     match class_name:
@@ -115,7 +123,7 @@ def get_weapon2_choices(class_name):
         case Class.FIGHTER:
             weapon_choices = _get_fighter_weapon2_choices()
         case Class.ROGUE:
-            weapon_choices = _get_rogue_weapon_choices()
+            weapon_choices = _get_rogue_weapon2_choices()
         case Class.WIZARD:
             weapon_choices = _get_wizard_weapon_choices()
     return weapon_choices
