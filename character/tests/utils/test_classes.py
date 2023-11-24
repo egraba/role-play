@@ -16,6 +16,10 @@ def enum2textchoice(enum):
     return (enum.value, enum.value)
 
 
+def enum2textchoice_concat(enum1, enum2):
+    return (f"{enum1}, {enum2}", f"{enum1}, {enum2}")
+
+
 @pytest.mark.django_db
 def test_get_weapon1_choices_cleric(equipment):
     choices = get_weapon1_choices(Class.CLERIC)
@@ -30,7 +34,7 @@ def test_get_weapon1_choices_fighter(equipment):
     choices = get_weapon1_choices(Class.FIGHTER)
     assert choices == {
         enum2textchoice(Armor.Name.CHAIN_MAIL),
-        (enum2textchoice(Armor.Name.LEATHER), enum2textchoice(Weapon.Name.LONGBOW)),
+        enum2textchoice_concat(Armor.Name.LEATHER, Weapon.Name.LONGBOW),
     }
 
 

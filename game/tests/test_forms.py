@@ -1,7 +1,7 @@
 from django import forms
 from django.test import TestCase
 
-from character.forms import CreateCharacterForm
+from character.forms.character import CreateCharacterForm
 from game.forms import ChoiceForm, CreateQuestForm, DamageForm, HealForm, IncreaseXpForm
 
 

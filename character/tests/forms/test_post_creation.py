@@ -10,7 +10,7 @@ class TestSelectEquipmentForm:
     form = None
 
     @pytest.fixture
-    def cleric(self):
+    def cleric(self, equipment):
         self.form = SelectEquipmentForm(initial={"class_name": Class.CLERIC})
 
     def test_weapon1_field_exists_for_cleric(self, cleric):
@@ -41,7 +41,7 @@ class TestSelectEquipmentForm:
         assert isinstance(self.form.fields["pack"], forms.ChoiceField)
 
     @pytest.fixture
-    def fighter(self):
+    def fighter(self, equipment):
         self.form = SelectEquipmentForm(initial={"class_name": Class.FIGHTER})
 
     def test_weapon1_field_exists_for_fighter(self, fighter):
@@ -72,7 +72,7 @@ class TestSelectEquipmentForm:
         assert isinstance(self.form.fields["pack"], forms.ChoiceField)
 
     @pytest.fixture
-    def rogue(self):
+    def rogue(self, equipment):
         self.form = SelectEquipmentForm(initial={"class_name": Class.ROGUE})
 
     def test_weapon1_field_exists_for_rogue(self, rogue):
@@ -100,7 +100,7 @@ class TestSelectEquipmentForm:
         assert isinstance(self.form.fields["pack"], forms.ChoiceField)
 
     @pytest.fixture
-    def wizard(self):
+    def wizard(self, equipment):
         self.form = SelectEquipmentForm(initial={"class_name": Class.WIZARD})
 
     def test_weapon1_field_exists_for_wizard(self, wizard):

@@ -18,7 +18,7 @@ def _get_fighter_weapon1_choices():
     choices.add((chain_mail, chain_mail))
     leather = Armor.objects.get(name=Armor.Name.LEATHER).name
     longbow = Weapon.objects.get(name=Weapon.Name.LONGBOW).name
-    choices.add(((leather, leather), (longbow, longbow)))
+    choices.add((f"{leather} & {longbow}", f"{leather} & {longbow}"))
     return choices
 
 
@@ -39,7 +39,7 @@ def _get_wizard_weapon_choices():
 
 
 def get_weapon1_choices(class_name):
-    weapon_choices = []
+    weapon_choices = set()
     match class_name:
         case Class.CLERIC:
             weapon_choices = _get_cleric_weapon1_choices()

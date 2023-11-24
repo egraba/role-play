@@ -23,7 +23,7 @@ class EquipmentSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
 
     def form_valid(self, form):
         try:
-            weapon_name = form.cleaned_data["weapon"]
+            weapon_name = form.cleaned_data["weapon1"]
             Equipment.objects.create(
                 name=weapon_name, inventory=self.character.inventory
             )
@@ -38,6 +38,7 @@ class EquipmentSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
 
             gear_name = form.cleaned_data["gear"]
             Equipment.objects.create(name=gear_name, inventory=self.character.inventory)
+
         except KeyError:
             # The form is different per class.
             pass

@@ -6,6 +6,8 @@ from character.utils.classes import (
     get_gear_choices,
     get_pack_choices,
     get_weapon1_choices,
+    get_weapon2_choices,
+    get_weapon3_choices,
 )
 
 
@@ -38,13 +40,13 @@ class SelectEquipmentForm(forms.Form):
             or class_name == Class.ROGUE
         ):
             self.fields["weapon2"] = forms.ChoiceField(
-                choices=get_weapon1_choices(class_name),
+                choices=get_weapon2_choices(class_name),
                 widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
             )
 
         if class_name == Class.FIGHTER:
             self.fields["weapon3"] = forms.ChoiceField(
-                choices=get_weapon1_choices(class_name),
+                choices=get_weapon3_choices(class_name),
                 widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
             )
 
