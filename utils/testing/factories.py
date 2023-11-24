@@ -2,11 +2,11 @@ import dice
 import factory
 from django.contrib.auth.models import User
 
-from game.models import DiceLaunch, Event, Game, Master, Player, Quest
-from master.models import Campaign
 from character.models.character import Character
 from character.models.classes import Class
 from character.models.races import Race
+from game.models import DiceLaunch, Event, Game, Master, Player, Quest
+from master.models import Campaign
 
 
 class UserFactory(factory.django.DjangoModelFactory):
