@@ -1,4 +1,5 @@
 from django import forms
+from django.db import models
 
 from character.models.character import Character
 from character.utils.abilities import AbilityScore
@@ -62,7 +63,7 @@ class CreateCharacterForm(forms.ModelForm):
         pass
 
 
-class ChoseEquipmentForm(forms.Form):
+class SelectEquipmentForm(forms.Form):
     class Weapon(models.TextChoices):
         MACE = "Mace"
         WARHAMMER = "warhammer"

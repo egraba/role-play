@@ -17,7 +17,7 @@ def enum2textchoice(enum):
 
 
 def enum2textchoice_concat(enum1, enum2):
-    return (f"{enum1}, {enum2}", f"{enum1}, {enum2}")
+    return (f"{enum1} & {enum2}", f"{enum1} & {enum2}")
 
 
 @pytest.mark.django_db
