@@ -13,8 +13,8 @@ class TestSelectEquipmentView:
     @pytest.fixture(autouse=True)
     def setup(self, client):
         self.character = CharacterFactory(name="user")
-        username = self.character.user.username
-        client.login(username=username, password="pwd")
+        user = self.character.user
+        client.force_login(user)
 
     def test_view_mapping(self, client):
         response = client.get(reverse("equipment-select", args=(self.character.id,)))
