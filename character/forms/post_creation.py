@@ -19,8 +19,27 @@ class SelectEquipmentForm(forms.Form):
 
         self.fields["weapon1"] = forms.ChoiceField(
             choices=get_weapon1_choices(class_name),
+            label="First weapon",
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
+
+        if (
+            class_name == Class.CLERIC
+            or class_name == Class.FIGHTER
+            or class_name == Class.ROGUE
+        ):
+            self.fields["weapon2"] = forms.ChoiceField(
+                choices=get_weapon2_choices(class_name),
+                label="Second weapon",
+                widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
+            )
+
+        if class_name == Class.FIGHTER:
+            self.fields["weapon3"] = forms.ChoiceField(
+                choices=get_weapon3_choices(class_name),
+                label="Third weapon",
+                widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
+            )
 
         if class_name == Class.CLERIC:
             self.fields["armor"] = forms.ChoiceField(
@@ -31,22 +50,6 @@ class SelectEquipmentForm(forms.Form):
         if class_name == Class.WIZARD:
             self.fields["gear"] = forms.ChoiceField(
                 choices=get_gear_choices(class_name),
-                widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
-            )
-
-        if (
-            class_name == Class.CLERIC
-            or class_name == Class.FIGHTER
-            or class_name == Class.ROGUE
-        ):
-            self.fields["weapon2"] = forms.ChoiceField(
-                choices=get_weapon2_choices(class_name),
-                widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
-            )
-
-        if class_name == Class.FIGHTER:
-            self.fields["weapon3"] = forms.ChoiceField(
-                choices=get_weapon3_choices(class_name),
                 widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
             )
 
