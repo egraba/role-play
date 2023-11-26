@@ -47,7 +47,7 @@ class SelectEquipmentForm(forms.Form):
                 widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
             )
 
-        if class_name == Class.WIZARD:
+        if class_name == Class.CLERIC or class_name == Class.WIZARD:
             self.fields["gear"] = forms.ChoiceField(
                 choices=get_gear_choices(class_name),
                 widget=forms.Select(attrs={"class": "rpgui-dropdown"}),

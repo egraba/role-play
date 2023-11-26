@@ -4,13 +4,13 @@ from pytest_django.asserts import assertRedirects, assertTemplateUsed
 
 from character.forms.post_creation import SelectEquipmentForm
 from character.models.classes import Class
-from character.models.equipment import Armor, Equipment, Pack, Weapon
+from character.models.equipment import Armor, Equipment, Gear, Pack, Weapon
 from character.views.post_creation import EquipmentSelectView
 from utils.testing.factories import CharacterFactory
 
 
 @pytest.mark.django_db
-class TestSelectEquipmentView:
+class TestEquipmentSelectView:
     path_name = "equipment-select"
     character = None
 
@@ -41,6 +41,7 @@ class TestSelectEquipmentView:
             "weapon1": f"{Weapon.Name.MACE}",
             "weapon2": f"{Weapon.Name.CROSSBOW_LIGHT}",
             "armor": f"{Armor.Name.SCALE_MAIL}",
+            "gear": f"{Gear.Name.AMULET}",
             "pack": f"{Pack.Name.EXPLORERS_PACK}",
         }
         form = SelectEquipmentForm(initial={"class_name": Class.CLERIC}, data=data)
@@ -68,6 +69,12 @@ class TestSelectEquipmentView:
         assert (
             Equipment.objects.get(
                 inventory=self.character.inventory, name=Armor.Name.SCALE_MAIL
+            )
+            is not None
+        )
+        assert (
+            Equipment.objects.get(
+                inventory=self.character.inventory, name=Gear.Name.AMULET
             )
             is not None
         )

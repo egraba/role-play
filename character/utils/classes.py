@@ -193,7 +193,13 @@ def get_pack_choices(class_name):
     return pack_choices
 
 
-def _get_wizard_gear_choices(class_name):
+def _get_cleric_gear_choices():
+    queryset = Gear.objects.filter(Q(gear_type=Gear.Type.HOLY_SYMBOL))
+    choices = {gear + gear for gear in queryset.values_list("name")}
+    return choices
+
+
+def _get_wizard_gear_choices():
     queryset = Gear.objects.filter(
         Q(name=Gear.Name.COMPONENT_POUCH) | Q(gear_type=Gear.Type.ARCANE_FOCUS)
     )
@@ -204,6 +210,8 @@ def _get_wizard_gear_choices(class_name):
 def get_gear_choices(class_name):
     gear_choices = []
     match class_name:
+        case Class.CLERIC:
+            gear_choices = _get_cleric_gear_choices()
         case Class.WIZARD:
-            gear_choices = _get_wizard_gear_choices(class_name)
+            gear_choices = _get_wizard_gear_choices()
     return gear_choices
