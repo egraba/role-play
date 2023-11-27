@@ -1,14 +1,10 @@
 from django import forms
 
 from character.models.classes import Class
-from character.utils.classes import (
-    get_armor_choices,
-    get_gear_choices,
-    get_pack_choices,
-    get_weapon1_choices,
-    get_weapon2_choices,
-    get_weapon3_choices,
-)
+from character.utils.classes.equipment.cleric import ClericEquipmentChoicesProvider
+from character.utils.classes.equipment.fighter import FighterEquipmentChoicesProvider
+from character.utils.classes.equipment.rogue import RogueEquipmentChoicesProvider
+from character.utils.classes.equipment.wizard import WizardEquipmentChoicesProvider
 
 
 class SelectEquipmentForm(forms.Form):
@@ -16,9 +12,18 @@ class SelectEquipmentForm(forms.Form):
         super().__init__(*args, **kwargs)
 
         class_name = self.initial["class_name"]
+        match class_name:
+            case Class.CLERIC:
+                equipment_provider = ClericEquipmentChoicesProvider()
+            case Class.FIGHTER:
+                equipment_provider = FighterEquipmentChoicesProvider()
+            case Class.ROGUE:
+                equipment_provider = RogueEquipmentChoicesProvider()
+            case Class.WIZARD:
+                equipment_provider = WizardEquipmentChoicesProvider()
 
         self.fields["weapon1"] = forms.ChoiceField(
-            choices=get_weapon1_choices(class_name),
+            choices=equipment_provider.get_weapon1_choices(),
             label="First weapon",
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
@@ -29,31 +34,31 @@ class SelectEquipmentForm(forms.Form):
             or class_name == Class.ROGUE
         ):
             self.fields["weapon2"] = forms.ChoiceField(
-                choices=get_weapon2_choices(class_name),
+                choices=equipment_provider.get_weapon2_choices(),
                 label="Second weapon",
                 widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
             )
 
         if class_name == Class.FIGHTER:
             self.fields["weapon3"] = forms.ChoiceField(
-                choices=get_weapon3_choices(class_name),
+                choices=equipment_provider.get_weapon3_choices(),
                 label="Third weapon",
                 widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
             )
 
         if class_name == Class.CLERIC:
             self.fields["armor"] = forms.ChoiceField(
-                choices=get_armor_choices(class_name),
+                choices=equipment_provider.get_armor_choices(),
                 widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
             )
 
         if class_name == Class.CLERIC or class_name == Class.WIZARD:
             self.fields["gear"] = forms.ChoiceField(
-                choices=get_gear_choices(class_name),
+                choices=equipment_provider.get_gear_choices(),
                 widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
             )
 
         self.fields["pack"] = forms.ChoiceField(
-            choices=get_pack_choices(class_name),
+            choices=equipment_provider.get_pack_choices(),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
