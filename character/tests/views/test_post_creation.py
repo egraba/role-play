@@ -1,10 +1,12 @@
 import pytest
 from django.urls import reverse
+from faker import Faker
 from pytest_django.asserts import assertRedirects, assertTemplateUsed
 
 from character.forms.post_creation import SelectEquipmentForm
 from character.models.classes import Class
-from character.models.equipment import Armor, Equipment, Gear, Pack, Weapon
+from character.models.equipment import Armor, Equipment
+from character.utils.classes.equipment.cleric import ClericEquipmentChoicesProvider
 from character.views.post_creation import EquipmentSelectView
 from utils.testing.factories import CharacterFactory
 
@@ -37,12 +39,19 @@ class TestEquipmentSelectView:
         client.force_login(user)
 
     def test_cleric_equipment(self, client, setup_cleric):
+        equipment_manager = ClericEquipmentChoicesProvider()
+        fake = Faker()
+        weapon1 = fake.random_element(equipment_manager.get_weapon1_choices())[1]
+        weapon2 = fake.random_element(equipment_manager.get_weapon2_choices())[1]
+        armor = fake.random_element(equipment_manager.get_armor_choices())[1]
+        gear = fake.random_element(equipment_manager.get_gear_choices())[1]
+        pack = fake.random_element(equipment_manager.get_pack_choices())[1]
         data = {
-            "weapon1": f"{Weapon.Name.MACE}",
-            "weapon2": f"{Weapon.Name.CROSSBOW_LIGHT}",
-            "armor": f"{Armor.Name.SCALE_MAIL}",
-            "gear": f"{Gear.Name.AMULET}",
-            "pack": f"{Pack.Name.EXPLORERS_PACK}",
+            "weapon1": f"{weapon1}",
+            "weapon2": f"{weapon2}",
+            "armor": f"{armor}",
+            "gear": f"{gear}",
+            "pack": f"{pack}",
         }
         form = SelectEquipmentForm(initial={"class_name": Class.CLERIC}, data=data)
         assert form.is_valid()
@@ -55,33 +64,23 @@ class TestEquipmentSelectView:
         assertRedirects(response, self.character.get_absolute_url())
 
         assert (
-            Equipment.objects.get(
-                inventory=self.character.inventory, name=Weapon.Name.MACE
-            )
+            Equipment.objects.get(inventory=self.character.inventory, name=weapon1)
             is not None
         )
         assert (
-            Equipment.objects.get(
-                inventory=self.character.inventory, name=Weapon.Name.CROSSBOW_LIGHT
-            )
+            Equipment.objects.get(inventory=self.character.inventory, name=weapon2)
             is not None
         )
         assert (
-            Equipment.objects.get(
-                inventory=self.character.inventory, name=Armor.Name.SCALE_MAIL
-            )
+            Equipment.objects.get(inventory=self.character.inventory, name=armor)
             is not None
         )
         assert (
-            Equipment.objects.get(
-                inventory=self.character.inventory, name=Gear.Name.AMULET
-            )
+            Equipment.objects.get(inventory=self.character.inventory, name=gear)
             is not None
         )
         assert (
-            Equipment.objects.get(
-                inventory=self.character.inventory, name=Pack.Name.EXPLORERS_PACK
-            )
+            Equipment.objects.get(inventory=self.character.inventory, name=pack)
             is not None
         )
         assert (
