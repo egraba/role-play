@@ -66,30 +66,14 @@ class TestEquipmentSelectView:
         assert response.status_code == 302
         assertRedirects(response, self.character.get_absolute_url())
 
+        inventory = self.character.inventory
+        assert Equipment.objects.get(inventory=inventory, name=weapon1) is not None
+        assert Equipment.objects.get(inventory=inventory, name=weapon2) is not None
+        assert Equipment.objects.get(inventory=inventory, name=armor) is not None
+        assert Equipment.objects.get(inventory=inventory, name=gear) is not None
+        assert Equipment.objects.get(inventory=inventory, name=pack) is not None
         assert (
-            Equipment.objects.get(inventory=self.character.inventory, name=weapon1)
-            is not None
-        )
-        assert (
-            Equipment.objects.get(inventory=self.character.inventory, name=weapon2)
-            is not None
-        )
-        assert (
-            Equipment.objects.get(inventory=self.character.inventory, name=armor)
-            is not None
-        )
-        assert (
-            Equipment.objects.get(inventory=self.character.inventory, name=gear)
-            is not None
-        )
-        assert (
-            Equipment.objects.get(inventory=self.character.inventory, name=pack)
-            is not None
-        )
-        assert (
-            Equipment.objects.get(
-                inventory=self.character.inventory, name=Armor.Name.SHIELD
-            )
+            Equipment.objects.get(inventory=inventory, name=Armor.Name.SHIELD)
             is not None
         )
 
@@ -122,19 +106,8 @@ class TestEquipmentSelectView:
         assert response.status_code == 302
         assertRedirects(response, self.character.get_absolute_url())
 
-        assert (
-            Equipment.objects.get(inventory=self.character.inventory, name=weapon1)
-            is not None
-        )
-        assert (
-            Equipment.objects.get(inventory=self.character.inventory, name=weapon2)
-            is not None
-        )
-        assert (
-            Equipment.objects.get(inventory=self.character.inventory, name=weapon3)
-            is not None
-        )
-        assert (
-            Equipment.objects.get(inventory=self.character.inventory, name=pack)
-            is not None
-        )
+        inventory = self.character.inventory
+        assert Equipment.objects.get(inventory=inventory, name=weapon1) is not None
+        assert Equipment.objects.get(inventory=inventory, name=weapon2) is not None
+        assert Equipment.objects.get(inventory=inventory, name=weapon3) is not None
+        assert Equipment.objects.get(inventory=inventory, name=pack) is not None
