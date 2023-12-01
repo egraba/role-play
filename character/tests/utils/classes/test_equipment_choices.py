@@ -189,7 +189,7 @@ class TestRogueEquipmentChoicesProvider:
 
 
 @pytest.mark.django_db
-class TestWizardEquipmentChoices:
+class TestWizardEquipmentChoicesProvider:
     def test_get_weapon1_choices(equipment):
         equipment_provider = WizardEquipmentChoicesProvider()
         choices = equipment_provider.get_weapon1_choices()
