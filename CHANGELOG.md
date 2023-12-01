@@ -3,7 +3,6 @@
 ## Unreleased
 
 ### Added
-* Pytest is now used instead of Unittest
 * Celery is now used as task queue system
 * DnD: implement races and their racial traits
 * DnD: implement basic rules
