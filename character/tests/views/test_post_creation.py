@@ -5,10 +5,11 @@ from pytest_django.asserts import assertRedirects, assertTemplateUsed
 
 from character.forms.post_creation import SelectEquipmentForm
 from character.models.classes import Class
-from character.models.equipment import Armor, Equipment
+from character.models.equipment import Armor, Equipment, Tool, Weapon
 from character.utils.classes.equipment_choices import (
     ClericEquipmentChoicesProvider,
     FighterEquipmentChoicesProvider,
+    RogueEquipmentChoicesProvider,
 )
 from character.views.post_creation import EquipmentSelectView
 from utils.testing.factories import CharacterFactory
@@ -83,7 +84,7 @@ class TestEquipmentSelectView:
         user = self.character.user
         client.force_login(user)
 
-    def test_figher_equipment(self, client, setup_fighter):
+    def test_fighter_equipment(self, client, setup_fighter):
         equipment_manager = FighterEquipmentChoicesProvider()
         fake = Faker()
         weapon1 = fake.random_element(equipment_manager.get_weapon1_choices())[1]
@@ -111,3 +112,49 @@ class TestEquipmentSelectView:
         assert Equipment.objects.get(inventory=inventory, name=weapon2) is not None
         assert Equipment.objects.get(inventory=inventory, name=weapon3) is not None
         assert Equipment.objects.get(inventory=inventory, name=pack) is not None
+
+    @pytest.fixture()
+    def setup_rogue(self, client, equipment):
+        self.character = CharacterFactory(name="user", class_name=Class.ROGUE)
+        user = self.character.user
+        client.force_login(user)
+
+    def test_rogue_equipment(self, client, setup_rogue):
+        equipment_manager = RogueEquipmentChoicesProvider()
+        fake = Faker()
+        weapon1 = fake.random_element(equipment_manager.get_weapon1_choices())[1]
+        weapon2 = fake.random_element(equipment_manager.get_weapon2_choices())[1]
+        pack = fake.random_element(equipment_manager.get_pack_choices())[1]
+        data = {
+            "weapon1": f"{weapon1}",
+            "weapon2": f"{weapon2}",
+            "pack": f"{pack}",
+        }
+        form = SelectEquipmentForm(initial={"class_name": Class.ROGUE}, data=data)
+        assert form.is_valid()
+
+        response = client.post(
+            reverse(self.path_name, args=(self.character.id,)),
+            data=form.cleaned_data,
+        )
+        assert response.status_code == 302
+        assertRedirects(response, self.character.get_absolute_url())
+
+        inventory = self.character.inventory
+        assert Equipment.objects.get(inventory=inventory, name=weapon1) is not None
+        assert Equipment.objects.get(inventory=inventory, name=weapon2) is not None
+        assert Equipment.objects.get(inventory=inventory, name=pack) is not None
+        assert (
+            Equipment.objects.get(inventory=inventory, name=Armor.Name.LEATHER)
+            is not None
+        )
+        assert (
+            Equipment.objects.filter(
+                inventory=inventory, name=Weapon.Name.DAGGER
+            ).count()
+            == 2
+        )
+        assert (
+            Equipment.objects.get(inventory=inventory, name=Tool.Name.THIEVES_TOOLS)
+            is not None
+        )
