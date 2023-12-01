@@ -6,6 +6,11 @@ from character.models.equipment import Armor, Gear, Pack, Weapon
 
 
 class EquipmentChoicesProvider(ABC):
+    """
+    Provides methods to get equipment choices per character's class,
+    in post creation form.
+    """
+
     @abstractmethod
     def get_weapon1_choices(self):
         pass
