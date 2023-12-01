@@ -5,11 +5,12 @@ from pytest_django.asserts import assertRedirects, assertTemplateUsed
 
 from character.forms.post_creation import SelectEquipmentForm
 from character.models.classes import Class
-from character.models.equipment import Armor, Equipment, Tool, Weapon
+from character.models.equipment import Armor, Equipment, Gear, Tool, Weapon
 from character.utils.classes.equipment_choices import (
     ClericEquipmentChoicesProvider,
     FighterEquipmentChoicesProvider,
     RogueEquipmentChoicesProvider,
+    WizardEquipmentChoicesProvider,
 )
 from character.views.post_creation import EquipmentSelectView
 from utils.testing.factories import CharacterFactory
@@ -156,5 +157,41 @@ class TestEquipmentSelectView:
         )
         assert (
             Equipment.objects.get(inventory=inventory, name=Tool.Name.THIEVES_TOOLS)
+            is not None
+        )
+
+    @pytest.fixture()
+    def setup_wizard(self, client, equipment):
+        self.character = CharacterFactory(name="user", class_name=Class.WIZARD)
+        user = self.character.user
+        client.force_login(user)
+
+    def test_wizard_equipment(self, client, setup_wizard):
+        equipment_manager = WizardEquipmentChoicesProvider()
+        fake = Faker()
+        weapon1 = fake.random_element(equipment_manager.get_weapon1_choices())[1]
+        gear = fake.random_element(equipment_manager.get_gear_choices())[1]
+        pack = fake.random_element(equipment_manager.get_pack_choices())[1]
+        data = {
+            "weapon1": f"{weapon1}",
+            "gear": f"{gear}",
+            "pack": f"{pack}",
+        }
+        form = SelectEquipmentForm(initial={"class_name": Class.WIZARD}, data=data)
+        assert form.is_valid()
+
+        response = client.post(
+            reverse(self.path_name, args=(self.character.id,)),
+            data=form.cleaned_data,
+        )
+        assert response.status_code == 302
+        assertRedirects(response, self.character.get_absolute_url())
+
+        inventory = self.character.inventory
+        assert Equipment.objects.get(inventory=inventory, name=weapon1) is not None
+        assert Equipment.objects.get(inventory=inventory, name=gear) is not None
+        assert Equipment.objects.get(inventory=inventory, name=pack) is not None
+        assert (
+            Equipment.objects.get(inventory=inventory, name=Gear.Name.SPELLBOOK)
             is not None
         )
