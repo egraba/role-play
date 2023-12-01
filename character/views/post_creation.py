@@ -22,25 +22,41 @@ class EquipmentSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
         return initial
 
     def form_valid(self, form):
+        # The form is different per class, so some fields have to be surrunded with try/except.
+        weapon_name = form.cleaned_data["weapon1"]
+        Equipment.objects.create(name=weapon_name, inventory=self.character.inventory)
+
         try:
-            weapon_name = form.cleaned_data["weapon1"]
+            weapon_name = form.cleaned_data["weapon2"]
             Equipment.objects.create(
                 name=weapon_name, inventory=self.character.inventory
             )
+        except KeyError:
+            pass
 
+        try:
+            weapon_name = form.cleaned_data["weapon3"]
+            Equipment.objects.create(
+                name=weapon_name, inventory=self.character.inventory
+            )
+        except KeyError:
+            pass
+
+        try:
             armor_name = form.cleaned_data["armor"]
             Equipment.objects.create(
                 name=armor_name, inventory=self.character.inventory
             )
+        except KeyError:
+            pass
 
-            pack_name = form.cleaned_data["pack"]
-            Equipment.objects.create(name=pack_name, inventory=self.character.inventory)
+        pack_name = form.cleaned_data["pack"]
+        Equipment.objects.create(name=pack_name, inventory=self.character.inventory)
 
+        try:
             gear_name = form.cleaned_data["gear"]
             Equipment.objects.create(name=gear_name, inventory=self.character.inventory)
-
         except KeyError:
-            # The form is different per class.
             pass
 
         # Some equipment is added without selection, depending on character's class.

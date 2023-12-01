@@ -6,7 +6,7 @@ from pytest_django.asserts import assertRedirects, assertTemplateUsed
 from character.forms.post_creation import SelectEquipmentForm
 from character.models.classes import Class
 from character.models.equipment import Armor, Equipment
-from character.utils.classes.equipment.cleric import ClericEquipmentChoicesProvider
+from character.utils.classes.equipment_choices import ClericEquipmentChoicesProvider
 from character.views.post_creation import EquipmentSelectView
 from utils.testing.factories import CharacterFactory
 

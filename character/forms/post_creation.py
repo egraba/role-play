@@ -1,10 +1,12 @@
 from django import forms
 
 from character.models.classes import Class
-from character.utils.classes.equipment.cleric import ClericEquipmentChoicesProvider
-from character.utils.classes.equipment.fighter import FighterEquipmentChoicesProvider
-from character.utils.classes.equipment.rogue import RogueEquipmentChoicesProvider
-from character.utils.classes.equipment.wizard import WizardEquipmentChoicesProvider
+from character.utils.classes.equipment_choices import (
+    ClericEquipmentChoicesProvider,
+    FighterEquipmentChoicesProvider,
+    RogueEquipmentChoicesProvider,
+    WizardEquipmentChoicesProvider,
+)
 
 
 class SelectEquipmentForm(forms.Form):
