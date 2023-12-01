@@ -1,16 +1,23 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse
 from django.views.generic import CreateView, DetailView, ListView
 
-import character.abilities as abilities
-from character.forms import CreateCharacterForm
+from character.forms.character import CreateCharacterForm
 from character.models.character import Character
 from character.models.classes import ClassAdvancement, ClassFeature, Proficiencies
+from character.models.equipment import Equipment, Inventory
 from character.models.races import AbilityScoreIncrease, RacialTrait
+from character.utils.abilities import compute_ability_modifier
 
 
 class CharacterDetailView(LoginRequiredMixin, DetailView):
     model = Character
     template_name = "character/character.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["inventory"] = Equipment.objects.filter(inventory=self.object.inventory)
+        return context
 
 
 class CharacterListView(LoginRequiredMixin, ListView):
@@ -26,7 +33,7 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
     template_name = "character/character_create.html"
 
     def get_success_url(self):
-        return self.object.get_absolute_url()
+        return reverse("equipment-select", args=(self.object.id,))
 
     def _apply_racial_traits(self, character, racial_trait):
         character.adult_age = racial_trait.adult_age
@@ -51,16 +58,16 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
                     setattr(character, asi.ability, new_value)
 
     def _compute_ability_modifiers(self, character):
-        character.strength_modifier = abilities.compute_modifier(character.strength)
-        character.dexterity_modifier = abilities.compute_modifier(character.dexterity)
-        character.constitution_modifier = abilities.compute_modifier(
+        character.strength_modifier = compute_ability_modifier(character.strength)
+        character.dexterity_modifier = compute_ability_modifier(character.dexterity)
+        character.constitution_modifier = compute_ability_modifier(
             character.constitution
         )
-        character.intelligence_modifier = abilities.compute_modifier(
+        character.intelligence_modifier = compute_ability_modifier(
             character.intelligence
         )
-        character.wisdom_modifier = abilities.compute_modifier(character.wisdom)
-        character.charisma_modifier = abilities.compute_modifier(character.charisma)
+        character.wisdom_modifier = compute_ability_modifier(character.wisdom)
+        character.charisma_modifier = compute_ability_modifier(character.charisma)
 
     def _apply_class_advancement(self, character, level):
         class_advancement = ClassAdvancement.objects.get(
@@ -94,5 +101,8 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
         self._apply_class_features(character, class_feature)
 
         character.save()
+
+        # Inventory
+        Inventory.objects.create(character=character)
 
         return super().form_valid(form)

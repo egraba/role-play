@@ -9,12 +9,12 @@ from django.views.generic import CreateView, FormView, ListView, UpdateView
 from django_fsm import TransitionNotAllowed
 
 from character.models.character import Character
+from character.views.mixins import CharacterContextMixin
 from game.forms import CreateQuestForm, DamageForm, HealForm, IncreaseXpForm
 from game.models import Damage, Event, Instruction, Player, Quest, XpIncrease
 from game.tasks import send_email
 from game.utils import get_players_emails
 from game.views.mixins import (
-    CharacterContextMixin,
     EventContextMixin,
     GameContextMixin,
     GameStatusControlMixin,

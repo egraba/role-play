@@ -3,12 +3,16 @@ from django.test import TestCase
 from django.urls import reverse
 from faker import Faker
 
-import character.abilities as abilities
-from character.forms import CreateCharacterForm
+from character.forms.character import CreateCharacterForm
 from character.models.character import Character
 from character.models.classes import Class
 from character.models.races import Ability, Language, Race
-from character.views import CharacterCreateView, CharacterDetailView, CharacterListView
+from character.utils.abilities import AbilityScore
+from character.views.character import (
+    CharacterCreateView,
+    CharacterDetailView,
+    CharacterListView,
+)
 from utils.testing.factories import CharacterFactory, GameFactory, PlayerFactory
 
 
@@ -135,12 +139,12 @@ class CharacterCreateViewTest(TestCase):
             "name": f"{name}",
             "race": f"{race}",
             "class_name": f"{class_name}",
-            "strength": abilities.scores[0][0],
-            "dexterity": abilities.scores[1][0],
-            "constitution": abilities.scores[2][0],
-            "intelligence": abilities.scores[3][0],
-            "wisdom": abilities.scores[4][0],
-            "charisma": abilities.scores[5][0],
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
         }
         form = CreateCharacterForm(data)
@@ -152,7 +156,9 @@ class CharacterCreateViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         character = Character.objects.last()
-        self.assertRedirects(response, character.get_absolute_url())
+        self.assertRedirects(
+            response, reverse("equipment-select", args=(character.id,))
+        )
 
         self.assertEqual(character.name, form.cleaned_data["name"])
         self.assertEqual(character.race, form.cleaned_data["race"])
@@ -171,12 +177,12 @@ class CharacterCreateViewTest(TestCase):
             "name": f"{name}",
             "race": f"{race}",
             "class_name": f"{class_name}",
-            "strength": abilities.scores[0][0],
-            "dexterity": abilities.scores[1][0],
-            "constitution": abilities.scores[2][0],
-            "intelligence": abilities.scores[3][0],
-            "wisdom": abilities.scores[4][0],
-            "charisma": abilities.scores[5][0],
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
         }
         form = CreateCharacterForm(data)
@@ -188,14 +194,16 @@ class CharacterCreateViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         character = Character.objects.last()
-        self.assertRedirects(response, character.get_absolute_url())
+        self.assertRedirects(
+            response, reverse("equipment-select", args=(character.id,))
+        )
 
-        self.assertEqual(character.strength, abilities.scores[0][0])
-        self.assertEqual(character.dexterity, abilities.scores[1][0])
-        self.assertEqual(character.constitution, abilities.scores[2][0] + 2)
-        self.assertEqual(character.intelligence, abilities.scores[3][0])
-        self.assertEqual(character.wisdom, abilities.scores[4][0])
-        self.assertEqual(character.charisma, abilities.scores[5][0])
+        self.assertEqual(character.strength, AbilityScore.SCORE_10)
+        self.assertEqual(character.dexterity, AbilityScore.SCORE_12)
+        self.assertEqual(character.constitution, AbilityScore.SCORE_13 + 2)
+        self.assertEqual(character.intelligence, AbilityScore.SCORE_14)
+        self.assertEqual(character.wisdom, AbilityScore.SCORE_15)
+        self.assertEqual(character.charisma, AbilityScore.SCORE_8)
 
         self.assertEqual(character.speed, 25)
 
@@ -229,12 +237,12 @@ class CharacterCreateViewTest(TestCase):
             "name": f"{name}",
             "race": f"{race}",
             "class_name": f"{class_name}",
-            "strength": abilities.scores[0][0],
-            "dexterity": abilities.scores[1][0],
-            "constitution": abilities.scores[2][0],
-            "intelligence": abilities.scores[3][0],
-            "wisdom": abilities.scores[4][0],
-            "charisma": abilities.scores[5][0],
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
         }
         form = CreateCharacterForm(data)
@@ -246,14 +254,16 @@ class CharacterCreateViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         character = Character.objects.last()
-        self.assertRedirects(response, character.get_absolute_url())
+        self.assertRedirects(
+            response, reverse("equipment-select", args=(character.id,))
+        )
 
-        self.assertEqual(character.strength, abilities.scores[0][0])
-        self.assertEqual(character.dexterity, abilities.scores[1][0] + 2)
-        self.assertEqual(character.constitution, abilities.scores[2][0])
-        self.assertEqual(character.intelligence, abilities.scores[3][0])
-        self.assertEqual(character.wisdom, abilities.scores[4][0])
-        self.assertEqual(character.charisma, abilities.scores[5][0])
+        self.assertEqual(character.strength, AbilityScore.SCORE_10)
+        self.assertEqual(character.dexterity, AbilityScore.SCORE_12 + 2)
+        self.assertEqual(character.constitution, AbilityScore.SCORE_13)
+        self.assertEqual(character.intelligence, AbilityScore.SCORE_14)
+        self.assertEqual(character.wisdom, AbilityScore.SCORE_15)
+        self.assertEqual(character.charisma, AbilityScore.SCORE_8)
 
         self.assertEqual(character.speed, 30)
 
@@ -283,12 +293,12 @@ class CharacterCreateViewTest(TestCase):
             "name": f"{name}",
             "race": f"{race}",
             "class_name": f"{class_name}",
-            "strength": abilities.scores[0][0],
-            "dexterity": abilities.scores[1][0],
-            "constitution": abilities.scores[2][0],
-            "intelligence": abilities.scores[3][0],
-            "wisdom": abilities.scores[4][0],
-            "charisma": abilities.scores[5][0],
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
         }
         form = CreateCharacterForm(data)
@@ -300,14 +310,16 @@ class CharacterCreateViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         character = Character.objects.last()
-        self.assertRedirects(response, character.get_absolute_url())
+        self.assertRedirects(
+            response, reverse("equipment-select", args=(character.id,))
+        )
 
-        self.assertEqual(character.strength, abilities.scores[0][0])
-        self.assertEqual(character.dexterity, abilities.scores[1][0] + 2)
-        self.assertEqual(character.constitution, abilities.scores[2][0])
-        self.assertEqual(character.intelligence, abilities.scores[3][0])
-        self.assertEqual(character.wisdom, abilities.scores[4][0])
-        self.assertEqual(character.charisma, abilities.scores[5][0])
+        self.assertEqual(character.strength, AbilityScore.SCORE_10)
+        self.assertEqual(character.dexterity, AbilityScore.SCORE_12 + 2)
+        self.assertEqual(character.constitution, AbilityScore.SCORE_13)
+        self.assertEqual(character.intelligence, AbilityScore.SCORE_14)
+        self.assertEqual(character.wisdom, AbilityScore.SCORE_15)
+        self.assertEqual(character.charisma, AbilityScore.SCORE_8)
 
         self.assertEqual(character.speed, 25)
 
@@ -337,12 +349,12 @@ class CharacterCreateViewTest(TestCase):
             "name": f"{name}",
             "race": f"{race}",
             "class_name": f"{class_name}",
-            "strength": abilities.scores[0][0],
-            "dexterity": abilities.scores[1][0],
-            "constitution": abilities.scores[2][0],
-            "intelligence": abilities.scores[3][0],
-            "wisdom": abilities.scores[4][0],
-            "charisma": abilities.scores[5][0],
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
         }
         form = CreateCharacterForm(data)
@@ -354,14 +366,16 @@ class CharacterCreateViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         character = Character.objects.last()
-        self.assertRedirects(response, character.get_absolute_url())
+        self.assertRedirects(
+            response, reverse("equipment-select", args=(character.id,))
+        )
 
-        self.assertEqual(character.strength, abilities.scores[0][0] + 1)
-        self.assertEqual(character.dexterity, abilities.scores[1][0] + 1)
-        self.assertEqual(character.constitution, abilities.scores[2][0] + 1)
-        self.assertEqual(character.intelligence, abilities.scores[3][0] + 1)
-        self.assertEqual(character.wisdom, abilities.scores[4][0] + 1)
-        self.assertEqual(character.charisma, abilities.scores[5][0] + 1)
+        self.assertEqual(character.strength, AbilityScore.SCORE_10 + 1)
+        self.assertEqual(character.dexterity, AbilityScore.SCORE_12 + 1)
+        self.assertEqual(character.constitution, AbilityScore.SCORE_13 + 1)
+        self.assertEqual(character.intelligence, AbilityScore.SCORE_14 + 1)
+        self.assertEqual(character.wisdom, AbilityScore.SCORE_15 + 1)
+        self.assertEqual(character.charisma, AbilityScore.SCORE_8 + 1)
 
         self.assertEqual(character.speed, 30)
 
@@ -383,12 +397,12 @@ class CharacterCreateViewTest(TestCase):
             "name": f"{name}",
             "race": f"{race}",
             "class_name": f"{class_name}",
-            "strength": abilities.scores[0][0],
-            "dexterity": abilities.scores[1][0],
-            "constitution": abilities.scores[2][0],
-            "intelligence": abilities.scores[3][0],
-            "wisdom": abilities.scores[4][0],
-            "charisma": abilities.scores[5][0],
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
         }
         form = CreateCharacterForm(data)
@@ -400,7 +414,9 @@ class CharacterCreateViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         character = Character.objects.last()
-        self.assertRedirects(response, character.get_absolute_url())
+        self.assertRedirects(
+            response, reverse("equipment-select", args=(character.id,))
+        )
 
         self.assertEqual(character.hit_dice, "1d8")
 
@@ -424,12 +440,12 @@ class CharacterCreateViewTest(TestCase):
             "name": f"{name}",
             "race": f"{race}",
             "class_name": f"{class_name}",
-            "strength": abilities.scores[0][0],
-            "dexterity": abilities.scores[1][0],
-            "constitution": abilities.scores[2][0],
-            "intelligence": abilities.scores[3][0],
-            "wisdom": abilities.scores[4][0],
-            "charisma": abilities.scores[5][0],
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
         }
         form = CreateCharacterForm(data)
@@ -441,7 +457,9 @@ class CharacterCreateViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         character = Character.objects.last()
-        self.assertRedirects(response, character.get_absolute_url())
+        self.assertRedirects(
+            response, reverse("equipment-select", args=(character.id,))
+        )
 
         self.assertEqual(character.hit_dice, "1d10")
 
@@ -468,12 +486,12 @@ class CharacterCreateViewTest(TestCase):
             "name": f"{name}",
             "race": f"{race}",
             "class_name": f"{class_name}",
-            "strength": abilities.scores[0][0],
-            "dexterity": abilities.scores[1][0],
-            "constitution": abilities.scores[2][0],
-            "intelligence": abilities.scores[3][0],
-            "wisdom": abilities.scores[4][0],
-            "charisma": abilities.scores[5][0],
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
         }
         form = CreateCharacterForm(data)
@@ -485,7 +503,9 @@ class CharacterCreateViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         character = Character.objects.last()
-        self.assertRedirects(response, character.get_absolute_url())
+        self.assertRedirects(
+            response, reverse("equipment-select", args=(character.id,))
+        )
 
         self.assertEqual(character.hit_dice, "1d8")
 
@@ -512,12 +532,12 @@ class CharacterCreateViewTest(TestCase):
             "name": f"{name}",
             "race": f"{race}",
             "class_name": f"{class_name}",
-            "strength": abilities.scores[0][0],
-            "dexterity": abilities.scores[1][0],
-            "constitution": abilities.scores[2][0],
-            "intelligence": abilities.scores[3][0],
-            "wisdom": abilities.scores[4][0],
-            "charisma": abilities.scores[5][0],
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
         }
         form = CreateCharacterForm(data)
@@ -529,7 +549,9 @@ class CharacterCreateViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         character = Character.objects.last()
-        self.assertRedirects(response, character.get_absolute_url())
+        self.assertRedirects(
+            response, reverse("equipment-select", args=(character.id,))
+        )
 
         self.assertEqual(character.hit_dice, "1d6")
 

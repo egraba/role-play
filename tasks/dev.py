@@ -9,12 +9,6 @@ def clean(c):
         c.run(f"rm -rf {pattern}")
 
 
-@task
-def make_migrations(c):
-    """Make Django migrations"""
-    c.run("python manage.py makemigrations", pty=True)
-
-
 @task(clean)
 def build(c):
     """Apply database migrations"""
