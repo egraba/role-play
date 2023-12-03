@@ -35,6 +35,8 @@ class CharacterInviteViewTest(TestCase):
         number_of_characters_not_in_a_game = 12
         for i in range(number_of_characters_in_a_game):
             PlayerFactory(game=game)
+        # All characters have to be deleted to avoid pagination issues.
+        Character.objects.all().delete()
         for i in range(number_of_characters_not_in_a_game):
             CharacterFactory()
 

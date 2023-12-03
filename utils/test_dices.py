@@ -14,7 +14,7 @@ class DiceTest(TestCase):
         dice = Dice(dice_str=dice_str)
         self.assertEqual(dice.throws, number_of_throws)
         self.assertEqual(dice.type, dice_type)
-        self.assertEquals(str(dice), dice_str)
+        self.assertEqual(str(dice), dice_str)
 
     def test_constructor_invalid_dice_str(self):
         fake = Faker()

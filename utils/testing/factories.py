@@ -46,6 +46,7 @@ class QuestFactory(factory.django.DjangoModelFactory):
 class GameFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Game
+        skip_postgeneration_save = True
 
     name = factory.Sequence(lambda n: f"game{n}")
     campaign = factory.SubFactory(CampaignFactory)

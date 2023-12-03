@@ -1,7 +1,9 @@
+import pytest
 from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
 from faker import Faker
+from pytest_django.asserts import assertContains, assertTemplateUsed
 
 from character.forms.character import CreateCharacterForm
 from character.models.character import Character
@@ -13,7 +15,12 @@ from character.views.character import (
     CharacterDetailView,
     CharacterListView,
 )
-from utils.testing.factories import CharacterFactory, GameFactory, PlayerFactory
+from utils.testing.factories import (
+    CharacterFactory,
+    GameFactory,
+    PlayerFactory,
+    UserFactory,
+)
 
 
 class CharacterDetailViewTest(TestCase):
@@ -44,72 +51,71 @@ class CharacterDetailViewTest(TestCase):
         self.assertContains(response, game.name)
 
 
-class CharacterListViewTest(TestCase):
+@pytest.mark.django_db
+class TestCharacterListView:
     path_name = "character-list"
 
-    @classmethod
-    def setUpTestData(cls):
-        number_of_characters = 22
-        for _ in range(number_of_characters):
-            CharacterFactory()
+    @pytest.fixture()
+    def setup(self, client):
+        user = UserFactory(username="user")
+        client.force_login(user)
 
-    def setUp(self):
-        self.user = User.objects.last()
-        self.client.force_login(self.user)
+    def test_view_mapping(self, client, setup):
+        response = client.get(reverse(self.path_name))
+        assert response.status_code == 200
+        assert response.resolver_match.func.view_class == CharacterListView
 
-    def test_view_mapping(self):
-        response = self.client.get(reverse(self.path_name))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.resolver_match.func.view_class, CharacterListView)
+    def test_template_mapping(self, client, setup):
+        response = client.get(reverse(self.path_name))
+        assertTemplateUsed(response, "character/character_list.html")
 
-    def test_template_mapping(self):
-        response = self.client.get(reverse(self.path_name))
-        self.assertTemplateUsed(response, "character/character_list.html")
+    def test_pagination_size(self, client, setup, setup_characters):
+        response = client.get(reverse(self.path_name))
+        assert response.status_code == 200
+        assert "is_paginated" in response.context
+        assert response.context["is_paginated"]
+        assert len(response.context["character_list"]) == 20
 
-    def test_pagination_size(self):
-        response = self.client.get(reverse(self.path_name))
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue("is_paginated" in response.context)
-        self.assertTrue(response.context["is_paginated"])
-        self.assertEqual(len(response.context["character_list"]), 20)
+    def test_pagination_size_next_page(self, client, setup, setup_characters):
+        response = client.get(reverse(self.path_name) + "?page=2")
+        assert response.status_code == 200
+        assert "is_paginated" in response.context
+        assert response.context["is_paginated"]
+        assert len(response.context["character_list"]) == 2
 
-    def test_pagination_size_next_page(self):
-        response = self.client.get(reverse(self.path_name) + "?page=2")
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue("is_paginated" in response.context)
-        self.assertTrue(response.context["is_paginated"])
-        self.assertEqual(len(response.context["character_list"]), 2)
-
-    def test_ordering(self):
-        response = self.client.get(reverse(self.path_name))
-        self.assertEqual(response.status_code, 200)
+    def test_ordering(self, client, setup, setup_characters):
+        response = client.get(reverse(self.path_name))
+        assert response.status_code == 200
         xp = 0
         for character in response.context["character_list"]:
             if xp == 0:
                 xp = character.xp
             else:
-                self.assertTrue(xp >= character.xp)
+                assert xp >= character.xp
                 xp = character.xp
 
-    def test_content_no_existing_character(self):
+    @pytest.fixture
+    def delete_characters(self):
         Character.objects.all().delete()
-        response = self.client.get(reverse(self.path_name))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "There is no character available...")
 
-    def test_content_character_is_in_game(self):
-        # To avoid pagination.
-        Character.objects.all().delete()
+    def test_content_no_existing_character(self, client, setup, delete_characters):
+        response = client.get(reverse(self.path_name))
+        assert response.status_code == 200
+        assertContains(response, "There is no character available...")
+
+    def test_content_character_is_in_game(self, client, setup, delete_characters):
+        # The idea is to have only one character. Assign them to a game, and check that
+        # game name is part of the page content.
         game = GameFactory()
         PlayerFactory(game=game)
-        response = self.client.get(reverse(self.path_name))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, game.name)
+        response = client.get(reverse(self.path_name))
+        assert response.status_code == 200
+        assertContains(response, game.name)
 
 
 class CharacterCreateViewTest(TestCase):
     path_name = "character-create"
-    fixtures = ["races", "abilities", "classes"]
+    fixtures = ["races", "abilities", "classes", "equipment"]
 
     @classmethod
     def setUpTestData(cls):
