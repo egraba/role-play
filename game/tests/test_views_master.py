@@ -10,7 +10,7 @@ from django.urls import reverse
 from django.utils import timezone
 from faker import Faker
 
-from character.models import Character
+from character.models.character import Character
 from game.forms import CreateQuestForm, DamageForm, HealForm, IncreaseXpForm
 from game.models import Damage, Event, Game, Healing, Quest, XpIncrease
 from game.views.master import (

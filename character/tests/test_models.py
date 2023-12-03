@@ -3,7 +3,8 @@ from django.db import models
 from django.test import TestCase
 from faker import Faker
 
-from character.models import Character
+from character.models.character import Character
+from utils.dices import Dice
 
 
 class CharacterModelTest(TestCase):
@@ -156,15 +157,27 @@ class CharacterModelTest(TestCase):
         old_xp = self.character.xp
         old_level = self.character.level
         old_bonus = self.character.proficiency_bonus
+        old_throws = Dice(self.character.hit_dice).throws
+        old_max_hp = self.character.max_hp
         self.character.increase_xp(new_xp)
         self.assertEqual(self.character.xp, old_xp + new_xp)
         self.assertEqual(self.character.level, old_level + 1)
         self.assertEqual(self.character.proficiency_bonus, old_bonus + 2)
+        dice = self.character.hit_dice
+        self.assertEqual(dice.throws, old_throws + 1)
+        self.assertEqual(self.character.max_hp, old_max_hp + self.character.hp_increase)
 
     def test_xp_increase_several_level_increase(self):
         new_xp = 50_000
         old_xp = self.character.xp
+        old_throws = Dice(self.character.hit_dice).throws
+        old_max_hp = self.character.max_hp
         self.character.increase_xp(new_xp)
         self.assertEqual(self.character.xp, old_xp + new_xp)
         self.assertEqual(self.character.level, 9)
         self.assertEqual(self.character.proficiency_bonus, 24)
+        dice = self.character.hit_dice
+        self.assertEqual(dice.throws, old_throws + 8)
+        self.assertEqual(
+            self.character.max_hp, old_max_hp + self.character.hp_increase * 8
+        )

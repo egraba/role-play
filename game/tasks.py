@@ -1,7 +1,7 @@
 from celery import shared_task
 from django.core.mail import send_mail
 
-from character.models import Character
+from character.models.character import Character
 from game.models import Choice, DiceLaunch, Game, Instruction
 
 

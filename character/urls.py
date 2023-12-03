@@ -1,10 +1,15 @@
 from django.urls import path
 
-from character.views import CharacterCreateView, CharacterDetailView, CharacterListView
+from character.views.character import (
+    CharacterCreateView,
+    CharacterDetailView,
+    CharacterListView,
+)
+from character.views.post_creation import EquipmentSelectView
 
 urlpatterns = [
     path(
-        "character/<int:pk>",
+        "<int:pk>",
         CharacterDetailView.as_view(),
         name="character-detail",
     ),
@@ -17,5 +22,10 @@ urlpatterns = [
         "create_character",
         CharacterCreateView.as_view(),
         name="character-create",
+    ),
+    path(
+        "<int:character_id>/select_equipment",
+        EquipmentSelectView.as_view(),
+        name="equipment-select",
     ),
 ]

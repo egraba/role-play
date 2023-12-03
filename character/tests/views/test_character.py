@@ -3,10 +3,16 @@ from django.test import TestCase
 from django.urls import reverse
 from faker import Faker
 
-import character.abilities as abilities
-from character.forms import CreateCharacterForm
-from character.models import Ability, Character, Class, Language, Race
-from character.views import CharacterCreateView, CharacterDetailView, CharacterListView
+from character.forms.character import CreateCharacterForm
+from character.models.character import Character
+from character.models.classes import Class
+from character.models.races import Ability, Language, Race
+from character.utils.abilities import AbilityScore
+from character.views.character import (
+    CharacterCreateView,
+    CharacterDetailView,
+    CharacterListView,
+)
 from utils.testing.factories import CharacterFactory, GameFactory, PlayerFactory
 
 
@@ -133,12 +139,12 @@ class CharacterCreateViewTest(TestCase):
             "name": f"{name}",
             "race": f"{race}",
             "class_name": f"{class_name}",
-            "strength": abilities.scores[0][0],
-            "dexterity": abilities.scores[1][0],
-            "constitution": abilities.scores[2][0],
-            "intelligence": abilities.scores[3][0],
-            "wisdom": abilities.scores[4][0],
-            "charisma": abilities.scores[5][0],
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
         }
         form = CreateCharacterForm(data)
@@ -150,13 +156,16 @@ class CharacterCreateViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         character = Character.objects.last()
-        self.assertRedirects(response, character.get_absolute_url())
+        self.assertRedirects(
+            response, reverse("equipment-select", args=(character.id,))
+        )
 
         self.assertEqual(character.name, form.cleaned_data["name"])
         self.assertEqual(character.race, form.cleaned_data["race"])
         self.assertEqual(character.xp, 0)
-        self.assertEqual(character.hp, 100)
-        self.assertEqual(character.max_hp, 100)
+        self.assertGreaterEqual(character.hp, 100)
+        self.assertGreaterEqual(character.max_hp, 100)
+        self.assertEqual(character.hp, character.max_hp)
 
     def test_character_creation_dwarf(self):
         fake = Faker()
@@ -168,12 +177,12 @@ class CharacterCreateViewTest(TestCase):
             "name": f"{name}",
             "race": f"{race}",
             "class_name": f"{class_name}",
-            "strength": abilities.scores[0][0],
-            "dexterity": abilities.scores[1][0],
-            "constitution": abilities.scores[2][0],
-            "intelligence": abilities.scores[3][0],
-            "wisdom": abilities.scores[4][0],
-            "charisma": abilities.scores[5][0],
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
         }
         form = CreateCharacterForm(data)
@@ -185,14 +194,16 @@ class CharacterCreateViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         character = Character.objects.last()
-        self.assertRedirects(response, character.get_absolute_url())
+        self.assertRedirects(
+            response, reverse("equipment-select", args=(character.id,))
+        )
 
-        self.assertEqual(character.strength, abilities.scores[0][0])
-        self.assertEqual(character.dexterity, abilities.scores[1][0])
-        self.assertEqual(character.constitution, abilities.scores[2][0] + 2)
-        self.assertEqual(character.intelligence, abilities.scores[3][0])
-        self.assertEqual(character.wisdom, abilities.scores[4][0])
-        self.assertEqual(character.charisma, abilities.scores[5][0])
+        self.assertEqual(character.strength, AbilityScore.SCORE_10)
+        self.assertEqual(character.dexterity, AbilityScore.SCORE_12)
+        self.assertEqual(character.constitution, AbilityScore.SCORE_13 + 2)
+        self.assertEqual(character.intelligence, AbilityScore.SCORE_14)
+        self.assertEqual(character.wisdom, AbilityScore.SCORE_15)
+        self.assertEqual(character.charisma, AbilityScore.SCORE_8)
 
         self.assertEqual(character.speed, 25)
 
@@ -226,12 +237,12 @@ class CharacterCreateViewTest(TestCase):
             "name": f"{name}",
             "race": f"{race}",
             "class_name": f"{class_name}",
-            "strength": abilities.scores[0][0],
-            "dexterity": abilities.scores[1][0],
-            "constitution": abilities.scores[2][0],
-            "intelligence": abilities.scores[3][0],
-            "wisdom": abilities.scores[4][0],
-            "charisma": abilities.scores[5][0],
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
         }
         form = CreateCharacterForm(data)
@@ -243,14 +254,16 @@ class CharacterCreateViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         character = Character.objects.last()
-        self.assertRedirects(response, character.get_absolute_url())
+        self.assertRedirects(
+            response, reverse("equipment-select", args=(character.id,))
+        )
 
-        self.assertEqual(character.strength, abilities.scores[0][0])
-        self.assertEqual(character.dexterity, abilities.scores[1][0] + 2)
-        self.assertEqual(character.constitution, abilities.scores[2][0])
-        self.assertEqual(character.intelligence, abilities.scores[3][0])
-        self.assertEqual(character.wisdom, abilities.scores[4][0])
-        self.assertEqual(character.charisma, abilities.scores[5][0])
+        self.assertEqual(character.strength, AbilityScore.SCORE_10)
+        self.assertEqual(character.dexterity, AbilityScore.SCORE_12 + 2)
+        self.assertEqual(character.constitution, AbilityScore.SCORE_13)
+        self.assertEqual(character.intelligence, AbilityScore.SCORE_14)
+        self.assertEqual(character.wisdom, AbilityScore.SCORE_15)
+        self.assertEqual(character.charisma, AbilityScore.SCORE_8)
 
         self.assertEqual(character.speed, 30)
 
@@ -280,12 +293,12 @@ class CharacterCreateViewTest(TestCase):
             "name": f"{name}",
             "race": f"{race}",
             "class_name": f"{class_name}",
-            "strength": abilities.scores[0][0],
-            "dexterity": abilities.scores[1][0],
-            "constitution": abilities.scores[2][0],
-            "intelligence": abilities.scores[3][0],
-            "wisdom": abilities.scores[4][0],
-            "charisma": abilities.scores[5][0],
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
         }
         form = CreateCharacterForm(data)
@@ -297,14 +310,16 @@ class CharacterCreateViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         character = Character.objects.last()
-        self.assertRedirects(response, character.get_absolute_url())
+        self.assertRedirects(
+            response, reverse("equipment-select", args=(character.id,))
+        )
 
-        self.assertEqual(character.strength, abilities.scores[0][0])
-        self.assertEqual(character.dexterity, abilities.scores[1][0] + 2)
-        self.assertEqual(character.constitution, abilities.scores[2][0])
-        self.assertEqual(character.intelligence, abilities.scores[3][0])
-        self.assertEqual(character.wisdom, abilities.scores[4][0])
-        self.assertEqual(character.charisma, abilities.scores[5][0])
+        self.assertEqual(character.strength, AbilityScore.SCORE_10)
+        self.assertEqual(character.dexterity, AbilityScore.SCORE_12 + 2)
+        self.assertEqual(character.constitution, AbilityScore.SCORE_13)
+        self.assertEqual(character.intelligence, AbilityScore.SCORE_14)
+        self.assertEqual(character.wisdom, AbilityScore.SCORE_15)
+        self.assertEqual(character.charisma, AbilityScore.SCORE_8)
 
         self.assertEqual(character.speed, 25)
 
@@ -334,12 +349,12 @@ class CharacterCreateViewTest(TestCase):
             "name": f"{name}",
             "race": f"{race}",
             "class_name": f"{class_name}",
-            "strength": abilities.scores[0][0],
-            "dexterity": abilities.scores[1][0],
-            "constitution": abilities.scores[2][0],
-            "intelligence": abilities.scores[3][0],
-            "wisdom": abilities.scores[4][0],
-            "charisma": abilities.scores[5][0],
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
         }
         form = CreateCharacterForm(data)
@@ -351,14 +366,16 @@ class CharacterCreateViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         character = Character.objects.last()
-        self.assertRedirects(response, character.get_absolute_url())
+        self.assertRedirects(
+            response, reverse("equipment-select", args=(character.id,))
+        )
 
-        self.assertEqual(character.strength, abilities.scores[0][0] + 1)
-        self.assertEqual(character.dexterity, abilities.scores[1][0] + 1)
-        self.assertEqual(character.constitution, abilities.scores[2][0] + 1)
-        self.assertEqual(character.intelligence, abilities.scores[3][0] + 1)
-        self.assertEqual(character.wisdom, abilities.scores[4][0] + 1)
-        self.assertEqual(character.charisma, abilities.scores[5][0] + 1)
+        self.assertEqual(character.strength, AbilityScore.SCORE_10 + 1)
+        self.assertEqual(character.dexterity, AbilityScore.SCORE_12 + 1)
+        self.assertEqual(character.constitution, AbilityScore.SCORE_13 + 1)
+        self.assertEqual(character.intelligence, AbilityScore.SCORE_14 + 1)
+        self.assertEqual(character.wisdom, AbilityScore.SCORE_15 + 1)
+        self.assertEqual(character.charisma, AbilityScore.SCORE_8 + 1)
 
         self.assertEqual(character.speed, 30)
 
@@ -369,3 +386,182 @@ class CharacterCreateViewTest(TestCase):
 
         abtls = set()
         self.assertEqual(set(character.abilities.all()), abtls)
+
+    def test_character_creation_cleric(self):
+        fake = Faker()
+        name = fake.name()
+        race = fake.enum(enum_cls=Race)
+        class_name = Class.CLERIC
+        gender = fake.enum(enum_cls=Character.Gender)
+        data = {
+            "name": f"{name}",
+            "race": f"{race}",
+            "class_name": f"{class_name}",
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
+            "gender": f"{gender}",
+        }
+        form = CreateCharacterForm(data)
+        self.assertTrue(form.is_valid())
+
+        response = self.client.post(
+            reverse(self.path_name),
+            data=form.cleaned_data,
+        )
+        self.assertEqual(response.status_code, 302)
+        character = Character.objects.last()
+        self.assertRedirects(
+            response, reverse("equipment-select", args=(character.id,))
+        )
+
+        self.assertEqual(character.hit_dice, "1d8")
+
+        hp = 100 + 8 + character.constitution_modifier
+        self.assertEqual(character.hp, hp)
+
+        self.assertEqual(
+            character.proficiencies.armor, "Light armor, medium armor, shields"
+        )
+        self.assertEqual(character.proficiencies.weapons, "Simple weapons")
+        self.assertEqual(character.proficiencies.tools, "None")
+        self.assertEqual(character.proficiencies.saving_throws, "Wisdom, Charisma")
+
+    def test_character_creation_fighter(self):
+        fake = Faker()
+        name = fake.name()
+        race = fake.enum(enum_cls=Race)
+        class_name = Class.FIGHTER
+        gender = fake.enum(enum_cls=Character.Gender)
+        data = {
+            "name": f"{name}",
+            "race": f"{race}",
+            "class_name": f"{class_name}",
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
+            "gender": f"{gender}",
+        }
+        form = CreateCharacterForm(data)
+        self.assertTrue(form.is_valid())
+
+        response = self.client.post(
+            reverse(self.path_name),
+            data=form.cleaned_data,
+        )
+        self.assertEqual(response.status_code, 302)
+        character = Character.objects.last()
+        self.assertRedirects(
+            response, reverse("equipment-select", args=(character.id,))
+        )
+
+        self.assertEqual(character.hit_dice, "1d10")
+
+        hp = 100 + 10 + character.constitution_modifier
+        self.assertEqual(character.hp, hp)
+
+        self.assertEqual(character.proficiencies.armor, "All armor, shields")
+        self.assertEqual(
+            character.proficiencies.weapons,
+            "Simple weapons, martial weapons",
+        )
+        self.assertEqual(character.proficiencies.tools, "None")
+        self.assertEqual(
+            character.proficiencies.saving_throws, "Strength, Constitution"
+        )
+
+    def test_character_creation_rogue(self):
+        fake = Faker()
+        name = fake.name()
+        race = fake.enum(enum_cls=Race)
+        class_name = Class.ROGUE
+        gender = fake.enum(enum_cls=Character.Gender)
+        data = {
+            "name": f"{name}",
+            "race": f"{race}",
+            "class_name": f"{class_name}",
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
+            "gender": f"{gender}",
+        }
+        form = CreateCharacterForm(data)
+        self.assertTrue(form.is_valid())
+
+        response = self.client.post(
+            reverse(self.path_name),
+            data=form.cleaned_data,
+        )
+        self.assertEqual(response.status_code, 302)
+        character = Character.objects.last()
+        self.assertRedirects(
+            response, reverse("equipment-select", args=(character.id,))
+        )
+
+        self.assertEqual(character.hit_dice, "1d8")
+
+        hp = 100 + 8 + character.constitution_modifier
+        self.assertEqual(character.hp, hp)
+
+        self.assertEqual(character.proficiencies.armor, "Light armor")
+        self.assertEqual(
+            character.proficiencies.weapons,
+            "Simple weapons, hand crossbows, longswords, rapiers, shortswords",
+        )
+        self.assertEqual(character.proficiencies.tools, "Thieves' tools")
+        self.assertEqual(
+            character.proficiencies.saving_throws, "Dexterity, Intelligence"
+        )
+
+    def test_character_creation_wizard(self):
+        fake = Faker()
+        name = fake.name()
+        race = fake.enum(enum_cls=Race)
+        class_name = Class.WIZARD
+        gender = fake.enum(enum_cls=Character.Gender)
+        data = {
+            "name": f"{name}",
+            "race": f"{race}",
+            "class_name": f"{class_name}",
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
+            "gender": f"{gender}",
+        }
+        form = CreateCharacterForm(data)
+        self.assertTrue(form.is_valid())
+
+        response = self.client.post(
+            reverse(self.path_name),
+            data=form.cleaned_data,
+        )
+        self.assertEqual(response.status_code, 302)
+        character = Character.objects.last()
+        self.assertRedirects(
+            response, reverse("equipment-select", args=(character.id,))
+        )
+
+        self.assertEqual(character.hit_dice, "1d6")
+
+        hp = 100 + 6 + character.constitution_modifier
+        self.assertEqual(character.hp, hp)
+
+        self.assertEqual(character.proficiencies.armor, "None")
+        self.assertEqual(
+            character.proficiencies.weapons,
+            "Daggers, darts, slings, quarterstaffs, light crossbows",
+        )
+        self.assertEqual(character.proficiencies.tools, "None")
+        self.assertEqual(character.proficiencies.saving_throws, "Intelligence, Wisdom")
