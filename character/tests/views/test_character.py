@@ -115,7 +115,7 @@ class TestCharacterListView:
 
 class CharacterCreateViewTest(TestCase):
     path_name = "character-create"
-    fixtures = ["races", "abilities", "classes"]
+    fixtures = ["races", "abilities", "classes", "equipment"]
 
     @classmethod
     def setUpTestData(cls):
