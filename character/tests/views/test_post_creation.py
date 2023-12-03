@@ -142,8 +142,8 @@ class TestEquipmentSelectView:
         assertRedirects(response, self.character.get_absolute_url())
 
         inventory = self.character.inventory
-        assert Equipment.objects.get(inventory=inventory, name=weapon1) is not None
-        assert Equipment.objects.get(inventory=inventory, name=weapon2) is not None
+        assert Equipment.objects.filter(inventory=inventory, name=weapon1) is not None
+        assert Equipment.objects.filter(inventory=inventory, name=weapon2) is not None
         assert Equipment.objects.get(inventory=inventory, name=pack) is not None
         assert (
             Equipment.objects.get(inventory=inventory, name=Armor.Name.LEATHER)
