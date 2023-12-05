@@ -23,32 +23,29 @@ from utils.testing.factories import (
 )
 
 
-class CharacterDetailViewTest(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        CharacterFactory()
+@pytest.mark.django_db
+class TestCharacterDetailView:
+    @pytest.fixture(autouse=True)
+    def setup(self, client):
+        self.character = CharacterFactory(name="character")
+        client.force_login(self.character.user)
 
-    def setUp(self):
-        self.user = User.objects.last()
-        self.client.force_login(self.user)
-        self.character = Character.objects.last()
+    def test_view_mapping(self, client):
+        response = client.get(self.character.get_absolute_url())
+        assert response.status_code == 200
+        assert response.resolver_match.func.view_class == CharacterDetailView
 
-    def test_view_mapping(self):
-        response = self.client.get(self.character.get_absolute_url())
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.resolver_match.func.view_class, CharacterDetailView)
+    def test_template_mapping(self, client):
+        response = client.get(self.character.get_absolute_url())
+        assert response.status_code == 200
+        assertTemplateUsed(response, "character/character.html")
 
-    def test_template_mapping(self):
-        response = self.client.get(self.character.get_absolute_url())
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "character/character.html")
-
-    def test_content_character_is_in_game(self):
+    def test_content_character_is_in_game(self, client):
         game = GameFactory()
         PlayerFactory(game=game, character=self.character)
-        response = self.client.get(self.character.get_absolute_url())
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, game.name)
+        response = client.get(self.character.get_absolute_url())
+        assert response.status_code == 200
+        assertContains(response, game.name)
 
 
 @pytest.mark.django_db
