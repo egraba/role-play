@@ -1,7 +1,9 @@
+import pytest
 from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
 from faker import Faker
+from pytest_django.asserts import assertTemplateUsed
 
 from master.forms import CampaignCreateForm, CampaignUpdateForm
 from master.models import Campaign
@@ -14,25 +16,21 @@ from master.views import (
 from utils.testing.factories import CampaignFactory, UserFactory
 
 
-class CampaignDetailViewTest(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        UserFactory()
-        CampaignFactory()
+@pytest.mark.django_db
+class TestCampaignDetailView:
+    @pytest.fixture(autouse=True)
+    def setup(self, client):
+        user = UserFactory(username="user")
+        client.force_login(user)
+        self.campaign = CampaignFactory()
 
-    def setUp(self):
-        self.user = User.objects.last()
-        self.client.force_login(self.user)
+    def test_view_mapping(self, client):
+        response = client.get(self.campaign.get_absolute_url())
+        assert response.resolver_match.func.view_class == CampaignDetailView
 
-    def test_view_mapping(self):
-        campaign = Campaign.objects.last()
-        response = self.client.get(campaign.get_absolute_url())
-        self.assertEqual(response.resolver_match.func.view_class, CampaignDetailView)
-
-    def test_template_mapping(self):
-        campaign = Campaign.objects.last()
-        response = self.client.get(campaign.get_absolute_url())
-        self.assertTemplateUsed(response, "master/campaign.html")
+    def test_template_mapping(self, client):
+        response = client.get(self.campaign.get_absolute_url())
+        assertTemplateUsed(response, "master/campaign.html")
 
 
 class CampaignListViewTest(TestCase):
