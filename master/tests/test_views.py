@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
 from faker import Faker
-from pytest_django.asserts import assertTemplateUsed
+from pytest_django.asserts import assertContains, assertTemplateUsed
 
 from master.forms import CampaignCreateForm, CampaignUpdateForm
 from master.models import Campaign
@@ -33,57 +33,52 @@ class TestCampaignDetailView:
         assertTemplateUsed(response, "master/campaign.html")
 
 
-class CampaignListViewTest(TestCase):
+@pytest.mark.django_db
+class TestCampaignListView:
     path_name = "campaign-list"
 
-    @classmethod
-    def setUpTestData(cls):
-        UserFactory()
-        number_of_stories = 22
-        for i in range(number_of_stories):
-            CampaignFactory()
+    @pytest.fixture(autouse=True)
+    def setup(self, client):
+        user = UserFactory(username="user")
+        client.force_login(user)
 
-    def setUp(self):
-        self.user = User.objects.last()
-        self.client.force_login(self.user)
+    def test_view_mapping(self, client):
+        response = client.get(reverse(self.path_name))
+        assert response.resolver_match.func.view_class == CampaignListView
 
-    def test_view_mapping(self):
-        response = self.client.get(reverse(self.path_name))
-        self.assertEqual(response.resolver_match.func.view_class, CampaignListView)
+    def test_template_mapping(self, client):
+        response = client.get(reverse(self.path_name))
+        assertTemplateUsed(response, "master/campaign_list.html")
 
-    def test_template_mapping(self):
-        response = self.client.get(reverse(self.path_name))
-        self.assertTemplateUsed(response, "master/campaign_list.html")
+    def test_pagination_size(self, client, create_campaigns):
+        response = client.get(reverse(self.path_name))
+        assert response.status_code == 200
+        assert "is_paginated" in response.context
+        assert response.context["is_paginated"]
+        assert len(response.context["campaign_list"]) == 20
 
-    def test_pagination_size(self):
-        response = self.client.get(reverse(self.path_name))
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue("is_paginated" in response.context)
-        self.assertTrue(response.context["is_paginated"])
-        self.assertEqual(len(response.context["campaign_list"]), 20)
+    def test_pagination_size_next_page(self, client, create_campaigns):
+        response = client.get(reverse(self.path_name) + "?page=2")
+        assert response.status_code == 200
+        assert "is_paginated" in response.context
+        assert response.context["is_paginated"]
+        assert len(response.context["campaign_list"]) == 2
 
-    def test_pagination_size_next_page(self):
-        response = self.client.get(reverse(self.path_name) + "?page=2")
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue("is_paginated" in response.context)
-        self.assertTrue(response.context["is_paginated"])
-        self.assertEqual(len(response.context["campaign_list"]), 2)
-
-    def test_ordering(self):
-        response = self.client.get(reverse(self.path_name))
-        self.assertEqual(response.status_code, 200)
+    def test_ordering(self, client, create_campaigns):
+        response = client.get(reverse(self.path_name))
+        assert response.status_code, 200
         title = ""
         for campaign in response.context["campaign_list"]:
             if title == "":
                 title = campaign.title.upper()
             else:
-                self.assertTrue(title <= campaign.title)
+                assert title <= campaign.title
                 title = campaign.title.upper()
 
-    def test_content_no_campaign(self):
+    def test_content_no_campaign(self, client):
         Campaign.objects.all().delete()
-        response = self.client.get(reverse(self.path_name))
-        self.assertContains(response, "There is no campaign available...")
+        response = client.get(reverse(self.path_name))
+        assertContains(response, "There is no campaign available...")
 
 
 class CampaignCreateViewTest(TestCase):
