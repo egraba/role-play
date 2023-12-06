@@ -30,7 +30,7 @@ class TestCharacterModel:
     def test_str(self):
         assert str(self.character) == self.character.name
 
-    def test_xp_increase_no_level_increase(self):
+    def test_xp_increase_no_level_increase(self, character_fixtures):
         fake = Faker()
         new_xp = fake.random_int(max=200)
         old_xp = self.character.xp
