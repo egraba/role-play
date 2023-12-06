@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
 from faker import Faker
-from pytest_django.asserts import assertContains, assertTemplateUsed
+from pytest_django.asserts import assertContains, assertRedirects, assertTemplateUsed
 
 from master.forms import CampaignCreateForm, CampaignUpdateForm
 from master.models import Campaign
@@ -81,27 +81,24 @@ class TestCampaignListView:
         assertContains(response, "There is no campaign available...")
 
 
-class CampaignCreateViewTest(TestCase):
+@pytest.mark.django_db
+class TestCampaignCreateView:
     path_name = "campaign-create"
 
-    @classmethod
-    def setUpTestData(cls):
-        UserFactory()
-        CampaignFactory()
+    @pytest.fixture(autouse=True)
+    def setup(self, client):
+        user = UserFactory(username="user")
+        client.force_login(user)
 
-    def setUp(self):
-        self.user = User.objects.last()
-        self.client.force_login(self.user)
+    def test_view_mapping(self, client):
+        response = client.get(reverse(self.path_name))
+        assert response.resolver_match.func.view_class == CampaignCreateView
 
-    def test_view_mapping(self):
-        response = self.client.get(reverse(self.path_name))
-        self.assertEqual(response.resolver_match.func.view_class, CampaignCreateView)
+    def test_template_mapping(self, client):
+        response = client.get(reverse(self.path_name))
+        assertTemplateUsed(response, "master/campaign_create.html")
 
-    def test_template_mapping(self):
-        response = self.client.get(reverse(self.path_name))
-        self.assertTemplateUsed(response, "master/campaign_create.html")
-
-    def test_campaign_creation(self):
+    def test_campaign_creation(self, client):
         fake = Faker()
         title = fake.text(max_nb_chars=10)
         synopsis = fake.text(max_nb_chars=900)
@@ -114,19 +111,19 @@ class CampaignCreateViewTest(TestCase):
             "objective": f"{objective}",
         }
         form = CampaignCreateForm(data)
-        self.assertTrue(form.is_valid())
+        assert form.is_valid()
 
-        response = self.client.post(
+        response = client.post(
             reverse(self.path_name),
             data=form.cleaned_data,
         )
-        self.assertEqual(response.status_code, 302)
+        assert response.status_code == 302
         campaign = Campaign.objects.last()
-        self.assertRedirects(response, campaign.get_absolute_url())
-        self.assertEqual(campaign.title, form.cleaned_data["title"])
-        self.assertEqual(campaign.synopsis, form.cleaned_data["synopsis"])
-        self.assertEqual(campaign.main_conflict, form.cleaned_data["main_conflict"])
-        self.assertEqual(campaign.objective, form.cleaned_data["objective"])
+        assertRedirects(response, campaign.get_absolute_url())
+        assert campaign.title == form.cleaned_data["title"]
+        assert campaign.synopsis == form.cleaned_data["synopsis"]
+        assert campaign.main_conflict == form.cleaned_data["main_conflict"]
+        assert campaign.objective == form.cleaned_data["objective"]
 
 
 class CampaignUpdateViewTest(TestCase):
