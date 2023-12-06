@@ -1,6 +1,4 @@
 import pytest
-from django.contrib.auth.models import User
-from django.test import TestCase
 from django.urls import reverse
 from faker import Faker
 from pytest_django.asserts import assertContains, assertRedirects, assertTemplateUsed
@@ -126,29 +124,25 @@ class TestCampaignCreateView:
         assert campaign.objective == form.cleaned_data["objective"]
 
 
-class CampaignUpdateViewTest(TestCase):
+@pytest.mark.django_db
+class TestCampaignUpdateView:
     path_name = "campaign-update"
 
-    @classmethod
-    def setUpTestData(cls):
-        UserFactory()
-        CampaignFactory()
+    @pytest.fixture(autouse=True)
+    def setup(self, client):
+        user = UserFactory(username="user")
+        client.force_login(user)
+        self.campaign = CampaignFactory(title="campaign")
 
-    def setUp(self):
-        self.user = User.objects.last()
-        self.client.force_login(self.user)
+    def test_view_mapping(self, client):
+        response = client.get(reverse(self.path_name, args=(self.campaign.slug,)))
+        assert response.resolver_match.func.view_class == CampaignUpdateView
 
-    def test_view_mapping(self):
-        campaign = Campaign.objects.last()
-        response = self.client.get(reverse(self.path_name, args=(campaign.slug,)))
-        self.assertEqual(response.resolver_match.func.view_class, CampaignUpdateView)
+    def test_template_mapping(self, client):
+        response = client.get(reverse(self.path_name, args=(self.campaign.slug,)))
+        assertTemplateUsed(response, "master/campaign_update.html")
 
-    def test_template_mapping(self):
-        campaign = Campaign.objects.last()
-        response = self.client.get(reverse(self.path_name, args=(campaign.slug,)))
-        self.assertTemplateUsed(response, "master/campaign_update.html")
-
-    def test_campaign_update(self):
+    def test_campaign_update(self, client):
         fake = Faker()
         synopsis = fake.text(max_nb_chars=900)
         main_conflict = fake.text(max_nb_chars=800)
@@ -159,16 +153,16 @@ class CampaignUpdateViewTest(TestCase):
             "objective": f"{objective}",
         }
         form = CampaignUpdateForm(data)
-        self.assertTrue(form.is_valid())
+        assert form.is_valid()
 
         campaign = Campaign.objects.last()
-        response = self.client.post(
-            reverse(self.path_name, args=(campaign.slug,)),
+        response = client.post(
+            reverse(self.path_name, args=(self.campaign.slug,)),
             data=form.cleaned_data,
         )
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, campaign.get_absolute_url())
+        assert response.status_code == 302
+        assertRedirects(response, self.campaign.get_absolute_url())
         campaign = Campaign.objects.last()
-        self.assertEqual(campaign.synopsis, form.cleaned_data["synopsis"])
-        self.assertEqual(campaign.main_conflict, form.cleaned_data["main_conflict"])
-        self.assertEqual(campaign.objective, form.cleaned_data["objective"])
+        assert campaign.synopsis == form.cleaned_data["synopsis"]
+        assert campaign.main_conflict == form.cleaned_data["main_conflict"]
+        assert campaign.objective == form.cleaned_data["objective"]
