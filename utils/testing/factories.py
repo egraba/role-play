@@ -58,6 +58,7 @@ class EventFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Event
 
+    game = factory.SubFactory(GameFactory)
     message = factory.Faker("text", max_nb_chars=50)
 
 
@@ -84,4 +85,5 @@ class PlayerFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Player
 
+    game = factory.SubFactory(GameFactory)
     character = factory.SubFactory(CharacterFactory)
