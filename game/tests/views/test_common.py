@@ -225,7 +225,7 @@ class TestGameView:
         game_id = random.randint(10000, 99999)
         response = client.get(reverse("game", args=[game_id]))
         assert response.status_code == 404
-        pytest.raises(Http404)
+        assert pytest.raises(Http404)
 
     def test_game_last_quest(self, client):
         quest = Quest.objects.filter(game=self.game).last()
