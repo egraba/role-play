@@ -337,7 +337,7 @@ class TestGameCreateErrorView:
     fake_slug = fake.slug()
 
     @pytest.fixture(autouse=True)
-    def setUp(self, client):
+    def setup(self, client):
         user = UserFactory(username="user")
         client.force_login(user)
 
