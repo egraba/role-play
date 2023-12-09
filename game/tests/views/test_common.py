@@ -89,7 +89,7 @@ class TestIndexView:
 
 
 @pytest.fixture(scope="class")
-def create_games(django_db_setup, django_db_blocker):
+def create_games(django_db_blocker):
     with django_db_blocker.unblock():
         number_of_games = 22
         for _ in range(number_of_games):
@@ -150,7 +150,7 @@ class TestGameListView:
 
 
 @pytest.fixture(scope="class")
-def create_populated_game(django_db_setup, django_db_blocker):
+def create_populated_game(django_db_blocker):
     with django_db_blocker.unblock():
         game = GameFactory(master__user__username="master")
         number_of_events = 10

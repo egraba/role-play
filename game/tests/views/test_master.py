@@ -36,7 +36,7 @@ from utils.testing.factories import (
 
 
 @pytest.fixture(scope="class")
-def create_characters(django_db_setup, django_db_blocker):
+def create_characters(django_db_blocker):
     with django_db_blocker.unblock():
         game = GameFactory(master__user__username="master")
         number_of_characters_in_a_game = 5
@@ -112,7 +112,7 @@ class TestCharacterInviteView:
 
 
 @pytest.fixture(scope="class")
-def create_player(django_db_setup, django_db_blocker):
+def create_player(django_db_blocker):
     with django_db_blocker.unblock():
         game = GameFactory(master__user__username="master")
         PlayerFactory(game=game)
@@ -190,7 +190,7 @@ class TestCharacterInviteConfirmView:
 
 
 @pytest.fixture(scope="class")
-def create_game(django_db_setup, django_db_blocker):
+def create_game(django_db_blocker):
     with django_db_blocker.unblock():
         GameFactory(master__user__username="master")
 
@@ -246,7 +246,7 @@ class TestGameStartView:
 
 
 @pytest.fixture(scope="class")
-def create_game_and_start(django_db_setup, django_db_blocker):
+def create_game_and_start(django_db_blocker):
     with django_db_blocker.unblock():
         game = GameFactory(master__user__username="master")
         number_of_players = 3
