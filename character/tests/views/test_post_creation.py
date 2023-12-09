@@ -22,7 +22,7 @@ class TestEquipmentSelectView:
     character = None
 
     @pytest.fixture()
-    def setup(self, client, equipment):
+    def setup(self, client):
         self.character = CharacterFactory(name="user")
         user = self.character.user
         client.force_login(user)
@@ -38,7 +38,7 @@ class TestEquipmentSelectView:
         assertTemplateUsed(response, "character/equipment_select.html")
 
     @pytest.fixture()
-    def setup_cleric(self, client, equipment):
+    def setup_cleric(self, client):
         self.character = CharacterFactory(name="user", class_name=Class.CLERIC)
         user = self.character.user
         client.force_login(user)
@@ -80,7 +80,7 @@ class TestEquipmentSelectView:
         )
 
     @pytest.fixture()
-    def setup_fighter(self, client, equipment):
+    def setup_fighter(self, client):
         self.character = CharacterFactory(name="user", class_name=Class.FIGHTER)
         user = self.character.user
         client.force_login(user)
@@ -115,7 +115,7 @@ class TestEquipmentSelectView:
         assert Equipment.objects.get(inventory=inventory, name=pack) is not None
 
     @pytest.fixture()
-    def setup_rogue(self, client, equipment):
+    def setup_rogue(self, client):
         self.character = CharacterFactory(name="user", class_name=Class.ROGUE)
         user = self.character.user
         client.force_login(user)
@@ -161,7 +161,7 @@ class TestEquipmentSelectView:
         )
 
     @pytest.fixture()
-    def setup_wizard(self, client, equipment):
+    def setup_wizard(self, client):
         self.character = CharacterFactory(name="user", class_name=Class.WIZARD)
         user = self.character.user
         client.force_login(user)

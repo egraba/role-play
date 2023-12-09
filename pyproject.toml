@@ -43,8 +43,8 @@ django-debug-toolbar = "*"
 factory_boy = "*"
 faker = "*"
 pre-commit = "*"
+pytest-asyncio = "*"
 pytest-django = "*"
-pytest-xdist = "*"
 
 [tool.commitizen]
 name = "cz_conventional_commits"

@@ -15,7 +15,6 @@ class UserFactory(factory.django.DjangoModelFactory):
         django_get_or_create = ("username",)
 
     username = factory.Faker("user_name")
-    password = factory.django.Password("pwd")
     email = factory.Faker("email")
 
 
@@ -58,6 +57,7 @@ class EventFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Event
 
+    game = factory.SubFactory(GameFactory)
     message = factory.Faker("text", max_nb_chars=50)
 
 
@@ -84,4 +84,5 @@ class PlayerFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Player
 
+    game = factory.SubFactory(GameFactory)
     character = factory.SubFactory(CharacterFactory)

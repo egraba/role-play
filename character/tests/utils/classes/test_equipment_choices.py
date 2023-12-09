@@ -19,7 +19,7 @@ def enum2textchoice_concat(enum1, enum2):
 
 @pytest.mark.django_db
 class TestClericEquipmentChoicesProvider:
-    def test_get_weapon1_choices(self, equipment):
+    def test_get_weapon1_choices(self):
         equipment_provider = ClericEquipmentChoicesProvider()
         choices = equipment_provider.get_weapon1_choices()
         assert choices == {
@@ -27,7 +27,7 @@ class TestClericEquipmentChoicesProvider:
             enum2textchoice(Weapon.Name.WARHAMMER),
         }
 
-    def test_get_weapon2_choices(self, equipment):
+    def test_get_weapon2_choices(self):
         equipment_provider = ClericEquipmentChoicesProvider()
         choices = equipment_provider.get_weapon2_choices()
         assert choices == {
@@ -47,12 +47,12 @@ class TestClericEquipmentChoicesProvider:
             enum2textchoice(Weapon.Name.SLING),
         }
 
-    def test_get_weapon3_choices(self, equipment):
+    def test_get_weapon3_choices(self):
         equipment_provider = ClericEquipmentChoicesProvider()
         with pytest.raises(NotImplementedError):
             equipment_provider.get_weapon3_choices()
 
-    def test_get_armor_choices(self, equipment):
+    def test_get_armor_choices(self):
         equipment_provider = ClericEquipmentChoicesProvider()
         choices = equipment_provider.get_armor_choices()
         assert choices == {
@@ -61,7 +61,7 @@ class TestClericEquipmentChoicesProvider:
             enum2textchoice(Armor.Name.CHAIN_MAIL),
         }
 
-    def test_get_gear_choices(self, equipment):
+    def test_get_gear_choices(self):
         equipment_provider = ClericEquipmentChoicesProvider()
         choices = equipment_provider.get_gear_choices()
         assert choices == {
@@ -70,7 +70,7 @@ class TestClericEquipmentChoicesProvider:
             enum2textchoice(Gear.Name.RELIQUARY),
         }
 
-    def test_get_pack_choices(self, equipment):
+    def test_get_pack_choices(self):
         equipment_provider = ClericEquipmentChoicesProvider()
         choices = equipment_provider.get_pack_choices()
         assert choices == {
@@ -81,7 +81,7 @@ class TestClericEquipmentChoicesProvider:
 
 @pytest.mark.django_db
 class TestFighterEquipmentChoicesProvider:
-    def test_get_weapon1_choices(self, equipment):
+    def test_get_weapon1_choices(self):
         equipment_provider = FighterEquipmentChoicesProvider()
         choices = equipment_provider.get_weapon1_choices()
         assert choices == {
@@ -89,7 +89,7 @@ class TestFighterEquipmentChoicesProvider:
             enum2textchoice_concat(Armor.Name.LEATHER, Weapon.Name.LONGBOW),
         }
 
-    def test_get_weapon2_choices(self, equipment):
+    def test_get_weapon2_choices(self):
         equipment_provider = FighterEquipmentChoicesProvider()
         choices = equipment_provider.get_weapon2_choices()
         assert choices == {
@@ -118,7 +118,7 @@ class TestFighterEquipmentChoicesProvider:
             enum2textchoice(Weapon.Name.NET),
         }
 
-    def test_get_weapon3_choices(self, equipment):
+    def test_get_weapon3_choices(self):
         equipment_provider = FighterEquipmentChoicesProvider()
         choices = equipment_provider.get_weapon3_choices()
         assert choices == {
@@ -126,17 +126,17 @@ class TestFighterEquipmentChoicesProvider:
             enum2textchoice(Weapon.Name.HANDAXE),
         }
 
-    def test_get_armor_choices(self, equipment):
+    def test_get_armor_choices(self):
         equipment_provider = FighterEquipmentChoicesProvider()
         with pytest.raises(NotImplementedError):
             equipment_provider.get_armor_choices()
 
-    def test_get_gear_choices(self, equipment):
+    def test_get_gear_choices(self):
         equipment_provider = FighterEquipmentChoicesProvider()
         with pytest.raises(NotImplementedError):
             equipment_provider.get_gear_choices()
 
-    def test_get_pack_choices(self, equipment):
+    def test_get_pack_choices(self):
         equipment_provider = FighterEquipmentChoicesProvider()
         choices = equipment_provider.get_pack_choices()
         assert choices == {
@@ -147,7 +147,7 @@ class TestFighterEquipmentChoicesProvider:
 
 @pytest.mark.django_db
 class TestRogueEquipmentChoicesProvider:
-    def test_get_weapon1_choices(self, equipment):
+    def test_get_weapon1_choices(self):
         equipment_provider = RogueEquipmentChoicesProvider()
         choices = equipment_provider.get_weapon1_choices()
         assert choices == {
@@ -155,7 +155,7 @@ class TestRogueEquipmentChoicesProvider:
             enum2textchoice(Weapon.Name.SHORTSWORD),
         }
 
-    def test_get_weapon2_choices(self, equipment):
+    def test_get_weapon2_choices(self):
         equipment_provider = RogueEquipmentChoicesProvider()
         choices = equipment_provider.get_weapon2_choices()
         assert choices == {
@@ -163,22 +163,22 @@ class TestRogueEquipmentChoicesProvider:
             enum2textchoice(Weapon.Name.SHORTSWORD),
         }
 
-    def test_get_weapon3_choices(self, equipment):
+    def test_get_weapon3_choices(self):
         equipment_provider = RogueEquipmentChoicesProvider()
         with pytest.raises(NotImplementedError):
             equipment_provider.get_weapon3_choices()
 
-    def test_get_armor_choices(self, equipment):
+    def test_get_armor_choices(self):
         equipment_provider = RogueEquipmentChoicesProvider()
         with pytest.raises(NotImplementedError):
             equipment_provider.get_armor_choices()
 
-    def test_get_gear_choices(self, equipment):
+    def test_get_gear_choices(self):
         equipment_provider = RogueEquipmentChoicesProvider()
         with pytest.raises(NotImplementedError):
             equipment_provider.get_gear_choices()
 
-    def test_get_pack_choices(self, equipment):
+    def test_get_pack_choices(self):
         equipment_provider = RogueEquipmentChoicesProvider()
         choices = equipment_provider.get_pack_choices()
         assert choices == {
@@ -190,7 +190,7 @@ class TestRogueEquipmentChoicesProvider:
 
 @pytest.mark.django_db
 class TestWizardEquipmentChoicesProvider:
-    def test_get_weapon1_choices(self, equipment):
+    def test_get_weapon1_choices(self):
         equipment_provider = WizardEquipmentChoicesProvider()
         choices = equipment_provider.get_weapon1_choices()
         assert choices == {
@@ -198,22 +198,22 @@ class TestWizardEquipmentChoicesProvider:
             enum2textchoice(Weapon.Name.DAGGER),
         }
 
-    def test_get_weapon2_choices(self, equipment):
+    def test_get_weapon2_choices(self):
         equipment_provider = WizardEquipmentChoicesProvider()
         with pytest.raises(NotImplementedError):
             equipment_provider.get_weapon2_choices()
 
-    def test_get_weapon3_choices(self, equipment):
+    def test_get_weapon3_choices(self):
         equipment_provider = WizardEquipmentChoicesProvider()
         with pytest.raises(NotImplementedError):
             equipment_provider.get_weapon3_choices()
 
-    def test_get_armor_choices(self, equipment):
+    def test_get_armor_choices(self):
         equipment_provider = WizardEquipmentChoicesProvider()
         with pytest.raises(NotImplementedError):
             equipment_provider.get_armor_choices()
 
-    def test_get_gear_choices(self, equipment):
+    def test_get_gear_choices(self):
         equipment_provider = WizardEquipmentChoicesProvider()
         choices = equipment_provider.get_gear_choices()
         assert choices == {
@@ -225,7 +225,7 @@ class TestWizardEquipmentChoicesProvider:
             enum2textchoice(Gear.Name.WAND),
         }
 
-    def test_get_pack_choices(self, equipment):
+    def test_get_pack_choices(self):
         equipment_provider = WizardEquipmentChoicesProvider()
         choices = equipment_provider.get_pack_choices()
         assert choices == {
