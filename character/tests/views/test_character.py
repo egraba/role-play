@@ -46,6 +46,14 @@ class TestCharacterDetailView:
         assertContains(response, game.name)
 
 
+@pytest.fixture(scope="class")
+def create_characters(django_db_blocker):
+    with django_db_blocker.unblock():
+        number_of_characters = 22
+        for _ in range(number_of_characters):
+            CharacterFactory()
+
+
 @pytest.mark.django_db
 class TestCharacterListView:
     path_name = "character-list"
@@ -64,21 +72,21 @@ class TestCharacterListView:
         response = client.get(reverse(self.path_name))
         assertTemplateUsed(response, "character/character_list.html")
 
-    def test_pagination_size(self, client, setup, setup_characters):
+    def test_pagination_size(self, client, setup, create_characters):
         response = client.get(reverse(self.path_name))
         assert response.status_code == 200
         assert "is_paginated" in response.context
         assert response.context["is_paginated"]
         assert len(response.context["character_list"]) == 20
 
-    def test_pagination_size_next_page(self, client, setup, setup_characters):
+    def test_pagination_size_next_page(self, client, setup, create_characters):
         response = client.get(reverse(self.path_name) + "?page=2")
         assert response.status_code == 200
         assert "is_paginated" in response.context
         assert response.context["is_paginated"]
         assert len(response.context["character_list"]) == 2
 
-    def test_ordering(self, client, setup, setup_characters):
+    def test_ordering(self, client, setup, create_characters):
         response = client.get(reverse(self.path_name))
         assert response.status_code == 200
         xp = 0
