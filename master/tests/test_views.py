@@ -14,6 +14,15 @@ from master.views import (
 from utils.testing.factories import CampaignFactory, UserFactory
 
 
+@pytest.fixture(scope="class")
+def create_campaigns(django_db_setup, django_db_blocker):
+    with django_db_blocker.unblock():
+        Campaign.objects.all().delete()
+        number_of_campaigns = 22
+        for i in range(number_of_campaigns):
+            CampaignFactory()
+
+
 @pytest.mark.django_db
 class TestCampaignDetailView:
     @pytest.fixture(autouse=True)
