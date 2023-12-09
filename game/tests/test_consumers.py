@@ -1,9 +1,9 @@
 from unittest.mock import ANY
 
+import pytest
 from channels.routing import URLRouter
 from channels.testing import WebsocketCommunicator
 from django.contrib.auth.models import User
-from django.test import TransactionTestCase
 from django.urls import re_path
 
 from game.consumers import GameEventsConsumer
@@ -11,8 +11,10 @@ from game.models import DiceLaunch
 from utils.testing.factories import CharacterFactory, GameFactory
 
 
-class GameEventsConsumerTest(TransactionTestCase):
-    def setUp(self):
+@pytest.mark.django_db(transaction=True)
+class TestGameEventsConsumer:
+    @pytest.fixture(autouse=True)
+    def setup(self):
         self.game = GameFactory(master__user__username="master")
         self.master_user = User.objects.get(username="master")
         character = CharacterFactory()
@@ -23,6 +25,7 @@ class GameEventsConsumerTest(TransactionTestCase):
             ]
         )
 
+    @pytest.mark.asyncio
     async def test_master_instruction(self):
         communicator = WebsocketCommunicator(
             self.application, f"/events/{self.game.id}/"
@@ -49,6 +52,7 @@ class GameEventsConsumerTest(TransactionTestCase):
 
         await communicator.disconnect()
 
+    @pytest.mark.asyncio
     async def test_master_quest(self):
         communicator = WebsocketCommunicator(
             self.application, f"/events/{self.game.id}/"
@@ -75,6 +79,7 @@ class GameEventsConsumerTest(TransactionTestCase):
 
         await communicator.disconnect()
 
+    @pytest.mark.asyncio
     async def test_master_start(self):
         communicator = WebsocketCommunicator(
             self.application, f"/events/{self.game.id}/"
@@ -101,6 +106,7 @@ class GameEventsConsumerTest(TransactionTestCase):
 
         await communicator.disconnect()
 
+    @pytest.mark.asyncio
     async def test_player_choice(self):
         communicator = WebsocketCommunicator(
             self.application, f"/events/{self.game.id}/"
@@ -130,6 +136,7 @@ class GameEventsConsumerTest(TransactionTestCase):
     def get_dice_launch_score(self):
         return DiceLaunch.objects.last()
 
+    @pytest.mark.asyncio
     async def test_player_dice_launch(self):
         communicator = WebsocketCommunicator(
             self.application, f"/events/{self.game.id}/"
