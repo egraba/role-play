@@ -10,7 +10,7 @@ from django.urls import reverse
 from django.utils import timezone
 from faker import Faker
 from pytest_django.asserts import (
-    assertQuerysetEqual,
+    assertQuerySetEqual,
     assertRedirects,
     assertTemplateUsed,
 )
@@ -108,7 +108,7 @@ class TestCharacterInviteView:
     def test_context_data_all_characters_already_assigned(self, client):
         Character.objects.filter(player=None).delete()
         response = client.get(reverse(self.path_name, args=(self.game.id,)))
-        assertQuerysetEqual(response.context["character_list"], [])
+        assertQuerySetEqual(response.context["character_list"], [])
 
 
 @pytest.fixture(scope="class")
