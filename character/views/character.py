@@ -103,6 +103,6 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
         character.save()
 
         # Inventory
-        Inventory.objects.create(character=character)
+        character.inventory = Inventory.objects.create()
 
         return super().form_valid(form)
