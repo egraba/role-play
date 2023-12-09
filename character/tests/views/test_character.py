@@ -128,7 +128,7 @@ class TestCharacterCreateView:
         assert response.status_code == 200
         assertTemplateUsed(response, "character/character_create.html")
 
-    def test_character_creation_common(self, client, character_fixtures):
+    def test_character_creation_common(self, client):
         fake = Faker()
         name = fake.name()
         race = fake.enum(enum_cls=Race)

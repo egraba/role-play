@@ -4,7 +4,7 @@ from django.core.management.commands import loaddata
 
 
 @pytest.fixture(scope="session")
-def character_fixtures(django_db_setup, django_db_blocker):
+def django_db_setup(django_db_setup, django_db_blocker):
     with django_db_blocker.unblock():
         call_command(loaddata.Command(), "character/fixtures/abilities.yaml")
         call_command(loaddata.Command(), "character/fixtures/advancement.yaml")

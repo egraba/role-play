@@ -30,14 +30,14 @@ class TestCharacterModel:
     def test_str(self):
         assert str(self.character) == self.character.name
 
-    def test_xp_increase_no_level_increase(self, character_fixtures):
+    def test_xp_increase_no_level_increase(self):
         fake = Faker()
         new_xp = fake.random_int(max=200)
         old_xp = self.character.xp
         self.character.increase_xp(new_xp)
         assert self.character.xp == old_xp + new_xp
 
-    def test_xp_increase_one_level_increase(self, character_fixtures):
+    def test_xp_increase_one_level_increase(self):
         fake = Faker()
         new_xp = fake.random_int(min=300, max=500)
         old_xp = self.character.xp
@@ -53,7 +53,7 @@ class TestCharacterModel:
         assert dice.throws == old_throws + 1
         assert self.character.max_hp == old_max_hp + self.character.hp_increase
 
-    def test_xp_increase_several_level_increase(self, character_fixtures):
+    def test_xp_increase_several_level_increase(self):
         new_xp = 50_000
         old_xp = self.character.xp
         old_throws = Dice(self.character.hit_dice).throws
