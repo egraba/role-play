@@ -3,11 +3,11 @@ from django import forms
 from game.models import Choice, Damage, DiceLaunch, Healing, XpIncrease
 
 
-class CreateQuestForm(forms.Form):
+class QuestCreateForm(forms.Form):
     content = forms.CharField(widget=forms.Textarea, max_length=1000)
 
 
-class IncreaseXpForm(forms.ModelForm):
+class XpIncreaseForm(forms.ModelForm):
     class Meta:
         model = XpIncrease
         fields = ["xp"]
@@ -33,7 +33,7 @@ class DamageForm(forms.ModelForm):
         return hp
 
 
-class HealForm(forms.ModelForm):
+class HealingForm(forms.ModelForm):
     class Meta:
         model = Healing
         fields = ["hp"]

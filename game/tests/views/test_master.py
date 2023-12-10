@@ -16,7 +16,7 @@ from pytest_django.asserts import (
 )
 
 from character.models.character import Character
-from game.forms import CreateQuestForm, DamageForm, HealForm, IncreaseXpForm
+from game.forms import DamageForm, HealingForm, QuestCreateForm, XpIncreaseForm
 from game.models import Damage, Event, Game, Healing, Quest, XpIncrease
 from game.views.master import (
     CharacterInviteConfirmView,
@@ -303,7 +303,7 @@ class TestQuestCreateView:
         fake = Faker()
         content = fake.text(100)
         data = {"content": f"{content}"}
-        form = CreateQuestForm(data)
+        form = QuestCreateForm(data)
         assert form.is_valid()
 
         response = client.post(
@@ -418,7 +418,7 @@ class TestXpIncreaseView:
     def test_creation_ok(self, client):
         xp = random.randint(1, 20)
         data = {"xp": f"{xp}"}
-        form = IncreaseXpForm(data)
+        form = XpIncreaseForm(data)
         assert form.is_valid()
 
         response = client.post(
@@ -446,7 +446,7 @@ class TestXpIncreaseView:
     def test_creation_ko_invalid_form(self, client):
         xp = random.randint(-20, 0)
         data = {"xp": f"{xp}"}
-        form = IncreaseXpForm(data)
+        form = XpIncreaseForm(data)
         assert form.is_valid() is False
         assert pytest.raises(ValidationError)
 
@@ -668,7 +668,7 @@ class TestHealView:
     def test_creation_ok(self, client):
         hp = random.randint(1, 20)
         data = {"hp": f"{hp}"}
-        form = HealForm(data)
+        form = HealingForm(data)
         assert form.is_valid()
 
         response = client.post(
@@ -687,14 +687,14 @@ class TestHealView:
     def test_creation_ko_invalid_form(self, client):
         hp = random.randint(-20, 0)
         data = {"hp": f"{hp}"}
-        form = HealForm(data)
+        form = HealingForm(data)
         assert form.is_valid() is False
         assert pytest.raises(ValidationError)
 
     def test_healing_not_exceed_character_max_hp(self, client):
         hp = 1000
         data = {"hp": f"{hp}"}
-        form = HealForm(data)
+        form = HealingForm(data)
         assert form.is_valid()
 
         response = client.post(
