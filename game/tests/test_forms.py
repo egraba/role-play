@@ -1,6 +1,6 @@
 from django import forms
 
-from character.forms.character import CreateCharacterForm
+from character.forms.character import CharacterCreateForm
 from game.forms import ChoiceForm, CreateQuestForm, DamageForm, HealForm, IncreaseXpForm
 
 
@@ -32,17 +32,17 @@ class TestHealForm:
         assert isinstance(form.fields["hp"].widget, forms.NumberInput)
 
 
-class TestCreateCharacterForm:
+class TestCharacterCreateForm:
     def test_name_type(self):
-        form = CreateCharacterForm()
+        form = CharacterCreateForm()
         assert isinstance(form.fields["name"].widget, forms.TextInput)
 
     def test_name_max_length(self):
-        form = CreateCharacterForm()
+        form = CharacterCreateForm()
         assert form.fields["name"].max_length == 100
 
     def test_race_type(self):
-        form = CreateCharacterForm()
+        form = CharacterCreateForm()
         assert isinstance(form.fields["race"].widget, forms.Select)
 
 

@@ -3,7 +3,7 @@ from django.urls import reverse
 from faker import Faker
 from pytest_django.asserts import assertContains, assertRedirects, assertTemplateUsed
 
-from character.forms.character import CreateCharacterForm
+from character.forms.character import CharacterCreateForm
 from character.models.character import Character
 from character.models.classes import Class
 from character.models.races import Ability, Language, Race
@@ -154,7 +154,7 @@ class TestCharacterCreateView:
             "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
         }
-        form = CreateCharacterForm(data)
+        form = CharacterCreateForm(data)
         assert form.is_valid()
 
         response = client.post(
@@ -190,7 +190,7 @@ class TestCharacterCreateView:
             "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
         }
-        form = CreateCharacterForm(data)
+        form = CharacterCreateForm(data)
         assert form.is_valid()
 
         response = client.post(
@@ -248,7 +248,7 @@ class TestCharacterCreateView:
             "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
         }
-        form = CreateCharacterForm(data)
+        form = CharacterCreateForm(data)
         assert form.is_valid()
 
         response = client.post(
@@ -302,7 +302,7 @@ class TestCharacterCreateView:
             "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
         }
-        form = CreateCharacterForm(data)
+        form = CharacterCreateForm(data)
         assert form.is_valid()
 
         response = client.post(
@@ -356,7 +356,7 @@ class TestCharacterCreateView:
             "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
         }
-        form = CreateCharacterForm(data)
+        form = CharacterCreateForm(data)
         assert form.is_valid()
 
         response = client.post(
@@ -402,7 +402,7 @@ class TestCharacterCreateView:
             "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
         }
-        form = CreateCharacterForm(data)
+        form = CharacterCreateForm(data)
         assert form.is_valid()
 
         response = client.post(
@@ -442,7 +442,7 @@ class TestCharacterCreateView:
             "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
         }
-        form = CreateCharacterForm(data)
+        form = CharacterCreateForm(data)
         assert form.is_valid()
 
         response = client.post(
@@ -481,7 +481,7 @@ class TestCharacterCreateView:
             "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
         }
-        form = CreateCharacterForm(data)
+        form = CharacterCreateForm(data)
         assert form.is_valid()
 
         response = client.post(
@@ -523,7 +523,7 @@ class TestCharacterCreateView:
             "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
         }
-        form = CreateCharacterForm(data)
+        form = CharacterCreateForm(data)
         assert form.is_valid()
 
         response = client.post(

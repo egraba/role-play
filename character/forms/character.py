@@ -5,7 +5,7 @@ from character.models.character import Character
 from character.utils.abilities import AbilityScore
 
 
-class CreateCharacterForm(forms.ModelForm):
+class CharacterCreateForm(forms.ModelForm):
     class Meta:
         model = Character
         fields = [
