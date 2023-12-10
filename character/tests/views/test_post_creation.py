@@ -3,7 +3,7 @@ from django.urls import reverse
 from faker import Faker
 from pytest_django.asserts import assertRedirects, assertTemplateUsed
 
-from character.forms.post_creation import SelectEquipmentForm
+from character.forms.post_creation import EquipmentSelectForm
 from character.models.classes import Class
 from character.models.equipment import Armor, Equipment, Gear, Tool, Weapon
 from character.utils.classes.equipment_choices import (
@@ -58,7 +58,7 @@ class TestEquipmentSelectView:
             "gear": f"{gear}",
             "pack": f"{pack}",
         }
-        form = SelectEquipmentForm(initial={"class_name": Class.CLERIC}, data=data)
+        form = EquipmentSelectForm(initial={"class_name": Class.CLERIC}, data=data)
         assert form.is_valid()
 
         response = client.post(
@@ -98,7 +98,7 @@ class TestEquipmentSelectView:
             "weapon3": f"{weapon3}",
             "pack": f"{pack}",
         }
-        form = SelectEquipmentForm(initial={"class_name": Class.FIGHTER}, data=data)
+        form = EquipmentSelectForm(initial={"class_name": Class.FIGHTER}, data=data)
         assert form.is_valid()
 
         response = client.post(
@@ -131,7 +131,7 @@ class TestEquipmentSelectView:
             "weapon2": f"{weapon2}",
             "pack": f"{pack}",
         }
-        form = SelectEquipmentForm(initial={"class_name": Class.ROGUE}, data=data)
+        form = EquipmentSelectForm(initial={"class_name": Class.ROGUE}, data=data)
         assert form.is_valid()
 
         response = client.post(
@@ -177,7 +177,7 @@ class TestEquipmentSelectView:
             "gear": f"{gear}",
             "pack": f"{pack}",
         }
-        form = SelectEquipmentForm(initial={"class_name": Class.WIZARD}, data=data)
+        form = EquipmentSelectForm(initial={"class_name": Class.WIZARD}, data=data)
         assert form.is_valid()
 
         response = client.post(

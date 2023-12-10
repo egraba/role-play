@@ -9,7 +9,7 @@ from character.utils.classes.equipment_choices import (
 )
 
 
-class SelectEquipmentForm(forms.Form):
+class EquipmentSelectForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 

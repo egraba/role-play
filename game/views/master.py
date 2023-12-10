@@ -10,7 +10,7 @@ from django_fsm import TransitionNotAllowed
 
 from character.models.character import Character
 from character.views.mixins import CharacterContextMixin
-from game.forms import CreateQuestForm, DamageForm, HealForm, IncreaseXpForm
+from game.forms import DamageForm, HealingForm, QuestCreateForm, XpIncreaseForm
 from game.models import Damage, Event, Instruction, Player, Quest, XpIncrease
 from game.tasks import send_email
 from game.utils import get_players_emails
@@ -97,7 +97,7 @@ class QuestCreateView(UserPassesTestMixin, FormView, EventContextMixin):
     model = Quest
     fields = ["description"]
     template_name = "game/quest_create.html"
-    form_class = CreateQuestForm
+    form_class = QuestCreateForm
 
     def test_func(self):
         return self.is_user_master()
@@ -151,7 +151,7 @@ class XpIncreaseView(
     CharacterContextMixin,
 ):
     model = XpIncrease
-    form_class = IncreaseXpForm
+    form_class = XpIncreaseForm
     template_name = "game/xp.html"
 
     def test_func(self):
@@ -218,7 +218,7 @@ class HealingView(
     EventContextMixin,
     CharacterContextMixin,
 ):
-    form_class = HealForm
+    form_class = HealingForm
     template_name = "game/heal.html"
 
     def test_func(self):

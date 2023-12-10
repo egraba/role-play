@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import FormView
 
-from character.forms.post_creation import SelectEquipmentForm
+from character.forms.post_creation import EquipmentSelectForm
 from character.models.classes import Class
 from character.models.equipment import Armor, Equipment, Gear, Tool, Weapon
 from character.views.mixins import CharacterContextMixin
@@ -9,7 +9,7 @@ from character.views.mixins import CharacterContextMixin
 
 class EquipmentSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
     template_name = "character/equipment_select.html"
-    form_class = SelectEquipmentForm
+    form_class = EquipmentSelectForm
 
     def get_success_url(self):
         return self.character.get_absolute_url()
