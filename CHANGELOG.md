@@ -8,6 +8,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * DnD: Implement combat structure
 
 ### Changed
+* Python 3.12 is now the only support version
 * Move rolls module outside of `game.utils`
 * Refactor consumers using command pattern
 * Decouple character's advantages and roll functions
@@ -119,7 +120,6 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * The game master can create background stories before starting a game
 
 ### Changed
-* Various code enhancements (more Pythonic code, utils modules)
 * Migrate to Django 5.0
 * Pytest is now used instead of Unittest
 * Various UX/UI improvements
