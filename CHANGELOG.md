@@ -11,6 +11,7 @@
 * The game master can create background stories before starting a game
 
 ### Changed
+* Python 3.12 is now the only support version
 * Migrate to Django 5.0
 * Pytest is now used instead of Unittest
 * Various UX/UI improvements
