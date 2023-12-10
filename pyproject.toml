@@ -15,7 +15,7 @@ readme = "README.md"
 packages = [{ include = "role_play" }]
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.12"
 async-timeout = "*"
 celery = "*"
 channels = "*"
