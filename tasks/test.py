@@ -8,7 +8,7 @@ from invoke import task
         "test_label": "Module paths to test",
     }
 )
-def run(c, coverage=False, verbose=False, test_label=None, pty=True):
+def run(context, coverage=False, verbose=False, test_label=None, pty=True):
     """Test the app"""
     cmd = "pytest --color=yes"
     cmd_options = ""
@@ -17,7 +17,7 @@ def run(c, coverage=False, verbose=False, test_label=None, pty=True):
     if test_label:
         cmd_options += test_label
     if coverage:
-        c.run(f"coverage run -m {cmd} {cmd_options}")
-        c.run("coverage html")
+        context.run(f"coverage run -m {cmd} {cmd_options}")
+        context.run("coverage html")
     else:
-        c.run(f"{cmd} {cmd_options}")
+        context.run(f"{cmd} {cmd_options}")

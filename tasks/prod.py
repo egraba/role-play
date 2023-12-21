@@ -4,27 +4,27 @@ import tasks.db as db
 
 
 @task
-def run_worker(c):
+def run_worker(context):
     """Run Celery worker"""
-    c.run("celery -A role_play worker -l INFO", asynchronous=True)
+    context.run("celery -A role_play worker -l INFO", asynchronous=True)
 
 
 @task(run_worker)
-def build(c):
+def build(context):
     """Apply database migrations"""
-    c.run("poetry run python manage.py migrate")
+    context.run("poetry run python manage.py migrate")
 
 
 @task(build, db.load_settings)
-def deploy(c):
+def deploy(context):
     """Deploy the app"""
-    c.run("poetry run python manage.py collectstatic")
-    c.run(
+    context.run("poetry run python manage.py collectstatic")
+    context.run(
         "poetry run daphne role_play.asgi:application -b 0.0.0.0 -p $PORT --access-log -"
     )
 
 
 @task
-def run_worker(c):
+def run_worker(context):
     """Run Celery worker"""
-    c.run("celery -A role_play worker -l INFO")
+    context.run("celery -A role_play worker -l INFO")
