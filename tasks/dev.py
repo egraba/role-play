@@ -2,32 +2,32 @@ from invoke import task
 
 
 @task
-def clean(c):
+def clean(context):
     """Clean generated files"""
     patterns = ["htmlcov", "staticfiles", ".coverage"]
     for pattern in patterns:
-        c.run(f"rm -rf {pattern}")
+        context.run(f"rm -rf {pattern}")
 
 
 @task(clean)
-def build(c):
+def build(context):
     """Apply database migrations"""
-    c.run("python manage.py migrate", pty=True)
+    context.run("python manage.py migrate", pty=True)
 
 
 @task(build)
-def run(c):
+def run(context):
     """Run the app"""
-    c.run("python manage.py runserver", pty=True)
+    context.run("python manage.py runserver", pty=True)
 
 
 @task
-def run_worker(c):
+def run_worker(context):
     """Run Celery worker"""
-    c.run("celery -A role_play worker -l INFO", pty=True)
+    context.run("celery -A role_play worker -l INFO", pty=True)
 
 
 @task
-def shell(c):
+def shell(context):
     """Launch Django shell"""
-    c.run("python manage.py shell")
+    context.run("python manage.py shell")
