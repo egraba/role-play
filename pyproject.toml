@@ -3,7 +3,7 @@ profile = "black"
 
 [tool.coverage.run]
 plugins = ['django_coverage_plugin']
-omit = ["manage.py"]
+omit = ["manage.py", "tasks/*"]
 
 [tool.poetry]
 name = "role-play"
