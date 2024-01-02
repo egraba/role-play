@@ -2,7 +2,7 @@ import pytest
 from faker import Faker
 
 from character.models.character import Character
-from utils.dices import Dice
+from utils.dice import Dice
 from utils.testing.factories import CharacterFactory
 
 

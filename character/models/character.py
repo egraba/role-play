@@ -8,7 +8,7 @@ from character.models.advancement import Advancement
 from character.models.classes import Class, Proficiencies
 from character.models.equipment import Inventory
 from character.models.races import Ability, Alignment, Language, Race, Size
-from utils.dices import Dice
+from utils.dice import add_throws
 
 
 class Character(models.Model):
@@ -90,9 +90,7 @@ class Character(models.Model):
         self.proficiency_bonus += advancement.proficiency_bonus
 
         # Increase hit dice
-        dice = Dice(str(self.hit_dice))
-        dice.throws += 1
-        self.hit_dice = dice
+        self.hit_dice = add_throws(self.hit_dice, 1)
 
         # Increase HP
         self.max_hp += self.hp_increase
