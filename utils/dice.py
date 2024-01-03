@@ -12,6 +12,17 @@ class DiceFormatError(TypeError):
 
 
 class Dice(str):
+    def __init__(self, dice_str):
+        super().__init__()
+        if not re.match(DICE_REGEX, self):
+            raise DiceFormatError(f"[{self}] does not match a dice regex...")
+        dice_str_parts = self.split("d")
+        self.throws = int(dice_str_parts[0])
+        dice_type = int(dice_str_parts[1])
+        if dice_type not in types:
+            raise DiceFormatError("The provided dice type is not supported...")
+        self.type = dice_type
+
     def add_throws(self, throws):
         """Add throws to a dice string.
 
@@ -24,13 +35,6 @@ class Dice(str):
 
         """
 
-        if not re.match(DICE_REGEX, self):
-            raise DiceFormatError(f"[{self}] does not match a dice regex...")
-        dice_str_parts = self.split("d")
-        dice_type = int(dice_str_parts[1])
-        if dice_type not in types:
-            raise DiceFormatError("The provided dice type is not supported...")
-
-        dice_str_parts[0] = str(int(dice_str_parts[0]) + throws)
-        self = "d".join(dice_str_parts)
+        self.throws += throws
+        self = f"{self.throws}d{self.type}"
         return self
