@@ -30,7 +30,7 @@ class Dice(str):
 
     """
 
-    def __init__(self, dice_str):
+    def __init__(self, dice_str: str):
         super().__init__()
         if not re.match(DICE_REGEX, self):
             raise DiceStringFormatError(f"[{self}] does not match a dice regex...")
@@ -48,7 +48,7 @@ class Dice(str):
             raise DiceStringFormatError("The provided dice type is not supported...")
         self.type = dice_type
 
-    def add_throws(self, throws):
+    def add_throws(self, throws: int) -> str:
         """Add throws to a dice string.
 
         A dice string looks like 'NdT', where N is the number of throws
@@ -63,7 +63,7 @@ class Dice(str):
         self = f"{self.throws + throws}d{self.type}"
         return self
 
-    def roll(self):
+    def roll(self) -> list[int]:
         """Rolls the dice.
 
         Returns:
