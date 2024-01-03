@@ -2,7 +2,12 @@ import re
 
 DICE_REGEX = "(\d+)?d(\d+)([\+\-]\d+)?"
 
-types = (4, 6, 8, 10, 12, 20)
+dice_types = {4, 6, 8, 10, 12, 20}
+"""set[int]: Dice types.
+
+The dice type is the number of dice faces.
+
+"""
 
 
 class DiceFormatError(TypeError):
@@ -19,7 +24,7 @@ class Dice(str):
         dice_str_parts = self.split("d")
         self.throws = int(dice_str_parts[0])
         dice_type = int(dice_str_parts[1])
-        if dice_type not in types:
+        if dice_type not in dice_types:
             raise DiceFormatError("The provided dice type is not supported...")
         self.type = dice_type
 
