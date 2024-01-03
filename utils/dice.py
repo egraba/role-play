@@ -10,7 +10,7 @@ The dice type is the number of dice faces.
 """
 
 
-class DiceFormatError(TypeError):
+class DiceStringFormatError(TypeError):
     """Raised when a dice string is wrongly formatted."""
 
     pass
@@ -20,12 +20,12 @@ class Dice(str):
     def __init__(self, dice_str):
         super().__init__()
         if not re.match(DICE_REGEX, self):
-            raise DiceFormatError(f"[{self}] does not match a dice regex...")
+            raise DiceStringFormatError(f"[{self}] does not match a dice regex...")
         dice_str_parts = self.split("d")
         self.throws = int(dice_str_parts[0])
         dice_type = int(dice_str_parts[1])
         if dice_type not in dice_types:
-            raise DiceFormatError("The provided dice type is not supported...")
+            raise DiceStringFormatError("The provided dice type is not supported...")
         self.type = dice_type
 
     def add_throws(self, throws):
