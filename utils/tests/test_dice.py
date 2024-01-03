@@ -4,15 +4,24 @@ from faker import Faker
 from utils.dice import Dice, DiceStringFormatError, dice_types
 
 
-def test_constructor_valid_dice():
+@pytest.fixture
+def dice_str():
     fake = Faker()
     dice_throws = fake.random_int(min=1, max=10)
     dice_type = fake.random_element(elements=dice_types)
-    dice_str = Dice(f"{dice_throws}d{dice_type}")
-    assert dice_str == f"{dice_throws}d{dice_type}"
-    # Dice string should be valid with no throws specified.
-    dice_str = Dice(f"d{dice_type}")
-    assert dice_str == f"d{dice_type}"
+    return Dice(f"{dice_throws}d{dice_type}")
+
+
+@pytest.fixture
+def dice_str_no_throw():
+    fake = Faker()
+    dice_type = fake.random_element(elements=dice_types)
+    return Dice(f"d{dice_type}")
+
+
+def test_constructor_valid_dice(dice_str, dice_str_no_throw):
+    assert dice_str == f"{dice_str.throws}d{dice_str.type}"
+    assert dice_str_no_throw == f"d{dice_str_no_throw.type}"
 
 
 def test_constructor_invalid_dice_str():
@@ -29,23 +38,16 @@ def test_constructor_invalid_dice_type():
         Dice(f"{dice_throws}d{dice_type}")
 
 
-def test_add_throws_valid_dice():
+def test_add_throws_valid_dice(dice_str):
     fake = Faker()
-    dice_throws = fake.random_int(min=1, max=10)
-    dice_type = fake.random_element(elements=dice_types)
-    dice_str = Dice(f"{dice_throws}d{dice_type}")
     number_of_throws = fake.random_int(min=1, max=10)
     assert (
         dice_str.add_throws(number_of_throws)
-        == f"{dice_throws + number_of_throws}d{dice_type}"
+        == f"{dice_str.throws + number_of_throws}d{dice_str.type}"
     )
 
 
-def test_roll():
-    fake = Faker()
-    dice_throws = fake.random_int(min=1, max=10)
-    dice_type = fake.random_element(elements=dice_types)
-    dice_str = Dice(f"{dice_throws}d{dice_type}")
+def test_roll(dice_str):
     rolls = dice_str.roll()
     for roll in rolls:
-        assert roll in range(1, dice_type + 1)
+        assert roll in range(1, dice_str.type + 1)
