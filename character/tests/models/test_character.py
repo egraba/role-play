@@ -49,8 +49,7 @@ class TestCharacterModel:
         assert self.character.xp == old_xp + new_xp
         assert self.character.level == old_level + 1
         assert self.character.proficiency_bonus == old_bonus + 2
-        dice = self.character.hit_dice
-        assert dice.throws == old_throws + 1
+        assert Dice(self.character.hit_dice).throws == old_throws + 1
         assert self.character.max_hp == old_max_hp + self.character.hp_increase
 
     def test_xp_increase_several_level_increase(self):
@@ -62,6 +61,5 @@ class TestCharacterModel:
         assert self.character.xp == old_xp + new_xp
         assert self.character.level == 9
         assert self.character.proficiency_bonus == 24
-        dice = self.character.hit_dice
-        assert dice.throws == old_throws + 8
+        assert Dice(self.character.hit_dice).throws == old_throws + 8
         assert self.character.max_hp == old_max_hp + self.character.hp_increase * 8
