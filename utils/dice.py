@@ -17,12 +17,26 @@ class DiceStringFormatError(TypeError):
 
 
 class Dice(str):
+    """Class managing dice strings.
+
+    A dice string looks like 'NdT', where N is the number of dice throws
+        and T the type of the dice.
+
+    Attributes:
+        throws (int): Number of throws.
+        type (int): Dice type.
+
+    """
+
     def __init__(self, dice_str):
         super().__init__()
         if not re.match(DICE_REGEX, self):
             raise DiceStringFormatError(f"[{self}] does not match a dice regex...")
+
         dice_str_parts = self.split("d")
+
         self.throws = int(dice_str_parts[0])
+
         dice_type = int(dice_str_parts[1])
         if dice_type not in dice_types:
             raise DiceStringFormatError("The provided dice type is not supported...")
@@ -40,6 +54,5 @@ class Dice(str):
 
         """
 
-        self.throws += throws
-        self = f"{self.throws}d{self.type}"
+        self = f"{self.throws + throws}d{self.type}"
         return self
