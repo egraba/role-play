@@ -21,7 +21,7 @@ class DiceStringFormatError(TypeError):
 class Dice(str):
     """Class managing dice strings.
 
-    A dice string looks like 'NdT', where N is the number of dice throws
+    A dice string looks like '[N]dT', where N is the number of dice throws
         and T the type of the dice.
 
     Attributes:
@@ -51,9 +51,7 @@ class Dice(str):
     def add_throws(self, throws: int) -> str:
         """Add throws to a dice string.
 
-        A dice string looks like 'NdT', where N is the number of throws
-        and T the type of the dice.
-        This method adds the throws passed as parameter to N.
+        This method adds the throws passed to the dice string.
 
         Args:
             dice_str (str): Dice string.
