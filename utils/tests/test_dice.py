@@ -10,6 +10,9 @@ def test_constructor_valid_dice():
     dice_type = fake.random_element(elements=dice_types)
     dice_str = Dice(f"{dice_throws}d{dice_type}")
     assert dice_str == f"{dice_throws}d{dice_type}"
+    # Dice string should be valid with no throws specified.
+    dice_str = Dice(f"d{dice_type}")
+    assert dice_str == f"d{dice_type}"
 
 
 def test_constructor_invalid_dice_str():
@@ -36,3 +39,13 @@ def test_add_throws_valid_dice():
         dice_str.add_throws(number_of_throws)
         == f"{dice_throws + number_of_throws}d{dice_type}"
     )
+
+
+def test_roll():
+    fake = Faker()
+    dice_throws = fake.random_int(min=1, max=10)
+    dice_type = fake.random_element(elements=dice_types)
+    dice_str = Dice(f"{dice_throws}d{dice_type}")
+    rolls = dice_str.roll()
+    for roll in rolls:
+        assert roll in range(1, dice_type + 1)

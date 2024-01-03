@@ -1,5 +1,7 @@
 import re
 
+import dice
+
 DICE_REGEX = "(\d+)?d(\d+)([\+\-]\d+)?"
 
 dice_types = {4, 6, 8, 10, 12, 20}
@@ -35,7 +37,11 @@ class Dice(str):
 
         dice_str_parts = self.split("d")
 
-        self.throws = int(dice_str_parts[0])
+        try:
+            self.throws = int(dice_str_parts[0])
+        except ValueError:
+            # This is raised when no throw is specified in the dice string.
+            pass
 
         dice_type = int(dice_str_parts[1])
         if dice_type not in dice_types:
@@ -56,3 +62,12 @@ class Dice(str):
 
         self = f"{self.throws + throws}d{self.type}"
         return self
+
+    def roll(self):
+        """Rolls the dice.
+
+        Returns:
+            list[int]: List of dice rolls results
+
+        """
+        return list(dice.roll(self))
