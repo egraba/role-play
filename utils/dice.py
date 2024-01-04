@@ -58,9 +58,9 @@ class Dice(str):
 
         """
 
-        if throws < 0:
+        if throws <= 0:
             raise DiceStringFormatError(
-                "The number of throws must be a positive integer..."
+                "The number of throws must be a strictly positive integer..."
             )
         self = f"{self.throws + throws}d{self.type}"
         return self
