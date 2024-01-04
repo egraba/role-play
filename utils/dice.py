@@ -65,11 +65,11 @@ class Dice(str):
         self = f"{self.throws + throws}d{self.type}"
         return self
 
-    def roll(self) -> list[int]:
+    def roll(self) -> int:
         """Rolls the dice.
 
         Returns:
-            list[int]: List of dice rolls results
+            int: Sum of dice rolls results.
 
         """
-        return list(dice.roll(self))
+        return sum(list(dice.roll(self)))

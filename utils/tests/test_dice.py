@@ -54,7 +54,11 @@ def test_add_throws_invalid_thows(dice_str):
         dice_str.add_throws(number_of_throws)
 
 
-def test_roll(dice_str):
-    rolls = dice_str.roll()
-    for roll in rolls:
-        assert roll in range(1, dice_str.type + 1)
+def test_roll_one_throw(dice_str_no_throw):
+    roll = dice_str_no_throw.roll()
+    assert roll in range(1, dice_str_no_throw.type + 1)
+
+
+def test_roll_several_throws(dice_str):
+    roll = dice_str.roll()
+    assert roll in range(1 * dice_str.throws, (dice_str.type + 1) * dice_str.throws)
