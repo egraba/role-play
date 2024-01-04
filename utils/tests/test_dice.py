@@ -47,6 +47,15 @@ def test_add_throws_valid_thows(dice_str):
     )
 
 
+def test_add_throws_no_thow(dice_str_no_throw):
+    fake = Faker()
+    number_of_throws = fake.random_int(min=1, max=10)
+    assert (
+        dice_str_no_throw.add_throws(number_of_throws)
+        == f"{dice_str_no_throw.throws + number_of_throws}d{dice_str_no_throw.type}"
+    )
+
+
 def test_add_throws_invalid_thows(dice_str):
     fake = Faker()
     number_of_throws = fake.random_int(min=-10, max=0)

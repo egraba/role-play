@@ -41,7 +41,7 @@ class Dice(str):
             self.throws = int(dice_str_parts[0])
         except ValueError:
             # This is raised when no throw is specified in the dice string.
-            pass
+            self.throws = 1
 
         dice_type = int(dice_str_parts[1])
         if dice_type not in dice_types:
