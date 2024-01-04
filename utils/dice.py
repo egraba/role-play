@@ -2,7 +2,7 @@ import re
 
 import dice
 
-DICE_REGEX = "(\d+)?d(\d+)([\+\-]\d+)?"
+DICE_REGEX = r"(\d+)?d(\d+)([\+\-]\d+)?"
 
 dice_types = {4, 6, 8, 10, 12, 20}
 """set[int]: Dice types.
