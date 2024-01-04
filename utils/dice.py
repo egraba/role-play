@@ -54,10 +54,14 @@ class Dice(str):
         This method adds the throws passed to the dice string.
 
         Args:
-            dice_str (str): Dice string.
+            throws (int): Number of throws.
 
         """
 
+        if throws < 0:
+            raise DiceStringFormatError(
+                "The number of throws must be a positive integer..."
+            )
         self = f"{self.throws + throws}d{self.type}"
         return self
 

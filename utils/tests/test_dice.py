@@ -38,13 +38,20 @@ def test_constructor_invalid_dice_type():
         Dice(f"{dice_throws}d{dice_type}")
 
 
-def test_add_throws_valid_dice(dice_str):
+def test_add_throws_valid_thows(dice_str):
     fake = Faker()
     number_of_throws = fake.random_int(min=1, max=10)
     assert (
         dice_str.add_throws(number_of_throws)
         == f"{dice_str.throws + number_of_throws}d{dice_str.type}"
     )
+
+
+def test_add_throws_invalid_thows(dice_str):
+    fake = Faker()
+    number_of_throws = fake.random_int(min=-10, max=0)
+    with pytest.raises(DiceStringFormatError):
+        dice_str.add_throws(number_of_throws)
 
 
 def test_roll(dice_str):
