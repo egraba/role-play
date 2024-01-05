@@ -56,6 +56,9 @@ class Dice(str):
         Args:
             throws (int): Number of throws.
 
+        Returns:
+            str: Updated dice string.
+
         """
 
         if throws <= 0:
