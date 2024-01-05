@@ -1,4 +1,3 @@
-import dice
 from asgiref.sync import async_to_sync
 from channels.exceptions import DenyConnection
 from channels.generic.websocket import JsonWebsocketConsumer
@@ -13,6 +12,7 @@ from game.tasks import (
     store_player_choice,
     store_player_dice_launch,
 )
+from utils.dice import Dice
 
 
 class GameEventsConsumer(JsonWebsocketConsumer):
@@ -78,7 +78,7 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                     )
                     self.close()
                 message = f"[{ self.user }] launched a dice: "
-                score = int(dice.roll("d20"))
+                score = Dice("d20").roll()
                 content["content"] = score
                 store_player_dice_launch.delay(
                     game_id=self.game.id,
