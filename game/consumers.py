@@ -78,7 +78,7 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                     )
                     self.close()
                 message = f"[{ self.user }] launched a dice: "
-                score = Dice("d20").roll()[0]
+                score = Dice("d20").roll()
                 content["content"] = score
                 store_player_dice_launch.delay(
                     game_id=self.game.id,
