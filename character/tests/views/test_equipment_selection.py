@@ -3,7 +3,12 @@ from django.urls import reverse
 from faker import Faker
 from pytest_django.asserts import assertRedirects, assertTemplateUsed
 
-from character.forms.equipment_selection import EquipmentSelectForm
+from character.forms.equipment_selection import (
+    ClericEquipmentSelectForm,
+    FighterEquipmentSelectForm,
+    RogueEquipmentSelectForm,
+    WizardEquipmentSelectForm,
+)
 from character.models.classes import Class
 from character.models.equipment import Armor, Equipment, Gear, Tool, Weapon
 from character.utils.classes.equipment_choices import (
@@ -12,7 +17,7 @@ from character.utils.classes.equipment_choices import (
     RogueEquipmentChoicesProvider,
     WizardEquipmentChoicesProvider,
 )
-from character.views.post_creation import EquipmentSelectView
+from character.views.equipment_selection import EquipmentSelectView
 from utils.testing.factories import CharacterFactory
 
 
@@ -58,7 +63,7 @@ class TestEquipmentSelectView:
             "gear": f"{gear}",
             "pack": f"{pack}",
         }
-        form = EquipmentSelectForm(initial={"class_name": Class.CLERIC}, data=data)
+        form = ClericEquipmentSelectForm(data=data)
         assert form.is_valid()
 
         response = client.post(
@@ -98,7 +103,7 @@ class TestEquipmentSelectView:
             "weapon3": f"{weapon3}",
             "pack": f"{pack}",
         }
-        form = EquipmentSelectForm(initial={"class_name": Class.FIGHTER}, data=data)
+        form = FighterEquipmentSelectForm(data=data)
         assert form.is_valid()
 
         response = client.post(
@@ -131,7 +136,7 @@ class TestEquipmentSelectView:
             "weapon2": f"{weapon2}",
             "pack": f"{pack}",
         }
-        form = EquipmentSelectForm(initial={"class_name": Class.ROGUE}, data=data)
+        form = RogueEquipmentSelectForm(data=data)
         assert form.is_valid()
 
         response = client.post(
@@ -177,7 +182,7 @@ class TestEquipmentSelectView:
             "gear": f"{gear}",
             "pack": f"{pack}",
         }
-        form = EquipmentSelectForm(initial={"class_name": Class.WIZARD}, data=data)
+        form = WizardEquipmentSelectForm(data=data)
         assert form.is_valid()
 
         response = client.post(

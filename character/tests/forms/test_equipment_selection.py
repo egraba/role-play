@@ -1,17 +1,21 @@
 import pytest
 from django import forms
 
-from character.forms.equipment_selection import EquipmentSelectForm
-from character.models.classes import Class
+from character.forms.equipment_selection import (
+    ClericEquipmentSelectForm,
+    FighterEquipmentSelectForm,
+    RogueEquipmentSelectForm,
+    WizardEquipmentSelectForm,
+)
 
 
 @pytest.mark.django_db
-class TestEquipmentSelectForm:
+class TestClericEquipmentSelectForm:
     form = None
 
     @pytest.fixture
     def cleric(self):
-        self.form = EquipmentSelectForm(initial={"class_name": Class.CLERIC})
+        self.form = ClericEquipmentSelectForm()
 
     def test_weapon1_field_exists_for_cleric(self, cleric):
         assert "weapon1" in self.form.fields
@@ -40,9 +44,14 @@ class TestEquipmentSelectForm:
     def test_pack_field_type_for_cleric(self, cleric):
         assert isinstance(self.form.fields["pack"], forms.ChoiceField)
 
+
+@pytest.mark.django_db
+class TestFighterEquipmentSelectForm:
+    form = None
+
     @pytest.fixture
     def fighter(self):
-        self.form = EquipmentSelectForm(initial={"class_name": Class.FIGHTER})
+        self.form = FighterEquipmentSelectForm()
 
     def test_weapon1_field_exists_for_fighter(self, fighter):
         assert "weapon1" in self.form.fields
@@ -71,9 +80,14 @@ class TestEquipmentSelectForm:
     def test_pack_field_type_for_fighter(self, fighter):
         assert isinstance(self.form.fields["pack"], forms.ChoiceField)
 
+
+@pytest.mark.django_db
+class TestRogueEquipmentSelectForm:
+    form = None
+
     @pytest.fixture
     def rogue(self):
-        self.form = EquipmentSelectForm(initial={"class_name": Class.ROGUE})
+        self.form = RogueEquipmentSelectForm()
 
     def test_weapon1_field_exists_for_rogue(self, rogue):
         assert "weapon1" in self.form.fields
@@ -99,9 +113,14 @@ class TestEquipmentSelectForm:
     def test_pack_field_type_for_rogue(self, rogue):
         assert isinstance(self.form.fields["pack"], forms.ChoiceField)
 
+
+@pytest.mark.django_db
+class TestWizardEquipmentSelectForm:
+    form = None
+
     @pytest.fixture
     def wizard(self):
-        self.form = EquipmentSelectForm(initial={"class_name": Class.WIZARD})
+        self.form = WizardEquipmentSelectForm()
 
     def test_weapon1_field_exists_for_wizard(self, wizard):
         assert "weapon1" in self.form.fields
