@@ -65,9 +65,21 @@ def test_add_throws_invalid_thows(dice_str):
 
 def test_roll_one_throw(dice_str_no_throw):
     roll = dice_str_no_throw.roll()
-    assert roll in range(1, dice_str_no_throw.type + 1)
+    assert roll <= dice_str_no_throw.type
 
 
 def test_roll_several_throws(dice_str):
     roll = dice_str.roll()
-    assert roll in range(1 * dice_str.throws, (dice_str.type + 1) * dice_str.throws)
+    assert roll <= dice_str.type * dice_str.throws
+
+
+def test_roll_with_modifier(dice_str):
+    fake = Faker()
+    min = -5
+    max = 10
+    modifier = fake.random_int(min=min, max=max)
+    roll = dice_str.roll(modifier)
+    assert (
+        roll >= 1 * dice_str.throws + min
+        and roll <= dice_str.type * dice_str.throws + max
+    )

@@ -68,11 +68,17 @@ class Dice(str):
         self = f"{self.throws + throws}d{self.type}"
         return self
 
-    def roll(self) -> int:
+    def roll(self, modifier: int = 0) -> int:
         """Rolls the dice.
+
+        This methods rolls the dice. In case of several rolls, it sums the values
+        of each roll and adds the modifier value (if any).
+
+        Args:
+            modifier (int): Positive or negative integer to add on a roll.
 
         Returns:
             int: Sum of dice rolls results.
 
         """
-        return sum(list(dice.roll(self)))
+        return sum(list(dice.roll(self))) + modifier
