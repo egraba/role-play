@@ -3,7 +3,7 @@ from django.urls import reverse
 from faker import Faker
 from pytest_django.asserts import assertRedirects, assertTemplateUsed
 
-from character.forms.post_creation import EquipmentSelectForm
+from character.forms.equipment_selection import EquipmentSelectForm
 from character.models.classes import Class
 from character.models.equipment import Armor, Equipment, Gear, Tool, Weapon
 from character.utils.classes.equipment_choices import (

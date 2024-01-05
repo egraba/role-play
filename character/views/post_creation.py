@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import FormView
 
-from character.forms.post_creation import EquipmentSelectForm
+from character.forms.equipment_selection import EquipmentSelectForm
 from character.models.classes import Class
 from character.models.equipment import Armor, Equipment, Gear, Tool, Weapon
 from character.views.mixins import CharacterContextMixin

@@ -1,7 +1,7 @@
 import pytest
 from django import forms
 
-from character.forms.post_creation import EquipmentSelectForm
+from character.forms.equipment_selection import EquipmentSelectForm
 from character.models.classes import Class
 
 
