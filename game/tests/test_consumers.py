@@ -6,9 +6,11 @@ from channels.testing import WebsocketCommunicator
 from django.contrib.auth.models import User
 from django.urls import re_path
 
+from character.tests.factories import CharacterFactory
 from game.consumers import GameEventsConsumer
 from game.models import DiceLaunch
-from utils.testing.factories import CharacterFactory, GameFactory
+
+from .factories import GameFactory
 
 
 @pytest.mark.django_db(transaction=True)

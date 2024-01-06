@@ -15,6 +15,7 @@ from pytest_django.asserts import (
 )
 
 from character.models.character import Character
+from character.tests.factories import CharacterFactory
 from game.models import Event, Game, Player, Quest
 from game.views.common import (
     GameCreateErrorView,
@@ -23,15 +24,10 @@ from game.views.common import (
     GameView,
     IndexView,
 )
-from utils.testing.factories import (
-    CampaignFactory,
-    CharacterFactory,
-    EventFactory,
-    GameFactory,
-    PlayerFactory,
-    QuestFactory,
-    UserFactory,
-)
+from master.tests.factories import CampaignFactory
+from utils.factories import UserFactory
+
+from ..factories import EventFactory, GameFactory, PlayerFactory, QuestFactory
 
 
 @pytest.mark.django_db

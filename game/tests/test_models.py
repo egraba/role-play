@@ -16,12 +16,8 @@ from game.models import (
     Quest,
     XpIncrease,
 )
-from utils.testing.factories import (
-    EventFactory,
-    GameFactory,
-    MasterFactory,
-    PlayerFactory,
-)
+
+from .factories import EventFactory, GameFactory, MasterFactory, PlayerFactory
 
 
 @pytest.mark.django_db

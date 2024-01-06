@@ -1,7 +1,8 @@
 import pytest
 
 from master.models import Campaign
-from utils.testing.factories import CampaignFactory
+
+from .factories import CampaignFactory
 
 
 @pytest.mark.django_db

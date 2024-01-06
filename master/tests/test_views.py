@@ -11,7 +11,9 @@ from master.views import (
     CampaignListView,
     CampaignUpdateView,
 )
-from utils.testing.factories import CampaignFactory, UserFactory
+from utils.factories import UserFactory
+
+from .factories import CampaignFactory
 
 
 @pytest.fixture(scope="class")

@@ -16,6 +16,7 @@ from pytest_django.asserts import (
 )
 
 from character.models.character import Character
+from character.tests.factories import CharacterFactory
 from game.forms import DamageForm, HealingForm, QuestCreateForm, XpIncreaseForm
 from game.models import Damage, Event, Game, Healing, Quest, XpIncrease
 from game.views.master import (
@@ -27,12 +28,9 @@ from game.views.master import (
     QuestCreateView,
     XpIncreaseView,
 )
-from utils.testing.factories import (
-    CharacterFactory,
-    GameFactory,
-    PlayerFactory,
-    UserFactory,
-)
+from utils.factories import UserFactory
+
+from ..factories import GameFactory, PlayerFactory
 
 
 @pytest.fixture(scope="class")
