@@ -32,11 +32,11 @@ class EquipmentSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
 
     def form_valid(self, form):
         # The form is different per class, so some fields have to be surrunded with try/except.
-        weapon_name = form.cleaned_data["weapon1"]
+        weapon_name = form.cleaned_data["first_weapon"]
         Equipment.objects.create(name=weapon_name, inventory=self.character.inventory)
 
         try:
-            weapon_name = form.cleaned_data["weapon2"]
+            weapon_name = form.cleaned_data["second_weapon"]
             Equipment.objects.create(
                 name=weapon_name, inventory=self.character.inventory
             )
@@ -44,7 +44,7 @@ class EquipmentSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
             pass
 
         try:
-            weapon_name = form.cleaned_data["weapon3"]
+            weapon_name = form.cleaned_data["third_weapon"]
             Equipment.objects.create(
                 name=weapon_name, inventory=self.character.inventory
             )

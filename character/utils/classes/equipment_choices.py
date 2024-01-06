@@ -12,15 +12,15 @@ class EquipmentChoicesProvider(ABC):
     """
 
     @abstractmethod
-    def get_weapon1_choices(self):
+    def get_first_weapon_choices(self):
         pass
 
     @abstractmethod
-    def get_weapon2_choices(self):
+    def get_second_weapon_choices(self):
         pass
 
     @abstractmethod
-    def get_weapon3_choices(self):
+    def get_third_weapon_choices(self):
         pass
 
     @abstractmethod
@@ -37,14 +37,14 @@ class EquipmentChoicesProvider(ABC):
 
 
 class ClericEquipmentChoicesProvider(EquipmentChoicesProvider):
-    def get_weapon1_choices(self):
+    def get_first_weapon_choices(self):
         queryset = Weapon.objects.filter(
             Q(name=Weapon.Name.MACE) | Q(name=Weapon.Name.WARHAMMER)
         )
         choices = {weapon + weapon for weapon in queryset.values_list("name")}
         return choices
 
-    def get_weapon2_choices(self):
+    def get_second_weapon_choices(self):
         queryset = Weapon.objects.filter(
             Q(name=Weapon.Name.CROSSBOW_LIGHT)
             | Q(weapon_type=Weapon.Type.SIMPLE_MELEE)
@@ -53,7 +53,7 @@ class ClericEquipmentChoicesProvider(EquipmentChoicesProvider):
         choices = {weapon + weapon for weapon in queryset.values_list("name")}
         return choices
 
-    def get_weapon3_choices(self):
+    def get_third_weapon_choices(self):
         raise NotImplementedError
 
     def get_armor_choices(self):
@@ -79,7 +79,7 @@ class ClericEquipmentChoicesProvider(EquipmentChoicesProvider):
 
 
 class FighterEquipmentChoicesProvider(EquipmentChoicesProvider):
-    def get_weapon1_choices(self):
+    def get_first_weapon_choices(self):
         choices = set()
         chain_mail = Armor.objects.get(name=Armor.Name.CHAIN_MAIL).name
         choices.add((chain_mail, chain_mail))
@@ -88,7 +88,7 @@ class FighterEquipmentChoicesProvider(EquipmentChoicesProvider):
         choices.add((f"{leather} & {longbow}", f"{leather} & {longbow}"))
         return choices
 
-    def get_weapon2_choices(self):
+    def get_second_weapon_choices(self):
         queryset = Weapon.objects.filter(
             Q(weapon_type=Weapon.Type.MARTIAL_MELEE)
             | Q(weapon_type=Weapon.Type.MARTIAL_RANGED)
@@ -96,7 +96,7 @@ class FighterEquipmentChoicesProvider(EquipmentChoicesProvider):
         choices = {weapon + weapon for weapon in queryset.values_list("name")}
         return choices
 
-    def get_weapon3_choices(self):
+    def get_third_weapon_choices(self):
         queryset = Weapon.objects.filter(
             Q(name=Weapon.Name.CROSSBOW_LIGHT) | Q(name=Weapon.Name.HANDAXE)
         )
@@ -118,21 +118,21 @@ class FighterEquipmentChoicesProvider(EquipmentChoicesProvider):
 
 
 class RogueEquipmentChoicesProvider(EquipmentChoicesProvider):
-    def get_weapon1_choices(self):
+    def get_first_weapon_choices(self):
         queryset = Weapon.objects.filter(
             Q(name=Weapon.Name.RAPIER) | Q(name=Weapon.Name.SHORTSWORD)
         )
         choices = {weapon + weapon for weapon in queryset.values_list("name")}
         return choices
 
-    def get_weapon2_choices(self):
+    def get_second_weapon_choices(self):
         queryset = Weapon.objects.filter(
             Q(name=Weapon.Name.SHORTBOW) | Q(name=Weapon.Name.SHORTSWORD)
         )
         choices = {weapon + weapon for weapon in queryset.values_list("name")}
         return choices
 
-    def get_weapon3_choices(self):
+    def get_third_weapon_choices(self):
         raise NotImplementedError
 
     def get_armor_choices(self):
@@ -152,17 +152,17 @@ class RogueEquipmentChoicesProvider(EquipmentChoicesProvider):
 
 
 class WizardEquipmentChoicesProvider(EquipmentChoicesProvider):
-    def get_weapon1_choices(self):
+    def get_first_weapon_choices(self):
         queryset = Weapon.objects.filter(
             Q(name=Weapon.Name.QUARTERSTAFF) | Q(name=Weapon.Name.DAGGER)
         )
         choices = {weapon + weapon for weapon in queryset.values_list("name")}
         return choices
 
-    def get_weapon2_choices(self):
+    def get_second_weapon_choices(self):
         raise NotImplementedError
 
-    def get_weapon3_choices(self):
+    def get_third_weapon_choices(self):
         raise NotImplementedError
 
     def get_armor_choices(self):

@@ -13,9 +13,8 @@ class FirstWeaponForm(forms.Form):
         equipment_provider = kwargs.pop("first_weapon_provider")
         super().__init__(*args, **kwargs)
 
-        self.fields["weapon1"] = forms.ChoiceField(
-            choices=equipment_provider.get_weapon1_choices(),
-            label="First weapon",
+        self.fields["first_weapon"] = forms.ChoiceField(
+            choices=equipment_provider.get_first_weapon_choices(),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
 
@@ -25,9 +24,8 @@ class SecondWeaponForm(forms.Form):
         equipment_provider = kwargs.pop("second_weapon_provider")
         super().__init__(*args, **kwargs)
 
-        self.fields["weapon2"] = forms.ChoiceField(
-            choices=equipment_provider.get_weapon2_choices(),
-            label="Second weapon",
+        self.fields["second_weapon"] = forms.ChoiceField(
+            choices=equipment_provider.get_second_weapon_choices(),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
 
@@ -37,9 +35,8 @@ class ThirdWeaponForm(forms.Form):
         equipment_provider = kwargs.pop("third_weapon_provider")
         super().__init__(*args, **kwargs)
 
-        self.fields["weapon3"] = forms.ChoiceField(
-            choices=equipment_provider.get_weapon3_choices(),
-            label="Third weapon",
+        self.fields["third_weapon"] = forms.ChoiceField(
+            choices=equipment_provider.get_third_weapon_choices(),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
 
