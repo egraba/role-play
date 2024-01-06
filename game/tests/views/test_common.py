@@ -23,7 +23,7 @@ from game.views.common import (
     GameView,
     IndexView,
 )
-from utils.testing.factories import (
+from utils.factories import (
     CampaignFactory,
     CharacterFactory,
     EventFactory,

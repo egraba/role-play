@@ -3,7 +3,7 @@ from faker import Faker
 
 from character.models.character import Character
 from utils.dice import Dice
-from utils.testing.factories import CharacterFactory
+from utils.factories import CharacterFactory
 
 
 @pytest.mark.django_db

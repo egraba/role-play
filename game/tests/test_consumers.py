@@ -8,7 +8,7 @@ from django.urls import re_path
 
 from game.consumers import GameEventsConsumer
 from game.models import DiceLaunch
-from utils.testing.factories import CharacterFactory, GameFactory
+from utils.factories import CharacterFactory, GameFactory
 
 
 @pytest.mark.django_db(transaction=True)

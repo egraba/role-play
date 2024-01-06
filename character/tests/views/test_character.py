@@ -13,12 +13,7 @@ from character.views.character import (
     CharacterDetailView,
     CharacterListView,
 )
-from utils.testing.factories import (
-    CharacterFactory,
-    GameFactory,
-    PlayerFactory,
-    UserFactory,
-)
+from utils.factories import CharacterFactory, GameFactory, PlayerFactory, UserFactory
 
 
 @pytest.mark.django_db

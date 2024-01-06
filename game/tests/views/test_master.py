@@ -27,12 +27,7 @@ from game.views.master import (
     QuestCreateView,
     XpIncreaseView,
 )
-from utils.testing.factories import (
-    CharacterFactory,
-    GameFactory,
-    PlayerFactory,
-    UserFactory,
-)
+from utils.factories import CharacterFactory, GameFactory, PlayerFactory, UserFactory
 
 
 @pytest.fixture(scope="class")

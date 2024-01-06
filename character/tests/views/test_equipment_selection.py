@@ -18,7 +18,7 @@ from character.utils.classes.equipment_choices import (
     WizardEquipmentChoicesProvider,
 )
 from character.views.equipment_selection import EquipmentSelectView
-from utils.testing.factories import CharacterFactory
+from utils.factories import CharacterFactory
 
 
 @pytest.mark.django_db
