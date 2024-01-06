@@ -89,6 +89,8 @@ class ClericEquipmentSelectForm(
             data=data,
         )
 
+        self.order_fields(["first_weapon", "second_weapon", "armor", "gear", "pack"])
+
 
 class FighterEquipmentSelectForm(
     FirstWeaponForm, SecondWeaponForm, ThirdWeaponForm, PackForm
@@ -104,6 +106,8 @@ class FighterEquipmentSelectForm(
             data=data,
         )
 
+        self.order_fields(["first_weapon", "second_weapon", "third_weapon", "pack"])
+
 
 class RogueEquipmentSelectForm(FirstWeaponForm, SecondWeaponForm, PackForm):
     def __init__(self, *args, **kwargs):
@@ -116,6 +120,8 @@ class RogueEquipmentSelectForm(FirstWeaponForm, SecondWeaponForm, PackForm):
             data=data,
         )
 
+        self.order_fields(["first_weapon", "second_weapon", "pack"])
+
 
 class WizardEquipmentSelectForm(FirstWeaponForm, GearForm, PackForm):
     def __init__(self, *args, **kwargs):
@@ -127,3 +133,5 @@ class WizardEquipmentSelectForm(FirstWeaponForm, GearForm, PackForm):
             pack_provider=equipment_provider,
             data=data,
         )
+
+        self.order_fields(["first_weapon", "gear", "pack"])

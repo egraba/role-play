@@ -44,6 +44,15 @@ class TestClericEquipmentSelectForm:
     def test_pack_field_type_for_cleric(self, cleric):
         assert isinstance(self.form.fields["pack"], forms.ChoiceField)
 
+    def test_field_order(self, cleric):
+        assert list(self.form.fields.keys()) == [
+            "first_weapon",
+            "second_weapon",
+            "armor",
+            "gear",
+            "pack",
+        ]
+
 
 @pytest.mark.django_db
 class TestFighterEquipmentSelectForm:
@@ -80,6 +89,14 @@ class TestFighterEquipmentSelectForm:
     def test_pack_field_type_for_fighter(self, fighter):
         assert isinstance(self.form.fields["pack"], forms.ChoiceField)
 
+    def test_field_order(self, fighter):
+        assert list(self.form.fields.keys()) == [
+            "first_weapon",
+            "second_weapon",
+            "third_weapon",
+            "pack",
+        ]
+
 
 @pytest.mark.django_db
 class TestRogueEquipmentSelectForm:
@@ -112,6 +129,13 @@ class TestRogueEquipmentSelectForm:
 
     def test_pack_field_type_for_rogue(self, rogue):
         assert isinstance(self.form.fields["pack"], forms.ChoiceField)
+
+    def test_field_order(self, rogue):
+        assert list(self.form.fields.keys()) == [
+            "first_weapon",
+            "second_weapon",
+            "pack",
+        ]
 
 
 @pytest.mark.django_db
@@ -148,3 +172,10 @@ class TestWizardEquipmentSelectForm:
 
     def test_gear_field_type_for_wizard(self, wizard):
         assert isinstance(self.form.fields["gear"], forms.ChoiceField)
+
+    def test_field_order(self, wizard):
+        assert list(self.form.fields.keys()) == [
+            "first_weapon",
+            "gear",
+            "pack",
+        ]
