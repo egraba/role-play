@@ -13,6 +13,9 @@ Instead of playing role play with paper, you can do it online!
 
 ## Screenshots
 
+> **Warning**
+> The screenshots below might not be accurate: the UI is changing a lot, as the project is under development.
+
 ### Main page
 ![Index](docs/screenshot-index-01.png)
 
