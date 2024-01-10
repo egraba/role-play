@@ -99,3 +99,27 @@ class Character(models.Model):
         self.xp += xp
         while self._check_level_increase():
             self._increase_level()
+
+
+class Skill(models.Model):
+    class Name(models.TextChoices):
+        ATHLETICS = "Athletics"
+        ACROBATICS = "Acrobatics"
+        SLEIGHT_OF_HAND = "Sleight of Hand"
+        STEALTH = "Stealth"
+        ARCANA = "Arcana"
+        HISTORY = "History"
+        INVESTIGATION = "Investigation"
+        NATURE = "Nature"
+        RELIGION = "Religion"
+        ANIMAL_HANDLING = "Animal Handling"
+        INSIGHT = "Insight"
+        MEDICINE = "Medicine"
+        PERCEPTION = "Perception"
+        SURVIVAL = "Survival"
+        DECEPTION = "Deception"
+        INTIMIDATION = "Intimidation"
+        PERFORMANCE = "Performance"
+        PERSUASION = "Persuasion"
+
+    name = models.CharField(max_length=20, unique=True, choices=Name)
