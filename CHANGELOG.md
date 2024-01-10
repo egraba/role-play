@@ -1,8 +1,9 @@
 # CHANGELOG
 
-## Unreleased
+## v0.4.0 - 2024-01-10
 
 ### Added
+* DnD: implement classes and their class features
 * Celery is now used as task queue system
 * DnD: implement races and their racial traits
 * DnD: implement basic rules
@@ -11,6 +12,7 @@
 * The game master can create background stories before starting a game
 
 ### Changed
+* Various code enhancements (more Pythonic code, utils modules)
 * Migrate to Django 5.0
 * Pytest is now used instead of Unittest
 * Various UX/UI improvements
