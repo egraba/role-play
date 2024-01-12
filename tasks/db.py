@@ -10,7 +10,15 @@ def reset(context):
 @task
 def load_settings(context):
     """Load app settings"""
-    patterns = ["senses", "advancement", "races", "classes", "equipment"]
+    patterns = [
+        "senses",
+        "advancement",
+        "races",
+        "classes",
+        "abilities",
+        "skills",
+        "equipment",
+    ]
     for pattern in patterns:
         context.run(f"python manage.py loaddata {pattern}", pty=True)
 

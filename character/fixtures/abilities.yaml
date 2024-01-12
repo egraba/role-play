@@ -1,0 +1,18 @@
+- model: character.ability
+  fields:
+    name: STR
+- model: character.ability
+  fields:
+    name: DEX
+- model: character.ability
+  fields:
+    name: CON
+- model: character.ability
+  fields:
+    name: INT
+- model: character.ability
+  fields:
+    name: WIS
+- model: character.ability
+  fields:
+    name: CHA

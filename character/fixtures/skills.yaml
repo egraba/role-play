@@ -1,0 +1,72 @@
+- model: character.skill
+  fields:
+    name: Athletics
+    ability: STR
+- model: character.skill
+  fields:
+    name: Acrobatics
+    ability: DEX
+- model: character.skill
+  fields:
+    name: Sleight of Hand
+    ability: DEX
+- model: character.skill
+  fields:
+    name: Stealth
+    ability: DEX
+- model: character.skill
+  fields:
+    name: Arcana
+    ability: INT
+- model: character.skill
+  fields:
+    name: History
+    ability: INT
+- model: character.skill
+  fields:
+    name: Investigation
+    ability: INT
+- model: character.skill
+  fields:
+    name: Nature
+    ability: INT
+- model: character.skill
+  fields:
+    name: Religion
+    ability: INT
+- model: character.skill
+  fields:
+    name: Animal Handling
+    ability: WIS
+- model: character.skill
+  fields:
+    name: Insight
+    ability: WIS
+- model: character.skill
+  fields:
+    name: Medicine
+    ability: WIS
+- model: character.skill
+  fields:
+    name: Perception
+    ability: WIS
+- model: character.skill
+  fields:
+    name: Survival
+    ability: WIS
+- model: character.skill
+  fields:
+    name: Deception
+    ability: CHA
+- model: character.skill
+  fields:
+    name: Intimidation
+    ability: CHA
+- model: character.skill
+  fields:
+    name: Performance
+    ability: CHA
+- model: character.skill
+  fields:
+    name: Persuasion
+    ability: CHA

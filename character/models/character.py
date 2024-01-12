@@ -20,8 +20,7 @@ class Ability(models.Model):
         WISDOM = "WIS", "Wisdom"
         CHARISMA = "CHA", "Charisma"
 
-    name = models.CharField(max_length=3, unique=True, choices=Name)
-    modifier = models.SmallIntegerField(default=0)
+    name = models.CharField(max_length=3, primary_key=True, choices=Name)
 
     class Meta:
         verbose_name_plural = "abilities"
@@ -138,5 +137,5 @@ class Skill(models.Model):
         PERFORMANCE = "Performance"
         PERSUASION = "Persuasion"
 
-    name = models.CharField(max_length=20, unique=True, choices=Name)
+    name = models.CharField(max_length=20, primary_key=True, choices=Name)
     ability = models.ForeignKey(Ability, on_delete=models.CASCADE)
