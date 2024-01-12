@@ -139,3 +139,4 @@ class Skill(models.Model):
         PERSUASION = "Persuasion"
 
     name = models.CharField(max_length=20, unique=True, choices=Name)
+    ability = models.ForeignKey(Ability, on_delete=models.CASCADE)
