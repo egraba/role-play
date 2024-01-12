@@ -6,7 +6,7 @@ from pytest_django.asserts import assertContains, assertRedirects, assertTemplat
 from character.forms.character import CharacterCreateForm
 from character.models.character import Character
 from character.models.classes import Class
-from character.models.races import Ability, Language, Race
+from character.models.races import Language, Race, Sense
 from character.utils.abilities import AbilityScore
 from character.views.character import (
     CharacterCreateView,
@@ -117,7 +117,6 @@ class TestCharacterListView:
 @pytest.mark.django_db
 class TestCharacterCreateView:
     path_name = "character-create"
-    fixtures = ["races", "abilities", "classes", "equipment"]
 
     @pytest.fixture(autouse=True)
     def setup(self, client):
@@ -215,18 +214,18 @@ class TestCharacterCreateView:
         languages.add(dwarvish)
         assert set(character.languages.all()) == languages
 
-        darkvision = Ability.objects.get(name="Darkvision")
-        dwarven_resilience = Ability.objects.get(name="Dwarven Resilience")
-        dwarven_combat_training = Ability.objects.get(name="Dwarven Combat Training")
-        tool_proficiency = Ability.objects.get(name="Tool Proficiency")
-        stonecunning = Ability.objects.get(name="Stonecunning")
-        abilities = set()
-        abilities.add(darkvision)
-        abilities.add(dwarven_resilience)
-        abilities.add(dwarven_combat_training)
-        abilities.add(tool_proficiency)
-        abilities.add(stonecunning)
-        assert set(character.abilities.all()) == abilities
+        darkvision = Sense.objects.get(name="Darkvision")
+        dwarven_resilience = Sense.objects.get(name="Dwarven Resilience")
+        dwarven_combat_training = Sense.objects.get(name="Dwarven Combat Training")
+        tool_proficiency = Sense.objects.get(name="Tool Proficiency")
+        stonecunning = Sense.objects.get(name="Stonecunning")
+        senses = set()
+        senses.add(darkvision)
+        senses.add(dwarven_resilience)
+        senses.add(dwarven_combat_training)
+        senses.add(tool_proficiency)
+        senses.add(stonecunning)
+        assert set(character.senses.all()) == senses
 
     def test_character_creation_elf(self, client):
         fake = Faker()
@@ -271,16 +270,16 @@ class TestCharacterCreateView:
         languages.add(elvish)
         assert set(character.languages.all()) == languages
 
-        darkvision = Ability.objects.get(name="Darkvision")
-        keen_senses = Ability.objects.get(name="Keen Senses")
-        fey_ancestry = Ability.objects.get(name="Fey Ancestry")
-        trance = Ability.objects.get(name="Trance")
-        abilities = set()
-        abilities.add(darkvision)
-        abilities.add(keen_senses)
-        abilities.add(fey_ancestry)
-        abilities.add(trance)
-        assert set(character.abilities.all()) == abilities
+        darkvision = Sense.objects.get(name="Darkvision")
+        keen_senses = Sense.objects.get(name="Keen Senses")
+        fey_ancestry = Sense.objects.get(name="Fey Ancestry")
+        trance = Sense.objects.get(name="Trance")
+        senses = set()
+        senses.add(darkvision)
+        senses.add(keen_senses)
+        senses.add(fey_ancestry)
+        senses.add(trance)
+        assert set(character.senses.all()) == senses
 
     def test_character_creation_halfling(self, client):
         fake = Faker()
@@ -327,14 +326,14 @@ class TestCharacterCreateView:
         languages.add(halfling)
         assert set(character.languages.all()) == languages
 
-        lucky = Ability.objects.get(name="Lucky")
-        brave = Ability.objects.get(name="Brave")
-        halfling_nimbleness = Ability.objects.get(name="Halfling Nimbleness")
-        abilities = set()
-        abilities.add(lucky)
-        abilities.add(brave)
-        abilities.add(halfling_nimbleness)
-        assert set(character.abilities.all()) == abilities
+        lucky = Sense.objects.get(name="Lucky")
+        brave = Sense.objects.get(name="Brave")
+        halfling_nimbleness = Sense.objects.get(name="Halfling Nimbleness")
+        senses = set()
+        senses.add(lucky)
+        senses.add(brave)
+        senses.add(halfling_nimbleness)
+        assert set(character.senses.all()) == senses
 
     def test_character_creation_human(self, client):
         fake = Faker()
@@ -379,8 +378,8 @@ class TestCharacterCreateView:
         languages.add(common)
         assert set(character.languages.all()) == languages
 
-        abilities = set()
-        assert set(character.abilities.all()) == abilities
+        senses = set()
+        assert set(character.senses.all()) == senses
 
     def test_character_creation_cleric(self, client):
         fake = Faker()

@@ -149,68 +149,68 @@
     racialtrait: 4
     language: 1
 
-# Dwarves' abilities
-- model: character.racialtrait_abilities
+# Dwarves' senses
+- model: character.racialtrait_senses
   pk: 1
   fields:
     racialtrait: 1
-    ability: 1
-- model: character.racialtrait_abilities
+    sense: 1
+- model: character.racialtrait_senses
   pk: 2
   fields:
     racialtrait: 1
-    ability: 2
-- model: character.racialtrait_abilities
+    sense: 2
+- model: character.racialtrait_senses
   pk: 3
   fields:
     racialtrait: 1
-    ability: 3
-- model: character.racialtrait_abilities
+    sense: 3
+- model: character.racialtrait_senses
   pk: 4
   fields:
     racialtrait: 1
-    ability: 4
-- model: character.racialtrait_abilities
+    sense: 4
+- model: character.racialtrait_senses
   pk: 5
   fields:
     racialtrait: 1
-    ability: 5
+    sense: 5
 
-# Elves' abilities
-- model: character.racialtrait_abilities
+# Elves' senses
+- model: character.racialtrait_senses
   pk: 6
   fields:
     racialtrait: 2
-    ability: 1
-- model: character.racialtrait_abilities
+    sense: 1
+- model: character.racialtrait_senses
   pk: 7
   fields:
     racialtrait: 2
-    ability: 6
-- model: character.racialtrait_abilities
+    sense: 6
+- model: character.racialtrait_senses
   pk: 8
   fields:
     racialtrait: 2
-    ability: 7
-- model: character.racialtrait_abilities
+    sense: 7
+- model: character.racialtrait_senses
   pk: 9
   fields:
     racialtrait: 2
-    ability: 8
+    sense: 8
 
-# Halflings' abilities
-- model: character.racialtrait_abilities
+# Halflings' senses
+- model: character.racialtrait_senses
   pk: 10
   fields:
     racialtrait: 3
-    ability: 9
-- model: character.racialtrait_abilities
+    sense: 9
+- model: character.racialtrait_senses
   pk: 11
   fields:
     racialtrait: 3
-    ability: 10
-- model: character.racialtrait_abilities
+    sense: 10
+- model: character.racialtrait_senses
   pk: 12
   fields:
     racialtrait: 3
-    ability: 11
+    sense: 11

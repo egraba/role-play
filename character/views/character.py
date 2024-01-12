@@ -44,7 +44,7 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
         # Need to save before setting many-to-many relationships
         character.save()
         character.languages.set(racial_trait.languages.all())
-        character.abilities.set(racial_trait.abilities.all())
+        character.senses.set(racial_trait.senses.all())
 
     def _apply_ability_score_increases(self, character, racial_trait):
         ability_score_increases = AbilityScoreIncrease.objects.filter(

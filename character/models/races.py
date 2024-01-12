@@ -32,12 +32,11 @@ class Language(models.Model):
         return self.name
 
 
-class Ability(models.Model):
+class Sense(models.Model):
     name = models.CharField(max_length=30, unique=True)
     description = models.TextField(max_length=50)
 
     class Meta:
-        verbose_name_plural = "abilities"
         ordering = ["name"]
 
     def __str__(self):
@@ -52,7 +51,7 @@ class RacialTrait(models.Model):
     size = models.CharField(max_length=1, choices=Size.choices)
     speed = models.SmallIntegerField()
     languages = models.ManyToManyField(Language)
-    abilities = models.ManyToManyField(Ability)
+    senses = models.ManyToManyField(Sense)
 
     def __str__(self):
         return f"{self.get_race_display()} racial trait"

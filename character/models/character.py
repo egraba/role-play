@@ -7,8 +7,24 @@ from django.urls import reverse
 from character.models.advancement import Advancement
 from character.models.classes import Class, Proficiencies
 from character.models.equipment import Inventory
-from character.models.races import Ability, Alignment, Language, Race, Size
+from character.models.races import Alignment, Language, Race, Sense, Size
 from utils.dice import Dice
+
+
+class Ability(models.Model):
+    class Name(models.TextChoices):
+        STRENGTH = "STR", "Strength"
+        DEXTERITY = "DEX", "Dexterity"
+        CONSTITUTION = "CON", "Constitution"
+        INTELLIGENCE = "INT", "Intelligence"
+        WISDOM = "WIS", "Wisdom"
+        CHARISMA = "CHA", "Charisma"
+
+    name = models.CharField(max_length=3, unique=True, choices=Name)
+    modifier = models.SmallIntegerField(default=0)
+
+    class Meta:
+        verbose_name_plural = "abilities"
 
 
 class Character(models.Model):
@@ -50,7 +66,7 @@ class Character(models.Model):
     size = models.CharField(max_length=1, choices=Size.choices, null=True, blank=True)
     speed = models.SmallIntegerField(null=True, blank=True)
     languages = models.ManyToManyField(Language)
-    abilities = models.ManyToManyField(Ability)
+    senses = models.ManyToManyField(Sense)
     hit_dice = models.CharField(max_length=5, default="1d8")
     hp_increase = models.SmallIntegerField(default=0)
     proficiencies = models.OneToOneField(
