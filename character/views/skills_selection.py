@@ -82,3 +82,24 @@ class SkillsSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
             case Class.WIZARD:
                 initial["choices"] = self.wizard_choices
         return initial
+
+    def form_valid(self, form):
+        first_skill = form.cleaned_data["first_skill"]
+        self.character.skills.add(first_skill)
+
+        second_skill = form.cleaned_data["second_skill"]
+        self.character.skills.add(second_skill)
+
+        try:
+            third_skill = form.cleaned_data["third_skill"]
+            self.character.add(third_skill)
+        except KeyError:
+            pass
+
+        try:
+            forth_skill = form.cleaned_data["forth_skill"]
+            self.character.add(forth_skill)
+        except KeyError:
+            pass
+
+        return super().form_valid(form)

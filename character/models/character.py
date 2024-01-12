@@ -26,6 +26,31 @@ class Ability(models.Model):
         verbose_name_plural = "abilities"
 
 
+class Skill(models.Model):
+    class Name(models.TextChoices):
+        ATHLETICS = "Athletics"
+        ACROBATICS = "Acrobatics"
+        SLEIGHT_OF_HAND = "Sleight of Hand"
+        STEALTH = "Stealth"
+        ARCANA = "Arcana"
+        HISTORY = "History"
+        INVESTIGATION = "Investigation"
+        NATURE = "Nature"
+        RELIGION = "Religion"
+        ANIMAL_HANDLING = "Animal Handling"
+        INSIGHT = "Insight"
+        MEDICINE = "Medicine"
+        PERCEPTION = "Perception"
+        SURVIVAL = "Survival"
+        DECEPTION = "Deception"
+        INTIMIDATION = "Intimidation"
+        PERFORMANCE = "Performance"
+        PERSUASION = "Persuasion"
+
+    name = models.CharField(max_length=20, primary_key=True, choices=Name)
+    ability = models.ForeignKey(Ability, on_delete=models.CASCADE)
+
+
 class Character(models.Model):
     class Gender(models.TextChoices):
         MALE = "M", "Male"
@@ -43,6 +68,7 @@ class Character(models.Model):
     hp = models.SmallIntegerField(default=100)
     max_hp = models.SmallIntegerField(default=100)
     proficiency_bonus = models.SmallIntegerField(default=2)
+    skills = models.ManyToManyField(Skill)
     strength = models.SmallIntegerField(default=0)
     dexterity = models.SmallIntegerField(default=0)
     constitution = models.SmallIntegerField(default=0)
@@ -114,28 +140,3 @@ class Character(models.Model):
         self.xp += xp
         while self._check_level_increase():
             self._increase_level()
-
-
-class Skill(models.Model):
-    class Name(models.TextChoices):
-        ATHLETICS = "Athletics"
-        ACROBATICS = "Acrobatics"
-        SLEIGHT_OF_HAND = "Sleight of Hand"
-        STEALTH = "Stealth"
-        ARCANA = "Arcana"
-        HISTORY = "History"
-        INVESTIGATION = "Investigation"
-        NATURE = "Nature"
-        RELIGION = "Religion"
-        ANIMAL_HANDLING = "Animal Handling"
-        INSIGHT = "Insight"
-        MEDICINE = "Medicine"
-        PERCEPTION = "Perception"
-        SURVIVAL = "Survival"
-        DECEPTION = "Deception"
-        INTIMIDATION = "Intimidation"
-        PERFORMANCE = "Performance"
-        PERSUASION = "Persuasion"
-
-    name = models.CharField(max_length=20, primary_key=True, choices=Name)
-    ability = models.ForeignKey(Ability, on_delete=models.CASCADE)
