@@ -160,7 +160,7 @@ class TestCharacterCreateView:
         )
         assert response.status_code == 302
         character = Character.objects.last()
-        assertRedirects(response, reverse("equipment-select", args=(character.id,)))
+        assertRedirects(response, reverse("skills-select", args=(character.id,)))
 
         assert character.name, form.cleaned_data["name"]
         assert character.race, form.cleaned_data["race"]
@@ -196,7 +196,7 @@ class TestCharacterCreateView:
         )
         assert response.status_code == 302
         character = Character.objects.last()
-        assertRedirects(response, reverse("equipment-select", args=(character.id,)))
+        assertRedirects(response, reverse("skills-select", args=(character.id,)))
 
         assert character.strength == AbilityScore.SCORE_10
         assert character.dexterity == AbilityScore.SCORE_12
@@ -254,7 +254,7 @@ class TestCharacterCreateView:
         )
         assert response.status_code, 302
         character = Character.objects.last()
-        assertRedirects(response, reverse("equipment-select", args=(character.id,)))
+        assertRedirects(response, reverse("skills-select", args=(character.id,)))
 
         assert character.strength == AbilityScore.SCORE_10
         assert character.dexterity == AbilityScore.SCORE_12 + 2
@@ -308,7 +308,7 @@ class TestCharacterCreateView:
         )
         assert response.status_code == 302
         character = Character.objects.last()
-        assertRedirects(response, reverse("equipment-select", args=(character.id,)))
+        assertRedirects(response, reverse("skills-select", args=(character.id,)))
 
         assert character.strength == AbilityScore.SCORE_10
         assert character.dexterity == AbilityScore.SCORE_12 + 2
@@ -362,7 +362,7 @@ class TestCharacterCreateView:
         )
         assert response.status_code == 302
         character = Character.objects.last()
-        assertRedirects(response, reverse("equipment-select", args=(character.id,)))
+        assertRedirects(response, reverse("skills-select", args=(character.id,)))
 
         assert character.strength == AbilityScore.SCORE_10 + 1
         assert character.dexterity == AbilityScore.SCORE_12 + 1
@@ -408,7 +408,7 @@ class TestCharacterCreateView:
         )
         assert response.status_code == 302
         character = Character.objects.last()
-        assertRedirects(response, reverse("equipment-select", args=(character.id,)))
+        assertRedirects(response, reverse("skills-select", args=(character.id,)))
 
         assert character.hit_dice == "1d8"
 
@@ -448,7 +448,7 @@ class TestCharacterCreateView:
         )
         assert response.status_code == 302
         character = Character.objects.last()
-        assertRedirects(response, reverse("equipment-select", args=(character.id,)))
+        assertRedirects(response, reverse("skills-select", args=(character.id,)))
 
         assert character.hit_dice == "1d10"
 
@@ -487,7 +487,7 @@ class TestCharacterCreateView:
         )
         assert response.status_code == 302
         character = Character.objects.last()
-        assertRedirects(response, reverse("equipment-select", args=(character.id,)))
+        assertRedirects(response, reverse("skills-select", args=(character.id,)))
 
         assert character.hit_dice == "1d8"
 
@@ -529,7 +529,7 @@ class TestCharacterCreateView:
         )
         assert response.status_code == 302
         character = Character.objects.last()
-        assertRedirects(response, reverse("equipment-select", args=(character.id,)))
+        assertRedirects(response, reverse("skills-select", args=(character.id,)))
 
         assert character.hit_dice == "1d6"
 

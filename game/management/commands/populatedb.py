@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 
 from character.tests.factories import CharacterFactory
 from game.tests.factories import GameFactory
-from utils.factories import UserFactory
+from utils.factories import UserWithPasswordFactory
 
 
 class Command(BaseCommand):
@@ -10,9 +10,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # Users
-        thomas = UserFactory(username="thomas")  # The game master
-        eric = UserFactory(username="eric")
-        seb = UserFactory(username="seb")
+        thomas = UserWithPasswordFactory(username="thomas")  # The game master
+        eric = UserWithPasswordFactory(username="eric")
+        seb = UserWithPasswordFactory(username="seb")
 
         # Games
         for _ in range(5):

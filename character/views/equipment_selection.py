@@ -9,7 +9,8 @@ from character.forms.equipment_selection import (
 )
 from character.models.classes import Class
 from character.models.equipment import Armor, Equipment, Gear, Tool, Weapon
-from character.views.mixins import CharacterContextMixin
+
+from .mixins import CharacterContextMixin
 
 
 class EquipmentSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
