@@ -6,7 +6,7 @@ from character.views.character import (
     CharacterListView,
 )
 from character.views.equipment_selection import EquipmentSelectView
-from character.views.skills_selection import SkillsSelectView
+from character.views.skills import SkillsSelectView
 
 urlpatterns = [
     path(

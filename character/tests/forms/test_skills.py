@@ -1,4 +1,4 @@
-from character.forms.skills_selection import ExtendedSkillsSelectForm, SkillsSelectForm
+from character.forms.skills import ExtendedSkillsSelectForm, SkillsSelectForm
 
 
 class TestSkillsSelectForm:

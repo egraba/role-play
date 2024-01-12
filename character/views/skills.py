@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.views.generic import FormView
 
-from character.forms.skills_selection import ExtendedSkillsSelectForm, SkillsSelectForm
+from character.forms.skills import ExtendedSkillsSelectForm, SkillsSelectForm
 from character.models.character import Skill
 from character.models.classes import Class
 from utils.converters import duplicate_choice
