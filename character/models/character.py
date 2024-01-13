@@ -7,8 +7,48 @@ from django.urls import reverse
 from character.models.advancement import Advancement
 from character.models.classes import Class, Proficiencies
 from character.models.equipment import Inventory
-from character.models.races import Ability, Alignment, Language, Race, Size
+from character.models.races import Alignment, Language, Race, Sense, Size
 from utils.dice import Dice
+
+
+class Ability(models.Model):
+    class Name(models.TextChoices):
+        STRENGTH = "STR", "Strength"
+        DEXTERITY = "DEX", "Dexterity"
+        CONSTITUTION = "CON", "Constitution"
+        INTELLIGENCE = "INT", "Intelligence"
+        WISDOM = "WIS", "Wisdom"
+        CHARISMA = "CHA", "Charisma"
+
+    name = models.CharField(max_length=3, primary_key=True, choices=Name)
+
+    class Meta:
+        verbose_name_plural = "abilities"
+
+
+class Skill(models.Model):
+    class Name(models.TextChoices):
+        ATHLETICS = "Athletics"
+        ACROBATICS = "Acrobatics"
+        SLEIGHT_OF_HAND = "Sleight of Hand"
+        STEALTH = "Stealth"
+        ARCANA = "Arcana"
+        HISTORY = "History"
+        INVESTIGATION = "Investigation"
+        NATURE = "Nature"
+        RELIGION = "Religion"
+        ANIMAL_HANDLING = "Animal Handling"
+        INSIGHT = "Insight"
+        MEDICINE = "Medicine"
+        PERCEPTION = "Perception"
+        SURVIVAL = "Survival"
+        DECEPTION = "Deception"
+        INTIMIDATION = "Intimidation"
+        PERFORMANCE = "Performance"
+        PERSUASION = "Persuasion"
+
+    name = models.CharField(max_length=20, primary_key=True, choices=Name)
+    ability = models.ForeignKey(Ability, on_delete=models.CASCADE)
 
 
 class Character(models.Model):
@@ -28,6 +68,7 @@ class Character(models.Model):
     hp = models.SmallIntegerField(default=100)
     max_hp = models.SmallIntegerField(default=100)
     proficiency_bonus = models.SmallIntegerField(default=2)
+    skills = models.ManyToManyField(Skill)
     strength = models.SmallIntegerField(default=0)
     dexterity = models.SmallIntegerField(default=0)
     constitution = models.SmallIntegerField(default=0)
@@ -50,7 +91,7 @@ class Character(models.Model):
     size = models.CharField(max_length=1, choices=Size.choices, null=True, blank=True)
     speed = models.SmallIntegerField(null=True, blank=True)
     languages = models.ManyToManyField(Language)
-    abilities = models.ManyToManyField(Ability)
+    senses = models.ManyToManyField(Sense)
     hit_dice = models.CharField(max_length=5, default="1d8")
     hp_increase = models.SmallIntegerField(default=0)
     proficiencies = models.OneToOneField(

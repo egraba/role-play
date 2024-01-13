@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## Unreleased
+
+### Added
+* DnD: implement skills selection at character creation
+
 ## v0.4.0 - 2024-01-10
 
 ### Added

@@ -9,7 +9,6 @@ from character.forms.equipment_selection import (
     RogueEquipmentSelectForm,
     WizardEquipmentSelectForm,
 )
-from character.models.classes import Class
 from character.models.equipment import Armor, Equipment, Gear, Tool, Weapon
 from character.utils.classes.equipment_choices import (
     ClericEquipmentChoicesProvider,
@@ -19,37 +18,22 @@ from character.utils.classes.equipment_choices import (
 )
 from character.views.equipment_selection import EquipmentSelectView
 
-from ..factories import CharacterFactory
-
 
 @pytest.mark.django_db
 class TestEquipmentSelectView:
     path_name = "equipment-select"
-    character = None
 
-    @pytest.fixture()
-    def setup(self, client):
-        self.character = CharacterFactory(name="user")
-        user = self.character.user
-        client.force_login(user)
-
-    def test_view_mapping(self, client, setup):
-        response = client.get(reverse(self.path_name, args=(self.character.id,)))
+    def test_view_mapping(self, client, character):
+        response = client.get(reverse(self.path_name, args=(character.id,)))
         assert response.status_code == 200
         assert response.resolver_match.func.view_class == EquipmentSelectView
 
-    def test_template_mapping(self, client, setup):
-        response = client.get(reverse(self.path_name, args=(self.character.id,)))
+    def test_template_mapping(self, client, character):
+        response = client.get(reverse(self.path_name, args=(character.id,)))
         assert response.status_code == 200
         assertTemplateUsed(response, "character/equipment_select.html")
 
-    @pytest.fixture()
-    def setup_cleric(self, client):
-        self.character = CharacterFactory(name="user", class_name=Class.CLERIC)
-        user = self.character.user
-        client.force_login(user)
-
-    def test_cleric_equipment(self, client, setup_cleric):
+    def test_cleric_equipment(self, client, cleric):
         equipment_manager = ClericEquipmentChoicesProvider()
         fake = Faker()
         first_weapon = fake.random_element(
@@ -71,14 +55,15 @@ class TestEquipmentSelectView:
         form = ClericEquipmentSelectForm(data=data)
         assert form.is_valid()
 
+        character = cleric  # for readability
         response = client.post(
-            reverse(self.path_name, args=(self.character.id,)),
+            reverse(self.path_name, args=(character.id,)),
             data=form.cleaned_data,
         )
         assert response.status_code == 302
-        assertRedirects(response, self.character.get_absolute_url())
+        assertRedirects(response, character.get_absolute_url())
 
-        inventory = self.character.inventory
+        inventory = character.inventory
         assert (
             Equipment.objects.filter(inventory=inventory, name=first_weapon) is not None
         )
@@ -94,13 +79,7 @@ class TestEquipmentSelectView:
             is not None
         )
 
-    @pytest.fixture()
-    def setup_fighter(self, client):
-        self.character = CharacterFactory(name="user", class_name=Class.FIGHTER)
-        user = self.character.user
-        client.force_login(user)
-
-    def test_fighter_equipment(self, client, setup_fighter):
+    def test_fighter_equipment(self, client, fighter):
         equipment_manager = FighterEquipmentChoicesProvider()
         fake = Faker()
         first_weapon = fake.random_element(
@@ -122,14 +101,15 @@ class TestEquipmentSelectView:
         form = FighterEquipmentSelectForm(data=data)
         assert form.is_valid()
 
+        character = fighter  # for readability
         response = client.post(
-            reverse(self.path_name, args=(self.character.id,)),
+            reverse(self.path_name, args=(character.id,)),
             data=form.cleaned_data,
         )
         assert response.status_code == 302
-        assertRedirects(response, self.character.get_absolute_url())
+        assertRedirects(response, character.get_absolute_url())
 
-        inventory = self.character.inventory
+        inventory = character.inventory
         assert Equipment.objects.get(inventory=inventory, name=first_weapon) is not None
         assert (
             Equipment.objects.get(inventory=inventory, name=second_weapon) is not None
@@ -137,13 +117,7 @@ class TestEquipmentSelectView:
         assert Equipment.objects.get(inventory=inventory, name=third_weapon) is not None
         assert Equipment.objects.get(inventory=inventory, name=pack) is not None
 
-    @pytest.fixture()
-    def setup_rogue(self, client):
-        self.character = CharacterFactory(name="user", class_name=Class.ROGUE)
-        user = self.character.user
-        client.force_login(user)
-
-    def test_rogue_equipment(self, client, setup_rogue):
+    def test_rogue_equipment(self, client, rogue):
         equipment_manager = RogueEquipmentChoicesProvider()
         fake = Faker()
         first_weapon = fake.random_element(
@@ -161,14 +135,15 @@ class TestEquipmentSelectView:
         form = RogueEquipmentSelectForm(data=data)
         assert form.is_valid()
 
+        character = rogue  # for readability
         response = client.post(
-            reverse(self.path_name, args=(self.character.id,)),
+            reverse(self.path_name, args=(character.id,)),
             data=form.cleaned_data,
         )
         assert response.status_code == 302
-        assertRedirects(response, self.character.get_absolute_url())
+        assertRedirects(response, character.get_absolute_url())
 
-        inventory = self.character.inventory
+        inventory = character.inventory
         assert (
             Equipment.objects.filter(inventory=inventory, name=first_weapon) is not None
         )
@@ -192,13 +167,7 @@ class TestEquipmentSelectView:
             is not None
         )
 
-    @pytest.fixture()
-    def setup_wizard(self, client):
-        self.character = CharacterFactory(name="user", class_name=Class.WIZARD)
-        user = self.character.user
-        client.force_login(user)
-
-    def test_wizard_equipment(self, client, setup_wizard):
+    def test_wizard_equipment(self, client, wizard):
         equipment_manager = WizardEquipmentChoicesProvider()
         fake = Faker()
         first_weapon = fake.random_element(
@@ -214,14 +183,15 @@ class TestEquipmentSelectView:
         form = WizardEquipmentSelectForm(data=data)
         assert form.is_valid()
 
+        character = wizard  # for readability
         response = client.post(
-            reverse(self.path_name, args=(self.character.id,)),
+            reverse(self.path_name, args=(character.id,)),
             data=form.cleaned_data,
         )
         assert response.status_code == 302
-        assertRedirects(response, self.character.get_absolute_url())
+        assertRedirects(response, character.get_absolute_url())
 
-        inventory = self.character.inventory
+        inventory = character.inventory
         assert Equipment.objects.get(inventory=inventory, name=first_weapon) is not None
         assert Equipment.objects.get(inventory=inventory, name=gear) is not None
         assert Equipment.objects.get(inventory=inventory, name=pack) is not None
