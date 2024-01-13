@@ -61,7 +61,7 @@ class TestCharacterListView:
         user = UserFactory(username="user")
         client.force_login(user)
 
-    def test_view_mapping(self, client, setup):
+    def test_view_mapping(self, client, character):
         response = client.get(reverse(self.path_name))
         assert response.status_code == 200
         assert response.resolver_match.func.view_class == CharacterListView

@@ -3,57 +3,19 @@ from django.urls import reverse
 from django.views.generic import FormView
 
 from character.forms.skills import ExtendedSkillsSelectForm, SkillsSelectForm
-from character.models.character import Skill
 from character.models.classes import Class
-from utils.converters import duplicate_choice
+from character.utils.skills import (
+    cleric_choices,
+    fighter_choices,
+    rogue_choices,
+    wizard_choices,
+)
 
 from .mixins import CharacterContextMixin
 
 
 class SkillsSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
     template_name = "character/skills_select.html"
-
-    cleric_choices = {
-        duplicate_choice(Skill.Name.HISTORY),
-        duplicate_choice(Skill.Name.INSIGHT),
-        duplicate_choice(Skill.Name.MEDICINE),
-        duplicate_choice(Skill.Name.PERSUASION),
-        duplicate_choice(Skill.Name.RELIGION),
-    }
-
-    fighter_choices = {
-        duplicate_choice(Skill.Name.ACROBATICS),
-        duplicate_choice(Skill.Name.ANIMAL_HANDLING),
-        duplicate_choice(Skill.Name.ATHLETICS),
-        duplicate_choice(Skill.Name.HISTORY),
-        duplicate_choice(Skill.Name.INSIGHT),
-        duplicate_choice(Skill.Name.INTIMIDATION),
-        duplicate_choice(Skill.Name.PERCEPTION),
-        duplicate_choice(Skill.Name.SURVIVAL),
-    }
-
-    rogue_choices = {
-        duplicate_choice(Skill.Name.ACROBATICS),
-        duplicate_choice(Skill.Name.ATHLETICS),
-        duplicate_choice(Skill.Name.DECEPTION),
-        duplicate_choice(Skill.Name.INSIGHT),
-        duplicate_choice(Skill.Name.INTIMIDATION),
-        duplicate_choice(Skill.Name.INVESTIGATION),
-        duplicate_choice(Skill.Name.PERCEPTION),
-        duplicate_choice(Skill.Name.PERFORMANCE),
-        duplicate_choice(Skill.Name.PERSUASION),
-        duplicate_choice(Skill.Name.SLEIGHT_OF_HAND),
-        duplicate_choice(Skill.Name.STEALTH),
-    }
-
-    wizard_choices = {
-        duplicate_choice(Skill.Name.ARCANA),
-        duplicate_choice(Skill.Name.HISTORY),
-        duplicate_choice(Skill.Name.INSIGHT),
-        duplicate_choice(Skill.Name.INVESTIGATION),
-        duplicate_choice(Skill.Name.MEDICINE),
-        duplicate_choice(Skill.Name.RELIGION),
-    }
 
     def get_success_url(self):
         return reverse("equipment-select", args=(self.character.id,))
@@ -63,9 +25,9 @@ class SkillsSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
             case Class.CLERIC:
                 form_class = SkillsSelectForm
             case Class.FIGHTER:
-                form_class = ExtendedSkillsSelectForm
-            case Class.ROGUE:
                 form_class = SkillsSelectForm
+            case Class.ROGUE:
+                form_class = ExtendedSkillsSelectForm
             case Class.WIZARD:
                 form_class = SkillsSelectForm
         return form_class
@@ -74,13 +36,13 @@ class SkillsSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
         initial = {}
         match self.character.class_name:
             case Class.CLERIC:
-                initial["choices"] = self.cleric_choices
+                initial["choices"] = cleric_choices
             case Class.FIGHTER:
-                initial["choices"] = self.fighter_choices
+                initial["choices"] = fighter_choices
             case Class.ROGUE:
-                initial["choices"] = self.rogue_choices
+                initial["choices"] = rogue_choices
             case Class.WIZARD:
-                initial["choices"] = self.wizard_choices
+                initial["choices"] = wizard_choices
         return initial
 
     def form_valid(self, form):
@@ -92,13 +54,13 @@ class SkillsSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
 
         try:
             third_skill = form.cleaned_data["third_skill"]
-            self.character.add(third_skill)
+            self.character.skills.add(third_skill)
         except KeyError:
             pass
 
         try:
-            forth_skill = form.cleaned_data["forth_skill"]
-            self.character.add(forth_skill)
+            fourth_skill = form.cleaned_data["fourth_skill"]
+            self.character.skills.add(fourth_skill)
         except KeyError:
             pass
 

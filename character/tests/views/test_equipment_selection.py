@@ -33,7 +33,7 @@ class TestEquipmentSelectView:
         user = self.character.user
         client.force_login(user)
 
-    def test_view_mapping(self, client, setup):
+    def test_view_mapping(self, client, character):
         response = client.get(reverse(self.path_name, args=(self.character.id,)))
         assert response.status_code == 200
         assert response.resolver_match.func.view_class == EquipmentSelectView
@@ -49,7 +49,7 @@ class TestEquipmentSelectView:
         user = self.character.user
         client.force_login(user)
 
-    def test_cleric_equipment(self, client, setup_cleric):
+    def test_cleric_equipment(self, client, cleric):
         equipment_manager = ClericEquipmentChoicesProvider()
         fake = Faker()
         first_weapon = fake.random_element(
