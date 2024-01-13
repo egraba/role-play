@@ -3,20 +3,20 @@ from django.urls import reverse
 from faker import Faker
 from pytest_django.asserts import assertRedirects, assertTemplateUsed
 
-from character.forms.equipment_selection import (
+from character.forms.equipment import (
     ClericEquipmentSelectForm,
     FighterEquipmentSelectForm,
     RogueEquipmentSelectForm,
     WizardEquipmentSelectForm,
 )
 from character.models.equipment import Armor, Equipment, Gear, Tool, Weapon
-from character.utils.classes.equipment_choices import (
+from character.utils.equipment import (
     ClericEquipmentChoicesProvider,
     FighterEquipmentChoicesProvider,
     RogueEquipmentChoicesProvider,
     WizardEquipmentChoicesProvider,
 )
-from character.views.equipment_selection import EquipmentSelectView
+from character.views.equipment import EquipmentSelectView
 
 
 @pytest.mark.django_db

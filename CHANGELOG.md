@@ -5,6 +5,9 @@
 ### Added
 * DnD: implement skills selection at character creation
 
+### Changed
+* Rename equipment-related modules
+
 ## v0.4.0 - 2024-01-10
 
 ### Added
