@@ -50,6 +50,9 @@ class Skill(models.Model):
     name = models.CharField(max_length=20, primary_key=True, choices=Name)
     ability = models.ForeignKey(Ability, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.name
+
 
 class Character(models.Model):
     class Gender(models.TextChoices):

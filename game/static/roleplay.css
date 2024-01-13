@@ -99,22 +99,18 @@ ul.errorlist {
     width: 45em;
 }
 
-#abilities {
+#characteristics {
+    margin-left: 0;
+}
+
+#main {
     border-spacing: 2em;
 }
 
-#coreabilities {
-    width: 25%;
-}
-
-#additionalabilities {
-    vertical-align: top;
-}
-
-#additionalabilities #ability {
+#abilities {
     width: 20%;
 }
 
-#additionalabilities td {
-    text-align: left;
+#other-abilities {
+    width: 20%;
 }
