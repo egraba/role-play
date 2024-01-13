@@ -1,7 +1,7 @@
 import pytest
 
 from character.models.equipment import Armor, Gear, Pack, Weapon
-from character.utils.classes.equipment_choices import (
+from character.utils.equipment import (
     ClericEquipmentChoicesProvider,
     FighterEquipmentChoicesProvider,
     RogueEquipmentChoicesProvider,

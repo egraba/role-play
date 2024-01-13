@@ -10,7 +10,7 @@ from character.forms.equipment import (
     WizardEquipmentSelectForm,
 )
 from character.models.equipment import Armor, Equipment, Gear, Tool, Weapon
-from character.utils.classes.equipment_choices import (
+from character.utils.equipment import (
     ClericEquipmentChoicesProvider,
     FighterEquipmentChoicesProvider,
     RogueEquipmentChoicesProvider,

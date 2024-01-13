@@ -1,6 +1,6 @@
 from django import forms
 
-from character.utils.classes.equipment_choices import (
+from character.utils.equipment import (
     ClericEquipmentChoicesProvider,
     FighterEquipmentChoicesProvider,
     RogueEquipmentChoicesProvider,
