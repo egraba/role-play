@@ -34,7 +34,8 @@ table {
     padding-bottom: 0;
 }
 
-.form.rpgui-container.framed-golden, .info.rpgui-container.framed-golden {
+.form.rpgui-container.framed-golden,
+.info.rpgui-container.framed-golden {
     width: 50%;
     margin-top: 10%;
     margin-left: 25%;
@@ -105,12 +106,4 @@ ul.errorlist {
 
 #main {
     border-spacing: 2em;
-}
-
-#abilities {
-    width: 20%;
-}
-
-#other-abilities {
-    width: 20%;
 }
