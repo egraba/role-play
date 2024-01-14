@@ -7,6 +7,7 @@
 
 ### Changed
 * Rename equipment-related modules
+* Arrange character detail page
 
 ## v0.4.0 - 2024-01-10
 
