@@ -26,6 +26,12 @@ class Ability(models.Model):
         verbose_name_plural = "abilities"
 
 
+class AbilityScore(models.Model):
+    ability = models.ForeignKey(Ability, on_delete=models.CASCADE)
+    score = models.SmallIntegerField()
+    modifier = models.SmallIntegerField()
+
+
 class Skill(models.Model):
     class Name(models.TextChoices):
         ATHLETICS = "Athletics"
