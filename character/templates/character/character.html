@@ -7,9 +7,7 @@
             <a href={% url 'index' %}>- Return to main menu -</a>
         </div>
 
-        <hr class="golden"/>
-
-        <table class="rpgui-container framed-grey">
+        <table id="characteristics" class="rpgui-container framed-golden">
             <tr>
                 <th><p>User</p></th>
                 <th><p>Race</p></th>
@@ -28,57 +26,64 @@
             </tr>
         </table>
 
-        <p>Proficiency bonus: {{ character.proficiency_bonus }}</p>
-
-        <h3>Abilities</h3>
-        <table id="abilities">
+        <table id="main">
             <tr>
-                <td id="coreabilities" class="rpgui-container framed-golden">
-                    <table>
-                        <tr><th colspan="3"><h4>Core abilities</h4></th></tr>
+                <td id="hp">
+                    <table class="rpgui-container framed-golden">
                         <tr>
-                            <th><p>Strength</p></th>
+                            <td><p>HP: {{ character.hp }} / {{ character.max_hp }}</p></td>
+                        </tr>
+                        <tr>
+                            <td><div data-value="{% widthratio character.hp character.max_hp 1 %}" class="rpgui-progress red"></div></td>
+                        </tr>
+                    </table>
+                </td>
+                <td id="abilities">
+                    <table class="rpgui-container framed-golden">
+                        <tr><th colspan="3"><h3>Abilities</h3></th></tr>
+                        <tr>
+                            <th><p>STR:</p></th>
                             <td><p>{{ character.strength }}</p></td>
                             <td><p>({{ character.strength_modifier }})</p></td>
                         </tr>
                         <tr>
-                            <th><p>Dexterity</p></th>
+                            <th><p>DEX:</p></th>
                             <td><p>{{ character.dexterity }}</p></td>
                             <td><p>({{ character.dexterity_modifier }})</p></td>
                         </tr>
                         <tr>
-                            <th><p>Constitution</p></th>
+                            <th><p>CON:</p></th>
                             <td><p>{{ character.constitution }}</p></td>
                             <td><p>({{ character.constitution_modifier }})</p></td>
                         </tr>
                         <tr>
-                            <th><p>Intelligence</p></th>
+                            <th><p>INT:</p></th>
                             <td><p>{{ character.intelligence }}</p></td>
                             <td><p>({{ character.intelligence_modifier }})</p></td>
                         </tr>
                         <tr>
-                            <th><p>Wisdom</p></th>
+                            <th><p>WIS:</p></th>
                             <td><p>{{ character.wisdom }}</p></td>
                             <td><p>({{ character.wisdom_modifier }})</p></td>
                         </tr>
                         <tr>
-                            <th><p>Charisma</p></th>
+                            <th><p>CHA:</p></th>
                             <td><p>{{ character.charisma }}</p></td>
                             <td><p>({{ character.charisma_modifier }})</p></td>
                         </tr>
                     </table>
                 </td>
-                <td id="additionalabilities" class="rpgui-container framed-golden">
-                    <table>
-                        <colgroup>
-                            <col id="ability">
-                            <col>
-                        </colgroup>
-                        <tr><th colspan="2"><h4>Additional abilities</h4></th></tr>
-                        {% for ability in character.abilities.all %}
+                <td id="other-abilities">
+                    <table id="proficiency-bonus" class="rpgui-container framed-golden">
+                        <tr>
+                            <td><p>Proficiency bonus: {{ character.proficiency_bonus }}</p></td>
+                        </tr>
+                    </table>
+                    <table id="skills" class="rpgui-container framed-golden">
+                        <tr><th><h3>Skills</h3></th></tr>
+                        {% for skill in character.skills.all %}
                             <tr>
-                                <th><p>{{ ability }}</p></th>
-                                <td><p>{{ ability.description }}</p></td>
+                                <td><p>{{ skill }}</p></td>
                             </tr>
                         {% empty %}
                             <tr>
@@ -86,27 +91,28 @@
                             </tr>
                         {% endfor %}
                     </table>
+                    <table id="languages" class="rpgui-container framed-golden">
+                        <tr><th><h3>Languages</h3></th></tr>
+                        {% for language in character.languages.all %}
+                            <tr>
+                                <td><p>{{ language.get_name_display }}</p></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </td>
+                <td id="inventory">
+                    <table class="rpgui-container framed-golden">
+                        <tr><th><h3>Inventory</h3></th></tr>
+                        {% for equipment in inventory %}
+                            <tr>
+                                <td><p>{{ equipment }}</p></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
                 </td>
             </tr>
         </table>
 
-
-        <h3>Languages</h3>
-        {% for language in character.languages.all %}
-            <p>{{ language.get_name_display }}</p>
-        {% endfor %}
-
-        <h3>HP</h3>
-        <div class="rpgui-center">
-            <p>Current HP: {{ character.hp }} / Maximum HP: {{ character.max_hp }}</p>
-            <div id="hp-bar" data-value="{% widthratio character.hp character.max_hp 1 %}" class="rpgui-progress red"></div>
-        </div>
-        <br />
-
-        <h3>Inventory</h3>
-        {% for equipment in inventory %}
-            <p>{{ equipment }}</p>
-        {% endfor %}
 
         <hr/>
 
