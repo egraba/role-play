@@ -6,6 +6,7 @@ from character.views.character import (
     CharacterListView,
 )
 from character.views.equipment import EquipmentSelectView
+from character.views.glossary import GlossaryView
 from character.views.skills import SkillsSelectView
 
 urlpatterns = [
@@ -33,5 +34,10 @@ urlpatterns = [
         "<int:character_id>/select_skills",
         SkillsSelectView.as_view(),
         name="skills-select",
+    ),
+    path(
+        "glossary",
+        GlossaryView.as_view(),
+        name="glossary",
     ),
 ]
