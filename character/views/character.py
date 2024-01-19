@@ -62,7 +62,7 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
         )
         if ability_score_increases is not None:
             for i in ability_score_increases:
-                ability = character.abilities.get(ability_type=i.ability)
+                ability = character.abilities.get(ability_type=i.ability_type)
                 ability.score += i.increase
                 ability.save()
 

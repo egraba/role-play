@@ -28,10 +28,10 @@ class Ability(models.Model):
         verbose_name_plural = "abilities"
 
     def __str__(self):
-        return self.ability_type
+        return self.ability_type.name
 
 
 class AbilityScoreIncrease(models.Model):
     racial_trait = models.ForeignKey(RacialTrait, on_delete=models.CASCADE)
-    ability = models.ForeignKey(AbilityType, on_delete=models.CASCADE)
+    ability_type = models.ForeignKey(AbilityType, on_delete=models.CASCADE)
     increase = models.SmallIntegerField()
