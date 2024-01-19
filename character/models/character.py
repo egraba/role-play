@@ -27,10 +27,16 @@ class AbilityType(models.Model):
         return self.name
 
 
-class AbilityScore(models.Model):
-    ability = models.ForeignKey(AbilityType, on_delete=models.CASCADE)
+class Ability(models.Model):
+    ability_type = models.ForeignKey(AbilityType, on_delete=models.CASCADE)
     score = models.SmallIntegerField()
     modifier = models.SmallIntegerField(default=0)
+
+    class Meta:
+        verbose_name_plural = "abilities"
+
+    def __str__(self):
+        return self.ability_type
 
 
 class AbilityScoreIncrease(models.Model):
@@ -85,7 +91,7 @@ class Character(models.Model):
     max_hp = models.SmallIntegerField(default=100)
     proficiency_bonus = models.SmallIntegerField(default=2)
     skills = models.ManyToManyField(Skill)
-    ability_scores = models.ManyToManyField(AbilityScore)
+    abilities = models.ManyToManyField(Ability)
     gender = models.CharField(max_length=1, choices=Gender.choices, default=Gender.MALE)
     ac = models.SmallIntegerField(default=0)
     adult_age = models.SmallIntegerField(null=True, blank=True)

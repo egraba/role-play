@@ -4,7 +4,7 @@ from django.views.generic import CreateView, DetailView, ListView
 
 from character.forms.character import CharacterCreateForm
 from character.models.character import (
-    AbilityScore,
+    Ability,
     AbilityScoreIncrease,
     AbilityType,
     Character,
@@ -41,13 +41,13 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
         return reverse("skills-select", args=(self.object.id,))
 
     def _initialize_ability_scores(self, character, form):
-        for ability in AbilityType.objects.all():
-            ability_score = AbilityScore.objects.create(
-                ability=ability,
-                score=form.cleaned_data[ability.get_name_display().lower()],
+        for ability_type in AbilityType.objects.all():
+            ability = Ability.objects.create(
+                ability_type=ability_type,
+                score=form.cleaned_data[ability_type.get_name_display().lower()],
             )
             character.save()
-            character.ability_scores.add(ability_score)
+            character.abilities.add(ability)
 
     def _apply_racial_traits(self, character, racial_trait):
         character.adult_age = racial_trait.adult_age
@@ -66,13 +66,13 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
         )
         if ability_score_increases is not None:
             for i in ability_score_increases:
-                ability_score = character.ability_scores.get(ability=i.ability)
-                ability_score.score += i.increase
-                ability_score.save()
+                ability = character.abilities.get(ability_type=i.ability)
+                ability.score += i.increase
+                ability.save()
 
     def _compute_ability_modifiers(self, character):
-        for ability_score in character.ability_scores.all():
-            ability_score.modifier = compute_ability_modifier(ability_score.score)
+        for ability in character.abilities.all():
+            ability.modifier = compute_ability_modifier(ability.score)
 
     def _apply_class_advancement(self, character, level):
         class_advancement = ClassAdvancement.objects.get(
@@ -83,8 +83,8 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
     def _apply_class_features(self, character, class_feature):
         character.hit_dice = class_feature.hitpoints.hit_dice
         character.hp += class_feature.hitpoints.hp_first_level
-        constitution_modifier = character.ability_scores.get(
-            ability=AbilityType.Name.CONSTITUTION
+        constitution_modifier = character.abilities.get(
+            ability_type=AbilityType.Name.CONSTITUTION
         ).modifier
         character.hp += constitution_modifier
         character.max_hp = character.hp
