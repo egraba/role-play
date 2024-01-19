@@ -11,7 +11,7 @@ from character.models.races import Alignment, Language, Race, RacialTrait, Sense
 from utils.dice import Dice
 
 
-class Ability(models.Model):
+class AbilityType(models.Model):
     class Name(models.TextChoices):
         STRENGTH = "STR", "Strength"
         DEXTERITY = "DEX", "Dexterity"
@@ -23,22 +23,19 @@ class Ability(models.Model):
     name = models.CharField(max_length=3, primary_key=True, choices=Name)
     description = models.TextField(max_length=1000)
 
-    class Meta:
-        verbose_name_plural = "abilities"
-
     def __str__(self):
         return self.name
 
 
 class AbilityScore(models.Model):
-    ability = models.ForeignKey(Ability, on_delete=models.CASCADE)
+    ability = models.ForeignKey(AbilityType, on_delete=models.CASCADE)
     score = models.SmallIntegerField()
     modifier = models.SmallIntegerField(default=0)
 
 
 class AbilityScoreIncrease(models.Model):
     racial_trait = models.ForeignKey(RacialTrait, on_delete=models.CASCADE)
-    ability = models.ForeignKey(Ability, on_delete=models.CASCADE)
+    ability = models.ForeignKey(AbilityType, on_delete=models.CASCADE)
     increase = models.SmallIntegerField()
 
 
@@ -64,7 +61,7 @@ class Skill(models.Model):
         PERSUASION = "Persuasion"
 
     name = models.CharField(max_length=20, primary_key=True, choices=Name)
-    ability = models.ForeignKey(Ability, on_delete=models.CASCADE)
+    ability = models.ForeignKey(AbilityType, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name

@@ -4,7 +4,7 @@ from faker import Faker
 from pytest_django.asserts import assertContains, assertRedirects, assertTemplateUsed
 
 from character.forms.character import CharacterCreateForm
-from character.models.character import Ability, Character
+from character.models.character import AbilityType, Character
 from character.models.classes import Class
 from character.models.races import Language, Race, Sense
 from character.utils.abilities import AbilityScore
@@ -198,26 +198,28 @@ class TestCharacterCreateView:
         character = Character.objects.last()
         assertRedirects(response, reverse("skills-select", args=(character.id,)))
 
-        strength = character.ability_scores.get(ability=Ability.Name.STRENGTH).score
+        strength = character.ability_scores.get(ability=AbilityType.Name.STRENGTH).score
         assert strength == AbilityScore.SCORE_10
 
-        dexterity = character.ability_scores.get(ability=Ability.Name.DEXTERITY).score
+        dexterity = character.ability_scores.get(
+            ability=AbilityType.Name.DEXTERITY
+        ).score
         assert dexterity == AbilityScore.SCORE_12
 
         constitution = character.ability_scores.get(
-            ability=Ability.Name.CONSTITUTION
+            ability=AbilityType.Name.CONSTITUTION
         ).score
         assert constitution == AbilityScore.SCORE_13 + 2
 
         intelligence = character.ability_scores.get(
-            ability=Ability.Name.INTELLIGENCE
+            ability=AbilityType.Name.INTELLIGENCE
         ).score
         assert intelligence == AbilityScore.SCORE_14
 
-        wisdom = character.ability_scores.get(ability=Ability.Name.WISDOM).score
+        wisdom = character.ability_scores.get(ability=AbilityType.Name.WISDOM).score
         assert wisdom == AbilityScore.SCORE_15
 
-        charisma = character.ability_scores.get(ability=Ability.Name.CHARISMA).score
+        charisma = character.ability_scores.get(ability=AbilityType.Name.CHARISMA).score
         assert charisma == AbilityScore.SCORE_8
 
         assert character.speed == 25
@@ -271,26 +273,28 @@ class TestCharacterCreateView:
         character = Character.objects.last()
         assertRedirects(response, reverse("skills-select", args=(character.id,)))
 
-        strength = character.ability_scores.get(ability=Ability.Name.STRENGTH).score
+        strength = character.ability_scores.get(ability=AbilityType.Name.STRENGTH).score
         assert strength == AbilityScore.SCORE_10
 
-        dexterity = character.ability_scores.get(ability=Ability.Name.DEXTERITY).score
+        dexterity = character.ability_scores.get(
+            ability=AbilityType.Name.DEXTERITY
+        ).score
         assert dexterity == AbilityScore.SCORE_12 + 2
 
         constitution = character.ability_scores.get(
-            ability=Ability.Name.CONSTITUTION
+            ability=AbilityType.Name.CONSTITUTION
         ).score
         assert constitution == AbilityScore.SCORE_13
 
         intelligence = character.ability_scores.get(
-            ability=Ability.Name.INTELLIGENCE
+            ability=AbilityType.Name.INTELLIGENCE
         ).score
         assert intelligence == AbilityScore.SCORE_14
 
-        wisdom = character.ability_scores.get(ability=Ability.Name.WISDOM).score
+        wisdom = character.ability_scores.get(ability=AbilityType.Name.WISDOM).score
         assert wisdom == AbilityScore.SCORE_15
 
-        charisma = character.ability_scores.get(ability=Ability.Name.CHARISMA).score
+        charisma = character.ability_scores.get(ability=AbilityType.Name.CHARISMA).score
         assert charisma == AbilityScore.SCORE_8
 
         assert character.speed == 30
@@ -340,26 +344,28 @@ class TestCharacterCreateView:
         character = Character.objects.last()
         assertRedirects(response, reverse("skills-select", args=(character.id,)))
 
-        strength = character.ability_scores.get(ability=Ability.Name.STRENGTH).score
+        strength = character.ability_scores.get(ability=AbilityType.Name.STRENGTH).score
         assert strength == AbilityScore.SCORE_10
 
-        dexterity = character.ability_scores.get(ability=Ability.Name.DEXTERITY).score
+        dexterity = character.ability_scores.get(
+            ability=AbilityType.Name.DEXTERITY
+        ).score
         assert dexterity == AbilityScore.SCORE_12 + 2
 
         constitution = character.ability_scores.get(
-            ability=Ability.Name.CONSTITUTION
+            ability=AbilityType.Name.CONSTITUTION
         ).score
         assert constitution == AbilityScore.SCORE_13
 
         intelligence = character.ability_scores.get(
-            ability=Ability.Name.INTELLIGENCE
+            ability=AbilityType.Name.INTELLIGENCE
         ).score
         assert intelligence == AbilityScore.SCORE_14
 
-        wisdom = character.ability_scores.get(ability=Ability.Name.WISDOM).score
+        wisdom = character.ability_scores.get(ability=AbilityType.Name.WISDOM).score
         assert wisdom == AbilityScore.SCORE_15
 
-        charisma = character.ability_scores.get(ability=Ability.Name.CHARISMA).score
+        charisma = character.ability_scores.get(ability=AbilityType.Name.CHARISMA).score
         assert charisma == AbilityScore.SCORE_8
 
         assert character.speed == 25
@@ -409,26 +415,28 @@ class TestCharacterCreateView:
         character = Character.objects.last()
         assertRedirects(response, reverse("skills-select", args=(character.id,)))
 
-        strength = character.ability_scores.get(ability=Ability.Name.STRENGTH).score
+        strength = character.ability_scores.get(ability=AbilityType.Name.STRENGTH).score
         assert strength == AbilityScore.SCORE_10 + 1
 
-        dexterity = character.ability_scores.get(ability=Ability.Name.DEXTERITY).score
+        dexterity = character.ability_scores.get(
+            ability=AbilityType.Name.DEXTERITY
+        ).score
         assert dexterity == AbilityScore.SCORE_12 + 1
 
         constitution = character.ability_scores.get(
-            ability=Ability.Name.CONSTITUTION
+            ability=AbilityType.Name.CONSTITUTION
         ).score
         assert constitution == AbilityScore.SCORE_13 + 1
 
         intelligence = character.ability_scores.get(
-            ability=Ability.Name.INTELLIGENCE
+            ability=AbilityType.Name.INTELLIGENCE
         ).score
         assert intelligence == AbilityScore.SCORE_14 + 1
 
-        wisdom = character.ability_scores.get(ability=Ability.Name.WISDOM).score
+        wisdom = character.ability_scores.get(ability=AbilityType.Name.WISDOM).score
         assert wisdom == AbilityScore.SCORE_15 + 1
 
-        charisma = character.ability_scores.get(ability=Ability.Name.CHARISMA).score
+        charisma = character.ability_scores.get(ability=AbilityType.Name.CHARISMA).score
         assert charisma == AbilityScore.SCORE_8 + 1
 
         assert character.speed == 30
@@ -473,7 +481,7 @@ class TestCharacterCreateView:
         assert character.hit_dice == "1d8"
 
         constitution_modifier = character.ability_scores.get(
-            ability=Ability.Name.CONSTITUTION
+            ability=AbilityType.Name.CONSTITUTION
         ).modifier
         hp = 100 + 8 + constitution_modifier
         assert character.hp == hp
@@ -516,7 +524,7 @@ class TestCharacterCreateView:
         assert character.hit_dice == "1d10"
 
         constitution_modifier = character.ability_scores.get(
-            ability=Ability.Name.CONSTITUTION
+            ability=AbilityType.Name.CONSTITUTION
         ).modifier
         hp = 100 + 10 + constitution_modifier
         assert character.hp == hp
@@ -558,7 +566,7 @@ class TestCharacterCreateView:
         assert character.hit_dice == "1d8"
 
         constitution_modifier = character.ability_scores.get(
-            ability=Ability.Name.CONSTITUTION
+            ability=AbilityType.Name.CONSTITUTION
         ).modifier
         hp = 100 + 8 + constitution_modifier
         assert character.hp == hp
@@ -603,7 +611,7 @@ class TestCharacterCreateView:
         assert character.hit_dice == "1d6"
 
         constitution_modifier = character.ability_scores.get(
-            ability=Ability.Name.CONSTITUTION
+            ability=AbilityType.Name.CONSTITUTION
         ).modifier
         hp = 100 + 6 + constitution_modifier
         assert character.hp == hp

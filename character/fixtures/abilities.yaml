@@ -1,31 +1,31 @@
-- model: character.ability
+- model: character.abilitytype
   fields:
     name: STR
     description: |
       Strength measures bodily power, athletic training, and the extent to which you
       can exert raw physical force.
-- model: character.ability
+- model: character.abilitytype
   fields:
     name: DEX
     description: |
       Dexterity measures agility, reflexes, and balance.
-- model: character.ability
+- model: character.abilitytype
   fields:
     name: CON
     description: |
       Constitution measures health, stamina, and vital force.
-- model: character.ability
+- model: character.abilitytype
   fields:
     name: INT
     description: |
       Intelligence measures mental acuity, accuracy of recall, and the ability to reason.
-- model: character.ability
+- model: character.abilitytype
   fields:
     name: WIS
     description: |
       Wisdom reflects how attuned you are to the world around you and represents
       perceptiveness and intuition.
-- model: character.ability
+- model: character.abilitytype
   fields:
     name: CHA
     description: |

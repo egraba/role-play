@@ -4,9 +4,9 @@ from django.views.generic import CreateView, DetailView, ListView
 
 from character.forms.character import CharacterCreateForm
 from character.models.character import (
-    Ability,
     AbilityScore,
     AbilityScoreIncrease,
+    AbilityType,
     Character,
 )
 from character.models.classes import ClassAdvancement, ClassFeature, Proficiencies
@@ -41,7 +41,7 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
         return reverse("skills-select", args=(self.object.id,))
 
     def _initialize_ability_scores(self, character, form):
-        for ability in Ability.objects.all():
+        for ability in AbilityType.objects.all():
             ability_score = AbilityScore.objects.create(
                 ability=ability,
                 score=form.cleaned_data[ability.get_name_display().lower()],
@@ -84,7 +84,7 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
         character.hit_dice = class_feature.hitpoints.hit_dice
         character.hp += class_feature.hitpoints.hp_first_level
         constitution_modifier = character.ability_scores.get(
-            ability=Ability.Name.CONSTITUTION
+            ability=AbilityType.Name.CONSTITUTION
         ).modifier
         character.hp += constitution_modifier
         character.max_hp = character.hp
