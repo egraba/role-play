@@ -4,7 +4,8 @@ from faker import Faker
 from pytest_django.asserts import assertContains, assertRedirects, assertTemplateUsed
 
 from character.forms.character import CharacterCreateForm
-from character.models.character import AbilityType, Character
+from character.models.abilities import AbilityType
+from character.models.character import Character
 from character.models.classes import Class
 from character.models.races import Language, Race, Sense
 from character.utils.abilities import AbilityScore

@@ -3,12 +3,8 @@ from django.urls import reverse
 from django.views.generic import CreateView, DetailView, ListView
 
 from character.forms.character import CharacterCreateForm
-from character.models.character import (
-    Ability,
-    AbilityScoreIncrease,
-    AbilityType,
-    Character,
-)
+from character.models.abilities import Ability, AbilityScoreIncrease, AbilityType
+from character.models.character import Character
 from character.models.classes import ClassAdvancement, ClassFeature, Proficiencies
 from character.models.equipment import Equipment, Inventory
 from character.models.races import RacialTrait

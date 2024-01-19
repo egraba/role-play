@@ -7,70 +7,11 @@ from django.urls import reverse
 from character.models.advancement import Advancement
 from character.models.classes import Class, Proficiencies
 from character.models.equipment import Inventory
-from character.models.races import Alignment, Language, Race, RacialTrait, Sense, Size
+from character.models.races import Alignment, Language, Race, Sense, Size
 from utils.dice import Dice
 
-
-class AbilityType(models.Model):
-    class Name(models.TextChoices):
-        STRENGTH = "STR", "Strength"
-        DEXTERITY = "DEX", "Dexterity"
-        CONSTITUTION = "CON", "Constitution"
-        INTELLIGENCE = "INT", "Intelligence"
-        WISDOM = "WIS", "Wisdom"
-        CHARISMA = "CHA", "Charisma"
-
-    name = models.CharField(max_length=3, primary_key=True, choices=Name)
-    description = models.TextField(max_length=1000)
-
-    def __str__(self):
-        return self.name
-
-
-class Ability(models.Model):
-    ability_type = models.ForeignKey(AbilityType, on_delete=models.CASCADE)
-    score = models.SmallIntegerField()
-    modifier = models.SmallIntegerField(default=0)
-
-    class Meta:
-        verbose_name_plural = "abilities"
-
-    def __str__(self):
-        return self.ability_type
-
-
-class AbilityScoreIncrease(models.Model):
-    racial_trait = models.ForeignKey(RacialTrait, on_delete=models.CASCADE)
-    ability = models.ForeignKey(AbilityType, on_delete=models.CASCADE)
-    increase = models.SmallIntegerField()
-
-
-class Skill(models.Model):
-    class Name(models.TextChoices):
-        ATHLETICS = "Athletics"
-        ACROBATICS = "Acrobatics"
-        SLEIGHT_OF_HAND = "Sleight of Hand"
-        STEALTH = "Stealth"
-        ARCANA = "Arcana"
-        HISTORY = "History"
-        INVESTIGATION = "Investigation"
-        NATURE = "Nature"
-        RELIGION = "Religion"
-        ANIMAL_HANDLING = "Animal Handling"
-        INSIGHT = "Insight"
-        MEDICINE = "Medicine"
-        PERCEPTION = "Perception"
-        SURVIVAL = "Survival"
-        DECEPTION = "Deception"
-        INTIMIDATION = "Intimidation"
-        PERFORMANCE = "Performance"
-        PERSUASION = "Persuasion"
-
-    name = models.CharField(max_length=20, primary_key=True, choices=Name)
-    ability = models.ForeignKey(AbilityType, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.name
+from .abilities import Ability
+from .skills import Skill
 
 
 class Character(models.Model):
