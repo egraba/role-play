@@ -41,36 +41,13 @@
                 <td id="abilities">
                     <table class="rpgui-container framed-golden">
                         <tr><th colspan="3"><h3>Abilities</h3></th></tr>
-                        <tr>
-                            <th><p>STR:</p></th>
-                            <td><p>{{ character.strength }}</p></td>
-                            <td><p>({{ character.strength_modifier }})</p></td>
-                        </tr>
-                        <tr>
-                            <th><p>DEX:</p></th>
-                            <td><p>{{ character.dexterity }}</p></td>
-                            <td><p>({{ character.dexterity_modifier }})</p></td>
-                        </tr>
-                        <tr>
-                            <th><p>CON:</p></th>
-                            <td><p>{{ character.constitution }}</p></td>
-                            <td><p>({{ character.constitution_modifier }})</p></td>
-                        </tr>
-                        <tr>
-                            <th><p>INT:</p></th>
-                            <td><p>{{ character.intelligence }}</p></td>
-                            <td><p>({{ character.intelligence_modifier }})</p></td>
-                        </tr>
-                        <tr>
-                            <th><p>WIS:</p></th>
-                            <td><p>{{ character.wisdom }}</p></td>
-                            <td><p>({{ character.wisdom_modifier }})</p></td>
-                        </tr>
-                        <tr>
-                            <th><p>CHA:</p></th>
-                            <td><p>{{ character.charisma }}</p></td>
-                            <td><p>({{ character.charisma_modifier }})</p></td>
-                        </tr>
+                        {% for ability in abilities %}
+                            <tr>
+                                <th><p>{{ ability }}:</p></th>
+                                <td><p>{{ ability.score }}</p></td>
+                                <td><p>({{ ability.modifier }})</p></td>
+                            </tr>
+                        {% endfor %}
                     </table>
                 </td>
                 <td id="other-abilities">
