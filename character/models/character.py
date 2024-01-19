@@ -21,6 +21,7 @@ class Ability(models.Model):
         CHARISMA = "CHA", "Charisma"
 
     name = models.CharField(max_length=3, primary_key=True, choices=Name)
+    description = models.TextField(max_length=1000)
 
     class Meta:
         verbose_name_plural = "abilities"

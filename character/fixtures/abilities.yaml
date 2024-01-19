@@ -1,18 +1,34 @@
 - model: character.ability
   fields:
     name: STR
+    description: |
+      Strength measures bodily power, athletic training, and the extent to which you
+      can exert raw physical force.
 - model: character.ability
   fields:
     name: DEX
+    description: |
+      Dexterity measures agility, reflexes, and balance.
 - model: character.ability
   fields:
     name: CON
+    description: |
+      Constitution measures health, stamina, and vital force.
 - model: character.ability
   fields:
     name: INT
+    description: |
+      Intelligence measures mental acuity, accuracy of recall, and the ability to reason.
 - model: character.ability
   fields:
     name: WIS
+    description: |
+      Wisdom reflects how attuned you are to the world around you and represents
+      perceptiveness and intuition.
 - model: character.ability
   fields:
     name: CHA
+    description: |
+      Charisma measures your ability to interact effectively with others. It includes
+      such factors as confidence and eloquence, and it can represent a charming or
+      command- ing personality.
