@@ -25,6 +25,9 @@ class Ability(models.Model):
     class Meta:
         verbose_name_plural = "abilities"
 
+    def __str__(self):
+        return self.name
+
 
 class AbilityScore(models.Model):
     ability = models.ForeignKey(Ability, on_delete=models.CASCADE)
