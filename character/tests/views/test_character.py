@@ -4,7 +4,7 @@ from faker import Faker
 from pytest_django.asserts import assertContains, assertRedirects, assertTemplateUsed
 
 from character.forms.character import CharacterCreateForm
-from character.models.character import Character
+from character.models.character import Ability, Character
 from character.models.classes import Class
 from character.models.races import Language, Race, Sense
 from character.utils.abilities import AbilityScore
@@ -198,12 +198,27 @@ class TestCharacterCreateView:
         character = Character.objects.last()
         assertRedirects(response, reverse("skills-select", args=(character.id,)))
 
-        assert character.strength == AbilityScore.SCORE_10
-        assert character.dexterity == AbilityScore.SCORE_12
-        assert character.constitution == AbilityScore.SCORE_13 + 2
-        assert character.intelligence == AbilityScore.SCORE_14
-        assert character.wisdom == AbilityScore.SCORE_15
-        assert character.charisma == AbilityScore.SCORE_8
+        strength = character.ability_scores.get(ability=Ability.Name.STRENGTH).score
+        assert strength == AbilityScore.SCORE_10
+
+        dexterity = character.ability_scores.get(ability=Ability.Name.DEXTERITY).score
+        assert dexterity == AbilityScore.SCORE_12
+
+        constitution = character.ability_scores.get(
+            ability=Ability.Name.CONSTITUTION
+        ).score
+        assert constitution == AbilityScore.SCORE_13 + 2
+
+        intelligence = character.ability_scores.get(
+            ability=Ability.Name.INTELLIGENCE
+        ).score
+        assert intelligence == AbilityScore.SCORE_14
+
+        wisdom = character.ability_scores.get(ability=Ability.Name.WISDOM).score
+        assert wisdom == AbilityScore.SCORE_15
+
+        charisma = character.ability_scores.get(ability=Ability.Name.CHARISMA).score
+        assert charisma == AbilityScore.SCORE_8
 
         assert character.speed == 25
 
@@ -256,12 +271,27 @@ class TestCharacterCreateView:
         character = Character.objects.last()
         assertRedirects(response, reverse("skills-select", args=(character.id,)))
 
-        assert character.strength == AbilityScore.SCORE_10
-        assert character.dexterity == AbilityScore.SCORE_12 + 2
-        assert character.constitution == AbilityScore.SCORE_13
-        assert character.intelligence == AbilityScore.SCORE_14
-        assert character.wisdom == AbilityScore.SCORE_15
-        assert character.charisma == AbilityScore.SCORE_8
+        strength = character.ability_scores.get(ability=Ability.Name.STRENGTH).score
+        assert strength == AbilityScore.SCORE_10
+
+        dexterity = character.ability_scores.get(ability=Ability.Name.DEXTERITY).score
+        assert dexterity == AbilityScore.SCORE_12 + 2
+
+        constitution = character.ability_scores.get(
+            ability=Ability.Name.CONSTITUTION
+        ).score
+        assert constitution == AbilityScore.SCORE_13
+
+        intelligence = character.ability_scores.get(
+            ability=Ability.Name.INTELLIGENCE
+        ).score
+        assert intelligence == AbilityScore.SCORE_14
+
+        wisdom = character.ability_scores.get(ability=Ability.Name.WISDOM).score
+        assert wisdom == AbilityScore.SCORE_15
+
+        charisma = character.ability_scores.get(ability=Ability.Name.CHARISMA).score
+        assert charisma == AbilityScore.SCORE_8
 
         assert character.speed == 30
 
@@ -310,12 +340,27 @@ class TestCharacterCreateView:
         character = Character.objects.last()
         assertRedirects(response, reverse("skills-select", args=(character.id,)))
 
-        assert character.strength == AbilityScore.SCORE_10
-        assert character.dexterity == AbilityScore.SCORE_12 + 2
-        assert character.constitution == AbilityScore.SCORE_13
-        assert character.intelligence == AbilityScore.SCORE_14
-        assert character.wisdom == AbilityScore.SCORE_15
-        assert character.charisma, AbilityScore.SCORE_8
+        strength = character.ability_scores.get(ability=Ability.Name.STRENGTH).score
+        assert strength == AbilityScore.SCORE_10
+
+        dexterity = character.ability_scores.get(ability=Ability.Name.DEXTERITY).score
+        assert dexterity == AbilityScore.SCORE_12 + 2
+
+        constitution = character.ability_scores.get(
+            ability=Ability.Name.CONSTITUTION
+        ).score
+        assert constitution == AbilityScore.SCORE_13
+
+        intelligence = character.ability_scores.get(
+            ability=Ability.Name.INTELLIGENCE
+        ).score
+        assert intelligence == AbilityScore.SCORE_14
+
+        wisdom = character.ability_scores.get(ability=Ability.Name.WISDOM).score
+        assert wisdom == AbilityScore.SCORE_15
+
+        charisma = character.ability_scores.get(ability=Ability.Name.CHARISMA).score
+        assert charisma == AbilityScore.SCORE_8
 
         assert character.speed == 25
 
@@ -364,12 +409,27 @@ class TestCharacterCreateView:
         character = Character.objects.last()
         assertRedirects(response, reverse("skills-select", args=(character.id,)))
 
-        assert character.strength == AbilityScore.SCORE_10 + 1
-        assert character.dexterity == AbilityScore.SCORE_12 + 1
-        assert character.constitution == AbilityScore.SCORE_13 + 1
-        assert character.intelligence == AbilityScore.SCORE_14 + 1
-        assert character.wisdom == AbilityScore.SCORE_15 + 1
-        assert character.charisma == AbilityScore.SCORE_8 + 1
+        strength = character.ability_scores.get(ability=Ability.Name.STRENGTH).score
+        assert strength == AbilityScore.SCORE_10 + 1
+
+        dexterity = character.ability_scores.get(ability=Ability.Name.DEXTERITY).score
+        assert dexterity == AbilityScore.SCORE_12 + 1
+
+        constitution = character.ability_scores.get(
+            ability=Ability.Name.CONSTITUTION
+        ).score
+        assert constitution == AbilityScore.SCORE_13 + 1
+
+        intelligence = character.ability_scores.get(
+            ability=Ability.Name.INTELLIGENCE
+        ).score
+        assert intelligence == AbilityScore.SCORE_14 + 1
+
+        wisdom = character.ability_scores.get(ability=Ability.Name.WISDOM).score
+        assert wisdom == AbilityScore.SCORE_15 + 1
+
+        charisma = character.ability_scores.get(ability=Ability.Name.CHARISMA).score
+        assert charisma == AbilityScore.SCORE_8 + 1
 
         assert character.speed == 30
 
@@ -412,7 +472,10 @@ class TestCharacterCreateView:
 
         assert character.hit_dice == "1d8"
 
-        hp = 100 + 8 + character.constitution_modifier
+        constitution_modifier = character.ability_scores.get(
+            ability=Ability.Name.CONSTITUTION
+        ).modifier
+        hp = 100 + 8 + constitution_modifier
         assert character.hp == hp
 
         assert character.proficiencies.armor == "Light armor, medium armor, shields"
@@ -452,7 +515,10 @@ class TestCharacterCreateView:
 
         assert character.hit_dice == "1d10"
 
-        hp = 100 + 10 + character.constitution_modifier
+        constitution_modifier = character.ability_scores.get(
+            ability=Ability.Name.CONSTITUTION
+        ).modifier
+        hp = 100 + 10 + constitution_modifier
         assert character.hp == hp
 
         assert character.proficiencies.armor == "All armor, shields"
@@ -491,7 +557,10 @@ class TestCharacterCreateView:
 
         assert character.hit_dice == "1d8"
 
-        hp = 100 + 8 + character.constitution_modifier
+        constitution_modifier = character.ability_scores.get(
+            ability=Ability.Name.CONSTITUTION
+        ).modifier
+        hp = 100 + 8 + constitution_modifier
         assert character.hp == hp
 
         assert character.proficiencies.armor == "Light armor"
@@ -533,7 +602,10 @@ class TestCharacterCreateView:
 
         assert character.hit_dice == "1d6"
 
-        hp = 100 + 6 + character.constitution_modifier
+        constitution_modifier = character.ability_scores.get(
+            ability=Ability.Name.CONSTITUTION
+        ).modifier
+        hp = 100 + 6 + constitution_modifier
         assert character.hp == hp
 
         assert character.proficiencies.armor == "None"

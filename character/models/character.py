@@ -29,7 +29,7 @@ class Ability(models.Model):
 class AbilityScore(models.Model):
     ability = models.ForeignKey(Ability, on_delete=models.CASCADE)
     score = models.SmallIntegerField()
-    modifier = models.SmallIntegerField()
+    modifier = models.SmallIntegerField(default=0)
 
 
 class Skill(models.Model):
@@ -78,18 +78,7 @@ class Character(models.Model):
     max_hp = models.SmallIntegerField(default=100)
     proficiency_bonus = models.SmallIntegerField(default=2)
     skills = models.ManyToManyField(Skill)
-    strength = models.SmallIntegerField(default=0)
-    dexterity = models.SmallIntegerField(default=0)
-    constitution = models.SmallIntegerField(default=0)
-    intelligence = models.SmallIntegerField(default=0)
-    wisdom = models.SmallIntegerField(default=0)
-    charisma = models.SmallIntegerField(default=0)
-    strength_modifier = models.SmallIntegerField(default=0)
-    dexterity_modifier = models.SmallIntegerField(default=0)
-    constitution_modifier = models.SmallIntegerField(default=0)
-    intelligence_modifier = models.SmallIntegerField(default=0)
-    wisdom_modifier = models.SmallIntegerField(default=0)
-    charisma_modifier = models.SmallIntegerField(default=0)
+    ability_scores = models.ManyToManyField(AbilityScore)
     gender = models.CharField(max_length=1, choices=Gender.choices, default=Gender.MALE)
     ac = models.SmallIntegerField(default=0)
     adult_age = models.SmallIntegerField(null=True, blank=True)
