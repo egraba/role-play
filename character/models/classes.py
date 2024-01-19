@@ -1,6 +1,6 @@
 from django.db import models
 
-from character.models import equipment
+from .equipment import Equipment
 
 
 class Class(models.TextChoices):
@@ -12,7 +12,7 @@ class Class(models.TextChoices):
 
 class ClassFeature(models.Model):
     class_name = models.CharField(max_length=1, choices=Class.choices, unique=True)
-    equipment = models.ManyToManyField(equipment.Equipment)
+    equipment = models.ManyToManyField(Equipment)
 
     def __str__(self):
         return f"{self.get_class_name_display()}'s feature"

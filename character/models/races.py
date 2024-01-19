@@ -55,17 +55,3 @@ class RacialTrait(models.Model):
 
     def __str__(self):
         return f"{self.get_race_display()} racial trait"
-
-
-class AbilityScoreIncrease(models.Model):
-    class Ability(models.TextChoices):
-        STRENGTH = "strength"
-        DEXTERITY = "dexterity"
-        CONSTITUTION = "constitution"
-        INTELLIGENCE = "intelligence"
-        WISDOM = "wisdom"
-        CHARISMA = "charisma"
-
-    racial_trait = models.ForeignKey(RacialTrait, on_delete=models.CASCADE)
-    ability = models.CharField(max_length=20, choices=Ability.choices)
-    increase = models.SmallIntegerField()

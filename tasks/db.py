@@ -13,9 +13,9 @@ def load_settings(context):
     patterns = [
         "senses",
         "advancement",
+        "abilities",
         "races",
         "classes",
-        "abilities",
         "skills",
         "equipment",
     ]

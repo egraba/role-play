@@ -19,12 +19,6 @@ class TestCharacterModel:
         assert self.character.xp == 0
         assert self.character.hp == 100
         assert self.character.proficiency_bonus == 2
-        assert self.character.strength == 0
-        assert self.character.dexterity == 0
-        assert self.character.constitution == 0
-        assert self.character.intelligence == 0
-        assert self.character.wisdom == 0
-        assert self.character.charisma == 0
         assert self.character.gender == Character.Gender.MALE
         assert self.character.ac == 0
 

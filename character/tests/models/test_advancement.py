@@ -11,7 +11,7 @@ class TestAdvancementModel:
         self.advancement = Advancement.objects.last()
 
     def test_creation(self):
-        isinstance(self.advancement, Advancement)
+        assert isinstance(self.advancement, Advancement)
 
     def test_str(self):
         assert str(self.advancement) == str(self.advancement.level)

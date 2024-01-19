@@ -6,6 +6,7 @@
 * DnD: implement skills selection at character creation
 
 ### Changed
+* Refactor abilities-related models
 * Rename equipment-related modules
 * Arrange character detail page
 

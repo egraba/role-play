@@ -3,10 +3,11 @@ from django.urls import reverse
 from django.views.generic import CreateView, DetailView, ListView
 
 from character.forms.character import CharacterCreateForm
+from character.models.abilities import Ability, AbilityScoreIncrease, AbilityType
 from character.models.character import Character
 from character.models.classes import ClassAdvancement, ClassFeature, Proficiencies
 from character.models.equipment import Equipment, Inventory
-from character.models.races import AbilityScoreIncrease, RacialTrait
+from character.models.races import RacialTrait
 from character.utils.abilities import compute_ability_modifier
 
 
@@ -17,6 +18,7 @@ class CharacterDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["inventory"] = Equipment.objects.filter(inventory=self.object.inventory)
+        context["abilities"] = self.object.abilities.all()
         return context
 
 
@@ -35,6 +37,15 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse("skills-select", args=(self.object.id,))
 
+    def _initialize_ability_scores(self, character, form):
+        for ability_type in AbilityType.objects.all():
+            ability = Ability.objects.create(
+                ability_type=ability_type,
+                score=form.cleaned_data[ability_type.get_name_display().lower()],
+            )
+            character.save()
+            character.abilities.add(ability)
+
     def _apply_racial_traits(self, character, racial_trait):
         character.adult_age = racial_trait.adult_age
         character.life_expectancy = racial_trait.life_expectancy
@@ -51,23 +62,14 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
             racial_trait__race=racial_trait.race
         )
         if ability_score_increases is not None:
-            for asi in ability_score_increases:
-                if hasattr(character, asi.ability):
-                    old_value = getattr(character, asi.ability)
-                    new_value = old_value + asi.increase
-                    setattr(character, asi.ability, new_value)
+            for i in ability_score_increases:
+                ability = character.abilities.get(ability_type=i.ability_type)
+                ability.score += i.increase
+                ability.save()
 
     def _compute_ability_modifiers(self, character):
-        character.strength_modifier = compute_ability_modifier(character.strength)
-        character.dexterity_modifier = compute_ability_modifier(character.dexterity)
-        character.constitution_modifier = compute_ability_modifier(
-            character.constitution
-        )
-        character.intelligence_modifier = compute_ability_modifier(
-            character.intelligence
-        )
-        character.wisdom_modifier = compute_ability_modifier(character.wisdom)
-        character.charisma_modifier = compute_ability_modifier(character.charisma)
+        for ability in character.abilities.all():
+            ability.modifier = compute_ability_modifier(ability.score)
 
     def _apply_class_advancement(self, character, level):
         class_advancement = ClassAdvancement.objects.get(
@@ -78,7 +80,10 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
     def _apply_class_features(self, character, class_feature):
         character.hit_dice = class_feature.hitpoints.hit_dice
         character.hp += class_feature.hitpoints.hp_first_level
-        character.hp += character.constitution_modifier
+        constitution_modifier = character.abilities.get(
+            ability_type=AbilityType.Name.CONSTITUTION
+        ).modifier
+        character.hp += constitution_modifier
         character.max_hp = character.hp
         character.hp_increase = class_feature.hitpoints.hp_higher_levels
         proficiencies = Proficiencies.objects.get(class_feature=class_feature)
@@ -88,6 +93,7 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         character = form.save(commit=False)
         character.user = self.request.user
+        self._initialize_ability_scores(character, form)
 
         # Racial traits
         racial_trait = RacialTrait.objects.get(race=character.race)

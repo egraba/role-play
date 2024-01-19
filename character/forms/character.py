@@ -11,12 +11,6 @@ class CharacterCreateForm(forms.ModelForm):
             "name",
             "race",
             "class_name",
-            "strength",
-            "dexterity",
-            "constitution",
-            "intelligence",
-            "wisdom",
-            "charisma",
         ]
         widgets = {
             "race": forms.Select(attrs={"class": "rpgui-dropdown"}),
