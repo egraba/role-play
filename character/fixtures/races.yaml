@@ -12,7 +12,7 @@
   pk: 1
   fields:
     racial_trait: 1
-    ability: constitution
+    ability: CON
     increase: 2
 # Elf
 - model: character.racialtrait
@@ -28,7 +28,7 @@
   pk: 2
   fields:
     racial_trait: 2
-    ability: dexterity
+    ability: DEX
     increase: 2
 # Halfling
 - model: character.racialtrait
@@ -44,7 +44,7 @@
   pk: 3
   fields:
     racial_trait: 3
-    ability: dexterity
+    ability: DEX
     increase: 2
 # Human
 - model: character.racialtrait
@@ -60,37 +60,37 @@
   pk: 4
   fields:
     racial_trait: 4
-    ability: strength
+    ability: STR
     increase: 1
 - model: character.abilityscoreincrease
   pk: 5
   fields:
     racial_trait: 4
-    ability: dexterity
+    ability: DEX
     increase: 1
 - model: character.abilityscoreincrease
   pk: 6
   fields:
     racial_trait: 4
-    ability: constitution
+    ability: CON
     increase: 1
 - model: character.abilityscoreincrease
   pk: 7
   fields:
     racial_trait: 4
-    ability: intelligence
+    ability: INT
     increase: 1
 - model: character.abilityscoreincrease
   pk: 8
   fields:
     racial_trait: 4
-    ability: wisdom
+    ability: WIS
     increase: 1
 - model: character.abilityscoreincrease
   pk: 9
   fields:
     racial_trait: 4
-    ability: charisma
+    ability: CHA
     increase: 1
 
 # Common

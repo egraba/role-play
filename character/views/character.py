@@ -3,10 +3,15 @@ from django.urls import reverse
 from django.views.generic import CreateView, DetailView, ListView
 
 from character.forms.character import CharacterCreateForm
-from character.models.character import Ability, AbilityScore, Character
+from character.models.character import (
+    Ability,
+    AbilityScore,
+    AbilityScoreIncrease,
+    Character,
+)
 from character.models.classes import ClassAdvancement, ClassFeature, Proficiencies
 from character.models.equipment import Equipment, Inventory
-from character.models.races import AbilityScoreIncrease, RacialTrait
+from character.models.races import RacialTrait
 from character.utils.abilities import compute_ability_modifier
 
 
@@ -60,11 +65,10 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
             racial_trait__race=racial_trait.race
         )
         if ability_score_increases is not None:
-            for asi in ability_score_increases:
-                if hasattr(character, asi.ability):
-                    old_value = getattr(character, asi.ability)
-                    new_value = old_value + asi.increase
-                    setattr(character, asi.ability, new_value)
+            for i in ability_score_increases:
+                ability_score = character.ability_scores.get(ability=i.ability)
+                ability_score.score += i.increase
+                ability_score.save()
 
     def _compute_ability_modifiers(self, character):
         for ability_score in character.ability_scores.all():
