@@ -25,7 +25,7 @@ class Skill(models.Model):
         PERSUASION = "Persuasion"
 
     name = models.CharField(max_length=20, primary_key=True, choices=Name)
-    ability = models.ForeignKey(AbilityType, on_delete=models.CASCADE)
+    ability_type = models.ForeignKey(AbilityType, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name

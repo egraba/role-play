@@ -1,72 +1,72 @@
 - model: character.skill
   fields:
     name: Athletics
-    ability: STR
+    ability_type: STR
 - model: character.skill
   fields:
     name: Acrobatics
-    ability: DEX
+    ability_type: DEX
 - model: character.skill
   fields:
     name: Sleight of Hand
-    ability: DEX
+    ability_type: DEX
 - model: character.skill
   fields:
     name: Stealth
-    ability: DEX
+    ability_type: DEX
 - model: character.skill
   fields:
     name: Arcana
-    ability: INT
+    ability_type: INT
 - model: character.skill
   fields:
     name: History
-    ability: INT
+    ability_type: INT
 - model: character.skill
   fields:
     name: Investigation
-    ability: INT
+    ability_type: INT
 - model: character.skill
   fields:
     name: Nature
-    ability: INT
+    ability_type: INT
 - model: character.skill
   fields:
     name: Religion
-    ability: INT
+    ability_type: INT
 - model: character.skill
   fields:
     name: Animal Handling
-    ability: WIS
+    ability_type: WIS
 - model: character.skill
   fields:
     name: Insight
-    ability: WIS
+    ability_type: WIS
 - model: character.skill
   fields:
     name: Medicine
-    ability: WIS
+    ability_type: WIS
 - model: character.skill
   fields:
     name: Perception
-    ability: WIS
+    ability_type: WIS
 - model: character.skill
   fields:
     name: Survival
-    ability: WIS
+    ability_type: WIS
 - model: character.skill
   fields:
     name: Deception
-    ability: CHA
+    ability_type: CHA
 - model: character.skill
   fields:
     name: Intimidation
-    ability: CHA
+    ability_type: CHA
 - model: character.skill
   fields:
     name: Performance
-    ability: CHA
+    ability_type: CHA
 - model: character.skill
   fields:
     name: Persuasion
-    ability: CHA
+    ability_type: CHA
