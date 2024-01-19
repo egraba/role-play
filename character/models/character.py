@@ -4,13 +4,13 @@ from django.db import models
 from django.db.models.functions import Upper
 from django.urls import reverse
 
-from character.models.advancement import Advancement
-from character.models.classes import Class, Proficiencies
-from character.models.equipment import Inventory
-from character.models.races import Alignment, Language, Race, Sense, Size
 from utils.dice import Dice
 
 from .abilities import Ability
+from .advancement import Advancement
+from .classes import Class, Proficiencies
+from .equipment import Inventory
+from .races import Alignment, Language, Race, Sense, Size
 from .skills import Skill
 
 
