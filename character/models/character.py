@@ -68,8 +68,8 @@ class Character(models.Model):
         next_level = self.level + 1
         advancement = cache.get(f"advancement_{next_level}")
         if not advancement:
-            cache.set(f"advancement_{next_level}", advancement)
             advancement = Advancement.objects.get(level=next_level)
+            cache.set(f"advancement_{next_level}", advancement)
         if self.xp >= advancement.xp:
             return True
         return False
