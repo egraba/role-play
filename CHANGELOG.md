@@ -11,6 +11,9 @@
 * Rename equipment-related modules
 * Arrange character detail page
 
+### Fixed
+* Cache is now properly set for character advancement
+
 ## v0.4.0 - 2024-01-10
 
 ### Added
