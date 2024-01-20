@@ -107,3 +107,7 @@ ul.errorlist {
 #main {
     border-spacing: 2em;
 }
+
+th.description {
+    width: 20%
+}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="rpgui-container framed">
+        <h1 class="title">Glossary</h1>
+        <div class="rpgui-center">
+            <a href={% url 'index' %}>- Return to main menu -</a>
+        </div>
+
+        <hr class="golden"/>
+        <br />
+
+        <div class="rpgui-container framed-golden">
+            <h1>Abilities</h1>
+            <table>
+                {% for ability_type in ability_types %}
+                    <tr>
+                        <th class="description"><p>{{ ability_type.get_name_display }}</p></th>
+                        <td><p>{{ ability_type.description }}</p></td>
+                    </tr>
+                {% endfor %}
+            </table>
+
+            <hr />
+
+            <h1>Skills</h1>
+            <table>
+                {% for skill in skills %}
+                    <tr>
+                        <th class="description"><p>{{ skill.get_name_display }}</p></th>
+                        <td><p>{{ skill.description }}</p></td>
+                    </tr>
+                {% endfor %}
+            </table>
+
+        </div>
+
+    </div>
+{% endblock %}
