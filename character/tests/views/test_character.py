@@ -22,25 +22,20 @@ from ..factories import CharacterFactory
 
 @pytest.mark.django_db
 class TestCharacterDetailView:
-    @pytest.fixture(autouse=True)
-    def setup(self, client):
-        self.character = CharacterFactory(name="character")
-        client.force_login(self.character.user)
-
-    def test_view_mapping(self, client):
-        response = client.get(self.character.get_absolute_url())
+    def test_view_mapping(self, client, character):
+        response = client.get(character.get_absolute_url())
         assert response.status_code == 200
         assert response.resolver_match.func.view_class == CharacterDetailView
 
-    def test_template_mapping(self, client):
-        response = client.get(self.character.get_absolute_url())
+    def test_template_mapping(self, client, character):
+        response = client.get(character.get_absolute_url())
         assert response.status_code == 200
         assertTemplateUsed(response, "character/character.html")
 
-    def test_content_character_is_in_game(self, client):
+    def test_content_character_is_in_game(self, client, character):
         game = GameFactory()
-        PlayerFactory(game=game, character=self.character)
-        response = client.get(self.character.get_absolute_url())
+        PlayerFactory(game=game, character=character)
+        response = client.get(character.get_absolute_url())
         assert response.status_code == 200
         assertContains(response, game.name)
 
@@ -57,35 +52,30 @@ def create_characters(django_db_blocker):
 class TestCharacterListView:
     path_name = "character-list"
 
-    @pytest.fixture()
-    def setup(self, client):
-        user = UserFactory(username="user")
-        client.force_login(user)
-
     def test_view_mapping(self, client, character):
         response = client.get(reverse(self.path_name))
         assert response.status_code == 200
         assert response.resolver_match.func.view_class == CharacterListView
 
-    def test_template_mapping(self, client, setup):
+    def test_template_mapping(self, client, character):
         response = client.get(reverse(self.path_name))
         assertTemplateUsed(response, "character/character_list.html")
 
-    def test_pagination_size(self, client, setup, create_characters):
+    def test_pagination_size(self, client, character, create_characters):
         response = client.get(reverse(self.path_name))
         assert response.status_code == 200
         assert "is_paginated" in response.context
         assert response.context["is_paginated"]
         assert len(response.context["character_list"]) == 20
 
-    def test_pagination_size_next_page(self, client, setup, create_characters):
+    def test_pagination_size_next_page(self, client, character, create_characters):
         response = client.get(reverse(self.path_name) + "?page=2")
         assert response.status_code == 200
         assert "is_paginated" in response.context
         assert response.context["is_paginated"]
-        assert len(response.context["character_list"]) == 2
+        assert len(response.context["character_list"]) == 3
 
-    def test_ordering(self, client, setup, create_characters):
+    def test_ordering(self, client, character, create_characters):
         response = client.get(reverse(self.path_name))
         assert response.status_code == 200
         xp = 0
@@ -100,12 +90,12 @@ class TestCharacterListView:
     def delete_characters(self):
         Character.objects.all().delete()
 
-    def test_content_no_existing_character(self, client, setup, delete_characters):
+    def test_content_no_existing_character(self, client, character, delete_characters):
         response = client.get(reverse(self.path_name))
         assert response.status_code == 200
         assertContains(response, "There is no character available...")
 
-    def test_content_character_is_in_game(self, client, setup, delete_characters):
+    def test_content_character_is_in_game(self, client, character, delete_characters):
         # The idea is to have only one character. Assign them to a game, and check that
         # game name is part of the page content.
         game = GameFactory()
@@ -120,8 +110,8 @@ class TestCharacterCreateView:
     path_name = "character-create"
 
     @pytest.fixture(autouse=True)
-    def setup(self, client):
-        user = UserFactory(username="user")
+    def user_with_no_character(self, client):
+        user = UserFactory(username="user-with-no-character")
         client.force_login(user)
 
     def test_view_mapping(self, client):

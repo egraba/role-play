@@ -7,6 +7,7 @@
 * Glossary page
 
 ### Changed
+* Refactor character-related views tests
 * Refactor abilities-related models
 * Rename equipment-related modules
 * Arrange character detail page
