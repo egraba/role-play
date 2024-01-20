@@ -110,8 +110,8 @@ class TestCharacterCreateView:
     path_name = "character-create"
 
     @pytest.fixture(autouse=True)
-    def setup(self, client):
-        user = UserFactory(username="user")
+    def user_with_no_character(self, client):
+        user = UserFactory(username="user-with-no-character")
         client.force_login(user)
 
     def test_view_mapping(self, client):
