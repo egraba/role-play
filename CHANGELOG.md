@@ -4,6 +4,7 @@
 
 ### Added
 * DnD: implement skills selection at character creation
+* Glossary page
 
 ### Changed
 * Refactor abilities-related models
