@@ -22,25 +22,20 @@ from ..factories import CharacterFactory
 
 @pytest.mark.django_db
 class TestCharacterDetailView:
-    @pytest.fixture(autouse=True)
-    def setup(self, client):
-        self.character = CharacterFactory(name="character")
-        client.force_login(self.character.user)
-
-    def test_view_mapping(self, client):
-        response = client.get(self.character.get_absolute_url())
+    def test_view_mapping(self, client, character):
+        response = client.get(character.get_absolute_url())
         assert response.status_code == 200
         assert response.resolver_match.func.view_class == CharacterDetailView
 
-    def test_template_mapping(self, client):
-        response = client.get(self.character.get_absolute_url())
+    def test_template_mapping(self, client, character):
+        response = client.get(character.get_absolute_url())
         assert response.status_code == 200
         assertTemplateUsed(response, "character/character.html")
 
-    def test_content_character_is_in_game(self, client):
+    def test_content_character_is_in_game(self, client, character):
         game = GameFactory()
-        PlayerFactory(game=game, character=self.character)
-        response = client.get(self.character.get_absolute_url())
+        PlayerFactory(game=game, character=character)
+        response = client.get(character.get_absolute_url())
         assert response.status_code == 200
         assertContains(response, game.name)
 
