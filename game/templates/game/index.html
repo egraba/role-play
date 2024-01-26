@@ -7,7 +7,10 @@
         <div class="rpgui-center">
             {% if user.is_authenticated %}
                 <p>Welcome {{ user.username }}.</p>
-                <a href="{% url 'logout' %}"><button class="rpgui-button"><p>Log out</p></button></a>
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button button class="rpgui-button" type="submit"><p>Log out</p></button>
+                </form>
             {% else %}
                 <p>Please log in or register, if you want to play.</p>
                 <a href="{% url 'login' %}"><button class="rpgui-button"><p>Log in</p></button></a>
