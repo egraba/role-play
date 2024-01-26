@@ -1,6 +1,13 @@
 from django import forms
 
-from game.models.events import Choice, Damage, DiceLaunch, Healing, XpIncrease
+from game.models.events import (
+    AbilityCheckRequest,
+    Choice,
+    Damage,
+    DiceLaunch,
+    Healing,
+    XpIncrease,
+)
 
 
 class QuestCreateForm(forms.Form):
@@ -57,4 +64,15 @@ class ChoiceForm(forms.ModelForm):
         fields = ["selection"]
         widgets = {
             "selection": forms.Textarea,
+        }
+
+
+class AbilityCheckRequestForm(forms.ModelForm):
+    class Meta:
+        model = AbilityCheckRequest
+        fields = ["character", "ability_type", "difficulty_class"]
+        widgets = {
+            "character": forms.Select(attrs={"class": "rpgui-dropdown"}),
+            "ability_type": forms.Select(attrs={"class": "rpgui-dropdown"}),
+            "difficulty_class": forms.Select(attrs={"class": "rpgui-dropdown"}),
         }

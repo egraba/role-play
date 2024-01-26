@@ -61,4 +61,9 @@ urlpatterns = [
         master.HealingView.as_view(),
         name="healing-create",
     ),
+    path(
+        "<int:game_id>/request_ability_check",
+        master.AbilityCheckRequestView.as_view(),
+        name="ability-check-request-create",
+    ),
 ]

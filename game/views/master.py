@@ -10,7 +10,13 @@ from django_fsm import TransitionNotAllowed
 
 from character.models.character import Character
 from character.views.mixins import CharacterContextMixin
-from game.forms import DamageForm, HealingForm, QuestCreateForm, XpIncreaseForm
+from game.forms import (
+    AbilityCheckRequestForm,
+    DamageForm,
+    HealingForm,
+    QuestCreateForm,
+    XpIncreaseForm,
+)
 from game.models.events import Damage, Event, Instruction, Quest, XpIncrease
 from game.models.game import Player
 from game.tasks import send_email
@@ -241,4 +247,29 @@ class HealingView(
         healing.save()
         self.character.hp += healing.hp
         self.character.save()
+        return super().form_valid(form)
+
+
+class AbilityCheckRequestView(
+    UserPassesTestMixin,
+    FormView,
+    EventContextMixin,
+):
+    form_class = AbilityCheckRequestForm
+    template_name = "game/ability_check_request.html"
+
+    def test_func(self):
+        return self.is_user_master()
+
+    def get_success_url(self):
+        return reverse_lazy("game", args=(self.game.id,))
+
+    def form_valid(self, form):
+        ability_check_request = form.save(commit=False)
+        ability_check_request.game = self.game
+        ability_check_request.date = timezone.now()
+        ability_check_request.message = (
+            f"{ability_check_request.character} needs to perform an ability check!"
+        )
+        ability_check_request.save()
         return super().form_valid(form)
