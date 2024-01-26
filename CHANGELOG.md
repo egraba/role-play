@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## Unreleased
+
+### Changed
+* Make clearer django migrate command in invoke tasks
+
 ## v0.5.0 - 2024-01-20
 
 ### Added
