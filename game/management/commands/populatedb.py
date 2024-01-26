@@ -19,9 +19,9 @@ class Command(BaseCommand):
             GameFactory(master__user=thomas)
 
         # Characters
-        CharacterFactory(user=eric)
-        CharacterFactory(user=seb)
-        for _ in range(10):
-            CharacterFactory()
+        CharacterFactory(user=eric, name="Eric")
+        CharacterFactory(user=seb, name="Seb")
+        for i in range(2, 10):
+            CharacterFactory(__sequence=i)
 
         self.stdout.write(self.style.SUCCESS("Successfully populated the database"))
