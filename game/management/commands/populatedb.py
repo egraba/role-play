@@ -11,17 +11,17 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         # Users
         thomas = UserWithPasswordFactory(username="thomas")  # The game master
-        eric = UserWithPasswordFactory(username="eric")
-        seb = UserWithPasswordFactory(username="seb")
+        eric = UserWithPasswordFactory(username="eric")  # A player
+        seb = UserWithPasswordFactory(username="seb")  # Another player
 
         # Games
         for _ in range(5):
             GameFactory(master__user=thomas)
 
         # Characters
-        CharacterFactory(user=eric)
-        CharacterFactory(user=seb)
-        for _ in range(10):
-            CharacterFactory()
+        CharacterFactory(user=eric, name="Eric")
+        CharacterFactory(user=seb, name="Seb")
+        for i in range(2, 10):
+            CharacterFactory(__sequence=i)
 
         self.stdout.write(self.style.SUCCESS("Successfully populated the database"))
