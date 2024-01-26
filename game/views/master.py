@@ -264,6 +264,10 @@ class AbilityCheckRequestView(
     def get_success_url(self):
         return reverse_lazy("game", args=(self.game.id,))
 
+    def get_initial(self):
+        initial = {"game": self.game}
+        return initial
+
     def form_valid(self, form):
         ability_check_request = form.save(commit=False)
         ability_check_request.game = self.game
