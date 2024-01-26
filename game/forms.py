@@ -1,5 +1,6 @@
 from django import forms
 
+from character.models.abilities import AbilityType
 from character.models.character import Character
 from game.models.events import (
     AbilityCheckRequest,
@@ -85,3 +86,6 @@ class AbilityCheckRequestForm(forms.ModelForm):
             queryset=Character.objects.filter(player__game=game),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
+
+        self.fields["ability_type"].label = "Ability"
+        self.fields["ability_type"].choices = AbilityType.Name.choices
