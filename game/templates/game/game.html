@@ -7,7 +7,7 @@
     <div class="rpgui-container framed">
         <h1 id="title" class="title">{{ game }}</h1>
         <div class="rpgui-center">
-            <a href={% url 'game-list' %}>- Return to games list -</a>
+            <a href="{% url 'game-list' %}">- Return to games list -</a>
         </div>
 
         <hr class="golden"/>
@@ -93,6 +93,11 @@
                                 <p>
                                     <a href={% url 'quest-create' game.id %}>
                                         <button class="rpgui-button"><p>Update the quest</p></button>
+                                    </a>
+                                </p>
+                                <p>
+                                    <a href={% url 'ability-check-request-create' game.id %}>
+                                        <button class="rpgui-button"><p>Ask for ability check</p></button>
                                     </a>
                                 </p>
                             {% endif %}
