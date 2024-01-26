@@ -6,6 +6,9 @@
 * Make clearer django migrate command in invoke tasks
 * `populatedb` command is now idempotent
 
+### Fixed
+* Logout is now working (Django deprecation)
+
 ## v0.5.0 - 2024-01-20
 
 ### Added
