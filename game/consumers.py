@@ -6,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
 
 from character.models.character import Character
-from game.models import Game
+from game.models.game import Game
 from game.tasks import (
     store_master_instruction,
     store_player_choice,

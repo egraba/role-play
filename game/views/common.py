@@ -6,7 +6,8 @@ from django.urls import reverse
 from django.views.generic import CreateView, ListView, TemplateView
 
 from character.models.character import Character
-from game.models import Event, Game, Instruction, Master, Player, Quest
+from game.models.events import Event, Instruction, Quest
+from game.models.game import Game, Master, Player
 from game.views.mixins import GameContextMixin
 from master.models import Campaign
 

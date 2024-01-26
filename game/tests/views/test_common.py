@@ -16,7 +16,8 @@ from pytest_django.asserts import (
 
 from character.models.character import Character
 from character.tests.factories import CharacterFactory
-from game.models import Event, Game, Player, Quest
+from game.models.events import Event, Quest
+from game.models.game import Game, Player
 from game.views.common import (
     GameCreateErrorView,
     GameCreateView,

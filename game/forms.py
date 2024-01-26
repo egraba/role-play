@@ -1,6 +1,6 @@
 from django import forms
 
-from game.models import Choice, Damage, DiceLaunch, Healing, XpIncrease
+from game.models.events import Choice, Damage, DiceLaunch, Healing, XpIncrease
 
 
 class QuestCreateForm(forms.Form):
