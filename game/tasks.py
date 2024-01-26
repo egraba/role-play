@@ -2,7 +2,8 @@ from celery import shared_task
 from django.core.mail import send_mail
 
 from character.models.character import Character
-from game.models import Choice, DiceLaunch, Game, Instruction
+from game.models.events import Choice, DiceLaunch, Instruction
+from game.models.game import Game
 
 
 @shared_task

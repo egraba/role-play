@@ -1,6 +1,7 @@
 import factory
 
-from game.models import DiceLaunch, Event, Game, Master, Player, Quest
+from game.models.events import DiceLaunch, Event, Quest
+from game.models.game import Game, Master, Player
 from utils.dice import Dice
 from utils.factories import UserFactory
 
