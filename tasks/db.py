@@ -33,3 +33,9 @@ def populate(context):
 def make_migrations(context):
     """Make Django migrations"""
     context.run("python manage.py makemigrations", pty=True)
+
+
+@task
+def migrate(context):
+    """Apply database migrations"""
+    context.run("python manage.py migrate", pty=True)
