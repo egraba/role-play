@@ -11,8 +11,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         # Users
         thomas = UserWithPasswordFactory(username="thomas")  # The game master
-        eric = UserWithPasswordFactory(username="eric")
-        seb = UserWithPasswordFactory(username="seb")
+        eric = UserWithPasswordFactory(username="eric")  # A player
+        seb = UserWithPasswordFactory(username="seb")  # Another player
 
         # Games
         for _ in range(5):
