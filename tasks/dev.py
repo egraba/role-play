@@ -1,4 +1,6 @@
-from invoke import task
+from invoke import Collection, task
+
+from .db import migrate
 
 
 @task
@@ -9,13 +11,7 @@ def clean(context):
         context.run(f"rm -rf {pattern}")
 
 
-@task(clean)
-def build(context):
-    """Apply database migrations"""
-    context.run("python manage.py migrate", pty=True)
-
-
-@task(build)
+@task(migrate)
 def run(context):
     """Run the app"""
     context.run("python manage.py runserver", pty=True)
@@ -31,3 +27,6 @@ def run_worker(context):
 def shell(context):
     """Launch Django shell"""
     context.run("python manage.py shell")
+
+
+namespace = Collection(clean, run, run_worker, shell)
