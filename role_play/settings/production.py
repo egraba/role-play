@@ -1,6 +1,7 @@
 import json
 
 import dj_database_url
+
 from role_play.settings.base import *
 
 DEBUG = False
