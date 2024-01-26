@@ -1,5 +1,6 @@
 from django.db import models
 
+from character.models.abilities import AbilityType
 from character.models.character import Character
 
 from .game import Game
@@ -73,3 +74,16 @@ class Choice(Action):
 
     def __str__(self):
         return self.selection
+
+
+class AbilityCheckRequest(Action):
+    class DifficultyClass(models.IntegerChoices):
+        VERY_EASY = 5, "Very easy"
+        EASY = 10, "Easy"
+        MEDIUM = 15, "Medium"
+        HARD = 20, "Hard"
+        VERY_HARD = 25, "Very hard"
+        NEARLY_IMPOSSIBLE = 30, "Nearly impossible"
+
+    ability_type = models.ForeignKey(AbilityType, on_delete=models.CASCADE)
+    difficulty_class = models.SmallIntegerField(choices=DifficultyClass)
