@@ -8,7 +8,7 @@ from django.urls import re_path
 
 from character.tests.factories import CharacterFactory
 from game.consumers import GameEventsConsumer
-from game.models import DiceLaunch
+from game.models.events import DiceLaunch
 
 from .factories import GameFactory
 

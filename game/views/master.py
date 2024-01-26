@@ -11,7 +11,8 @@ from django_fsm import TransitionNotAllowed
 from character.models.character import Character
 from character.views.mixins import CharacterContextMixin
 from game.forms import DamageForm, HealingForm, QuestCreateForm, XpIncreaseForm
-from game.models import Damage, Event, Instruction, Player, Quest, XpIncrease
+from game.models.events import Damage, Event, Instruction, Quest, XpIncrease
+from game.models.game import Player
 from game.tasks import send_email
 from game.utils import get_players_emails
 from game.views.mixins import (

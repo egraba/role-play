@@ -18,7 +18,8 @@ from pytest_django.asserts import (
 from character.models.character import Character
 from character.tests.factories import CharacterFactory
 from game.forms import DamageForm, HealingForm, QuestCreateForm, XpIncreaseForm
-from game.models import Damage, Event, Game, Healing, Quest, XpIncrease
+from game.models.events import Damage, Event, Healing, Quest, XpIncrease
+from game.models.game import Game
 from game.views.master import (
     CharacterInviteConfirmView,
     CharacterInviteView,
