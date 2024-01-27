@@ -9,6 +9,7 @@ from django.urls import re_path
 from character.tests.factories import CharacterFactory
 from game.consumers import GameEventsConsumer
 from game.models.events import DiceLaunch
+from game.utils.channels import EventType
 
 from .factories import GameFactory
 
@@ -39,13 +40,13 @@ class TestGameEventsConsumer:
 
         await communicator.send_json_to(
             {
-                "type": "master.instruction",
+                "type": EventType.MASTER_INSTRUCTION,
                 "content": "some content",
             }
         )
         response = await communicator.receive_json_from()
         expected_json = {
-            "type": "master.instruction",
+            "type": EventType.MASTER_INSTRUCTION,
             "date": ANY,
             "message": "the Master said: ",
             "content": "some content",
@@ -66,13 +67,13 @@ class TestGameEventsConsumer:
 
         await communicator.send_json_to(
             {
-                "type": "master.quest",
+                "type": EventType.MASTER_QUEST,
                 "content": "some content",
             }
         )
         response = await communicator.receive_json_from()
         expected_json = {
-            "type": "master.quest",
+            "type": EventType.MASTER_QUEST,
             "date": ANY,
             "message": "the Master updated the quest.",
             "content": "some content",
@@ -93,13 +94,13 @@ class TestGameEventsConsumer:
 
         await communicator.send_json_to(
             {
-                "type": "master.start",
+                "type": EventType.MASTER_START,
                 "content": "some content",
             }
         )
         response = await communicator.receive_json_from()
         expected_json = {
-            "type": "master.start",
+            "type": EventType.MASTER_START,
             "date": ANY,
             "message": "the game started.",
             "content": "some content",
@@ -120,13 +121,13 @@ class TestGameEventsConsumer:
 
         await communicator.send_json_to(
             {
-                "type": "player.choice",
+                "type": EventType.PLAYER_CHOICE,
                 "content": "some content",
             }
         )
         response = await communicator.receive_json_from()
         expected_json = {
-            "type": "player.choice",
+            "type": EventType.PLAYER_CHOICE,
             "date": ANY,
             "message": f"[{ self.player_user }] said: ",
             "content": "some content",
@@ -150,12 +151,12 @@ class TestGameEventsConsumer:
 
         await communicator.send_json_to(
             {
-                "type": "player.dice.launch",
+                "type": EventType.PLAYER_DICE_LAUNCH,
             }
         )
         response = await communicator.receive_json_from()
         expected_json = {
-            "type": "player.dice.launch",
+            "type": EventType.PLAYER_DICE_LAUNCH,
             "date": ANY,
             "message": f"[{ self.player_user }] launched a dice: ",
             "content": ANY,

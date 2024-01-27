@@ -12,6 +12,7 @@ from game.tasks import (
     store_player_choice,
     store_player_dice_launch,
 )
+from game.utils.channels import EventType
 from utils.dice import Dice
 
 
@@ -41,7 +42,7 @@ class GameEventsConsumer(JsonWebsocketConsumer):
     def receive_json(self, content):
         date = timezone.now().isoformat()
         match content["type"]:
-            case "master.instruction":
+            case EventType.MASTER_INSTRUCTION:
                 message = "the Master said: "
                 store_master_instruction.delay(
                     game_id=self.game.id,
@@ -49,13 +50,13 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                     message=message,
                     content=content["content"],
                 )
-            case "master.start":
+            case EventType.MASTER_START:
                 message = "the game started."
-            case "master.quest":
+            case EventType.MASTER_QUEST:
                 message = "the Master updated the quest."
-            case "master.abilitycheck":
+            case EventType.MASTER_ABILITY_CHECK:
                 message = ""
-            case "player.choice":
+            case EventType.PLAYER_CHOICE:
                 try:
                     character = Character.objects.get(user=self.user)
                 except ObjectDoesNotExist:
@@ -71,7 +72,7 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                     character_id=character.id,
                     selection=content["content"],
                 )
-            case "player.dice.launch":
+            case EventType.PLAYER_DICE_LAUNCH:
                 try:
                     character = Character.objects.get(user=self.user)
                 except ObjectDoesNotExist:
