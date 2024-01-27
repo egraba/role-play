@@ -67,13 +67,13 @@ class TestGameEventsConsumer:
 
         await communicator.send_json_to(
             {
-                "type": EventType.MASTER_QUEST,
+                "type": EventType.MASTER_QUEST_UPDATE,
                 "content": "some content",
             }
         )
         response = await communicator.receive_json_from()
         expected_json = {
-            "type": EventType.MASTER_QUEST,
+            "type": EventType.MASTER_QUEST_UPDATE,
             "date": ANY,
             "message": "the Master updated the quest.",
             "content": "some content",
@@ -94,13 +94,13 @@ class TestGameEventsConsumer:
 
         await communicator.send_json_to(
             {
-                "type": EventType.MASTER_START,
+                "type": EventType.MASTER_GAME_START,
                 "content": "some content",
             }
         )
         response = await communicator.receive_json_from()
         expected_json = {
-            "type": EventType.MASTER_START,
+            "type": EventType.MASTER_GAME_START,
             "date": ANY,
             "message": "the game started.",
             "content": "some content",

@@ -12,9 +12,9 @@ class EventType(StrEnum):
     """
 
     MASTER_INSTRUCTION = "master.instruction"
-    MASTER_START = "master.start"
-    MASTER_QUEST = "master.quest"
-    MASTER_ABILITY_CHECK = "master.ability.check"
+    MASTER_GAME_START = "master.game.start"
+    MASTER_QUEST_UPDATE = "master.quest.update"
+    MASTER_ABILITY_CHECK_REQUEST = "master.ability.check.request"
     PLAYER_CHOICE = "player.choice"
     PLAYER_DICE_LAUNCH = "player.dice.launch"
 
