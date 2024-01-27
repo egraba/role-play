@@ -3,7 +3,7 @@ from faker import Faker
 
 from game.utils.emails import get_players_emails
 
-from .factories import GameFactory, PlayerFactory
+from ..factories import GameFactory, PlayerFactory
 
 
 @pytest.mark.django_db
