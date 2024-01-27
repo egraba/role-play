@@ -130,6 +130,10 @@
         const playerSendButton = document.getElementById('player-message-submit');
         const playerDiceLaunchButton = document.getElementById('dice-launch-submit');
 
+        const MASTER_INSTRUCTION = "master.instruction";
+        const PLAYER_CHOICE = "player.choice";
+        const PLAYER_DICE_LAUNCH = "player.dice.launch";
+
         eventsSocket.onmessage = function(event) {
             message = JSON.parse(event.data)
             eventList.innerHTML += '<p>' + moment(message["date"]).fromNow() + ', ' + message["message"] + message["content"] + '</p>'
@@ -138,7 +142,7 @@
                 lines.splice(0, 1);
                 eventList.innerHTML = lines.join('\n');
             }
-            if (message["type"] === "master.quest") {
+            if (message["type"] === MASTER_QUEST_UPDATE) {
                 $("#quest").load(" #quest > *");
             }
         };
@@ -152,7 +156,7 @@
                 const message = input.value;
                 if (message) {
                     eventsSocket.send(JSON.stringify({
-                        'type': 'master.instruction',
+                        'type': MASTER_INSTRUCTION,
                         'content': message,
                     }));
                     input.value = '';
@@ -173,7 +177,7 @@
                 const message = input.value;
                 if (message) {
                     eventsSocket.send(JSON.stringify({
-                        'type': 'player.choice',
+                        'type': PLAYER_CHOICE,
                         'content': message
                     }));
                     input.value = '';
@@ -192,7 +196,7 @@
         if (playerDiceLaunchButton !== null) {
             playerDiceLaunchButton.addEventListener('click', function(event) {
                 eventsSocket.send(JSON.stringify({
-                    'type': 'player.dice.launch',
+                    'type': PLAYER_DICE_LAUNCH,
                 }));
             });
         }
