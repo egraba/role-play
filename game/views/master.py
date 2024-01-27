@@ -276,4 +276,11 @@ class AbilityCheckRequestView(
             a {ability_check_request.ability_type} ability check! \
             Difficulty: {ability_check_request.get_difficulty_class_display()}."
         ability_check_request.save()
+
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            f"game_{self.game.id}_events",
+            {"type": "master.abilitycheck", "content": ""},
+        )
+
         return super().form_valid(form)

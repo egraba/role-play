@@ -53,6 +53,8 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                 message = "the game started."
             case "master.quest":
                 message = "the Master updated the quest."
+            case "master.abilitycheck":
+                message = ""
             case "player.choice":
                 try:
                     character = Character.objects.get(user=self.user)
@@ -95,6 +97,9 @@ class GameEventsConsumer(JsonWebsocketConsumer):
         self.send_json(event)
 
     def master_quest(self, event):
+        self.send_json(event)
+
+    def master_abilitycheck(self, event):
         self.send_json(event)
 
     def master_start(self, event):
