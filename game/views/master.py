@@ -1,5 +1,3 @@
-from asgiref.sync import async_to_sync
-from channels.layers import get_channel_layer
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.cache import cache
 from django.http import HttpResponseRedirect
@@ -20,7 +18,8 @@ from game.forms import (
 from game.models.events import Damage, Event, Instruction, Quest, XpIncrease
 from game.models.game import Player
 from game.tasks import send_email
-from game.utils import get_players_emails
+from game.utils.channels import send_to_chat
+from game.utils.emails import get_players_emails
 from game.views.mixins import (
     EventContextMixin,
     GameContextMixin,
@@ -82,11 +81,7 @@ class GameStartView(UserPassesTestMixin, GameStatusControlMixin):
             event.date = timezone.now()
             event.message = "the game started."
             event.save()
-            channel_layer = get_channel_layer()
-            async_to_sync(channel_layer.group_send)(
-                f"game_{game.id}_events",
-                {"type": "master.start", "content": ""},
-            )
+            send_to_chat(game.id, "master.start", "")
         except TransitionNotAllowed:
             return HttpResponseRedirect(reverse("game-start-error", args=(game.id,)))
         return HttpResponseRedirect(game.get_absolute_url())
@@ -118,11 +113,7 @@ class QuestCreateView(UserPassesTestMixin, FormView, EventContextMixin):
         quest.message = "the Master updated the campaign."
         quest.content = form.cleaned_data["content"]
         quest.save()
-        channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)(
-            f"game_{self.game.id}_events",
-            {"type": "master.quest", "content": ""},
-        )
+        send_to_chat(self.game.id, "master.quest", "")
         send_email.delay(
             subject=f"[{self.game}] The Master updated the quest.",
             message=f"The Master said:\n{quest.content}",
@@ -276,11 +267,5 @@ class AbilityCheckRequestView(
             a {ability_check_request.ability_type} ability check! \
             Difficulty: {ability_check_request.get_difficulty_class_display()}."
         ability_check_request.save()
-
-        channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)(
-            f"game_{self.game.id}_events",
-            {"type": "master.abilitycheck", "content": ""},
-        )
-
+        send_to_chat(self.game.id, "master.abilitycheck", "")
         return super().form_valid(form)
