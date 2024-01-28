@@ -3,7 +3,6 @@ from channels.exceptions import DenyConnection
 from channels.generic.websocket import JsonWebsocketConsumer
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
-from django.utils import timezone
 
 from character.models.character import Character
 from game.models.game import Game
@@ -51,14 +50,11 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                 pass
 
         else:
-            date = timezone.now().isoformat()
-            content.update({"event_date": date})
-
             match content["type"]:
                 case GameEventType.MASTER_INSTRUCTION:
                     store_master_instruction.delay(
                         game_id=self.game.id,
-                        date=date,
+                        date=content["event_date"],
                         event_message=f"the Master said: {content['event_message']}",
                     )
                 case GameEventType.PLAYER_CHOICE:
@@ -72,10 +68,10 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                     message = f"[{ self.user }] said: "
                     store_player_choice.delay(
                         game_id=self.game.id,
-                        date=date,
+                        date=content["event_date"],
                         message=message,
                         character_id=character.id,
-                        selection=content["content"],
+                        selection=content["event_message"],
                     )
                 case GameEventType.PLAYER_DICE_LAUNCH:
                     try:
@@ -87,10 +83,10 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                         self.close()
                     message = f"[{ self.user }] launched a dice: "
                     score = Dice("d20").roll()
-                    content["content"] = score
+                    content["event_message"] = score
                     store_player_dice_launch.delay(
                         game_id=self.game.id,
-                        date=date,
+                        date=content["event_date"],
                         message=message,
                         character_id=character.id,
                         score=score,

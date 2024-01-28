@@ -1,5 +1,6 @@
 from datetime import datetime
 from enum import IntFlag, StrEnum, auto
+from typing import Optional
 
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
@@ -43,10 +44,10 @@ class GameEvent(BaseModel):
 
     """
 
-    event_origin: GameEventOrigin
     type: GameEventType  # "type" field is necessary for Django channels.
     event_date: datetime
     event_message: str
+    event_origin: Optional[GameEventOrigin] = None
 
 
 class GameEventError(TypeError):

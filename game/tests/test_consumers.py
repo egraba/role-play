@@ -5,11 +5,12 @@ from channels.routing import URLRouter
 from channels.testing import WebsocketCommunicator
 from django.contrib.auth.models import User
 from django.urls import re_path
+from faker import Faker
 
 from character.tests.factories import CharacterFactory
 from game.consumers import GameEventsConsumer
 from game.models.events import DiceLaunch
-from game.utils.channels import GameEventType
+from game.utils.channels import GameEvent, GameEventOrigin, GameEventType
 
 from .factories import GameFactory
 
@@ -38,19 +39,19 @@ class TestGameEventsConsumer:
         connected, _ = await communicator.connect()
         assert connected
 
-        await communicator.send_json_to(
-            {
-                "type": GameEventType.MASTER_INSTRUCTION,
-                "event_message": "some content",
-            }
-        )
-        response = await communicator.receive_json_from()
-        expected_json = {
+        fake = Faker()
+        event_date = fake.date_time().isoformat()
+        event_message = fake.text(100)
+        game_event = {
             "type": GameEventType.MASTER_INSTRUCTION,
-            "date": ANY,
-            "event_message": "some content",
+            "event_date": event_date,
+            "event_message": event_message,
         }
-        assert response == expected_json
+        assert GameEvent(**game_event)
+
+        await communicator.send_json_to(game_event)
+        response = await communicator.receive_json_from()
+        assert response == game_event
 
         await communicator.disconnect()
 
@@ -64,20 +65,20 @@ class TestGameEventsConsumer:
         connected, _ = await communicator.connect()
         assert connected
 
-        await communicator.send_json_to(
-            {
-                "type": GameEventType.MASTER_QUEST_UPDATE,
-                "content": "some content",
-            }
-        )
-        response = await communicator.receive_json_from()
-        expected_json = {
+        fake = Faker()
+        event_date = fake.date_time().isoformat()
+        event_message = "the Master updated the quest."
+        game_event = {
             "type": GameEventType.MASTER_QUEST_UPDATE,
-            "date": ANY,
-            "message": "the Master updated the quest.",
-            "content": "some content",
+            "event_date": event_date,
+            "event_message": event_message,
+            "event_origin": GameEventOrigin.SERVER_SIDE,
         }
-        assert response == expected_json
+        assert GameEvent(**game_event)
+
+        await communicator.send_json_to(game_event)
+        response = await communicator.receive_json_from()
+        assert response == game_event
 
         await communicator.disconnect()
 
@@ -91,20 +92,20 @@ class TestGameEventsConsumer:
         connected, _ = await communicator.connect()
         assert connected
 
-        await communicator.send_json_to(
-            {
-                "type": GameEventType.MASTER_GAME_START,
-                "content": "some content",
-            }
-        )
-        response = await communicator.receive_json_from()
-        expected_json = {
+        fake = Faker()
+        event_date = fake.date_time().isoformat()
+        event_message = "the game started."
+        game_event = {
             "type": GameEventType.MASTER_GAME_START,
-            "date": ANY,
-            "message": "the game started.",
-            "content": "some content",
+            "event_date": event_date,
+            "event_message": event_message,
+            "event_origin": GameEventOrigin.SERVER_SIDE,
         }
-        assert response == expected_json
+        assert GameEvent(**game_event)
+
+        await communicator.send_json_to(game_event)
+        response = await communicator.receive_json_from()
+        assert response == game_event
 
         await communicator.disconnect()
 
@@ -118,20 +119,20 @@ class TestGameEventsConsumer:
         connected, _ = await communicator.connect()
         assert connected
 
-        await communicator.send_json_to(
-            {
-                "type": GameEventType.MASTER_ABILITY_CHECK_REQUEST,
-                "content": "some content",
-            }
-        )
-        response = await communicator.receive_json_from()
-        expected_json = {
+        fake = Faker()
+        event_date = fake.date_time().isoformat()
+        event_message = fake.text(100)
+        game_event = {
             "type": GameEventType.MASTER_ABILITY_CHECK_REQUEST,
-            "date": ANY,
-            "message": "the game started.",
-            "content": "some content",
+            "event_date": event_date,
+            "event_message": event_message,
+            "event_origin": GameEventOrigin.SERVER_SIDE,
         }
-        assert response == expected_json
+        assert GameEvent(**game_event)
+
+        await communicator.send_json_to(game_event)
+        response = await communicator.receive_json_from()
+        assert response == game_event
 
         await communicator.disconnect()
 
@@ -145,20 +146,19 @@ class TestGameEventsConsumer:
         connected, _ = await communicator.connect()
         assert connected
 
-        await communicator.send_json_to(
-            {
-                "type": GameEventType.PLAYER_CHOICE,
-                "content": "some content",
-            }
-        )
-        response = await communicator.receive_json_from()
-        expected_json = {
+        fake = Faker()
+        event_date = fake.date_time().isoformat()
+        event_message = fake.text(100)
+        game_event = {
             "type": GameEventType.PLAYER_CHOICE,
-            "date": ANY,
-            "message": f"[{ self.player_user }] said: ",
-            "content": "some content",
+            "event_date": event_date,
+            "event_message": event_message,
         }
-        assert response == expected_json
+        assert GameEvent(**game_event)
+
+        await communicator.send_json_to(game_event)
+        response = await communicator.receive_json_from()
+        assert response == game_event
 
         await communicator.disconnect()
 
@@ -175,17 +175,22 @@ class TestGameEventsConsumer:
         connected, _ = await communicator.connect()
         assert connected
 
-        await communicator.send_json_to(
-            {
-                "type": GameEventType.PLAYER_DICE_LAUNCH,
-            }
-        )
+        fake = Faker()
+        event_date = fake.date_time().isoformat()
+        event_message = fake.text(100)
+        game_event = {
+            "type": GameEventType.PLAYER_DICE_LAUNCH,
+            "event_date": event_date,
+            "event_message": event_message,
+        }
+        assert GameEvent(**game_event)
+
+        await communicator.send_json_to(game_event)
         response = await communicator.receive_json_from()
         expected_json = {
             "type": GameEventType.PLAYER_DICE_LAUNCH,
-            "date": ANY,
-            "message": f"[{ self.player_user }] launched a dice: ",
-            "content": ANY,
+            "event_date": event_date,
+            "event_message": ANY,
         }
         assert response == expected_json
 
