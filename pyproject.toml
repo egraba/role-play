@@ -30,6 +30,7 @@ email-validator = "*"
 gunicorn = "*"
 invoke = "*"
 psycopg = { extras = ["binary"], version = "*" }
+pydantic = "*"
 pyyaml = "*"
 redis = "*"
 whitenoise = "*"
