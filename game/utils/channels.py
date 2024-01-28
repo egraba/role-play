@@ -3,12 +3,12 @@ from enum import Flag, StrEnum, auto
 
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
+from pydantic import BaseModel
 
 
 class GameEventOrigin(Flag):
     """Game event origin.
 
-    Game events are all the communication events that occur during a game.
     These events can be initiated from the client side (e.g. via a browser),
     or via the server (e.g. via a form).
 
@@ -21,7 +21,6 @@ class GameEventOrigin(Flag):
 class GameEventType(StrEnum):
     """Game event type.
 
-    Game events are all the communication events that occur during a game.
     The type corresponds to a specific action that can be done during a game.
 
     The events prefixed by "MASTER" are done by the Dungeon Master (DM), while
@@ -35,6 +34,19 @@ class GameEventType(StrEnum):
     MASTER_ABILITY_CHECK_REQUEST = "master.ability.check.request"
     PLAYER_CHOICE = "player.choice"
     PLAYER_DICE_LAUNCH = "player.dice.launch"
+
+
+class GameEvent(BaseModel):
+    """Game event.
+
+    Game events are all the communication events that occur during a game.
+
+    """
+
+    event_origin: GameEventOrigin
+    event_type: GameEventType
+    event_date: datetime
+    event_message: str
 
 
 def send_to_chat(
