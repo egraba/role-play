@@ -1,12 +1,12 @@
-import datetime
-from enum import Flag, StrEnum, auto
+from datetime import datetime
+from enum import IntFlag, StrEnum, auto
 
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
 
 
-class GameEventOrigin(Flag):
+class GameEventOrigin(IntFlag):
     """Game event origin.
 
     These events can be initiated from the client side (e.g. via a browser),
@@ -49,27 +49,30 @@ class GameEvent(BaseModel):
     event_message: str
 
 
-def send_to_chat(
-    game_id: int, event_type: str, date: datetime, event_message: str
-) -> None:
+class GameEventError(TypeError):
+    """Raised when an error occurs during GameEvent schema validation."""
+
+    pass
+
+
+def send_to_chat(game_id: int, game_event: dict[GameEvent]) -> None:
     """Send game events to the game chat.
 
     Send game events to the game channel layer.
 
     Args:
         game_id (int): Game identifier.
-        event_type (str): Type of the game event.
-        date (datetime): Date of the game event.
-        event_message (str): Message related to the event to be displayed on the chat.
+        game_event (dict[GameEvent]): Game event.
 
     """
+    # All the events sent by this function are server-side events.
+    game_event["event_origin"] = GameEventOrigin.SERVER_SIDE
+    try:
+        GameEvent(**game_event)
+    except ValidationError as e:
+        raise GameEventError(e.errors())
+
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
-        group=f"game_{game_id}_events",
-        message={
-            "origin": GameEventOrigin.SERVER_SIDE,
-            "type": event_type,
-            "date": date.isoformat(),
-            "event_message": event_message,
-        },
+        group=f"game_{game_id}_events", message=game_event
     )
