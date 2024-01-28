@@ -46,13 +46,13 @@ class GameEventsConsumer(JsonWebsocketConsumer):
         # in the database, so the event has just to be sent to the group.
         #
         # If the event comes from the client, the data needs to be stored in the database.
-        if "origin" in content:
-            if content["origin"] == GameEventOrigin.SERVER_SIDE:
+        if "event_origin" in content:
+            if content["event_origin"] == GameEventOrigin.SERVER_SIDE:
                 pass
 
         else:
             date = timezone.now().isoformat()
-            content.update({"date": date})
+            content.update({"event_date": date})
 
             match content["type"]:
                 case GameEventType.MASTER_INSTRUCTION:
