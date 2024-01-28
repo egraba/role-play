@@ -44,7 +44,7 @@ class GameEvent(BaseModel):
     """
 
     event_origin: GameEventOrigin
-    event_type: GameEventType
+    type: GameEventType  # "type" field is necessary for Django channels.
     event_date: datetime
     event_message: str
 

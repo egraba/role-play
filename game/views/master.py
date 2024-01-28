@@ -271,7 +271,7 @@ class AbilityCheckRequestView(
         send_to_chat(
             game_id=self.game.id,
             game_event={
-                "event_type": GameEventType.MASTER_ABILITY_CHECK_REQUEST,
+                "type": GameEventType.MASTER_ABILITY_CHECK_REQUEST,
                 "event_date": ability_check_request.date.isoformat(),
                 "event_message": ability_check_request.message,
             },
