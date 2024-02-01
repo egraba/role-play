@@ -8,7 +8,8 @@ from pydantic import BaseModel, ValidationError
 
 
 class GameEventOrigin(IntFlag):
-    """Game event origin.
+    """
+    Game event origin.
 
     These events can be initiated from the client side (e.g. via a browser),
     or via the server (e.g. via a form).
@@ -20,7 +21,8 @@ class GameEventOrigin(IntFlag):
 
 
 class GameEventType(StrEnum):
-    """Game event type.
+    """
+    Game event type.
 
     The type corresponds to a specific action that can be done during a game.
 
@@ -38,7 +40,8 @@ class GameEventType(StrEnum):
 
 
 class GameEvent(BaseModel):
-    """Game event.
+    """
+    Game event.
 
     Game events are all the communication events that occur during a game.
 
