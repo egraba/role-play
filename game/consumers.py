@@ -6,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from character.models.character import Character
 from game.models.game import Game
-from game.tasks import store_master_instruction, store_player_dice_launch
+from game.tasks import store_message, store_player_dice_launch
 from game.utils.channels import GameEventOrigin, GameEventType, PlayerType
 from utils.dice import Dice
 
@@ -57,16 +57,12 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                     )
                     self.close()
 
-                sender_str = f"[{self.user}]"
-            else:
-                sender_str = "the Master"
-
             match content["type"]:
                 case GameEventType.MESSAGE:
-                    store_master_instruction.delay(
+                    store_message.delay(
                         game_id=self.game.id,
                         date=content["date"],
-                        message=f"{sender_str} said: {content['message']}",
+                        message=content["message"],
                     )
                 case GameEventType.DICE_LAUNCH:
                     message = f"[{ self.user }] launched a dice: "

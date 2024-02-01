@@ -21,7 +21,7 @@
                 <h3>Game events</h3>
                 <div id="event-list">
                     {% for event in event_list reversed %}
-                        <p>{{ event.date|naturaltime }}, {{ event.message }} {{ event.instruction.content }} {{ event.choice.selection }} {{ event.dicelaunch.score }}</p>
+                        <p>{{ event.date|naturaltime }}, {{ event.message }}</p>
                     {% empty %}
                         <p>The campaign did not start yet...</p>
                     {% endfor %}
@@ -151,19 +151,21 @@
         const PLAYER = "player";
         if ("{{ game.master.user }}" == "{{ user }}") {
             player_type = MASTER;
+            senderStr = "the Master";
         } else {
             player_type = PLAYER;
+            senderStr = "[{{ user }}]";
         }
 
         if (sendButton !== null) {
             sendButton.addEventListener('click', function(event) {
-                const message = input.value;
-                if (message) {
+                const userInput = input.value;
+                if (userInput) {
                     eventsSocket.send(JSON.stringify({
                         'type': MESSAGE,
                         'date': Date.now(),
                         'player_type': player_type,
-                        'message': message,
+                        'message': senderStr + ' said: ' + userInput,
                     }));
                     input.value = '';
                     input.focus();

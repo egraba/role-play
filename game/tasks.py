@@ -2,7 +2,7 @@ from celery import shared_task
 from django.core.mail import send_mail
 
 from character.models.character import Character
-from game.models.events import Choice, DiceLaunch, Instruction
+from game.models.events import Choice, DiceLaunch, Event
 from game.models.game import Game
 
 
@@ -12,12 +12,12 @@ def send_email(subject, message, from_email, recipient_list):
 
 
 @shared_task
-def store_master_instruction(game_id, date, message):
+def store_message(game_id, date, message):
     game = Game.objects.get(id=game_id)
-    Instruction.objects.create(
+    Event.objects.create(
         game=game,
         date=date,
-        content=message,
+        message=message,
     )
 
 
