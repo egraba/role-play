@@ -10,17 +10,13 @@ from pydantic import BaseModel, ValidationError
 class GameEventType(StrEnum):
     """
     The game event type corresponds to a specific action that can be done during a game.
-
-    The events prefixed by "MASTER" are done by the Dungeon Master (DM), while
-    the events prefixed by "PLAYER" are done by the players.
     """
 
-    MASTER_INSTRUCTION = "master.instruction"
-    MASTER_GAME_START = "master.game.start"
-    MASTER_QUEST_UPDATE = "master.quest.update"
-    MASTER_ABILITY_CHECK_REQUEST = "master.ability.check.request"
-    PLAYER_CHOICE = "player.choice"
-    PLAYER_DICE_LAUNCH = "player.dice.launch"
+    MESSAGE = "message"
+    GAME_START = "game.start"
+    QUEST_UPDATE = "quest.update"
+    ABILITY_CHECK_REQUEST = "ability.check.request"
+    DICE_LAUNCH = "dice.launch"
 
 
 class PlayerType(StrEnum):

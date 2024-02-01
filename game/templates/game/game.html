@@ -130,9 +130,9 @@
         const playerSendButton = document.getElementById('player-message-submit');
         const playerDiceLaunchButton = document.getElementById('dice-launch-submit');
 
-        const MASTER_INSTRUCTION = "master.instruction";
-        const PLAYER_CHOICE = "player.choice";
-        const PLAYER_DICE_LAUNCH = "player.dice.launch";
+        const MESSAGE = "message";
+        const QUEST_UPDATE = "quest.update";
+        const DICE_LAUNCH = "dice.launch";
 
         eventsSocket.onmessage = function(event) {
             message = JSON.parse(event.data)
@@ -142,7 +142,7 @@
                 lines.splice(0, 1);
                 eventList.innerHTML = lines.join('\n');
             }
-            if (message["type"] === MASTER_QUEST_UPDATE) {
+            if (message["type"] === QUEST_UPDATE) {
                 $("#quest").load(" #quest > *");
             }
         };

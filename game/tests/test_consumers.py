@@ -30,7 +30,7 @@ class TestGameEventsConsumer:
         )
 
     @pytest.mark.asyncio
-    async def test_master_instruction(self):
+    async def test_message_from_master(self):
         communicator = WebsocketCommunicator(
             self.application, f"/events/{self.game.id}/"
         )
@@ -43,7 +43,7 @@ class TestGameEventsConsumer:
         date = fake.date_time().isoformat()
         message = fake.text(100)
         game_event = {
-            "type": GameEventType.MASTER_INSTRUCTION,
+            "type": GameEventType.MESSAGE,
             "player_type": PlayerType.MASTER,
             "date": date,
             "message": message,
@@ -57,91 +57,7 @@ class TestGameEventsConsumer:
         await communicator.disconnect()
 
     @pytest.mark.asyncio
-    async def test_master_quest_update(self):
-        communicator = WebsocketCommunicator(
-            self.application, f"/events/{self.game.id}/"
-        )
-        communicator.scope["user"] = self.master_user
-        communicator.scope["game_id"] = self.game.id
-        connected, _ = await communicator.connect()
-        assert connected
-
-        fake = Faker()
-        date = fake.date_time().isoformat()
-        message = "the Master updated the quest."
-        game_event = {
-            "type": GameEventType.MASTER_QUEST_UPDATE,
-            "player_type": PlayerType.MASTER,
-            "date": date,
-            "message": message,
-            "origin": GameEventOrigin.SERVER_SIDE,
-        }
-        assert GameEvent(**game_event)
-
-        await communicator.send_json_to(game_event)
-        response = await communicator.receive_json_from()
-        assert response == game_event
-
-        await communicator.disconnect()
-
-    @pytest.mark.asyncio
-    async def test_master_game_start(self):
-        communicator = WebsocketCommunicator(
-            self.application, f"/events/{self.game.id}/"
-        )
-        communicator.scope["user"] = self.master_user
-        communicator.scope["game_id"] = self.game.id
-        connected, _ = await communicator.connect()
-        assert connected
-
-        fake = Faker()
-        date = fake.date_time().isoformat()
-        message = "the game started."
-        game_event = {
-            "type": GameEventType.MASTER_GAME_START,
-            "player_type": PlayerType.MASTER,
-            "date": date,
-            "message": message,
-            "origin": GameEventOrigin.SERVER_SIDE,
-        }
-        assert GameEvent(**game_event)
-
-        await communicator.send_json_to(game_event)
-        response = await communicator.receive_json_from()
-        assert response == game_event
-
-        await communicator.disconnect()
-
-    @pytest.mark.asyncio
-    async def test_master_ability_check_request(self):
-        communicator = WebsocketCommunicator(
-            self.application, f"/events/{self.game.id}/"
-        )
-        communicator.scope["user"] = self.master_user
-        communicator.scope["game_id"] = self.game.id
-        connected, _ = await communicator.connect()
-        assert connected
-
-        fake = Faker()
-        date = fake.date_time().isoformat()
-        message = fake.text(100)
-        game_event = {
-            "type": GameEventType.MASTER_ABILITY_CHECK_REQUEST,
-            "player_type": PlayerType.MASTER,
-            "date": date,
-            "message": message,
-            "origin": GameEventOrigin.SERVER_SIDE,
-        }
-        assert GameEvent(**game_event)
-
-        await communicator.send_json_to(game_event)
-        response = await communicator.receive_json_from()
-        assert response == game_event
-
-        await communicator.disconnect()
-
-    @pytest.mark.asyncio
-    async def test_player_choice(self):
+    async def test_message_from_player(self):
         communicator = WebsocketCommunicator(
             self.application, f"/events/{self.game.id}/"
         )
@@ -154,10 +70,94 @@ class TestGameEventsConsumer:
         date = fake.date_time().isoformat()
         message = fake.text(100)
         game_event = {
-            "type": GameEventType.PLAYER_CHOICE,
+            "type": GameEventType.MESSAGE,
             "player_type": PlayerType.PLAYER,
             "date": date,
             "message": message,
+        }
+        assert GameEvent(**game_event)
+
+        await communicator.send_json_to(game_event)
+        response = await communicator.receive_json_from()
+        assert response == game_event
+
+        await communicator.disconnect()
+
+    @pytest.mark.asyncio
+    async def test_quest_update(self):
+        communicator = WebsocketCommunicator(
+            self.application, f"/events/{self.game.id}/"
+        )
+        communicator.scope["user"] = self.master_user
+        communicator.scope["game_id"] = self.game.id
+        connected, _ = await communicator.connect()
+        assert connected
+
+        fake = Faker()
+        date = fake.date_time().isoformat()
+        message = "the Master updated the quest."
+        game_event = {
+            "type": GameEventType.QUEST_UPDATE,
+            "player_type": PlayerType.MASTER,
+            "date": date,
+            "message": message,
+            "origin": GameEventOrigin.SERVER_SIDE,
+        }
+        assert GameEvent(**game_event)
+
+        await communicator.send_json_to(game_event)
+        response = await communicator.receive_json_from()
+        assert response == game_event
+
+        await communicator.disconnect()
+
+    @pytest.mark.asyncio
+    async def test_game_start(self):
+        communicator = WebsocketCommunicator(
+            self.application, f"/events/{self.game.id}/"
+        )
+        communicator.scope["user"] = self.master_user
+        communicator.scope["game_id"] = self.game.id
+        connected, _ = await communicator.connect()
+        assert connected
+
+        fake = Faker()
+        date = fake.date_time().isoformat()
+        message = "the game started."
+        game_event = {
+            "type": GameEventType.GAME_START,
+            "player_type": PlayerType.MASTER,
+            "date": date,
+            "message": message,
+            "origin": GameEventOrigin.SERVER_SIDE,
+        }
+        assert GameEvent(**game_event)
+
+        await communicator.send_json_to(game_event)
+        response = await communicator.receive_json_from()
+        assert response == game_event
+
+        await communicator.disconnect()
+
+    @pytest.mark.asyncio
+    async def test_ability_check_request(self):
+        communicator = WebsocketCommunicator(
+            self.application, f"/events/{self.game.id}/"
+        )
+        communicator.scope["user"] = self.master_user
+        communicator.scope["game_id"] = self.game.id
+        connected, _ = await communicator.connect()
+        assert connected
+
+        fake = Faker()
+        date = fake.date_time().isoformat()
+        message = fake.text(100)
+        game_event = {
+            "type": GameEventType.ABILITY_CHECK_REQUEST,
+            "player_type": PlayerType.MASTER,
+            "date": date,
+            "message": message,
+            "origin": GameEventOrigin.SERVER_SIDE,
         }
         assert GameEvent(**game_event)
 
@@ -171,7 +171,7 @@ class TestGameEventsConsumer:
         return DiceLaunch.objects.last()
 
     @pytest.mark.asyncio
-    async def test_player_dice_launch(self):
+    async def test_dice_launch(self):
         communicator = WebsocketCommunicator(
             self.application, f"/events/{self.game.id}/"
         )
@@ -184,7 +184,7 @@ class TestGameEventsConsumer:
         date = fake.date_time().isoformat()
         message = fake.text(100)
         game_event = {
-            "type": GameEventType.PLAYER_DICE_LAUNCH,
+            "type": GameEventType.DICE_LAUNCH,
             "player_type": PlayerType.PLAYER,
             "date": date,
             "message": message,
@@ -194,7 +194,7 @@ class TestGameEventsConsumer:
         await communicator.send_json_to(game_event)
         response = await communicator.receive_json_from()
         expected_json = {
-            "type": GameEventType.PLAYER_DICE_LAUNCH,
+            "type": GameEventType.DICE_LAUNCH,
             "player_type": PlayerType.PLAYER,
             "date": date,
             "message": ANY,

@@ -85,7 +85,7 @@ class GameStartView(UserPassesTestMixin, GameStatusControlMixin):
             send_to_channel(
                 game_id=game.id,
                 game_event={
-                    "type": GameEventType.MASTER_GAME_START,
+                    "type": GameEventType.GAME_START,
                     "player_type": PlayerType.MASTER,
                     "date": event.date.isoformat(),
                     "message": event.message,
@@ -127,7 +127,7 @@ class QuestCreateView(UserPassesTestMixin, FormView, EventContextMixin):
         send_to_channel(
             game_id=self.game.id,
             game_event={
-                "type": GameEventType.MASTER_QUEST_UPDATE,
+                "type": GameEventType.QUEST_UPDATE,
                 "player_type": PlayerType.MASTER,
                 "date": quest.date.isoformat(),
                 "message": quest.message,
@@ -292,7 +292,7 @@ class AbilityCheckRequestView(
         send_to_channel(
             game_id=self.game.id,
             game_event={
-                "type": GameEventType.MASTER_ABILITY_CHECK_REQUEST,
+                "type": GameEventType.ABILITY_CHECK_REQUEST,
                 "player_type": PlayerType.MASTER,
                 "date": ability_check_request.date.isoformat(),
                 "message": ability_check_request.message,
