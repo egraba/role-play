@@ -87,8 +87,8 @@ class GameStartView(UserPassesTestMixin, GameStatusControlMixin):
                 game_event={
                     "type": GameEventType.MASTER_GAME_START,
                     "player_type": PlayerType.MASTER,
-                    "event_date": event.date.isoformat(),
-                    "event_message": event.message,
+                    "date": event.date.isoformat(),
+                    "message": event.message,
                 },
             )
 
@@ -129,8 +129,8 @@ class QuestCreateView(UserPassesTestMixin, FormView, EventContextMixin):
             game_event={
                 "type": GameEventType.MASTER_QUEST_UPDATE,
                 "player_type": PlayerType.MASTER,
-                "event_date": quest.date.isoformat(),
-                "event_message": quest.message,
+                "date": quest.date.isoformat(),
+                "message": quest.message,
             },
         )
 
@@ -294,8 +294,8 @@ class AbilityCheckRequestView(
             game_event={
                 "type": GameEventType.MASTER_ABILITY_CHECK_REQUEST,
                 "player_type": PlayerType.MASTER,
-                "event_date": ability_check_request.date.isoformat(),
-                "event_message": ability_check_request.message,
+                "date": ability_check_request.date.isoformat(),
+                "message": ability_check_request.message,
             },
         )
 

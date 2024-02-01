@@ -46,8 +46,8 @@ class GameEventsConsumer(JsonWebsocketConsumer):
         # in the database, so the event has just to be sent to the group.
         # If the event comes from the client, the data needs to be stored in the database,
         # when it is received by the server.
-        if "event_origin" in content:
-            if content["event_origin"] == GameEventOrigin.SERVER_SIDE:
+        if "origin" in content:
+            if content["origin"] == GameEventOrigin.SERVER_SIDE:
                 pass
 
         else:
@@ -65,25 +65,25 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                 case GameEventType.MASTER_INSTRUCTION:
                     store_master_instruction.delay(
                         game_id=self.game.id,
-                        date=content["event_date"],
-                        event_message=f"the Master said: {content['event_message']}",
+                        date=content["date"],
+                        message=f"the Master said: {content['message']}",
                     )
                 case GameEventType.PLAYER_CHOICE:
                     message = f"[{ self.user }] said: "
                     store_player_choice.delay(
                         game_id=self.game.id,
-                        date=content["event_date"],
+                        date=content["date"],
                         message=message,
                         character_id=character.id,
-                        selection=content["event_message"],
+                        selection=content["message"],
                     )
                 case GameEventType.PLAYER_DICE_LAUNCH:
                     message = f"[{ self.user }] launched a dice: "
                     score = Dice("d20").roll()
-                    content["event_message"] = score
+                    content["message"] = score
                     store_player_dice_launch.delay(
                         game_id=self.game.id,
-                        date=content["event_date"],
+                        date=content["date"],
                         message=message,
                         character_id=character.id,
                         score=score,

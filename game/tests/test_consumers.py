@@ -40,13 +40,13 @@ class TestGameEventsConsumer:
         assert connected
 
         fake = Faker()
-        event_date = fake.date_time().isoformat()
-        event_message = fake.text(100)
+        date = fake.date_time().isoformat()
+        message = fake.text(100)
         game_event = {
             "type": GameEventType.MASTER_INSTRUCTION,
             "player_type": PlayerType.MASTER,
-            "event_date": event_date,
-            "event_message": event_message,
+            "date": date,
+            "message": message,
         }
         assert GameEvent(**game_event)
 
@@ -67,14 +67,14 @@ class TestGameEventsConsumer:
         assert connected
 
         fake = Faker()
-        event_date = fake.date_time().isoformat()
-        event_message = "the Master updated the quest."
+        date = fake.date_time().isoformat()
+        message = "the Master updated the quest."
         game_event = {
             "type": GameEventType.MASTER_QUEST_UPDATE,
             "player_type": PlayerType.MASTER,
-            "event_date": event_date,
-            "event_message": event_message,
-            "event_origin": GameEventOrigin.SERVER_SIDE,
+            "date": date,
+            "message": message,
+            "origin": GameEventOrigin.SERVER_SIDE,
         }
         assert GameEvent(**game_event)
 
@@ -95,14 +95,14 @@ class TestGameEventsConsumer:
         assert connected
 
         fake = Faker()
-        event_date = fake.date_time().isoformat()
-        event_message = "the game started."
+        date = fake.date_time().isoformat()
+        message = "the game started."
         game_event = {
             "type": GameEventType.MASTER_GAME_START,
             "player_type": PlayerType.MASTER,
-            "event_date": event_date,
-            "event_message": event_message,
-            "event_origin": GameEventOrigin.SERVER_SIDE,
+            "date": date,
+            "message": message,
+            "origin": GameEventOrigin.SERVER_SIDE,
         }
         assert GameEvent(**game_event)
 
@@ -123,14 +123,14 @@ class TestGameEventsConsumer:
         assert connected
 
         fake = Faker()
-        event_date = fake.date_time().isoformat()
-        event_message = fake.text(100)
+        date = fake.date_time().isoformat()
+        message = fake.text(100)
         game_event = {
             "type": GameEventType.MASTER_ABILITY_CHECK_REQUEST,
             "player_type": PlayerType.MASTER,
-            "event_date": event_date,
-            "event_message": event_message,
-            "event_origin": GameEventOrigin.SERVER_SIDE,
+            "date": date,
+            "message": message,
+            "origin": GameEventOrigin.SERVER_SIDE,
         }
         assert GameEvent(**game_event)
 
@@ -151,13 +151,13 @@ class TestGameEventsConsumer:
         assert connected
 
         fake = Faker()
-        event_date = fake.date_time().isoformat()
-        event_message = fake.text(100)
+        date = fake.date_time().isoformat()
+        message = fake.text(100)
         game_event = {
             "type": GameEventType.PLAYER_CHOICE,
             "player_type": PlayerType.PLAYER,
-            "event_date": event_date,
-            "event_message": event_message,
+            "date": date,
+            "message": message,
         }
         assert GameEvent(**game_event)
 
@@ -181,13 +181,13 @@ class TestGameEventsConsumer:
         assert connected
 
         fake = Faker()
-        event_date = fake.date_time().isoformat()
-        event_message = fake.text(100)
+        date = fake.date_time().isoformat()
+        message = fake.text(100)
         game_event = {
             "type": GameEventType.PLAYER_DICE_LAUNCH,
             "player_type": PlayerType.PLAYER,
-            "event_date": event_date,
-            "event_message": event_message,
+            "date": date,
+            "message": message,
         }
         assert GameEvent(**game_event)
 
@@ -196,8 +196,8 @@ class TestGameEventsConsumer:
         expected_json = {
             "type": GameEventType.PLAYER_DICE_LAUNCH,
             "player_type": PlayerType.PLAYER,
-            "event_date": event_date,
-            "event_message": ANY,
+            "date": date,
+            "message": ANY,
         }
         assert response == expected_json
 

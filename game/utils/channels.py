@@ -44,10 +44,10 @@ class GameEvent(BaseModel):
     """Game events are all the communication events that occur during a game."""
 
     type: GameEventType  # "type" field is necessary for Django channels.
-    event_date: datetime
+    date: datetime
     player_type: PlayerType
-    event_message: str
-    event_origin: Optional[GameEventOrigin] = None
+    message: str
+    origin: Optional[GameEventOrigin] = None
 
 
 class GameEventError(TypeError):
@@ -65,7 +65,7 @@ def send_to_channel(game_id: int, game_event: dict[GameEvent]) -> None:
         game_event (dict[GameEvent]): Game event.
     """
     # All the events sent by this function are server-side events.
-    game_event["event_origin"] = GameEventOrigin.SERVER_SIDE
+    game_event["origin"] = GameEventOrigin.SERVER_SIDE
     try:
         GameEvent(**game_event)
     except ValidationError as e:
