@@ -18,6 +18,8 @@ from utils.dice import Dice
 class GameEventsConsumer(JsonWebsocketConsumer):
     def connect(self):
         self.user = self.scope["user"]
+        # The game ID has to be retrieved to create a channel.
+        # There is one room per game.
         game_id = self.scope["url_route"]["kwargs"]["game_id"]
         try:
             self.game = cache.get(f"game{game_id}")
@@ -27,6 +29,7 @@ class GameEventsConsumer(JsonWebsocketConsumer):
         except ObjectDoesNotExist:
             raise DenyConnection(f"Game [{game_id}] not found...")
             self.close()
+
         self.game_group_name = f"game_{self.game.id}_events"
         async_to_sync(self.channel_layer.group_add)(
             self.game_group_name, self.channel_name
@@ -39,17 +42,16 @@ class GameEventsConsumer(JsonWebsocketConsumer):
         )
 
     def receive_json(self, content):
-        # Check the origin of the event.
-        #
         # If the event comes from the server, the related data has already been stored
         # in the database, so the event has just to be sent to the group.
-        #
-        # If the event comes from the client, the data needs to be stored in the database.
+        # If the event comes from the client, the data needs to be stored in the database,
+        # when it is received by the server.
         if "event_origin" in content:
             if content["event_origin"] == GameEventOrigin.SERVER_SIDE:
                 pass
 
         else:
+            # Make sure that the character sending an event is the user's one.
             if content["player_type"] == PlayerType.PLAYER:
                 try:
                     character = Character.objects.get(user=self.user)
