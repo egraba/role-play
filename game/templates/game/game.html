@@ -35,14 +35,10 @@
                         <input id="message-input" type="text">
                     </p>
                     <div class="rpgui-center">
-                        {% if game.master.user == user %}
-                            <button id="master-message-submit" class="rpgui-button" type="submit">
-                                <p>Send</p>
-                            </button>
-                        {% else %}
-                            <button id="player-message-submit" class="rpgui-button" type="submit">
-                                <p>Send</p>
-                            </button>
+                        <button id="message-submit" class="rpgui-button" type="submit">
+                            <p>Send</p>
+                        </button>
+                        {% if game.master.user != user %}
                             <button id="dice-launch-submit" class="rpgui-button" type="submit">
                                 <p>Launch dice</p>
                             </button>
@@ -126,9 +122,8 @@
         const eventsSocket = new WebSocket(url);
         const eventList = document.getElementById('event-list');
         const input = document.getElementById('message-input');
-        const masterSendButton = document.getElementById('master-message-submit');
-        const playerSendButton = document.getElementById('player-message-submit');
-        const playerDiceLaunchButton = document.getElementById('dice-launch-submit');
+        const sendButton = document.getElementById('message-submit');
+        const diceLaunchButton = document.getElementById('dice-launch-submit');
 
         const MESSAGE = "message";
         const QUEST_UPDATE = "quest.update";
@@ -136,7 +131,7 @@
 
         eventsSocket.onmessage = function(event) {
             message = JSON.parse(event.data)
-            eventList.innerHTML += '<p>' + moment(message["date"]).fromNow() + ', ' + message["content"] + '</p>'
+            eventList.innerHTML += '<p>' + moment(message["date"]).fromNow() + ', ' + message["message"] + '</p>'
             lines = eventList.innerHTML.split('</p>');
             if (lines.length > 10) {
                 lines.splice(0, 1);
@@ -151,13 +146,24 @@
             console.error('Events socket closed unexpectedly...');
         };
 
-        if (masterSendButton !== null) {
-            masterSendButton.addEventListener('click', function(event) {
+        var player_type;
+        const MASTER = "master";
+        const PLAYER = "player";
+        if ("{{ game.master.user }}" == "{{ user }}") {
+            player_type = MASTER;
+        } else {
+            player_type = PLAYER;
+        }
+
+        if (sendButton !== null) {
+            sendButton.addEventListener('click', function(event) {
                 const message = input.value;
                 if (message) {
                     eventsSocket.send(JSON.stringify({
-                        'type': MASTER_INSTRUCTION,
-                        'content': message,
+                        'type': MESSAGE,
+                        'date': Date.now(),
+                        'player_type': player_type,
+                        'message': message,
                     }));
                     input.value = '';
                     input.focus();
@@ -167,36 +173,15 @@
             input.addEventListener('keypress', function(event) {
                 if (event.key === 'Enter') {
                     event.preventDefault();
-                    masterSendButton.click();
+                    sendButton.click();
                 }
             });
         }
 
-        if (playerSendButton !== null) {
-            playerSendButton.addEventListener('click', function(event) {
-                const message = input.value;
-                if (message) {
-                    eventsSocket.send(JSON.stringify({
-                        'type': PLAYER_CHOICE,
-                        'content': message
-                    }));
-                    input.value = '';
-                    input.focus();
-                }
-            });
-
-            input.addEventListener('keypress', function(event) {
-                if (event.key === 'Enter') {
-                    event.preventDefault();
-                    playerSendButton.click();
-                }
-            });
-        }
-
-        if (playerDiceLaunchButton !== null) {
-            playerDiceLaunchButton.addEventListener('click', function(event) {
+        if (diceLaunchButton !== null) {
+            diceLaunchButton.addEventListener('click', function(event) {
                 eventsSocket.send(JSON.stringify({
-                    'type': PLAYER_DICE_LAUNCH,
+                    'type': DICE_LAUNCH,
                 }));
             });
         }
