@@ -81,7 +81,16 @@ class GameStartView(UserPassesTestMixin, GameStatusControlMixin):
             event.date = timezone.now()
             event.message = "the game started."
             event.save()
-            send_to_channel(game.id, GameEventType.MASTER_GAME_START, "")
+
+            send_to_channel(
+                game_id=game.id,
+                game_event={
+                    "type": GameEventType.MASTER_GAME_START,
+                    "event_date": event.date.isoformat(),
+                    "event_message": event.message,
+                },
+            )
+
         except TransitionNotAllowed:
             return HttpResponseRedirect(reverse("game-start-error", args=(game.id,)))
         return HttpResponseRedirect(game.get_absolute_url())
@@ -113,13 +122,23 @@ class QuestCreateView(UserPassesTestMixin, FormView, EventContextMixin):
         quest.message = "the Master updated the campaign."
         quest.content = form.cleaned_data["content"]
         quest.save()
-        send_to_channel(self.game.id, GameEventType.MASTER_QUEST_UPDATE, "")
+
+        send_to_channel(
+            game_id=self.game.id,
+            game_event={
+                "type": GameEventType.MASTER_QUEST_UPDATE,
+                "event_date": quest.date.isoformat(),
+                "event_message": quest.message,
+            },
+        )
+
         send_email.delay(
             subject=f"[{self.game}] The Master updated the quest.",
             message=f"The Master said:\n{quest.content}",
             from_email=self.game.master.user.email,
             recipient_list=get_players_emails(game=self.game),
         )
+
         return super().form_valid(form)
 
 
