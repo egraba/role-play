@@ -7,19 +7,6 @@ from channels.layers import get_channel_layer
 from pydantic import BaseModel, ValidationError
 
 
-class GameEventOrigin(IntFlag):
-    """
-    Game event origin.
-
-    These events can be initiated from the client side (e.g. via a browser),
-    or via the server (e.g. via a form).
-
-    """
-
-    CLIENT_SIDE = auto()
-    SERVER_SIDE = auto()
-
-
 class GameEventType(StrEnum):
     """
     Game event type.
@@ -39,6 +26,31 @@ class GameEventType(StrEnum):
     PLAYER_DICE_LAUNCH = "player.dice.launch"
 
 
+class PlayerType(StrEnum):
+    """
+    Player type.
+
+    Supported types are Character's Player and Dungeon Master.
+
+    """
+
+    MASTER = "master"
+    PLAYER = "player"
+
+
+class GameEventOrigin(IntFlag):
+    """
+    Game event origin.
+
+    These events can be initiated from the client side (e.g. via a browser),
+    or via the server (e.g. via a form).
+
+    """
+
+    CLIENT_SIDE = auto()
+    SERVER_SIDE = auto()
+
+
 class GameEvent(BaseModel):
     """
     Game event.
@@ -49,6 +61,7 @@ class GameEvent(BaseModel):
 
     type: GameEventType  # "type" field is necessary for Django channels.
     event_date: datetime
+    player_type: PlayerType
     event_message: str
     event_origin: Optional[GameEventOrigin] = None
 

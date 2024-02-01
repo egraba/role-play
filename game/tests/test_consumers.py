@@ -10,7 +10,7 @@ from faker import Faker
 from character.tests.factories import CharacterFactory
 from game.consumers import GameEventsConsumer
 from game.models.events import DiceLaunch
-from game.utils.channels import GameEvent, GameEventOrigin, GameEventType
+from game.utils.channels import GameEvent, GameEventOrigin, GameEventType, PlayerType
 
 from .factories import GameFactory
 
@@ -44,6 +44,7 @@ class TestGameEventsConsumer:
         event_message = fake.text(100)
         game_event = {
             "type": GameEventType.MASTER_INSTRUCTION,
+            "player_type": PlayerType.MASTER,
             "event_date": event_date,
             "event_message": event_message,
         }
@@ -70,6 +71,7 @@ class TestGameEventsConsumer:
         event_message = "the Master updated the quest."
         game_event = {
             "type": GameEventType.MASTER_QUEST_UPDATE,
+            "player_type": PlayerType.MASTER,
             "event_date": event_date,
             "event_message": event_message,
             "event_origin": GameEventOrigin.SERVER_SIDE,
@@ -97,6 +99,7 @@ class TestGameEventsConsumer:
         event_message = "the game started."
         game_event = {
             "type": GameEventType.MASTER_GAME_START,
+            "player_type": PlayerType.MASTER,
             "event_date": event_date,
             "event_message": event_message,
             "event_origin": GameEventOrigin.SERVER_SIDE,
@@ -124,6 +127,7 @@ class TestGameEventsConsumer:
         event_message = fake.text(100)
         game_event = {
             "type": GameEventType.MASTER_ABILITY_CHECK_REQUEST,
+            "player_type": PlayerType.MASTER,
             "event_date": event_date,
             "event_message": event_message,
             "event_origin": GameEventOrigin.SERVER_SIDE,
@@ -151,6 +155,7 @@ class TestGameEventsConsumer:
         event_message = fake.text(100)
         game_event = {
             "type": GameEventType.PLAYER_CHOICE,
+            "player_type": PlayerType.PLAYER,
             "event_date": event_date,
             "event_message": event_message,
         }
@@ -180,6 +185,7 @@ class TestGameEventsConsumer:
         event_message = fake.text(100)
         game_event = {
             "type": GameEventType.PLAYER_DICE_LAUNCH,
+            "player_type": PlayerType.PLAYER,
             "event_date": event_date,
             "event_message": event_message,
         }
@@ -189,6 +195,7 @@ class TestGameEventsConsumer:
         response = await communicator.receive_json_from()
         expected_json = {
             "type": GameEventType.PLAYER_DICE_LAUNCH,
+            "player_type": PlayerType.PLAYER,
             "event_date": event_date,
             "event_message": ANY,
         }

@@ -18,7 +18,7 @@ from game.forms import (
 from game.models.events import Damage, Event, Instruction, Quest, XpIncrease
 from game.models.game import Player
 from game.tasks import send_email
-from game.utils.channels import GameEventType, send_to_channel
+from game.utils.channels import GameEventType, PlayerType, send_to_channel
 from game.utils.emails import get_players_emails
 from game.views.mixins import (
     EventContextMixin,
@@ -86,6 +86,7 @@ class GameStartView(UserPassesTestMixin, GameStatusControlMixin):
                 game_id=game.id,
                 game_event={
                     "type": GameEventType.MASTER_GAME_START,
+                    "player_type": PlayerType.MASTER,
                     "event_date": event.date.isoformat(),
                     "event_message": event.message,
                 },
@@ -127,6 +128,7 @@ class QuestCreateView(UserPassesTestMixin, FormView, EventContextMixin):
             game_id=self.game.id,
             game_event={
                 "type": GameEventType.MASTER_QUEST_UPDATE,
+                "player_type": PlayerType.MASTER,
                 "event_date": quest.date.isoformat(),
                 "event_message": quest.message,
             },
@@ -291,6 +293,7 @@ class AbilityCheckRequestView(
             game_id=self.game.id,
             game_event={
                 "type": GameEventType.MASTER_ABILITY_CHECK_REQUEST,
+                "player_type": PlayerType.MASTER,
                 "event_date": ability_check_request.date.isoformat(),
                 "event_message": ability_check_request.message,
             },
