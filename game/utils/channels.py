@@ -56,9 +56,8 @@ class GameEventError(TypeError):
     pass
 
 
-def send_to_chat(game_id: int, game_event: dict[GameEvent]) -> None:
-    """Send game events to the game chat.
-
+def send_to_channel(game_id: int, game_event: dict[GameEvent]) -> None:
+    """
     Send game events to the game channel layer.
 
     Args:

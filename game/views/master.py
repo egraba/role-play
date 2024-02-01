@@ -18,7 +18,7 @@ from game.forms import (
 from game.models.events import Damage, Event, Instruction, Quest, XpIncrease
 from game.models.game import Player
 from game.tasks import send_email
-from game.utils.channels import GameEventType, send_to_chat
+from game.utils.channels import GameEventType, send_to_channel
 from game.utils.emails import get_players_emails
 from game.views.mixins import (
     EventContextMixin,
@@ -81,7 +81,7 @@ class GameStartView(UserPassesTestMixin, GameStatusControlMixin):
             event.date = timezone.now()
             event.message = "the game started."
             event.save()
-            send_to_chat(game.id, GameEventType.MASTER_GAME_START, "")
+            send_to_channel(game.id, GameEventType.MASTER_GAME_START, "")
         except TransitionNotAllowed:
             return HttpResponseRedirect(reverse("game-start-error", args=(game.id,)))
         return HttpResponseRedirect(game.get_absolute_url())
@@ -113,7 +113,7 @@ class QuestCreateView(UserPassesTestMixin, FormView, EventContextMixin):
         quest.message = "the Master updated the campaign."
         quest.content = form.cleaned_data["content"]
         quest.save()
-        send_to_chat(self.game.id, GameEventType.MASTER_QUEST_UPDATE, "")
+        send_to_channel(self.game.id, GameEventType.MASTER_QUEST_UPDATE, "")
         send_email.delay(
             subject=f"[{self.game}] The Master updated the quest.",
             message=f"The Master said:\n{quest.content}",
@@ -268,7 +268,7 @@ class AbilityCheckRequestView(
             Difficulty: {ability_check_request.get_difficulty_class_display()}."
         ability_check_request.save()
 
-        send_to_chat(
+        send_to_channel(
             game_id=self.game.id,
             game_event={
                 "type": GameEventType.MASTER_ABILITY_CHECK_REQUEST,
