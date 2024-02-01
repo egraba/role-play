@@ -11,7 +11,7 @@ from game.tasks import (
     store_player_choice,
     store_player_dice_launch,
 )
-from game.utils.channels import GameEventOrigin, GameEventType
+from game.utils.channels import GameEventOrigin, GameEventType, PlayerType
 from utils.dice import Dice
 
 
@@ -50,6 +50,15 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                 pass
 
         else:
+            if content["player_type"] == PlayerType.PLAYER:
+                try:
+                    character = Character.objects.get(user=self.user)
+                except ObjectDoesNotExist:
+                    raise DenyConnection(
+                        f"Character of user [{self.user}] not found..."
+                    )
+                    self.close()
+
             match content["type"]:
                 case GameEventType.MASTER_INSTRUCTION:
                     store_master_instruction.delay(
@@ -58,13 +67,6 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                         event_message=f"the Master said: {content['event_message']}",
                     )
                 case GameEventType.PLAYER_CHOICE:
-                    try:
-                        character = Character.objects.get(user=self.user)
-                    except ObjectDoesNotExist:
-                        raise DenyConnection(
-                            f"Character of user [{self.user}] not found..."
-                        )
-                        self.close()
                     message = f"[{ self.user }] said: "
                     store_player_choice.delay(
                         game_id=self.game.id,
@@ -74,13 +76,6 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                         selection=content["event_message"],
                     )
                 case GameEventType.PLAYER_DICE_LAUNCH:
-                    try:
-                        character = Character.objects.get(user=self.user)
-                    except ObjectDoesNotExist:
-                        raise DenyConnection(
-                            f"Character of user [{self.user}] not found..."
-                        )
-                        self.close()
                     message = f"[{ self.user }] launched a dice: "
                     score = Dice("d20").roll()
                     content["event_message"] = score
