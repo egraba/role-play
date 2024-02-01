@@ -9,13 +9,10 @@ from pydantic import BaseModel, ValidationError
 
 class GameEventType(StrEnum):
     """
-    Game event type.
-
-    The type corresponds to a specific action that can be done during a game.
+    The game event type corresponds to a specific action that can be done during a game.
 
     The events prefixed by "MASTER" are done by the Dungeon Master (DM), while
     the events prefixed by "PLAYER" are done by the players.
-
     """
 
     MASTER_INSTRUCTION = "master.instruction"
@@ -27,12 +24,7 @@ class GameEventType(StrEnum):
 
 
 class PlayerType(StrEnum):
-    """
-    Player type.
-
-    Supported types are Character's Player and Dungeon Master.
-
-    """
+    """Type of player in a game."""
 
     MASTER = "master"
     PLAYER = "player"
@@ -40,11 +32,8 @@ class PlayerType(StrEnum):
 
 class GameEventOrigin(IntFlag):
     """
-    Game event origin.
-
-    These events can be initiated from the client side (e.g. via a browser),
+    Game events can be initiated from the client side (e.g. via a browser),
     or via the server (e.g. via a form).
-
     """
 
     CLIENT_SIDE = auto()
@@ -52,12 +41,7 @@ class GameEventOrigin(IntFlag):
 
 
 class GameEvent(BaseModel):
-    """
-    Game event.
-
-    Game events are all the communication events that occur during a game.
-
-    """
+    """Game events are all the communication events that occur during a game."""
 
     type: GameEventType  # "type" field is necessary for Django channels.
     event_date: datetime
@@ -79,7 +63,6 @@ def send_to_channel(game_id: int, game_event: dict[GameEvent]) -> None:
     Args:
         game_id (int): Game identifier.
         game_event (dict[GameEvent]): Game event.
-
     """
     # All the events sent by this function are server-side events.
     game_event["event_origin"] = GameEventOrigin.SERVER_SIDE
