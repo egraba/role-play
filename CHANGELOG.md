@@ -6,6 +6,7 @@
 * DnD: implement ability checks
 
 ### Changed
+* Improve docstrings style
 * Make clearer django migrate command in invoke tasks
 * `populatedb` command is now idempotent
 
