@@ -3,7 +3,7 @@ from django.core.cache import cache
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
-from django.views.generic import CreateView, FormView, ListView, UpdateView
+from django.views.generic import FormView, ListView, UpdateView
 from django_fsm import TransitionNotAllowed
 
 from character.models.character import Character
@@ -15,7 +15,7 @@ from game.forms import (
     QuestCreateForm,
     XpIncreaseForm,
 )
-from game.models.events import Damage, Event, Instruction, Quest, XpIncrease
+from game.models.events import Damage, Event, Quest, XpIncrease
 from game.models.game import Player
 from game.tasks import send_email
 from game.utils.channels import send_to_channel
@@ -143,25 +143,6 @@ class QuestCreateView(UserPassesTestMixin, FormView, EventContextMixin):
             recipient_list=get_players_emails(game=self.game),
         )
 
-        return super().form_valid(form)
-
-
-class InstructionCreateView(UserPassesTestMixin, CreateView, EventContextMixin):
-    model = Instruction
-    fields = ["content"]
-    template_name = "game/instruction_create.html"
-
-    def test_func(self):
-        return self.is_user_master()
-
-    def get_success_url(self):
-        return self.game.get_absolute_url()
-
-    def form_valid(self, form):
-        instruction = form.save(commit=False)
-        instruction.game = self.game
-        instruction.message = "The Master gave an instruction."
-        instruction.save()
         return super().form_valid(form)
 
 

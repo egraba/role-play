@@ -27,13 +27,6 @@ class Quest(Event):
         return self.content
 
 
-class Instruction(Event):
-    content = models.TextField(max_length=1000)
-
-    def __str__(self):
-        return self.content
-
-
 class Action(Event):
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
 

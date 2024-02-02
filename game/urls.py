@@ -42,11 +42,6 @@ urlpatterns = [
         name="quest-create",
     ),
     path(
-        "<int:game_id>/create_instruction",
-        master.InstructionCreateView.as_view(),
-        name="instruction-create",
-    ),
-    path(
         "<int:game_id>/character/<int:character_id>/increase_xp",
         master.XpIncreaseView.as_view(),
         name="xpincrease-create",

@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.views.generic import CreateView, ListView, TemplateView
 
 from character.models.character import Character
-from game.models.events import Event, Instruction, Quest
+from game.models.events import Event, Quest
 from game.models.game import Game, Master, Player
 from game.views.mixins import GameContextMixin
 from master.models import Campaign
@@ -51,7 +51,6 @@ class GameView(LoginRequiredMixin, ListView, GameContextMixin):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["quest"] = Quest.objects.filter(game=self.game.id).last()
-        context["instruction"] = Instruction.objects.filter(game=self.game.id).last()
         context["character_list"] = Character.objects.filter(
             player__game=self.game.id
         ).order_by("name")
