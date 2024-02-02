@@ -61,6 +61,4 @@ class Action(Event):
 
 
 class AbilityCheck(Action):
-    ability_check_request = models.ForeignKey(
-        AbilityCheckRequest, on_delete=models.CASCADE
-    )
+    request = models.ForeignKey(AbilityCheckRequest, on_delete=models.CASCADE)
