@@ -1,5 +1,3 @@
-from unittest.mock import ANY
-
 import pytest
 from channels.routing import URLRouter
 from channels.testing import WebsocketCommunicator
@@ -9,7 +7,6 @@ from faker import Faker
 
 from character.tests.factories import CharacterFactory
 from game.consumers import GameEventsConsumer
-from game.models.events import DiceLaunch
 from game.schemas import GameEvent, GameEventOrigin, GameEventType, PlayerType
 
 from .factories import GameFactory
@@ -164,41 +161,5 @@ class TestGameEventsConsumer:
         await communicator.send_json_to(game_event)
         response = await communicator.receive_json_from()
         assert response == game_event
-
-        await communicator.disconnect()
-
-    def get_dice_launch_score(self):
-        return DiceLaunch.objects.last()
-
-    @pytest.mark.asyncio
-    async def test_dice_launch(self):
-        communicator = WebsocketCommunicator(
-            self.application, f"/events/{self.game.id}/"
-        )
-        communicator.scope["user"] = self.player_user
-        communicator.scope["game_id"] = self.game.id
-        connected, _ = await communicator.connect()
-        assert connected
-
-        fake = Faker()
-        date = fake.date_time().isoformat()
-        message = fake.text(100)
-        game_event = {
-            "type": GameEventType.DICE_LAUNCH,
-            "player_type": PlayerType.PLAYER,
-            "date": date,
-            "message": message,
-        }
-        assert GameEvent(**game_event)
-
-        await communicator.send_json_to(game_event)
-        response = await communicator.receive_json_from()
-        expected_json = {
-            "type": GameEventType.DICE_LAUNCH,
-            "player_type": PlayerType.PLAYER,
-            "date": date,
-            "message": ANY,
-        }
-        assert response == expected_json
 
         await communicator.disconnect()

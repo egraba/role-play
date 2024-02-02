@@ -1,7 +1,7 @@
 from django import forms
 
 from character.forms.character import CharacterCreateForm
-from game.forms import DamageForm, HealingForm, QuestCreateForm, XpIncreaseForm
+from game.forms import QuestCreateForm
 
 
 class TestQuestCreateForm:
@@ -12,24 +12,6 @@ class TestQuestCreateForm:
     def test_content_max_length(self):
         form = QuestCreateForm()
         assert form.fields["content"].max_length == 1000
-
-
-class TestXpIncreaseForm:
-    def test_xp_type(self):
-        form = XpIncreaseForm()
-        assert isinstance(form.fields["xp"].widget, forms.NumberInput)
-
-
-class TestDamageForm:
-    def test_hp_type(self):
-        form = DamageForm()
-        assert isinstance(form.fields["hp"].widget, forms.NumberInput)
-
-
-class TestHealingForm:
-    def test_hp_type(self):
-        form = HealingForm()
-        assert isinstance(form.fields["hp"].widget, forms.NumberInput)
 
 
 class TestCharacterCreateForm:

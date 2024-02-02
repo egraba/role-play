@@ -14,7 +14,6 @@ class GameEventType(StrEnum):
     GAME_START = "game.start"
     QUEST_UPDATE = "quest.update"
     ABILITY_CHECK_REQUEST = "ability.check.request"
-    DICE_LAUNCH = "dice.launch"
 
 
 class PlayerType(StrEnum):

@@ -38,11 +38,6 @@
                         <button id="message-submit" class="rpgui-button" type="submit">
                             <p>Send</p>
                         </button>
-                        {% if game.master.user != user %}
-                            <button id="dice-launch-submit" class="rpgui-button" type="submit">
-                                <p>Launch dice</p>
-                            </button>
-                        {% endif %}
                     </div>
                 </div>
             {% endif %}
@@ -123,11 +118,9 @@
         const eventList = document.getElementById('event-list');
         const input = document.getElementById('message-input');
         const sendButton = document.getElementById('message-submit');
-        const diceLaunchButton = document.getElementById('dice-launch-submit');
 
         const MESSAGE = "message";
         const QUEST_UPDATE = "quest.update";
-        const DICE_LAUNCH = "dice.launch";
 
         eventsSocket.onmessage = function(event) {
             message = JSON.parse(event.data)
@@ -177,14 +170,6 @@
                     event.preventDefault();
                     sendButton.click();
                 }
-            });
-        }
-
-        if (diceLaunchButton !== null) {
-            diceLaunchButton.addEventListener('click', function(event) {
-                eventsSocket.send(JSON.stringify({
-                    'type': DICE_LAUNCH,
-                }));
             });
         }
 

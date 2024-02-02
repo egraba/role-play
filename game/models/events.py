@@ -45,31 +45,3 @@ class AbilityCheckRequest(Action):
 
     ability_type = models.ForeignKey(AbilityType, on_delete=models.CASCADE)
     difficulty_class = models.SmallIntegerField(choices=DifficultyClass)
-
-
-class XpIncrease(Action):
-    xp = models.SmallIntegerField()
-
-    def __str__(self):
-        return str(self.xp)
-
-
-class Damage(Action):
-    hp = models.SmallIntegerField()
-
-    def __str__(self):
-        return str(self.hp)
-
-
-class Healing(Action):
-    hp = models.SmallIntegerField()
-
-    def __str__(self):
-        return str(self.hp)
-
-
-class DiceLaunch(Action):
-    score = models.SmallIntegerField()
-
-    def __str__(self):
-        return str(self.score)

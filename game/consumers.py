@@ -4,12 +4,10 @@ from channels.generic.websocket import JsonWebsocketConsumer
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 
-from character.models.character import Character
 from game.models.game import Game
-from game.tasks import store_message, store_player_dice_launch
-from utils.dice import Dice
+from game.tasks import store_message
 
-from .schemas import GameEventOrigin, GameEventType, PlayerType
+from .schemas import GameEventOrigin, GameEventType
 
 
 class GameEventsConsumer(JsonWebsocketConsumer):
@@ -48,34 +46,14 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                 pass
 
         else:
-            if content["player_type"] == PlayerType.PLAYER:
-                # Make sure that the character sending an event is the user's one.
-                try:
-                    character = Character.objects.get(user=self.user)
-                except ObjectDoesNotExist:
-                    raise DenyConnection(
-                        f"Character of user [{self.user}] not found..."
-                    )
-                    self.close()
+            if content["type"] == GameEventType.MESSAGE:
+                store_message.delay(
+                    game_id=self.game.id,
+                    date=content["date"],
+                    message=content["message"],
+                )
 
-            match content["type"]:
-                case GameEventType.MESSAGE:
-                    store_message.delay(
-                        game_id=self.game.id,
-                        date=content["date"],
-                        message=content["message"],
-                    )
-                case GameEventType.DICE_LAUNCH:
-                    message = f"[{ self.user }] launched a dice: "
-                    score = Dice("d20").roll()
-                    content["message"] = score
-                    store_player_dice_launch.delay(
-                        game_id=self.game.id,
-                        date=content["date"],
-                        message=message,
-                        character_id=character.id,
-                        score=score,
-                    )
+            pass
 
         async_to_sync(self.channel_layer.group_send)(self.game_group_name, content)
 

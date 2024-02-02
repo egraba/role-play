@@ -1,8 +1,7 @@
 import factory
 
-from game.models.events import DiceLaunch, Event, Quest
+from game.models.events import Event, Quest
 from game.models.game import Game, Master, Player
-from utils.dice import Dice
 from utils.factories import UserFactory
 
 
@@ -38,13 +37,6 @@ class EventFactory(factory.django.DjangoModelFactory):
 
     game = factory.SubFactory(GameFactory)
     message = factory.Faker("text", max_nb_chars=50)
-
-
-class DiceLaunchFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = DiceLaunch
-
-    score = Dice("d20").roll()
 
 
 class PlayerFactory(factory.django.DjangoModelFactory):
