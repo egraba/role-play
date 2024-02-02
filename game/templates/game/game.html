@@ -7,7 +7,7 @@
     <div class="rpgui-container framed">
         <h1 id="title" class="title">{{ game }}</h1>
         <div class="rpgui-center">
-            <a href={% url 'game-list' %}>- Return to games list -</a>
+            <a href="{% url 'game-list' %}">- Return to games list -</a>
         </div>
 
         <hr class="golden"/>
@@ -21,7 +21,7 @@
                 <h3>Game events</h3>
                 <div id="event-list">
                     {% for event in event_list reversed %}
-                        <p>{{ event.date|naturaltime }}, {{ event.message }} {{ event.instruction.content }} {{ event.choice.selection }} {{ event.dicelaunch.score }}</p>
+                        <p>{{ event.date|naturaltime }}, {{ event.message }}</p>
                     {% empty %}
                         <p>The campaign did not start yet...</p>
                     {% endfor %}
@@ -34,19 +34,15 @@
                         <label>Message:</label>
                         <input id="message-input" type="text">
                     </p>
-                    <div class="rpgui-center">
-                        {% if game.master.user == user %}
-                            <button id="master-message-submit" class="rpgui-button" type="submit">
-                                <p>Send</p>
+                    <div id="player-actions" class="rpgui-center">
+                        <button id="message-submit" class="rpgui-button" type="submit">
+                            <p>Send</p>
+                        </button>
+                        {% if player and ability_check_request %}
+                            <button id="ability-check-submit" class="rpgui-button" type="submit">
+                                <p>Perform ability check</p>
                             </button>
-                        {% else %}
-                            <button id="player-message-submit" class="rpgui-button" type="submit">
-                                <p>Send</p>
-                            </button>
-                            <button id="dice-launch-submit" class="rpgui-button" type="submit">
-                                <p>Launch dice</p>
-                            </button>
-                        {% endif %}
+                        {% endif%}
                     </div>
                 </div>
             {% endif %}
@@ -95,6 +91,11 @@
                                         <button class="rpgui-button"><p>Update the quest</p></button>
                                     </a>
                                 </p>
+                                <p>
+                                    <a href={% url 'ability-check-request-create' game.id %}>
+                                        <button class="rpgui-button"><p>Ask for ability check</p></button>
+                                    </a>
+                                </p>
                             {% endif %}
                         </div>
                     </div>
@@ -121,20 +122,30 @@
         const eventsSocket = new WebSocket(url);
         const eventList = document.getElementById('event-list');
         const input = document.getElementById('message-input');
-        const masterSendButton = document.getElementById('master-message-submit');
-        const playerSendButton = document.getElementById('player-message-submit');
-        const playerDiceLaunchButton = document.getElementById('dice-launch-submit');
+        const sendButton = document.getElementById('message-submit');
+        const abilityCheckButton = document.getElementById('ability-check-submit');
+
+        const MESSAGE = "message";
+        const QUEST_UPDATE = "quest.update";
+        const ABILITY_CHECK_REQUEST = "ability.check.request";
+        const ABILITY_CHECK = "ability.check";
+        const ABILITY_CHECK_RESULT = "ability.check.result";
 
         eventsSocket.onmessage = function(event) {
             message = JSON.parse(event.data)
-            eventList.innerHTML += '<p>' + moment(message["date"]).fromNow() + ', ' + message["message"] + message["content"] + '</p>'
+            eventList.innerHTML += '<p>' + moment(message["date"]).fromNow() + ', ' + message["message"] + '</p>'
             lines = eventList.innerHTML.split('</p>');
             if (lines.length > 10) {
                 lines.splice(0, 1);
                 eventList.innerHTML = lines.join('\n');
             }
-            if (message["type"] === "master.quest") {
+            if (message["type"] === QUEST_UPDATE) {
                 $("#quest").load(" #quest > *");
+            }
+            if (message["type"] === ABILITY_CHECK_REQUEST || message["type"] === ABILITY_CHECK_RESULT) {
+                // The full page has to be reloaded, otherwise clicking on the button
+                // triggers no action.
+                location.reload();
             }
         };
 
@@ -142,13 +153,26 @@
             console.error('Events socket closed unexpectedly...');
         };
 
-        if (masterSendButton !== null) {
-            masterSendButton.addEventListener('click', function(event) {
-                const message = input.value;
-                if (message) {
+        var player_type;
+        const MASTER = "master";
+        const PLAYER = "player";
+        if ("{{ game.master.user }}" == "{{ user }}") {
+            player_type = MASTER;
+            senderStr = "the Master";
+        } else {
+            player_type = PLAYER;
+            senderStr = "[{{ user }}]";
+        }
+
+        if (sendButton !== null) {
+            sendButton.addEventListener('click', function(event) {
+                const userInput = input.value;
+                if (userInput) {
                     eventsSocket.send(JSON.stringify({
-                        'type': 'master.instruction',
-                        'content': message,
+                        'type': MESSAGE,
+                        'date': Date.now(),
+                        'player_type': player_type,
+                        'message': senderStr + ' said: ' + userInput,
                     }));
                     input.value = '';
                     input.focus();
@@ -158,36 +182,18 @@
             input.addEventListener('keypress', function(event) {
                 if (event.key === 'Enter') {
                     event.preventDefault();
-                    masterSendButton.click();
+                    sendButton.click();
                 }
             });
         }
 
-        if (playerSendButton !== null) {
-            playerSendButton.addEventListener('click', function(event) {
-                const message = input.value;
-                if (message) {
-                    eventsSocket.send(JSON.stringify({
-                        'type': 'player.choice',
-                        'content': message
-                    }));
-                    input.value = '';
-                    input.focus();
-                }
-            });
-
-            input.addEventListener('keypress', function(event) {
-                if (event.key === 'Enter') {
-                    event.preventDefault();
-                    playerSendButton.click();
-                }
-            });
-        }
-
-        if (playerDiceLaunchButton !== null) {
-            playerDiceLaunchButton.addEventListener('click', function(event) {
+        if (abilityCheckButton !== null) {
+            abilityCheckButton.addEventListener('click', function(event) {
                 eventsSocket.send(JSON.stringify({
-                    'type': 'player.dice.launch',
+                    'type': ABILITY_CHECK,
+                    'date': Date.now(),
+                    'player_type': PLAYER,
+                    'message': senderStr + ' performed an ability check!',
                 }));
             });
         }

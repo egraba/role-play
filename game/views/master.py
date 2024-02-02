@@ -1,24 +1,25 @@
-from asgiref.sync import async_to_sync
-from channels.layers import get_channel_layer
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.cache import cache
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
-from django.views.generic import CreateView, FormView, ListView, UpdateView
+from django.views.generic import FormView, ListView, UpdateView
 from django_fsm import TransitionNotAllowed
 
 from character.models.character import Character
-from character.views.mixins import CharacterContextMixin
-from game.forms import DamageForm, HealingForm, QuestCreateForm, XpIncreaseForm
-from game.models import Damage, Event, Instruction, Player, Quest, XpIncrease
+from game.forms import AbilityCheckRequestForm, QuestCreateForm
+from game.models.events import Event, Quest
+from game.models.game import Player
 from game.tasks import send_email
-from game.utils import get_players_emails
+from game.utils.channels import send_to_channel
+from game.utils.emails import get_players_emails
 from game.views.mixins import (
     EventContextMixin,
     GameContextMixin,
     GameStatusControlMixin,
 )
+
+from ..schemas import GameEventType, PlayerType
 
 
 class CharacterInviteView(UserPassesTestMixin, ListView, GameContextMixin):
@@ -75,11 +76,17 @@ class GameStartView(UserPassesTestMixin, GameStatusControlMixin):
             event.date = timezone.now()
             event.message = "the game started."
             event.save()
-            channel_layer = get_channel_layer()
-            async_to_sync(channel_layer.group_send)(
-                f"game_{game.id}_events",
-                {"type": "master.start", "content": ""},
+
+            send_to_channel(
+                game_id=game.id,
+                game_event={
+                    "type": GameEventType.GAME_START,
+                    "player_type": PlayerType.MASTER,
+                    "date": event.date.isoformat(),
+                    "message": event.message,
+                },
             )
+
         except TransitionNotAllowed:
             return HttpResponseRedirect(reverse("game-start-error", args=(game.id,)))
         return HttpResponseRedirect(game.get_absolute_url())
@@ -111,48 +118,34 @@ class QuestCreateView(UserPassesTestMixin, FormView, EventContextMixin):
         quest.message = "the Master updated the campaign."
         quest.content = form.cleaned_data["content"]
         quest.save()
-        channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)(
-            f"game_{self.game.id}_events",
-            {"type": "master.quest", "content": ""},
+
+        send_to_channel(
+            game_id=self.game.id,
+            game_event={
+                "type": GameEventType.QUEST_UPDATE,
+                "player_type": PlayerType.MASTER,
+                "date": quest.date.isoformat(),
+                "message": quest.message,
+            },
         )
+
         send_email.delay(
             subject=f"[{self.game}] The Master updated the quest.",
             message=f"The Master said:\n{quest.content}",
             from_email=self.game.master.user.email,
             recipient_list=get_players_emails(game=self.game),
         )
+
         return super().form_valid(form)
 
 
-class InstructionCreateView(UserPassesTestMixin, CreateView, EventContextMixin):
-    model = Instruction
-    fields = ["content"]
-    template_name = "game/instruction_create.html"
-
-    def test_func(self):
-        return self.is_user_master()
-
-    def get_success_url(self):
-        return self.game.get_absolute_url()
-
-    def form_valid(self, form):
-        instruction = form.save(commit=False)
-        instruction.game = self.game
-        instruction.message = "The Master gave an instruction."
-        instruction.save()
-        return super().form_valid(form)
-
-
-class XpIncreaseView(
+class AbilityCheckRequestView(
     UserPassesTestMixin,
     FormView,
     EventContextMixin,
-    CharacterContextMixin,
 ):
-    model = XpIncrease
-    form_class = XpIncreaseForm
-    template_name = "game/xp.html"
+    form_class = AbilityCheckRequestForm
+    template_name = "game/ability_check_request.html"
 
     def test_func(self):
         return self.is_user_master()
@@ -160,84 +153,27 @@ class XpIncreaseView(
     def get_success_url(self):
         return reverse_lazy("game", args=(self.game.id,))
 
+    def get_initial(self):
+        initial = {"game": self.game}
+        return initial
+
     def form_valid(self, form):
-        xp_increase = form.save(commit=False)
-        xp_increase.game = self.game
-        xp_increase.character = self.character
-        xp_increase.date = timezone.now()
-        xp_increase.message = (
-            f"{self.character} gained experience: +{xp_increase.xp} XP!"
+        ability_check_request = form.save(commit=False)
+        ability_check_request.game = self.game
+        ability_check_request.date = timezone.now()
+        ability_check_request.message = f"[{ability_check_request.character.user}] \
+            needs to perform a {ability_check_request.ability_type} ability check! \
+            Difficulty: {ability_check_request.get_difficulty_class_display()}."
+        ability_check_request.save()
+
+        send_to_channel(
+            game_id=self.game.id,
+            game_event={
+                "type": GameEventType.ABILITY_CHECK_REQUEST,
+                "player_type": PlayerType.MASTER,
+                "date": ability_check_request.date.isoformat(),
+                "message": ability_check_request.message,
+            },
         )
-        xp_increase.save()
-        self.character.xp += xp_increase.xp
-        self.character.save()
-        return super().form_valid(form)
 
-
-class DamageView(
-    UserPassesTestMixin,
-    FormView,
-    EventContextMixin,
-    CharacterContextMixin,
-):
-    model = Damage
-    form_class = DamageForm
-    template_name = "game/damage.html"
-
-    def test_func(self):
-        return self.is_user_master()
-
-    def get_success_url(self):
-        return reverse_lazy("game", args=(self.game.id,))
-
-    def form_valid(self, form):
-        damage = form.save(commit=False)
-        damage.game = self.game
-        damage.character = self.character
-        damage.date = timezone.now()
-        if damage.hp >= self.character.hp:
-            damage.message = (
-                f"{self.character} was hit: -{damage.hp} HP! {self.character} is dead."
-            )
-            # The player is removed from the game.
-            Player.objects.get(character=self.character).delete()
-            # The character is healed when remove from the game,
-            # so that they can join another game.
-            self.character.hp = self.character.max_hp
-            self.character.save()
-        else:
-            damage.message = f"{self.character} was hit: -{damage.hp} HP!"
-        damage.save()
-        self.character.save()
-        return super().form_valid(form)
-
-
-class HealingView(
-    UserPassesTestMixin,
-    FormView,
-    EventContextMixin,
-    CharacterContextMixin,
-):
-    form_class = HealingForm
-    template_name = "game/heal.html"
-
-    def test_func(self):
-        return self.is_user_master()
-
-    def get_success_url(self):
-        return reverse_lazy("game", args=(self.game.id,))
-
-    def form_valid(self, form):
-        healing = form.save(commit=False)
-        healing.game = self.game
-        healing.character = self.character
-        healing.date = timezone.now()
-        # A character cannot have more HP that their max HP.
-        max_healing = self.character.max_hp - self.character.hp
-        if healing.hp > max_healing:
-            healing.hp = max_healing
-        healing.message = f"{self.character} was healed: +{healing.hp} HP!"
-        healing.save()
-        self.character.hp += healing.hp
-        self.character.save()
         return super().form_valid(form)

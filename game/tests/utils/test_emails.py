@@ -1,9 +1,9 @@
 import pytest
 from faker import Faker
 
-from game.utils import get_players_emails
+from game.utils.emails import get_players_emails
 
-from .factories import GameFactory, PlayerFactory
+from ..factories import GameFactory, PlayerFactory
 
 
 @pytest.mark.django_db

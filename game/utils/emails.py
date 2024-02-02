@@ -1,4 +1,4 @@
-from game.models import Player
+from game.models.game import Player
 
 
 def get_players_emails(game):

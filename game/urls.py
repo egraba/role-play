@@ -42,23 +42,8 @@ urlpatterns = [
         name="quest-create",
     ),
     path(
-        "<int:game_id>/create_instruction",
-        master.InstructionCreateView.as_view(),
-        name="instruction-create",
-    ),
-    path(
-        "<int:game_id>/character/<int:character_id>/increase_xp",
-        master.XpIncreaseView.as_view(),
-        name="xpincrease-create",
-    ),
-    path(
-        "<int:game_id>/character/<int:character_id>/damage",
-        master.DamageView.as_view(),
-        name="damage-create",
-    ),
-    path(
-        "<int:game_id>/character/<int:character_id>/heal",
-        master.HealingView.as_view(),
-        name="healing-create",
+        "<int:game_id>/request_ability_check",
+        master.AbilityCheckRequestView.as_view(),
+        name="ability-check-request-create",
     ),
 ]

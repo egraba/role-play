@@ -1,7 +1,7 @@
 import factory
 
-from game.models import DiceLaunch, Event, Game, Master, Player, Quest
-from utils.dice import Dice
+from game.models.events import AbilityCheckRequest, Event, Quest
+from game.models.game import Game, Master, Player
 from utils.factories import UserFactory
 
 
@@ -31,6 +31,14 @@ class GameFactory(factory.django.DjangoModelFactory):
     quest = factory.RelatedFactory(QuestFactory, factory_related_name="game")
 
 
+class PlayerFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Player
+
+    game = factory.SubFactory(GameFactory)
+    character = factory.SubFactory("character.tests.factories.CharacterFactory")
+
+
 class EventFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Event
@@ -39,16 +47,13 @@ class EventFactory(factory.django.DjangoModelFactory):
     message = factory.Faker("text", max_nb_chars=50)
 
 
-class DiceLaunchFactory(factory.django.DjangoModelFactory):
+class AbilityCheckRequestFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = DiceLaunch
-
-    score = Dice("d20").roll()
-
-
-class PlayerFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = Player
+        model = AbilityCheckRequest
 
     game = factory.SubFactory(GameFactory)
     character = factory.SubFactory("character.tests.factories.CharacterFactory")
+    ability_type = factory.SubFactory("character.tests.factories.AbilityTypeFactory")
+    difficulty_class = factory.Faker(
+        "enum", enum_cls=AbilityCheckRequest.DifficultyClass
+    )
