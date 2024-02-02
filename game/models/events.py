@@ -62,13 +62,6 @@ class DiceLaunch(Action):
         return str(self.score)
 
 
-class Choice(Action):
-    selection = models.CharField(max_length=50)
-
-    def __str__(self):
-        return self.selection
-
-
 class AbilityCheckRequest(Action):
     class DifficultyClass(models.IntegerChoices):
         VERY_EASY = 5, "Very easy"

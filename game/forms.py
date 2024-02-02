@@ -4,7 +4,6 @@ from character.models.abilities import AbilityType
 from character.models.character import Character
 from game.models.events import (
     AbilityCheckRequest,
-    Choice,
     Damage,
     DiceLaunch,
     Healing,
@@ -58,15 +57,6 @@ class DiceLaunchForm(forms.ModelForm):
     class Meta:
         model = DiceLaunch
         fields = []
-
-
-class ChoiceForm(forms.ModelForm):
-    class Meta:
-        model = Choice
-        fields = ["selection"]
-        widgets = {
-            "selection": forms.Textarea,
-        }
 
 
 class AbilityCheckRequestForm(forms.ModelForm):

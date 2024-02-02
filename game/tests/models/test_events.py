@@ -2,17 +2,8 @@ import random
 
 import pytest
 from django.utils import timezone
-from faker import Faker
 
-from game.models.events import (
-    Choice,
-    Damage,
-    DiceLaunch,
-    Event,
-    Healing,
-    Quest,
-    XpIncrease,
-)
+from game.models.events import Damage, DiceLaunch, Event, Healing, Quest, XpIncrease
 
 from ..factories import EventFactory, GameFactory, PlayerFactory
 
@@ -111,23 +102,3 @@ class TestDiceLaunchModel:
 
     def test_str(self):
         assert str(self.dice_launch) == str(self.dice_launch.score)
-
-
-@pytest.mark.django_db
-class TestChoiceModel:
-    @pytest.fixture(autouse=True)
-    def setup(self):
-        game = GameFactory()
-        player = PlayerFactory(game=game)
-        fake = Faker()
-        self.choice = Choice.objects.create(
-            game=game,
-            character=player.character,
-            selection=fake.text(max_nb_chars=50),
-        )
-
-    def test_creation(self):
-        assert isinstance(self.choice, Choice)
-
-    def test_str(self):
-        assert str(self.choice) == self.choice.selection

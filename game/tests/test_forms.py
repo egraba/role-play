@@ -1,13 +1,7 @@
 from django import forms
 
 from character.forms.character import CharacterCreateForm
-from game.forms import (
-    ChoiceForm,
-    DamageForm,
-    HealingForm,
-    QuestCreateForm,
-    XpIncreaseForm,
-)
+from game.forms import DamageForm, HealingForm, QuestCreateForm, XpIncreaseForm
 
 
 class TestQuestCreateForm:
@@ -50,13 +44,3 @@ class TestCharacterCreateForm:
     def test_race_type(self):
         form = CharacterCreateForm()
         assert isinstance(form.fields["race"].widget, forms.Select)
-
-
-class TestChoiceForm:
-    def test_selection_type(self):
-        form = ChoiceForm()
-        assert isinstance(form.fields["selection"].widget, forms.Textarea)
-
-    def test_name_max_length(self):
-        form = ChoiceForm()
-        assert form.fields["selection"].max_length == 50
