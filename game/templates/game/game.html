@@ -38,6 +38,11 @@
                         <button id="message-submit" class="rpgui-button" type="submit">
                             <p>Send</p>
                         </button>
+                        {% if player %}
+                            <button id="ability-check-submit" class="rpgui-button" type="submit">
+                                <p>Perform ability check</p>
+                            </button>
+                        {% endif%}
                     </div>
                 </div>
             {% endif %}
@@ -118,9 +123,11 @@
         const eventList = document.getElementById('event-list');
         const input = document.getElementById('message-input');
         const sendButton = document.getElementById('message-submit');
+        const abilityCheckButton = document.getElementById('ability-check-submit');
 
         const MESSAGE = "message";
         const QUEST_UPDATE = "quest.update";
+        const ABILITY_CHECK = "ability.check";
 
         eventsSocket.onmessage = function(event) {
             message = JSON.parse(event.data)
@@ -170,6 +177,16 @@
                     event.preventDefault();
                     sendButton.click();
                 }
+            });
+        }
+
+        if (abilityCheckButton !== null) {
+            abilityCheckButton.addEventListener('click', function(event) {
+                eventsSocket.send(JSON.stringify({
+                    'type': ABILITY_CHECK,
+                    'date': Date.now(),
+                    'player_type': PLAYER
+                }));
             });
         }
 
