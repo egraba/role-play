@@ -27,14 +27,19 @@ class Quest(Event):
         return self.content
 
 
-class Action(Event):
+class Request(Event):
+    class Status(models.TextChoices):
+        PENDING = "P", "Pending"
+        DONE = "D", "Done"
+
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
+    status = models.CharField(max_length=1, choices=Status, default=Status.PENDING)
 
     class Meta:
         abstract = True
 
 
-class AbilityCheckRequest(Action):
+class AbilityCheckRequest(Request):
     class DifficultyClass(models.IntegerChoices):
         VERY_EASY = 5, "Very easy"
         EASY = 10, "Easy"
