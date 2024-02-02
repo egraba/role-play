@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Added
+* DnD: implement ability checks
+
 ### Changed
 * Make clearer django migrate command in invoke tasks
 * `populatedb` command is now idempotent
