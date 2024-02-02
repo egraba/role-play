@@ -50,3 +50,17 @@ class AbilityCheckRequest(Request):
 
     ability_type = models.ForeignKey(AbilityType, on_delete=models.CASCADE)
     difficulty_class = models.SmallIntegerField(choices=DifficultyClass)
+
+
+class Action(Event):
+    character = models.ForeignKey(Character, on_delete=models.CASCADE)
+    result = models.BooleanField()
+
+    class Meta:
+        abstract = True
+
+
+class AbilityCheck(Action):
+    ability_check_request = models.ForeignKey(
+        AbilityCheckRequest, on_delete=models.CASCADE
+    )
