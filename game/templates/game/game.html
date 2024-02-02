@@ -185,7 +185,8 @@
                 eventsSocket.send(JSON.stringify({
                     'type': ABILITY_CHECK,
                     'date': Date.now(),
-                    'player_type': PLAYER
+                    'player_type': PLAYER,
+                    'message': senderStr + ' performed an ability check!',
                 }));
             });
         }

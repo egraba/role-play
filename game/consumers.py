@@ -4,8 +4,9 @@ from channels.generic.websocket import JsonWebsocketConsumer
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 
+from character.models.character import Character
 from game.models.game import Game
-from game.tasks import store_message
+from game.tasks import perform_ability_check, store_message
 
 from .schemas import GameEventOrigin, GameEventType
 
@@ -46,14 +47,31 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                 pass
 
         else:
-            if content["type"] == GameEventType.MESSAGE:
-                store_message.delay(
-                    game_id=self.game.id,
-                    date=content["date"],
-                    message=content["message"],
-                )
+            match content["type"]:
+                case GameEventType.MESSAGE:
+                    store_message.delay(
+                        game_id=self.game.id,
+                        date=content["date"],
+                        message=content["message"],
+                    )
+                case GameEventType.ABILITY_CHECK:
+                    try:
+                        character = Character.objects.get(user=self.user)
+                    except ObjectDoesNotExist:
+                        raise DenyConnection(
+                            f"Character of user [{self.user}] not found..."
+                        )
+                        self.close()
+                    perform_ability_check.delay(
+                        game_id=self.game.id,
+                        date=content["date"],
+                        character_id=character.id,
+                        message=content["message"],
+                    )
+                case _:
+                    pass
 
-            pass
+        pass
 
         async_to_sync(self.channel_layer.group_send)(self.game_group_name, content)
 
@@ -73,6 +91,10 @@ class GameEventsConsumer(JsonWebsocketConsumer):
         """Ability check request from the master."""
         self.send_json(event)
 
-    def dice_launch(self, event):
-        """Dice launch."""
+    def ability_check(self, event):
+        """Ability check roll from the player."""
+        self.send_json(event)
+
+    def ability_check_result(self, event):
+        """Ability check result."""
         self.send_json(event)
