@@ -8,6 +8,7 @@ from game.models.game import Game
 
 from .schemas import GameEventType, PlayerType
 from .utils.channels import send_to_channel
+from .utils.dice_rolls import perform_ability_check
 
 
 @shared_task
@@ -26,19 +27,21 @@ def store_message(game_id, date, message):
 
 
 @shared_task
-def perform_ability_check(game_id, date, character_id, message):
+def process_ability_check(game_id, date, character_id, message):
     game = Game.objects.get(id=game_id)
     character = Character.objects.get(id=character_id)
     ability_check_request = AbilityCheckRequest.objects.filter(
         character=character, status=AbilityCheckRequest.Status.PENDING
     ).first()
+
+    score, result = perform_ability_check(character, ability_check_request)
     ability_check = AbilityCheck.objects.create(
         game=game,
         date=date,
         character=character,
         request=ability_check_request,
-        message=message,
-        result=True,
+        message=f"score: {score}, ability check result: {result}",
+        result=result,
     )
 
     send_to_channel(
@@ -47,6 +50,6 @@ def perform_ability_check(game_id, date, character_id, message):
             "type": GameEventType.ABILITY_CHECK_RESULT,
             "player_type": PlayerType.MASTER,
             "date": timezone.now().isoformat(),
-            "message": str(ability_check.result),
+            "message": ability_check.message,
         },
     )

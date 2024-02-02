@@ -6,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from character.models.character import Character
 from game.models.game import Game
-from game.tasks import perform_ability_check, store_message
+from game.tasks import process_ability_check, store_message
 
 from .schemas import GameEventOrigin, GameEventType
 
@@ -62,7 +62,7 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                             f"Character of user [{self.user}] not found..."
                         )
                         self.close()
-                    perform_ability_check.delay(
+                    process_ability_check.delay(
                         game_id=self.game.id,
                         date=content["date"],
                         character_id=character.id,
