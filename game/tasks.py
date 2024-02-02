@@ -40,14 +40,18 @@ def process_ability_check(game_id, date, character_id, message):
         raise PermissionDenied
 
     score, result = perform_ability_check(character, ability_check_request)
-    ability_check = AbilityCheck.objects.create(
+    # Ability check's message must be created after AbilityCheck constructor call
+    # in order to display the result in verbose format.
+    ability_check = AbilityCheck(
         game=game,
         date=date,
         character=character,
         request=ability_check_request,
-        message=f"score: {score}, ability check result: {result}",
         result=result,
     )
+    ability_check.message = f"[{character.user}]'s score: {score}, \
+        ability check result: {ability_check.get_result_display()}"
+    ability_check.save()
 
     # The corresponding request is done.
     ability_check_request.status = AbilityCheckRequest.Status.DONE
