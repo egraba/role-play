@@ -34,6 +34,19 @@ class Action(Event):
         abstract = True
 
 
+class AbilityCheckRequest(Action):
+    class DifficultyClass(models.IntegerChoices):
+        VERY_EASY = 5, "Very easy"
+        EASY = 10, "Easy"
+        MEDIUM = 15, "Medium"
+        HARD = 20, "Hard"
+        VERY_HARD = 25, "Very hard"
+        NEARLY_IMPOSSIBLE = 30, "Nearly impossible"
+
+    ability_type = models.ForeignKey(AbilityType, on_delete=models.CASCADE)
+    difficulty_class = models.SmallIntegerField(choices=DifficultyClass)
+
+
 class XpIncrease(Action):
     xp = models.SmallIntegerField()
 
@@ -60,16 +73,3 @@ class DiceLaunch(Action):
 
     def __str__(self):
         return str(self.score)
-
-
-class AbilityCheckRequest(Action):
-    class DifficultyClass(models.IntegerChoices):
-        VERY_EASY = 5, "Very easy"
-        EASY = 10, "Easy"
-        MEDIUM = 15, "Medium"
-        HARD = 20, "Hard"
-        VERY_HARD = 25, "Very hard"
-        NEARLY_IMPOSSIBLE = 30, "Nearly impossible"
-
-    ability_type = models.ForeignKey(AbilityType, on_delete=models.CASCADE)
-    difficulty_class = models.SmallIntegerField(choices=DifficultyClass)
