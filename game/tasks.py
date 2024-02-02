@@ -1,4 +1,5 @@
 from celery import shared_task
+from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
 from django.utils import timezone
 
@@ -30,9 +31,13 @@ def store_message(game_id, date, message):
 def process_ability_check(game_id, date, character_id, message):
     game = Game.objects.get(id=game_id)
     character = Character.objects.get(id=character_id)
+
+    # Retrieve the corresponding request.
     ability_check_request = AbilityCheckRequest.objects.filter(
         character=character, status=AbilityCheckRequest.Status.PENDING
     ).first()
+    if ability_check_request is None:
+        raise PermissionDenied
 
     score, result = perform_ability_check(character, ability_check_request)
     ability_check = AbilityCheck.objects.create(
@@ -43,6 +48,10 @@ def process_ability_check(game_id, date, character_id, message):
         message=f"score: {score}, ability check result: {result}",
         result=result,
     )
+
+    # The corresponding request is done.
+    ability_check_request.status = AbilityCheckRequest.Status.DONE
+    ability_check_request.save()
 
     send_to_channel(
         game_id=game.id,

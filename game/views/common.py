@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.views.generic import CreateView, ListView, TemplateView
 
 from character.models.character import Character
-from game.models.events import Event, Quest
+from game.models.events import AbilityCheckRequest, Event, Quest, Request
 from game.models.game import Game, Master, Player
 from game.views.mixins import GameContextMixin
 from master.models import Campaign
@@ -56,6 +56,9 @@ class GameView(LoginRequiredMixin, ListView, GameContextMixin):
         ).order_by("name")
         try:
             context["player"] = Player.objects.get(character__user=self.request.user)
+            context["ability_check_request"] = AbilityCheckRequest.objects.filter(
+                status=Request.Status.PENDING
+            ).first()
         except ObjectDoesNotExist:
             pass
         return context
