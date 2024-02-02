@@ -22,9 +22,3 @@ def deploy(context):
     context.run(
         "poetry run daphne role_play.asgi:application -b 0.0.0.0 -p $PORT --access-log -"
     )
-
-
-@task
-def run_worker(context):
-    """Run Celery worker"""
-    context.run("celery -A role_play worker -l INFO")
