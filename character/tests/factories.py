@@ -56,6 +56,12 @@ class CharacterFactory(factory.django.DjangoModelFactory):
     class_name = factory.Faker("enum", enum_cls=Class)
     xp = factory.Faker("random_int")
 
+    @factory.post_generation
+    def abilities(self, create, extracted, **kwargs):
+        if not create or not extracted:
+            return
+        self.abilities.add(*extracted)
+
 
 class EquipmentFactory(factory.django.DjangoModelFactory):
     class Meta:

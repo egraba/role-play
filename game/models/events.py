@@ -53,8 +53,12 @@ class AbilityCheckRequest(Request):
 
 
 class Action(Event):
+    class Result(models.TextChoices):
+        SUCCESS = "S", "Success"
+        FAILURE = "F", "Failure"
+
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
-    result = models.BooleanField()
+    result = models.CharField(max_length=1, choices=Result)
 
     class Meta:
         abstract = True

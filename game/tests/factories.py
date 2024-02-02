@@ -1,6 +1,6 @@
 import factory
 
-from game.models.events import Event, Quest
+from game.models.events import AbilityCheckRequest, Event, Quest
 from game.models.game import Game, Master, Player
 from utils.factories import UserFactory
 
@@ -31,6 +31,14 @@ class GameFactory(factory.django.DjangoModelFactory):
     quest = factory.RelatedFactory(QuestFactory, factory_related_name="game")
 
 
+class PlayerFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Player
+
+    game = factory.SubFactory(GameFactory)
+    character = factory.SubFactory("character.tests.factories.CharacterFactory")
+
+
 class EventFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Event
@@ -39,9 +47,13 @@ class EventFactory(factory.django.DjangoModelFactory):
     message = factory.Faker("text", max_nb_chars=50)
 
 
-class PlayerFactory(factory.django.DjangoModelFactory):
+class AbilityCheckRequestFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = Player
+        model = AbilityCheckRequest
 
     game = factory.SubFactory(GameFactory)
     character = factory.SubFactory("character.tests.factories.CharacterFactory")
+    ability_type = factory.SubFactory("character.tests.factories.AbilityTypeFactory")
+    difficulty_class = factory.Faker(
+        "enum", enum_cls=AbilityCheckRequest.DifficultyClass
+    )
