@@ -39,6 +39,13 @@ def process_ability_check(game_id, date, character_id, message):
     if ability_check_request is None:
         raise PermissionDenied
 
+    # Store the message send when the player has clicked on the sending button.
+    Event.objects.create(
+        game=game,
+        date=date,
+        message=message,
+    )
+
     score, result = perform_ability_check(character, ability_check_request)
     # Ability check's message must be created after AbilityCheck constructor call
     # in order to display the result in verbose format.
