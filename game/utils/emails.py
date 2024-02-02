@@ -1,7 +1,16 @@
-from game.models.game import Player
+from ..models.game import Game, Player
 
 
-def get_players_emails(game):
+def get_players_emails(game: Game) -> list[str]:
+    """
+    Get players emails.
+
+    Args:
+        game (Game): Current game.
+
+    Returns:
+        list: email list.
+    """
     players = Player.objects.filter(game=game)
     email_set = {
         player.character.user.email
