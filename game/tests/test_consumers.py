@@ -10,7 +10,7 @@ from faker import Faker
 from character.tests.factories import CharacterFactory
 from game.consumers import GameEventsConsumer
 from game.models.events import DiceLaunch
-from game.utils.channels import GameEvent, GameEventOrigin, GameEventType, PlayerType
+from game.schemas import GameEvent, GameEventOrigin, GameEventType, PlayerType
 
 from .factories import GameFactory
 

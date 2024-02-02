@@ -7,8 +7,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from character.models.character import Character
 from game.models.game import Game
 from game.tasks import store_message, store_player_dice_launch
-from game.utils.channels import GameEventOrigin, GameEventType, PlayerType
 from utils.dice import Dice
+
+from .schemas import GameEventOrigin, GameEventType, PlayerType
 
 
 class GameEventsConsumer(JsonWebsocketConsumer):

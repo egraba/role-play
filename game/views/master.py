@@ -18,13 +18,15 @@ from game.forms import (
 from game.models.events import Damage, Event, Instruction, Quest, XpIncrease
 from game.models.game import Player
 from game.tasks import send_email
-from game.utils.channels import GameEventType, PlayerType, send_to_channel
+from game.utils.channels import send_to_channel
 from game.utils.emails import get_players_emails
 from game.views.mixins import (
     EventContextMixin,
     GameContextMixin,
     GameStatusControlMixin,
 )
+
+from ..schemas import GameEventType, PlayerType
 
 
 class CharacterInviteView(UserPassesTestMixin, ListView, GameContextMixin):
