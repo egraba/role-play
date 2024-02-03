@@ -1,5 +1,6 @@
-from character.models.character import Skill
 from utils.converters import duplicate_choice
+
+from ..models.character import Skill
 
 cleric_choices = {
     duplicate_choice(Skill.Name.HISTORY),

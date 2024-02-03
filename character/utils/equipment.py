@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from django.db.models import Q
 
-from character.models.equipment import Armor, Gear, Pack, Weapon
+from ..models.equipment import Armor, Gear, Pack, Weapon
 
 
 class EquipmentChoicesProvider(ABC):

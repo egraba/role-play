@@ -1,7 +1,7 @@
 from django import forms
 
-from character.models.character import Character
-from character.utils.abilities import AbilityScore
+from ..models.character import Character
+from ..utils.abilities import AbilityScore
 
 
 class CharacterCreateForm(forms.ModelForm):
@@ -49,8 +49,10 @@ class CharacterCreateForm(forms.ModelForm):
     )
 
     def clean(self):
+        # self.cleaned_data is set during form.is_valid() call.
+        # pylint: disable=attribute-defined-outside-init
         self.cleaned_data = super().clean()
+
         # The ability scores must be unique per ability.
         if len(self.cleaned_data) != len(set(self.cleaned_data.values())):
             raise forms.ValidationError("Each ability must have a different score...")
-        pass

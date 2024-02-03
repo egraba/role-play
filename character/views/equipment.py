@@ -1,15 +1,14 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import FormView
 
-from character.forms.equipment import (
+from ..forms.equipment import (
     ClericEquipmentSelectForm,
     FighterEquipmentSelectForm,
     RogueEquipmentSelectForm,
     WizardEquipmentSelectForm,
 )
-from character.models.classes import Class
-from character.models.equipment import Armor, Equipment, Gear, Tool, Weapon
-
+from ..models.classes import Class
+from ..models.equipment import Armor, Equipment, Gear, Tool, Weapon
 from .mixins import CharacterContextMixin
 
 

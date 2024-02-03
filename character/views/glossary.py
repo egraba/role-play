@@ -1,9 +1,8 @@
 from django.core.cache import cache
 from django.views.generic import TemplateView
 
-from character.models.abilities import AbilityType
-from character.models.skills import Skill
-
+from ..models.abilities import AbilityType
+from ..models.skills import Skill
 from ..utils.cache import ABILITY_TYPES_KEY
 
 
