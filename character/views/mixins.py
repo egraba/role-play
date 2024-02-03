@@ -8,6 +8,13 @@ from character.models.character import Character
 
 
 class CharacterContextMixin(ContextMixin, View):
+    """
+    Mixin class that provides character object and context.
+
+    Attributes:
+        character (Character): Character instance.
+    """
+
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
         character_id = self.kwargs["character_id"]
