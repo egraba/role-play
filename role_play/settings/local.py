@@ -2,7 +2,7 @@ from role_play.settings.base import *
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = []  # type: list
 
 INSTALLED_APPS += [
     "debug_toolbar",

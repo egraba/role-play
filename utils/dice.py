@@ -63,7 +63,7 @@ class Dice(str):
             raise DiceStringFormatError(
                 "The number of throws must be a strictly positive integer..."
             )
-        self = f"{self.throws + throws}d{self.type}"
+        self = f"{self.throws + throws}d{self.type}"  # type: ignore
         return self
 
     def roll(self, modifier: int = 0) -> int:

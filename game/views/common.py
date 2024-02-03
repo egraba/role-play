@@ -69,7 +69,7 @@ class GameView(LoginRequiredMixin, ListView, GameContextMixin):
 
 class GameCreateView(LoginRequiredMixin, CreateView):
     model = Game
-    fields = []
+    fields = []  # type: list[str]
     template_name = "game/game_create.html"
 
     def post(self, request, *args, **kwargs):

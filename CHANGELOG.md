@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Added
+* Use mypy for type checking
 * DnD: implement ability checks
 
 ### Changed
