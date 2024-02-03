@@ -9,10 +9,19 @@ from game.models.game import Game
 
 
 class GameContextMixin(ContextMixin, View):
-    def is_user_master(self):
+    """
+    Mixin class that provides game object and context.
+
+    Attributes:
+        game (Game): Game instance.
+    """
+
+    def is_user_master(self) -> bool:
+        """Return True if the logged user is the game master."""
         return self.request.user == self.game.master.user
 
     def is_user_player(self):
+        """Return True if the logged user is a player of the game."""
         try:
             self.game.player_set.get(character__user=self.request.user)
             return True
@@ -39,13 +48,26 @@ class GameContextMixin(ContextMixin, View):
 
 
 class GameStatusControlMixin(UpdateView):
+    """
+    Mixin class that provides game object, for views inheriting from UpdateViews.
+
+    Attributes:
+        model (Game): Game instance.
+    """
+
     model = Game
 
     def is_user_master(self):
+        """Return True if the logged user is the game master."""
         return self.request.user == self.get_object().master.user
 
 
 class EventContextMixin(GameContextMixin, FormMixin):
+    """
+    Mixin class that checks if game events can be sent during a Game
+    (e.g. game has been started by the master).
+    """
+
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
         if self.game.is_ongoing():
@@ -58,4 +80,5 @@ class EventContextMixin(GameContextMixin, FormMixin):
         return super().form_valid(form)
 
     def is_user_master(self):
+        """Return True if the logged user is the game master."""
         return super().is_user_master()

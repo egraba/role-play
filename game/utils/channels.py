@@ -13,7 +13,7 @@ def send_to_channel(game_id: int, game_event: dict[str, Any]) -> None:
 
     Args:
         game_id (int): Game identifier.
-        game_event (dict[GameEvent]): Game event.
+        game_event (dict[str, Any]): Game event.
     """
     # All the events sent by this function are server-side events.
     game_event["origin"] = GameEventOrigin.SERVER_SIDE

@@ -12,10 +12,10 @@ def perform_ability_check(
 
     Args:
         character (Character): Character who performs the ability check.
-        request (AbilityCheckRequest): The corresponding ability check request from the master (DM).
+        request (AbilityCheckRequest): The corresponding ability check request from the master.
 
     Returns:
-        tuple[int, AbilityCheck.Result]: Dice roll score and ability check result.
+        tuple[int, tuple[str, str]]: Dice roll score and ability check result.
     """
 
     ability = character.abilities.get(ability_type=request.ability_type)
