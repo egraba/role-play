@@ -2,6 +2,7 @@
 Role playing game.
 
 [![CI status](https://github.com/egraba/role-play/actions/workflows/ci.yml/badge.svg)](https://github.com/egraba/role-play/actions)
+[![linting: pylint](https://img.shields.io/badge/linting-pylint-yellowgreen)](https://github.com/pylint-dev/pylint)
 
 ## Purpose
 Instead of playing role play with paper, you can do it online!
