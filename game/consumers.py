@@ -12,32 +12,41 @@ from .schemas import GameEventOrigin, GameEventType
 
 
 class GameEventsConsumer(JsonWebsocketConsumer):
+    """
+    GameEventsConsumer class.
+
+    Attributes:
+        user (User): Logged user.
+        game (Game): Current game instance.
+    """
+
     def connect(self):
+        # self.scope is set in parent's connect()
+        # pylint: disable=attribute-defined-outside-init
         self.user = self.scope["user"]
+
         # The game ID has to be retrieved to create a channel.
         # There is one room per game.
         game_id = self.scope["url_route"]["kwargs"]["game_id"]
         try:
-            self.game = cache.get(f"game{game_id}")
-            if not self.game:
-                self.game = Game.objects.get(id=game_id)
-                cache.set(f"game{game_id}", self.game)
-        except ObjectDoesNotExist:
-            raise DenyConnection(f"Game [{game_id}] not found...")
+            self.game = cache.get_or_set(f"game{game_id}", Game.objects.get(id=game_id))
+        except ObjectDoesNotExist as e:
             self.close()
+            raise DenyConnection(f"Game [{game_id}] not found...") from e
 
         self.game_group_name = f"game_{self.game.id}_events"
+
         async_to_sync(self.channel_layer.group_add)(
             self.game_group_name, self.channel_name
         )
         self.accept()
 
-    def disconnect(self, close_code):
+    def disconnect(self, code=None):
         async_to_sync(self.channel_layer.group_discard)(
             self.game_group_name, self.channel_name
         )
 
-    def receive_json(self, content):
+    def receive_json(self, content, **kwargs):
         # If the event comes from the server, the related data has already been stored
         # in the database, so the event has just to be sent to the group.
         # If the event comes from the client, the data needs to be stored in the database,
@@ -57,11 +66,11 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                 case GameEventType.ABILITY_CHECK:
                     try:
                         character = Character.objects.get(user=self.user)
-                    except ObjectDoesNotExist:
+                    except ObjectDoesNotExist as e:
+                        self.close()
                         raise DenyConnection(
                             f"Character of user [{self.user}] not found..."
-                        )
-                        self.close()
+                        ) from e
                     process_ability_check.delay(
                         game_id=self.game.id,
                         date=content["date"],
@@ -70,8 +79,6 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                     )
                 case _:
                     pass
-
-        pass
 
         async_to_sync(self.channel_layer.group_send)(self.game_group_name, content)
 

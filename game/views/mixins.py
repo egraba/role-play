@@ -32,12 +32,9 @@ class GameContextMixin(ContextMixin, View):
         super().setup(request, *args, **kwargs)
         game_id = self.kwargs["game_id"]
         try:
-            self.game = cache.get(f"game{game_id}")
-            if not self.game:
-                self.game = Game.objects.get(id=game_id)
-                cache.set(f"game{game_id}", self.game)
-        except ObjectDoesNotExist:
-            raise Http404(f"Game [{game_id}] does not exist...")
+            self.game = cache.get_or_set(f"game{game_id}", Game.objects.get(id=game_id))
+        except ObjectDoesNotExist as e:
+            raise Http404(f"Game [{game_id}] does not exist...") from e
         if not self.is_user_master() and not self.is_user_player():
             raise PermissionDenied
 
@@ -75,10 +72,3 @@ class EventContextMixin(GameContextMixin, FormMixin):
             pass
         else:
             raise PermissionDenied()
-
-    def form_valid(self, form):
-        return super().form_valid(form)
-
-    def is_user_master(self):
-        """Return True if the logged user is the game master."""
-        return super().is_user_master()

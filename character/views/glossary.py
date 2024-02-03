@@ -11,16 +11,10 @@ class GlossaryView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        ability_types = cache.get("ability_types")
-        if not ability_types:
-            ability_types = AbilityType.objects.all()
-            cache.set("ability_types", ability_types)
+        ability_types = cache.get_or_set("ability_types", AbilityType.objects.all())
         context["ability_types"] = ability_types
 
-        skills = cache.get("skills")
-        if not skills:
-            skills = Skill.objects.all()
-            cache.set("skills", skills)
+        skills = cache.get_or_create("skills", Skill.objects.all())
         context["skills"] = skills
 
         return context
