@@ -1,6 +1,6 @@
 from invoke import task
 
-import tasks.db as db
+from tasks import db
 
 
 @task

@@ -53,6 +53,6 @@ repos:
           [
             "-rn", # Only display messages
             "-sn", # Don't display the score
-            --disable=C0114,C0115,C0116,E1101,
-            --ignore=manage.py,migrations,role_play
+            "--disable=C0114,C0115,C0116,E1101",
+            "--ignore=manage.py,migrations,role_play"
           ]
