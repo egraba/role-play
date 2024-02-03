@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from celery import shared_task
 from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
@@ -13,12 +15,23 @@ from .utils.dice_rolls import perform_ability_check
 
 
 @shared_task
-def send_email(subject, message, from_email, recipient_list):
+def send_email(
+    subject: str, message: str, from_email: str, recipient_list: list[str]
+) -> int:
+    """Send an email."""
     return send_mail(subject, message, from_email, recipient_list)
 
 
 @shared_task
-def store_message(game_id, date, message):
+def store_message(game_id: int, date: datetime, message: str) -> None:
+    """
+    Store the message received in the channel.
+
+    Args:
+        game_id (int): Identifier of the game.
+        date (datetime): Date on which the message has been sent.
+        message (str): Message content.
+    """
     game = Game.objects.get(id=game_id)
     Event.objects.create(
         game=game,
@@ -28,7 +41,18 @@ def store_message(game_id, date, message):
 
 
 @shared_task
-def process_ability_check(game_id, date, character_id, message):
+def process_ability_check(
+    game_id: int, date: datetime, character_id: int, message: str
+) -> None:
+    """
+    Process an ability check roll.
+
+    Args:
+        game_id (int): Identifier of the game.
+        date (datetime): Date on which the message has been sent.
+        character_id (int): Identifier of the character who did the ability check.
+        message (str): Message content.
+    """
     game = Game.objects.get(id=game_id)
     character = Character.objects.get(id=character_id)
 
