@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Added
+* Document more classes, methods and functions
 * Use mypy for type checking
 * DnD: implement ability checks
 
