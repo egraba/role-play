@@ -1,5 +1,7 @@
 # CHANGELOG
 
+Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<patch>`).
+
 ## v0.6.0 - 2024-02-03
 
 ### Added
