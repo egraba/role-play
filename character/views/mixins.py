@@ -6,6 +6,8 @@ from django.views.generic.list import ContextMixin
 
 from character.models.character import Character
 
+from ..utils.cache import character_key
+
 
 class CharacterContextMixin(ContextMixin, View):
     """
@@ -20,7 +22,7 @@ class CharacterContextMixin(ContextMixin, View):
         character_id = self.kwargs["character_id"]
         try:
             self.character = cache.get_or_set(
-                f"character{character_id}", Character.objects.get(id=character_id)
+                character_key(character_id), Character.objects.get(id=character_id)
             )
         except ObjectDoesNotExist as e:
             raise Http404(f"Character [{character_id}] does not exist...") from e

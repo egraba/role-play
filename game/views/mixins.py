@@ -7,6 +7,8 @@ from django.views.generic.list import ContextMixin
 
 from game.models.game import Game
 
+from ..utils.cache import game_key
+
 
 class GameContextMixin(ContextMixin, View):
     """
@@ -32,7 +34,9 @@ class GameContextMixin(ContextMixin, View):
         super().setup(request, *args, **kwargs)
         game_id = self.kwargs["game_id"]
         try:
-            self.game = cache.get_or_set(f"game{game_id}", Game.objects.get(id=game_id))
+            self.game = cache.get_or_set(
+                game_key(game_id), Game.objects.get(id=game_id)
+            )
         except ObjectDoesNotExist as e:
             raise Http404(f"Game [{game_id}] does not exist...") from e
         if not self.is_user_master() and not self.is_user_player():

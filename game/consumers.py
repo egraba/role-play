@@ -9,6 +9,7 @@ from game.models.game import Game
 from game.tasks import process_ability_check, store_message
 
 from .schemas import GameEventOrigin, GameEventType
+from .utils.cache import game_key
 
 
 class GameEventsConsumer(JsonWebsocketConsumer):
@@ -29,7 +30,9 @@ class GameEventsConsumer(JsonWebsocketConsumer):
         # There is one room per game.
         game_id = self.scope["url_route"]["kwargs"]["game_id"]
         try:
-            self.game = cache.get_or_set(f"game{game_id}", Game.objects.get(id=game_id))
+            self.game = cache.get_or_set(
+                game_key(game_id), Game.objects.get(id=game_id)
+            )
         except ObjectDoesNotExist as e:
             self.close()
             raise DenyConnection(f"Game [{game_id}] not found...") from e
