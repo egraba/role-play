@@ -16,7 +16,7 @@ class AbilityType(models.Model):
     description = models.TextField(max_length=1000)
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
 
 class Ability(models.Model):
@@ -28,7 +28,7 @@ class Ability(models.Model):
         verbose_name_plural = "abilities"
 
     def __str__(self):
-        return self.ability_type.name
+        return str(self.ability_type.name)
 
 
 class AbilityScoreIncrease(models.Model):

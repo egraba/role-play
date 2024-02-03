@@ -17,14 +17,14 @@ class Event(models.Model):
         ]
 
     def __str__(self):
-        return self.message
+        return str(self.message)
 
 
 class Quest(Event):
     content = models.CharField(max_length=1000)
 
     def __str__(self):
-        return self.content
+        return str(self.content)
 
 
 class Request(Event):

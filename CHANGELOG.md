@@ -2,6 +2,14 @@
 
 Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<patch>`).
 
+## Unreleased
+
+### Added
+* Use pylint as a linter
+
+### Changed
+* Remove some errors raised by pylint
+
 ## v0.6.0 - 2024-02-03
 
 ### Added

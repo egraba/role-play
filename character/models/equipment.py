@@ -13,7 +13,7 @@ class Equipment(models.Model):
     )
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
 
 class Weapon(models.Model):
@@ -66,7 +66,7 @@ class Weapon(models.Model):
     weapon_type = models.CharField(max_length=2, choices=Type.choices)
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
 
 class Armor(models.Model):
@@ -95,7 +95,7 @@ class Armor(models.Model):
     armor_type = models.CharField(max_length=2, choices=Type.choices)
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
 
 class Pack(models.Model):
@@ -111,7 +111,7 @@ class Pack(models.Model):
     name = models.CharField(max_length=30, primary_key=True, choices=Name.choices)
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
 
 class Gear(models.Model):
@@ -225,7 +225,7 @@ class Gear(models.Model):
     gear_type = models.CharField(max_length=2, choices=Type.choices, default=Type.MISC)
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
 
 class Tool(models.Model):
@@ -278,4 +278,4 @@ class Tool(models.Model):
     tool_type = models.CharField(max_length=2, choices=Type.choices, default=Type.MISC)
 
     def __str__(self):
-        return self.name
+        return str(self.name)

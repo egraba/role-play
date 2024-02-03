@@ -29,7 +29,7 @@ class Language(models.Model):
     name = models.CharField(max_length=1, choices=Name.choices, unique=True)
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
 
 class Sense(models.Model):
@@ -40,7 +40,7 @@ class Sense(models.Model):
         ordering = ["name"]
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
 
 class RacialTrait(models.Model):
