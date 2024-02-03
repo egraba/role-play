@@ -6,10 +6,11 @@ from django.urls import reverse
 from django.views.generic import CreateView, ListView, TemplateView
 
 from character.models.character import Character
-from game.models.events import AbilityCheckRequest, Event, Quest, Request
-from game.models.game import Game, Master, Player
-from game.views.mixins import GameContextMixin
 from master.models import Campaign
+
+from ..models.events import AbilityCheckRequest, Event, Quest, Request
+from ..models.game import Game, Master, Player
+from ..views.mixins import GameContextMixin
 
 
 class IndexView(TemplateView):

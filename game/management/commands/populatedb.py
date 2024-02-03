@@ -1,8 +1,9 @@
 from django.core.management.base import BaseCommand
 
 from character.tests.factories import CharacterFactory
-from game.tests.factories import GameFactory
 from utils.factories import UserWithPasswordFactory
+
+from ...tests.factories import GameFactory
 
 
 class Command(BaseCommand):

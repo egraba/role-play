@@ -5,10 +5,10 @@ from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 
 from character.models.character import Character
-from game.models.game import Game
-from game.tasks import process_ability_check, store_message
 
+from .models.game import Game
 from .schemas import GameEventOrigin, GameEventType
+from .tasks import process_ability_check, store_message
 from .utils.cache import game_key
 
 

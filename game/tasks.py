@@ -6,9 +6,9 @@ from django.core.mail import send_mail
 from django.utils import timezone
 
 from character.models.character import Character
-from game.models.events import AbilityCheck, AbilityCheckRequest, Event
-from game.models.game import Game
 
+from .models.events import AbilityCheck, AbilityCheckRequest, Event
+from .models.game import Game
 from .schemas import GameEventType, PlayerType
 from .utils.channels import send_to_channel
 from .utils.dice_rolls import perform_ability_check

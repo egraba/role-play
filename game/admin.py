@@ -1,7 +1,7 @@
 from django.contrib import admin
 
-from game.models.events import Event, Quest
-from game.models.game import Game, Player
+from .models.events import Event, Quest
+from .models.game import Game, Player
 
 
 class GameAdmin(admin.ModelAdmin):

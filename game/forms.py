@@ -2,7 +2,8 @@ from django import forms
 
 from character.models.abilities import AbilityType
 from character.models.character import Character
-from game.models.events import AbilityCheckRequest
+
+from .models.events import AbilityCheckRequest
 
 
 class QuestCreateForm(forms.Form):
