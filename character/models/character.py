@@ -66,20 +66,18 @@ class Character(models.Model):
 
     def _check_level_increase(self):
         next_level = self.level + 1
-        advancement = cache.get(f"advancement_{next_level}")
-        if not advancement:
-            advancement = Advancement.objects.get(level=next_level)
-            cache.set(f"advancement_{next_level}", advancement)
+        advancement = cache.get_or_set(
+            f"advancement_{next_level}", Advancement.objects.get(level=next_level)
+        )
         if self.xp >= advancement.xp:
             return True
         return False
 
     def _increase_level(self):
         self.level += 1
-        advancement = cache.get(f"advancement_{self.level}")
-        if not advancement:
-            advancement = Advancement.objects.get(level=self.level)
-            cache.set(f"advancement_{self.level}", advancement)
+        advancement = cache.get_or_set(
+            f"advancement_{self.level}", Advancement.objects.get(level=self.level)
+        )
         self.proficiency_bonus += advancement.proficiency_bonus
 
         # Increase hit dice
