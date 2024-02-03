@@ -1,6 +1,6 @@
 from django import forms
 
-from master.models import Campaign
+from .models import Campaign
 
 
 class CampaignCreateForm(forms.ModelForm):

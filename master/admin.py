@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from master.models import Campaign
+from .models import Campaign
 
 
 class CampaignAdmin(admin.ModelAdmin):
