@@ -1,11 +1,9 @@
-from typing import TypeVar
+from typing import Any
 
 from django.db.models import Choices
 
-T = TypeVar("T")
 
-
-def duplicate_choice(choice: Choices, other_choice: Choices = None) -> tuple[T]:
+def duplicate_choice(choice: Choices, other_choice: Choices = None) -> tuple[Any, Any]:
     """
     Duplicate a Choice and convert it into a tuple.
 

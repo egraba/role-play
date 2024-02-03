@@ -1,3 +1,5 @@
+from typing import Any
+
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from pydantic import ValidationError
@@ -5,7 +7,7 @@ from pydantic import ValidationError
 from ..schemas import GameEvent, GameEventError, GameEventOrigin
 
 
-def send_to_channel(game_id: int, game_event: dict[GameEvent]) -> None:
+def send_to_channel(game_id: int, game_event: dict[str, Any]) -> None:
     """
     Send game events to the game channel layer.
 

@@ -6,7 +6,7 @@ from ..models.events import AbilityCheck, AbilityCheckRequest
 
 def perform_ability_check(
     character: Character, request: AbilityCheckRequest
-) -> tuple[int, AbilityCheck.Result]:
+) -> tuple[int, tuple[str, str]]:
     """
     Perform ability check.
 
