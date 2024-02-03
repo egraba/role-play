@@ -37,7 +37,7 @@ class CharacterInviteView(UserPassesTestMixin, ListView, GameContextMixin):
 
 class CharacterInviteConfirmView(UserPassesTestMixin, UpdateView, GameContextMixin):
     model = Character
-    fields = []
+    fields = []  # type: list[str]
     template_name = "game/character_invite_confirm.html"
 
     def test_func(self):
@@ -60,7 +60,7 @@ class CharacterInviteConfirmView(UserPassesTestMixin, UpdateView, GameContextMix
 
 
 class GameStartView(UserPassesTestMixin, GameStatusControlMixin):
-    fields = []
+    fields = []  # type: list[str]
     template_name = "game/game_start.html"
 
     def test_func(self):
@@ -93,7 +93,7 @@ class GameStartView(UserPassesTestMixin, GameStatusControlMixin):
 
 
 class GameStartErrorView(UserPassesTestMixin, GameStatusControlMixin):
-    fields = []
+    fields = []  # type: list[str]
     template_name = "game/game_start_error.html"
 
     def test_func(self):

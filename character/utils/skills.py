@@ -7,7 +7,7 @@ cleric_choices = {
     duplicate_choice(Skill.Name.MEDICINE),
     duplicate_choice(Skill.Name.PERSUASION),
     duplicate_choice(Skill.Name.RELIGION),
-}
+}  # type: set
 
 fighter_choices = {
     duplicate_choice(Skill.Name.ACROBATICS),
@@ -18,7 +18,7 @@ fighter_choices = {
     duplicate_choice(Skill.Name.INTIMIDATION),
     duplicate_choice(Skill.Name.PERCEPTION),
     duplicate_choice(Skill.Name.SURVIVAL),
-}
+}  # type: set
 
 rogue_choices = {
     duplicate_choice(Skill.Name.ACROBATICS),
@@ -32,7 +32,7 @@ rogue_choices = {
     duplicate_choice(Skill.Name.PERSUASION),
     duplicate_choice(Skill.Name.SLEIGHT_OF_HAND),
     duplicate_choice(Skill.Name.STEALTH),
-}
+}  # type: set
 
 wizard_choices = {
     duplicate_choice(Skill.Name.ARCANA),
@@ -41,4 +41,4 @@ wizard_choices = {
     duplicate_choice(Skill.Name.INVESTIGATION),
     duplicate_choice(Skill.Name.MEDICINE),
     duplicate_choice(Skill.Name.RELIGION),
-}
+}  # type: set
