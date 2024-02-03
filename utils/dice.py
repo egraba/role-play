@@ -70,8 +70,8 @@ class Dice(str):
         """
         Rolls the dice.
 
-        In case of several rolls, it sums the values
-        of each roll and adds the modifier value (if any).
+        In case of several rolls, it sums the values of each roll and adds
+        the modifier value (if any).
 
         Args:
             modifier (int): Positive or negative integer to add on a roll.
