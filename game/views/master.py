@@ -7,19 +7,15 @@ from django.views.generic import FormView, ListView, UpdateView
 from django_fsm import TransitionNotAllowed
 
 from character.models.character import Character
-from game.forms import AbilityCheckRequestForm, QuestCreateForm
-from game.models.events import Event, Quest
-from game.models.game import Player
-from game.tasks import send_email
-from game.utils.channels import send_to_channel
-from game.utils.emails import get_players_emails
-from game.views.mixins import (
-    EventContextMixin,
-    GameContextMixin,
-    GameStatusControlMixin,
-)
 
+from ..forms import AbilityCheckRequestForm, QuestCreateForm
+from ..models.events import Event, Quest
+from ..models.game import Player
 from ..schemas import GameEventType, PlayerType
+from ..tasks import send_email
+from ..utils.channels import send_to_channel
+from ..utils.emails import get_players_emails
+from ..views.mixins import EventContextMixin, GameContextMixin, GameStatusControlMixin
 
 
 class CharacterInviteView(UserPassesTestMixin, ListView, GameContextMixin):

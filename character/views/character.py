@@ -2,13 +2,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.views.generic import CreateView, DetailView, ListView
 
-from character.forms.character import CharacterCreateForm
-from character.models.abilities import Ability, AbilityScoreIncrease, AbilityType
-from character.models.character import Character
-from character.models.classes import ClassAdvancement, ClassFeature, Proficiencies
-from character.models.equipment import Equipment, Inventory
-from character.models.races import RacialTrait
-from character.utils.abilities import compute_ability_modifier
+from ..forms.character import CharacterCreateForm
+from ..models.abilities import Ability, AbilityScoreIncrease, AbilityType
+from ..models.character import Character
+from ..models.classes import ClassAdvancement, ClassFeature, Proficiencies
+from ..models.equipment import Equipment, Inventory
+from ..models.races import RacialTrait
+from ..utils.abilities import compute_ability_modifier
 
 
 class CharacterDetailView(LoginRequiredMixin, DetailView):
@@ -71,7 +71,7 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
         for ability in character.abilities.all():
             ability.modifier = compute_ability_modifier(ability.score)
 
-    def _apply_class_advancement(self, character, level):
+    def _apply_class_advancement(self, character):
         class_advancement = ClassAdvancement.objects.get(
             class_name=character.class_name, level=1
         )
@@ -102,7 +102,7 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
         self._compute_ability_modifiers(character)
 
         # Class features
-        self._apply_class_advancement(character, level=1)
+        self._apply_class_advancement(character)
         class_feature = ClassFeature.objects.get(class_name=character.class_name)
         self._apply_class_features(character, class_feature)
 

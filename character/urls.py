@@ -1,13 +1,9 @@
 from django.urls import path
 
-from character.views.character import (
-    CharacterCreateView,
-    CharacterDetailView,
-    CharacterListView,
-)
-from character.views.equipment import EquipmentSelectView
-from character.views.glossary import GlossaryView
-from character.views.skills import SkillsSelectView
+from .views.character import CharacterCreateView, CharacterDetailView, CharacterListView
+from .views.equipment import EquipmentSelectView
+from .views.glossary import GlossaryView
+from .views.skills import SkillsSelectView
 
 urlpatterns = [
     path(

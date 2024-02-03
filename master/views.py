@@ -1,8 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
-from master.forms import CampaignCreateForm, CampaignUpdateForm
-from master.models import Campaign
+from .forms import CampaignCreateForm, CampaignUpdateForm
+from .models import Campaign
 
 
 class CampaignDetailView(LoginRequiredMixin, DetailView):

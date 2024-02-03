@@ -1,9 +1,9 @@
 from django.contrib import admin
 
-from character.models.advancement import Advancement
-from character.models.character import Character
-from character.models.classes import ClassAdvancement, HitPoints, Proficiencies
-from character.models.races import RacialTrait, Sense
+from .models.advancement import Advancement
+from .models.character import Character
+from .models.classes import ClassAdvancement, HitPoints, Proficiencies
+from .models.races import RacialTrait, Sense
 
 
 class CharacterAdmin(admin.ModelAdmin):

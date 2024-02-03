@@ -2,15 +2,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.views.generic import FormView
 
-from character.forms.skills import ExtendedSkillsSelectForm, SkillsSelectForm
-from character.models.classes import Class
-from character.utils.skills import (
+from ..forms.skills import ExtendedSkillsSelectForm, SkillsSelectForm
+from ..models.classes import Class
+from ..utils.skills import (
     cleric_choices,
     fighter_choices,
     rogue_choices,
     wizard_choices,
 )
-
 from .mixins import CharacterContextMixin
 
 

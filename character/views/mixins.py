@@ -4,8 +4,7 @@ from django.http import Http404
 from django.views.generic import View
 from django.views.generic.list import ContextMixin
 
-from character.models.character import Character
-
+from ..models.character import Character
 from ..utils.cache import character_key
 
 

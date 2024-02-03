@@ -1,6 +1,6 @@
 from django.urls import path
 
-from game.views import common, master
+from .views import common, master
 
 urlpatterns = [
     path("", common.IndexView.as_view(), name="index"),

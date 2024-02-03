@@ -1,6 +1,6 @@
 from django.urls import path
 
-from master.views import (
+from .views import (
     CampaignCreateView,
     CampaignDetailView,
     CampaignListView,

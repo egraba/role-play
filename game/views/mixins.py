@@ -5,8 +5,7 @@ from django.views.generic import UpdateView, View
 from django.views.generic.edit import FormMixin
 from django.views.generic.list import ContextMixin
 
-from game.models.game import Game
-
+from ..models.game import Game
 from ..utils.cache import game_key
 
 
