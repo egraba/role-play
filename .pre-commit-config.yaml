@@ -1,43 +1,44 @@
 repos:
-- repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v4.5.0
-  hooks:
-  -   id: check-yaml
-  -   id: end-of-file-fixer
-  -   id: trailing-whitespace
-- repo: https://github.com/psf/black
-  rev: 24.1.1
-  hooks:
-  -   id: black
-- repo: https://github.com/pycqa/isort
-  rev: 5.13.2
-  hooks:
-  - id: isort
-- repo: https://github.com/pycqa/flake8
-  rev: 7.0.0
-  hooks:
-  -   id: flake8
-- repo: https://github.com/rtts/djhtml
-  rev: 3.0.6
-  hooks:
-    - id: djhtml
-      exclude: .*/rpgui/.*
-    - id: djcss
-      exclude: .*/rpgui/.*
-    - id: djjs
-      exclude: .*/rpgui/.*|.*/js/.*
-- repo: https://github.com/codespell-project/codespell
-  rev: v2.2.6
-  hooks:
-  - id: codespell
-- repo: https://github.com/commitizen-tools/commitizen
-  rev: v3.14.0
-  hooks:
-    - id: commitizen
-    - id: commitizen-branch
-      stages: [push]
--   repo: https://github.com/pre-commit/mirrors-mypy
-    rev: 'v1.8.0'
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
     hooks:
-    -   id: mypy
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+  - repo: https://github.com/psf/black
+    rev: 24.1.1
+    hooks:
+      - id: black
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.0.0
+    hooks:
+      - id: flake8
+  - repo: https://github.com/rtts/djhtml
+    rev: 3.0.6
+    hooks:
+      - id: djhtml
+        exclude: .*/rpgui/.*
+      - id: djcss
+        exclude: .*/rpgui/.*
+      - id: djjs
+        exclude: .*/rpgui/.*|.*/js/.*
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.2.6
+    hooks:
+      - id: codespell
+        exclude: "poetry.lock"
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v3.14.0
+    hooks:
+      - id: commitizen
+      - id: commitizen-branch
+        stages: [push]
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: "v1.8.0"
+    hooks:
+      - id: mypy
         exclude: "/migrations/.*\\.py"
