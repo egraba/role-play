@@ -53,4 +53,5 @@ repos:
           [
             "-rn", # Only display messages
             "-sn", # Don't display the score
+            --disable=C0114,C0115,C0116
           ]
