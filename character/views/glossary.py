@@ -4,6 +4,8 @@ from django.views.generic import TemplateView
 from character.models.abilities import AbilityType
 from character.models.skills import Skill
 
+from ..utils.cache import ABILITY_TYPES_KEY
+
 
 class GlossaryView(TemplateView):
     template_name = "character/glossary.html"
@@ -11,7 +13,7 @@ class GlossaryView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        ability_types = cache.get_or_set("ability_types", AbilityType.objects.all())
+        ability_types = cache.get_or_set(ABILITY_TYPES_KEY, AbilityType.objects.all())
         context["ability_types"] = ability_types
 
         skills = cache.get_or_create("skills", Skill.objects.all())

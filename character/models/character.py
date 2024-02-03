@@ -6,6 +6,7 @@ from django.urls import reverse
 
 from utils.dice import Dice
 
+from ..utils.cache import advancement_key
 from .abilities import Ability
 from .advancement import Advancement
 from .classes import Class, Proficiencies
@@ -67,7 +68,7 @@ class Character(models.Model):
     def _check_level_increase(self):
         next_level = self.level + 1
         advancement = cache.get_or_set(
-            f"advancement_{next_level}", Advancement.objects.get(level=next_level)
+            advancement_key(next_level), Advancement.objects.get(level=next_level)
         )
         if self.xp >= advancement.xp:
             return True
@@ -76,7 +77,7 @@ class Character(models.Model):
     def _increase_level(self):
         self.level += 1
         advancement = cache.get_or_set(
-            f"advancement_{self.level}", Advancement.objects.get(level=self.level)
+            advancement_key(self.level), Advancement.objects.get(level=self.level)
         )
         self.proficiency_bonus += advancement.proficiency_bonus
 
