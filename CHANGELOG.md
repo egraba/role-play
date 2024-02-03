@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## v0.6.0 - 2024-02-03
 
 ### Added
 * Document more classes, methods and functions
