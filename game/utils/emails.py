@@ -9,7 +9,7 @@ def get_players_emails(game: Game) -> list[str]:
         game (Game): Current game.
 
     Returns:
-        list: email list.
+        list[str]: email list.
     """
     players = Player.objects.filter(game=game)
     email_set = {
