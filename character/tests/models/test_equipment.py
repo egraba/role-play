@@ -7,6 +7,8 @@ from ..factories import EquipmentFactory
 
 @pytest.mark.django_db
 class TestEquipmentModel:
+    equipment = None
+
     @pytest.fixture(autouse=True)
     def setup(self):
         self.equipment = EquipmentFactory()
@@ -20,6 +22,8 @@ class TestEquipmentModel:
 
 @pytest.mark.django_db
 class TestWeaponModel:
+    weapon = None
+
     @pytest.fixture(autouse=True)
     def setup(self):
         # Fixtures are automatically loaded during the test session initialization.
@@ -34,6 +38,8 @@ class TestWeaponModel:
 
 @pytest.mark.django_db
 class TestArmorModel:
+    armor = None
+
     @pytest.fixture(autouse=True)
     def setup(self):
         # Fixtures are automatically loaded during the test session initialization.
@@ -48,6 +54,8 @@ class TestArmorModel:
 
 @pytest.mark.django_db
 class TestPackModel:
+    pack = None
+
     @pytest.fixture(autouse=True)
     def setup(self):
         # Fixtures are automatically loaded during the test session initialization.
@@ -62,6 +70,8 @@ class TestPackModel:
 
 @pytest.mark.django_db
 class TestGearModel:
+    gear = None
+
     @pytest.fixture(autouse=True)
     def setup(self):
         # Fixtures are automatically loaded during the test session initialization.
@@ -76,6 +86,8 @@ class TestGearModel:
 
 @pytest.mark.django_db
 class TestToolModel:
+    tool = None
+
     @pytest.fixture(autouse=True)
     def setup(self):
         # Fixtures are automatically loaded during the test session initialization.

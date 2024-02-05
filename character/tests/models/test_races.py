@@ -5,6 +5,8 @@ from character.models.races import Language, RacialTrait, Sense
 
 @pytest.mark.django_db
 class TestLanguageModel:
+    language = None
+
     @pytest.fixture(autouse=True)
     def setup(self):
         # Fixtures are automatically loaded during the test session initialization.
@@ -19,6 +21,8 @@ class TestLanguageModel:
 
 @pytest.mark.django_db
 class TestAbilityModel:
+    ability = None
+
     @pytest.fixture(autouse=True)
     def setup(self):
         # Fixtures are automatically loaded during the test session initialization.
@@ -33,6 +37,8 @@ class TestAbilityModel:
 
 @pytest.mark.django_db
 class TestRacialTraitModel:
+    racial_trait = None
+
     @pytest.fixture(autouse=True)
     def setup(self):
         # Fixtures are automatically loaded during the test session initialization.

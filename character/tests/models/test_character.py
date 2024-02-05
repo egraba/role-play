@@ -9,6 +9,8 @@ from ..factories import CharacterFactory
 
 @pytest.mark.django_db
 class TestCharacterModel:
+    character = None
+
     @pytest.fixture(autouse=True)
     def setup(self):
         self.character = CharacterFactory(name="character", xp=0)

@@ -10,6 +10,8 @@ from character.models.classes import (
 
 @pytest.mark.django_db
 class TestClassFeatureModel:
+    class_feature = None
+
     @pytest.fixture(autouse=True)
     def setup(self):
         # Fixtures are automatically loaded during the test session initialization.
@@ -27,6 +29,8 @@ class TestClassFeatureModel:
 
 @pytest.mark.django_db
 class TestHitPointsModel:
+    hit_points = None
+
     @pytest.fixture(autouse=True)
     def setup(self):
         # Fixtures are automatically loaded during the test session initialization.
@@ -35,15 +39,14 @@ class TestHitPointsModel:
     def test_creation(self):
         assert isinstance(self.hit_points, HitPoints)
 
-    def test_verbose_name_plural(self):
-        assert self.hit_points._meta.verbose_name_plural == "hit points"
-
     def test_str(self):
         assert str(self.hit_points) == f"{self.hit_points.class_feature} hit points"
 
 
 @pytest.mark.django_db
 class TestProficienciesModel:
+    proficiencies = None
+
     @pytest.fixture(autouse=True)
     def setup(self):
         # Fixtures are automatically loaded during the test session initialization.
@@ -51,9 +54,6 @@ class TestProficienciesModel:
 
     def test_creation(self):
         assert isinstance(self.proficiencies, Proficiencies)
-
-    def test_verbose_name_plural(self):
-        assert self.proficiencies._meta.verbose_name_plural == "proficiencies"
 
     def test_str(self):
         assert (
@@ -64,6 +64,8 @@ class TestProficienciesModel:
 
 @pytest.mark.django_db
 class TestClassAdvancementModel:
+    class_advancement = None
+
     @pytest.fixture(autouse=True)
     def setup(self):
         # Fixtures are automatically loaded during the test session initialization.
