@@ -6,6 +6,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 
 ### Added
 * Use pylint as a linter
+* Add pylint-pytest plugin to avoid pytest-related false-positives
 
 ### Changed
 * Use relative imports inside modules
