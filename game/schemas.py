@@ -47,5 +47,3 @@ class GameEvent(BaseModel):
 
 class GameEventError(TypeError):
     """Raised when an error occurs during GameEvent schema validation."""
-
-    pass
