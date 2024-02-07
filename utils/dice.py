@@ -1,4 +1,5 @@
 import re
+from collections import UserString
 
 import dice
 
@@ -15,10 +16,8 @@ The dice type is the number of dice faces.
 class DiceStringFormatError(TypeError):
     """Raised when a dice string is wrongly formatted."""
 
-    pass
 
-
-class Dice(str):
+class Dice(UserString):
     """
     Class managing dice strings.
 
@@ -31,11 +30,12 @@ class Dice(str):
     """
 
     def __init__(self, dice_str: str):
-        super().__init__()
-        if not re.match(DICE_REGEX, self):
-            raise DiceStringFormatError(f"[{self}] does not match a dice regex...")
+        super().__init__(dice_str)
+        if not re.match(DICE_REGEX, dice_str):
+            raise DiceStringFormatError(f"[{dice_str}] does not match a dice regex...")
 
         dice_str_parts = self.split("d")
+        print(dice_str_parts)
 
         try:
             self.throws = int(dice_str_parts[0])
@@ -56,15 +56,18 @@ class Dice(str):
             throws (int): Number of throws.
 
         Returns:
-            str: Updated dice string.
+            str: New dice string.
         """
 
         if throws <= 0:
             raise DiceStringFormatError(
                 "The number of throws must be a strictly positive integer..."
             )
-        self = f"{self.throws + throws}d{self.type}"  # type: ignore
-        return self
+        if self.throws is None:
+            self.throws = 0
+        self.throws += throws
+        self.data = f"{self.throws}d{self.type}"
+        return self.data
 
     def roll(self, modifier: int = 0) -> int:
         """
@@ -79,4 +82,4 @@ class Dice(str):
         Returns:
             int: Sum of dice rolls results.
         """
-        return sum(list(dice.roll(self))) + modifier
+        return sum(list(dice.roll(self.data))) + modifier
