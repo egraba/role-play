@@ -18,6 +18,7 @@ def run(context, coverage=False, verbose=False, test_label=None):
         cmd_options += test_label
     if coverage:
         context.run(f"coverage run -m {cmd} {cmd_options}", pty=True)
+        context.run("coverage xml", pty=True)
         context.run("coverage html", pty=True)
     else:
         context.run(f"{cmd} {cmd_options}", pty=True)
