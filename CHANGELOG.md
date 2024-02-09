@@ -12,7 +12,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * Use relative imports inside modules
 * Use functions and constants to retrieve cache keys
 * Use `get_or_set()` where cache is used for better readability
-* Remove some errors raised by pylint
+* Remove errors raised by pylint
 
 ## v0.6.0 - 2024-02-03
 
