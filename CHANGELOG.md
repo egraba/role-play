@@ -2,6 +2,11 @@
 
 Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<patch>`).
 
+## Unreleased
+
+### Changed
+* Split test coverage commands
+
 ## v0.6.1 - 2024-02-09
 
 ### Added
