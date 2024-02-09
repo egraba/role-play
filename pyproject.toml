@@ -46,7 +46,7 @@ faker = "*"
 pre-commit = "*"
 pylint = "*"
 pylint-pytest = "*"
-pytest = "^7.4"
+pytest = "*"
 pytest-asyncio = "*"
 pytest-django = "*"
 
