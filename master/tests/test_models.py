@@ -7,12 +7,12 @@ from .factories import CampaignFactory
 
 @pytest.mark.django_db
 class TestCampaignModel:
-    @pytest.fixture(autouse=True)
-    def setup(self):
-        self.campaign = CampaignFactory(title="campaign")
+    @pytest.fixture
+    def campaign(self):
+        return CampaignFactory(title="campaign")
 
-    def test_creation(self):
-        assert isinstance(self.campaign, Campaign)
+    def test_creation(self, campaign):
+        assert isinstance(campaign, Campaign)
 
-    def test_str(self):
-        assert str(self.campaign) == self.campaign.title
+    def test_str(self, campaign):
+        assert str(campaign) == campaign.title
