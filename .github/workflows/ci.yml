@@ -56,7 +56,7 @@ jobs:
         poetry install
     - name: Run Tests
       run: |
-        poetry run invoke test.run --verbose
+        poetry run invoke test.run --verbose --coverage
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v3
       env:
