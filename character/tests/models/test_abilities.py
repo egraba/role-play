@@ -7,6 +7,8 @@ from ..factories import AbilityFactory, AbilityScoreIncreaseFactory
 
 @pytest.mark.django_db
 class TestAbilityTypeModel:
+    ability_type = None
+
     @pytest.fixture(autouse=True)
     def setup(self):
         # Fixtures are automatically loaded during the test session initialization.
@@ -21,6 +23,8 @@ class TestAbilityTypeModel:
 
 @pytest.mark.django_db
 class TestAbilityModel:
+    ability = None
+
     @pytest.fixture(autouse=True)
     def setup(self):
         self.ability = AbilityFactory()
@@ -34,6 +38,8 @@ class TestAbilityModel:
 
 @pytest.mark.django_db
 class TestAbilityScoreIncreaseModel:
+    ability_score_increase = None
+
     @pytest.fixture(autouse=True)
     def setup(self):
         self.ability_score_increase = AbilityScoreIncreaseFactory()

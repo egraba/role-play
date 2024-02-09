@@ -21,24 +21,27 @@ def create_campaigns(django_db_blocker):
     with django_db_blocker.unblock():
         Campaign.objects.all().delete()
         number_of_campaigns = 22
-        for i in range(number_of_campaigns):
+        for _ in range(number_of_campaigns):
             CampaignFactory()
 
 
 @pytest.mark.django_db
 class TestCampaignDetailView:
     @pytest.fixture(autouse=True)
-    def setup(self, client):
+    def login(self, client):
         user = UserFactory(username="user")
         client.force_login(user)
-        self.campaign = CampaignFactory()
 
-    def test_view_mapping(self, client):
-        response = client.get(self.campaign.get_absolute_url())
+    @pytest.fixture
+    def campaign(self):
+        return CampaignFactory()
+
+    def test_view_mapping(self, client, campaign):
+        response = client.get(campaign.get_absolute_url())
         assert response.resolver_match.func.view_class == CampaignDetailView
 
-    def test_template_mapping(self, client):
-        response = client.get(self.campaign.get_absolute_url())
+    def test_template_mapping(self, client, campaign):
+        response = client.get(campaign.get_absolute_url())
         assertTemplateUsed(response, "master/campaign.html")
 
 
@@ -47,7 +50,7 @@ class TestCampaignListView:
     path_name = "campaign-list"
 
     @pytest.fixture(autouse=True)
-    def setup(self, client):
+    def login(self, client):
         user = UserFactory(username="user")
         client.force_login(user)
 
@@ -140,20 +143,23 @@ class TestCampaignUpdateView:
     path_name = "campaign-update"
 
     @pytest.fixture(autouse=True)
-    def setup(self, client):
+    def login(self, client):
         user = UserFactory(username="user")
         client.force_login(user)
-        self.campaign = CampaignFactory(title="campaign")
 
-    def test_view_mapping(self, client):
-        response = client.get(reverse(self.path_name, args=(self.campaign.slug,)))
+    @pytest.fixture
+    def campaign(self):
+        return CampaignFactory(title="campaign")
+
+    def test_view_mapping(self, client, campaign):
+        response = client.get(reverse(self.path_name, args=(campaign.slug,)))
         assert response.resolver_match.func.view_class == CampaignUpdateView
 
-    def test_template_mapping(self, client):
-        response = client.get(reverse(self.path_name, args=(self.campaign.slug,)))
+    def test_template_mapping(self, client, campaign):
+        response = client.get(reverse(self.path_name, args=(campaign.slug,)))
         assertTemplateUsed(response, "master/campaign_update.html")
 
-    def test_campaign_update(self, client):
+    def test_campaign_update(self, client, campaign):
         fake = Faker()
         synopsis = fake.text(max_nb_chars=900)
         main_conflict = fake.text(max_nb_chars=800)
@@ -168,11 +174,11 @@ class TestCampaignUpdateView:
 
         campaign = Campaign.objects.last()
         response = client.post(
-            reverse(self.path_name, args=(self.campaign.slug,)),
+            reverse(self.path_name, args=(campaign.slug,)),
             data=form.cleaned_data,
         )
         assert response.status_code == 302
-        assertRedirects(response, self.campaign.get_absolute_url())
+        assertRedirects(response, campaign.get_absolute_url())
         campaign = Campaign.objects.last()
         assert campaign.synopsis == form.cleaned_data["synopsis"]
         assert campaign.main_conflict == form.cleaned_data["main_conflict"]

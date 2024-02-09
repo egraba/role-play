@@ -21,8 +21,7 @@ def duplicate_choice(choice: Choices, other_choice: Choices = None) -> tuple[Any
 
     if other_choice is None:
         return (choice.value, choice.value)
-    else:
-        return (
-            f"{choice.value} & {other_choice.value}",
-            f"{choice.value} & {other_choice.value}",
-        )
+    return (
+        f"{choice.value} & {other_choice.value}",
+        f"{choice.value} & {other_choice.value}",
+    )

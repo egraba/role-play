@@ -79,12 +79,12 @@ class TestCharacterListView:
         response = client.get(reverse(self.path_name))
         assert response.status_code == 200
         xp = 0
-        for character in response.context["character_list"]:
+        for c in response.context["character_list"]:
             if xp == 0:
-                xp = character.xp
+                xp = c.xp
             else:
-                assert xp >= character.xp
-                xp = character.xp
+                assert xp >= c.xp
+                xp = c.xp
 
     @pytest.fixture
     def delete_characters(self):
@@ -124,25 +124,24 @@ class TestCharacterCreateView:
         assert response.status_code == 200
         assertTemplateUsed(response, "character/character_create.html")
 
-    def test_character_creation_common(self, client):
+    @pytest.fixture
+    def character_form(self):
         fake = Faker()
-        name = fake.name()
-        race = fake.enum(enum_cls=Race)
-        class_name = fake.enum(enum_cls=Class)
-        gender = fake.enum(enum_cls=Character.Gender)
-        data = {
-            "name": f"{name}",
-            "race": f"{race}",
-            "class_name": f"{class_name}",
+        return {
+            "name": f"{fake.name()}",
+            "race": f"{fake.enum(enum_cls=Race)}",
+            "class_name": f"{fake.enum(enum_cls=Class)}",
             "strength": AbilityScore.SCORE_10,
             "dexterity": AbilityScore.SCORE_12,
             "constitution": AbilityScore.SCORE_13,
             "intelligence": AbilityScore.SCORE_14,
             "wisdom": AbilityScore.SCORE_15,
             "charisma": AbilityScore.SCORE_8,
-            "gender": f"{gender}",
+            "gender": f"{fake.enum(enum_cls=Character.Gender)}",
         }
-        form = CharacterCreateForm(data)
+
+    def test_character_creation_common(self, client, character_form):
+        form = CharacterCreateForm(character_form)
         assert form.is_valid()
 
         response = client.post(
@@ -160,25 +159,24 @@ class TestCharacterCreateView:
         assert character.max_hp >= 100
         assert character.hp == character.max_hp
 
-    def test_character_creation_dwarf(self, client):
+    @pytest.fixture
+    def dwarf_form(self):
         fake = Faker()
-        name = fake.name()
-        race = Race.DWARF
-        class_name = fake.enum(enum_cls=Class)
-        gender = fake.enum(enum_cls=Character.Gender)
-        data = {
-            "name": f"{name}",
-            "race": f"{race}",
-            "class_name": f"{class_name}",
+        return {
+            "name": f"{fake.name()}",
+            "race": f"{Race.DWARF}",
+            "class_name": f"{fake.enum(enum_cls=Class)}",
             "strength": AbilityScore.SCORE_10,
             "dexterity": AbilityScore.SCORE_12,
             "constitution": AbilityScore.SCORE_13,
             "intelligence": AbilityScore.SCORE_14,
             "wisdom": AbilityScore.SCORE_15,
             "charisma": AbilityScore.SCORE_8,
-            "gender": f"{gender}",
+            "gender": f"{fake.enum(enum_cls=Character.Gender)}",
         }
-        form = CharacterCreateForm(data)
+
+    def test_character_creation_dwarf(self, client, dwarf_form):
+        form = CharacterCreateForm(dwarf_form)
         assert form.is_valid()
 
         response = client.post(
@@ -215,45 +213,37 @@ class TestCharacterCreateView:
 
         assert character.speed == 25
 
-        common = Language.objects.get(name=Language.Name.COMMON)
-        dwarvish = Language.objects.get(name=Language.Name.DWARVISH)
         languages = set()
-        languages.add(common)
-        languages.add(dwarvish)
+        languages.add(Language.objects.get(name=Language.Name.COMMON))
+        languages.add(Language.objects.get(name=Language.Name.DWARVISH))
         assert set(character.languages.all()) == languages
 
-        darkvision = Sense.objects.get(name="Darkvision")
-        dwarven_resilience = Sense.objects.get(name="Dwarven Resilience")
-        dwarven_combat_training = Sense.objects.get(name="Dwarven Combat Training")
-        tool_proficiency = Sense.objects.get(name="Tool Proficiency")
-        stonecunning = Sense.objects.get(name="Stonecunning")
         senses = set()
-        senses.add(darkvision)
-        senses.add(dwarven_resilience)
-        senses.add(dwarven_combat_training)
-        senses.add(tool_proficiency)
-        senses.add(stonecunning)
+        senses.add(Sense.objects.get(name="Darkvision"))
+        senses.add(Sense.objects.get(name="Dwarven Resilience"))
+        senses.add(Sense.objects.get(name="Dwarven Combat Training"))
+        senses.add(Sense.objects.get(name="Tool Proficiency"))
+        senses.add(Sense.objects.get(name="Stonecunning"))
         assert set(character.senses.all()) == senses
 
-    def test_character_creation_elf(self, client):
+    @pytest.fixture
+    def elf_form(self):
         fake = Faker()
-        name = fake.name()
-        race = Race.ELF
-        class_name = fake.enum(enum_cls=Class)
-        gender = fake.enum(enum_cls=Character.Gender)
-        data = {
-            "name": f"{name}",
-            "race": f"{race}",
-            "class_name": f"{class_name}",
+        return {
+            "name": f"{fake.name()}",
+            "race": f"{Race.ELF}",
+            "class_name": f"{fake.enum(enum_cls=Class)}",
             "strength": AbilityScore.SCORE_10,
             "dexterity": AbilityScore.SCORE_12,
             "constitution": AbilityScore.SCORE_13,
             "intelligence": AbilityScore.SCORE_14,
             "wisdom": AbilityScore.SCORE_15,
             "charisma": AbilityScore.SCORE_8,
-            "gender": f"{gender}",
+            "gender": f"{fake.enum(enum_cls=Character.Gender)}",
         }
-        form = CharacterCreateForm(data)
+
+    def test_character_creation_elf(self, client, elf_form):
+        form = CharacterCreateForm(elf_form)
         assert form.is_valid()
 
         response = client.post(
@@ -290,41 +280,35 @@ class TestCharacterCreateView:
 
         assert character.speed == 30
 
-        elvish = Language.objects.get(name=Language.Name.ELVISH)
         languages = set()
-        languages.add(elvish)
+        languages.add(Language.objects.get(name=Language.Name.ELVISH))
         assert set(character.languages.all()) == languages
 
-        darkvision = Sense.objects.get(name="Darkvision")
-        keen_senses = Sense.objects.get(name="Keen Senses")
-        fey_ancestry = Sense.objects.get(name="Fey Ancestry")
-        trance = Sense.objects.get(name="Trance")
         senses = set()
-        senses.add(darkvision)
-        senses.add(keen_senses)
-        senses.add(fey_ancestry)
-        senses.add(trance)
+        senses.add(Sense.objects.get(name="Darkvision"))
+        senses.add(Sense.objects.get(name="Keen Senses"))
+        senses.add(Sense.objects.get(name="Fey Ancestry"))
+        senses.add(Sense.objects.get(name="Trance"))
         assert set(character.senses.all()) == senses
 
-    def test_character_creation_halfling(self, client):
+    @pytest.fixture
+    def halfling_form(self):
         fake = Faker()
-        name = fake.name()
-        race = Race.HALFLING
-        class_name = fake.enum(enum_cls=Class)
-        gender = fake.enum(enum_cls=Character.Gender)
-        data = {
-            "name": f"{name}",
-            "race": f"{race}",
-            "class_name": f"{class_name}",
+        return {
+            "name": f"{fake.name()}",
+            "race": f"{Race.HALFLING}",
+            "class_name": f"{fake.enum(enum_cls=Class)}",
             "strength": AbilityScore.SCORE_10,
             "dexterity": AbilityScore.SCORE_12,
             "constitution": AbilityScore.SCORE_13,
             "intelligence": AbilityScore.SCORE_14,
             "wisdom": AbilityScore.SCORE_15,
             "charisma": AbilityScore.SCORE_8,
-            "gender": f"{gender}",
+            "gender": f"{fake.enum(enum_cls=Character.Gender)}",
         }
-        form = CharacterCreateForm(data)
+
+    def test_character_creation_halfling(self, client, halfling_form):
+        form = CharacterCreateForm(halfling_form)
         assert form.is_valid()
 
         response = client.post(
@@ -361,41 +345,36 @@ class TestCharacterCreateView:
 
         assert character.speed == 25
 
-        common = Language.objects.get(name=Language.Name.COMMON)
-        halfling = Language.objects.get(name=Language.Name.HALFLING)
         languages = set()
-        languages.add(common)
-        languages.add(halfling)
+        languages.add(Language.objects.get(name=Language.Name.COMMON))
+        languages.add(Language.objects.get(name=Language.Name.HALFLING))
         assert set(character.languages.all()) == languages
 
-        lucky = Sense.objects.get(name="Lucky")
-        brave = Sense.objects.get(name="Brave")
         halfling_nimbleness = Sense.objects.get(name="Halfling Nimbleness")
         senses = set()
-        senses.add(lucky)
-        senses.add(brave)
+        senses.add(Sense.objects.get(name="Lucky"))
+        senses.add(Sense.objects.get(name="Brave"))
         senses.add(halfling_nimbleness)
         assert set(character.senses.all()) == senses
 
-    def test_character_creation_human(self, client):
+    @pytest.fixture
+    def human_form(self):
         fake = Faker()
-        name = fake.name()
-        race = Race.HUMAN
-        class_name = fake.enum(enum_cls=Class)
-        gender = fake.enum(enum_cls=Character.Gender)
-        data = {
-            "name": f"{name}",
-            "race": f"{race}",
-            "class_name": f"{class_name}",
+        return {
+            "name": f"{fake.name()}",
+            "race": f"{Race.HUMAN}",
+            "class_name": f"{fake.enum(enum_cls=Class)}",
             "strength": AbilityScore.SCORE_10,
             "dexterity": AbilityScore.SCORE_12,
             "constitution": AbilityScore.SCORE_13,
             "intelligence": AbilityScore.SCORE_14,
             "wisdom": AbilityScore.SCORE_15,
             "charisma": AbilityScore.SCORE_8,
-            "gender": f"{gender}",
+            "gender": f"{fake.enum(enum_cls=Character.Gender)}",
         }
-        form = CharacterCreateForm(data)
+
+    def test_character_creation_human(self, client, human_form):
+        form = CharacterCreateForm(human_form)
         assert form.is_valid()
 
         response = client.post(
@@ -432,9 +411,8 @@ class TestCharacterCreateView:
 
         assert character.speed == 30
 
-        common = Language.objects.get(name=Language.Name.COMMON)
         languages = set()
-        languages.add(common)
+        languages.add(Language.objects.get(name=Language.Name.COMMON))
         assert set(character.languages.all()) == languages
 
         senses = set()

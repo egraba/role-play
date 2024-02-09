@@ -45,6 +45,7 @@ factory_boy = "*"
 faker = "*"
 pre-commit = "*"
 pylint = "*"
+pylint-pytest = "*"
 pytest = "^7.4"
 pytest-asyncio = "*"
 pytest-django = "*"
@@ -56,6 +57,9 @@ version_scheme = "semver"
 version_provider = "poetry"
 update_changelog_on_bump = true
 major_version_zero = true
+
+[tool.pylint.main]
+load-plugins = "pylint_pytest"
 
 [tool.pytest.ini_options]
 python_files = ["test_*.py", "*_test.py", "testing/python/*.py"]

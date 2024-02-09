@@ -5,6 +5,8 @@ from character.models.skills import Skill
 
 @pytest.mark.django_db
 class TestSkillModel:
+    skill = None
+
     @pytest.fixture(autouse=True)
     def setup(self):
         # Fixtures are automatically loaded during the test session initialization.

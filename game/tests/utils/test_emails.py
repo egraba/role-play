@@ -24,6 +24,6 @@ class TestGetPlayersEmails:
         emails = set()
         email = fake.email()
         emails.add(email)
-        for i in range(5):
+        for _ in range(5):
             PlayerFactory(game=game, character__user__email=email)
         assert get_players_emails(game) == list(emails)

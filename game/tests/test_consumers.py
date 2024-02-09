@@ -14,25 +14,31 @@ from .factories import GameFactory
 
 @pytest.mark.django_db(transaction=True)
 class TestGameEventsConsumer:
-    @pytest.fixture(autouse=True)
-    def setup(self):
-        self.game = GameFactory(master__user__username="master")
-        self.master_user = User.objects.get(username="master")
-        character = CharacterFactory()
-        self.player_user = User.objects.get(character=character)
-        self.application = URLRouter(
+    @pytest.fixture
+    def application(self):
+        return URLRouter(
             [
                 re_path(r"^events/(?P<game_id>\w+)/$", GameEventsConsumer.as_asgi()),
             ]
         )
 
+    @pytest.fixture
+    def game(self):
+        return GameFactory(master__user__username="master")
+
+    @pytest.fixture
+    def master_user(self):
+        return User.objects.get(username="master")
+
+    @pytest.fixture
+    def player_user(self):
+        return User.objects.get(character=CharacterFactory())
+
     @pytest.mark.asyncio
-    async def test_message_from_master(self):
-        communicator = WebsocketCommunicator(
-            self.application, f"/events/{self.game.id}/"
-        )
-        communicator.scope["user"] = self.master_user
-        communicator.scope["game_id"] = self.game.id
+    async def test_message_from_master(self, application, game, master_user):
+        communicator = WebsocketCommunicator(application, f"/events/{game.id}/")
+        communicator.scope["user"] = master_user
+        communicator.scope["game_id"] = game.id
         connected, _ = await communicator.connect()
         assert connected
 
@@ -54,12 +60,10 @@ class TestGameEventsConsumer:
         await communicator.disconnect()
 
     @pytest.mark.asyncio
-    async def test_message_from_player(self):
-        communicator = WebsocketCommunicator(
-            self.application, f"/events/{self.game.id}/"
-        )
-        communicator.scope["user"] = self.player_user
-        communicator.scope["game_id"] = self.game.id
+    async def test_message_from_player(self, application, game, player_user):
+        communicator = WebsocketCommunicator(application, f"/events/{game.id}/")
+        communicator.scope["user"] = player_user
+        communicator.scope["game_id"] = game.id
         connected, _ = await communicator.connect()
         assert connected
 
@@ -81,12 +85,10 @@ class TestGameEventsConsumer:
         await communicator.disconnect()
 
     @pytest.mark.asyncio
-    async def test_quest_update(self):
-        communicator = WebsocketCommunicator(
-            self.application, f"/events/{self.game.id}/"
-        )
-        communicator.scope["user"] = self.master_user
-        communicator.scope["game_id"] = self.game.id
+    async def test_quest_update(self, application, game, master_user):
+        communicator = WebsocketCommunicator(application, f"/events/{game.id}/")
+        communicator.scope["user"] = master_user
+        communicator.scope["game_id"] = game.id
         connected, _ = await communicator.connect()
         assert connected
 
@@ -109,12 +111,10 @@ class TestGameEventsConsumer:
         await communicator.disconnect()
 
     @pytest.mark.asyncio
-    async def test_game_start(self):
-        communicator = WebsocketCommunicator(
-            self.application, f"/events/{self.game.id}/"
-        )
-        communicator.scope["user"] = self.master_user
-        communicator.scope["game_id"] = self.game.id
+    async def test_game_start(self, application, game, master_user):
+        communicator = WebsocketCommunicator(application, f"/events/{game.id}/")
+        communicator.scope["user"] = master_user
+        communicator.scope["game_id"] = game.id
         connected, _ = await communicator.connect()
         assert connected
 
@@ -137,12 +137,10 @@ class TestGameEventsConsumer:
         await communicator.disconnect()
 
     @pytest.mark.asyncio
-    async def test_ability_check_request(self):
-        communicator = WebsocketCommunicator(
-            self.application, f"/events/{self.game.id}/"
-        )
-        communicator.scope["user"] = self.master_user
-        communicator.scope["game_id"] = self.game.id
+    async def test_ability_check_request(self, application, game, master_user):
+        communicator = WebsocketCommunicator(application, f"/events/{game.id}/")
+        communicator.scope["user"] = master_user
+        communicator.scope["game_id"] = game.id
         connected, _ = await communicator.connect()
         assert connected
 
