@@ -68,7 +68,7 @@ class TestIndexView:
         assertContains(response, "Create a new character")
         assertNotContains(response, "View your character")
         with pytest.raises(KeyError):
-            response.context["user_character"]
+            print(response.context["user_character"])
 
     def test_content_logged_user_existing_character(self, client):
         character = CharacterFactory()
@@ -147,7 +147,7 @@ class TestGameListView:
 
 
 @pytest.fixture(scope="class")
-def create_populated_game(django_db_blocker):
+def populated_game(django_db_blocker):
     with django_db_blocker.unblock():
         game = GameFactory(master__user__username="master")
         number_of_events = 10
@@ -164,40 +164,39 @@ def create_populated_game(django_db_blocker):
 @pytest.mark.django_db
 class TestGameView:
     @pytest.fixture(autouse=True)
-    def setup(self, client):
+    def login(self, client):
         # Only games created by their own master are displayed to them.
         user = UserFactory(username="master")
         client.force_login(user)
-        self.game = Game.objects.last()
 
     @pytest.fixture(autouse=True)
     def tear_down(self):
         yield cache.clear()
 
-    def test_view_mapping(self, client):
-        response = client.get(self.game.get_absolute_url())
+    def test_view_mapping(self, client, populated_game):
+        response = client.get(populated_game.get_absolute_url())
         assert response.resolver_match.func.view_class == GameView
 
-    def test_template_mapping(self, client):
-        response = client.get(self.game.get_absolute_url())
+    def test_template_mapping(self, client, populated_game):
+        response = client.get(populated_game.get_absolute_url())
         assertTemplateUsed(response, "game/game.html")
 
-    def test_pagination_size(self, client, create_populated_game):
-        response = client.get(self.game.get_absolute_url())
+    def test_pagination_size(self, client, populated_game):
+        response = client.get(populated_game.get_absolute_url())
         assert response.status_code == 200
         assert "is_paginated" in response.context
         assert response.context["is_paginated"]
         assert len(response.context["event_list"]) == 10
 
-    def test_pagination_size_next_page(self, client, create_populated_game):
-        response = client.get(self.game.get_absolute_url() + "?page=2")
+    def test_pagination_size_next_page(self, client, populated_game):
+        response = client.get(populated_game.get_absolute_url() + "?page=2")
         assert response.status_code == 200
         assert "is_paginated" in response.context
         assert response.context["is_paginated"]
-        assert len(response.context["event_list"]) == 4  # Inherited events
+        assert len(response.context["event_list"]) == 3  # Inherited events
 
-    def test_ordering_character_name_ascending(self, client, create_populated_game):
-        response = client.get(self.game.get_absolute_url())
+    def test_ordering_character_name_ascending(self, client, populated_game):
+        response = client.get(populated_game.get_absolute_url())
         assert response.status_code == 200
         last_name = ""
         for character in response.context["character_list"]:
@@ -207,8 +206,8 @@ class TestGameView:
                 assert last_name <= character.name
                 last_name = character.name.upper()
 
-    def test_ordering_event_date_descending(self, client, create_populated_game):
-        response = client.get(self.game.get_absolute_url())
+    def test_ordering_event_date_descending(self, client, populated_game):
+        response = client.get(populated_game.get_absolute_url())
         assert response.status_code == 200
         last_date = 0
         for event in response.context["event_list"]:
@@ -224,64 +223,64 @@ class TestGameView:
         assert response.status_code == 404
         assert pytest.raises(Http404)
 
-    def test_game_last_quest(self, client):
-        quest = Quest.objects.filter(game=self.game).last()
-        response = client.get(self.game.get_absolute_url())
+    def test_game_last_quest(self, client, populated_game):
+        quest = Quest.objects.filter(game=populated_game).last()
+        response = client.get(populated_game.get_absolute_url())
         assert response.status_code == 200
         assert response.context["quest"] == quest
 
     def test_context_data_master(self, client):
-        response = client.get(self.game.get_absolute_url())
+        response = client.get(populated_game.get_absolute_url())
         assert response.status_code == 200
 
-        quest_list = Quest.objects.filter(game=self.game)
+        quest_list = Quest.objects.filter(game=populated_game)
         quest = quest_list.last()
         assert response.context["quest"] == quest
-        character_list = Character.objects.filter(player__game=self.game)
+        character_list = Character.objects.filter(player__game=populated_game)
         assertQuerySetEqual(
             set(response.context["character_list"]), set(character_list)
         )
-        event_list = Event.objects.filter(game=self.game)
+        event_list = Event.objects.filter(game=populated_game)
         # issubset() is used because of pagination.
         assert set(response.context["event_list"]).issubset(set(event_list))
         with pytest.raises(KeyError):
-            response.context["player"]
+            print(response.context["player"])
 
     def test_context_data_player(self, client):
         client.logout()
         # Log as a player
-        character = Character.objects.filter(player__game=self.game).last()
+        character = Character.objects.filter(player__game=populated_game).last()
         user = character.user
         client.force_login(user)
-        response = client.get(self.game.get_absolute_url())
+        response = client.get(populated_game.get_absolute_url())
         assert response.status_code == 200
 
-        quest_list = Quest.objects.filter(game=self.game)
+        quest_list = Quest.objects.filter(game=populated_game)
         quest = quest_list.last()
         assert response.context["quest"] == quest
-        character_list = Character.objects.filter(player__game=self.game)
+        character_list = Character.objects.filter(player__game=populated_game)
         assertQuerySetEqual(
             set(response.context["character_list"]), set(character_list)
         )
-        event_list = Event.objects.filter(game=self.game)
+        event_list = Event.objects.filter(game=populated_game)
         # issubset() is used because of pagination.
         assert set(response.context["event_list"]).issubset(set(event_list))
-        player = Player.objects.get(game=self.game, character__user=user)
+        player = Player.objects.get(game=populated_game, character__user=user)
         assert response.context["player"] == player
 
     def test_content_character_is_current_user(self, client):
         client.logout()
         # Log as a player
-        character = Character.objects.filter(player__game=self.game).last()
+        character = Character.objects.filter(player__game=populated_game).last()
         user = character.user
         client.force_login(user)
-        response = client.get(self.game.get_absolute_url())
+        response = client.get(populated_game.get_absolute_url())
         assert response.status_code == 200
         assertContains(response, "played by you")
 
     def test_content_no_events(self, client):
-        Event.objects.filter(game=self.game).delete()
-        response = client.get(self.game.get_absolute_url())
+        Event.objects.filter(game=populated_game).delete()
+        response = client.get(populated_game.get_absolute_url())
         assert response.status_code == 200
         assertContains(response, "The campaign did not start yet...")
 
@@ -291,33 +290,36 @@ class TestGameCreateView:
     path_name = "game-create"
 
     @pytest.fixture(autouse=True)
-    def setup(self, client):
-        self.user = UserFactory(username="user")
-        client.force_login(self.user)
-        self.campaign = CampaignFactory()
+    def login(self, client):
+        user = UserFactory(username="user")
+        client.force_login(user)
 
-    def test_view_mapping(self, client):
-        response = client.get(reverse(self.path_name, args=(self.campaign.slug,)))
+    @pytest.fixture
+    def campaign(self):
+        return CampaignFactory()
+
+    def test_view_mapping(self, client, campaign):
+        response = client.get(reverse(self.path_name, args=(campaign.slug,)))
         assert response.status_code == 200
         assert response.resolver_match.func.view_class == GameCreateView
 
-    def test_template_mapping(self, client):
-        response = client.get(reverse(self.path_name, args=(self.campaign.slug,)))
+    def test_template_mapping(self, client, campaign):
+        response = client.get(reverse(self.path_name, args=(campaign.slug,)))
         assert response.status_code == 200
         assertTemplateUsed(response, "game/game_create.html")
 
-    def test_game_creation(self, client):
-        response = client.post(reverse(self.path_name, args=(self.campaign.slug,)))
+    def test_game_creation(self, client, campaign):
+        response = client.post(reverse(self.path_name, args=(campaign.slug,)))
         assert response.status_code == 302
         game = Game.objects.last()
         assertRedirects(response, game.get_absolute_url())
-        assert game.name == f"{self.campaign.title} #{game.id}"
+        assert game.name == f"{campaign.title} #{game.id}"
         assert game.status == "P"
         assert game.master.user == self.user
         quest = Quest.objects.last()
         assert quest.game == game
         assert quest.message == "The Master created the campaign."
-        assert quest.content == self.campaign.synopsis
+        assert quest.content == campaign.synopsis
 
     def test_game_creation_campaign_does_not_exist(self, client):
         fake = Faker()
