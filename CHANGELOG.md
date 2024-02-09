@@ -2,7 +2,7 @@
 
 Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<patch>`).
 
-## Unreleased
+## v0.6.1 - 2024-02-09
 
 ### Added
 * Use pylint as a linter
