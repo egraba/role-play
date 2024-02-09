@@ -57,6 +57,7 @@ jobs:
     - name: Run Tests
       run: |
         poetry run invoke test.run --verbose --coverage
+        poetry run invoke test.coverage-report --output-format xml
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v3
       env:
