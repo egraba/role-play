@@ -7,7 +7,7 @@ from django.urls import reverse
 from utils.dice import Dice
 
 from ..utils.cache import advancement_key
-from .abilities import Ability
+from .abilities import Ability, AbilityType
 from .advancement import Advancement
 from .classes import Class
 from .equipment import Inventory
