@@ -1,18 +1,18 @@
 from character.models.character import Character
 from utils.dice import Dice
 
-from ..models.events import AbilityCheck, AbilityCheckRequest
+from ..models.events import Roll, RollRequest
 
 
 def perform_ability_check(
-    character: Character, request: AbilityCheckRequest
+    character: Character, request: RollRequest
 ) -> tuple[int, tuple[str, str]]:
     """
     Perform ability check.
 
     Args:
         character (Character): Character who performs the ability check.
-        request (AbilityCheckRequest): The corresponding ability check request from the master.
+        request (RollRequest): The corresponding ability check request from the master.
 
     Returns:
         tuple[int, tuple[str, str]]: Dice roll score and ability check result.
@@ -21,5 +21,5 @@ def perform_ability_check(
     ability = character.abilities.get(ability_type=request.ability_type)
     score = Dice("d20").roll(ability.modifier)
     if score >= request.difficulty_class:
-        return score, AbilityCheck.Result.SUCCESS
-    return score, AbilityCheck.Result.FAILURE
+        return score, Roll.Result.SUCCESS
+    return score, Roll.Result.FAILURE

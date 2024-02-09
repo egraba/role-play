@@ -8,7 +8,7 @@ from django.views.generic import CreateView, ListView, TemplateView
 from character.models.character import Character
 from master.models import Campaign
 
-from ..models.events import AbilityCheckRequest, Event, Quest, Request
+from ..models.events import Event, Quest, RollRequest
 from ..models.game import Game, Master, Player
 from ..views.mixins import GameContextMixin
 
@@ -57,8 +57,8 @@ class GameView(LoginRequiredMixin, ListView, GameContextMixin):
         ).order_by("name")
         try:
             context["player"] = Player.objects.get(character__user=self.request.user)
-            context["ability_check_request"] = AbilityCheckRequest.objects.filter(
-                status=Request.Status.PENDING
+            context["ability_check_request"] = RollRequest.objects.filter(
+                status=RollRequest.Status.PENDING
             ).first()
         except ObjectDoesNotExist:
             pass

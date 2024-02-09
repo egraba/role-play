@@ -7,7 +7,7 @@ from django.utils import timezone
 
 from character.models.character import Character
 
-from .models.events import AbilityCheck, AbilityCheckRequest, Event
+from .models.events import Event, Roll, RollRequest
 from .models.game import Game
 from .schemas import GameEventType, PlayerType
 from .utils.channels import send_to_channel
@@ -57,8 +57,8 @@ def process_ability_check(
     character = Character.objects.get(id=character_id)
 
     # Retrieve the corresponding request.
-    ability_check_request = AbilityCheckRequest.objects.filter(
-        character=character, status=AbilityCheckRequest.Status.PENDING
+    ability_check_request = RollRequest.objects.filter(
+        character=character, status=RollRequest.Status.PENDING
     ).first()
     if ability_check_request is None:
         raise PermissionDenied
@@ -73,7 +73,7 @@ def process_ability_check(
     score, result = perform_ability_check(character, ability_check_request)
     # Ability check's message must be created after AbilityCheck constructor call
     # in order to display the result in verbose format.
-    ability_check = AbilityCheck(
+    ability_check = Roll(
         game=game,
         date=date,
         character=character,
@@ -85,7 +85,7 @@ def process_ability_check(
     ability_check.save()
 
     # The corresponding request is done.
-    ability_check_request.status = AbilityCheckRequest.Status.DONE
+    ability_check_request.status = RollRequest.Status.DONE
     ability_check_request.save()
 
     send_to_channel(
