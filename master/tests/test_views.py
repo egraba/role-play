@@ -33,7 +33,7 @@ class TestCampaignDetailView:
         client.force_login(user)
 
     @pytest.fixture
-    def capaign(self):
+    def campaign(self):
         return CampaignFactory()
 
     def test_view_mapping(self, client, campaign):

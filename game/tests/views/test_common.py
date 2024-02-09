@@ -159,6 +159,7 @@ def populated_game(django_db_blocker):
         number_of_players = 8
         for _ in range(number_of_players):
             PlayerFactory(game=game)
+        return game
 
 
 @pytest.mark.django_db
@@ -229,7 +230,7 @@ class TestGameView:
         assert response.status_code == 200
         assert response.context["quest"] == quest
 
-    def test_context_data_master(self, client):
+    def test_context_data_master(self, client, populated_game):
         response = client.get(populated_game.get_absolute_url())
         assert response.status_code == 200
 
@@ -246,7 +247,7 @@ class TestGameView:
         with pytest.raises(KeyError):
             print(response.context["player"])
 
-    def test_context_data_player(self, client):
+    def test_context_data_player(self, client, populated_game):
         client.logout()
         # Log as a player
         character = Character.objects.filter(player__game=populated_game).last()
@@ -268,7 +269,7 @@ class TestGameView:
         player = Player.objects.get(game=populated_game, character__user=user)
         assert response.context["player"] == player
 
-    def test_content_character_is_current_user(self, client):
+    def test_content_character_is_current_user(self, client, populated_game):
         client.logout()
         # Log as a player
         character = Character.objects.filter(player__game=populated_game).last()
@@ -278,7 +279,7 @@ class TestGameView:
         assert response.status_code == 200
         assertContains(response, "played by you")
 
-    def test_content_no_events(self, client):
+    def test_content_no_events(self, client, populated_game):
         Event.objects.filter(game=populated_game).delete()
         response = client.get(populated_game.get_absolute_url())
         assert response.status_code == 200
@@ -289,39 +290,40 @@ class TestGameView:
 class TestGameCreateView:
     path_name = "game-create"
 
-    @pytest.fixture(autouse=True)
-    def login(self, client):
+    @pytest.fixture
+    def logged_user(self, client):
         user = UserFactory(username="user")
         client.force_login(user)
+        return user
 
     @pytest.fixture
     def campaign(self):
         return CampaignFactory()
 
-    def test_view_mapping(self, client, campaign):
+    def test_view_mapping(self, client, logged_user, campaign):
         response = client.get(reverse(self.path_name, args=(campaign.slug,)))
         assert response.status_code == 200
         assert response.resolver_match.func.view_class == GameCreateView
 
-    def test_template_mapping(self, client, campaign):
+    def test_template_mapping(self, client, logged_user, campaign):
         response = client.get(reverse(self.path_name, args=(campaign.slug,)))
         assert response.status_code == 200
         assertTemplateUsed(response, "game/game_create.html")
 
-    def test_game_creation(self, client, campaign):
+    def test_game_creation(self, client, logged_user, campaign):
         response = client.post(reverse(self.path_name, args=(campaign.slug,)))
         assert response.status_code == 302
         game = Game.objects.last()
         assertRedirects(response, game.get_absolute_url())
         assert game.name == f"{campaign.title} #{game.id}"
         assert game.status == "P"
-        assert game.master.user == self.user
+        assert game.master.user == logged_user
         quest = Quest.objects.last()
         assert quest.game == game
         assert quest.message == "The Master created the campaign."
         assert quest.content == campaign.synopsis
 
-    def test_game_creation_campaign_does_not_exist(self, client):
+    def test_game_creation_campaign_does_not_exist(self, client, logged_user):
         fake = Faker()
         fake_slug = fake.slug()
         response = client.post(reverse(self.path_name, args=(fake_slug,)))
