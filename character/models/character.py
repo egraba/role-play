@@ -7,7 +7,7 @@ from django.urls import reverse
 from utils.dice import Dice
 
 from ..utils.cache import advancement_key
-from .abilities import Ability
+from .abilities import Ability, AbilityType
 from .advancement import Advancement
 from .classes import Class, Proficiencies
 from .equipment import Inventory
@@ -91,3 +91,8 @@ class Character(models.Model):
         self.xp += xp
         while self._check_level_increase():
             self._increase_level()
+
+
+class SavingThrow(models.Model):
+    character = models.ForeignKey(Character, on_delete=models.CASCADE)
+    ability_type = models.ForeignKey(AbilityType, on_delete=models.CASCADE)

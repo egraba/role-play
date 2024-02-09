@@ -1,11 +1,12 @@
 import pytest
+from django.db.models import Q
 from django.urls import reverse
 from faker import Faker
 from pytest_django.asserts import assertContains, assertRedirects, assertTemplateUsed
 
 from character.forms.character import CharacterCreateForm
 from character.models.abilities import AbilityType
-from character.models.character import Character
+from character.models.character import Character, SavingThrow
 from character.models.classes import Class
 from character.models.races import Language, Race, Sense
 from character.utils.abilities import AbilityScore
@@ -459,7 +460,12 @@ class TestCharacterCreateView:
 
         assert character.proficiencies.weapons == "Simple weapons"
         assert character.proficiencies.tools == "None"
-        assert character.proficiencies.saving_throws == "Wisdom, Charisma"
+        assert set(character.savingthrow_set.all()) == set(
+            SavingThrow.objects.filter(
+                Q(ability_type_id=AbilityType.Name.WISDOM)
+                | Q(ability_type_id=AbilityType.Name.CHARISMA)
+            )
+        )
 
     def test_character_creation_fighter(self, client):
         fake = Faker()
@@ -501,7 +507,12 @@ class TestCharacterCreateView:
         assert character.proficiencies.armor == "All armor, shields"
         assert character.proficiencies.weapons == "Simple weapons, martial weapons"
         assert character.proficiencies.tools == "None"
-        assert character.proficiencies.saving_throws == "Strength, Constitution"
+        assert set(character.savingthrow_set.all()) == set(
+            SavingThrow.objects.filter(
+                Q(ability_type_id=AbilityType.Name.STRENGTH)
+                | Q(ability_type_id=AbilityType.Name.CONSTITUTION)
+            )
+        )
 
     def test_character_creation_rogue(self, client):
         fake = Faker()
@@ -546,7 +557,12 @@ class TestCharacterCreateView:
             == "Simple weapons, hand crossbows, longswords, rapiers, shortswords"
         )
         assert character.proficiencies.tools == "Thieves' tools"
-        assert character.proficiencies.saving_throws == "Dexterity, Intelligence"
+        assert set(character.savingthrow_set.all()) == set(
+            SavingThrow.objects.filter(
+                Q(ability_type_id=AbilityType.Name.DEXTERITY)
+                | Q(ability_type_id=AbilityType.Name.INTELLIGENCE)
+            )
+        )
 
     def test_character_creation_wizard(self, client):
         fake = Faker()
@@ -591,4 +607,9 @@ class TestCharacterCreateView:
             == "Daggers, darts, slings, quarterstaffs, light crossbows"
         )
         assert character.proficiencies.tools == "None"
-        assert character.proficiencies.saving_throws == "Intelligence, Wisdom"
+        assert set(character.savingthrow_set.all()) == set(
+            SavingThrow.objects.filter(
+                Q(ability_type_id=AbilityType.Name.INTELLIGENCE)
+                | Q(ability_type_id=AbilityType.Name.WISDOM)
+            )
+        )

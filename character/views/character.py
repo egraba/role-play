@@ -4,11 +4,12 @@ from django.views.generic import CreateView, DetailView, ListView
 
 from ..forms.character import CharacterCreateForm
 from ..models.abilities import Ability, AbilityScoreIncrease, AbilityType
-from ..models.character import Character
+from ..models.character import Character, SavingThrow
 from ..models.classes import ClassAdvancement, ClassFeature, Proficiencies
 from ..models.equipment import Equipment, Inventory
 from ..models.races import RacialTrait
 from ..utils.abilities import compute_ability_modifier
+from ..utils.saving_throws import get_saving_throws
 
 
 class CharacterDetailView(LoginRequiredMixin, DetailView):
@@ -89,6 +90,11 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
         proficiencies = Proficiencies.objects.get(class_feature=class_feature)
         proficiencies.character = character
         proficiencies.save()
+        saving_throws = get_saving_throws(class_feature.class_name)
+        for ability in saving_throws:
+            SavingThrow.objects.create(
+                character=character, ability_type=AbilityType.objects.get(name=ability)
+            )
 
     def form_valid(self, form):
         character = form.save(commit=False)
