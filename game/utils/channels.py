@@ -20,7 +20,7 @@ def send_to_channel(game_id: int, game_event: dict[str, Any]) -> None:
     try:
         GameEvent(**game_event)
     except ValidationError as e:
-        raise GameEventError(e.errors())
+        raise GameEventError(e.errors()) from e
 
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(

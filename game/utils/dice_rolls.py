@@ -22,5 +22,4 @@ def perform_ability_check(
     score = Dice("d20").roll(ability.modifier)
     if score >= request.difficulty_class:
         return score, AbilityCheck.Result.SUCCESS
-    else:
-        return score, AbilityCheck.Result.FAILURE
+    return score, AbilityCheck.Result.FAILURE
