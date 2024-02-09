@@ -6,6 +6,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 
 ### Changed
 * Split test coverage commands
+* Migrate to pytest8
 
 ## v0.6.1 - 2024-02-09
 
