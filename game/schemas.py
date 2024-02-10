@@ -16,6 +16,9 @@ class GameEventType(StrEnum):
     ABILITY_CHECK_REQUEST = "ability.check.request"
     ABILITY_CHECK = "ability.check"
     ABILITY_CHECK_RESULT = "ability.check.result"
+    SAVING_THROW_REQUEST = "saving.throw.request"
+    SAVING_THROW = "saving.throw"
+    SAVING_THROW_RESULT = "saving.throw.result"
 
 
 class PlayerType(StrEnum):

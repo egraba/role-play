@@ -4,18 +4,18 @@ from utils.dice import Dice
 from ..models.events import Roll, RollRequest
 
 
-def perform_ability_check(
+def perform_roll(
     character: Character, request: RollRequest
 ) -> tuple[int, tuple[str, str]]:
     """
-    Perform ability check.
+    Perform dice roll.
 
     Args:
-        character (Character): Character who performs the ability check.
-        request (RollRequest): The corresponding ability check request from the master.
+        character (Character): Character who performs the roll.
+        request (RollRequest): The corresponding roll request from the master.
 
     Returns:
-        tuple[int, tuple[str, str]]: Dice roll score and ability check result.
+        tuple[int, tuple[str, str]]: Dice roll score and roll type result.
     """
 
     ability = character.abilities.get(ability_type=request.ability_type)

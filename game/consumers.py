@@ -8,7 +8,7 @@ from character.models.character import Character
 
 from .models.game import Game
 from .schemas import GameEventOrigin, GameEventType
-from .tasks import process_ability_check, store_message
+from .tasks import process_roll, store_message
 from .utils.cache import game_key
 
 
@@ -74,7 +74,21 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                         raise DenyConnection(
                             f"Character of user [{self.user}] not found..."
                         ) from e
-                    process_ability_check.delay(
+                    process_roll.delay(
+                        game_id=self.game.id,
+                        date=content["date"],
+                        character_id=character.id,
+                        message=content["message"],
+                    )
+                case GameEventType.SAVING_THROW:
+                    try:
+                        character = Character.objects.get(user=self.user)
+                    except ObjectDoesNotExist as e:
+                        self.close()
+                        raise DenyConnection(
+                            f"Character of user [{self.user}] not found..."
+                        ) from e
+                    process_roll.delay(
                         game_id=self.game.id,
                         date=content["date"],
                         character_id=character.id,
@@ -107,4 +121,16 @@ class GameEventsConsumer(JsonWebsocketConsumer):
 
     def ability_check_result(self, event):
         """Ability check result."""
+        self.send_json(event)
+
+    def saving_throw_request(self, event):
+        """Saving throw request from the master."""
+        self.send_json(event)
+
+    def saving_throw(self, event):
+        """Saving throw roll from the player."""
+        self.send_json(event)
+
+    def saving_throw_result(self, event):
+        """Saving throw result."""
         self.send_json(event)
