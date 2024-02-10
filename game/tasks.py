@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from celery import shared_task
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.core.mail import send_mail
 from django.utils import timezone
 
@@ -58,12 +58,15 @@ def process_roll(
         character_id (int): Identifier of the character who did the roll.
         message (str): Message content.
     """
-    game = Game.objects.get(id=game_id)
-    character = Character.objects.get(id=character_id)
+    try:
+        game = Game.objects.get(id=game_id)
+        character = Character.objects.get(id=character_id, player__game=game)
+    except ObjectDoesNotExist as exc:
+        raise PermissionDenied from exc
 
     # Retrieve the corresponding request.
     request = RollRequest.objects.filter(
-        roll_type=None, character=character, status=RollRequest.Status.PENDING
+        roll_type=roll_type, character=character, status=RollRequest.Status.PENDING
     ).first()
     if request is None:
         raise PermissionDenied

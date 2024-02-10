@@ -56,3 +56,13 @@ class RollRequestFactory(factory.django.DjangoModelFactory):
     ability_type = factory.SubFactory("character.tests.factories.AbilityTypeFactory")
     difficulty_class = factory.Faker("enum", enum_cls=RollRequest.DifficultyClass)
     roll_type = factory.Faker("enum", enum_cls=RollRequest.RollType)
+
+    @factory.post_generation
+    def add_character_to_game(obj, create, extracted, **kwargs):
+        # pylint: disable=no-self-argument,unused-argument
+        if not create:
+            return
+        character = obj.character
+        game = obj.game
+        PlayerFactory(character=character, game=game)
+        character.save()
