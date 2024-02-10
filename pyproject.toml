@@ -48,6 +48,7 @@ pylint = "*"
 pylint-pytest = "*"
 pytest = "*"
 pytest-asyncio = "*"
+pytest-celery = "*"
 pytest-django = "*"
 
 [tool.commitizen]
