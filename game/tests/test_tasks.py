@@ -1,6 +1,7 @@
 from difflib import SequenceMatcher
 
 import pytest
+from django.core.exceptions import PermissionDenied
 from django.utils import timezone
 from faker import Faker
 
@@ -56,3 +57,21 @@ class TestProcessRoll:
 
         ability_check_request = RollRequest.objects.last()
         assert ability_check_request.status == RollRequest.Status.DONE
+
+    def test_ability_check_failure_game_not_found(
+        self, celery_worker, ability_check_request, character
+    ):
+        fake = Faker()
+        date = timezone.now()
+        message = fake.text(100)
+        with pytest.raises(PermissionDenied):
+            process_roll.delay(
+                game_id=fake.random_int(min=1000),
+                roll_type=ability_check_request.roll_type,
+                date=date.isoformat(),
+                character_id=character.id,
+                message=message,
+            ).get()
+
+        ability_check_request = RollRequest.objects.last()
+        assert ability_check_request.status == RollRequest.Status.PENDING
