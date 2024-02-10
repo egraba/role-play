@@ -46,6 +46,7 @@ class TestProcessRoll:
 
         roll = Roll.objects.last()
         assert roll.game == game
+        assert (roll.date.second - date.second) <= 2
         expected_str = f"[{character.user}]'s score: , \
             {ability_check_request.roll_type} result: {roll.get_result_display()}"
         s = SequenceMatcher(None, roll.message, expected_str)
