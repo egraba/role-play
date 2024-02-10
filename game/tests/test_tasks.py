@@ -47,7 +47,9 @@ class TestProcessRoll:
         roll = Roll.objects.last()
         assert roll.game == game
         assert (roll.date.second - date.second) <= 2
-        expected_str = f"[{character.user}]'s score: , \
+        # SequenceMatcher is used as the score is a random value, and therefore
+        # cannot be guessed.
+        expected_str = f"[{character.user}]'s score: 5, \
             {ability_check_request.roll_type} result: {roll.get_result_display()}"
         s = SequenceMatcher(None, roll.message, expected_str)
         assert s.ratio() > 0.9
