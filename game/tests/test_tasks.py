@@ -58,7 +58,7 @@ class TestProcessRoll:
         ability_check_request = RollRequest.objects.last()
         assert ability_check_request.status == RollRequest.Status.DONE
 
-    def test_ability_check_failure_game_not_found(
+    def test_roll_failure_game_not_found(
         self, celery_worker, ability_check_request, character
     ):
         fake = Faker()
@@ -76,7 +76,7 @@ class TestProcessRoll:
         ability_check_request = RollRequest.objects.last()
         assert ability_check_request.status == RollRequest.Status.PENDING
 
-    def test_ability_check_failure_character_not_found(
+    def test_roll_failure_character_not_found(
         self, celery_worker, ability_check_request, game
     ):
         fake = Faker()
@@ -94,7 +94,7 @@ class TestProcessRoll:
         ability_check_request = RollRequest.objects.last()
         assert ability_check_request.status == RollRequest.Status.PENDING
 
-    def test_ability_check_failure_request_not_found(
+    def test_roll_failure_request_not_found(
         self, celery_worker, ability_check_request, game, character
     ):
         fake = Faker()
