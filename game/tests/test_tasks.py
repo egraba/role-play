@@ -77,14 +77,14 @@ class TestProcessRoll:
         assert ability_check_request.status == RollRequest.Status.PENDING
 
     def test_ability_check_failure_character_not_found(
-        self, celery_worker, ability_check_request, game, character
+        self, celery_worker, ability_check_request, game
     ):
         fake = Faker()
         date = timezone.now()
         message = fake.text(100)
         with pytest.raises(PermissionDenied):
             process_roll.delay(
-                game_id=fake.random_int(min=1000),
+                game_id=game.id,
                 roll_type=ability_check_request.roll_type,
                 date=date.isoformat(),
                 character_id=fake.random_int(min=1000),
@@ -93,3 +93,19 @@ class TestProcessRoll:
 
         ability_check_request = RollRequest.objects.last()
         assert ability_check_request.status == RollRequest.Status.PENDING
+
+    def test_ability_check_failure_request_not_found(
+        self, celery_worker, ability_check_request, game, character
+    ):
+        fake = Faker()
+        date = timezone.now()
+        message = fake.text(100)
+        RollRequest.objects.last().delete()
+        with pytest.raises(PermissionDenied):
+            process_roll.delay(
+                game_id=game.id,
+                roll_type=RollRequest.RollType.ABILITY_CHECK,
+                date=date.isoformat(),
+                character_id=character.id,
+                message=message,
+            ).get()
