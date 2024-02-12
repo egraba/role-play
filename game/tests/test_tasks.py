@@ -37,7 +37,7 @@ class TestProcessRoll:
         message = fake.text(100)
         process_roll.delay(
             game_id=game.id,
-            roll_type=ability_check_request.roll_type,
+            roll_type=RollRequest.RollType.ABILITY_CHECK,
             date=date.isoformat(),
             character_id=character.id,
             message=message,
@@ -51,7 +51,7 @@ class TestProcessRoll:
         # SequenceMatcher is used as the score is a random value, and therefore
         # cannot be guessed.
         expected_str = f"[{character.user}]'s score: 5, \
-            {ability_check_request.roll_type} result: {roll.get_result_display()}"
+            {RollRequest.RollType.ABILITY_CHECK} result: {roll.get_result_display()}"
         s = SequenceMatcher(None, roll.message, expected_str)
         assert s.ratio() > 0.9
 
@@ -67,7 +67,7 @@ class TestProcessRoll:
         with pytest.raises(PermissionDenied):
             process_roll.delay(
                 game_id=fake.random_int(min=1000),
-                roll_type=ability_check_request.roll_type,
+                roll_type=RollRequest.RollType.ABILITY_CHECK,
                 date=date.isoformat(),
                 character_id=character.id,
                 message=message,
@@ -85,7 +85,7 @@ class TestProcessRoll:
         with pytest.raises(PermissionDenied):
             process_roll.delay(
                 game_id=game.id,
-                roll_type=ability_check_request.roll_type,
+                roll_type=RollRequest.RollType.ABILITY_CHECK,
                 date=date.isoformat(),
                 character_id=fake.random_int(min=1000),
                 message=message,
@@ -109,3 +109,36 @@ class TestProcessRoll:
                 character_id=character.id,
                 message=message,
             ).get()
+
+    @pytest.fixture
+    def saving_throw_request(self):
+        return RollRequestFactory(roll_type=RollRequest.RollType.SAVING_THROW)
+
+    def test_saving_throw_success(
+        self, celery_worker, saving_throw_request, game, character
+    ):
+        fake = Faker()
+        date = timezone.now()
+        message = fake.text(100)
+        process_roll.delay(
+            game_id=game.id,
+            roll_type=RollRequest.RollType.SAVING_THROW,
+            date=date.isoformat(),
+            character_id=character.id,
+            message=message,
+        ).get()
+
+        assert character.player.game == game
+
+        roll = Roll.objects.last()
+        assert roll.game == game
+        assert (roll.date.second - date.second) <= 2
+        # SequenceMatcher is used as the score is a random value, and therefore
+        # cannot be guessed.
+        expected_str = f"[{character.user}]'s score: 5, \
+            {RollRequest.RollType.SAVING_THROW} result: {roll.get_result_display()}"
+        s = SequenceMatcher(None, roll.message, expected_str)
+        assert s.ratio() > 0.9
+
+        saving_throw_request = RollRequest.objects.last()
+        assert saving_throw_request.status == RollRequest.Status.DONE
