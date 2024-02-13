@@ -4,6 +4,45 @@ from utils.dice import Dice
 from ..models.events import Roll, RollRequest
 
 
+def _has_advantage(
+    character: Character, roll_type: RollRequest.RollType, against: str
+) -> bool:
+    """
+    Indicate if a character has an advantage or not.
+
+    Args:
+        character (Character): The character who performs the roll.
+        roll_type (RollRequest.RollType): The type of roll
+        against (str): Against which attack the advantage is.
+
+    Returns:
+        bool: True if the character has an advantage, False otherwise.
+    """
+    has_dwarven_resistance = character.senses.get(name="Dwarven Resistance").exists()
+    has_fey_ancestry = character.senses.get(name="Fey Ancestry").exists()
+    is_brave = character.senses.get(name="Brave").exists()
+    has_stout_resilience = character.senses.get(name="Stout resilience").exists()
+
+    if (
+        has_dwarven_resistance
+        and roll_type == RollRequest.RollType.SAVING_THROW
+        and against == "poison"
+    ):
+        return True
+    if has_fey_ancestry and RollRequest.RollType.SAVING_THROW and against == "charm":
+        return True
+    if is_brave and RollRequest.RollType.SAVING_THROW and against == "being frightened":
+        return True
+    if (
+        has_stout_resilience
+        and roll_type == RollRequest.RollType.SAVING_THROW
+        and against == "poison"
+    ):
+        return True
+
+    return False
+
+
 def perform_roll(
     character: Character, request: RollRequest
 ) -> tuple[int, tuple[str, str]]:
@@ -11,7 +50,7 @@ def perform_roll(
     Perform dice roll.
 
     Args:
-        character (Character): Character who performs the roll.
+        character (Character): The character who performs the roll.
         request (RollRequest): The corresponding roll request from the master.
 
     Returns:
