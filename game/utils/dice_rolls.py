@@ -1,10 +1,23 @@
 from django.core.exceptions import ObjectDoesNotExist
 
 from character.exceptions import AbilityNotFound
+from character.models.abilities import AbilityType
 from character.models.character import Character
 from utils.dice import Dice
 
 from ..models.events import Roll, RollRequest
+
+
+def _roll(character: Character, ability_type: AbilityType) -> int:
+    try:
+        ability = character.abilities.get(ability_type=ability_type)
+    except ObjectDoesNotExist as exc:
+        raise AbilityNotFound(ability_type) from exc
+
+    score = Dice("d20").roll(ability.modifier)
+    if character.is_proficient(ability):
+        score += character.proficiency_bonus
+    return score
 
 
 def _has_advantage(
@@ -78,12 +91,7 @@ def perform_roll(
         tuple[int, tuple[str, str]]: Dice roll score and roll type result.
     """
 
-    try:
-        ability = character.abilities.get(ability_type=request.ability_type)
-    except ObjectDoesNotExist as exc:
-        raise AbilityNotFound(request.ability_type) from exc
-
-    score = Dice("d20").roll(ability.modifier)
+    score = _roll(character, request.ability_type)
 
     has_advantage = _has_advantage(character, request.roll_type, request.against)
     has_disadvantage = _has_disadvantage(character, request.roll_type, request.against)
@@ -91,7 +99,7 @@ def perform_roll(
         # If the character has both advantage and disadantage, there is no more roll.
         pass
     else:
-        new_score = Dice("d20").roll(ability.modifier)
+        new_score = _roll(character, request.ability_type)
         if has_advantage:
             score = max(score, new_score)
         if has_disadvantage:

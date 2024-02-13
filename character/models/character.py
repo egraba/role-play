@@ -92,6 +92,10 @@ class Character(models.Model):
         while self._check_level_increase():
             self._increase_level()
 
+    def is_proficient(self, ability_type):
+        # pylint: disable=unused-argument
+        return False
+
 
 class SavingThrow(models.Model):
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
