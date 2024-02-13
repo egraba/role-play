@@ -42,7 +42,7 @@ def _has_advantage(
     if (
         has_dwarven_resistance
         and roll_type == RollRequest.RollType.SAVING_THROW
-        and against == "poison"
+        and against == RollRequest.Against.POISON
     ):
         return True
     if has_fey_ancestry and RollRequest.RollType.SAVING_THROW and against == "charm":
