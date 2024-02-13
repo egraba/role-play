@@ -7,15 +7,33 @@ from game.utils.rolls import perform_roll
 
 
 @pytest.mark.django_db
-def test_perform_roll():
-    character = CharacterFactory()
-    request = RollRequestFactory(
-        character=character, roll_type=RollRequest.RollType.ABILITY_CHECK
-    )
-    # Perform the test several time, as it uses random values.
-    for _ in range(10):
-        score, result = perform_roll(character, request)
-        if score >= request.difficulty_class:
-            assert result == Roll.Result.SUCCESS
-        else:
-            assert result == Roll.Result.FAILURE
+class TestPerformRoll:
+    def test_perform_roll_success(self, monkeypatch):
+        def patched_roll(modifier=0):
+            return 10 + modifier
+
+        monkeypatch.setattr("utils.dice.Dice.roll", patched_roll)
+
+        character = CharacterFactory()
+        request = RollRequestFactory(
+            character=character,
+            roll_type=RollRequest.RollType.ABILITY_CHECK,
+            difficulty_class=RollRequest.DifficultyClass.EASY,
+        )
+        _, result = perform_roll(character, request)
+        assert result == Roll.Result.SUCCESS
+
+    def test_perform_roll_failure(self, monkeypatch):
+        def patched_roll(modifier=0):
+            return 10 + modifier
+
+        monkeypatch.setattr("utils.dice.Dice.roll", patched_roll)
+
+        character = CharacterFactory()
+        request = RollRequestFactory(
+            character=character,
+            roll_type=RollRequest.RollType.ABILITY_CHECK,
+            difficulty_class=RollRequest.DifficultyClass.HARD,
+        )
+        _, result = perform_roll(character, request)
+        assert result == Roll.Result.FAILURE
