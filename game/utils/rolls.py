@@ -45,14 +45,22 @@ def _has_advantage(
         and against == RollRequest.Against.POISON
     ):
         return True
-    if has_fey_ancestry and RollRequest.RollType.SAVING_THROW and against == "charm":
+    if (
+        has_fey_ancestry
+        and RollRequest.RollType.SAVING_THROW
+        and against == RollRequest.Against.CHARM
+    ):
         return True
-    if is_brave and RollRequest.RollType.SAVING_THROW and against == "being frightened":
+    if (
+        is_brave
+        and RollRequest.RollType.SAVING_THROW
+        and against == RollRequest.Against.BEING_FRIGHTENED
+    ):
         return True
     if (
         has_stout_resilience
         and roll_type == RollRequest.RollType.SAVING_THROW
-        and against == "poison"
+        and against == RollRequest.Against.POISON
     ):
         return True
 
