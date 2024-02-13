@@ -11,7 +11,7 @@ from .models.events import Event, Roll, RollRequest
 from .models.game import Game
 from .schemas import GameEventType, PlayerType
 from .utils.channels import send_to_channel
-from .utils.dice_rolls import perform_roll
+from .utils.rolls import perform_roll
 
 
 @shared_task

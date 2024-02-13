@@ -3,7 +3,7 @@ import pytest
 from character.tests.factories import CharacterFactory
 from game.models.events import Roll, RollRequest
 from game.tests.factories import RollRequestFactory
-from game.utils.dice_rolls import perform_roll
+from game.utils.rolls import perform_roll
 
 
 @pytest.mark.django_db
