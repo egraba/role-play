@@ -43,6 +43,24 @@ def _has_advantage(
     return False
 
 
+def _has_disadvantage(
+    character: Character, roll_type: RollRequest.RollType, against: str
+) -> bool:
+    """
+    Indicate if a character has a disadvantage or not.
+
+    Args:
+        character (Character): The character who performs the roll.
+        roll_type (RollRequest.RollType): The type of roll
+        against (str): Against which attack the disadvantage is.
+
+    Returns:
+        bool: True if the character has a disadvantage, False otherwise.
+    """
+    # pylint: disable=unused-argument
+    return False
+
+
 def perform_roll(
     character: Character, request: RollRequest
 ) -> tuple[int, tuple[str, str]]:
@@ -59,6 +77,19 @@ def perform_roll(
 
     ability = character.abilities.get(ability_type=request.ability_type)
     score = Dice("d20").roll(ability.modifier)
+
+    has_advantage = _has_advantage(character, request.roll_type, request.against)
+    has_disadvantage = _has_disadvantage(character, request.roll_type, request.against)
+    if has_advantage and has_disadvantage:
+        # If the character has both advantage and disadantage, there is no more roll.
+        pass
+    else:
+        new_score = Dice("d20").roll(ability.modifier)
+        if has_advantage:
+            score = max(score, new_score)
+        if has_disadvantage:
+            score = min(score, new_score)
+
     if score >= request.difficulty_class:
         return score, Roll.Result.SUCCESS
     return score, Roll.Result.FAILURE

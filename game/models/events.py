@@ -45,11 +45,17 @@ class RollRequest(Event):
         SAVING_THROW = 2, "Saving throw"
         ATTACK = 3, "Attack"
 
+    class Against(models.TextChoices):
+        BEING_FRIGHTENED = "F", "Being frightened"
+        CHARM = "C", "Charm"
+        POISON = "P", "Poison"
+
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
     status = models.CharField(max_length=1, choices=Status, default=Status.PENDING)
     ability_type = models.ForeignKey(AbilityType, on_delete=models.CASCADE)
     difficulty_class = models.SmallIntegerField(choices=DifficultyClass)
     roll_type = models.SmallIntegerField(choices=RollType)
+    against = models.CharField(max_length=1, choices=Against, blank=True, null=True)
 
 
 class Roll(Event):
