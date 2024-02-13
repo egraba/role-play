@@ -1,3 +1,6 @@
+from django.core.exceptions import ObjectDoesNotExist
+
+from character.exceptions import AbilityNotFound
 from character.models.character import Character
 from utils.dice import Dice
 
@@ -75,7 +78,11 @@ def perform_roll(
         tuple[int, tuple[str, str]]: Dice roll score and roll type result.
     """
 
-    ability = character.abilities.get(ability_type=request.ability_type)
+    try:
+        ability = character.abilities.get(ability_type=request.ability_type)
+    except ObjectDoesNotExist as exc:
+        raise AbilityNotFound(request.ability_type) from exc
+
     score = Dice("d20").roll(ability.modifier)
 
     has_advantage = _has_advantage(character, request.roll_type, request.against)
