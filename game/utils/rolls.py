@@ -34,10 +34,10 @@ def _has_advantage(
     Returns:
         bool: True if the character has an advantage, False otherwise.
     """
-    has_dwarven_resistance = character.senses.get(name="Dwarven Resistance").exists()
-    has_fey_ancestry = character.senses.get(name="Fey Ancestry").exists()
-    is_brave = character.senses.get(name="Brave").exists()
-    has_stout_resilience = character.senses.get(name="Stout resilience").exists()
+    has_dwarven_resistance = bool(character.senses.filter(name="Dwarven Resistance"))
+    has_fey_ancestry = bool(character.senses.filter(name="Fey Ancestry"))
+    is_brave = bool(character.senses.filter(name="Brave"))
+    has_stout_resilience = bool(character.senses.filter(name="Stout resilience"))
 
     if (
         has_dwarven_resistance
