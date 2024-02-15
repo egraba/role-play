@@ -221,11 +221,11 @@ class TestCharacterCreateView:
         assert set(character.languages.all()) == languages
 
         senses = set()
-        senses.add(Sense.objects.get(name="Darkvision"))
-        senses.add(Sense.objects.get(name="Dwarven Resilience"))
-        senses.add(Sense.objects.get(name="Dwarven Combat Training"))
-        senses.add(Sense.objects.get(name="Tool Proficiency"))
-        senses.add(Sense.objects.get(name="Stonecunning"))
+        senses.add(Sense.objects.get(name=Sense.Name.DARKVISION))
+        senses.add(Sense.objects.get(name=Sense.Name.DWARVEN_RESILIENCE))
+        senses.add(Sense.objects.get(name=Sense.Name.DWARVEN_COMBAT_TRAINING))
+        senses.add(Sense.objects.get(name=Sense.Name.TOOL_PROFICIENCY))
+        senses.add(Sense.objects.get(name=Sense.Name.STONECUNNING))
         assert set(character.senses.all()) == senses
 
     @pytest.fixture
@@ -287,10 +287,10 @@ class TestCharacterCreateView:
         assert set(character.languages.all()) == languages
 
         senses = set()
-        senses.add(Sense.objects.get(name="Darkvision"))
-        senses.add(Sense.objects.get(name="Keen Senses"))
-        senses.add(Sense.objects.get(name="Fey Ancestry"))
-        senses.add(Sense.objects.get(name="Trance"))
+        senses.add(Sense.objects.get(name=Sense.Name.DARKVISION))
+        senses.add(Sense.objects.get(name=Sense.Name.KEEN_SENSES))
+        senses.add(Sense.objects.get(name=Sense.Name.FEY_ANCESTRY))
+        senses.add(Sense.objects.get(name=Sense.Name.TRANCE))
         assert set(character.senses.all()) == senses
 
     @pytest.fixture
@@ -352,11 +352,10 @@ class TestCharacterCreateView:
         languages.add(Language.objects.get(name=Language.Name.HALFLING))
         assert set(character.languages.all()) == languages
 
-        halfling_nimbleness = Sense.objects.get(name="Halfling Nimbleness")
         senses = set()
-        senses.add(Sense.objects.get(name="Lucky"))
-        senses.add(Sense.objects.get(name="Brave"))
-        senses.add(halfling_nimbleness)
+        senses.add(Sense.objects.get(name=Sense.Name.LUCKY))
+        senses.add(Sense.objects.get(name=Sense.Name.BRAVE))
+        senses.add(Sense.objects.get(name=Sense.Name.HALFLING_NIMBLENESS))
         assert set(character.senses.all()) == senses
 
     @pytest.fixture
