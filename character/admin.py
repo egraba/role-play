@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from .models.advancement import Advancement
 from .models.character import Character
-from .models.classes import ClassAdvancement, HitPoints, Proficiencies
+from .models.classes import ClassAdvancement, HitPoints
 from .models.races import RacialTrait, Sense
 
 
@@ -47,18 +47,6 @@ class HitPointsAdmin(admin.ModelAdmin):
     list_display = ["class_feature", "hit_dice", "hp_first_level", "hp_higher_levels"]
 
 
-class ProficienciesAdmin(admin.ModelAdmin):
-    fields = ["class_feature", "armor", "weapons", "tools", "saving_throws", "skills"]
-    list_display = [
-        "class_feature",
-        "armor",
-        "weapons",
-        "tools",
-        "saving_throws",
-        "skills",
-    ]
-
-
 class ClassAdvancementAdmin(admin.ModelAdmin):
     fields = ["class_name", "level", "proficiency_bonus"]
     list_display = ["class_name", "level", "proficiency_bonus"]
@@ -77,5 +65,4 @@ admin.site.register(RacialTrait, RacialTraitAdmin)
 
 # Classes
 admin.site.register(HitPoints, HitPointsAdmin)
-admin.site.register(Proficiencies, ProficienciesAdmin)
 admin.site.register(ClassAdvancement, ClassAdvancementAdmin)

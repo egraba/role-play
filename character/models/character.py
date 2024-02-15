@@ -7,9 +7,9 @@ from django.urls import reverse
 from utils.dice import Dice
 
 from ..utils.cache import advancement_key
-from .abilities import Ability, AbilityType
+from .abilities import Ability
 from .advancement import Advancement
-from .classes import Class, Proficiencies
+from .classes import Class
 from .equipment import Inventory
 from .races import Alignment, Language, Race, Sense, Size
 from .skills import Skill
@@ -47,9 +47,6 @@ class Character(models.Model):
     senses = models.ManyToManyField(Sense)
     hit_dice = models.CharField(max_length=5, default="1d8")
     hp_increase = models.SmallIntegerField(default=0)
-    proficiencies = models.OneToOneField(
-        Proficiencies, on_delete=models.SET_NULL, blank=True, null=True
-    )
     inventory = models.OneToOneField(
         Inventory, on_delete=models.CASCADE, blank=True, null=True
     )
@@ -93,10 +90,6 @@ class Character(models.Model):
             self._increase_level()
 
     def is_proficient(self, ability_type):
-        # pylint: disable=unused-argument
+        if ability_type in self.savingthrowproficiency_set.all():
+            return True
         return False
-
-
-class SavingThrow(models.Model):
-    character = models.ForeignKey(Character, on_delete=models.CASCADE)
-    ability_type = models.ForeignKey(AbilityType, on_delete=models.CASCADE)

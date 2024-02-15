@@ -33,7 +33,20 @@ class Language(models.Model):
 
 
 class Sense(models.Model):
-    name = models.CharField(max_length=30, unique=True)
+    class Name(models.TextChoices):
+        DARKVISION = "DV", "Darkvision"
+        DWARVEN_RESILIENCE = "DR", "Dwarven Resilience"
+        DWARVEN_COMBAT_TRAINING = "DC", "Dwarven Combat Training"
+        TOOL_PROFICIENCY = "TP", "Tool Proficiency"
+        STONECUNNING = "SC", "Stonecunning"
+        KEEN_SENSES = "KS", "Keen Senses"
+        FEY_ANCESTRY = "FA", "Fey Ancestry"
+        TRANCE = "TR", "Trance"
+        LUCKY = "LU", "Lucky"
+        BRAVE = "BR", "Brave"
+        HALFLING_NIMBLENESS = "HN", "Halfling Nimbleness"
+
+    name = models.CharField(max_length=30, choices=Name.choices, unique=True)
     description = models.TextField(max_length=50)
 
     class Meta:

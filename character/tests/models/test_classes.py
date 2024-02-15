@@ -1,11 +1,6 @@
 import pytest
 
-from character.models.classes import (
-    ClassAdvancement,
-    ClassFeature,
-    HitPoints,
-    Proficiencies,
-)
+from character.models.classes import ClassAdvancement, ClassFeature, HitPoints
 
 
 @pytest.mark.django_db
@@ -41,25 +36,6 @@ class TestHitPointsModel:
 
     def test_str(self):
         assert str(self.hit_points) == f"{self.hit_points.class_feature} hit points"
-
-
-@pytest.mark.django_db
-class TestProficienciesModel:
-    proficiencies = None
-
-    @pytest.fixture(autouse=True)
-    def setup(self):
-        # Fixtures are automatically loaded during the test session initialization.
-        self.proficiencies = Proficiencies.objects.last()
-
-    def test_creation(self):
-        assert isinstance(self.proficiencies, Proficiencies)
-
-    def test_str(self):
-        assert (
-            str(self.proficiencies)
-            == f"{self.proficiencies.class_feature} proficiencies"
-        )
 
 
 @pytest.mark.django_db

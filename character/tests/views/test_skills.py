@@ -4,12 +4,8 @@ from faker import Faker
 from pytest_django.asserts import assertRedirects, assertTemplateUsed
 
 from character.forms.skills import ExtendedSkillsSelectForm, SkillsSelectForm
-from character.utils.skills import (
-    cleric_choices,
-    fighter_choices,
-    rogue_choices,
-    wizard_choices,
-)
+from character.models.classes import Class
+from character.utils.proficiencies import get_skills
 from character.views.skills import SkillsSelectView
 
 
@@ -30,14 +26,15 @@ class TestSkillsSelectView:
 
     def test_cleric_skills(self, client, cleric):
         fake = Faker()
+        skills_set = get_skills(Class.CLERIC)
         skills = fake.random_elements(
-            elements=sorted(cleric_choices), length=len(cleric_choices), unique=True
+            elements=sorted(skills_set), length=len(skills_set), unique=True
         )
         data = {
             "first_skill": f"{skills[0][0]}",
             "second_skill": f"{skills[1][0]}",
         }
-        form = SkillsSelectForm(initial={"choices": cleric_choices}, data=data)
+        form = SkillsSelectForm(initial={"choices": skills_set}, data=data)
         assert form.is_valid()
 
         character = cleric  # for better readability
@@ -59,14 +56,15 @@ class TestSkillsSelectView:
 
     def test_fighter_skills(self, client, fighter):
         fake = Faker()
+        skills_set = get_skills(Class.FIGHTER)
         skills = fake.random_elements(
-            elements=sorted(fighter_choices), length=len(fighter_choices), unique=True
+            elements=sorted(skills_set), length=len(skills_set), unique=True
         )
         data = {
             "first_skill": f"{skills[0][0]}",
             "second_skill": f"{skills[1][0]}",
         }
-        form = SkillsSelectForm(initial={"choices": fighter_choices}, data=data)
+        form = SkillsSelectForm(initial={"choices": skills_set}, data=data)
         assert form.is_valid()
 
         character = fighter  # for better readability
@@ -88,8 +86,9 @@ class TestSkillsSelectView:
 
     def test_rogue_skills(self, client, rogue):
         fake = Faker()
+        skills_set = get_skills(Class.ROGUE)
         skills = fake.random_elements(
-            elements=sorted(rogue_choices), length=len(rogue_choices), unique=True
+            elements=sorted(skills_set), length=len(skills_set), unique=True
         )
         data = {
             "first_skill": f"{skills[0][0]}",
@@ -97,7 +96,7 @@ class TestSkillsSelectView:
             "third_skill": f"{skills[2][0]}",
             "fourth_skill": f"{skills[3][0]}",
         }
-        form = ExtendedSkillsSelectForm(initial={"choices": rogue_choices}, data=data)
+        form = ExtendedSkillsSelectForm(initial={"choices": skills_set}, data=data)
         assert form.is_valid()
 
         character = rogue  # for better readability
@@ -127,14 +126,15 @@ class TestSkillsSelectView:
 
     def test_wizard_skills(self, client, wizard):
         fake = Faker()
+        skills_set = get_skills(Class.WIZARD)
         skills = fake.random_elements(
-            elements=sorted(wizard_choices), length=len(wizard_choices), unique=True
+            elements=sorted(skills_set), length=len(skills_set), unique=True
         )
         data = {
             "first_skill": f"{skills[0][0]}",
             "second_skill": f"{skills[1][0]}",
         }
-        form = SkillsSelectForm(initial={"choices": wizard_choices}, data=data)
+        form = SkillsSelectForm(initial={"choices": skills_set}, data=data)
         assert form.is_valid()
 
         character = wizard  # for better readability

@@ -6,8 +6,9 @@ from pytest_django.asserts import assertContains, assertRedirects, assertTemplat
 
 from character.forms.character import CharacterCreateForm
 from character.models.abilities import AbilityType
-from character.models.character import Character, SavingThrow
+from character.models.character import Character
 from character.models.classes import Class
+from character.models.proficiencies import SavingThrowProficiency
 from character.models.races import Language, Race, Sense
 from character.utils.abilities import AbilityScore
 from character.views.character import (
@@ -456,12 +457,8 @@ class TestCharacterCreateView:
         hp = 100 + 8 + constitution_modifier
         assert character.hp == hp
 
-        assert character.proficiencies.armor == "Light armor, medium armor, shields"
-
-        assert character.proficiencies.weapons == "Simple weapons"
-        assert character.proficiencies.tools == "None"
-        assert set(character.savingthrow_set.all()) == set(
-            SavingThrow.objects.filter(
+        assert set(character.savingthrowproficiency_set.all()) == set(
+            SavingThrowProficiency.objects.filter(
                 Q(ability_type_id=AbilityType.Name.WISDOM)
                 | Q(ability_type_id=AbilityType.Name.CHARISMA)
             )
@@ -504,11 +501,8 @@ class TestCharacterCreateView:
         hp = 100 + 10 + constitution_modifier
         assert character.hp == hp
 
-        assert character.proficiencies.armor == "All armor, shields"
-        assert character.proficiencies.weapons == "Simple weapons, martial weapons"
-        assert character.proficiencies.tools == "None"
-        assert set(character.savingthrow_set.all()) == set(
-            SavingThrow.objects.filter(
+        assert set(character.savingthrowproficiency_set.all()) == set(
+            SavingThrowProficiency.objects.filter(
                 Q(ability_type_id=AbilityType.Name.STRENGTH)
                 | Q(ability_type_id=AbilityType.Name.CONSTITUTION)
             )
@@ -551,14 +545,8 @@ class TestCharacterCreateView:
         hp = 100 + 8 + constitution_modifier
         assert character.hp == hp
 
-        assert character.proficiencies.armor == "Light armor"
-        assert (
-            character.proficiencies.weapons
-            == "Simple weapons, hand crossbows, longswords, rapiers, shortswords"
-        )
-        assert character.proficiencies.tools == "Thieves' tools"
-        assert set(character.savingthrow_set.all()) == set(
-            SavingThrow.objects.filter(
+        assert set(character.savingthrowproficiency_set.all()) == set(
+            SavingThrowProficiency.objects.filter(
                 Q(ability_type_id=AbilityType.Name.DEXTERITY)
                 | Q(ability_type_id=AbilityType.Name.INTELLIGENCE)
             )
@@ -601,14 +589,8 @@ class TestCharacterCreateView:
         hp = 100 + 6 + constitution_modifier
         assert character.hp == hp
 
-        assert character.proficiencies.armor == "None"
-        assert (
-            character.proficiencies.weapons
-            == "Daggers, darts, slings, quarterstaffs, light crossbows"
-        )
-        assert character.proficiencies.tools == "None"
-        assert set(character.savingthrow_set.all()) == set(
-            SavingThrow.objects.filter(
+        assert set(character.savingthrowproficiency_set.all()) == set(
+            SavingThrowProficiency.objects.filter(
                 Q(ability_type_id=AbilityType.Name.INTELLIGENCE)
                 | Q(ability_type_id=AbilityType.Name.WISDOM)
             )
