@@ -40,9 +40,6 @@ def _has_advantage(
     )
     has_fey_ancestry = bool(character.senses.filter(name=Sense.Name.FEY_ANCESTRY))
     is_brave = bool(character.senses.filter(name=Sense.Name.BRAVE))
-    has_stout_resilience = bool(
-        character.senses.filter(name=Sense.Name.STOUT_RESILIENCE)
-    )
 
     if (
         has_dwarven_resilience
@@ -62,13 +59,6 @@ def _has_advantage(
         and against == RollRequest.Against.BEING_FRIGHTENED
     ):
         return True
-    if (
-        has_stout_resilience
-        and roll_type == RollRequest.RollType.SAVING_THROW
-        and against == RollRequest.Against.POISON
-    ):
-        return True
-
     return False
 
 

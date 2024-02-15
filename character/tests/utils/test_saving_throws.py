@@ -1,6 +1,6 @@
 from character.models.abilities import AbilityType
 from character.models.classes import Class
-from character.utils.saving_throws import get_saving_throws
+from character.utils.proficiencies import get_saving_throws
 
 
 def test_saving_throws_cleric():

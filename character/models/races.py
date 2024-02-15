@@ -43,7 +43,6 @@ class Sense(models.Model):
         KEEN_SENSES = "KS", "Keen Senses"
         LUCKY = "LU", "Lucky"
         STONECUNNING = "SC", "Stonecunning"
-        STOUT_RESILIENCE = "SR", "Stout Resilience"
         TOOL_PROFICIENCY = "TP", "Tool Proficiency"
         TRANCE = "TR", "Trance"
 
