@@ -15,8 +15,6 @@ class SkillsSelectForm(forms.Form):
         )
 
     def clean(self):
-        # self.cleaned_data is set during form.is_valid() call.
-        # pylint: disable=attribute-defined-outside-init
         self.cleaned_data = super().clean()
         if len(self.cleaned_data) != len(set(self.cleaned_data.values())):
             raise forms.ValidationError("The selected skills must be unique...")

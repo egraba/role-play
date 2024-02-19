@@ -5,6 +5,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Changed
+* Use Ruff instead of other linters and formatters
 * Split test coverage commands
 * Migrate to pytest8
 

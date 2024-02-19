@@ -49,8 +49,6 @@ class CharacterCreateForm(forms.ModelForm):
     )
 
     def clean(self):
-        # self.cleaned_data is set during form.is_valid() call.
-        # pylint: disable=attribute-defined-outside-init
         self.cleaned_data = super().clean()
 
         # The ability scores must be unique per ability.
