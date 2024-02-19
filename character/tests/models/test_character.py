@@ -9,54 +9,52 @@ from ..factories import CharacterFactory
 
 @pytest.mark.django_db
 class TestCharacterModel:
-    character = None
+    @pytest.fixture
+    def character(self):
+        return CharacterFactory(name="character", xp=0)
 
-    @pytest.fixture(autouse=True)
-    def setup(self):
-        self.character = CharacterFactory(name="character", xp=0)
+    def test_creation(self, character):
+        isinstance(character, Character)
+        assert character.level == 1
+        assert character.xp == 0
+        assert character.hp == 100
+        assert character.proficiency_bonus == 2
+        assert character.gender == Character.Gender.MALE
+        assert character.ac == 0
 
-    def test_creation(self):
-        isinstance(self.character, Character)
-        assert self.character.level == 1
-        assert self.character.xp == 0
-        assert self.character.hp == 100
-        assert self.character.proficiency_bonus == 2
-        assert self.character.gender == Character.Gender.MALE
-        assert self.character.ac == 0
+    def test_str(self, character):
+        assert str(character) == character.name
 
-    def test_str(self):
-        assert str(self.character) == self.character.name
-
-    def test_xp_increase_no_level_increase(self):
+    def test_xp_increase_no_level_increase(self, character):
         fake = Faker()
         new_xp = fake.random_int(max=200)
-        old_xp = self.character.xp
-        self.character.increase_xp(new_xp)
-        assert self.character.xp == old_xp + new_xp
+        old_xp = character.xp
+        character.increase_xp(new_xp)
+        assert character.xp == old_xp + new_xp
 
-    def test_xp_increase_one_level_increase(self):
+    def test_xp_increase_one_level_increase(self, character):
         fake = Faker()
         new_xp = fake.random_int(min=300, max=500)
-        old_xp = self.character.xp
-        old_level = self.character.level
-        old_bonus = self.character.proficiency_bonus
-        old_throws = Dice(self.character.hit_dice).throws
-        old_max_hp = self.character.max_hp
-        self.character.increase_xp(new_xp)
-        assert self.character.xp == old_xp + new_xp
-        assert self.character.level == old_level + 1
-        assert self.character.proficiency_bonus == old_bonus + 2
-        assert Dice(self.character.hit_dice).throws == old_throws + 1
-        assert self.character.max_hp == old_max_hp + self.character.hp_increase
+        old_xp = character.xp
+        old_level = character.level
+        old_bonus = character.proficiency_bonus
+        old_throws = Dice(character.hit_dice).throws
+        old_max_hp = character.max_hp
+        character.increase_xp(new_xp)
+        assert character.xp == old_xp + new_xp
+        assert character.level == old_level + 1
+        assert character.proficiency_bonus == old_bonus + 2
+        assert Dice(character.hit_dice).throws == old_throws + 1
+        assert character.max_hp == old_max_hp + character.hp_increase
 
-    def test_xp_increase_several_level_increase(self):
+    def test_xp_increase_several_level_increase(self, character):
         new_xp = 50_000
-        old_xp = self.character.xp
-        old_throws = Dice(self.character.hit_dice).throws
-        old_max_hp = self.character.max_hp
-        self.character.increase_xp(new_xp)
-        assert self.character.xp == old_xp + new_xp
-        assert self.character.level == 9
-        assert self.character.proficiency_bonus == 24
-        assert Dice(self.character.hit_dice).throws == old_throws + 8
-        assert self.character.max_hp == old_max_hp + self.character.hp_increase * 8
+        old_xp = character.xp
+        old_throws = Dice(character.hit_dice).throws
+        old_max_hp = character.max_hp
+        character.increase_xp(new_xp)
+        assert character.xp == old_xp + new_xp
+        assert character.level == 9
+        assert character.proficiency_bonus == 24
+        assert Dice(character.hit_dice).throws == old_throws + 8
+        assert character.max_hp == old_max_hp + character.hp_increase * 8
