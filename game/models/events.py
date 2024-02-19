@@ -52,7 +52,10 @@ class RollRequest(Event):
 
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
     status = models.CharField(max_length=1, choices=Status, default=Status.PENDING)
-    ability_type = models.ForeignKey(AbilityType, on_delete=models.CASCADE)
+    ability_type = models.CharField(
+        max_length=3,
+        choices=AbilityType.Name,
+    )
     difficulty_class = models.SmallIntegerField(choices=DifficultyClass)
     roll_type = models.SmallIntegerField(choices=RollType)
     against = models.CharField(max_length=1, choices=Against, blank=True, null=True)
