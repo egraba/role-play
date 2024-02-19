@@ -23,7 +23,6 @@ class GameEventsConsumer(JsonWebsocketConsumer):
 
     def connect(self):
         # self.scope is set in parent's connect()
-        # pylint: disable=attribute-defined-outside-init
         self.user = self.scope["user"]
 
         # The game ID has to be retrieved to create a channel.

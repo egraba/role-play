@@ -5,18 +5,17 @@ repos:
       - id: check-yaml
       - id: end-of-file-fixer
       - id: trailing-whitespace
-  - repo: https://github.com/psf/black
-    rev: 24.1.1
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.2.2
     hooks:
-      - id: black
-  - repo: https://github.com/pycqa/isort
-    rev: 5.13.2
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: "v1.8.0"
     hooks:
-      - id: isort
-  - repo: https://github.com/pycqa/flake8
-    rev: 7.0.0
-    hooks:
-      - id: flake8
+      - id: mypy
+        exclude: "/migrations/.*\\.py"
   - repo: https://github.com/rtts/djhtml
     rev: 3.0.6
     hooks:
@@ -32,27 +31,8 @@ repos:
       - id: codespell
         args: ["--ignore-words=codespell-ignore-words.txt"]
   - repo: https://github.com/commitizen-tools/commitizen
-    rev: v3.14.0
+    rev: v3.15.0
     hooks:
       - id: commitizen
       - id: commitizen-branch
         stages: [push]
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: "v1.8.0"
-    hooks:
-      - id: mypy
-        exclude: "/migrations/.*\\.py"
-  - repo: local
-    hooks:
-      - id: pylint
-        name: pylint
-        entry: pylint
-        language: system
-        types: [python]
-        args:
-          [
-            "-rn", # Only display messages
-            "-sn", # Don't display the score
-            "--disable=C0103,C0114,C0115,C0116,E1101,R0901,R0903",
-            "--ignore=manage.py,migrations,role_play"
-          ]
