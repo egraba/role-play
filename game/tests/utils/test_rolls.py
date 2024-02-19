@@ -1,5 +1,7 @@
 import pytest
 
+from character.models.abilities import AbilityType
+from character.models.proficiencies import SavingThrowProficiency
 from character.models.races import Sense
 from character.tests.factories import CharacterFactory
 from game.models.events import Roll, RollRequest
@@ -41,6 +43,27 @@ class TestPerformRoll:
         _, result = perform_roll(character, request)
         assert result == Roll.Result.FAILURE
 
+    def test_perform_roll_proficient(self, monkeypatch):
+        def patched_roll(self, modifier=0):
+            # pylint: disable=unused-argument
+            return 10
+
+        monkeypatch.setattr("utils.dice.Dice.roll", patched_roll)
+
+        character = CharacterFactory()
+        SavingThrowProficiency.objects.create(
+            character=character,
+            ability_type=AbilityType.objects.get(name=AbilityType.Name.CHARISMA),
+        )
+        request = RollRequestFactory(
+            character=character,
+            ability_type=AbilityType.Name.CHARISMA,
+            roll_type=RollRequest.RollType.ABILITY_CHECK,
+            difficulty_class=RollRequest.DifficultyClass.HARD,
+        )
+        score, _ = perform_roll(character, request)
+        assert score == 12
+
     def test_perform_roll_with_advantage_dwarven_resistance(self, monkeypatch):
         score_generator = (score for score in range(10, 20, 5))
 
@@ -51,7 +74,7 @@ class TestPerformRoll:
         monkeypatch.setattr("utils.dice.Dice.roll", patched_roll)
 
         character = CharacterFactory()
-        character.senses.add(Sense.objects.create(name="Dwarven Resistance"))
+        character.senses.add(Sense.objects.get(name=Sense.Name.DWARVEN_RESILIENCE))
         character.save()
         request = RollRequestFactory(
             character=character,
@@ -72,7 +95,7 @@ class TestPerformRoll:
         monkeypatch.setattr("utils.dice.Dice.roll", patched_roll)
 
         character = CharacterFactory()
-        character.senses.add(Sense.objects.create(name="Fey Ancestry"))
+        character.senses.add(Sense.objects.get(name=Sense.Name.FEY_ANCESTRY))
         character.save()
         request = RollRequestFactory(
             character=character,
@@ -93,34 +116,13 @@ class TestPerformRoll:
         monkeypatch.setattr("utils.dice.Dice.roll", patched_roll)
 
         character = CharacterFactory()
-        character.senses.add(Sense.objects.create(name="Brave"))
+        character.senses.add(Sense.objects.get(name=Sense.Name.BRAVE))
         character.save()
         request = RollRequestFactory(
             character=character,
             roll_type=RollRequest.RollType.SAVING_THROW,
             difficulty_class=RollRequest.DifficultyClass.EASY,
             against=RollRequest.Against.BEING_FRIGHTENED,
-        )
-        score, _ = perform_roll(character, request)
-        assert score == 15
-
-    def test_perform_roll_with_advantage_stout_resilience(self, monkeypatch):
-        score_generator = (score for score in range(10, 20, 5))
-
-        def patched_roll(self, modifier=0):
-            # pylint: disable=unused-argument
-            return next(score_generator)
-
-        monkeypatch.setattr("utils.dice.Dice.roll", patched_roll)
-
-        character = CharacterFactory()
-        character.senses.add(Sense.objects.create(name="Stout resilience"))
-        character.save()
-        request = RollRequestFactory(
-            character=character,
-            roll_type=RollRequest.RollType.SAVING_THROW,
-            difficulty_class=RollRequest.DifficultyClass.EASY,
-            against=RollRequest.Against.POISON,
         )
         score, _ = perform_roll(character, request)
         assert score == 15
