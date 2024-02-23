@@ -8,9 +8,10 @@ from ..models.character import Character
 from ..models.classes import ClassAdvancement, ClassFeature
 from ..models.equipment import Equipment, Inventory
 from ..models.proficiencies import SavingThrowProficiency
-from ..models.races import RacialTrait
+from ..models.races import Race
 from ..utils.abilities import compute_ability_modifier
 from ..utils.proficiencies import get_saving_throws
+from ..utils.race_builders import DwarfBuilder, RaceDirector
 
 
 class CharacterDetailView(LoginRequiredMixin, DetailView):
@@ -100,10 +101,13 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
         self._initialize_ability_scores(character, form)
 
         # Racial traits
-        racial_trait = RacialTrait.objects.get(race=character.race)
-        self._apply_racial_traits(character, racial_trait)
-        self._apply_ability_score_increases(character, racial_trait)
-        self._compute_ability_modifiers(character)
+        match character.race:
+            case Race.DWARF:
+                race_builder = DwarfBuilder(character)
+            case _:
+                race_builder = DwarfBuilder(character)
+        race_director = RaceDirector()
+        race_director.build(race_builder)
 
         # Class features
         self._apply_class_advancement(character)
