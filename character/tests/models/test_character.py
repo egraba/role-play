@@ -5,7 +5,7 @@ from character.models.character import Character
 from character.models.proficiencies import SavingThrowProficiency
 from utils.dice import Dice
 
-from ..factories import AbilityTypeFactory, CharacterFactory
+from ..factories import AbilityFactory, CharacterFactory
 
 
 @pytest.mark.django_db
@@ -61,12 +61,12 @@ class TestCharacterModel:
         assert character.max_hp == old_max_hp + character.hp_increase * 8
 
     def test_is_proficient_ability_present(self, character):
-        ability_type = AbilityTypeFactory()
+        ability = AbilityFactory(character=character)
         SavingThrowProficiency.objects.create(
-            character=character, ability_type=ability_type
+            character=character, ability_type=ability.ability_type
         )
-        assert character.is_proficient(ability_type)
+        assert character.is_proficient(ability)
 
     def test_is_proficient_ability_absent(self, character):
-        ability_type = AbilityTypeFactory()
-        assert character.is_proficient(ability_type) is False
+        ability = AbilityFactory(character=character)
+        assert character.is_proficient(ability) is False

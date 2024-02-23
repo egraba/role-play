@@ -89,8 +89,10 @@ class Character(models.Model):
         while self._check_level_increase():
             self._increase_level()
 
-    def is_proficient(self, ability_type):
+    def is_proficient(self, ability: Ability) -> bool:
+        if not self.abilities.filter(ability_type=ability.ability_type).exists():
+            return False
         return any(
-            proficiency["ability_type_id"] == ability_type.name
+            proficiency["ability_type_id"] == ability.ability_type.name
             for proficiency in self.savingthrowproficiency_set.values()
         )
