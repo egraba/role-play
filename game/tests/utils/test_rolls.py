@@ -13,7 +13,6 @@ from game.utils.rolls import perform_roll
 class TestPerformRoll:
     def test_perform_roll_success(self, monkeypatch):
         def patched_roll(self, modifier=0):
-            # pylint: disable=unused-argument
             return 10
 
         monkeypatch.setattr("utils.dice.Dice.roll", patched_roll)
@@ -29,7 +28,6 @@ class TestPerformRoll:
 
     def test_perform_roll_failure(self, monkeypatch):
         def patched_roll(self, modifier=0):
-            # pylint: disable=unused-argument
             return 10
 
         monkeypatch.setattr("utils.dice.Dice.roll", patched_roll)
@@ -45,7 +43,6 @@ class TestPerformRoll:
 
     def test_perform_roll_proficient(self, monkeypatch):
         def patched_roll(self, modifier=0):
-            # pylint: disable=unused-argument
             return 10
 
         monkeypatch.setattr("utils.dice.Dice.roll", patched_roll)
@@ -68,7 +65,6 @@ class TestPerformRoll:
         score_generator = (score for score in range(10, 20, 5))
 
         def patched_roll(self, modifier=0):
-            # pylint: disable=unused-argument
             return next(score_generator)
 
         monkeypatch.setattr("utils.dice.Dice.roll", patched_roll)
@@ -89,7 +85,6 @@ class TestPerformRoll:
         score_generator = (score for score in range(10, 20, 5))
 
         def patched_roll(self, modifier=0):
-            # pylint: disable=unused-argument
             return next(score_generator)
 
         monkeypatch.setattr("utils.dice.Dice.roll", patched_roll)
@@ -110,7 +105,6 @@ class TestPerformRoll:
         score_generator = (score for score in range(10, 20, 5))
 
         def patched_roll(self, modifier=0):
-            # pylint: disable=unused-argument
             return next(score_generator)
 
         monkeypatch.setattr("utils.dice.Dice.roll", patched_roll)

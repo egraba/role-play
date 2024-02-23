@@ -76,7 +76,6 @@ def _has_disadvantage(
     Returns:
         bool: True if the character has a disadvantage, False otherwise.
     """
-    # pylint: disable=unused-argument
     return False
 
 
