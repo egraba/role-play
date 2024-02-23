@@ -134,5 +134,8 @@ dmypy.json
 # Hosted tatic files
 staticfiles/
 
-# requirements.txt (The project uses pipenv)
+# requirements.txt
 requirements.txt
+
+# ruff
+.ruff_cache/
