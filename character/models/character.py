@@ -90,6 +90,7 @@ class Character(models.Model):
             self._increase_level()
 
     def is_proficient(self, ability_type):
-        if ability_type in self.savingthrowproficiency_set.all():
-            return True
-        return False
+        return any(
+            proficiency["ability_type_id"] == ability_type.name
+            for proficiency in self.savingthrowproficiency_set.values()
+        )
