@@ -1,8 +1,11 @@
 from abc import ABC, abstractmethod
 
+from utils.dice import Dice
 from ..models.abilities import AbilityType
 from ..models.character import Character
 from ..models.races import Alignment, Language, Sense, Size
+from ..models.classes import ClassAdvancement
+from ..models.proficiencies import SavingThrowProficiency
 from .abilities import compute_ability_modifier
 
 
@@ -112,8 +115,74 @@ class HumanBuilder(RaceBuilder):
             ability.save()
 
 
+class KlassBuilder(ABC):
+    def __init__(self, character: Character) -> None:
+        self.character = character
+
+    def apply_advancement(self) -> None:
+        class_advancement = ClassAdvancement.objects.get(
+            class_name=self.character.class_name, level=1
+        )
+        self.character.proficiency_bonus += class_advancement.proficiency_bonus
+
+    @abstractmethod
+    def apply_hit_points(self) -> None:
+        pass
+
+    @abstractmethod
+    def apply_armor_proficiencies(self) -> None:
+        pass
+
+    @abstractmethod
+    def apply_weapons_proficiencies(self) -> None:
+        pass
+
+    @abstractmethod
+    def apply_tools_proficiencies(self) -> None:
+        pass
+
+    @abstractmethod
+    def apply_saving_throws_proficiencies(self) -> None:
+        pass
+
+
+class ClericBuilder(KlassBuilder):
+    def apply_hit_points(self):
+        self.character.hit_dice = Dice("1d8")
+        self.character.hp += 8
+        modifier = self.character.abilities.get(
+            ability_type=AbilityType.Name.CONSTITUTION
+        ).modifier
+        self.character.hp += modifier
+        self.character.max_hp = self.character.hp
+        self.character.hp_increase = 5
+
+    def apply_armor_proficiencies(self):
+        pass
+
+    def apply_weapons_proficiencies(self):
+        pass
+
+    def apply_tools_proficiencies(self):
+        pass
+
+    def apply_saving_throws_proficiencies(self):
+        saving_throws = {AbilityType.Name.WISDOM, AbilityType.Name.CHARISMA}
+        for ability in saving_throws:
+            SavingThrowProficiency.objects.create(
+                character=self.character,
+                ability_type=AbilityType.objects.get(name=ability),
+            )
+
+
 class Director:
-    def build(self, race_builder: RaceBuilder):
+    def build(self, race_builder: RaceBuilder, klass_builder: KlassBuilder) -> None:
         race_builder.apply_racial_traits()
         race_builder.apply_ability_score_increases()
         race_builder.compute_ability_modifiers()
+        klass_builder.apply_advancement()
+        klass_builder.apply_hit_points()
+        klass_builder.apply_armor_proficiencies()
+        klass_builder.apply_weapons_proficiencies()
+        klass_builder.apply_tools_proficiencies()
+        klass_builder.apply_saving_throws_proficiencies()

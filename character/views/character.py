@@ -5,7 +5,7 @@ from django.views.generic import CreateView, DetailView, ListView
 from ..forms.character import CharacterCreateForm
 from ..models.abilities import Ability, AbilityType
 from ..models.character import Character
-from ..models.classes import ClassAdvancement, ClassFeature
+from ..models.classes import Class
 from ..models.equipment import Equipment, Inventory
 from ..models.proficiencies import SavingThrowProficiency
 from ..models.races import Race
@@ -16,6 +16,7 @@ from ..utils.builders import (
     HalflingBuilder,
     HumanBuilder,
     Director,
+    ClericBuilder,
 )
 
 
@@ -54,12 +55,6 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
             character.save()
             character.abilities.add(ability)
 
-    def _apply_class_advancement(self, character):
-        class_advancement = ClassAdvancement.objects.get(
-            class_name=character.class_name, level=1
-        )
-        character.proficiency_bonus += class_advancement.proficiency_bonus
-
     def _apply_class_features(self, character, class_feature):
         character.hit_dice = class_feature.hitpoints.hit_dice
         character.hp += class_feature.hitpoints.hp_first_level
@@ -92,13 +87,16 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
                 race_builder = HumanBuilder(character)
             case _:
                 race_builder = DwarfBuilder(character)
-        director = Director()
-        director.build(race_builder)
 
         # Class features
-        self._apply_class_advancement(character)
-        class_feature = ClassFeature.objects.get(class_name=character.class_name)
-        self._apply_class_features(character, class_feature)
+        match character.class_name:
+            case Class.CLERIC:
+                klass_builder = ClericBuilder(character)
+            case _:
+                klass_builder = ClericBuilder(character)
+
+        director = Director()
+        director.build(race_builder, klass_builder)
 
         character.save()
 
