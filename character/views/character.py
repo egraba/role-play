@@ -18,6 +18,7 @@ from ..utils.builders import (
     Director,
     ClericBuilder,
     FighterBuilder,
+    RogueBuilder,
 )
 
 
@@ -95,6 +96,8 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
                 klass_builder = ClericBuilder(character)
             case Class.FIGHTER:
                 klass_builder = FighterBuilder(character)
+            case Class.ROGUE:
+                klass_builder = RogueBuilder(character)
             case _:
                 klass_builder = ClericBuilder(character)
 

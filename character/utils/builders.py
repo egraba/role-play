@@ -204,6 +204,35 @@ class FighterBuilder(KlassBuilder):
             )
 
 
+class RogueBuilder(KlassBuilder):
+    def apply_hit_points(self):
+        self.character.hit_dice = Dice("1d8")
+        self.character.hp += 8
+        modifier = self.character.abilities.get(
+            ability_type=AbilityType.Name.CONSTITUTION
+        ).modifier
+        self.character.hp += modifier
+        self.character.max_hp = self.character.hp
+        self.character.hp_increase = 5
+
+    def apply_armor_proficiencies(self):
+        pass
+
+    def apply_weapons_proficiencies(self):
+        pass
+
+    def apply_tools_proficiencies(self):
+        pass
+
+    def apply_saving_throws_proficiencies(self):
+        saving_throws = {AbilityType.Name.DEXTERITY, AbilityType.Name.INTELLIGENCE}
+        for ability in saving_throws:
+            SavingThrowProficiency.objects.create(
+                character=self.character,
+                ability_type=AbilityType.objects.get(name=ability),
+            )
+
+
 class Director:
     def build(self, race_builder: RaceBuilder, klass_builder: KlassBuilder) -> None:
         race_builder.apply_racial_traits()
