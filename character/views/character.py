@@ -17,6 +17,7 @@ from ..utils.builders import (
     HumanBuilder,
     Director,
     ClericBuilder,
+    FighterBuilder,
 )
 
 
@@ -92,12 +93,13 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
         match character.class_name:
             case Class.CLERIC:
                 klass_builder = ClericBuilder(character)
+            case Class.FIGHTER:
+                klass_builder = FighterBuilder(character)
             case _:
                 klass_builder = ClericBuilder(character)
 
         director = Director()
         director.build(race_builder, klass_builder)
-
         character.save()
 
         # Inventory
