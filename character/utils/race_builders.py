@@ -95,6 +95,23 @@ class HalflingBuilder(RaceBuilder):
         ability.save()
 
 
+class HumanBuilder(RaceBuilder):
+    def apply_racial_traits(self):
+        self.character.adult_age = 20
+        self.character.life_expectancy = 90
+        self.character.alignment = Alignment.NONE
+        self.character.size = Size.MEDIUM
+        self.character.speed = 30
+        # Need to save before setting many-to-many relationships
+        self.character.save()
+        self.character.languages.add(Language.objects.get(name=Language.Name.COMMON))
+
+    def apply_ability_score_increases(self):
+        for ability in self.character.abilities.all():
+            ability.score += 1
+            ability.save()
+
+
 class RaceDirector:
     def build(self, builder: RaceBuilder):
         builder.apply_racial_traits()

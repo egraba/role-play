@@ -15,6 +15,7 @@ from ..utils.race_builders import (
     DwarfBuilder,
     ElfBuilder,
     HalflingBuilder,
+    HumanBuilder,
     RaceDirector,
 )
 
@@ -113,6 +114,8 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
                 race_builder = ElfBuilder(character)
             case Race.HALFLING:
                 race_builder = HalflingBuilder(character)
+            case Race.HUMAN:
+                race_builder = HumanBuilder(character)
             case _:
                 race_builder = DwarfBuilder(character)
         race_director = RaceDirector()
