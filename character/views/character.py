@@ -6,14 +6,10 @@ from ..forms.character import CharacterCreateForm
 from ..models.abilities import Ability, AbilityType
 from ..models.character import Character
 from ..models.equipment import Equipment, Inventory
-from ..models.races import Race
 from ..utils.builders import (
-    DwarfBuilder,
-    ElfBuilder,
-    HalflingBuilder,
-    HumanBuilder,
     Director,
     KlassBuilder,
+    RaceBuilder,
 )
 
 
@@ -55,21 +51,9 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         character = form.save(commit=False)
         character.user = self.request.user
+
         self._initialize_ability_scores(character, form)
-
-        # Racial traits
-        match character.race:
-            case Race.DWARF:
-                race_builder = DwarfBuilder(character)
-            case Race.ELF:
-                race_builder = ElfBuilder(character)
-            case Race.HALFLING:
-                race_builder = HalflingBuilder(character)
-            case Race.HUMAN:
-                race_builder = HumanBuilder(character)
-            case _:
-                race_builder = DwarfBuilder(character)
-
+        race_builder = RaceBuilder(character)
         klass_builder = KlassBuilder(character)
         director = Director()
         director.build(race_builder, klass_builder)
