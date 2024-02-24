@@ -11,7 +11,7 @@ from ..models.proficiencies import SavingThrowProficiency
 from ..models.races import Race
 from ..utils.abilities import compute_ability_modifier
 from ..utils.proficiencies import get_saving_throws
-from ..utils.race_builders import DwarfBuilder, RaceDirector
+from ..utils.race_builders import DwarfBuilder, ElfBuilder, RaceDirector
 
 
 class CharacterDetailView(LoginRequiredMixin, DetailView):
@@ -104,6 +104,8 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
         match character.race:
             case Race.DWARF:
                 race_builder = DwarfBuilder(character)
+            case Race.ELF:
+                race_builder = ElfBuilder(character)
             case _:
                 race_builder = DwarfBuilder(character)
         race_director = RaceDirector()

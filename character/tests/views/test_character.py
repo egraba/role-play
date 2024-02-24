@@ -283,6 +283,7 @@ class TestCharacterCreateView:
         assert character.speed == 30
 
         languages = set()
+        languages.add(Language.objects.get(name=Language.Name.COMMON))
         languages.add(Language.objects.get(name=Language.Name.ELVISH))
         assert set(character.languages.all()) == languages
 

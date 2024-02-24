@@ -24,7 +24,7 @@ class RaceBuilder(ABC):
 
 
 class DwarfBuilder(RaceBuilder):
-    def apply_racial_traits(self) -> None:
+    def apply_racial_traits(self):
         self.character.adult_age = 50
         self.character.life_expectancy = 350
         self.character.alignment = Alignment.LAWFUL
@@ -42,10 +42,32 @@ class DwarfBuilder(RaceBuilder):
         self.character.senses.add(Sense.objects.get(name=Sense.Name.TOOL_PROFICIENCY))
         self.character.senses.add(Sense.objects.get(name=Sense.Name.STONECUNNING))
 
-    def apply_ability_score_increases(self) -> None:
+    def apply_ability_score_increases(self):
         ability = self.character.abilities.get(
             ability_type=AbilityType.Name.CONSTITUTION
         )
+        ability.score += 2
+        ability.save()
+
+
+class ElfBuilder(RaceBuilder):
+    def apply_racial_traits(self):
+        self.character.adult_age = 100
+        self.character.life_expectancy = 750
+        self.character.alignment = Alignment.FREEDOM
+        self.character.size = Size.MEDIUM
+        self.character.speed = 30
+        # Need to save before setting many-to-many relationships
+        self.character.save()
+        self.character.languages.add(Language.objects.get(name=Language.Name.COMMON))
+        self.character.languages.add(Language.objects.get(name=Language.Name.ELVISH))
+        self.character.senses.add(Sense.objects.get(name=Sense.Name.DARKVISION))
+        self.character.senses.add(Sense.objects.get(name=Sense.Name.KEEN_SENSES))
+        self.character.senses.add(Sense.objects.get(name=Sense.Name.FEY_ANCESTRY))
+        self.character.senses.add(Sense.objects.get(name=Sense.Name.TRANCE))
+
+    def apply_ability_score_increases(self):
+        ability = self.character.abilities.get(ability_type=AbilityType.Name.DEXTERITY)
         ability.score += 2
         ability.save()
 
