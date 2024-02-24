@@ -10,12 +10,12 @@ from ..models.equipment import Equipment, Inventory
 from ..models.proficiencies import SavingThrowProficiency
 from ..models.races import Race
 from ..utils.proficiencies import get_saving_throws
-from ..utils.race_builders import (
+from ..utils.builders import (
     DwarfBuilder,
     ElfBuilder,
     HalflingBuilder,
     HumanBuilder,
-    RaceDirector,
+    Director,
 )
 
 
@@ -92,8 +92,8 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
                 race_builder = HumanBuilder(character)
             case _:
                 race_builder = DwarfBuilder(character)
-        race_director = RaceDirector()
-        race_director.build(race_builder)
+        director = Director()
+        director.build(race_builder)
 
         # Class features
         self._apply_class_advancement(character)
