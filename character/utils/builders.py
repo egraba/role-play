@@ -7,8 +7,7 @@ from ..models.races import Alignment, Language, Sense, Size
 from ..models.classes import ClassAdvancement
 from ..models.proficiencies import SavingThrowProficiency
 from .abilities import compute_ability_modifier
-from .proficiencies import saving_throws
-from ..constants.klasses import hit_points
+from ..constants.klasses import klass_features
 
 
 class RaceBuilder(ABC):
@@ -129,14 +128,15 @@ class KlassBuilder:
         self.character.proficiency_bonus += class_advancement.proficiency_bonus
 
     def apply_hit_points(self) -> None:
-        self.character.hit_dice = Dice(hit_points[self.klass]["hit_dice"])
-        self.character.hp += hit_points[self.klass]["hp_first_level"]
+        hit_points = klass_features[self.klass]["hit_points"]
+        self.character.hit_dice = Dice(hit_points["hit_dice"])
+        self.character.hp += hit_points["hp_first_level"]
         modifier = self.character.abilities.get(
-            ability_type=hit_points[self.klass]["hp_modifier_ability"]
+            ability_type=hit_points["hp_modifier_ability"]
         ).modifier
         self.character.hp += modifier
         self.character.max_hp = self.character.hp
-        self.character.hp_increase = hit_points[self.klass]["hp_higher_levels"]
+        self.character.hp_increase = hit_points["hp_higher_levels"]
 
     def apply_armor_proficiencies(self) -> None:
         pass
@@ -148,7 +148,8 @@ class KlassBuilder:
         pass
 
     def apply_saving_throws_proficiencies(self) -> None:
-        for ability in saving_throws[self.character.class_name]:
+        saving_throws = klass_features[self.klass]["saving_throws"]
+        for ability in saving_throws:
             SavingThrowProficiency.objects.create(
                 character=self.character,
                 ability_type=AbilityType.objects.get(name=ability),

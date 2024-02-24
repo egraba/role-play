@@ -1,16 +1,7 @@
 from utils.converters import duplicate_choice
 
-from ..models.abilities import AbilityType
 from ..models.character import Skill
 from ..models.classes import Class
-
-
-saving_throws: dict = {
-    Class.CLERIC: {AbilityType.Name.WISDOM, AbilityType.Name.CHARISMA},
-    Class.FIGHTER: {AbilityType.Name.STRENGTH, AbilityType.Name.CONSTITUTION},
-    Class.ROGUE: {AbilityType.Name.DEXTERITY, AbilityType.Name.INTELLIGENCE},
-    Class.WIZARD: {AbilityType.Name.INTELLIGENCE, AbilityType.Name.WISDOM},
-}
 
 
 def get_skills(klass: Class) -> set[tuple[str, str]] | None:
