@@ -8,6 +8,7 @@ from ..models.classes import ClassAdvancement
 from ..models.proficiencies import SavingThrowProficiency
 from .abilities import compute_ability_modifier
 from .proficiencies import saving_throws
+from ..constants.klasses import hit_points
 
 
 class RaceBuilder(ABC):
@@ -116,9 +117,10 @@ class HumanBuilder(RaceBuilder):
             ability.save()
 
 
-class KlassBuilder(ABC):
+class KlassBuilder:
     def __init__(self, character: Character) -> None:
         self.character = character
+        self.klass = character.class_name
 
     def apply_advancement(self) -> None:
         class_advancement = ClassAdvancement.objects.get(
@@ -127,7 +129,14 @@ class KlassBuilder(ABC):
         self.character.proficiency_bonus += class_advancement.proficiency_bonus
 
     def apply_hit_points(self) -> None:
-        pass
+        self.character.hit_dice = Dice(hit_points[self.klass]["hit_dice"])
+        self.character.hp += hit_points[self.klass]["hp_first_level"]
+        modifier = self.character.abilities.get(
+            ability_type=hit_points[self.klass]["hp_modifier_ability"]
+        ).modifier
+        self.character.hp += modifier
+        self.character.max_hp = self.character.hp
+        self.character.hp_increase = hit_points[self.klass]["hp_higher_levels"]
 
     def apply_armor_proficiencies(self) -> None:
         pass
@@ -144,54 +153,6 @@ class KlassBuilder(ABC):
                 character=self.character,
                 ability_type=AbilityType.objects.get(name=ability),
             )
-
-
-class ClericBuilder(KlassBuilder):
-    def apply_hit_points(self):
-        self.character.hit_dice = Dice("1d8")
-        self.character.hp += 8
-        modifier = self.character.abilities.get(
-            ability_type=AbilityType.Name.CONSTITUTION
-        ).modifier
-        self.character.hp += modifier
-        self.character.max_hp = self.character.hp
-        self.character.hp_increase = 5
-
-
-class FighterBuilder(KlassBuilder):
-    def apply_hit_points(self):
-        self.character.hit_dice = Dice("1d10")
-        self.character.hp += 10
-        modifier = self.character.abilities.get(
-            ability_type=AbilityType.Name.CONSTITUTION
-        ).modifier
-        self.character.hp += modifier
-        self.character.max_hp = self.character.hp
-        self.character.hp_increase = 6
-
-
-class RogueBuilder(KlassBuilder):
-    def apply_hit_points(self):
-        self.character.hit_dice = Dice("1d8")
-        self.character.hp += 8
-        modifier = self.character.abilities.get(
-            ability_type=AbilityType.Name.CONSTITUTION
-        ).modifier
-        self.character.hp += modifier
-        self.character.max_hp = self.character.hp
-        self.character.hp_increase = 5
-
-
-class WizardBuilder(KlassBuilder):
-    def apply_hit_points(self):
-        self.character.hit_dice = Dice("1d6")
-        self.character.hp += 6
-        modifier = self.character.abilities.get(
-            ability_type=AbilityType.Name.CONSTITUTION
-        ).modifier
-        self.character.hp += modifier
-        self.character.max_hp = self.character.hp
-        self.character.hp_increase = 4
 
 
 class Director:

@@ -5,7 +5,6 @@ from django.views.generic import CreateView, DetailView, ListView
 from ..forms.character import CharacterCreateForm
 from ..models.abilities import Ability, AbilityType
 from ..models.character import Character
-from ..models.classes import Class
 from ..models.equipment import Equipment, Inventory
 from ..models.races import Race
 from ..utils.builders import (
@@ -14,10 +13,7 @@ from ..utils.builders import (
     HalflingBuilder,
     HumanBuilder,
     Director,
-    ClericBuilder,
-    FighterBuilder,
-    RogueBuilder,
-    WizardBuilder,
+    KlassBuilder,
 )
 
 
@@ -74,19 +70,7 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
             case _:
                 race_builder = DwarfBuilder(character)
 
-        # Class features
-        match character.class_name:
-            case Class.CLERIC:
-                klass_builder = ClericBuilder(character)
-            case Class.FIGHTER:
-                klass_builder = FighterBuilder(character)
-            case Class.ROGUE:
-                klass_builder = RogueBuilder(character)
-            case Class.WIZARD:
-                klass_builder = WizardBuilder(character)
-            case _:
-                klass_builder = ClericBuilder(character)
-
+        klass_builder = KlassBuilder(character)
         director = Director()
         director.build(race_builder, klass_builder)
         character.save()
