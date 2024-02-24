@@ -3,13 +3,12 @@ from django.urls import reverse
 from django.views.generic import CreateView, DetailView, ListView
 
 from ..forms.character import CharacterCreateForm
-from ..models.abilities import Ability, AbilityScoreIncrease, AbilityType
+from ..models.abilities import Ability, AbilityType
 from ..models.character import Character
 from ..models.classes import ClassAdvancement, ClassFeature
 from ..models.equipment import Equipment, Inventory
 from ..models.proficiencies import SavingThrowProficiency
 from ..models.races import Race
-from ..utils.abilities import compute_ability_modifier
 from ..utils.proficiencies import get_saving_throws
 from ..utils.race_builders import (
     DwarfBuilder,
@@ -54,31 +53,6 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
             )
             character.save()
             character.abilities.add(ability)
-
-    def _apply_racial_traits(self, character, racial_trait):
-        character.adult_age = racial_trait.adult_age
-        character.life_expectancy = racial_trait.life_expectancy
-        character.alignment = racial_trait.alignment
-        character.size = racial_trait.size
-        character.speed = racial_trait.speed
-        # Need to save before setting many-to-many relationships
-        character.save()
-        character.languages.set(racial_trait.languages.all())
-        character.senses.set(racial_trait.senses.all())
-
-    def _apply_ability_score_increases(self, character, racial_trait):
-        ability_score_increases = AbilityScoreIncrease.objects.filter(
-            racial_trait__race=racial_trait.race
-        )
-        if ability_score_increases is not None:
-            for i in ability_score_increases:
-                ability = character.abilities.get(ability_type=i.ability_type)
-                ability.score += i.increase
-                ability.save()
-
-    def _compute_ability_modifiers(self, character):
-        for ability in character.abilities.all():
-            ability.modifier = compute_ability_modifier(ability.score)
 
     def _apply_class_advancement(self, character):
         class_advancement = ClassAdvancement.objects.get(
