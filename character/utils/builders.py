@@ -7,6 +7,7 @@ from ..models.races import Alignment, Language, Sense, Size
 from ..models.classes import ClassAdvancement
 from ..models.proficiencies import SavingThrowProficiency
 from .abilities import compute_ability_modifier
+from .proficiencies import saving_throws
 
 
 class RaceBuilder(ABC):
@@ -125,25 +126,24 @@ class KlassBuilder(ABC):
         )
         self.character.proficiency_bonus += class_advancement.proficiency_bonus
 
-    @abstractmethod
     def apply_hit_points(self) -> None:
         pass
 
-    @abstractmethod
     def apply_armor_proficiencies(self) -> None:
         pass
 
-    @abstractmethod
     def apply_weapons_proficiencies(self) -> None:
         pass
 
-    @abstractmethod
     def apply_tools_proficiencies(self) -> None:
         pass
 
-    @abstractmethod
     def apply_saving_throws_proficiencies(self) -> None:
-        pass
+        for ability in saving_throws[self.character.class_name]:
+            SavingThrowProficiency.objects.create(
+                character=self.character,
+                ability_type=AbilityType.objects.get(name=ability),
+            )
 
 
 class ClericBuilder(KlassBuilder):
@@ -157,23 +157,6 @@ class ClericBuilder(KlassBuilder):
         self.character.max_hp = self.character.hp
         self.character.hp_increase = 5
 
-    def apply_armor_proficiencies(self):
-        pass
-
-    def apply_weapons_proficiencies(self):
-        pass
-
-    def apply_tools_proficiencies(self):
-        pass
-
-    def apply_saving_throws_proficiencies(self):
-        saving_throws = {AbilityType.Name.WISDOM, AbilityType.Name.CHARISMA}
-        for ability in saving_throws:
-            SavingThrowProficiency.objects.create(
-                character=self.character,
-                ability_type=AbilityType.objects.get(name=ability),
-            )
-
 
 class FighterBuilder(KlassBuilder):
     def apply_hit_points(self):
@@ -185,23 +168,6 @@ class FighterBuilder(KlassBuilder):
         self.character.hp += modifier
         self.character.max_hp = self.character.hp
         self.character.hp_increase = 6
-
-    def apply_armor_proficiencies(self):
-        pass
-
-    def apply_weapons_proficiencies(self):
-        pass
-
-    def apply_tools_proficiencies(self):
-        pass
-
-    def apply_saving_throws_proficiencies(self):
-        saving_throws = {AbilityType.Name.STRENGTH, AbilityType.Name.CONSTITUTION}
-        for ability in saving_throws:
-            SavingThrowProficiency.objects.create(
-                character=self.character,
-                ability_type=AbilityType.objects.get(name=ability),
-            )
 
 
 class RogueBuilder(KlassBuilder):
@@ -215,23 +181,6 @@ class RogueBuilder(KlassBuilder):
         self.character.max_hp = self.character.hp
         self.character.hp_increase = 5
 
-    def apply_armor_proficiencies(self):
-        pass
-
-    def apply_weapons_proficiencies(self):
-        pass
-
-    def apply_tools_proficiencies(self):
-        pass
-
-    def apply_saving_throws_proficiencies(self):
-        saving_throws = {AbilityType.Name.DEXTERITY, AbilityType.Name.INTELLIGENCE}
-        for ability in saving_throws:
-            SavingThrowProficiency.objects.create(
-                character=self.character,
-                ability_type=AbilityType.objects.get(name=ability),
-            )
-
 
 class WizardBuilder(KlassBuilder):
     def apply_hit_points(self):
@@ -243,23 +192,6 @@ class WizardBuilder(KlassBuilder):
         self.character.hp += modifier
         self.character.max_hp = self.character.hp
         self.character.hp_increase = 4
-
-    def apply_armor_proficiencies(self):
-        pass
-
-    def apply_weapons_proficiencies(self):
-        pass
-
-    def apply_tools_proficiencies(self):
-        pass
-
-    def apply_saving_throws_proficiencies(self):
-        saving_throws = {AbilityType.Name.INTELLIGENCE, AbilityType.Name.WISDOM}
-        for ability in saving_throws:
-            SavingThrowProficiency.objects.create(
-                character=self.character,
-                ability_type=AbilityType.objects.get(name=ability),
-            )
 
 
 class Director:

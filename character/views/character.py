@@ -7,9 +7,7 @@ from ..models.abilities import Ability, AbilityType
 from ..models.character import Character
 from ..models.classes import Class
 from ..models.equipment import Equipment, Inventory
-from ..models.proficiencies import SavingThrowProficiency
 from ..models.races import Race
-from ..utils.proficiencies import get_saving_throws
 from ..utils.builders import (
     DwarfBuilder,
     ElfBuilder,
@@ -57,21 +55,6 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
             )
             character.save()
             character.abilities.add(ability)
-
-    def _apply_class_features(self, character, class_feature):
-        character.hit_dice = class_feature.hitpoints.hit_dice
-        character.hp += class_feature.hitpoints.hp_first_level
-        constitution_modifier = character.abilities.get(
-            ability_type=AbilityType.Name.CONSTITUTION
-        ).modifier
-        character.hp += constitution_modifier
-        character.max_hp = character.hp
-        character.hp_increase = class_feature.hitpoints.hp_higher_levels
-        saving_throws = get_saving_throws(class_feature.class_name)
-        for ability in saving_throws:
-            SavingThrowProficiency.objects.create(
-                character=character, ability_type=AbilityType.objects.get(name=ability)
-            )
 
     def form_valid(self, form):
         character = form.save(commit=False)
