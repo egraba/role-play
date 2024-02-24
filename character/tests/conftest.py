@@ -9,7 +9,7 @@ def django_db_setup(django_db_setup, django_db_blocker):
         call_command(loaddata.Command(), "character/fixtures/senses.yaml")
         call_command(loaddata.Command(), "character/fixtures/advancement.yaml")
         call_command(loaddata.Command(), "character/fixtures/abilities.yaml")
-        call_command(loaddata.Command(), "character/fixtures/races.yaml")
+        call_command(loaddata.Command(), "character/fixtures/languages.yaml")
         call_command(loaddata.Command(), "character/fixtures/classes.yaml")
         call_command(loaddata.Command(), "character/fixtures/skills.yaml")
         call_command(loaddata.Command(), "character/fixtures/equipment.yaml")

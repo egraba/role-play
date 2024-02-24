@@ -54,17 +54,3 @@ class Sense(models.Model):
 
     def __str__(self):
         return str(self.name)
-
-
-class RacialTrait(models.Model):
-    race = models.CharField(max_length=1, choices=Race.choices, unique=True)
-    adult_age = models.SmallIntegerField()
-    life_expectancy = models.SmallIntegerField()
-    alignment = models.CharField(max_length=1, choices=Alignment.choices)
-    size = models.CharField(max_length=1, choices=Size.choices)
-    speed = models.SmallIntegerField()
-    languages = models.ManyToManyField(Language)
-    senses = models.ManyToManyField(Sense)
-
-    def __str__(self):
-        return f"{self.get_race_display()} racial trait"

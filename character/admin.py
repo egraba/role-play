@@ -3,7 +3,7 @@ from django.contrib import admin
 from .models.advancement import Advancement
 from .models.character import Character
 from .models.classes import ClassAdvancement, HitPoints
-from .models.races import RacialTrait, Sense
+from .models.races import Sense
 
 
 class CharacterAdmin(admin.ModelAdmin):
@@ -19,27 +19,6 @@ class AdvancementAdmin(admin.ModelAdmin):
 class SenseAdmin(admin.ModelAdmin):
     fields = ["name", "description"]
     list_display = ["name", "description"]
-
-
-class RacialTraitAdmin(admin.ModelAdmin):
-    fields = [
-        "race",
-        "adult_age",
-        "life_expectancy",
-        "alignment",
-        "size",
-        "speed",
-        "languages",
-        "senses",
-    ]
-    list_display = [
-        "race",
-        "adult_age",
-        "life_expectancy",
-        "alignment",
-        "size",
-        "speed",
-    ]
 
 
 class HitPointsAdmin(admin.ModelAdmin):
@@ -61,7 +40,6 @@ admin.site.register(Advancement, AdvancementAdmin)
 
 # Races
 admin.site.register(Sense, SenseAdmin)
-admin.site.register(RacialTrait, RacialTraitAdmin)
 
 # Classes
 admin.site.register(HitPoints, HitPointsAdmin)
