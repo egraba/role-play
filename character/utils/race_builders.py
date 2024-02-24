@@ -72,6 +72,29 @@ class ElfBuilder(RaceBuilder):
         ability.save()
 
 
+class HalflingBuilder(RaceBuilder):
+    def apply_racial_traits(self):
+        self.character.adult_age = 20
+        self.character.life_expectancy = 75
+        self.character.alignment = Alignment.LAWFUL
+        self.character.size = Size.SMALL
+        self.character.speed = 25
+        # Need to save before setting many-to-many relationships
+        self.character.save()
+        self.character.languages.add(Language.objects.get(name=Language.Name.COMMON))
+        self.character.languages.add(Language.objects.get(name=Language.Name.HALFLING))
+        self.character.senses.add(Sense.objects.get(name=Sense.Name.LUCKY))
+        self.character.senses.add(Sense.objects.get(name=Sense.Name.BRAVE))
+        self.character.senses.add(
+            Sense.objects.get(name=Sense.Name.HALFLING_NIMBLENESS)
+        )
+
+    def apply_ability_score_increases(self):
+        ability = self.character.abilities.get(ability_type=AbilityType.Name.DEXTERITY)
+        ability.score += 2
+        ability.save()
+
+
 class RaceDirector:
     def build(self, builder: RaceBuilder):
         builder.apply_racial_traits()
