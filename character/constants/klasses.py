@@ -1,7 +1,7 @@
 from ..models.abilities import AbilityType
 from ..models.classes import Class
 
-klass_features: dict = {
+KLASS_FEATURES: dict = {
     Class.CLERIC: {
         "hit_points": {
             "hit_dice": "1d8",

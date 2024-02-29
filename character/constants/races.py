@@ -1,7 +1,7 @@
 from ..models.abilities import AbilityType
 from ..models.races import Alignment, Language, Race, Sense, Size
 
-racial_traits: dict = {
+RACIAL_TRAITS: dict = {
     Race.DWARF: {
         "adult_age": 50,
         "life_expectancy": 350,
