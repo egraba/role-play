@@ -4,7 +4,7 @@ from faker import Faker
 from pytest_django.asserts import assertRedirects, assertTemplateUsed
 
 from character.forms.skills import ExtendedSkillsSelectForm, SkillsSelectForm
-from character.models.classes import Klass
+from character.models.klasses import Klass
 from character.utils.proficiencies import get_skills
 from character.views.skills import SkillsSelectView
 

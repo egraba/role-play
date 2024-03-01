@@ -7,7 +7,7 @@ from pytest_django.asserts import assertContains, assertRedirects, assertTemplat
 from character.forms.character import CharacterCreateForm
 from character.models.abilities import AbilityType
 from character.models.character import Character
-from character.models.classes import Klass
+from character.models.klasses import Klass
 from character.models.proficiencies import SavingThrowProficiency
 from character.models.races import Language, Race, Sense
 from character.utils.abilities import AbilityScore

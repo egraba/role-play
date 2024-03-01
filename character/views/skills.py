@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.views.generic import FormView
 
 from ..forms.skills import ExtendedSkillsSelectForm, SkillsSelectForm
-from ..models.classes import Klass
+from ..models.klasses import Klass
 from ..utils.proficiencies import get_skills
 from .mixins import CharacterContextMixin
 

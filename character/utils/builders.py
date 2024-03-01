@@ -5,7 +5,7 @@ from ..constants.races import RACIAL_TRAITS
 from ..forms.character import CharacterCreateForm
 from ..models.abilities import AbilityType, Ability
 from ..models.character import Character
-from ..models.classes import KlassAdvancement
+from ..models.klasses import KlassAdvancement
 from ..models.proficiencies import SavingThrowProficiency
 from ..models.races import Language, Sense
 from .abilities import compute_ability_modifier

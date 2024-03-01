@@ -7,7 +7,7 @@ from ..forms.equipment import (
     RogueEquipmentSelectForm,
     WizardEquipmentSelectForm,
 )
-from ..models.classes import Klass
+from ..models.klasses import Klass
 from ..models.equipment import Armor, Equipment, Gear, Tool, Weapon
 from .mixins import CharacterContextMixin
 

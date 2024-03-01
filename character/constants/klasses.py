@@ -1,5 +1,5 @@
 from ..models.abilities import AbilityType
-from ..models.classes import Klass
+from ..models.klasses import Klass
 from ..models.equipment import Armor
 
 KLASS_FEATURES: dict = {

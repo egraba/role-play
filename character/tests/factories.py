@@ -2,7 +2,7 @@ import factory
 
 from character.models.abilities import Ability, AbilityType
 from character.models.character import Character
-from character.models.classes import Klass
+from character.models.klasses import Klass
 from character.models.equipment import Equipment
 from character.models.races import Race
 

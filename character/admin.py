@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from .models.advancement import Advancement
 from .models.character import Character
-from .models.classes import KlassAdvancement, HitPoints
+from .models.klasses import KlassAdvancement, HitPoints
 from .models.races import Sense
 
 

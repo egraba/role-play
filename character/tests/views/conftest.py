@@ -1,6 +1,6 @@
 import pytest
 
-from character.models.classes import Klass
+from character.models.klasses import Klass
 
 from ..factories import CharacterFactory
 

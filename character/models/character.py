@@ -9,7 +9,7 @@ from utils.dice import Dice
 from ..utils.cache import advancement_key
 from .abilities import Ability
 from .advancement import Advancement
-from .classes import Klass
+from .klasses import Klass
 from .equipment import Inventory
 from .races import Alignment, Language, Race, Sense, Size
 from .skills import Skill

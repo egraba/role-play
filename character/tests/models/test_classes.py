@@ -1,6 +1,6 @@
 import pytest
 
-from character.models.classes import KlassAdvancement
+from character.models.klasses import KlassAdvancement
 
 
 @pytest.mark.django_db

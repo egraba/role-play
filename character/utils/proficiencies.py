@@ -1,7 +1,7 @@
 from utils.converters import duplicate_choice
 
 from ..models.character import Skill
-from ..models.classes import Klass
+from ..models.klasses import Klass
 
 
 def get_skills(klass: Klass) -> set[tuple[str, str]] | None:
