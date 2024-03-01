@@ -7,8 +7,9 @@ from ..forms.equipment import (
     RogueEquipmentSelectForm,
     WizardEquipmentSelectForm,
 )
+from ..constants.equipment import ArmorName, WeaponName, ToolName, GearName
 from ..models.klasses import Klass
-from ..models.equipment import Armor, Equipment, Gear, Tool, Weapon
+from ..models.equipment import Equipment
 from .mixins import CharacterContextMixin
 
 
@@ -72,39 +73,39 @@ class EquipmentSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
         match self.character.klass:
             case Klass.CLERIC:
                 Equipment.objects.create(
-                    name=Weapon.Name.CROSSBOW_LIGHT, inventory=self.character.inventory
+                    name=WeaponName.CROSSBOW_LIGHT, inventory=self.character.inventory
                 )
                 Equipment.objects.create(
-                    name=Gear.Name.CROSSBOW_BOLTS,
+                    name=GearName.CROSSBOW_BOLTS,
                     inventory=self.character.inventory,
                 )
                 Equipment.objects.create(
-                    name=Armor.Name.SHIELD, inventory=self.character.inventory
+                    name=ArmorName.SHIELD, inventory=self.character.inventory
                 )
 
             case Klass.ROGUE:
                 Equipment.objects.create(
-                    name=Weapon.Name.SHORTBOW, inventory=self.character.inventory
+                    name=WeaponName.SHORTBOW, inventory=self.character.inventory
                 )
                 Equipment.objects.create(
-                    name=Gear.Name.QUIVER, inventory=self.character.inventory
+                    name=GearName.QUIVER, inventory=self.character.inventory
                 )
                 Equipment.objects.create(
-                    name=Armor.Name.LEATHER, inventory=self.character.inventory
+                    name=ArmorName.LEATHER, inventory=self.character.inventory
                 )
                 Equipment.objects.create(
-                    name=Weapon.Name.DAGGER, inventory=self.character.inventory
+                    name=WeaponName.DAGGER, inventory=self.character.inventory
                 )
                 Equipment.objects.create(
-                    name=Weapon.Name.DAGGER, inventory=self.character.inventory
+                    name=WeaponName.DAGGER, inventory=self.character.inventory
                 )
                 Equipment.objects.create(
-                    name=Tool.Name.THIEVES_TOOLS, inventory=self.character.inventory
+                    name=ToolName.THIEVES_TOOLS, inventory=self.character.inventory
                 )
 
             case Klass.WIZARD:
                 Equipment.objects.create(
-                    name=Gear.Name.SPELLBOOK,
+                    name=GearName.SPELLBOOK,
                     inventory=self.character.inventory,
                 )
         return super().form_valid(form)
