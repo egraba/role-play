@@ -97,10 +97,17 @@ def process_roll(
     request.status = RollRequest.Status.DONE
     request.save()
 
+    # Send the right message to the channel.
+    match roll_type:
+        case RollRequest.RollType.ABILITY_CHECK:
+            result_type = GameEventType.ABILITY_CHECK_RESULT
+        case RollRequest.RollType.SAVING_THROW:
+            result_type = GameEventType.SAVING_THROW_RESULT
+
     send_to_channel(
         game_id=game.id,
         game_event={
-            "type": GameEventType.ABILITY_CHECK_RESULT,
+            "type": result_type,
             "player_type": PlayerType.MASTER,
             "date": timezone.now().isoformat(),
             "message": roll.message,
