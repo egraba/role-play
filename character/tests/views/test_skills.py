@@ -4,7 +4,7 @@ from faker import Faker
 from pytest_django.asserts import assertRedirects, assertTemplateUsed
 
 from character.forms.skills import ExtendedSkillsSelectForm, SkillsSelectForm
-from character.models.classes import Class
+from character.models.classes import Klass
 from character.utils.proficiencies import get_skills
 from character.views.skills import SkillsSelectView
 
@@ -26,7 +26,7 @@ class TestSkillsSelectView:
 
     def test_cleric_skills(self, client, cleric):
         fake = Faker()
-        skills_set = get_skills(Class.CLERIC)
+        skills_set = get_skills(Klass.CLERIC)
         skills = fake.random_elements(
             elements=sorted(skills_set), length=len(skills_set), unique=True
         )
@@ -56,7 +56,7 @@ class TestSkillsSelectView:
 
     def test_fighter_skills(self, client, fighter):
         fake = Faker()
-        skills_set = get_skills(Class.FIGHTER)
+        skills_set = get_skills(Klass.FIGHTER)
         skills = fake.random_elements(
             elements=sorted(skills_set), length=len(skills_set), unique=True
         )
@@ -86,7 +86,7 @@ class TestSkillsSelectView:
 
     def test_rogue_skills(self, client, rogue):
         fake = Faker()
-        skills_set = get_skills(Class.ROGUE)
+        skills_set = get_skills(Klass.ROGUE)
         skills = fake.random_elements(
             elements=sorted(skills_set), length=len(skills_set), unique=True
         )
@@ -126,7 +126,7 @@ class TestSkillsSelectView:
 
     def test_wizard_skills(self, client, wizard):
         fake = Faker()
-        skills_set = get_skills(Class.WIZARD)
+        skills_set = get_skills(Klass.WIZARD)
         skills = fake.random_elements(
             elements=sorted(skills_set), length=len(skills_set), unique=True
         )

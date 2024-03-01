@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from .models.advancement import Advancement
 from .models.character import Character
-from .models.classes import ClassAdvancement, HitPoints
+from .models.classes import KlassAdvancement, HitPoints
 from .models.races import Sense
 
 
@@ -43,4 +43,4 @@ admin.site.register(Sense, SenseAdmin)
 
 # Classes
 admin.site.register(HitPoints, HitPointsAdmin)
-admin.site.register(ClassAdvancement, ClassAdvancementAdmin)
+admin.site.register(KlassAdvancement, ClassAdvancementAdmin)

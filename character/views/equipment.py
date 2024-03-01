@@ -7,7 +7,7 @@ from ..forms.equipment import (
     RogueEquipmentSelectForm,
     WizardEquipmentSelectForm,
 )
-from ..models.classes import Class
+from ..models.classes import Klass
 from ..models.equipment import Armor, Equipment, Gear, Tool, Weapon
 from .mixins import CharacterContextMixin
 
@@ -20,13 +20,13 @@ class EquipmentSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
 
     def get_form_class(self):
         match self.character.class_name:
-            case Class.CLERIC:
+            case Klass.CLERIC:
                 form_class = ClericEquipmentSelectForm
-            case Class.FIGHTER:
+            case Klass.FIGHTER:
                 form_class = FighterEquipmentSelectForm
-            case Class.ROGUE:
+            case Klass.ROGUE:
                 form_class = RogueEquipmentSelectForm
-            case Class.WIZARD:
+            case Klass.WIZARD:
                 form_class = WizardEquipmentSelectForm
         return form_class
 
@@ -70,7 +70,7 @@ class EquipmentSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
 
         # Some equipment is added without selection, depending on character's class.
         match self.character.class_name:
-            case Class.CLERIC:
+            case Klass.CLERIC:
                 Equipment.objects.create(
                     name=Weapon.Name.CROSSBOW_LIGHT, inventory=self.character.inventory
                 )
@@ -82,7 +82,7 @@ class EquipmentSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
                     name=Armor.Name.SHIELD, inventory=self.character.inventory
                 )
 
-            case Class.ROGUE:
+            case Klass.ROGUE:
                 Equipment.objects.create(
                     name=Weapon.Name.SHORTBOW, inventory=self.character.inventory
                 )
@@ -102,7 +102,7 @@ class EquipmentSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
                     name=Tool.Name.THIEVES_TOOLS, inventory=self.character.inventory
                 )
 
-            case Class.WIZARD:
+            case Klass.WIZARD:
                 Equipment.objects.create(
                     name=Gear.Name.SPELLBOOK,
                     inventory=self.character.inventory,

@@ -7,7 +7,7 @@ from pytest_django.asserts import assertContains, assertRedirects, assertTemplat
 from character.forms.character import CharacterCreateForm
 from character.models.abilities import AbilityType
 from character.models.character import Character
-from character.models.classes import Class
+from character.models.classes import Klass
 from character.models.proficiencies import SavingThrowProficiency
 from character.models.races import Language, Race, Sense
 from character.utils.abilities import AbilityScore
@@ -132,7 +132,7 @@ class TestCharacterCreateView:
         return {
             "name": f"{fake.name()}",
             "race": f"{fake.enum(enum_cls=Race)}",
-            "class_name": f"{fake.enum(enum_cls=Class)}",
+            "class_name": f"{fake.enum(enum_cls=Klass)}",
             "strength": AbilityScore.SCORE_10,
             "dexterity": AbilityScore.SCORE_12,
             "constitution": AbilityScore.SCORE_13,
@@ -167,7 +167,7 @@ class TestCharacterCreateView:
         return {
             "name": f"{fake.name()}",
             "race": f"{Race.DWARF}",
-            "class_name": f"{fake.enum(enum_cls=Class)}",
+            "class_name": f"{fake.enum(enum_cls=Klass)}",
             "strength": AbilityScore.SCORE_10,
             "dexterity": AbilityScore.SCORE_12,
             "constitution": AbilityScore.SCORE_13,
@@ -234,7 +234,7 @@ class TestCharacterCreateView:
         return {
             "name": f"{fake.name()}",
             "race": f"{Race.ELF}",
-            "class_name": f"{fake.enum(enum_cls=Class)}",
+            "class_name": f"{fake.enum(enum_cls=Klass)}",
             "strength": AbilityScore.SCORE_10,
             "dexterity": AbilityScore.SCORE_12,
             "constitution": AbilityScore.SCORE_13,
@@ -300,7 +300,7 @@ class TestCharacterCreateView:
         return {
             "name": f"{fake.name()}",
             "race": f"{Race.HALFLING}",
-            "class_name": f"{fake.enum(enum_cls=Class)}",
+            "class_name": f"{fake.enum(enum_cls=Klass)}",
             "strength": AbilityScore.SCORE_10,
             "dexterity": AbilityScore.SCORE_12,
             "constitution": AbilityScore.SCORE_13,
@@ -365,7 +365,7 @@ class TestCharacterCreateView:
         return {
             "name": f"{fake.name()}",
             "race": f"{Race.HUMAN}",
-            "class_name": f"{fake.enum(enum_cls=Class)}",
+            "class_name": f"{fake.enum(enum_cls=Klass)}",
             "strength": AbilityScore.SCORE_10,
             "dexterity": AbilityScore.SCORE_12,
             "constitution": AbilityScore.SCORE_13,
@@ -424,7 +424,7 @@ class TestCharacterCreateView:
         fake = Faker()
         name = fake.name()
         race = fake.enum(enum_cls=Race)
-        class_name = Class.CLERIC
+        class_name = Klass.CLERIC
         gender = fake.enum(enum_cls=Character.Gender)
         data = {
             "name": f"{name}",
@@ -468,7 +468,7 @@ class TestCharacterCreateView:
         fake = Faker()
         name = fake.name()
         race = fake.enum(enum_cls=Race)
-        class_name = Class.FIGHTER
+        class_name = Klass.FIGHTER
         gender = fake.enum(enum_cls=Character.Gender)
         data = {
             "name": f"{name}",
@@ -512,7 +512,7 @@ class TestCharacterCreateView:
         fake = Faker()
         name = fake.name()
         race = fake.enum(enum_cls=Race)
-        class_name = Class.ROGUE
+        class_name = Klass.ROGUE
         gender = fake.enum(enum_cls=Character.Gender)
         data = {
             "name": f"{name}",
@@ -556,7 +556,7 @@ class TestCharacterCreateView:
         fake = Faker()
         name = fake.name()
         race = fake.enum(enum_cls=Race)
-        class_name = Class.WIZARD
+        class_name = Klass.WIZARD
         gender = fake.enum(enum_cls=Character.Gender)
         data = {
             "name": f"{name}",

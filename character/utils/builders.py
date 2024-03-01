@@ -5,7 +5,7 @@ from ..constants.races import RACIAL_TRAITS
 from ..forms.character import CharacterCreateForm
 from ..models.abilities import AbilityType, Ability
 from ..models.character import Character
-from ..models.classes import ClassAdvancement
+from ..models.classes import KlassAdvancement
 from ..models.proficiencies import SavingThrowProficiency
 from ..models.races import Language, Sense
 from .abilities import compute_ability_modifier
@@ -62,7 +62,7 @@ class KlassBuilder:
         self.klass = character.class_name
 
     def apply_advancement(self) -> None:
-        class_advancement = ClassAdvancement.objects.get(
+        class_advancement = KlassAdvancement.objects.get(
             class_name=self.character.class_name, level=1
         )
         self.character.proficiency_bonus += class_advancement.proficiency_bonus

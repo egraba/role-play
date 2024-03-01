@@ -1,12 +1,12 @@
 from utils.converters import duplicate_choice
 
 from ..models.character import Skill
-from ..models.classes import Class
+from ..models.classes import Klass
 
 
-def get_skills(klass: Class) -> set[tuple[str, str]] | None:
+def get_skills(klass: Klass) -> set[tuple[str, str]] | None:
     match klass:
-        case Class.CLERIC:
+        case Klass.CLERIC:
             return {
                 duplicate_choice(Skill.Name.HISTORY),
                 duplicate_choice(Skill.Name.INSIGHT),
@@ -14,7 +14,7 @@ def get_skills(klass: Class) -> set[tuple[str, str]] | None:
                 duplicate_choice(Skill.Name.PERSUASION),
                 duplicate_choice(Skill.Name.RELIGION),
             }
-        case Class.FIGHTER:
+        case Klass.FIGHTER:
             return {
                 duplicate_choice(Skill.Name.ACROBATICS),
                 duplicate_choice(Skill.Name.ANIMAL_HANDLING),
@@ -25,7 +25,7 @@ def get_skills(klass: Class) -> set[tuple[str, str]] | None:
                 duplicate_choice(Skill.Name.PERCEPTION),
                 duplicate_choice(Skill.Name.SURVIVAL),
             }
-        case Class.ROGUE:
+        case Klass.ROGUE:
             return {
                 duplicate_choice(Skill.Name.ACROBATICS),
                 duplicate_choice(Skill.Name.ATHLETICS),
@@ -39,7 +39,7 @@ def get_skills(klass: Class) -> set[tuple[str, str]] | None:
                 duplicate_choice(Skill.Name.SLEIGHT_OF_HAND),
                 duplicate_choice(Skill.Name.STEALTH),
             }
-        case Class.WIZARD:
+        case Klass.WIZARD:
             return {
                 duplicate_choice(Skill.Name.ARCANA),
                 duplicate_choice(Skill.Name.HISTORY),

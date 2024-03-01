@@ -2,7 +2,7 @@ import factory
 
 from character.models.abilities import Ability, AbilityType
 from character.models.character import Character
-from character.models.classes import Class
+from character.models.classes import Klass
 from character.models.equipment import Equipment
 from character.models.races import Race
 
@@ -31,7 +31,7 @@ class CharacterFactory(factory.django.DjangoModelFactory):
     name = factory.Sequence(lambda n: f"character{n}")
     user = factory.SubFactory("utils.factories.UserFactory")
     race = factory.Faker("enum", enum_cls=Race)
-    class_name = factory.Faker("enum", enum_cls=Class)
+    class_name = factory.Faker("enum", enum_cls=Klass)
     xp = factory.Faker("random_int")
 
     @classmethod

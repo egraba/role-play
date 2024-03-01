@@ -3,15 +3,15 @@ from django.db import models
 from .equipment import Equipment
 
 
-class Class(models.TextChoices):
+class Klass(models.TextChoices):
     CLERIC = "C", "Cleric"
     FIGHTER = "F", "Fighter"
     ROGUE = "R", "Rogue"
     WIZARD = "W", "Wizard"
 
 
-class ClassFeature(models.Model):
-    class_name = models.CharField(max_length=1, choices=Class.choices, unique=True)
+class KlassFeature(models.Model):
+    class_name = models.CharField(max_length=1, choices=Klass.choices, unique=True)
     equipment = models.ManyToManyField(Equipment)
 
     def __str__(self):
@@ -20,7 +20,7 @@ class ClassFeature(models.Model):
 
 class HitPoints(models.Model):
     class_feature = models.OneToOneField(
-        ClassFeature, on_delete=models.SET_NULL, blank=True, null=True
+        KlassFeature, on_delete=models.SET_NULL, blank=True, null=True
     )
     hit_dice = models.CharField(max_length=5)
     hp_first_level = models.SmallIntegerField()
@@ -33,8 +33,8 @@ class HitPoints(models.Model):
         return f"{self.class_feature} hit points"
 
 
-class ClassAdvancement(models.Model):
-    class_name = models.CharField(max_length=1, choices=Class.choices)
+class KlassAdvancement(models.Model):
+    class_name = models.CharField(max_length=1, choices=Klass.choices)
     level = models.SmallIntegerField()
     proficiency_bonus = models.SmallIntegerField()
 
