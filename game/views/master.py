@@ -16,6 +16,7 @@ from ..tasks import send_email
 from ..utils.cache import game_key
 from ..utils.channels import send_to_channel
 from ..utils.emails import get_players_emails
+from ..utils.rolls import RollRequest
 from ..views.mixins import EventContextMixin, GameContextMixin, GameStatusControlMixin
 
 
@@ -157,6 +158,7 @@ class AbilityCheckRequestView(
     def form_valid(self, form):
         ability_check_request = form.save(commit=False)
         ability_check_request.game = self.game
+        ability_check_request.roll_type = RollRequest.RollType.ABILITY_CHECK
         ability_check_request.date = timezone.now()
         ability_check_request.message = f"[{ability_check_request.character.user}] \
             needs to perform a {ability_check_request.ability_type} ability check! \
