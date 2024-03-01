@@ -2,12 +2,28 @@ from utils.dice import Dice
 
 from ..constants.klasses import KLASS_FEATURES
 from ..constants.races import RACIAL_TRAITS
-from ..models.abilities import AbilityType
+from ..forms.character import CharacterCreateForm
+from ..models.abilities import AbilityType, Ability
 from ..models.character import Character
 from ..models.classes import ClassAdvancement
 from ..models.proficiencies import SavingThrowProficiency
 from ..models.races import Language, Sense
 from .abilities import compute_ability_modifier
+
+
+class BaseBuilder:
+    def __init__(self, character: Character, form: CharacterCreateForm) -> None:
+        self.character = character
+        self.form = form
+
+    def initialize_ability_scores(self) -> None:
+        for ability_type in AbilityType.objects.all():
+            ability = Ability.objects.create(
+                ability_type=ability_type,
+                score=self.form.cleaned_data[ability_type.get_name_display().lower()],
+            )
+            self.character.save()
+            self.character.abilities.add(ability)
 
 
 class RaceBuilder:
@@ -81,7 +97,13 @@ class KlassBuilder:
 
 
 class Director:
-    def build(self, race_builder: RaceBuilder, klass_builder: KlassBuilder) -> None:
+    def build(
+        self,
+        base_builder: BaseBuilder,
+        race_builder: RaceBuilder,
+        klass_builder: KlassBuilder,
+    ) -> None:
+        base_builder.initialize_ability_scores()
         race_builder.apply_racial_traits()
         race_builder.apply_ability_score_increases()
         race_builder.compute_ability_modifiers()
