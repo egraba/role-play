@@ -10,11 +10,11 @@ class CharacterCreateForm(forms.ModelForm):
         fields = [
             "name",
             "race",
-            "class_name",
+            "klass",
         ]
         widgets = {
             "race": forms.Select(attrs={"class": "rpgui-dropdown"}),
-            "class_name": forms.Select(attrs={"class": "rpgui-dropdown"}),
+            "klass": forms.Select(attrs={"class": "rpgui-dropdown"}),
         }
 
     strength = forms.TypedChoiceField(

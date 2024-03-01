@@ -14,27 +14,27 @@ def character(client):
 
 @pytest.fixture
 def cleric(client):
-    c = CharacterFactory(name="cleric", class_name=Klass.CLERIC)
+    c = CharacterFactory(name="cleric", klass=Klass.CLERIC)
     client.force_login(c.user)
     return c
 
 
 @pytest.fixture
 def fighter(client):
-    c = CharacterFactory(name="fighter", class_name=Klass.FIGHTER)
+    c = CharacterFactory(name="fighter", klass=Klass.FIGHTER)
     client.force_login(c.user)
     return c
 
 
 @pytest.fixture
 def rogue(client):
-    c = CharacterFactory(name="rogue", class_name=Klass.ROGUE)
+    c = CharacterFactory(name="rogue", klass=Klass.ROGUE)
     client.force_login(c.user)
     return c
 
 
 @pytest.fixture
 def wizard(client):
-    c = CharacterFactory(name="wizard", class_name=Klass.WIZARD)
+    c = CharacterFactory(name="wizard", klass=Klass.WIZARD)
     client.force_login(c.user)
     return c

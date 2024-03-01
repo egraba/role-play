@@ -19,7 +19,7 @@ class EquipmentSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
         return self.character.get_absolute_url()
 
     def get_form_class(self):
-        match self.character.class_name:
+        match self.character.klass:
             case Klass.CLERIC:
                 form_class = ClericEquipmentSelectForm
             case Klass.FIGHTER:
@@ -69,7 +69,7 @@ class EquipmentSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
             pass
 
         # Some equipment is added without selection, depending on character's class.
-        match self.character.class_name:
+        match self.character.klass:
             case Klass.CLERIC:
                 Equipment.objects.create(
                     name=Weapon.Name.CROSSBOW_LIGHT, inventory=self.character.inventory

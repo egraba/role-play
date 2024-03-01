@@ -31,7 +31,7 @@ class CharacterFactory(factory.django.DjangoModelFactory):
     name = factory.Sequence(lambda n: f"character{n}")
     user = factory.SubFactory("utils.factories.UserFactory")
     race = factory.Faker("enum", enum_cls=Race)
-    class_name = factory.Faker("enum", enum_cls=Klass)
+    klass = factory.Faker("enum", enum_cls=Klass)
     xp = factory.Faker("random_int")
 
     @classmethod

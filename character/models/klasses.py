@@ -11,15 +11,15 @@ class Klass(models.TextChoices):
 
 
 class KlassFeature(models.Model):
-    class_name = models.CharField(max_length=1, choices=Klass.choices, unique=True)
+    klass = models.CharField(max_length=1, choices=Klass.choices, unique=True)
     equipment = models.ManyToManyField(Equipment)
 
     def __str__(self):
-        return f"{self.get_class_name_display()}'s feature"
+        return f"{self.get_klass_display()}'s feature"
 
 
 class HitPoints(models.Model):
-    class_feature = models.OneToOneField(
+    klass_feature = models.OneToOneField(
         KlassFeature, on_delete=models.SET_NULL, blank=True, null=True
     )
     hit_dice = models.CharField(max_length=5)
@@ -30,16 +30,16 @@ class HitPoints(models.Model):
         verbose_name_plural = "hit points"
 
     def __str__(self):
-        return f"{self.class_feature} hit points"
+        return f"{self.klass_feature} hit points"
 
 
 class KlassAdvancement(models.Model):
-    class_name = models.CharField(max_length=1, choices=Klass.choices)
+    klass = models.CharField(max_length=1, choices=Klass.choices)
     level = models.SmallIntegerField()
     proficiency_bonus = models.SmallIntegerField()
 
     class Meta:
-        ordering = ["class_name"]
+        ordering = ["klass"]
 
     def __str__(self):
         return str(self.level)

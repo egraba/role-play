@@ -15,7 +15,7 @@ class SkillsSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
         return reverse("equipment-select", args=(self.character.id,))
 
     def get_form_class(self):
-        match self.character.class_name:
+        match self.character.klass:
             case Klass.CLERIC:
                 form_class = SkillsSelectForm
             case Klass.FIGHTER:
@@ -28,7 +28,7 @@ class SkillsSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
 
     def get_initial(self):
         initial = {}
-        match self.character.class_name:
+        match self.character.klass:
             case Klass.CLERIC:
                 initial["choices"] = get_skills(Klass.CLERIC)
             case Klass.FIGHTER:

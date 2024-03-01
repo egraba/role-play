@@ -59,13 +59,13 @@ class RaceBuilder:
 class KlassBuilder:
     def __init__(self, character: Character) -> None:
         self.character = character
-        self.klass = character.class_name
+        self.klass = character.klass
 
     def apply_advancement(self) -> None:
-        class_advancement = KlassAdvancement.objects.get(
-            class_name=self.character.class_name, level=1
+        klass_advancement = KlassAdvancement.objects.get(
+            klass=self.character.klass, level=1
         )
-        self.character.proficiency_bonus += class_advancement.proficiency_bonus
+        self.character.proficiency_bonus += klass_advancement.proficiency_bonus
 
     def apply_hit_points(self) -> None:
         hit_points = KLASS_FEATURES[self.klass]["hit_points"]

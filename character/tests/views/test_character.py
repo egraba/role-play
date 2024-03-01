@@ -132,7 +132,7 @@ class TestCharacterCreateView:
         return {
             "name": f"{fake.name()}",
             "race": f"{fake.enum(enum_cls=Race)}",
-            "class_name": f"{fake.enum(enum_cls=Klass)}",
+            "klass": f"{fake.enum(enum_cls=Klass)}",
             "strength": AbilityScore.SCORE_10,
             "dexterity": AbilityScore.SCORE_12,
             "constitution": AbilityScore.SCORE_13,
@@ -167,7 +167,7 @@ class TestCharacterCreateView:
         return {
             "name": f"{fake.name()}",
             "race": f"{Race.DWARF}",
-            "class_name": f"{fake.enum(enum_cls=Klass)}",
+            "klass": f"{fake.enum(enum_cls=Klass)}",
             "strength": AbilityScore.SCORE_10,
             "dexterity": AbilityScore.SCORE_12,
             "constitution": AbilityScore.SCORE_13,
@@ -234,7 +234,7 @@ class TestCharacterCreateView:
         return {
             "name": f"{fake.name()}",
             "race": f"{Race.ELF}",
-            "class_name": f"{fake.enum(enum_cls=Klass)}",
+            "klass": f"{fake.enum(enum_cls=Klass)}",
             "strength": AbilityScore.SCORE_10,
             "dexterity": AbilityScore.SCORE_12,
             "constitution": AbilityScore.SCORE_13,
@@ -300,7 +300,7 @@ class TestCharacterCreateView:
         return {
             "name": f"{fake.name()}",
             "race": f"{Race.HALFLING}",
-            "class_name": f"{fake.enum(enum_cls=Klass)}",
+            "klass": f"{fake.enum(enum_cls=Klass)}",
             "strength": AbilityScore.SCORE_10,
             "dexterity": AbilityScore.SCORE_12,
             "constitution": AbilityScore.SCORE_13,
@@ -365,7 +365,7 @@ class TestCharacterCreateView:
         return {
             "name": f"{fake.name()}",
             "race": f"{Race.HUMAN}",
-            "class_name": f"{fake.enum(enum_cls=Klass)}",
+            "klass": f"{fake.enum(enum_cls=Klass)}",
             "strength": AbilityScore.SCORE_10,
             "dexterity": AbilityScore.SCORE_12,
             "constitution": AbilityScore.SCORE_13,
@@ -424,12 +424,12 @@ class TestCharacterCreateView:
         fake = Faker()
         name = fake.name()
         race = fake.enum(enum_cls=Race)
-        class_name = Klass.CLERIC
+        klass = Klass.CLERIC
         gender = fake.enum(enum_cls=Character.Gender)
         data = {
             "name": f"{name}",
             "race": f"{race}",
-            "class_name": f"{class_name}",
+            "klass": f"{klass}",
             "strength": AbilityScore.SCORE_10,
             "dexterity": AbilityScore.SCORE_12,
             "constitution": AbilityScore.SCORE_13,
@@ -468,12 +468,12 @@ class TestCharacterCreateView:
         fake = Faker()
         name = fake.name()
         race = fake.enum(enum_cls=Race)
-        class_name = Klass.FIGHTER
+        klass = Klass.FIGHTER
         gender = fake.enum(enum_cls=Character.Gender)
         data = {
             "name": f"{name}",
             "race": f"{race}",
-            "class_name": f"{class_name}",
+            "klass": f"{klass}",
             "strength": AbilityScore.SCORE_10,
             "dexterity": AbilityScore.SCORE_12,
             "constitution": AbilityScore.SCORE_13,
@@ -512,12 +512,12 @@ class TestCharacterCreateView:
         fake = Faker()
         name = fake.name()
         race = fake.enum(enum_cls=Race)
-        class_name = Klass.ROGUE
+        klass = Klass.ROGUE
         gender = fake.enum(enum_cls=Character.Gender)
         data = {
             "name": f"{name}",
             "race": f"{race}",
-            "class_name": f"{class_name}",
+            "klass": f"{klass}",
             "strength": AbilityScore.SCORE_10,
             "dexterity": AbilityScore.SCORE_12,
             "constitution": AbilityScore.SCORE_13,
@@ -556,12 +556,12 @@ class TestCharacterCreateView:
         fake = Faker()
         name = fake.name()
         race = fake.enum(enum_cls=Race)
-        class_name = Klass.WIZARD
+        klass = Klass.WIZARD
         gender = fake.enum(enum_cls=Character.Gender)
         data = {
             "name": f"{name}",
             "race": f"{race}",
-            "class_name": f"{class_name}",
+            "klass": f"{klass}",
             "strength": AbilityScore.SCORE_10,
             "dexterity": AbilityScore.SCORE_12,
             "constitution": AbilityScore.SCORE_13,
