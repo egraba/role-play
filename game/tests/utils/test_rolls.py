@@ -1,5 +1,6 @@
 import pytest
 
+from character.constants.abilities import AbilityName
 from character.models.abilities import AbilityType
 from character.models.proficiencies import SavingThrowProficiency
 from character.models.races import Sense
@@ -50,11 +51,11 @@ class TestPerformRoll:
         character = CharacterFactory()
         SavingThrowProficiency.objects.create(
             character=character,
-            ability_type=AbilityType.objects.get(name=AbilityType.Name.CHARISMA),
+            ability_type=AbilityType.objects.get(name=AbilityName.CHARISMA),
         )
         request = RollRequestFactory(
             character=character,
-            ability_type=AbilityType.Name.CHARISMA,
+            ability_type=AbilityName.CHARISMA,
             roll_type=RollRequest.RollType.ABILITY_CHECK,
             difficulty_class=RollRequest.DifficultyClass.HARD,
         )

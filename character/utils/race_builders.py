@@ -44,7 +44,7 @@ class DwarfBuilder(RaceBuilder):
 
     def apply_ability_score_increases(self):
         ability = self.character.abilities.get(
-            ability_type=AbilityType.Name.CONSTITUTION
+            ability_type=AbilityType.AbilityName.CONSTITUTION
         )
         ability.score += 2
         ability.save()
@@ -67,7 +67,9 @@ class ElfBuilder(RaceBuilder):
         self.character.senses.add(Sense.objects.get(name=Sense.Name.TRANCE))
 
     def apply_ability_score_increases(self):
-        ability = self.character.abilities.get(ability_type=AbilityType.Name.DEXTERITY)
+        ability = self.character.abilities.get(
+            ability_type=AbilityType.AbilityName.DEXTERITY
+        )
         ability.score += 2
         ability.save()
 
@@ -90,7 +92,9 @@ class HalflingBuilder(RaceBuilder):
         )
 
     def apply_ability_score_increases(self):
-        ability = self.character.abilities.get(ability_type=AbilityType.Name.DEXTERITY)
+        ability = self.character.abilities.get(
+            ability_type=AbilityType.AbilityName.DEXTERITY
+        )
         ability.score += 2
         ability.save()
 

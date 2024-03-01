@@ -1,4 +1,4 @@
-from ..models.abilities import AbilityType
+from ..constants.abilities import AbilityName
 from ..models.races import Alignment, Language, Race, Sense, Size
 
 RACIAL_TRAITS: dict = {
@@ -16,7 +16,7 @@ RACIAL_TRAITS: dict = {
             Sense.Name.TOOL_PROFICIENCY,
             Sense.Name.STONECUNNING,
         },
-        "ability_score_increases": {AbilityType.Name.CONSTITUTION: 2},
+        "ability_score_increases": {AbilityName.CONSTITUTION: 2},
     },
     Race.ELF: {
         "adult_age": 100,
@@ -31,7 +31,7 @@ RACIAL_TRAITS: dict = {
             Sense.Name.FEY_ANCESTRY,
             Sense.Name.TRANCE,
         },
-        "ability_score_increases": {AbilityType.Name.DEXTERITY: 2},
+        "ability_score_increases": {AbilityName.DEXTERITY: 2},
     },
     Race.HALFLING: {
         "adult_age": 20,
@@ -41,7 +41,7 @@ RACIAL_TRAITS: dict = {
         "speed": 25,
         "languages": {Language.Name.COMMON, Language.Name.HALFLING},
         "senses": {Sense.Name.LUCKY, Sense.Name.BRAVE, Sense.Name.HALFLING_NIMBLENESS},
-        "ability_score_increases": {AbilityType.Name.DEXTERITY: 2},
+        "ability_score_increases": {AbilityName.DEXTERITY: 2},
     },
     Race.HUMAN: {
         "adult_age": 50,
@@ -52,12 +52,12 @@ RACIAL_TRAITS: dict = {
         "languages": {Language.Name.COMMON},
         "senses": {},
         "ability_score_increases": {
-            AbilityType.Name.CHARISMA: 1,
-            AbilityType.Name.CONSTITUTION: 1,
-            AbilityType.Name.DEXTERITY: 1,
-            AbilityType.Name.INTELLIGENCE: 1,
-            AbilityType.Name.STRENGTH: 1,
-            AbilityType.Name.WISDOM: 1,
+            AbilityName.CHARISMA: 1,
+            AbilityName.CONSTITUTION: 1,
+            AbilityName.DEXTERITY: 1,
+            AbilityName.INTELLIGENCE: 1,
+            AbilityName.STRENGTH: 1,
+            AbilityName.WISDOM: 1,
         },
     },
 }

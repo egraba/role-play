@@ -1,6 +1,6 @@
 from django.db import models
 
-from character.models.abilities import AbilityType
+from character.constants.abilities import AbilityName
 from character.models.character import Character
 
 from .game import Game
@@ -54,7 +54,7 @@ class RollRequest(Event):
     status = models.CharField(max_length=1, choices=Status, default=Status.PENDING)
     ability_type = models.CharField(
         max_length=3,
-        choices=AbilityType.Name,
+        choices=AbilityName,
     )
     difficulty_class = models.SmallIntegerField(choices=DifficultyClass)
     roll_type = models.SmallIntegerField(choices=RollType)
