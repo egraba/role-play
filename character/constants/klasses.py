@@ -9,7 +9,10 @@ KLASS_FEATURES: dict = {
             "hp_modifier_ability": AbilityType.Name.CONSTITUTION,
             "hp_higher_levels": 5,
         },
-        "saving_throws": {AbilityType.Name.WISDOM, AbilityType.Name.CHARISMA},
+        "proficiencies": {
+            "armor": {},
+            "saving_throws": {AbilityType.Name.WISDOM, AbilityType.Name.CHARISMA},
+        },
     },
     Class.FIGHTER: {
         "hit_points": {
@@ -18,7 +21,10 @@ KLASS_FEATURES: dict = {
             "hp_modifier_ability": AbilityType.Name.CONSTITUTION,
             "hp_higher_levels": 6,
         },
-        "saving_throws": {AbilityType.Name.STRENGTH, AbilityType.Name.CONSTITUTION},
+        "proficiencies": {
+            "armor": {},
+            "saving_throws": {AbilityType.Name.STRENGTH, AbilityType.Name.CONSTITUTION},
+        },
     },
     Class.ROGUE: {
         "hit_points": {
@@ -27,7 +33,13 @@ KLASS_FEATURES: dict = {
             "hp_modifier_ability": AbilityType.Name.CONSTITUTION,
             "hp_higher_levels": 5,
         },
-        "saving_throws": {AbilityType.Name.DEXTERITY, AbilityType.Name.INTELLIGENCE},
+        "proficiencies": {
+            "armor": {},
+            "saving_throws": {
+                AbilityType.Name.DEXTERITY,
+                AbilityType.Name.INTELLIGENCE,
+            },
+        },
     },
     Class.WIZARD: {
         "hit_points": {
@@ -36,6 +48,9 @@ KLASS_FEATURES: dict = {
             "hp_modifier_ability": AbilityType.Name.CONSTITUTION,
             "hp_higher_levels": 4,
         },
-        "saving_throws": {AbilityType.Name.INTELLIGENCE, AbilityType.Name.WISDOM},
+        "proficiencies": {
+            "armor": {},
+            "saving_throws": {AbilityType.Name.INTELLIGENCE, AbilityType.Name.WISDOM},
+        },
     },
 }

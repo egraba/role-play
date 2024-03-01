@@ -88,7 +88,7 @@ class KlassBuilder:
         pass
 
     def apply_saving_throws_proficiencies(self) -> None:
-        saving_throws = KLASS_FEATURES[self.klass]["saving_throws"]
+        saving_throws = KLASS_FEATURES[self.klass]["proficiencies"]["saving_throws"]
         for ability in saving_throws:
             SavingThrowProficiency.objects.create(
                 character=self.character,
