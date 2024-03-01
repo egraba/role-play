@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.views.generic import FormView
 
 from ..forms.skills import ExtendedSkillsSelectForm, SkillsSelectForm
-from ..models.classes import Class
+from ..models.klasses import Klass
 from ..utils.proficiencies import get_skills
 from .mixins import CharacterContextMixin
 
@@ -15,28 +15,28 @@ class SkillsSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
         return reverse("equipment-select", args=(self.character.id,))
 
     def get_form_class(self):
-        match self.character.class_name:
-            case Class.CLERIC:
+        match self.character.klass:
+            case Klass.CLERIC:
                 form_class = SkillsSelectForm
-            case Class.FIGHTER:
+            case Klass.FIGHTER:
                 form_class = SkillsSelectForm
-            case Class.ROGUE:
+            case Klass.ROGUE:
                 form_class = ExtendedSkillsSelectForm
-            case Class.WIZARD:
+            case Klass.WIZARD:
                 form_class = SkillsSelectForm
         return form_class
 
     def get_initial(self):
         initial = {}
-        match self.character.class_name:
-            case Class.CLERIC:
-                initial["choices"] = get_skills(Class.CLERIC)
-            case Class.FIGHTER:
-                initial["choices"] = get_skills(Class.FIGHTER)
-            case Class.ROGUE:
-                initial["choices"] = get_skills(Class.ROGUE)
-            case Class.WIZARD:
-                initial["choices"] = get_skills(Class.WIZARD)
+        match self.character.klass:
+            case Klass.CLERIC:
+                initial["choices"] = get_skills(Klass.CLERIC)
+            case Klass.FIGHTER:
+                initial["choices"] = get_skills(Klass.FIGHTER)
+            case Klass.ROGUE:
+                initial["choices"] = get_skills(Klass.ROGUE)
+            case Klass.WIZARD:
+                initial["choices"] = get_skills(Klass.WIZARD)
         return initial
 
     def form_valid(self, form):

@@ -8,6 +8,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * DnD: Implement saving throws
 
 ### Changed
+* Use `klass` name, instead of `class`for character's class
 * DnD: Refactor ability checks
 * Refactor character creation
 * Use Ruff instead of other linters and formatters

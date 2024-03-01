@@ -1,9 +1,9 @@
 from ..models.abilities import AbilityType
-from ..models.classes import Class
+from ..models.klasses import Klass
 from ..models.equipment import Armor
 
 KLASS_FEATURES: dict = {
-    Class.CLERIC: {
+    Klass.CLERIC: {
         "hit_points": {
             "hit_dice": "1d8",
             "hp_first_level": 8,
@@ -19,7 +19,7 @@ KLASS_FEATURES: dict = {
             "saving_throws": {AbilityType.Name.WISDOM, AbilityType.Name.CHARISMA},
         },
     },
-    Class.FIGHTER: {
+    Klass.FIGHTER: {
         "hit_points": {
             "hit_dice": "1d10",
             "hp_first_level": 10,
@@ -36,7 +36,7 @@ KLASS_FEATURES: dict = {
             "saving_throws": {AbilityType.Name.STRENGTH, AbilityType.Name.CONSTITUTION},
         },
     },
-    Class.ROGUE: {
+    Klass.ROGUE: {
         "hit_points": {
             "hit_dice": "1d8",
             "hp_first_level": 8,
@@ -51,7 +51,7 @@ KLASS_FEATURES: dict = {
             },
         },
     },
-    Class.WIZARD: {
+    Klass.WIZARD: {
         "hit_points": {
             "hit_dice": "1d6",
             "hp_first_level": 6,

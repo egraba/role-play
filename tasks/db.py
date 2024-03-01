@@ -15,7 +15,7 @@ def load_settings(context):
         "advancement",
         "abilities",
         "languages",
-        "classes",
+        "klasses",
         "skills",
         "equipment",
     ]
