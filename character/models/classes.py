@@ -33,23 +33,6 @@ class HitPoints(models.Model):
         return f"{self.class_feature} hit points"
 
 
-class Proficiencies(models.Model):
-    class_feature = models.OneToOneField(
-        ClassFeature, on_delete=models.SET_NULL, blank=True, null=True
-    )
-    armor = models.TextField(max_length=50, blank=True, null=True)
-    weapons = models.TextField(max_length=50, blank=True, null=True)
-    tools = models.TextField(max_length=50, blank=True, null=True)
-    saving_throws = models.TextField(max_length=50, blank=True, null=True)
-    skills = models.TextField(max_length=50, blank=True, null=True)
-
-    class Meta:
-        verbose_name_plural = "proficiencies"
-
-    def __str__(self):
-        return f"{self.class_feature} proficiencies"
-
-
 class ClassAdvancement(models.Model):
     class_name = models.CharField(max_length=1, choices=Class.choices)
     level = models.SmallIntegerField()

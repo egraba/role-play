@@ -9,7 +9,7 @@ from utils.dice import Dice
 from ..utils.cache import advancement_key
 from .abilities import Ability
 from .advancement import Advancement
-from .classes import Class, Proficiencies
+from .classes import Class
 from .equipment import Inventory
 from .races import Alignment, Language, Race, Sense, Size
 from .skills import Skill
@@ -47,9 +47,6 @@ class Character(models.Model):
     senses = models.ManyToManyField(Sense)
     hit_dice = models.CharField(max_length=5, default="1d8")
     hp_increase = models.SmallIntegerField(default=0)
-    proficiencies = models.OneToOneField(
-        Proficiencies, on_delete=models.SET_NULL, blank=True, null=True
-    )
     inventory = models.OneToOneField(
         Inventory, on_delete=models.CASCADE, blank=True, null=True
     )
@@ -91,3 +88,11 @@ class Character(models.Model):
         self.xp += xp
         while self._check_level_increase():
             self._increase_level()
+
+    def is_proficient(self, ability: Ability) -> bool:
+        if not self.abilities.filter(ability_type=ability.ability_type).exists():
+            return False
+        return any(
+            proficiency["ability_type_id"] == ability.ability_type.name
+            for proficiency in self.savingthrowproficiency_set.values()
+        )

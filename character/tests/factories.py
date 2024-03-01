@@ -1,10 +1,10 @@
 import factory
 
-from character.models.abilities import Ability, AbilityScoreIncrease, AbilityType
+from character.models.abilities import Ability, AbilityType
 from character.models.character import Character
 from character.models.classes import Class
 from character.models.equipment import Equipment
-from character.models.races import Alignment, Race, RacialTrait, Size
+from character.models.races import Race
 
 
 class AbilityTypeFactory(factory.django.DjangoModelFactory):
@@ -21,28 +21,6 @@ class AbilityFactory(factory.django.DjangoModelFactory):
 
     ability_type = factory.SubFactory(AbilityTypeFactory)
     score = factory.Faker("random_int")
-
-
-class RacialTraitFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = RacialTrait
-        django_get_or_create = ("race",)
-
-    race = factory.Faker("enum", enum_cls=Race)
-    adult_age = factory.Faker("random_int")
-    life_expectancy = factory.Faker("random_int")
-    alignment = factory.Faker("enum", enum_cls=Alignment)
-    size = factory.Faker("enum", enum_cls=Size)
-    speed = factory.Faker("random_int")
-
-
-class AbilityScoreIncreaseFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = AbilityScoreIncrease
-
-    racial_trait = factory.SubFactory(RacialTraitFactory)
-    ability_type = factory.SubFactory(AbilityTypeFactory)
-    increase = factory.Faker("random_int")
 
 
 class CharacterFactory(factory.django.DjangoModelFactory):

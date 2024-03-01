@@ -38,10 +38,17 @@
                         <button id="message-submit" class="rpgui-button" type="submit">
                             <p>Send</p>
                         </button>
-                        {% if player and ability_check_request %}
-                            <button id="ability-check-submit" class="rpgui-button" type="submit">
-                                <p>Perform ability check</p>
-                            </button>
+                        {% if player %}
+                            {% if ability_check_request %}
+                                <button id="ability-check-submit" class="rpgui-button" type="submit">
+                                    <p>Perform ability check</p>
+                                </button>
+                            {% endif %}
+                            {% if saving_throw_request %}
+                                <button id="saving-throw-submit" class="rpgui-button" type="submit">
+                                    <p>Perform saving throw</p>
+                                </button>
+                            {% endif %}
                         {% endif%}
                     </div>
                 </div>
@@ -124,12 +131,16 @@
         const input = document.getElementById('message-input');
         const sendButton = document.getElementById('message-submit');
         const abilityCheckButton = document.getElementById('ability-check-submit');
+        const savingThrowButton = document.getElementById('saving-throw-submit');
 
         const MESSAGE = "message";
         const QUEST_UPDATE = "quest.update";
         const ABILITY_CHECK_REQUEST = "ability.check.request";
         const ABILITY_CHECK = "ability.check";
         const ABILITY_CHECK_RESULT = "ability.check.result";
+        const SAVING_THROW_REQUEST = "saving.throw.request";
+        const SAVING_THROW = "saving.throw";
+        const SAVING_THROW_RESULT = "saving.throw.result";
 
         eventsSocket.onmessage = function(event) {
             message = JSON.parse(event.data)
@@ -142,7 +153,7 @@
             if (message["type"] === QUEST_UPDATE) {
                 $("#quest").load(" #quest > *");
             }
-            if (message["type"] === ABILITY_CHECK_REQUEST || message["type"] === ABILITY_CHECK_RESULT) {
+            if (message["type"] === ABILITY_CHECK_REQUEST || message["type"] === ABILITY_CHECK_RESULT || message["type"] === SAVING_THROW_REQUEST || message["type"] === SAVING_THROW_RESULT) {
                 // The full page has to be reloaded, otherwise clicking on the button
                 // triggers no action.
                 location.reload();
@@ -194,6 +205,17 @@
                     'date': Date.now(),
                     'player_type': PLAYER,
                     'message': senderStr + ' performed an ability check!',
+                }));
+            });
+        }
+
+        if (savingThrowButton !== null) {
+            savingThrowButton.addEventListener('click', function(event) {
+                eventsSocket.send(JSON.stringify({
+                    'type': SAVING_THROW,
+                    'date': Date.now(),
+                    'player_type': PLAYER,
+                    'message': senderStr + ' performed a saving throw!',
                 }));
             });
         }

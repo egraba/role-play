@@ -1,4 +1,5 @@
 import pytest
+from django.db.models import Q
 from django.urls import reverse
 from faker import Faker
 from pytest_django.asserts import assertContains, assertRedirects, assertTemplateUsed
@@ -7,6 +8,7 @@ from character.forms.character import CharacterCreateForm
 from character.models.abilities import AbilityType
 from character.models.character import Character
 from character.models.classes import Class
+from character.models.proficiencies import SavingThrowProficiency
 from character.models.races import Language, Race, Sense
 from character.utils.abilities import AbilityScore
 from character.views.character import (
@@ -219,11 +221,11 @@ class TestCharacterCreateView:
         assert set(character.languages.all()) == languages
 
         senses = set()
-        senses.add(Sense.objects.get(name="Darkvision"))
-        senses.add(Sense.objects.get(name="Dwarven Resilience"))
-        senses.add(Sense.objects.get(name="Dwarven Combat Training"))
-        senses.add(Sense.objects.get(name="Tool Proficiency"))
-        senses.add(Sense.objects.get(name="Stonecunning"))
+        senses.add(Sense.objects.get(name=Sense.Name.DARKVISION))
+        senses.add(Sense.objects.get(name=Sense.Name.DWARVEN_RESILIENCE))
+        senses.add(Sense.objects.get(name=Sense.Name.DWARVEN_COMBAT_TRAINING))
+        senses.add(Sense.objects.get(name=Sense.Name.TOOL_PROFICIENCY))
+        senses.add(Sense.objects.get(name=Sense.Name.STONECUNNING))
         assert set(character.senses.all()) == senses
 
     @pytest.fixture
@@ -281,14 +283,15 @@ class TestCharacterCreateView:
         assert character.speed == 30
 
         languages = set()
+        languages.add(Language.objects.get(name=Language.Name.COMMON))
         languages.add(Language.objects.get(name=Language.Name.ELVISH))
         assert set(character.languages.all()) == languages
 
         senses = set()
-        senses.add(Sense.objects.get(name="Darkvision"))
-        senses.add(Sense.objects.get(name="Keen Senses"))
-        senses.add(Sense.objects.get(name="Fey Ancestry"))
-        senses.add(Sense.objects.get(name="Trance"))
+        senses.add(Sense.objects.get(name=Sense.Name.DARKVISION))
+        senses.add(Sense.objects.get(name=Sense.Name.KEEN_SENSES))
+        senses.add(Sense.objects.get(name=Sense.Name.FEY_ANCESTRY))
+        senses.add(Sense.objects.get(name=Sense.Name.TRANCE))
         assert set(character.senses.all()) == senses
 
     @pytest.fixture
@@ -350,11 +353,10 @@ class TestCharacterCreateView:
         languages.add(Language.objects.get(name=Language.Name.HALFLING))
         assert set(character.languages.all()) == languages
 
-        halfling_nimbleness = Sense.objects.get(name="Halfling Nimbleness")
         senses = set()
-        senses.add(Sense.objects.get(name="Lucky"))
-        senses.add(Sense.objects.get(name="Brave"))
-        senses.add(halfling_nimbleness)
+        senses.add(Sense.objects.get(name=Sense.Name.LUCKY))
+        senses.add(Sense.objects.get(name=Sense.Name.BRAVE))
+        senses.add(Sense.objects.get(name=Sense.Name.HALFLING_NIMBLENESS))
         assert set(character.senses.all()) == senses
 
     @pytest.fixture
@@ -455,11 +457,12 @@ class TestCharacterCreateView:
         hp = 100 + 8 + constitution_modifier
         assert character.hp == hp
 
-        assert character.proficiencies.armor == "Light armor, medium armor, shields"
-
-        assert character.proficiencies.weapons == "Simple weapons"
-        assert character.proficiencies.tools == "None"
-        assert character.proficiencies.saving_throws == "Wisdom, Charisma"
+        assert set(character.savingthrowproficiency_set.all()) == set(
+            SavingThrowProficiency.objects.filter(
+                Q(ability_type_id=AbilityType.Name.WISDOM)
+                | Q(ability_type_id=AbilityType.Name.CHARISMA)
+            )
+        )
 
     def test_character_creation_fighter(self, client):
         fake = Faker()
@@ -498,10 +501,12 @@ class TestCharacterCreateView:
         hp = 100 + 10 + constitution_modifier
         assert character.hp == hp
 
-        assert character.proficiencies.armor == "All armor, shields"
-        assert character.proficiencies.weapons == "Simple weapons, martial weapons"
-        assert character.proficiencies.tools == "None"
-        assert character.proficiencies.saving_throws == "Strength, Constitution"
+        assert set(character.savingthrowproficiency_set.all()) == set(
+            SavingThrowProficiency.objects.filter(
+                Q(ability_type_id=AbilityType.Name.STRENGTH)
+                | Q(ability_type_id=AbilityType.Name.CONSTITUTION)
+            )
+        )
 
     def test_character_creation_rogue(self, client):
         fake = Faker()
@@ -540,13 +545,12 @@ class TestCharacterCreateView:
         hp = 100 + 8 + constitution_modifier
         assert character.hp == hp
 
-        assert character.proficiencies.armor == "Light armor"
-        assert (
-            character.proficiencies.weapons
-            == "Simple weapons, hand crossbows, longswords, rapiers, shortswords"
+        assert set(character.savingthrowproficiency_set.all()) == set(
+            SavingThrowProficiency.objects.filter(
+                Q(ability_type_id=AbilityType.Name.DEXTERITY)
+                | Q(ability_type_id=AbilityType.Name.INTELLIGENCE)
+            )
         )
-        assert character.proficiencies.tools == "Thieves' tools"
-        assert character.proficiencies.saving_throws == "Dexterity, Intelligence"
 
     def test_character_creation_wizard(self, client):
         fake = Faker()
@@ -585,10 +589,9 @@ class TestCharacterCreateView:
         hp = 100 + 6 + constitution_modifier
         assert character.hp == hp
 
-        assert character.proficiencies.armor == "None"
-        assert (
-            character.proficiencies.weapons
-            == "Daggers, darts, slings, quarterstaffs, light crossbows"
+        assert set(character.savingthrowproficiency_set.all()) == set(
+            SavingThrowProficiency.objects.filter(
+                Q(ability_type_id=AbilityType.Name.INTELLIGENCE)
+                | Q(ability_type_id=AbilityType.Name.WISDOM)
+            )
         )
-        assert character.proficiencies.tools == "None"
-        assert character.proficiencies.saving_throws == "Intelligence, Wisdom"

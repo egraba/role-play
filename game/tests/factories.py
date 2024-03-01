@@ -1,6 +1,7 @@
 import factory
 
-from game.models.events import AbilityCheckRequest, Event, Quest
+from character.models.abilities import AbilityType
+from game.models.events import Event, Quest, RollRequest
 from game.models.game import Game, Master, Player
 from utils.factories import UserFactory
 
@@ -34,6 +35,10 @@ class QuestFactory(factory.django.DjangoModelFactory):
 class PlayerFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Player
+        django_get_or_create = (
+            "game",
+            "character",
+        )
 
     game = factory.SubFactory(GameFactory)
     character = factory.SubFactory("character.tests.factories.CharacterFactory")
@@ -47,13 +52,21 @@ class EventFactory(factory.django.DjangoModelFactory):
     message = factory.Faker("text", max_nb_chars=50)
 
 
-class AbilityCheckRequestFactory(factory.django.DjangoModelFactory):
+class RollRequestFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = AbilityCheckRequest
+        model = RollRequest
 
     game = factory.SubFactory(GameFactory)
     character = factory.SubFactory("character.tests.factories.CharacterFactory")
-    ability_type = factory.SubFactory("character.tests.factories.AbilityTypeFactory")
-    difficulty_class = factory.Faker(
-        "enum", enum_cls=AbilityCheckRequest.DifficultyClass
-    )
+    ability_type = factory.Faker("enum", enum_cls=AbilityType.Name)
+    difficulty_class = factory.Faker("enum", enum_cls=RollRequest.DifficultyClass)
+    roll_type = factory.Faker("enum", enum_cls=RollRequest.RollType)
+
+    @factory.post_generation
+    def add_character_to_game(obj, create, extracted, **kwargs):
+        if not create:
+            return
+        character = obj.character
+        game = obj.game
+        PlayerFactory(character=character, game=game)
+        character.save()

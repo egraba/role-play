@@ -33,7 +33,20 @@ class Language(models.Model):
 
 
 class Sense(models.Model):
-    name = models.CharField(max_length=30, unique=True)
+    class Name(models.TextChoices):
+        BRAVE = "BR", "Brave"
+        DARKVISION = "DV", "Darkvision"
+        DWARVEN_COMBAT_TRAINING = "DC", "Dwarven Combat Training"
+        DWARVEN_RESILIENCE = "DR", "Dwarven Resilience"
+        FEY_ANCESTRY = "FA", "Fey Ancestry"
+        HALFLING_NIMBLENESS = "HN", "Halfling Nimbleness"
+        KEEN_SENSES = "KS", "Keen Senses"
+        LUCKY = "LU", "Lucky"
+        STONECUNNING = "SC", "Stonecunning"
+        TOOL_PROFICIENCY = "TP", "Tool Proficiency"
+        TRANCE = "TR", "Trance"
+
+    name = models.CharField(max_length=30, choices=Name.choices, unique=True)
     description = models.TextField(max_length=50)
 
     class Meta:
@@ -41,17 +54,3 @@ class Sense(models.Model):
 
     def __str__(self):
         return str(self.name)
-
-
-class RacialTrait(models.Model):
-    race = models.CharField(max_length=1, choices=Race.choices, unique=True)
-    adult_age = models.SmallIntegerField()
-    life_expectancy = models.SmallIntegerField()
-    alignment = models.CharField(max_length=1, choices=Alignment.choices)
-    size = models.CharField(max_length=1, choices=Size.choices)
-    speed = models.SmallIntegerField()
-    languages = models.ManyToManyField(Language)
-    senses = models.ManyToManyField(Sense)
-
-    def __str__(self):
-        return f"{self.get_race_display()} racial trait"

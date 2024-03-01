@@ -13,8 +13,10 @@ from ..models.events import Event, Quest
 from ..models.game import Player
 from ..schemas import GameEventType, PlayerType
 from ..tasks import send_email
+from ..utils.cache import game_key
 from ..utils.channels import send_to_channel
 from ..utils.emails import get_players_emails
+from ..utils.rolls import RollRequest
 from ..views.mixins import EventContextMixin, GameContextMixin, GameStatusControlMixin
 
 
@@ -67,7 +69,7 @@ class GameStartView(UserPassesTestMixin, GameStatusControlMixin):
         try:
             game.start()
             game.save()
-            cache.set(f"game{game.id}", game)
+            cache.set(game_key(game.id), game)
             event = Event.objects.create(game=game)
             event.date = timezone.now()
             event.message = "the game started."
@@ -156,6 +158,7 @@ class AbilityCheckRequestView(
     def form_valid(self, form):
         ability_check_request = form.save(commit=False)
         ability_check_request.game = self.game
+        ability_check_request.roll_type = RollRequest.RollType.ABILITY_CHECK
         ability_check_request.date = timezone.now()
         ability_check_request.message = f"[{ability_check_request.character.user}] \
             needs to perform a {ability_check_request.ability_type} ability check! \

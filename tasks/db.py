@@ -14,7 +14,7 @@ def load_settings(context):
         "senses",
         "advancement",
         "abilities",
-        "races",
+        "languages",
         "classes",
         "skills",
         "equipment",

@@ -4,7 +4,12 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 
 ## Unreleased
 
+### Added
+* DnD: Implement saving throws
+
 ### Changed
+* DnD: Refactor ability checks
+* Refactor character creation
 * Use Ruff instead of other linters and formatters
 * Split test coverage commands
 * Migrate to pytest8

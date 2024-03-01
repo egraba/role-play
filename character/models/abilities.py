@@ -1,7 +1,5 @@
 from django.db import models
 
-from .races import RacialTrait
-
 
 class AbilityType(models.Model):
     class Name(models.TextChoices):
@@ -29,9 +27,3 @@ class Ability(models.Model):
 
     def __str__(self):
         return str(self.ability_type.name)
-
-
-class AbilityScoreIncrease(models.Model):
-    racial_trait = models.ForeignKey(RacialTrait, on_delete=models.CASCADE)
-    ability_type = models.ForeignKey(AbilityType, on_delete=models.CASCADE)
-    increase = models.SmallIntegerField()

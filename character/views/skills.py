@@ -4,12 +4,7 @@ from django.views.generic import FormView
 
 from ..forms.skills import ExtendedSkillsSelectForm, SkillsSelectForm
 from ..models.classes import Class
-from ..utils.skills import (
-    cleric_choices,
-    fighter_choices,
-    rogue_choices,
-    wizard_choices,
-)
+from ..utils.proficiencies import get_skills
 from .mixins import CharacterContextMixin
 
 
@@ -35,13 +30,13 @@ class SkillsSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
         initial = {}
         match self.character.class_name:
             case Class.CLERIC:
-                initial["choices"] = cleric_choices
+                initial["choices"] = get_skills(Class.CLERIC)
             case Class.FIGHTER:
-                initial["choices"] = fighter_choices
+                initial["choices"] = get_skills(Class.FIGHTER)
             case Class.ROGUE:
-                initial["choices"] = rogue_choices
+                initial["choices"] = get_skills(Class.ROGUE)
             case Class.WIZARD:
-                initial["choices"] = wizard_choices
+                initial["choices"] = get_skills(Class.WIZARD)
         return initial
 
     def form_valid(self, form):

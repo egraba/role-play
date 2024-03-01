@@ -1,0 +1,20 @@
+# Common
+- model: character.language
+  pk: 1
+  fields:
+    name: C
+# Dwarvish
+- model: character.language
+  pk: 2
+  fields:
+    name: D
+# Elvish
+- model: character.language
+  pk: 3
+  fields:
+    name: E
+# Halfling
+- model: character.language
+  pk: 4
+  fields:
+    name: H
