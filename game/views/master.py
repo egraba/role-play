@@ -13,6 +13,7 @@ from ..models.events import Event, Quest
 from ..models.game import Player
 from ..schemas import GameEventType, PlayerType
 from ..tasks import send_email
+from ..utils.cache import game_key
 from ..utils.channels import send_to_channel
 from ..utils.emails import get_players_emails
 from ..views.mixins import EventContextMixin, GameContextMixin, GameStatusControlMixin
@@ -67,7 +68,7 @@ class GameStartView(UserPassesTestMixin, GameStatusControlMixin):
         try:
             game.start()
             game.save()
-            cache.set(f"game{game.id}", game)
+            cache.set(game_key(game.id), game)
             event = Event.objects.create(game=game)
             event.date = timezone.now()
             event.message = "the game started."
