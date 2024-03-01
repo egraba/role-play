@@ -1,5 +1,6 @@
 from ..models.abilities import AbilityType
 from ..models.classes import Class
+from ..models.equipment import Armor
 
 KLASS_FEATURES: dict = {
     Class.CLERIC: {
@@ -10,7 +11,11 @@ KLASS_FEATURES: dict = {
             "hp_higher_levels": 5,
         },
         "proficiencies": {
-            "armor": {},
+            "armor": {
+                Armor.Type.LIGHT_ARMOR,
+                Armor.Type.MEDIUM_ARMOR,
+                Armor.Type.SHIELD,
+            },
             "saving_throws": {AbilityType.Name.WISDOM, AbilityType.Name.CHARISMA},
         },
     },
@@ -22,7 +27,12 @@ KLASS_FEATURES: dict = {
             "hp_higher_levels": 6,
         },
         "proficiencies": {
-            "armor": {},
+            "armor": {
+                Armor.Type.LIGHT_ARMOR,
+                Armor.Type.MEDIUM_ARMOR,
+                Armor.Type.HEAVY_ARMOR,
+                Armor.Type.SHIELD,
+            },
             "saving_throws": {AbilityType.Name.STRENGTH, AbilityType.Name.CONSTITUTION},
         },
     },
@@ -34,7 +44,7 @@ KLASS_FEATURES: dict = {
             "hp_higher_levels": 5,
         },
         "proficiencies": {
-            "armor": {},
+            "armor": {Armor.Type.LIGHT_ARMOR},
             "saving_throws": {
                 AbilityType.Name.DEXTERITY,
                 AbilityType.Name.INTELLIGENCE,
