@@ -1,17 +1,16 @@
-from abc import ABC
-
 from utils.dice import Dice
-from ..models.abilities import AbilityType
-from ..models.character import Character
-from ..models.races import Language, Sense
-from ..models.classes import ClassAdvancement
-from ..models.proficiencies import SavingThrowProficiency
-from .abilities import compute_ability_modifier
+
 from ..constants.klasses import KLASS_FEATURES
 from ..constants.races import RACIAL_TRAITS
+from ..models.abilities import AbilityType
+from ..models.character import Character
+from ..models.classes import ClassAdvancement
+from ..models.proficiencies import SavingThrowProficiency
+from ..models.races import Language, Sense
+from .abilities import compute_ability_modifier
 
 
-class RaceBuilder(ABC):
+class RaceBuilder:
     def __init__(self, character: Character) -> None:
         self.character = character
         self.race = character.race
