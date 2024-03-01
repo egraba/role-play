@@ -91,7 +91,7 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                         ) from e
                     process_roll.delay(
                         game_id=self.game.id,
-                        roll_type=RollRequest.RollType.ABILITY_CHECK,
+                        roll_type=RollRequest.RollType.SAVING_THROW,
                         date=content["date"],
                         character_id=character.id,
                         message=content["message"],

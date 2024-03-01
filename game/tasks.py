@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from celery import shared_task
+from celery.utils.log import get_task_logger
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.core.mail import send_mail
 from django.utils import timezone
@@ -12,6 +13,8 @@ from .models.game import Game
 from .schemas import GameEventType, PlayerType
 from .utils.channels import send_to_channel
 from .utils.rolls import perform_roll
+
+logger = get_task_logger(__name__)
 
 
 @shared_task
@@ -58,6 +61,7 @@ def process_roll(
         character_id (int): Identifier of the character who did the roll.
         message (str): Message content.
     """
+    logger.info(f"{game_id=}, {roll_type=}, {date=}, {character_id=}, {message=}")
     try:
         game = Game.objects.get(id=game_id)
         character = Character.objects.get(id=character_id, player__game=game)

@@ -60,6 +60,9 @@ class GameView(LoginRequiredMixin, ListView, GameContextMixin):
             context["ability_check_request"] = RollRequest.objects.filter(
                 status=RollRequest.Status.PENDING
             ).first()
+            context["saving_throw_request"] = RollRequest.objects.filter(
+                status=RollRequest.Status.PENDING
+            ).first()
         except ObjectDoesNotExist:
             pass
         return context
