@@ -5,6 +5,7 @@ from faker import Faker
 from pytest_django.asserts import assertContains, assertRedirects, assertTemplateUsed
 
 from character.constants.abilities import AbilityName
+from character.constants.character import Gender
 from character.forms.character import CharacterCreateForm
 from character.models.character import Character
 from character.models.klasses import Klass
@@ -139,7 +140,7 @@ class TestCharacterCreateView:
             "intelligence": AbilityScore.SCORE_14,
             "wisdom": AbilityScore.SCORE_15,
             "charisma": AbilityScore.SCORE_8,
-            "gender": f"{fake.enum(enum_cls=Character.Gender)}",
+            "gender": f"{fake.enum(enum_cls=Gender)}",
         }
 
     def test_character_creation_common(self, client, character_form):
@@ -174,7 +175,7 @@ class TestCharacterCreateView:
             "intelligence": AbilityScore.SCORE_14,
             "wisdom": AbilityScore.SCORE_15,
             "charisma": AbilityScore.SCORE_8,
-            "gender": f"{fake.enum(enum_cls=Character.Gender)}",
+            "gender": f"{fake.enum(enum_cls=Gender)}",
         }
 
     def test_character_creation_dwarf(self, client, dwarf_form):
@@ -239,7 +240,7 @@ class TestCharacterCreateView:
             "intelligence": AbilityScore.SCORE_14,
             "wisdom": AbilityScore.SCORE_15,
             "charisma": AbilityScore.SCORE_8,
-            "gender": f"{fake.enum(enum_cls=Character.Gender)}",
+            "gender": f"{fake.enum(enum_cls=Gender)}",
         }
 
     def test_character_creation_elf(self, client, elf_form):
@@ -303,7 +304,7 @@ class TestCharacterCreateView:
             "intelligence": AbilityScore.SCORE_14,
             "wisdom": AbilityScore.SCORE_15,
             "charisma": AbilityScore.SCORE_8,
-            "gender": f"{fake.enum(enum_cls=Character.Gender)}",
+            "gender": f"{fake.enum(enum_cls=Gender)}",
         }
 
     def test_character_creation_halfling(self, client, halfling_form):
@@ -366,7 +367,7 @@ class TestCharacterCreateView:
             "intelligence": AbilityScore.SCORE_14,
             "wisdom": AbilityScore.SCORE_15,
             "charisma": AbilityScore.SCORE_8,
-            "gender": f"{fake.enum(enum_cls=Character.Gender)}",
+            "gender": f"{fake.enum(enum_cls=Gender)}",
         }
 
     def test_character_creation_human(self, client, human_form):
@@ -417,7 +418,7 @@ class TestCharacterCreateView:
         name = fake.name()
         race = fake.enum(enum_cls=Race)
         klass = Klass.CLERIC
-        gender = fake.enum(enum_cls=Character.Gender)
+        gender = fake.enum(enum_cls=Gender)
         data = {
             "name": f"{name}",
             "race": f"{race}",
@@ -461,7 +462,7 @@ class TestCharacterCreateView:
         name = fake.name()
         race = fake.enum(enum_cls=Race)
         klass = Klass.FIGHTER
-        gender = fake.enum(enum_cls=Character.Gender)
+        gender = fake.enum(enum_cls=Gender)
         data = {
             "name": f"{name}",
             "race": f"{race}",
@@ -505,7 +506,7 @@ class TestCharacterCreateView:
         name = fake.name()
         race = fake.enum(enum_cls=Race)
         klass = Klass.ROGUE
-        gender = fake.enum(enum_cls=Character.Gender)
+        gender = fake.enum(enum_cls=Gender)
         data = {
             "name": f"{name}",
             "race": f"{race}",
@@ -549,7 +550,7 @@ class TestCharacterCreateView:
         name = fake.name()
         race = fake.enum(enum_cls=Race)
         klass = Klass.WIZARD
-        gender = fake.enum(enum_cls=Character.Gender)
+        gender = fake.enum(enum_cls=Gender)
         data = {
             "name": f"{name}",
             "race": f"{race}",

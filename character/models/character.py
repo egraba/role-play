@@ -6,21 +6,17 @@ from django.urls import reverse
 
 from utils.dice import Dice
 
+from ..constants.character import Gender
 from ..utils.cache import advancement_key
 from .abilities import Ability
 from .advancement import Advancement
-from .klasses import Klass
 from .equipment import Inventory
+from .klasses import Klass
 from .races import Alignment, Language, Race, Sense, Size
 from .skills import Skill
 
 
 class Character(models.Model):
-    class Gender(models.TextChoices):
-        MALE = "M", "Male"
-        FEMALE = "F", "Female"
-        UNDEFINED = "U", "Undefined"
-
     name = models.CharField(max_length=100, unique=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     race = models.CharField(max_length=1, choices=Race.choices)
