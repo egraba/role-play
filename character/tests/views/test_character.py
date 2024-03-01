@@ -6,11 +6,12 @@ from pytest_django.asserts import assertContains, assertRedirects, assertTemplat
 
 from character.constants.abilities import AbilityName
 from character.constants.character import Gender
+from character.constants.races import LanguageName, Race, SenseName
 from character.forms.character import CharacterCreateForm
 from character.models.character import Character
 from character.models.klasses import Klass
 from character.models.proficiencies import SavingThrowProficiency
-from character.models.races import Language, Race, Sense
+from character.models.races import Language, Sense
 from character.utils.abilities import AbilityScore
 from character.views.character import (
     CharacterCreateView,
@@ -215,16 +216,16 @@ class TestCharacterCreateView:
         assert character.speed == 25
 
         languages = set()
-        languages.add(Language.objects.get(name=Language.Name.COMMON))
-        languages.add(Language.objects.get(name=Language.Name.DWARVISH))
+        languages.add(Language.objects.get(name=LanguageName.COMMON))
+        languages.add(Language.objects.get(name=LanguageName.DWARVISH))
         assert set(character.languages.all()) == languages
 
         senses = set()
-        senses.add(Sense.objects.get(name=Sense.Name.DARKVISION))
-        senses.add(Sense.objects.get(name=Sense.Name.DWARVEN_RESILIENCE))
-        senses.add(Sense.objects.get(name=Sense.Name.DWARVEN_COMBAT_TRAINING))
-        senses.add(Sense.objects.get(name=Sense.Name.TOOL_PROFICIENCY))
-        senses.add(Sense.objects.get(name=Sense.Name.STONECUNNING))
+        senses.add(Sense.objects.get(name=SenseName.DARKVISION))
+        senses.add(Sense.objects.get(name=SenseName.DWARVEN_RESILIENCE))
+        senses.add(Sense.objects.get(name=SenseName.DWARVEN_COMBAT_TRAINING))
+        senses.add(Sense.objects.get(name=SenseName.TOOL_PROFICIENCY))
+        senses.add(Sense.objects.get(name=SenseName.STONECUNNING))
         assert set(character.senses.all()) == senses
 
     @pytest.fixture
@@ -280,15 +281,15 @@ class TestCharacterCreateView:
         assert character.speed == 30
 
         languages = set()
-        languages.add(Language.objects.get(name=Language.Name.COMMON))
-        languages.add(Language.objects.get(name=Language.Name.ELVISH))
+        languages.add(Language.objects.get(name=LanguageName.COMMON))
+        languages.add(Language.objects.get(name=LanguageName.ELVISH))
         assert set(character.languages.all()) == languages
 
         senses = set()
-        senses.add(Sense.objects.get(name=Sense.Name.DARKVISION))
-        senses.add(Sense.objects.get(name=Sense.Name.KEEN_SENSES))
-        senses.add(Sense.objects.get(name=Sense.Name.FEY_ANCESTRY))
-        senses.add(Sense.objects.get(name=Sense.Name.TRANCE))
+        senses.add(Sense.objects.get(name=SenseName.DARKVISION))
+        senses.add(Sense.objects.get(name=SenseName.KEEN_SENSES))
+        senses.add(Sense.objects.get(name=SenseName.FEY_ANCESTRY))
+        senses.add(Sense.objects.get(name=SenseName.TRANCE))
         assert set(character.senses.all()) == senses
 
     @pytest.fixture
@@ -344,14 +345,14 @@ class TestCharacterCreateView:
         assert character.speed == 25
 
         languages = set()
-        languages.add(Language.objects.get(name=Language.Name.COMMON))
-        languages.add(Language.objects.get(name=Language.Name.HALFLING))
+        languages.add(Language.objects.get(name=LanguageName.COMMON))
+        languages.add(Language.objects.get(name=LanguageName.HALFLING))
         assert set(character.languages.all()) == languages
 
         senses = set()
-        senses.add(Sense.objects.get(name=Sense.Name.LUCKY))
-        senses.add(Sense.objects.get(name=Sense.Name.BRAVE))
-        senses.add(Sense.objects.get(name=Sense.Name.HALFLING_NIMBLENESS))
+        senses.add(Sense.objects.get(name=SenseName.LUCKY))
+        senses.add(Sense.objects.get(name=SenseName.BRAVE))
+        senses.add(Sense.objects.get(name=SenseName.HALFLING_NIMBLENESS))
         assert set(character.senses.all()) == senses
 
     @pytest.fixture
@@ -407,7 +408,7 @@ class TestCharacterCreateView:
         assert character.speed == 30
 
         languages = set()
-        languages.add(Language.objects.get(name=Language.Name.COMMON))
+        languages.add(Language.objects.get(name=LanguageName.COMMON))
         assert set(character.languages.all()) == languages
 
         senses = set()

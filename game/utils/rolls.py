@@ -1,9 +1,9 @@
 from django.core.exceptions import ObjectDoesNotExist
 
+from character.constants.races import SenseName
 from character.exceptions import AbilityNotFound
 from character.models.abilities import AbilityType
 from character.models.character import Character
-from character.models.races import Sense
 from utils.dice import Dice
 
 from ..models.events import Roll, RollRequest
@@ -36,10 +36,10 @@ def _has_advantage(
         bool: True if the character has an advantage, False otherwise.
     """
     has_dwarven_resilience = bool(
-        character.senses.filter(name=Sense.Name.DWARVEN_RESILIENCE)
+        character.senses.filter(name=SenseName.DWARVEN_RESILIENCE)
     )
-    has_fey_ancestry = bool(character.senses.filter(name=Sense.Name.FEY_ANCESTRY))
-    is_brave = bool(character.senses.filter(name=Sense.Name.BRAVE))
+    has_fey_ancestry = bool(character.senses.filter(name=SenseName.FEY_ANCESTRY))
+    is_brave = bool(character.senses.filter(name=SenseName.BRAVE))
 
     if (
         has_dwarven_resilience

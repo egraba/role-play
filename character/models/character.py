@@ -7,12 +7,13 @@ from django.urls import reverse
 from utils.dice import Dice
 
 from ..constants.character import Gender
+from ..constants.races import Alignment, Race, Size
 from ..utils.cache import advancement_key
 from .abilities import Ability
 from .advancement import Advancement
 from .equipment import Inventory
 from .klasses import Klass
-from .races import Alignment, Language, Race, Sense, Size
+from .races import Language, Sense
 from .skills import Skill
 
 

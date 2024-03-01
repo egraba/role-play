@@ -1,6 +1,7 @@
 import pytest
 
 from character.constants.abilities import AbilityName
+from character.constants.races import SenseName
 from character.models.abilities import AbilityType
 from character.models.proficiencies import SavingThrowProficiency
 from character.models.races import Sense
@@ -71,7 +72,7 @@ class TestPerformRoll:
         monkeypatch.setattr("utils.dice.Dice.roll", patched_roll)
 
         character = CharacterFactory()
-        character.senses.add(Sense.objects.get(name=Sense.Name.DWARVEN_RESILIENCE))
+        character.senses.add(Sense.objects.get(name=SenseName.DWARVEN_RESILIENCE))
         character.save()
         request = RollRequestFactory(
             character=character,
@@ -91,7 +92,7 @@ class TestPerformRoll:
         monkeypatch.setattr("utils.dice.Dice.roll", patched_roll)
 
         character = CharacterFactory()
-        character.senses.add(Sense.objects.get(name=Sense.Name.FEY_ANCESTRY))
+        character.senses.add(Sense.objects.get(name=SenseName.FEY_ANCESTRY))
         character.save()
         request = RollRequestFactory(
             character=character,
@@ -111,7 +112,7 @@ class TestPerformRoll:
         monkeypatch.setattr("utils.dice.Dice.roll", patched_roll)
 
         character = CharacterFactory()
-        character.senses.add(Sense.objects.get(name=Sense.Name.BRAVE))
+        character.senses.add(Sense.objects.get(name=SenseName.BRAVE))
         character.save()
         request = RollRequestFactory(
             character=character,

@@ -1,11 +1,11 @@
 import factory
 
 from character.constants.abilities import AbilityName
+from character.constants.races import Race
 from character.models.abilities import Ability, AbilityType
 from character.models.character import Character
-from character.models.klasses import Klass
 from character.models.equipment import Equipment
-from character.models.races import Race
+from character.models.klasses import Klass
 
 
 class AbilityTypeFactory(factory.django.DjangoModelFactory):
