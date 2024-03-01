@@ -35,6 +35,10 @@ class QuestFactory(factory.django.DjangoModelFactory):
 class PlayerFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Player
+        django_get_or_create = (
+            "game",
+            "character",
+        )
 
     game = factory.SubFactory(GameFactory)
     character = factory.SubFactory("character.tests.factories.CharacterFactory")
