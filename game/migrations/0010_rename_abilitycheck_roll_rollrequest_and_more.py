@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("character", "0022_savingthrow"),
         ("game", "0009_alter_abilitycheck_result"),
