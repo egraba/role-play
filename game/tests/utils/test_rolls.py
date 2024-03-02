@@ -6,7 +6,7 @@ from character.models.abilities import AbilityType
 from character.models.proficiencies import SavingThrowProficiency
 from character.models.races import Sense
 from character.tests.factories import CharacterFactory
-from game.models.events import Roll, RollRequest
+from game.constants.events import Against, DifficultyClass, RollResult, RollType
 from game.tests.factories import RollRequestFactory
 from game.utils.rolls import perform_roll
 
@@ -22,11 +22,11 @@ class TestPerformRoll:
         character = CharacterFactory()
         request = RollRequestFactory(
             character=character,
-            roll_type=RollRequest.RollType.ABILITY_CHECK,
-            difficulty_class=RollRequest.DifficultyClass.EASY,
+            roll_type=RollType.ABILITY_CHECK,
+            difficulty_class=DifficultyClass.EASY,
         )
         _, result = perform_roll(character, request)
-        assert result == Roll.Result.SUCCESS
+        assert result == RollResult.SUCCESS
 
     def test_perform_roll_failure(self, monkeypatch):
         def patched_roll(self, modifier=0):
@@ -37,11 +37,11 @@ class TestPerformRoll:
         character = CharacterFactory()
         request = RollRequestFactory(
             character=character,
-            roll_type=RollRequest.RollType.ABILITY_CHECK,
-            difficulty_class=RollRequest.DifficultyClass.HARD,
+            roll_type=RollType.ABILITY_CHECK,
+            difficulty_class=DifficultyClass.HARD,
         )
         _, result = perform_roll(character, request)
-        assert result == Roll.Result.FAILURE
+        assert result == RollResult.FAILURE
 
     def test_perform_roll_proficient(self, monkeypatch):
         def patched_roll(self, modifier=0):
@@ -57,8 +57,8 @@ class TestPerformRoll:
         request = RollRequestFactory(
             character=character,
             ability_type=AbilityName.CHARISMA,
-            roll_type=RollRequest.RollType.ABILITY_CHECK,
-            difficulty_class=RollRequest.DifficultyClass.HARD,
+            roll_type=RollType.ABILITY_CHECK,
+            difficulty_class=DifficultyClass.HARD,
         )
         score, _ = perform_roll(character, request)
         assert score == 12
@@ -76,9 +76,9 @@ class TestPerformRoll:
         character.save()
         request = RollRequestFactory(
             character=character,
-            roll_type=RollRequest.RollType.SAVING_THROW,
-            difficulty_class=RollRequest.DifficultyClass.EASY,
-            against=RollRequest.Against.POISON,
+            roll_type=RollType.SAVING_THROW,
+            difficulty_class=DifficultyClass.EASY,
+            against=Against.POISON,
         )
         score, _ = perform_roll(character, request)
         assert score == 15
@@ -96,9 +96,9 @@ class TestPerformRoll:
         character.save()
         request = RollRequestFactory(
             character=character,
-            roll_type=RollRequest.RollType.SAVING_THROW,
-            difficulty_class=RollRequest.DifficultyClass.EASY,
-            against=RollRequest.Against.CHARM,
+            roll_type=RollType.SAVING_THROW,
+            difficulty_class=DifficultyClass.EASY,
+            against=Against.CHARM,
         )
         score, _ = perform_roll(character, request)
         assert score == 15
@@ -116,9 +116,9 @@ class TestPerformRoll:
         character.save()
         request = RollRequestFactory(
             character=character,
-            roll_type=RollRequest.RollType.SAVING_THROW,
-            difficulty_class=RollRequest.DifficultyClass.EASY,
-            against=RollRequest.Against.BEING_FRIGHTENED,
+            roll_type=RollType.SAVING_THROW,
+            difficulty_class=DifficultyClass.EASY,
+            against=Against.BEING_FRIGHTENED,
         )
         score, _ = perform_roll(character, request)
         assert score == 15

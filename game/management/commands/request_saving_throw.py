@@ -1,9 +1,10 @@
 from django.core.management.base import BaseCommand
 
-from ...tests.factories import RollRequestFactory
-from ...models.events import RollRequest
-from ...models.game import Game
 from character.models.character import Character
+
+from ...constants.events import RollType
+from ...models.game import Game
+from ...tests.factories import RollRequestFactory
 
 
 class Command(BaseCommand):
@@ -19,6 +20,6 @@ class Command(BaseCommand):
         RollRequestFactory(
             game=game,
             character=character,
-            roll_type=RollRequest.RollType.SAVING_THROW,
+            roll_type=RollType.SAVING_THROW,
         )
         self.stdout.write(self.style.SUCCESS("Saving throw created successfully"))

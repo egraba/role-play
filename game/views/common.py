@@ -8,6 +8,7 @@ from django.views.generic import CreateView, ListView, TemplateView
 from character.models.character import Character
 from master.models import Campaign
 
+from ..constants.events import RollStatus
 from ..models.events import Event, Quest, RollRequest
 from ..models.game import Game, Master, Player
 from ..views.mixins import GameContextMixin
@@ -58,10 +59,10 @@ class GameView(LoginRequiredMixin, ListView, GameContextMixin):
         try:
             context["player"] = Player.objects.get(character__user=self.request.user)
             context["ability_check_request"] = RollRequest.objects.filter(
-                status=RollRequest.Status.PENDING
+                status=RollStatus.PENDING
             ).first()
             context["saving_throw_request"] = RollRequest.objects.filter(
-                status=RollRequest.Status.PENDING
+                status=RollStatus.PENDING
             ).first()
         except ObjectDoesNotExist:
             pass

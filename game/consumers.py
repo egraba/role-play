@@ -10,7 +10,7 @@ from .models.game import Game
 from .schemas import GameEventOrigin, GameEventType
 from .tasks import process_roll, store_message
 from .utils.cache import game_key
-from .utils.rolls import RollRequest
+from .constants.events import RollType
 
 
 class GameEventsConsumer(JsonWebsocketConsumer):
@@ -76,7 +76,7 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                         ) from e
                     process_roll.delay(
                         game_id=self.game.id,
-                        roll_type=RollRequest.RollType.ABILITY_CHECK,
+                        roll_type=RollType.ABILITY_CHECK,
                         date=content["date"],
                         character_id=character.id,
                         message=content["message"],
@@ -91,7 +91,7 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                         ) from e
                     process_roll.delay(
                         game_id=self.game.id,
-                        roll_type=RollRequest.RollType.SAVING_THROW,
+                        roll_type=RollType.SAVING_THROW,
                         date=content["date"],
                         character_id=character.id,
                         message=content["message"],

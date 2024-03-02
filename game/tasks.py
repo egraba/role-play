@@ -8,6 +8,7 @@ from django.utils import timezone
 
 from character.models.character import Character
 
+from .constants.events import RollStatus, RollType
 from .models.events import Event, Roll, RollRequest
 from .models.game import Game
 from .schemas import GameEventType, PlayerType
@@ -46,7 +47,7 @@ def store_message(game_id: int, date: datetime, message: str) -> None:
 @shared_task
 def process_roll(
     game_id: int,
-    roll_type: RollRequest.RollType,
+    roll_type: RollType,
     date: datetime,
     character_id: int,
     message: str,
@@ -56,7 +57,7 @@ def process_roll(
 
     Args:
         game_id (int): Identifier of the game.
-        roll_type (RollRequest.RollType): Type of the roll.
+        roll_type (RollType): Type of the roll.
         date (datetime): Date on which the message has been sent from the player.
         character_id (int): Identifier of the character who did the roll.
         message (str): Message content.
@@ -70,7 +71,7 @@ def process_roll(
 
     # Retrieve the corresponding request.
     request = RollRequest.objects.filter(
-        roll_type=roll_type, character=character, status=RollRequest.Status.PENDING
+        roll_type=roll_type, character=character, status=RollStatus.PENDING
     ).first()
     if request is None:
         raise PermissionDenied
@@ -98,14 +99,14 @@ def process_roll(
     roll.save()
 
     # The corresponding request is considered now as done.
-    request.status = RollRequest.Status.DONE
+    request.status = RollStatus.DONE
     request.save()
 
     # Send the right message to the channel.
     match roll_type:
-        case RollRequest.RollType.ABILITY_CHECK:
+        case RollType.ABILITY_CHECK:
             result_type = GameEventType.ABILITY_CHECK_RESULT
-        case RollRequest.RollType.SAVING_THROW:
+        case RollType.SAVING_THROW:
             result_type = GameEventType.SAVING_THROW_RESULT
 
     send_to_channel(

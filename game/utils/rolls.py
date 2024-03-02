@@ -6,7 +6,8 @@ from character.models.abilities import AbilityType
 from character.models.character import Character
 from utils.dice import Dice
 
-from ..models.events import Roll, RollRequest
+from ..constants.events import Against, RollResult, RollType
+from ..models.events import RollRequest
 
 
 def _roll(character: Character, ability_type: AbilityType) -> int:
@@ -21,15 +22,13 @@ def _roll(character: Character, ability_type: AbilityType) -> int:
     return score
 
 
-def _has_advantage(
-    character: Character, roll_type: RollRequest.RollType, against: str
-) -> bool:
+def _has_advantage(character: Character, roll_type: RollType, against: str) -> bool:
     """
     Indicate if a character has an advantage or not.
 
     Args:
         character (Character): The character who performs the roll.
-        roll_type (RollRequest.RollType): The type of roll
+        roll_type (RollType): The type of roll
         against (str): Against which attack the advantage is.
 
     Returns:
@@ -43,34 +42,24 @@ def _has_advantage(
 
     if (
         has_dwarven_resilience
-        and roll_type == RollRequest.RollType.SAVING_THROW
-        and against == RollRequest.Against.POISON
+        and roll_type == RollType.SAVING_THROW
+        and against == Against.POISON
     ):
         return True
-    if (
-        has_fey_ancestry
-        and RollRequest.RollType.SAVING_THROW
-        and against == RollRequest.Against.CHARM
-    ):
+    if has_fey_ancestry and RollType.SAVING_THROW and against == Against.CHARM:
         return True
-    if (
-        is_brave
-        and RollRequest.RollType.SAVING_THROW
-        and against == RollRequest.Against.BEING_FRIGHTENED
-    ):
+    if is_brave and RollType.SAVING_THROW and against == Against.BEING_FRIGHTENED:
         return True
     return False
 
 
-def _has_disadvantage(
-    character: Character, roll_type: RollRequest.RollType, against: str
-) -> bool:
+def _has_disadvantage(character: Character, roll_type: RollType, against: str) -> bool:
     """
     Indicate if a character has a disadvantage or not.
 
     Args:
         character (Character): The character who performs the roll.
-        roll_type (RollRequest.RollType): The type of roll
+        roll_type (RollType): The type of roll
         against (str): Against which attack the disadvantage is.
 
     Returns:
@@ -108,5 +97,5 @@ def perform_roll(
             score = min(score, new_score)
 
     if score >= request.difficulty_class:
-        return score, Roll.Result.SUCCESS
-    return score, Roll.Result.FAILURE
+        return score, RollResult.SUCCESS
+    return score, RollResult.FAILURE

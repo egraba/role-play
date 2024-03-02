@@ -6,6 +6,7 @@ from django.utils import timezone
 from faker import Faker
 
 from character.models.character import Character
+from game.constants.events import RollType, RollStatus
 from game.models.events import Roll, RollRequest
 from game.models.game import Game
 from game.tasks import process_roll
@@ -17,7 +18,7 @@ from .factories import RollRequestFactory
 class TestProcessRoll:
     @pytest.fixture
     def ability_check_request(self):
-        return RollRequestFactory(roll_type=RollRequest.RollType.ABILITY_CHECK)
+        return RollRequestFactory(roll_type=RollType.ABILITY_CHECK)
 
     @pytest.fixture
     def game(self):
@@ -37,7 +38,7 @@ class TestProcessRoll:
         message = fake.text(100)
         process_roll.delay(
             game_id=game.id,
-            roll_type=RollRequest.RollType.ABILITY_CHECK,
+            roll_type=RollType.ABILITY_CHECK,
             date=date.isoformat(),
             character_id=character.id,
             message=message,
@@ -51,12 +52,12 @@ class TestProcessRoll:
         # SequenceMatcher is used as the score is a random value, and therefore
         # cannot be guessed.
         expected_str = f"[{character.user}]'s score: 5, \
-            {RollRequest.RollType.ABILITY_CHECK} result: {roll.get_result_display()}"
+            {RollType.ABILITY_CHECK} result: {roll.get_result_display()}"
         s = SequenceMatcher(None, roll.message, expected_str)
         assert s.ratio() > 0.9
 
         ability_check_request = RollRequest.objects.last()
-        assert ability_check_request.status == RollRequest.Status.DONE
+        assert ability_check_request.status == RollStatus.DONE
 
     def test_process_roll_failure_game_not_found(
         self, celery_worker, ability_check_request, character
@@ -67,14 +68,14 @@ class TestProcessRoll:
         with pytest.raises(PermissionDenied):
             process_roll.delay(
                 game_id=fake.random_int(min=1000),
-                roll_type=RollRequest.RollType.ABILITY_CHECK,
+                roll_type=RollType.ABILITY_CHECK,
                 date=date.isoformat(),
                 character_id=character.id,
                 message=message,
             ).get()
 
         ability_check_request = RollRequest.objects.last()
-        assert ability_check_request.status == RollRequest.Status.PENDING
+        assert ability_check_request.status == RollStatus.PENDING
 
     def test_process_roll_failure_character_not_found(
         self, celery_worker, ability_check_request, game
@@ -85,14 +86,14 @@ class TestProcessRoll:
         with pytest.raises(PermissionDenied):
             process_roll.delay(
                 game_id=game.id,
-                roll_type=RollRequest.RollType.ABILITY_CHECK,
+                roll_type=RollType.ABILITY_CHECK,
                 date=date.isoformat(),
                 character_id=fake.random_int(min=1000),
                 message=message,
             ).get()
 
         ability_check_request = RollRequest.objects.last()
-        assert ability_check_request.status == RollRequest.Status.PENDING
+        assert ability_check_request.status == RollStatus.PENDING
 
     def test_process_roll_failure_request_not_found(
         self, celery_worker, ability_check_request, game, character
@@ -104,7 +105,7 @@ class TestProcessRoll:
         with pytest.raises(PermissionDenied):
             process_roll.delay(
                 game_id=game.id,
-                roll_type=RollRequest.RollType.ABILITY_CHECK,
+                roll_type=RollType.ABILITY_CHECK,
                 date=date.isoformat(),
                 character_id=character.id,
                 message=message,
@@ -112,7 +113,7 @@ class TestProcessRoll:
 
     @pytest.fixture
     def saving_throw_request(self):
-        return RollRequestFactory(roll_type=RollRequest.RollType.SAVING_THROW)
+        return RollRequestFactory(roll_type=RollType.SAVING_THROW)
 
     def test_process_roll_saving_throw_success(
         self, celery_worker, saving_throw_request, game, character
@@ -122,7 +123,7 @@ class TestProcessRoll:
         message = fake.text(100)
         process_roll.delay(
             game_id=game.id,
-            roll_type=RollRequest.RollType.SAVING_THROW,
+            roll_type=RollType.SAVING_THROW,
             date=date.isoformat(),
             character_id=character.id,
             message=message,
@@ -136,9 +137,9 @@ class TestProcessRoll:
         # SequenceMatcher is used as the score is a random value, and therefore
         # cannot be guessed.
         expected_str = f"[{character.user}]'s score: 5, \
-            {RollRequest.RollType.SAVING_THROW} result: {roll.get_result_display()}"
+            {RollType.SAVING_THROW} result: {roll.get_result_display()}"
         s = SequenceMatcher(None, roll.message, expected_str)
         assert s.ratio() > 0.9
 
         saving_throw_request = RollRequest.objects.last()
-        assert saving_throw_request.status == RollRequest.Status.DONE
+        assert saving_throw_request.status == RollStatus.DONE
