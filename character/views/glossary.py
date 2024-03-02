@@ -15,7 +15,7 @@ class GlossaryView(TemplateView):
         ability_types = cache.get_or_set(ABILITY_TYPES_KEY, AbilityType.objects.all())
         context["ability_types"] = ability_types
 
-        skills = cache.get_or_create("skills", Skill.objects.all())
+        skills = cache.get_or_set("skills", Skill.objects.all())
         context["skills"] = skills
 
         return context
