@@ -1,5 +1,46 @@
-from ..models.abilities import AbilityType
-from ..models.races import Alignment, Language, Race, Sense, Size
+from django.db.models import TextChoices
+
+from ..constants.abilities import AbilityName
+
+
+class Race(TextChoices):
+    HUMAN = "H", "Human"
+    HALFLING = "G", "Halfling"
+    ELF = "E", "Elf"
+    DWARF = "D", "Dwarf"
+
+
+class Alignment(TextChoices):
+    LAWFUL = "L", "Lawful"
+    FREEDOM = "F", "Freedom"
+    NONE = "N", "None"
+
+
+class Size(TextChoices):
+    SMALL = "S", "Small"
+    MEDIUM = "M", "Medium"
+
+
+class LanguageName(TextChoices):
+    COMMON = "C", "Common"
+    DWARVISH = "D", "Dwarvish"
+    ELVISH = "E", "Elvish"
+    HALFLING = "H", "Halfling"
+
+
+class SenseName(TextChoices):
+    BRAVE = "BR", "Brave"
+    DARKVISION = "DV", "Darkvision"
+    DWARVEN_COMBAT_TRAINING = "DC", "Dwarven Combat Training"
+    DWARVEN_RESILIENCE = "DR", "Dwarven Resilience"
+    FEY_ANCESTRY = "FA", "Fey Ancestry"
+    HALFLING_NIMBLENESS = "HN", "Halfling Nimbleness"
+    KEEN_SENSES = "KS", "Keen Senses"
+    LUCKY = "LU", "Lucky"
+    STONECUNNING = "SC", "Stonecunning"
+    TOOL_PROFICIENCY = "TP", "Tool Proficiency"
+    TRANCE = "TR", "Trance"
+
 
 RACIAL_TRAITS: dict = {
     Race.DWARF: {
@@ -8,15 +49,15 @@ RACIAL_TRAITS: dict = {
         "alignment": Alignment.LAWFUL,
         "size": Size.MEDIUM,
         "speed": 25,
-        "languages": {Language.Name.COMMON, Language.Name.DWARVISH},
+        "languages": {LanguageName.COMMON, LanguageName.DWARVISH},
         "senses": {
-            Sense.Name.DARKVISION,
-            Sense.Name.DWARVEN_RESILIENCE,
-            Sense.Name.DWARVEN_COMBAT_TRAINING,
-            Sense.Name.TOOL_PROFICIENCY,
-            Sense.Name.STONECUNNING,
+            SenseName.DARKVISION,
+            SenseName.DWARVEN_RESILIENCE,
+            SenseName.DWARVEN_COMBAT_TRAINING,
+            SenseName.TOOL_PROFICIENCY,
+            SenseName.STONECUNNING,
         },
-        "ability_score_increases": {AbilityType.Name.CONSTITUTION: 2},
+        "ability_score_increases": {AbilityName.CONSTITUTION: 2},
     },
     Race.ELF: {
         "adult_age": 100,
@@ -24,14 +65,14 @@ RACIAL_TRAITS: dict = {
         "alignment": Alignment.FREEDOM,
         "size": Size.MEDIUM,
         "speed": 30,
-        "languages": {Language.Name.COMMON, Language.Name.ELVISH},
+        "languages": {LanguageName.COMMON, LanguageName.ELVISH},
         "senses": {
-            Sense.Name.DARKVISION,
-            Sense.Name.KEEN_SENSES,
-            Sense.Name.FEY_ANCESTRY,
-            Sense.Name.TRANCE,
+            SenseName.DARKVISION,
+            SenseName.KEEN_SENSES,
+            SenseName.FEY_ANCESTRY,
+            SenseName.TRANCE,
         },
-        "ability_score_increases": {AbilityType.Name.DEXTERITY: 2},
+        "ability_score_increases": {AbilityName.DEXTERITY: 2},
     },
     Race.HALFLING: {
         "adult_age": 20,
@@ -39,9 +80,9 @@ RACIAL_TRAITS: dict = {
         "alignment": Alignment.LAWFUL,
         "size": Size.SMALL,
         "speed": 25,
-        "languages": {Language.Name.COMMON, Language.Name.HALFLING},
-        "senses": {Sense.Name.LUCKY, Sense.Name.BRAVE, Sense.Name.HALFLING_NIMBLENESS},
-        "ability_score_increases": {AbilityType.Name.DEXTERITY: 2},
+        "languages": {LanguageName.COMMON, LanguageName.HALFLING},
+        "senses": {SenseName.LUCKY, SenseName.BRAVE, SenseName.HALFLING_NIMBLENESS},
+        "ability_score_increases": {AbilityName.DEXTERITY: 2},
     },
     Race.HUMAN: {
         "adult_age": 50,
@@ -49,15 +90,15 @@ RACIAL_TRAITS: dict = {
         "alignment": Alignment.NONE,
         "size": Size.MEDIUM,
         "speed": 30,
-        "languages": {Language.Name.COMMON},
+        "languages": {LanguageName.COMMON},
         "senses": {},
         "ability_score_increases": {
-            AbilityType.Name.CHARISMA: 1,
-            AbilityType.Name.CONSTITUTION: 1,
-            AbilityType.Name.DEXTERITY: 1,
-            AbilityType.Name.INTELLIGENCE: 1,
-            AbilityType.Name.STRENGTH: 1,
-            AbilityType.Name.WISDOM: 1,
+            AbilityName.CHARISMA: 1,
+            AbilityName.CONSTITUTION: 1,
+            AbilityName.DEXTERITY: 1,
+            AbilityName.INTELLIGENCE: 1,
+            AbilityName.STRENGTH: 1,
+            AbilityName.WISDOM: 1,
         },
     },
 }

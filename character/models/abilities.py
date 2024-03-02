@@ -1,16 +1,9 @@
 from django.db import models
+from ..constants.abilities import AbilityName
 
 
 class AbilityType(models.Model):
-    class Name(models.TextChoices):
-        STRENGTH = "STR", "Strength"
-        DEXTERITY = "DEX", "Dexterity"
-        CONSTITUTION = "CON", "Constitution"
-        INTELLIGENCE = "INT", "Intelligence"
-        WISDOM = "WIS", "Wisdom"
-        CHARISMA = "CHA", "Charisma"
-
-    name = models.CharField(max_length=3, primary_key=True, choices=Name)
+    name = models.CharField(max_length=3, primary_key=True, choices=AbilityName)
     description = models.TextField(max_length=1000)
 
     def __str__(self):

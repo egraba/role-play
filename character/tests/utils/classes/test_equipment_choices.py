@@ -1,6 +1,6 @@
 import pytest
 
-from character.models.equipment import Armor, Gear, Pack, Weapon
+from character.constants.equipment import ArmorName, GearName, PackName, WeaponName
 from character.utils.equipment import (
     ClericEquipmentChoicesProvider,
     FighterEquipmentChoicesProvider,
@@ -16,28 +16,28 @@ class TestClericEquipmentChoicesProvider:
         equipment_provider = ClericEquipmentChoicesProvider()
         choices = equipment_provider.get_first_weapon_choices()
         assert choices == {
-            duplicate_choice(Weapon.Name.MACE),
-            duplicate_choice(Weapon.Name.WARHAMMER),
+            duplicate_choice(WeaponName.MACE),
+            duplicate_choice(WeaponName.WARHAMMER),
         }
 
     def test_get_second_weapon_choices(self):
         equipment_provider = ClericEquipmentChoicesProvider()
         choices = equipment_provider.get_second_weapon_choices()
         assert choices == {
-            duplicate_choice(Weapon.Name.CROSSBOW_LIGHT),
-            duplicate_choice(Weapon.Name.CLUB),
-            duplicate_choice(Weapon.Name.DAGGER),
-            duplicate_choice(Weapon.Name.GREATCLUB),
-            duplicate_choice(Weapon.Name.HANDAXE),
-            duplicate_choice(Weapon.Name.JAVELIN),
-            duplicate_choice(Weapon.Name.LIGHT_HAMMER),
-            duplicate_choice(Weapon.Name.MACE),
-            duplicate_choice(Weapon.Name.QUARTERSTAFF),
-            duplicate_choice(Weapon.Name.SICKLE),
-            duplicate_choice(Weapon.Name.SPEAR),
-            duplicate_choice(Weapon.Name.DART),
-            duplicate_choice(Weapon.Name.SHORTBOW),
-            duplicate_choice(Weapon.Name.SLING),
+            duplicate_choice(WeaponName.CROSSBOW_LIGHT),
+            duplicate_choice(WeaponName.CLUB),
+            duplicate_choice(WeaponName.DAGGER),
+            duplicate_choice(WeaponName.GREATCLUB),
+            duplicate_choice(WeaponName.HANDAXE),
+            duplicate_choice(WeaponName.JAVELIN),
+            duplicate_choice(WeaponName.LIGHT_HAMMER),
+            duplicate_choice(WeaponName.MACE),
+            duplicate_choice(WeaponName.QUARTERSTAFF),
+            duplicate_choice(WeaponName.SICKLE),
+            duplicate_choice(WeaponName.SPEAR),
+            duplicate_choice(WeaponName.DART),
+            duplicate_choice(WeaponName.SHORTBOW),
+            duplicate_choice(WeaponName.SLING),
         }
 
     def test_get_third_weapon_choices(self):
@@ -49,26 +49,26 @@ class TestClericEquipmentChoicesProvider:
         equipment_provider = ClericEquipmentChoicesProvider()
         choices = equipment_provider.get_armor_choices()
         assert choices == {
-            duplicate_choice(Armor.Name.SCALE_MAIL),
-            duplicate_choice(Armor.Name.LEATHER),
-            duplicate_choice(Armor.Name.CHAIN_MAIL),
+            duplicate_choice(ArmorName.SCALE_MAIL),
+            duplicate_choice(ArmorName.LEATHER),
+            duplicate_choice(ArmorName.CHAIN_MAIL),
         }
 
     def test_get_gear_choices(self):
         equipment_provider = ClericEquipmentChoicesProvider()
         choices = equipment_provider.get_gear_choices()
         assert choices == {
-            duplicate_choice(Gear.Name.AMULET),
-            duplicate_choice(Gear.Name.EMBLEM),
-            duplicate_choice(Gear.Name.RELIQUARY),
+            duplicate_choice(GearName.AMULET),
+            duplicate_choice(GearName.EMBLEM),
+            duplicate_choice(GearName.RELIQUARY),
         }
 
     def test_get_pack_choices(self):
         equipment_provider = ClericEquipmentChoicesProvider()
         choices = equipment_provider.get_pack_choices()
         assert choices == {
-            duplicate_choice(Pack.Name.PRIESTS_PACK),
-            duplicate_choice(Pack.Name.EXPLORERS_PACK),
+            duplicate_choice(PackName.PRIESTS_PACK),
+            duplicate_choice(PackName.EXPLORERS_PACK),
         }
 
 
@@ -78,45 +78,45 @@ class TestFighterEquipmentChoicesProvider:
         equipment_provider = FighterEquipmentChoicesProvider()
         choices = equipment_provider.get_first_weapon_choices()
         assert choices == {
-            duplicate_choice(Armor.Name.CHAIN_MAIL),
-            duplicate_choice(Armor.Name.LEATHER, Weapon.Name.LONGBOW),
+            duplicate_choice(ArmorName.CHAIN_MAIL),
+            duplicate_choice(ArmorName.LEATHER, WeaponName.LONGBOW),
         }
 
     def test_get_second_weapon_choices(self):
         equipment_provider = FighterEquipmentChoicesProvider()
         choices = equipment_provider.get_second_weapon_choices()
         assert choices == {
-            duplicate_choice(Weapon.Name.BATTLEAXE),
-            duplicate_choice(Weapon.Name.FLAIL),
-            duplicate_choice(Weapon.Name.GLAIVE),
-            duplicate_choice(Weapon.Name.GREATAXE),
-            duplicate_choice(Weapon.Name.GREATSWORD),
-            duplicate_choice(Weapon.Name.HALBERD),
-            duplicate_choice(Weapon.Name.LANCE),
-            duplicate_choice(Weapon.Name.LONGSWORD),
-            duplicate_choice(Weapon.Name.MAUL),
-            duplicate_choice(Weapon.Name.MORNINGSTAR),
-            duplicate_choice(Weapon.Name.PIKE),
-            duplicate_choice(Weapon.Name.RAPIER),
-            duplicate_choice(Weapon.Name.SCIMITAR),
-            duplicate_choice(Weapon.Name.SHORTSWORD),
-            duplicate_choice(Weapon.Name.TRIDENT),
-            duplicate_choice(Weapon.Name.WAR_PICK),
-            duplicate_choice(Weapon.Name.WARHAMMER),
-            duplicate_choice(Weapon.Name.WHIP),
-            duplicate_choice(Weapon.Name.BLOWGUN),
-            duplicate_choice(Weapon.Name.CROSSBOW_HAND),
-            duplicate_choice(Weapon.Name.CROSSBOW_HEAVY),
-            duplicate_choice(Weapon.Name.LONGBOW),
-            duplicate_choice(Weapon.Name.NET),
+            duplicate_choice(WeaponName.BATTLEAXE),
+            duplicate_choice(WeaponName.FLAIL),
+            duplicate_choice(WeaponName.GLAIVE),
+            duplicate_choice(WeaponName.GREATAXE),
+            duplicate_choice(WeaponName.GREATSWORD),
+            duplicate_choice(WeaponName.HALBERD),
+            duplicate_choice(WeaponName.LANCE),
+            duplicate_choice(WeaponName.LONGSWORD),
+            duplicate_choice(WeaponName.MAUL),
+            duplicate_choice(WeaponName.MORNINGSTAR),
+            duplicate_choice(WeaponName.PIKE),
+            duplicate_choice(WeaponName.RAPIER),
+            duplicate_choice(WeaponName.SCIMITAR),
+            duplicate_choice(WeaponName.SHORTSWORD),
+            duplicate_choice(WeaponName.TRIDENT),
+            duplicate_choice(WeaponName.WAR_PICK),
+            duplicate_choice(WeaponName.WARHAMMER),
+            duplicate_choice(WeaponName.WHIP),
+            duplicate_choice(WeaponName.BLOWGUN),
+            duplicate_choice(WeaponName.CROSSBOW_HAND),
+            duplicate_choice(WeaponName.CROSSBOW_HEAVY),
+            duplicate_choice(WeaponName.LONGBOW),
+            duplicate_choice(WeaponName.NET),
         }
 
     def test_get_third_weapon_choices(self):
         equipment_provider = FighterEquipmentChoicesProvider()
         choices = equipment_provider.get_third_weapon_choices()
         assert choices == {
-            duplicate_choice(Weapon.Name.CROSSBOW_LIGHT),
-            duplicate_choice(Weapon.Name.HANDAXE),
+            duplicate_choice(WeaponName.CROSSBOW_LIGHT),
+            duplicate_choice(WeaponName.HANDAXE),
         }
 
     def test_get_armor_choices(self):
@@ -133,8 +133,8 @@ class TestFighterEquipmentChoicesProvider:
         equipment_provider = FighterEquipmentChoicesProvider()
         choices = equipment_provider.get_pack_choices()
         assert choices == {
-            duplicate_choice(Pack.Name.DUNGEONEERS_PACK),
-            duplicate_choice(Pack.Name.EXPLORERS_PACK),
+            duplicate_choice(PackName.DUNGEONEERS_PACK),
+            duplicate_choice(PackName.EXPLORERS_PACK),
         }
 
 
@@ -144,16 +144,16 @@ class TestRogueEquipmentChoicesProvider:
         equipment_provider = RogueEquipmentChoicesProvider()
         choices = equipment_provider.get_first_weapon_choices()
         assert choices == {
-            duplicate_choice(Weapon.Name.RAPIER),
-            duplicate_choice(Weapon.Name.SHORTSWORD),
+            duplicate_choice(WeaponName.RAPIER),
+            duplicate_choice(WeaponName.SHORTSWORD),
         }
 
     def test_get_second_weapon_choices(self):
         equipment_provider = RogueEquipmentChoicesProvider()
         choices = equipment_provider.get_second_weapon_choices()
         assert choices == {
-            duplicate_choice(Weapon.Name.SHORTBOW),
-            duplicate_choice(Weapon.Name.SHORTSWORD),
+            duplicate_choice(WeaponName.SHORTBOW),
+            duplicate_choice(WeaponName.SHORTSWORD),
         }
 
     def test_get_third_weapon_choices(self):
@@ -175,9 +175,9 @@ class TestRogueEquipmentChoicesProvider:
         equipment_provider = RogueEquipmentChoicesProvider()
         choices = equipment_provider.get_pack_choices()
         assert choices == {
-            duplicate_choice(Pack.Name.BURGLARS_PACK),
-            duplicate_choice(Pack.Name.DUNGEONEERS_PACK),
-            duplicate_choice(Pack.Name.EXPLORERS_PACK),
+            duplicate_choice(PackName.BURGLARS_PACK),
+            duplicate_choice(PackName.DUNGEONEERS_PACK),
+            duplicate_choice(PackName.EXPLORERS_PACK),
         }
 
 
@@ -187,8 +187,8 @@ class TestWizardEquipmentChoicesProvider:
         equipment_provider = WizardEquipmentChoicesProvider()
         choices = equipment_provider.get_first_weapon_choices()
         assert choices == {
-            duplicate_choice(Weapon.Name.QUARTERSTAFF),
-            duplicate_choice(Weapon.Name.DAGGER),
+            duplicate_choice(WeaponName.QUARTERSTAFF),
+            duplicate_choice(WeaponName.DAGGER),
         }
 
     def test_get_second_weapon_choices(self):
@@ -210,18 +210,18 @@ class TestWizardEquipmentChoicesProvider:
         equipment_provider = WizardEquipmentChoicesProvider()
         choices = equipment_provider.get_gear_choices()
         assert choices == {
-            duplicate_choice(Gear.Name.COMPONENT_POUCH),
-            duplicate_choice(Gear.Name.CRYSTAL),
-            duplicate_choice(Gear.Name.ORB),
-            duplicate_choice(Gear.Name.ROD),
-            duplicate_choice(Gear.Name.STAFF),
-            duplicate_choice(Gear.Name.WAND),
+            duplicate_choice(GearName.COMPONENT_POUCH),
+            duplicate_choice(GearName.CRYSTAL),
+            duplicate_choice(GearName.ORB),
+            duplicate_choice(GearName.ROD),
+            duplicate_choice(GearName.STAFF),
+            duplicate_choice(GearName.WAND),
         }
 
     def test_get_pack_choices(self):
         equipment_provider = WizardEquipmentChoicesProvider()
         choices = equipment_provider.get_pack_choices()
         assert choices == {
-            duplicate_choice(Pack.Name.SCHOLARS_PACK),
-            duplicate_choice(Pack.Name.EXPLORERS_PACK),
+            duplicate_choice(PackName.SCHOLARS_PACK),
+            duplicate_choice(PackName.EXPLORERS_PACK),
         }

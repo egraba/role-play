@@ -3,13 +3,14 @@ from django.urls import reverse
 from faker import Faker
 from pytest_django.asserts import assertRedirects, assertTemplateUsed
 
+from character.constants.equipment import ArmorName, GearName, ToolName, WeaponName
 from character.forms.equipment import (
     ClericEquipmentSelectForm,
     FighterEquipmentSelectForm,
     RogueEquipmentSelectForm,
     WizardEquipmentSelectForm,
 )
-from character.models.equipment import Armor, Equipment, Gear, Tool, Weapon
+from character.models.equipment import Equipment
 from character.utils.equipment import (
     ClericEquipmentChoicesProvider,
     FighterEquipmentChoicesProvider,
@@ -75,7 +76,7 @@ class TestEquipmentSelectView:
         assert Equipment.objects.get(inventory=inventory, name=gear) is not None
         assert Equipment.objects.get(inventory=inventory, name=pack) is not None
         assert (
-            Equipment.objects.get(inventory=inventory, name=Armor.Name.SHIELD)
+            Equipment.objects.get(inventory=inventory, name=ArmorName.SHIELD)
             is not None
         )
 
@@ -153,17 +154,17 @@ class TestEquipmentSelectView:
         )
         assert Equipment.objects.get(inventory=inventory, name=pack) is not None
         assert (
-            Equipment.objects.get(inventory=inventory, name=Armor.Name.LEATHER)
+            Equipment.objects.get(inventory=inventory, name=ArmorName.LEATHER)
             is not None
         )
         assert (
             Equipment.objects.filter(
-                inventory=inventory, name=Weapon.Name.DAGGER
+                inventory=inventory, name=WeaponName.DAGGER
             ).count()
             == 2
         )
         assert (
-            Equipment.objects.get(inventory=inventory, name=Tool.Name.THIEVES_TOOLS)
+            Equipment.objects.get(inventory=inventory, name=ToolName.THIEVES_TOOLS)
             is not None
         )
 
@@ -196,6 +197,6 @@ class TestEquipmentSelectView:
         assert Equipment.objects.get(inventory=inventory, name=gear) is not None
         assert Equipment.objects.get(inventory=inventory, name=pack) is not None
         assert (
-            Equipment.objects.get(inventory=inventory, name=Gear.Name.SPELLBOOK)
+            Equipment.objects.get(inventory=inventory, name=GearName.SPELLBOOK)
             is not None
         )

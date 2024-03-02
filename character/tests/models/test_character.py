@@ -1,6 +1,7 @@
 import pytest
 from faker import Faker
 
+from character.constants.character import Gender
 from character.models.character import Character
 from character.models.proficiencies import SavingThrowProficiency
 from utils.dice import Dice
@@ -20,7 +21,7 @@ class TestCharacterModel:
         assert character.xp == 0
         assert character.hp == 100
         assert character.proficiency_bonus == 2
-        assert character.gender == Character.Gender.MALE
+        assert character.gender == Gender.MALE
         assert character.ac == 0
 
     def test_str(self, character):

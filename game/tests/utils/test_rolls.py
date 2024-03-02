@@ -1,10 +1,12 @@
 import pytest
 
+from character.constants.abilities import AbilityName
+from character.constants.races import SenseName
 from character.models.abilities import AbilityType
 from character.models.proficiencies import SavingThrowProficiency
 from character.models.races import Sense
 from character.tests.factories import CharacterFactory
-from game.models.events import Roll, RollRequest
+from game.constants.events import Against, DifficultyClass, RollResult, RollType
 from game.tests.factories import RollRequestFactory
 from game.utils.rolls import perform_roll
 
@@ -20,11 +22,11 @@ class TestPerformRoll:
         character = CharacterFactory()
         request = RollRequestFactory(
             character=character,
-            roll_type=RollRequest.RollType.ABILITY_CHECK,
-            difficulty_class=RollRequest.DifficultyClass.EASY,
+            roll_type=RollType.ABILITY_CHECK,
+            difficulty_class=DifficultyClass.EASY,
         )
         _, result = perform_roll(character, request)
-        assert result == Roll.Result.SUCCESS
+        assert result == RollResult.SUCCESS
 
     def test_perform_roll_failure(self, monkeypatch):
         def patched_roll(self, modifier=0):
@@ -35,11 +37,11 @@ class TestPerformRoll:
         character = CharacterFactory()
         request = RollRequestFactory(
             character=character,
-            roll_type=RollRequest.RollType.ABILITY_CHECK,
-            difficulty_class=RollRequest.DifficultyClass.HARD,
+            roll_type=RollType.ABILITY_CHECK,
+            difficulty_class=DifficultyClass.HARD,
         )
         _, result = perform_roll(character, request)
-        assert result == Roll.Result.FAILURE
+        assert result == RollResult.FAILURE
 
     def test_perform_roll_proficient(self, monkeypatch):
         def patched_roll(self, modifier=0):
@@ -50,13 +52,13 @@ class TestPerformRoll:
         character = CharacterFactory()
         SavingThrowProficiency.objects.create(
             character=character,
-            ability_type=AbilityType.objects.get(name=AbilityType.Name.CHARISMA),
+            ability_type=AbilityType.objects.get(name=AbilityName.CHARISMA),
         )
         request = RollRequestFactory(
             character=character,
-            ability_type=AbilityType.Name.CHARISMA,
-            roll_type=RollRequest.RollType.ABILITY_CHECK,
-            difficulty_class=RollRequest.DifficultyClass.HARD,
+            ability_type=AbilityName.CHARISMA,
+            roll_type=RollType.ABILITY_CHECK,
+            difficulty_class=DifficultyClass.HARD,
         )
         score, _ = perform_roll(character, request)
         assert score == 12
@@ -70,13 +72,13 @@ class TestPerformRoll:
         monkeypatch.setattr("utils.dice.Dice.roll", patched_roll)
 
         character = CharacterFactory()
-        character.senses.add(Sense.objects.get(name=Sense.Name.DWARVEN_RESILIENCE))
+        character.senses.add(Sense.objects.get(name=SenseName.DWARVEN_RESILIENCE))
         character.save()
         request = RollRequestFactory(
             character=character,
-            roll_type=RollRequest.RollType.SAVING_THROW,
-            difficulty_class=RollRequest.DifficultyClass.EASY,
-            against=RollRequest.Against.POISON,
+            roll_type=RollType.SAVING_THROW,
+            difficulty_class=DifficultyClass.EASY,
+            against=Against.POISON,
         )
         score, _ = perform_roll(character, request)
         assert score == 15
@@ -90,13 +92,13 @@ class TestPerformRoll:
         monkeypatch.setattr("utils.dice.Dice.roll", patched_roll)
 
         character = CharacterFactory()
-        character.senses.add(Sense.objects.get(name=Sense.Name.FEY_ANCESTRY))
+        character.senses.add(Sense.objects.get(name=SenseName.FEY_ANCESTRY))
         character.save()
         request = RollRequestFactory(
             character=character,
-            roll_type=RollRequest.RollType.SAVING_THROW,
-            difficulty_class=RollRequest.DifficultyClass.EASY,
-            against=RollRequest.Against.CHARM,
+            roll_type=RollType.SAVING_THROW,
+            difficulty_class=DifficultyClass.EASY,
+            against=Against.CHARM,
         )
         score, _ = perform_roll(character, request)
         assert score == 15
@@ -110,13 +112,13 @@ class TestPerformRoll:
         monkeypatch.setattr("utils.dice.Dice.roll", patched_roll)
 
         character = CharacterFactory()
-        character.senses.add(Sense.objects.get(name=Sense.Name.BRAVE))
+        character.senses.add(Sense.objects.get(name=SenseName.BRAVE))
         character.save()
         request = RollRequestFactory(
             character=character,
-            roll_type=RollRequest.RollType.SAVING_THROW,
-            difficulty_class=RollRequest.DifficultyClass.EASY,
-            against=RollRequest.Against.BEING_FRIGHTENED,
+            roll_type=RollType.SAVING_THROW,
+            difficulty_class=DifficultyClass.EASY,
+            against=Against.BEING_FRIGHTENED,
         )
         score, _ = perform_roll(character, request)
         assert score == 15

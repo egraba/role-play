@@ -1,53 +1,53 @@
-from ..models.abilities import AbilityType
+from ..constants.abilities import AbilityName
+from ..constants.equipment import ArmorType
 from ..models.klasses import Klass
-from ..models.equipment import Armor
 
 KLASS_FEATURES: dict = {
     Klass.CLERIC: {
         "hit_points": {
             "hit_dice": "1d8",
             "hp_first_level": 8,
-            "hp_modifier_ability": AbilityType.Name.CONSTITUTION,
+            "hp_modifier_ability": AbilityName.CONSTITUTION,
             "hp_higher_levels": 5,
         },
         "proficiencies": {
             "armor": {
-                Armor.Type.LIGHT_ARMOR,
-                Armor.Type.MEDIUM_ARMOR,
-                Armor.Type.SHIELD,
+                ArmorType.LIGHT_ARMOR,
+                ArmorType.MEDIUM_ARMOR,
+                ArmorType.SHIELD,
             },
-            "saving_throws": {AbilityType.Name.WISDOM, AbilityType.Name.CHARISMA},
+            "saving_throws": {AbilityName.WISDOM, AbilityName.CHARISMA},
         },
     },
     Klass.FIGHTER: {
         "hit_points": {
             "hit_dice": "1d10",
             "hp_first_level": 10,
-            "hp_modifier_ability": AbilityType.Name.CONSTITUTION,
+            "hp_modifier_ability": AbilityName.CONSTITUTION,
             "hp_higher_levels": 6,
         },
         "proficiencies": {
             "armor": {
-                Armor.Type.LIGHT_ARMOR,
-                Armor.Type.MEDIUM_ARMOR,
-                Armor.Type.HEAVY_ARMOR,
-                Armor.Type.SHIELD,
+                ArmorType.LIGHT_ARMOR,
+                ArmorType.MEDIUM_ARMOR,
+                ArmorType.HEAVY_ARMOR,
+                ArmorType.SHIELD,
             },
-            "saving_throws": {AbilityType.Name.STRENGTH, AbilityType.Name.CONSTITUTION},
+            "saving_throws": {AbilityName.STRENGTH, AbilityName.CONSTITUTION},
         },
     },
     Klass.ROGUE: {
         "hit_points": {
             "hit_dice": "1d8",
             "hp_first_level": 8,
-            "hp_modifier_ability": AbilityType.Name.CONSTITUTION,
+            "hp_modifier_ability": AbilityName.CONSTITUTION,
             "hp_higher_levels": 5,
         },
         "proficiencies": {
-            "armor": {Armor.Type.LIGHT_ARMOR},
+            "armor": {ArmorType.LIGHT_ARMOR},
             "saving_throws": {
-                AbilityType.Name.DEXTERITY,
-                AbilityType.Name.INTELLIGENCE,
+                AbilityName.DEXTERITY,
+                AbilityName.INTELLIGENCE,
             },
         },
     },
@@ -55,12 +55,12 @@ KLASS_FEATURES: dict = {
         "hit_points": {
             "hit_dice": "1d6",
             "hp_first_level": 6,
-            "hp_modifier_ability": AbilityType.Name.CONSTITUTION,
+            "hp_modifier_ability": AbilityName.CONSTITUTION,
             "hp_higher_levels": 4,
         },
         "proficiencies": {
             "armor": {},
-            "saving_throws": {AbilityType.Name.INTELLIGENCE, AbilityType.Name.WISDOM},
+            "saving_throws": {AbilityName.INTELLIGENCE, AbilityName.WISDOM},
         },
     },
 }

@@ -1,10 +1,11 @@
 import factory
 
+from character.constants.abilities import AbilityName
+from character.constants.races import Race
 from character.models.abilities import Ability, AbilityType
 from character.models.character import Character
-from character.models.klasses import Klass
 from character.models.equipment import Equipment
-from character.models.races import Race
+from character.models.klasses import Klass
 
 
 class AbilityTypeFactory(factory.django.DjangoModelFactory):
@@ -12,7 +13,7 @@ class AbilityTypeFactory(factory.django.DjangoModelFactory):
         model = AbilityType
         django_get_or_create = ("name",)
 
-    name = factory.Faker("enum", enum_cls=AbilityType.Name)
+    name = factory.Faker("enum", enum_cls=AbilityName)
 
 
 class AbilityFactory(factory.django.DjangoModelFactory):
@@ -38,7 +39,7 @@ class CharacterFactory(factory.django.DjangoModelFactory):
     def _create(cls, model_class, *args, **kwargs):
         character = model_class(*args, **kwargs)
         character.save()
-        for ability_name, _ in AbilityType.Name.choices:
+        for ability_name, _ in AbilityName.choices:
             ability = AbilityFactory(ability_type__name=ability_name)
             character.abilities.add(ability)
         return character

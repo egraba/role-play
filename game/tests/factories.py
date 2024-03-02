@@ -1,6 +1,7 @@
 import factory
 
-from character.models.abilities import AbilityType
+from character.constants.abilities import AbilityName
+from game.constants.events import DifficultyClass, RollType
 from game.models.events import Event, Quest, RollRequest
 from game.models.game import Game, Master, Player
 from utils.factories import UserFactory
@@ -58,9 +59,9 @@ class RollRequestFactory(factory.django.DjangoModelFactory):
 
     game = factory.SubFactory(GameFactory)
     character = factory.SubFactory("character.tests.factories.CharacterFactory")
-    ability_type = factory.Faker("enum", enum_cls=AbilityType.Name)
-    difficulty_class = factory.Faker("enum", enum_cls=RollRequest.DifficultyClass)
-    roll_type = factory.Faker("enum", enum_cls=RollRequest.RollType)
+    ability_type = factory.Faker("enum", enum_cls=AbilityName)
+    difficulty_class = factory.Faker("enum", enum_cls=DifficultyClass)
+    roll_type = factory.Faker("enum", enum_cls=RollType)
 
     @factory.post_generation
     def add_character_to_game(obj, create, extracted, **kwargs):

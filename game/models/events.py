@@ -1,8 +1,15 @@
 from django.db import models
 
-from character.models.abilities import AbilityType
+from character.constants.abilities import AbilityName
 from character.models.character import Character
 
+from ..constants.events import (
+    Against,
+    DifficultyClass,
+    RollResult,
+    RollStatus,
+    RollType,
+)
 from .game import Game
 
 
@@ -28,33 +35,13 @@ class Quest(Event):
 
 
 class RollRequest(Event):
-    class Status(models.TextChoices):
-        PENDING = "P", "Pending"
-        DONE = "D", "Done"
-
-    class DifficultyClass(models.IntegerChoices):
-        VERY_EASY = 5, "Very easy"
-        EASY = 10, "Easy"
-        MEDIUM = 15, "Medium"
-        HARD = 20, "Hard"
-        VERY_HARD = 25, "Very hard"
-        NEARLY_IMPOSSIBLE = 30, "Nearly impossible"
-
-    class RollType(models.IntegerChoices):
-        ABILITY_CHECK = 1, "Ability check"
-        SAVING_THROW = 2, "Saving throw"
-        ATTACK = 3, "Attack"
-
-    class Against(models.TextChoices):
-        BEING_FRIGHTENED = "F", "Being frightened"
-        CHARM = "C", "Charm"
-        POISON = "P", "Poison"
-
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
-    status = models.CharField(max_length=1, choices=Status, default=Status.PENDING)
+    status = models.CharField(
+        max_length=1, choices=RollStatus, default=RollStatus.PENDING
+    )
     ability_type = models.CharField(
         max_length=3,
-        choices=AbilityType.Name,
+        choices=AbilityName,
     )
     difficulty_class = models.SmallIntegerField(choices=DifficultyClass)
     roll_type = models.SmallIntegerField(choices=RollType)
@@ -62,10 +49,6 @@ class RollRequest(Event):
 
 
 class Roll(Event):
-    class Result(models.TextChoices):
-        SUCCESS = "S", "Success"
-        FAILURE = "F", "Failure"
-
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
     request = models.ForeignKey(RollRequest, on_delete=models.CASCADE)
-    result = models.CharField(max_length=1, choices=Result)
+    result = models.CharField(max_length=1, choices=RollResult)
