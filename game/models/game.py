@@ -7,20 +7,17 @@ from django_fsm import FSMField, transition
 
 from character.models.character import Character
 from master.models import Campaign
+from ..constants.game import GameStatus
 
 
 class Game(models.Model):
-    class Status(models.TextChoices):
-        UNDER_PREPARATION = "P", "Under preparation"
-        ONGOING = "O", "Ongoing"
-
     name = models.CharField(max_length=100)
     campaign = models.ForeignKey(
         Campaign, on_delete=models.SET_NULL, null=True, blank=True
     )
     start_date = models.DateTimeField(null=True, blank=True)
     status = FSMField(
-        max_length=1, choices=Status.choices, default=Status.UNDER_PREPARATION
+        max_length=1, choices=GameStatus.choices, default=GameStatus.UNDER_PREPARATION
     )
 
     class Meta:
@@ -39,18 +36,18 @@ class Game(models.Model):
 
     @transition(
         field=status,
-        source=Status.UNDER_PREPARATION,
-        target=Status.ONGOING,
+        source=GameStatus.UNDER_PREPARATION,
+        target=GameStatus.ONGOING,
         conditions=[can_start],
     )
     def start(self):
         self.start_date = timezone.now()
 
     def is_under_preparation(self):
-        return self.status == self.Status.UNDER_PREPARATION
+        return self.status == GameStatus.UNDER_PREPARATION
 
     def is_ongoing(self):
-        return self.status == self.Status.ONGOING
+        return self.status == GameStatus.ONGOING
 
 
 class Master(models.Model):
