@@ -2,7 +2,7 @@
 
 Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<patch>`).
 
-## Unreleased
+## v0.7.0 - 2024-03-02
 
 ### Added
 * DnD: Implement saving throws
