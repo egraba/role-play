@@ -29,7 +29,9 @@ repos:
     rev: v2.2.6
     hooks:
       - id: codespell
-        args: ["--ignore-words=codespell-ignore-words.txt"]
+        args:
+          ["--ignore-words=codespell-ignore-words.txt"]
+        exclude: game/static
   - repo: https://github.com/commitizen-tools/commitizen
     rev: v3.16.0
     hooks:
