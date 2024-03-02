@@ -16,6 +16,9 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * Split test coverage commands
 * Migrate to pytest8
 
+### Fixed
+* Fix regression to display glossary page again
+
 ## v0.6.1 - 2024-02-09
 
 ### Added
