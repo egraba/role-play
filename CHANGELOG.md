@@ -2,6 +2,11 @@
 
 Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<patch>`).
 
+## Unreleased
+
+### Added
+* DnD: Add Androgynous gender
+
 ## v0.7.0 - 2024-03-02
 
 ### Added
