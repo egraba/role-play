@@ -168,7 +168,7 @@ class TestCharacterCreateView:
         fake = Faker()
         return {
             "name": f"{fake.name()}",
-            "race": f"{Race.DWARF}",
+            "race": f"{Race.HILL_DWARF}",
             "klass": f"{fake.enum(enum_cls=Klass)}",
             "strength": AbilityScore.SCORE_10,
             "dexterity": AbilityScore.SCORE_12,
@@ -233,7 +233,7 @@ class TestCharacterCreateView:
         fake = Faker()
         return {
             "name": f"{fake.name()}",
-            "race": f"{Race.ELF}",
+            "race": f"{Race.HIGH_ELF}",
             "klass": f"{fake.enum(enum_cls=Klass)}",
             "strength": AbilityScore.SCORE_10,
             "dexterity": AbilityScore.SCORE_12,

@@ -4,10 +4,12 @@ from ..constants.abilities import AbilityName
 
 
 class Race(TextChoices):
-    HUMAN = "H", "Human"
-    HALFLING = "G", "Halfling"
-    ELF = "E", "Elf"
-    DWARF = "D", "Dwarf"
+    HUMAN = "human", "Human"
+    HALFLING = "halfling", "Halfling"
+    HILL_DWARF = "hill_dwarf", "Hill Dwarf"
+    MOUNTAIN_DWARF = "mountain_dwarf", "Mountain Dwarf"
+    HIGH_ELF = "high_elf", "High Elf"
+    WOOD_ELF = "wood_elf", "Wood Elf"
 
 
 class Alignment(TextChoices):
@@ -43,7 +45,7 @@ class SenseName(TextChoices):
 
 
 RACIAL_TRAITS: dict = {
-    Race.DWARF: {
+    Race.HILL_DWARF: {
         "adult_age": 50,
         "life_expectancy": 350,
         "alignment": Alignment.LAWFUL,
@@ -59,7 +61,38 @@ RACIAL_TRAITS: dict = {
         },
         "ability_score_increases": {AbilityName.CONSTITUTION: 2},
     },
-    Race.ELF: {
+    Race.MOUNTAIN_DWARF: {
+        "adult_age": 50,
+        "life_expectancy": 350,
+        "alignment": Alignment.LAWFUL,
+        "size": Size.MEDIUM,
+        "speed": 25,
+        "languages": {LanguageName.COMMON, LanguageName.DWARVISH},
+        "senses": {
+            SenseName.DARKVISION,
+            SenseName.DWARVEN_RESILIENCE,
+            SenseName.DWARVEN_COMBAT_TRAINING,
+            SenseName.TOOL_PROFICIENCY,
+            SenseName.STONECUNNING,
+        },
+        "ability_score_increases": {AbilityName.CONSTITUTION: 2},
+    },
+    Race.HIGH_ELF: {
+        "adult_age": 100,
+        "life_expectancy": 750,
+        "alignment": Alignment.FREEDOM,
+        "size": Size.MEDIUM,
+        "speed": 30,
+        "languages": {LanguageName.COMMON, LanguageName.ELVISH},
+        "senses": {
+            SenseName.DARKVISION,
+            SenseName.KEEN_SENSES,
+            SenseName.FEY_ANCESTRY,
+            SenseName.TRANCE,
+        },
+        "ability_score_increases": {AbilityName.DEXTERITY: 2},
+    },
+    Race.WOOD_ELF: {
         "adult_age": 100,
         "life_expectancy": 750,
         "alignment": Alignment.FREEDOM,
