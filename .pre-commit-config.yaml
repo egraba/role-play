@@ -32,9 +32,3 @@ repos:
         args:
           ["--ignore-words=codespell-ignore-words.txt"]
         exclude: game/static
-  - repo: https://github.com/commitizen-tools/commitizen
-    rev: v3.16.0
-    hooks:
-      - id: commitizen
-      - id: commitizen-branch
-        stages: [push]
