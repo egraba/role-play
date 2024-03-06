@@ -33,7 +33,6 @@ redis = "*"
 whitenoise = "*"
 
 [tool.poetry.group.dev.dependencies]
-commitizen = "*"
 coverage = "*"
 django-coverage-plugin = "*"
 django-debug-toolbar = "*"
@@ -44,14 +43,6 @@ pytest = "*"
 pytest-asyncio = "*"
 pytest-celery = "*"
 pytest-django = "*"
-
-[tool.commitizen]
-name = "cz_conventional_commits"
-tag_format = "v$version"
-version_scheme = "semver"
-version_provider = "poetry"
-update_changelog_on_bump = true
-major_version_zero = true
 
 [tool.ruff]
 exclude = ["role_play/asgi.py", "role_play/urls.py", "role_play/settings/*"]
