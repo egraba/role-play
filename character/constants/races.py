@@ -65,8 +65,9 @@ RACIAL_TRAITS: dict = {
             SenseName.DWARVEN_COMBAT_TRAINING,
             SenseName.TOOL_PROFICIENCY,
             SenseName.STONECUNNING,
+            SenseName.DWARVEN_TOUGHNESS,
         },
-        "ability_score_increases": {AbilityName.CONSTITUTION: 2},
+        "ability_score_increases": {AbilityName.CONSTITUTION: 2, AbilityName.WISDOM: 1},
     },
     Race.MOUNTAIN_DWARF: {
         "adult_age": 50,
@@ -81,8 +82,12 @@ RACIAL_TRAITS: dict = {
             SenseName.DWARVEN_COMBAT_TRAINING,
             SenseName.TOOL_PROFICIENCY,
             SenseName.STONECUNNING,
+            SenseName.DWARVEN_ARMOR_TRAINING,
         },
-        "ability_score_increases": {AbilityName.CONSTITUTION: 2},
+        "ability_score_increases": {
+            AbilityName.CONSTITUTION: 2,
+            AbilityName.STRENGTH: 2,
+        },
     },
     Race.HIGH_ELF: {
         "adult_age": 100,

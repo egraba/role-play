@@ -168,7 +168,7 @@ class TestCharacterCreateView:
         fake = Faker()
         return {
             "name": f"{fake.name()}",
-            "race": f"{fake.random_elements(elements=(Race.HILL_DWARF, Race.MOUNTAIN_DWARF))}",
+            "race": f"{fake.random_element(elements=(Race.HILL_DWARF, Race.MOUNTAIN_DWARF))}",
             "klass": f"{fake.enum(enum_cls=Klass)}",
             "strength": AbilityScore.SCORE_10,
             "dexterity": AbilityScore.SCORE_12,
@@ -253,7 +253,7 @@ class TestCharacterCreateView:
         wisdom = character.abilities.get(ability_type=AbilityName.WISDOM).score
         assert wisdom == AbilityScore.SCORE_15 + 1
 
-        assert character.senses.get(SenseName.DWARVEN_TOUGHNESS)
+        assert character.senses.get(name=SenseName.DWARVEN_TOUGHNESS)
 
     @pytest.fixture
     def moutain_dwarf_form(self):
@@ -284,9 +284,9 @@ class TestCharacterCreateView:
         assertRedirects(response, reverse("skills-select", args=(character.id,)))
 
         strength = character.abilities.get(ability_type=AbilityName.STRENGTH).score
-        assert strength == AbilityScore.SCORE_10 + 1
+        assert strength == AbilityScore.SCORE_10 + 2
 
-        assert character.senses.get(SenseName.DWARVEN_ARMOR_TRAINING)
+        assert character.senses.get(name=SenseName.DWARVEN_ARMOR_TRAINING)
 
     @pytest.fixture
     def elf_form(self):
