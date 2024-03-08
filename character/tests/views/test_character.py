@@ -168,7 +168,7 @@ class TestCharacterCreateView:
         fake = Faker()
         return {
             "name": f"{fake.name()}",
-            "race": f"{Race.HILL_DWARF}",
+            "race": f"{fake.random_elements(elements=(Race.HILL_DWARF, Race.MOUNTAIN_DWARF))}",
             "klass": f"{fake.enum(enum_cls=Klass)}",
             "strength": AbilityScore.SCORE_10,
             "dexterity": AbilityScore.SCORE_12,
@@ -191,9 +191,6 @@ class TestCharacterCreateView:
         character = Character.objects.last()
         assertRedirects(response, reverse("skills-select", args=(character.id,)))
 
-        strength = character.abilities.get(ability_type=AbilityName.STRENGTH).score
-        assert strength == AbilityScore.SCORE_10
-
         dexterity = character.abilities.get(ability_type=AbilityName.DEXTERITY).score
         assert dexterity == AbilityScore.SCORE_12
 
@@ -206,9 +203,6 @@ class TestCharacterCreateView:
             ability_type=AbilityName.INTELLIGENCE
         ).score
         assert intelligence == AbilityScore.SCORE_14
-
-        wisdom = character.abilities.get(ability_type=AbilityName.WISDOM).score
-        assert wisdom == AbilityScore.SCORE_15
 
         charisma = character.abilities.get(ability_type=AbilityName.CHARISMA).score
         assert charisma == AbilityScore.SCORE_8
@@ -226,7 +220,73 @@ class TestCharacterCreateView:
         senses.add(Sense.objects.get(name=SenseName.DWARVEN_COMBAT_TRAINING))
         senses.add(Sense.objects.get(name=SenseName.TOOL_PROFICIENCY))
         senses.add(Sense.objects.get(name=SenseName.STONECUNNING))
-        assert set(character.senses.all()) == senses
+        assert senses.issubset(set(character.senses.all()))
+
+    @pytest.fixture
+    def hill_dwarf_form(self):
+        fake = Faker()
+        return {
+            "name": f"{fake.name()}",
+            "race": f"{Race.HILL_DWARF}",
+            "klass": f"{fake.enum(enum_cls=Klass)}",
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
+            "gender": f"{fake.enum(enum_cls=Gender)}",
+        }
+
+    def test_character_creation_hill_dwarf(self, client, hill_dwarf_form):
+        form = CharacterCreateForm(hill_dwarf_form)
+        assert form.is_valid()
+
+        response = client.post(
+            reverse(self.path_name),
+            data=form.cleaned_data,
+        )
+        assert response.status_code == 302
+        character = Character.objects.last()
+        assertRedirects(response, reverse("skills-select", args=(character.id,)))
+
+        wisdom = character.abilities.get(ability_type=AbilityName.WISDOM).score
+        assert wisdom == AbilityScore.SCORE_15 + 1
+
+        assert character.senses.get(SenseName.DWARVEN_TOUGHNESS)
+
+    @pytest.fixture
+    def moutain_dwarf_form(self):
+        fake = Faker()
+        return {
+            "name": f"{fake.name()}",
+            "race": f"{Race.MOUNTAIN_DWARF}",
+            "klass": f"{fake.enum(enum_cls=Klass)}",
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
+            "gender": f"{fake.enum(enum_cls=Gender)}",
+        }
+
+    def test_character_creation_mountain_dwarf(self, client, moutain_dwarf_form):
+        form = CharacterCreateForm(moutain_dwarf_form)
+        assert form.is_valid()
+
+        response = client.post(
+            reverse(self.path_name),
+            data=form.cleaned_data,
+        )
+        assert response.status_code == 302
+        character = Character.objects.last()
+        assertRedirects(response, reverse("skills-select", args=(character.id,)))
+
+        strength = character.abilities.get(ability_type=AbilityName.STRENGTH).score
+        assert strength == AbilityScore.SCORE_10 + 1
+
+        assert character.senses.get(SenseName.DWARVEN_ARMOR_TRAINING)
 
     @pytest.fixture
     def elf_form(self):
