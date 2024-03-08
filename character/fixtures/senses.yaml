@@ -76,3 +76,47 @@
     name: halfling_nimbleness
     description: |
       You can move through the space of any creature that is of a size larger than yours.
+- model: character.sense
+  pk: 12
+  fields:
+    name: dwarven_toughness
+    description: |
+      Your hit point maximum increases by 1, and it increases by 1 every time you gain a level.
+- model: character.sense
+  pk: 13
+  fields:
+    name: dwarven_armor_training
+    description: |
+      You have proficiency with light and medium armor.
+- model: character.sense
+  pk: 14
+  fields:
+    name: elf_weapon_training
+    description: |
+      You have proficiency with the longsword, shortsword, shortbow, and longbow.
+- model: character.sense
+  pk: 15
+  fields:
+    name: cantrip
+    description: |
+      You know one cantrip of your choice from the wizard spell list.
+      Intelligence is your spellcasting ability for it.
+- model: character.sense
+  pk: 16
+  fields:
+    name: extra_language
+    description: |
+      You can speak, read, and write one extra language of your choice.
+- model: character.sense
+  pk: 17
+  fields:
+    name: fleet_of_foot
+    description: |
+      Your base walking speed increases to 35 feet.
+- model: character.sense
+  pk: 18
+  fields:
+    name: mask_of_the_wild
+    description: |
+      You can attempt to hide even when you are only lightly obscured by foliage,
+      heavy rain, falling snow, mist, and other natural phenomena.
