@@ -96,8 +96,14 @@ RACIAL_TRAITS: dict = {
             SenseName.KEEN_SENSES,
             SenseName.FEY_ANCESTRY,
             SenseName.TRANCE,
+            SenseName.ELF_WEAPON_TRAINING,
+            SenseName.CANTRIP,
+            SenseName.EXTRA_LANGUAGE,
         },
-        "ability_score_increases": {AbilityName.DEXTERITY: 2},
+        "ability_score_increases": {
+            AbilityName.DEXTERITY: 2,
+            AbilityName.INTELLIGENCE: 1,
+        },
     },
     Race.WOOD_ELF: {
         "adult_age": 100,
@@ -111,8 +117,11 @@ RACIAL_TRAITS: dict = {
             SenseName.KEEN_SENSES,
             SenseName.FEY_ANCESTRY,
             SenseName.TRANCE,
+            SenseName.ELF_WEAPON_TRAINING,
+            SenseName.FLEET_OF_FOOT,
+            SenseName.MASK_OF_THE_WILD,
         },
-        "ability_score_increases": {AbilityName.DEXTERITY: 2},
+        "ability_score_increases": {AbilityName.DEXTERITY: 2, AbilityName.WISDOM: 1},
     },
     Race.HALFLING: {
         "adult_age": 20,

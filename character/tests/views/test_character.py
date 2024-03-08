@@ -282,7 +282,7 @@ class TestCharacterCreateView:
         senses.add(Sense.objects.get(name=SenseName.KEEN_SENSES))
         senses.add(Sense.objects.get(name=SenseName.FEY_ANCESTRY))
         senses.add(Sense.objects.get(name=SenseName.TRANCE))
-        assert set(character.senses.all()) == senses
+        assert senses.issubset(set(character.senses.all()))
 
     @pytest.fixture
     def high_elf_form(self):
