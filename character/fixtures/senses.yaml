@@ -1,7 +1,7 @@
 - model: character.sense
   pk: 1
   fields:
-    name: DV
+    name: darkvision
     description: |
       Accustomed to life underground, you have superior vision in dark and dim conditions.
       You can see in dim light within 60 feet of you as if it were bright light,
@@ -10,26 +10,26 @@
 - model: character.sense
   pk: 2
   fields:
-    name: DR
+    name: dwarven_resilience
     description: |
       You have advantage on saving throws against poison, and you have resistance against poison damage.
 - model: character.sense
   pk: 3
   fields:
-    name: DC
+    name: dwarven_combat_training
     description: |
       You have proficiency with the battleaxe, handaxe, light hammer, and warhammer.
 - model: character.sense
   pk: 4
   fields:
-    name: TP
+    name: tool_proficiency
     description: |
       You gain proficiency with the artisan's tools of your choice:
       smith's tools, brewer's supplies, or mason's tools.
 - model: character.sense
   pk: 5
   fields:
-    name: SC
+    name: stonecunning
     description: |
       Whenever you make an Intelligence (History) check related to the origin of stonework,
       you are considered proficient in the History skill and add double your proficiency bonus
@@ -37,19 +37,19 @@
 - model: character.sense
   pk: 6
   fields:
-    name: KS
+    name: keen_senses
     description: |
       You have proficiency in the Percep- tion skill.
 - model: character.sense
   pk: 7
   fields:
-    name: FA
+    name: fey_ancestry
     description: |
       You have advantage on saving throws against being charmed, and magic can't put you to sleep.
 - model: character.sense
   pk: 8
   fields:
-    name: TR
+    name: trance
     description: |
       Elves don't need to sleep. Instead, they meditate deeply, remaining semiconscious,
       for 4 hours a day.
@@ -60,19 +60,63 @@
 - model: character.sense
   pk: 9
   fields:
-    name: LU
+    name: lucky
     description: |
       When you roll a 1 on the d20 for an attack roll, sense check, or saving throw,
       you can reroll the die and must use the new roll.
 - model: character.sense
   pk: 10
   fields:
-    name: BR
+    name: brave
     description: |
       You have advantage on saving throws against being frightened.
 - model: character.sense
   pk: 11
   fields:
-    name: HN
+    name: halfling_nimbleness
     description: |
       You can move through the space of any creature that is of a size larger than yours.
+- model: character.sense
+  pk: 12
+  fields:
+    name: dwarven_toughness
+    description: |
+      Your hit point maximum increases by 1, and it increases by 1 every time you gain a level.
+- model: character.sense
+  pk: 13
+  fields:
+    name: dwarven_armor_training
+    description: |
+      You have proficiency with light and medium armor.
+- model: character.sense
+  pk: 14
+  fields:
+    name: elf_weapon_training
+    description: |
+      You have proficiency with the longsword, shortsword, shortbow, and longbow.
+- model: character.sense
+  pk: 15
+  fields:
+    name: cantrip
+    description: |
+      You know one cantrip of your choice from the wizard spell list.
+      Intelligence is your spellcasting ability for it.
+- model: character.sense
+  pk: 16
+  fields:
+    name: extra_language
+    description: |
+      You can speak, read, and write one extra language of your choice.
+- model: character.sense
+  pk: 17
+  fields:
+    name: fleet_of_foot
+    description: |
+      Your base walking speed increases to 35 feet.
+- model: character.sense
+  pk: 18
+  fields:
+    name: mask_of_the_wild
+    description: |
+      You can attempt to hide even when you are only lightly obscured by foliage,
+      heavy rain, falling snow, mist, and other natural phenomena.

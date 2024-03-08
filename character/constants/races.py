@@ -4,10 +4,12 @@ from ..constants.abilities import AbilityName
 
 
 class Race(TextChoices):
-    HUMAN = "H", "Human"
-    HALFLING = "G", "Halfling"
-    ELF = "E", "Elf"
-    DWARF = "D", "Dwarf"
+    HUMAN = "human", "Human"
+    HALFLING = "halfling", "Halfling"
+    HILL_DWARF = "hill_dwarf", "Hill Dwarf"
+    MOUNTAIN_DWARF = "mountain_dwarf", "Mountain Dwarf"
+    HIGH_ELF = "high_elf", "High Elf"
+    WOOD_ELF = "wood_elf", "Wood Elf"
 
 
 class Alignment(TextChoices):
@@ -29,21 +31,28 @@ class LanguageName(TextChoices):
 
 
 class SenseName(TextChoices):
-    BRAVE = "BR", "Brave"
-    DARKVISION = "DV", "Darkvision"
-    DWARVEN_COMBAT_TRAINING = "DC", "Dwarven Combat Training"
-    DWARVEN_RESILIENCE = "DR", "Dwarven Resilience"
-    FEY_ANCESTRY = "FA", "Fey Ancestry"
-    HALFLING_NIMBLENESS = "HN", "Halfling Nimbleness"
-    KEEN_SENSES = "KS", "Keen Senses"
-    LUCKY = "LU", "Lucky"
-    STONECUNNING = "SC", "Stonecunning"
-    TOOL_PROFICIENCY = "TP", "Tool Proficiency"
-    TRANCE = "TR", "Trance"
+    BRAVE = "brave", "Brave"
+    CANTRIP = "cantrip", "Cantrip"
+    DARKVISION = "darkvision", "Darkvision"
+    DWARVEN_ARMOR_TRAINING = "dwarven_armor_training", "Dwarven Armor Training"
+    DWARVEN_COMBAT_TRAINING = "dwarven_combat_training", "Dwarven Combat Training"
+    DWARVEN_RESILIENCE = "dwarven_resilience", "Dwarven Resilience"
+    DWARVEN_TOUGHNESS = "dwarven_toughness", "Dwarven Toughness"
+    ELF_WEAPON_TRAINING = "elf_weapon_training", "Elf Weapon Training"
+    EXTRA_LANGUAGE = "extra_language", "Extra Language"
+    FEY_ANCESTRY = "fey_ancestry", "Fey Ancestry"
+    FLEET_OF_FOOT = "fleet_of_foot", "Fleet of Foot"
+    HALFLING_NIMBLENESS = "halfling_nimbleness", "Halfling Nimbleness"
+    KEEN_SENSES = "keen_senses", "Keen Senses"
+    LUCKY = "lucky", "Lucky"
+    MASK_OF_THE_WILD = "mask_of_the_wild", "Mask of the Wild"
+    STONECUNNING = "stonecunning", "Stonecunning"
+    TOOL_PROFICIENCY = "tool_proficiency", "Tool Proficiency"
+    TRANCE = "trance", "Trance"
 
 
 RACIAL_TRAITS: dict = {
-    Race.DWARF: {
+    Race.HILL_DWARF: {
         "adult_age": 50,
         "life_expectancy": 350,
         "alignment": Alignment.LAWFUL,
@@ -56,10 +65,31 @@ RACIAL_TRAITS: dict = {
             SenseName.DWARVEN_COMBAT_TRAINING,
             SenseName.TOOL_PROFICIENCY,
             SenseName.STONECUNNING,
+            SenseName.DWARVEN_TOUGHNESS,
         },
-        "ability_score_increases": {AbilityName.CONSTITUTION: 2},
+        "ability_score_increases": {AbilityName.CONSTITUTION: 2, AbilityName.WISDOM: 1},
     },
-    Race.ELF: {
+    Race.MOUNTAIN_DWARF: {
+        "adult_age": 50,
+        "life_expectancy": 350,
+        "alignment": Alignment.LAWFUL,
+        "size": Size.MEDIUM,
+        "speed": 25,
+        "languages": {LanguageName.COMMON, LanguageName.DWARVISH},
+        "senses": {
+            SenseName.DARKVISION,
+            SenseName.DWARVEN_RESILIENCE,
+            SenseName.DWARVEN_COMBAT_TRAINING,
+            SenseName.TOOL_PROFICIENCY,
+            SenseName.STONECUNNING,
+            SenseName.DWARVEN_ARMOR_TRAINING,
+        },
+        "ability_score_increases": {
+            AbilityName.CONSTITUTION: 2,
+            AbilityName.STRENGTH: 2,
+        },
+    },
+    Race.HIGH_ELF: {
         "adult_age": 100,
         "life_expectancy": 750,
         "alignment": Alignment.FREEDOM,
@@ -71,8 +101,32 @@ RACIAL_TRAITS: dict = {
             SenseName.KEEN_SENSES,
             SenseName.FEY_ANCESTRY,
             SenseName.TRANCE,
+            SenseName.ELF_WEAPON_TRAINING,
+            SenseName.CANTRIP,
+            SenseName.EXTRA_LANGUAGE,
         },
-        "ability_score_increases": {AbilityName.DEXTERITY: 2},
+        "ability_score_increases": {
+            AbilityName.DEXTERITY: 2,
+            AbilityName.INTELLIGENCE: 1,
+        },
+    },
+    Race.WOOD_ELF: {
+        "adult_age": 100,
+        "life_expectancy": 750,
+        "alignment": Alignment.FREEDOM,
+        "size": Size.MEDIUM,
+        "speed": 30,
+        "languages": {LanguageName.COMMON, LanguageName.ELVISH},
+        "senses": {
+            SenseName.DARKVISION,
+            SenseName.KEEN_SENSES,
+            SenseName.FEY_ANCESTRY,
+            SenseName.TRANCE,
+            SenseName.ELF_WEAPON_TRAINING,
+            SenseName.FLEET_OF_FOOT,
+            SenseName.MASK_OF_THE_WILD,
+        },
+        "ability_score_increases": {AbilityName.DEXTERITY: 2, AbilityName.WISDOM: 1},
     },
     Race.HALFLING: {
         "adult_age": 20,

@@ -5,6 +5,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Added
+* DnD: Implement elves and dwarves subraces
 * DnD: Add Androgynous gender
 
 ## v0.7.0 - 2024-03-02
