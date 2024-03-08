@@ -31,17 +31,17 @@ class LanguageName(TextChoices):
 
 
 class SenseName(TextChoices):
-    BRAVE = "BR", "Brave"
-    DARKVISION = "DV", "Darkvision"
-    DWARVEN_COMBAT_TRAINING = "DC", "Dwarven Combat Training"
-    DWARVEN_RESILIENCE = "DR", "Dwarven Resilience"
-    FEY_ANCESTRY = "FA", "Fey Ancestry"
-    HALFLING_NIMBLENESS = "HN", "Halfling Nimbleness"
-    KEEN_SENSES = "KS", "Keen Senses"
-    LUCKY = "LU", "Lucky"
-    STONECUNNING = "SC", "Stonecunning"
-    TOOL_PROFICIENCY = "TP", "Tool Proficiency"
-    TRANCE = "TR", "Trance"
+    BRAVE = "brave", "Brave"
+    DARKVISION = "darkvision", "Darkvision"
+    DWARVEN_COMBAT_TRAINING = "dwarven_combat_training", "Dwarven Combat Training"
+    DWARVEN_RESILIENCE = "dwarven_resilience", "Dwarven Resilience"
+    FEY_ANCESTRY = "fey_ancestry", "Fey Ancestry"
+    HALFLING_NIMBLENESS = "halfling_nimbleness", "Halfling Nimbleness"
+    KEEN_SENSES = "keen_senses", "Keen Senses"
+    LUCKY = "lucky", "Lucky"
+    STONECUNNING = "stonecunning", "Stonecunning"
+    TOOL_PROFICIENCY = "tool_proficiency", "Tool Proficiency"
+    TRANCE = "trance", "Trance"
 
 
 RACIAL_TRAITS: dict = {
