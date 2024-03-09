@@ -1,20 +1,48 @@
-# Common
 - model: character.language
   pk: 1
   fields:
     name: common
-# Dwarvish
+    language_type: S
+    script: common
 - model: character.language
   pk: 2
   fields:
     name: dwarvish
-# Elvish
+    language_type: S
+    script: dwarvish
 - model: character.language
   pk: 3
   fields:
     name: elvish
-# Halfling
+    language_type: S
+    script: elvish
 - model: character.language
   pk: 4
   fields:
+    name: giant
+    language_type: S
+    script: dwarvish
+- model: character.language
+  pk: 5
+  fields:
+    name: gnomish
+    language_type: S
+    script: dwarvish
+- model: character.language
+  pk: 6
+  fields:
+    name: goblin
+    language_type: S
+    script: dwarvish
+- model: character.language
+  pk: 7
+  fields:
     name: halfling
+    language_type: S
+    script: common
+- model: character.language
+  pk: 8
+  fields:
+    name: orc
+    language_type: S
+    script: dwarvish
