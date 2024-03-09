@@ -2,19 +2,19 @@
 - model: character.language
   pk: 1
   fields:
-    name: C
+    name: common
 # Dwarvish
 - model: character.language
   pk: 2
   fields:
-    name: D
+    name: dwarvish
 # Elvish
 - model: character.language
   pk: 3
   fields:
-    name: E
+    name: elvish
 # Halfling
 - model: character.language
   pk: 4
   fields:
-    name: H
+    name: halfling

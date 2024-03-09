@@ -4,7 +4,7 @@ from ..constants.races import LanguageName, SenseName
 
 
 class Language(models.Model):
-    name = models.CharField(max_length=1, choices=LanguageName.choices, unique=True)
+    name = models.CharField(max_length=8, choices=LanguageName.choices, unique=True)
 
     def __str__(self):
         return str(self.name)

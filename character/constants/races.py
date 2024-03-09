@@ -24,10 +24,10 @@ class Size(TextChoices):
 
 
 class LanguageName(TextChoices):
-    COMMON = "C", "Common"
-    DWARVISH = "D", "Dwarvish"
-    ELVISH = "E", "Elvish"
-    HALFLING = "H", "Halfling"
+    COMMON = "common", "Common"
+    DWARVISH = "dwarvish", "Dwarvish"
+    ELVISH = "elvish", "Elvish"
+    HALFLING = "halfling", "Halfling"
 
 
 class SenseName(TextChoices):
