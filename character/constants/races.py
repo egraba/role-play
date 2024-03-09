@@ -42,6 +42,11 @@ class LanguageName(TextChoices):
     UNDERCOMMON = "undercommon", "Undercommon"
 
 
+class LanguageType(TextChoices):
+    STANDARD = "S", "Standard"
+    EXOTIC = "E", "EXOTIC"
+
+
 class SenseName(TextChoices):
     BRAVE = "brave", "Brave"
     CANTRIP = "cantrip", "Cantrip"
