@@ -5,6 +5,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Added
+* DnD: Support more languages
 * DnD: Implement height and weight random setup
 * DnD: Implement elves and dwarves subraces
 * DnD: Add Androgynous gender
