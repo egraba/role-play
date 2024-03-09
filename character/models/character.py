@@ -21,6 +21,8 @@ class Character(models.Model):
     name = models.CharField(max_length=100, unique=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     race = models.CharField(max_length=14, choices=Race.choices)
+    height = models.FloatField(default=0)
+    weight = models.SmallIntegerField(default=0)
     klass = models.CharField(max_length=1, choices=Klass.choices, verbose_name="class")
     level = models.SmallIntegerField(default=1)
     xp = models.IntegerField(default=0)

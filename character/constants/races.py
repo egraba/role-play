@@ -68,6 +68,14 @@ RACIAL_TRAITS: dict = {
             SenseName.DWARVEN_TOUGHNESS,
         },
         "ability_score_increases": {AbilityName.CONSTITUTION: 2, AbilityName.WISDOM: 1},
+        "height": {
+            "base_height": 3.8,
+            "height_modifier": "2d4",
+        },
+        "weight": {
+            "base_weight": 115,
+            "weight_modifier": "2d6",
+        },
     },
     Race.MOUNTAIN_DWARF: {
         "adult_age": 50,
@@ -87,6 +95,14 @@ RACIAL_TRAITS: dict = {
         "ability_score_increases": {
             AbilityName.CONSTITUTION: 2,
             AbilityName.STRENGTH: 2,
+        },
+        "height": {
+            "base_height": 4.0,
+            "height_modifier": "2d4",
+        },
+        "weight": {
+            "base_weight": 130,
+            "weight_modifier": "2d6",
         },
     },
     Race.HIGH_ELF: {
@@ -109,6 +125,14 @@ RACIAL_TRAITS: dict = {
             AbilityName.DEXTERITY: 2,
             AbilityName.INTELLIGENCE: 1,
         },
+        "height": {
+            "base_height": 4.6,
+            "height_modifier": "2d10",
+        },
+        "weight": {
+            "base_weight": 90,
+            "weight_modifier": "1d4",
+        },
     },
     Race.WOOD_ELF: {
         "adult_age": 100,
@@ -127,6 +151,14 @@ RACIAL_TRAITS: dict = {
             SenseName.MASK_OF_THE_WILD,
         },
         "ability_score_increases": {AbilityName.DEXTERITY: 2, AbilityName.WISDOM: 1},
+        "height": {
+            "base_height": 4.6,
+            "height_modifier": "2d10",
+        },
+        "weight": {
+            "base_weight": 100,
+            "weight_modifier": "1d4",
+        },
     },
     Race.HALFLING: {
         "adult_age": 20,
@@ -137,6 +169,14 @@ RACIAL_TRAITS: dict = {
         "languages": {LanguageName.COMMON, LanguageName.HALFLING},
         "senses": {SenseName.LUCKY, SenseName.BRAVE, SenseName.HALFLING_NIMBLENESS},
         "ability_score_increases": {AbilityName.DEXTERITY: 2},
+        "height": {
+            "base_height": 2.7,
+            "height_modifier": "2d4",
+        },
+        "weight": {
+            "base_weight": 35,
+            "weight_modifier": None,
+        },
     },
     Race.HUMAN: {
         "adult_age": 50,
@@ -153,6 +193,14 @@ RACIAL_TRAITS: dict = {
             AbilityName.INTELLIGENCE: 1,
             AbilityName.STRENGTH: 1,
             AbilityName.WISDOM: 1,
+        },
+        "height": {
+            "base_height": 4.8,
+            "height_modifier": "2d10",
+        },
+        "weight": {
+            "base_weight": 110,
+            "weight_modifier": "2d4",
         },
     },
 }

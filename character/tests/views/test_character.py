@@ -250,6 +250,9 @@ class TestCharacterCreateView:
         character = Character.objects.last()
         assertRedirects(response, reverse("skills-select", args=(character.id,)))
 
+        assert 3.8 < character.height <= 3.8 + 2 * 4 / 12
+        assert 115 < character.weight <= 115 + 2 * 6 * 12
+
         wisdom = character.abilities.get(ability_type=AbilityName.WISDOM).score
         assert wisdom == AbilityScore.SCORE_15 + 1
 
@@ -282,6 +285,9 @@ class TestCharacterCreateView:
         assert response.status_code == 302
         character = Character.objects.last()
         assertRedirects(response, reverse("skills-select", args=(character.id,)))
+
+        assert 4 < character.height <= 4 + 2 * 4 / 12
+        assert 130 < character.weight <= 130 + 2 * 6 * 12
 
         strength = character.abilities.get(ability_type=AbilityName.STRENGTH).score
         assert strength == AbilityScore.SCORE_10 + 2
@@ -372,6 +378,9 @@ class TestCharacterCreateView:
         character = Character.objects.last()
         assertRedirects(response, reverse("skills-select", args=(character.id,)))
 
+        assert 4.6 < character.height <= 4.6 + 2 * 10 / 12
+        assert 90 < character.weight <= 90 + 1 * 4 * 12
+
         intelligence = character.abilities.get(
             ability_type=AbilityName.INTELLIGENCE
         ).score
@@ -409,6 +418,9 @@ class TestCharacterCreateView:
         character = Character.objects.last()
         assertRedirects(response, reverse("skills-select", args=(character.id,)))
 
+        assert 4.6 < character.height <= 4.6 + 2 * 10 / 12
+        assert 100 < character.weight <= 100 + 1 * 4 * 12
+
         wisdom = character.abilities.get(ability_type=AbilityName.WISDOM).score
         assert wisdom == AbilityScore.SCORE_15 + 1
 
@@ -443,6 +455,9 @@ class TestCharacterCreateView:
         assert response.status_code == 302
         character = Character.objects.last()
         assertRedirects(response, reverse("skills-select", args=(character.id,)))
+
+        assert 2.7 < character.height <= 2.7 + 2 * 4 / 12
+        assert 35 == character.weight
 
         strength = character.abilities.get(ability_type=AbilityName.STRENGTH).score
         assert strength == AbilityScore.SCORE_10
@@ -506,6 +521,9 @@ class TestCharacterCreateView:
         assert response.status_code == 302
         character = Character.objects.last()
         assertRedirects(response, reverse("skills-select", args=(character.id,)))
+
+        assert 4.8 < character.height <= 4.8 + 2 * 10 / 12
+        assert 110 < character.weight <= 110 + 2 * 4 * 12
 
         strength = character.abilities.get(ability_type=AbilityName.STRENGTH).score
         assert strength == AbilityScore.SCORE_10 + 1

@@ -55,6 +55,21 @@ class RaceBuilder:
         for ability in self.character.abilities.all():
             ability.modifier = compute_ability_modifier(ability.score)
 
+    def set_height(self) -> None:
+        base_height = RACIAL_TRAITS[self.race]["height"]["base_height"]
+        height_modifier = RACIAL_TRAITS[self.race]["height"]["height_modifier"]
+        additional_height = Dice(height_modifier).roll() / 12  # inches
+        self.character.height = base_height + additional_height
+
+    def set_weight(self) -> None:
+        base_weight = RACIAL_TRAITS[self.race]["weight"]["base_weight"]
+        weight_modifier = RACIAL_TRAITS[self.race]["weight"]["weight_modifier"]
+        if weight_modifier is None:
+            self.character.weight = base_weight
+        else:
+            additional_weight = Dice(weight_modifier).roll() * 12  # pounds
+            self.character.weight = base_weight + additional_weight
+
 
 class KlassBuilder:
     def __init__(self, character: Character) -> None:
@@ -107,6 +122,8 @@ class Director:
         race_builder.apply_racial_traits()
         race_builder.apply_ability_score_increases()
         race_builder.compute_ability_modifiers()
+        race_builder.set_height()
+        race_builder.set_weight()
         klass_builder.apply_advancement()
         klass_builder.apply_hit_points()
         klass_builder.apply_armor_proficiencies()
