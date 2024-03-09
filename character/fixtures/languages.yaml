@@ -1,20 +1,101 @@
-# Common
 - model: character.language
   pk: 1
   fields:
-    name: C
-# Dwarvish
+    name: common
+    language_type: S
+    script: common
 - model: character.language
   pk: 2
   fields:
-    name: D
-# Elvish
+    name: dwarvish
+    language_type: S
+    script: dwarvish
 - model: character.language
   pk: 3
   fields:
-    name: E
-# Halfling
+    name: elvish
+    language_type: S
+    script: elvish
 - model: character.language
   pk: 4
   fields:
-    name: H
+    name: giant
+    language_type: S
+    script: dwarvish
+- model: character.language
+  pk: 5
+  fields:
+    name: gnomish
+    language_type: S
+    script: dwarvish
+- model: character.language
+  pk: 6
+  fields:
+    name: goblin
+    language_type: S
+    script: dwarvish
+- model: character.language
+  pk: 7
+  fields:
+    name: halfling
+    language_type: S
+    script: common
+- model: character.language
+  pk: 8
+  fields:
+    name: orc
+    language_type: S
+    script: dwarvish
+- model: character.language
+  pk: 8
+  fields:
+    name: orc
+    language_type: S
+    script: dwarvish
+- model: character.language
+  pk: 9
+  fields:
+    name: abyssal
+    language_type: E
+    script: infernal
+- model: character.language
+  pk: 10
+  fields:
+    name: celestial
+    language_type: E
+    script: celestial
+- model: character.language
+  pk: 11
+  fields:
+    name: deep_speech
+    language_type: E
+- model: character.language
+  pk: 12
+  fields:
+    name: draconic
+    language_type: E
+    script: draconic
+- model: character.language
+  pk: 13
+  fields:
+    name: infernal
+    language_type: E
+    script: infernal
+- model: character.language
+  pk: 14
+  fields:
+    name: primordial
+    language_type: E
+    script: dwarvish
+- model: character.language
+  pk: 15
+  fields:
+    name: sylvan
+    language_type: E
+    script: elvish
+- model: character.language
+  pk: 16
+  fields:
+    name: undercommon
+    language_type: S
+    script: elvish
