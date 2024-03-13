@@ -142,6 +142,10 @@ class TestCharacterCreateView:
             "wisdom": AbilityScore.SCORE_15,
             "charisma": AbilityScore.SCORE_8,
             "gender": f"{fake.enum(enum_cls=Gender)}",
+            "personality_traits": f"{fake.text(max_nb_chars=100)}",
+            "ideals": f"{fake.text(max_nb_chars=100)}",
+            "bonds": f"{fake.text(max_nb_chars=100)}",
+            "flaws": f"{fake.text(max_nb_chars=100)}",
         }
 
     def test_character_creation_common(self, client, character_form):
@@ -177,6 +181,10 @@ class TestCharacterCreateView:
             "wisdom": AbilityScore.SCORE_15,
             "charisma": AbilityScore.SCORE_8,
             "gender": f"{fake.enum(enum_cls=Gender)}",
+            "personality_traits": f"{fake.text(max_nb_chars=100)}",
+            "ideals": f"{fake.text(max_nb_chars=100)}",
+            "bonds": f"{fake.text(max_nb_chars=100)}",
+            "flaws": f"{fake.text(max_nb_chars=100)}",
         }
 
     def test_character_creation_dwarf(self, client, dwarf_form):
@@ -236,6 +244,10 @@ class TestCharacterCreateView:
             "wisdom": AbilityScore.SCORE_15,
             "charisma": AbilityScore.SCORE_8,
             "gender": f"{fake.enum(enum_cls=Gender)}",
+            "personality_traits": f"{fake.text(max_nb_chars=100)}",
+            "ideals": f"{fake.text(max_nb_chars=100)}",
+            "bonds": f"{fake.text(max_nb_chars=100)}",
+            "flaws": f"{fake.text(max_nb_chars=100)}",
         }
 
     def test_character_creation_hill_dwarf(self, client, hill_dwarf_form):
@@ -272,6 +284,10 @@ class TestCharacterCreateView:
             "wisdom": AbilityScore.SCORE_15,
             "charisma": AbilityScore.SCORE_8,
             "gender": f"{fake.enum(enum_cls=Gender)}",
+            "personality_traits": f"{fake.text(max_nb_chars=100)}",
+            "ideals": f"{fake.text(max_nb_chars=100)}",
+            "bonds": f"{fake.text(max_nb_chars=100)}",
+            "flaws": f"{fake.text(max_nb_chars=100)}",
         }
 
     def test_character_creation_mountain_dwarf(self, client, moutain_dwarf_form):
@@ -308,6 +324,10 @@ class TestCharacterCreateView:
             "wisdom": AbilityScore.SCORE_15,
             "charisma": AbilityScore.SCORE_8,
             "gender": f"{fake.enum(enum_cls=Gender)}",
+            "personality_traits": f"{fake.text(max_nb_chars=100)}",
+            "ideals": f"{fake.text(max_nb_chars=100)}",
+            "bonds": f"{fake.text(max_nb_chars=100)}",
+            "flaws": f"{fake.text(max_nb_chars=100)}",
         }
 
     def test_character_creation_elf(self, client, elf_form):
@@ -364,6 +384,10 @@ class TestCharacterCreateView:
             "wisdom": AbilityScore.SCORE_15,
             "charisma": AbilityScore.SCORE_8,
             "gender": f"{fake.enum(enum_cls=Gender)}",
+            "personality_traits": f"{fake.text(max_nb_chars=100)}",
+            "ideals": f"{fake.text(max_nb_chars=100)}",
+            "bonds": f"{fake.text(max_nb_chars=100)}",
+            "flaws": f"{fake.text(max_nb_chars=100)}",
         }
 
     def test_character_creation_high_elf(self, client, high_elf_form):
@@ -404,6 +428,10 @@ class TestCharacterCreateView:
             "wisdom": AbilityScore.SCORE_15,
             "charisma": AbilityScore.SCORE_8,
             "gender": f"{fake.enum(enum_cls=Gender)}",
+            "personality_traits": f"{fake.text(max_nb_chars=100)}",
+            "ideals": f"{fake.text(max_nb_chars=100)}",
+            "bonds": f"{fake.text(max_nb_chars=100)}",
+            "flaws": f"{fake.text(max_nb_chars=100)}",
         }
 
     def test_character_creation_wood_elf(self, client, wood_elf_form):
@@ -442,6 +470,10 @@ class TestCharacterCreateView:
             "wisdom": AbilityScore.SCORE_15,
             "charisma": AbilityScore.SCORE_8,
             "gender": f"{fake.enum(enum_cls=Gender)}",
+            "personality_traits": f"{fake.text(max_nb_chars=100)}",
+            "ideals": f"{fake.text(max_nb_chars=100)}",
+            "bonds": f"{fake.text(max_nb_chars=100)}",
+            "flaws": f"{fake.text(max_nb_chars=100)}",
         }
 
     def test_character_creation_halfling(self, client, halfling_form):
@@ -508,6 +540,10 @@ class TestCharacterCreateView:
             "wisdom": AbilityScore.SCORE_15,
             "charisma": AbilityScore.SCORE_8,
             "gender": f"{fake.enum(enum_cls=Gender)}",
+            "personality_traits": f"{fake.text(max_nb_chars=100)}",
+            "ideals": f"{fake.text(max_nb_chars=100)}",
+            "bonds": f"{fake.text(max_nb_chars=100)}",
+            "flaws": f"{fake.text(max_nb_chars=100)}",
         }
 
     def test_character_creation_human(self, client, human_form):
@@ -573,6 +609,10 @@ class TestCharacterCreateView:
             "wisdom": AbilityScore.SCORE_15,
             "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
+            "personality_traits": f"{fake.text(max_nb_chars=100)}",
+            "ideals": f"{fake.text(max_nb_chars=100)}",
+            "bonds": f"{fake.text(max_nb_chars=100)}",
+            "flaws": f"{fake.text(max_nb_chars=100)}",
         }
         form = CharacterCreateForm(data)
         assert form.is_valid()
@@ -617,6 +657,10 @@ class TestCharacterCreateView:
             "wisdom": AbilityScore.SCORE_15,
             "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
+            "personality_traits": f"{fake.text(max_nb_chars=100)}",
+            "ideals": f"{fake.text(max_nb_chars=100)}",
+            "bonds": f"{fake.text(max_nb_chars=100)}",
+            "flaws": f"{fake.text(max_nb_chars=100)}",
         }
         form = CharacterCreateForm(data)
         assert form.is_valid()
@@ -661,6 +705,10 @@ class TestCharacterCreateView:
             "wisdom": AbilityScore.SCORE_15,
             "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
+            "personality_traits": f"{fake.text(max_nb_chars=100)}",
+            "ideals": f"{fake.text(max_nb_chars=100)}",
+            "bonds": f"{fake.text(max_nb_chars=100)}",
+            "flaws": f"{fake.text(max_nb_chars=100)}",
         }
         form = CharacterCreateForm(data)
         assert form.is_valid()
@@ -705,6 +753,10 @@ class TestCharacterCreateView:
             "wisdom": AbilityScore.SCORE_15,
             "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
+            "personality_traits": f"{fake.text(max_nb_chars=100)}",
+            "ideals": f"{fake.text(max_nb_chars=100)}",
+            "bonds": f"{fake.text(max_nb_chars=100)}",
+            "flaws": f"{fake.text(max_nb_chars=100)}",
         }
         form = CharacterCreateForm(data)
         assert form.is_valid()
