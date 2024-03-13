@@ -111,12 +111,31 @@ class KlassBuilder:
             )
 
 
+class BackgroundBuilder:
+    def __init__(self, character: Character) -> None:
+        self.character = character
+        self.background = character.background
+
+    def add_skill_proficiencies(self) -> None:
+        pass
+
+    def add_tool_proficiencies(self) -> None:
+        pass
+
+    def add_languages(self) -> None:
+        pass
+
+    def add_equipment(self) -> None:
+        pass
+
+
 class Director:
     def build(
         self,
         base_builder: BaseBuilder,
         race_builder: RaceBuilder,
         klass_builder: KlassBuilder,
+        background_builder: BackgroundBuilder,
     ) -> None:
         base_builder.initialize_ability_scores()
 
@@ -132,3 +151,8 @@ class Director:
         klass_builder.apply_weapons_proficiencies()
         klass_builder.apply_tools_proficiencies()
         klass_builder.apply_saving_throws_proficiencies()
+
+        background_builder.add_skill_proficiencies()
+        background_builder.add_tool_proficiencies()
+        background_builder.add_languages()
+        background_builder.add_equipment()
