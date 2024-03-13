@@ -6,7 +6,7 @@ from ..forms.character import CharacterCreateForm
 from ..models.abilities import AbilityType, Ability
 from ..models.character import Character
 from ..models.klasses import KlassAdvancement
-from ..models.proficiencies import SavingThrowProficiency
+from ..models.proficiencies import SavingThrowProficiency, SkillProficiency
 from ..models.races import Language, Sense
 from .abilities import compute_ability_modifier
 
@@ -117,7 +117,9 @@ class BackgroundBuilder:
         self.background = character.background
 
     def add_skill_proficiencies(self) -> None:
-        pass
+        skill_proficiencies = KLASS_FEATURES[self.background]["skill_proficiencies"]
+        for skill in skill_proficiencies:
+            SkillProficiency.objects.create(character=self.character, skill=skill)
 
     def add_tool_proficiencies(self) -> None:
         pass
