@@ -119,11 +119,13 @@ class Director:
         klass_builder: KlassBuilder,
     ) -> None:
         base_builder.initialize_ability_scores()
+
         race_builder.apply_racial_traits()
         race_builder.apply_ability_score_increases()
         race_builder.compute_ability_modifiers()
         race_builder.set_height()
         race_builder.set_weight()
+
         klass_builder.apply_advancement()
         klass_builder.apply_hit_points()
         klass_builder.apply_armor_proficiencies()
