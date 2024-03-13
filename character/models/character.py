@@ -6,6 +6,7 @@ from django.urls import reverse
 
 from utils.dice import Dice
 
+from ..constants.backgrounds import Background
 from ..constants.character import Gender
 from ..constants.races import Alignment, Race, Size
 from ..utils.cache import advancement_key
@@ -44,6 +45,7 @@ class Character(models.Model):
     senses = models.ManyToManyField(Sense)
     hit_dice = models.CharField(max_length=5, default="1d8")
     hp_increase = models.SmallIntegerField(default=0)
+    background = models.CharField(max_length=10, choices=Background.choices)
     personality_traits = models.TextField(max_length=100)
     ideals = models.TextField(max_length=100, null=True, blank=True)
     bonds = models.TextField(max_length=100, null=True, blank=True)
