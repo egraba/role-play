@@ -44,7 +44,7 @@ class LanguageName(TextChoices):
 
 class LanguageType(TextChoices):
     STANDARD = "S", "Standard"
-    EXOTIC = "E", "EXOTIC"
+    EXOTIC = "E", "Exotic"
 
 
 class SenseName(TextChoices):
