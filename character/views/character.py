@@ -49,7 +49,9 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
         klass_builder = KlassBuilder(character)
         background_builder = BackgroundBuilder(character)
         director = Director()
-        director.build(base_builder, race_builder, klass_builder, background_builder)
+        director.build_character(
+            base_builder, race_builder, klass_builder, background_builder
+        )
         character.save()
 
         # Inventory

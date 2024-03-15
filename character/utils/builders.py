@@ -136,7 +136,7 @@ class BackgroundBuilder:
 
 
 class Director:
-    def build(
+    def build_character(
         self,
         base_builder: BaseBuilder,
         race_builder: RaceBuilder,
