@@ -27,7 +27,7 @@ BACKGROUNDS: dict = {
             7: "I've enjoyed fine food, drink, and high society among my temple's elite. Rough living grates on me.",
             8: "I've spent so long in the temple that I have little practical experience dealing with people in the outside world.",
         },
-        "bond": {
+        "bonds": {
             1: "I would die to recover an ancient relic of my faith that was lost long ago.",
             2: "I will someday get revenge on the corrupt temple hierarchy who branded me a heretic.",
             3: "I owe my life to the priest who took me in when my parents died.",
@@ -35,7 +35,7 @@ BACKGROUNDS: dict = {
             5: "I will do anything to protect the temple where I served.",
             6: "I seek to preserve a sacred text that my enemies consider heretical and seek to destroy.",
         },
-        "flaw": {
+        "flaws": {
             1: "I judge others harshly, and myself even more severely.",
             2: "I put too much trust in those who wield power within my temple's hierarchy.",
             3: "My piety sometimes leads me to blindly trust those that profess faith in my god.",
