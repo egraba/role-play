@@ -1,10 +1,12 @@
+import random
+
 from utils.dice import Dice
 
 from ..constants.backgrounds import BACKGROUNDS
 from ..constants.klasses import KLASS_FEATURES
 from ..constants.races import RACIAL_TRAITS
 from ..forms.character import CharacterCreateForm
-from ..models.abilities import AbilityType, Ability
+from ..models.abilities import Ability, AbilityType
 from ..models.character import Character
 from ..models.klasses import KlassAdvancement
 from ..models.proficiencies import SavingThrowProficiency, SkillProficiency
@@ -134,6 +136,11 @@ class BackgroundBuilder:
     def add_equipment(self) -> None:
         pass
 
+    def select_personality_trait(self) -> None:
+        self.character.personality_traits = random.choice(
+            BACKGROUNDS[self.background]["personality_traits"]
+        )
+
 
 class Director:
     def build_character(
@@ -162,3 +169,4 @@ class Director:
         background_builder.add_tool_proficiencies()
         background_builder.add_languages()
         background_builder.add_equipment()
+        background_builder.select_personality_trait()

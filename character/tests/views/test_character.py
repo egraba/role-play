@@ -5,7 +5,7 @@ from faker import Faker
 from pytest_django.asserts import assertContains, assertRedirects, assertTemplateUsed
 
 from character.constants.abilities import AbilityName
-from character.constants.backgrounds import Background
+from character.constants.backgrounds import Background, BACKGROUNDS
 from character.constants.character import Gender
 from character.constants.races import LanguageName, Race, SenseName
 from character.forms.character import CharacterCreateForm
@@ -744,4 +744,35 @@ class TestCharacterCreateView:
                 Q(ability_type_id=AbilityName.INTELLIGENCE)
                 | Q(ability_type_id=AbilityName.WISDOM)
             )
+        )
+
+    def test_character_creation_acolyte(self, client):
+        fake = Faker()
+        data = {
+            "name": f"{fake.name()}",
+            "race": f"{fake.enum(enum_cls=Race)}",
+            "klass": f"{fake.enum(enum_cls=Klass)}",
+            "background": f"{Background.ACOLYTE}",
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
+            "gender": f"{fake.enum(enum_cls=Gender)}",
+        }
+        form = CharacterCreateForm(data)
+        assert form.is_valid()
+
+        response = client.post(
+            reverse(self.path_name),
+            data=form.cleaned_data,
+        )
+        assert response.status_code == 302
+        character = Character.objects.last()
+        assertRedirects(response, reverse("skills-select", args=(character.id,)))
+
+        assert (
+            character.personality_traits
+            in BACKGROUNDS[Background.ACOLYTE]["personality_traits"].values()
         )
