@@ -30,7 +30,7 @@ BACKGROUNDS: dict = {
         "languages": {},
         "equipment": {},
     },
-    Background.FOLK_HERO: {
+    Background.NOBLE: {
         "skill_proficiencies": {SkillName.HISTORY, SkillName.PERSUASION},
         "tool_proficiencies": {},
         "languages": {},

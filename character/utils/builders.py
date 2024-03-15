@@ -1,5 +1,6 @@
 from utils.dice import Dice
 
+from ..constants.backgrounds import BACKGROUNDS
 from ..constants.klasses import KLASS_FEATURES
 from ..constants.races import RACIAL_TRAITS
 from ..forms.character import CharacterCreateForm
@@ -8,6 +9,7 @@ from ..models.character import Character
 from ..models.klasses import KlassAdvancement
 from ..models.proficiencies import SavingThrowProficiency, SkillProficiency
 from ..models.races import Language, Sense
+from ..models.skills import Skill
 from .abilities import compute_ability_modifier
 
 
@@ -117,9 +119,11 @@ class BackgroundBuilder:
         self.background = character.background
 
     def add_skill_proficiencies(self) -> None:
-        skill_proficiencies = KLASS_FEATURES[self.background]["skill_proficiencies"]
+        skill_proficiencies = BACKGROUNDS[self.background]["skill_proficiencies"]
         for skill in skill_proficiencies:
-            SkillProficiency.objects.create(character=self.character, skill=skill)
+            SkillProficiency.objects.create(
+                character=self.character, skill=Skill.objects.get(name=skill)
+            )
 
     def add_tool_proficiencies(self) -> None:
         pass
