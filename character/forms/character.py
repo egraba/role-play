@@ -11,6 +11,7 @@ class CharacterCreateForm(forms.ModelForm):
             "name",
             "race",
             "klass",
+            "background",
             "personality_traits",
             "ideals",
             "bonds",
@@ -19,6 +20,7 @@ class CharacterCreateForm(forms.ModelForm):
         widgets = {
             "race": forms.Select(attrs={"class": "rpgui-dropdown"}),
             "klass": forms.Select(attrs={"class": "rpgui-dropdown"}),
+            "background": forms.Select(attrs={"class": "rpgui-dropdown"}),
         }
 
     strength = forms.TypedChoiceField(
@@ -56,6 +58,7 @@ class CharacterCreateForm(forms.ModelForm):
         "name",
         "race",
         "klass",
+        "background",
         "strength",
         "dexterity",
         "constitution",
