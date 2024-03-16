@@ -1,6 +1,6 @@
-from ..constants.equipment import GearType
+from ..constants.equipment import GearType, ToolType
 from ..models.character import Character
-from ..models.equipment import Gear
+from ..models.equipment import Gear, Tool
 from ..models.races import Language
 
 
@@ -18,3 +18,10 @@ def get_holy_symbols():
     Return the set of all holy symbols.
     """
     return set(Gear.objects.filter(gear_type=GearType.HOLY_SYMBOL))
+
+
+def get_gaming_set_tools():
+    """
+    Return the set of gaming set tools.
+    """
+    return set(Tool.objects.filter(tool_type=ToolType.GAMING_SET))

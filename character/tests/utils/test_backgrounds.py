@@ -1,11 +1,15 @@
 import pytest
 from faker import Faker
 
-from character.constants.equipment import GearType
+from character.constants.equipment import GearType, ToolType
 from character.constants.races import LanguageName
-from character.models.equipment import Gear
+from character.models.equipment import Gear, Tool
 from character.models.races import Language
-from character.utils.backgrounds import get_holy_symbols, get_non_spoken_languages
+from character.utils.backgrounds import (
+    get_holy_symbols,
+    get_non_spoken_languages,
+    get_gaming_set_tools,
+)
 
 from ..factories import CharacterFactory
 
@@ -27,3 +31,9 @@ def test_get_non_spoken_languages():
 def test_get_holy_symbols():
     holy_symbols = set(Gear.objects.filter(gear_type=GearType.HOLY_SYMBOL))
     assert get_holy_symbols() == holy_symbols
+
+
+@pytest.mark.django_db
+def test_get_gaming_set_tools():
+    gaming_set_tools = set(Tool.objects.filter(tool_type=ToolType.GAMING_SET))
+    assert get_gaming_set_tools() == gaming_set_tools
