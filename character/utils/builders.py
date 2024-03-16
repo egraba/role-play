@@ -141,6 +141,12 @@ class BackgroundBuilder:
             BACKGROUNDS[self.background]["personality_traits"]
         )
 
+    def select_bond(self) -> None:
+        self.character.bonds = random.choice(BACKGROUNDS[self.background]["bonds"])
+
+    def select_flaw(self) -> None:
+        self.character.flaws = random.choice(BACKGROUNDS[self.background]["flaws"])
+
 
 class Director:
     def build_character(
@@ -170,3 +176,5 @@ class Director:
         background_builder.add_languages()
         background_builder.add_equipment()
         background_builder.select_personality_trait()
+        background_builder.select_bond()
+        background_builder.select_flaw()
