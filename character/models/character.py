@@ -46,10 +46,10 @@ class Character(models.Model):
     hit_dice = models.CharField(max_length=5, default="1d8")
     hp_increase = models.SmallIntegerField(default=0)
     background = models.CharField(max_length=10, choices=Background.choices)
-    personality_traits = models.TextField(max_length=100)
-    ideals = models.TextField(max_length=100, null=True, blank=True)
-    bonds = models.TextField(max_length=100, null=True, blank=True)
-    flaws = models.TextField(max_length=100, null=True, blank=True)
+    personality_traits = models.TextField(max_length=150)
+    ideals = models.TextField(max_length=150, null=True, blank=True)
+    bonds = models.TextField(max_length=150, null=True, blank=True)
+    flaws = models.TextField(max_length=150, null=True, blank=True)
     inventory = models.OneToOneField(
         Inventory, on_delete=models.CASCADE, blank=True, null=True
     )

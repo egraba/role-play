@@ -138,14 +138,18 @@ class BackgroundBuilder:
 
     def select_personality_trait(self) -> None:
         self.character.personality_traits = random.choice(
-            BACKGROUNDS[self.background]["personality_traits"]
+            list(BACKGROUNDS[self.background]["personality_traits"].values())
         )
 
     def select_bond(self) -> None:
-        self.character.bonds = random.choice(BACKGROUNDS[self.background]["bonds"])
+        self.character.bonds = random.choice(
+            list(BACKGROUNDS[self.background]["bonds"].values())
+        )
 
     def select_flaw(self) -> None:
-        self.character.flaws = random.choice(BACKGROUNDS[self.background]["flaws"])
+        self.character.flaws = random.choice(
+            list(BACKGROUNDS[self.background]["flaws"].values())
+        )
 
 
 class Director:
