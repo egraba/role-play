@@ -2,10 +2,9 @@ from ..models.character import Character
 from ..models.races import Language
 
 
-def get_language_choices(character: Character):
+def get_non_spoken_languages(character: Character):
     """
-    Return a set of languages to select for a character.
-    The set does not include the languages already spoken by the character.
+    Return the set of languages a character does not speak.
     """
     languages = set(Language.objects.all())
     character_languages = set(character.languages.all())
