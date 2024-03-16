@@ -776,3 +776,170 @@ class TestCharacterCreateView:
             character.personality_traits
             in BACKGROUNDS[Background.ACOLYTE]["personality_traits"].values()
         )
+        assert character.bonds in BACKGROUNDS[Background.ACOLYTE]["bonds"].values()
+        assert character.flaws in BACKGROUNDS[Background.ACOLYTE]["flaws"].values()
+
+    def test_character_creation_criminal(self, client):
+        fake = Faker()
+        data = {
+            "name": f"{fake.name()}",
+            "race": f"{fake.enum(enum_cls=Race)}",
+            "klass": f"{fake.enum(enum_cls=Klass)}",
+            "background": f"{Background.CRIMINAL}",
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
+            "gender": f"{fake.enum(enum_cls=Gender)}",
+        }
+        form = CharacterCreateForm(data)
+        assert form.is_valid()
+
+        response = client.post(
+            reverse(self.path_name),
+            data=form.cleaned_data,
+        )
+        assert response.status_code == 302
+        character = Character.objects.last()
+        assertRedirects(response, reverse("skills-select", args=(character.id,)))
+
+        assert (
+            character.personality_traits
+            in BACKGROUNDS[Background.CRIMINAL]["personality_traits"].values()
+        )
+        assert character.bonds in BACKGROUNDS[Background.CRIMINAL]["bonds"].values()
+        assert character.flaws in BACKGROUNDS[Background.CRIMINAL]["flaws"].values()
+
+    def test_character_creation_folk_hero(self, client):
+        fake = Faker()
+        data = {
+            "name": f"{fake.name()}",
+            "race": f"{fake.enum(enum_cls=Race)}",
+            "klass": f"{fake.enum(enum_cls=Klass)}",
+            "background": f"{Background.FOLK_HERO}",
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
+            "gender": f"{fake.enum(enum_cls=Gender)}",
+        }
+        form = CharacterCreateForm(data)
+        assert form.is_valid()
+
+        response = client.post(
+            reverse(self.path_name),
+            data=form.cleaned_data,
+        )
+        assert response.status_code == 302
+        character = Character.objects.last()
+        assertRedirects(response, reverse("skills-select", args=(character.id,)))
+
+        assert (
+            character.personality_traits
+            in BACKGROUNDS[Background.FOLK_HERO]["personality_traits"].values()
+        )
+        assert character.bonds in BACKGROUNDS[Background.FOLK_HERO]["bonds"].values()
+        assert character.flaws in BACKGROUNDS[Background.FOLK_HERO]["flaws"].values()
+
+    def test_character_creation_noble(self, client):
+        fake = Faker()
+        data = {
+            "name": f"{fake.name()}",
+            "race": f"{fake.enum(enum_cls=Race)}",
+            "klass": f"{fake.enum(enum_cls=Klass)}",
+            "background": f"{Background.NOBLE}",
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
+            "gender": f"{fake.enum(enum_cls=Gender)}",
+        }
+        form = CharacterCreateForm(data)
+        assert form.is_valid()
+
+        response = client.post(
+            reverse(self.path_name),
+            data=form.cleaned_data,
+        )
+        assert response.status_code == 302
+        character = Character.objects.last()
+        assertRedirects(response, reverse("skills-select", args=(character.id,)))
+
+        assert (
+            character.personality_traits
+            in BACKGROUNDS[Background.NOBLE]["personality_traits"].values()
+        )
+        assert character.bonds in BACKGROUNDS[Background.NOBLE]["bonds"].values()
+        assert character.flaws in BACKGROUNDS[Background.NOBLE]["flaws"].values()
+
+    def test_character_creation_sage(self, client):
+        fake = Faker()
+        data = {
+            "name": f"{fake.name()}",
+            "race": f"{fake.enum(enum_cls=Race)}",
+            "klass": f"{fake.enum(enum_cls=Klass)}",
+            "background": f"{Background.SAGE}",
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
+            "gender": f"{fake.enum(enum_cls=Gender)}",
+        }
+        form = CharacterCreateForm(data)
+        assert form.is_valid()
+
+        response = client.post(
+            reverse(self.path_name),
+            data=form.cleaned_data,
+        )
+        assert response.status_code == 302
+        character = Character.objects.last()
+        assertRedirects(response, reverse("skills-select", args=(character.id,)))
+
+        assert (
+            character.personality_traits
+            in BACKGROUNDS[Background.SAGE]["personality_traits"].values()
+        )
+        assert character.bonds in BACKGROUNDS[Background.SAGE]["bonds"].values()
+        assert character.flaws in BACKGROUNDS[Background.SAGE]["flaws"].values()
+
+    def test_character_creation_soldier(self, client):
+        fake = Faker()
+        data = {
+            "name": f"{fake.name()}",
+            "race": f"{fake.enum(enum_cls=Race)}",
+            "klass": f"{fake.enum(enum_cls=Klass)}",
+            "background": f"{Background.SOLDIER}",
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
+            "gender": f"{fake.enum(enum_cls=Gender)}",
+        }
+        form = CharacterCreateForm(data)
+        assert form.is_valid()
+
+        response = client.post(
+            reverse(self.path_name),
+            data=form.cleaned_data,
+        )
+        assert response.status_code == 302
+        character = Character.objects.last()
+        assertRedirects(response, reverse("skills-select", args=(character.id,)))
+
+        assert (
+            character.personality_traits
+            in BACKGROUNDS[Background.SOLDIER]["personality_traits"].values()
+        )
+        assert character.bonds in BACKGROUNDS[Background.SOLDIER]["bonds"].values()
+        assert character.flaws in BACKGROUNDS[Background.SOLDIER]["flaws"].values()
