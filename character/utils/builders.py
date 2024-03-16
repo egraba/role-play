@@ -152,33 +152,31 @@ class BackgroundBuilder:
         )
 
 
-class Director:
-    def build_character(
-        self,
-        base_builder: BaseBuilder,
-        race_builder: RaceBuilder,
-        klass_builder: KlassBuilder,
-        background_builder: BackgroundBuilder,
-    ) -> None:
-        base_builder.initialize_ability_scores()
+def build_character(
+    base_builder: BaseBuilder,
+    race_builder: RaceBuilder,
+    klass_builder: KlassBuilder,
+    background_builder: BackgroundBuilder,
+) -> None:
+    base_builder.initialize_ability_scores()
 
-        race_builder.apply_racial_traits()
-        race_builder.apply_ability_score_increases()
-        race_builder.compute_ability_modifiers()
-        race_builder.set_height()
-        race_builder.set_weight()
+    race_builder.apply_racial_traits()
+    race_builder.apply_ability_score_increases()
+    race_builder.compute_ability_modifiers()
+    race_builder.set_height()
+    race_builder.set_weight()
 
-        klass_builder.apply_advancement()
-        klass_builder.apply_hit_points()
-        klass_builder.apply_armor_proficiencies()
-        klass_builder.apply_weapons_proficiencies()
-        klass_builder.apply_tools_proficiencies()
-        klass_builder.apply_saving_throws_proficiencies()
+    klass_builder.apply_advancement()
+    klass_builder.apply_hit_points()
+    klass_builder.apply_armor_proficiencies()
+    klass_builder.apply_weapons_proficiencies()
+    klass_builder.apply_tools_proficiencies()
+    klass_builder.apply_saving_throws_proficiencies()
 
-        background_builder.add_skill_proficiencies()
-        background_builder.add_tool_proficiencies()
-        background_builder.add_languages()
-        background_builder.add_equipment()
-        background_builder.select_personality_trait()
-        background_builder.select_bond()
-        background_builder.select_flaw()
+    background_builder.add_skill_proficiencies()
+    background_builder.add_tool_proficiencies()
+    background_builder.add_languages()
+    background_builder.add_equipment()
+    background_builder.select_personality_trait()
+    background_builder.select_bond()
+    background_builder.select_flaw()
