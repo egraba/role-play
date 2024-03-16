@@ -5,13 +5,15 @@ from faker import Faker
 from pytest_django.asserts import assertContains, assertRedirects, assertTemplateUsed
 
 from character.constants.abilities import AbilityName
-from character.constants.backgrounds import Background, BACKGROUNDS
+from character.constants.backgrounds import BACKGROUNDS, Background
 from character.constants.character import Gender
 from character.constants.races import LanguageName, Race, SenseName
+from character.constants.skills import SkillName
 from character.forms.character import CharacterCreateForm
 from character.models.character import Character
 from character.models.klasses import Klass
-from character.models.proficiencies import SavingThrowProficiency
+from character.models.proficiencies import SavingThrowProficiency, SkillProficiency
+from character.models.skills import Skill
 from character.models.races import Language, Sense
 from character.utils.abilities import AbilityScore
 from character.views.character import (
@@ -772,6 +774,11 @@ class TestCharacterCreateView:
         character = Character.objects.last()
         assertRedirects(response, reverse("skills-select", args=(character.id,)))
 
+        SkillProficiency.objects.filter(
+            Q(character=character, skill=Skill.objects.get(name=SkillName.INSIGHT))
+            | Q(character=character, skill=Skill.objects.get(name=SkillName.RELIGION))
+        )
+
         assert (
             character.personality_traits
             in BACKGROUNDS[Background.ACOLYTE]["personality_traits"].values()
@@ -804,6 +811,11 @@ class TestCharacterCreateView:
         assert response.status_code == 302
         character = Character.objects.last()
         assertRedirects(response, reverse("skills-select", args=(character.id,)))
+
+        SkillProficiency.objects.filter(
+            Q(character=character, skill=Skill.objects.get(name=SkillName.DECEPTION))
+            | Q(character=character, skill=Skill.objects.get(name=SkillName.STEALTH))
+        )
 
         assert (
             character.personality_traits
@@ -838,6 +850,14 @@ class TestCharacterCreateView:
         character = Character.objects.last()
         assertRedirects(response, reverse("skills-select", args=(character.id,)))
 
+        SkillProficiency.objects.filter(
+            Q(
+                character=character,
+                skill=Skill.objects.get(name=SkillName.ANIMAL_HANDLING),
+            )
+            | Q(character=character, skill=Skill.objects.get(name=SkillName.SURVIVAL))
+        )
+
         assert (
             character.personality_traits
             in BACKGROUNDS[Background.FOLK_HERO]["personality_traits"].values()
@@ -870,6 +890,11 @@ class TestCharacterCreateView:
         assert response.status_code == 302
         character = Character.objects.last()
         assertRedirects(response, reverse("skills-select", args=(character.id,)))
+
+        SkillProficiency.objects.filter(
+            Q(character=character, skill=Skill.objects.get(name=SkillName.HISTORY))
+            | Q(character=character, skill=Skill.objects.get(name=SkillName.PERSUASION))
+        )
 
         assert (
             character.personality_traits
@@ -904,6 +929,11 @@ class TestCharacterCreateView:
         character = Character.objects.last()
         assertRedirects(response, reverse("skills-select", args=(character.id,)))
 
+        SkillProficiency.objects.filter(
+            Q(character=character, skill=Skill.objects.get(name=SkillName.ARCANA))
+            | Q(character=character, skill=Skill.objects.get(name=SkillName.HISTORY))
+        )
+
         assert (
             character.personality_traits
             in BACKGROUNDS[Background.SAGE]["personality_traits"].values()
@@ -936,6 +966,14 @@ class TestCharacterCreateView:
         assert response.status_code == 302
         character = Character.objects.last()
         assertRedirects(response, reverse("skills-select", args=(character.id,)))
+
+        SkillProficiency.objects.filter(
+            Q(character=character, skill=Skill.objects.get(name=SkillName.ATHLETICS))
+            | Q(
+                character=character,
+                skill=Skill.objects.get(name=SkillName.INTIMIDATION),
+            )
+        )
 
         assert (
             character.personality_traits
