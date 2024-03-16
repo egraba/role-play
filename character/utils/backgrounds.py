@@ -25,3 +25,10 @@ def get_gaming_set_tools():
     Return the set of gaming set tools.
     """
     return set(Tool.objects.filter(tool_type=ToolType.GAMING_SET))
+
+
+def get_artisans_tools():
+    """
+    Return the set of artisan's tools.
+    """
+    return set(Tool.objects.filter(tool_type=ToolType.ARTISANS_TOOLS))
