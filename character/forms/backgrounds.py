@@ -1,7 +1,8 @@
 from django import forms
+from .mixins import DuplicateValuesMixin
 
 
-class AcolyteForm(forms.Form):
+class AcolyteForm(DuplicateValuesMixin):
     first_language = forms.ChoiceField()
     second_language = forms.ChoiceField()
     equipment = forms.ChoiceField()
@@ -21,7 +22,7 @@ class NobleForm(forms.Form):
     language = forms.ChoiceField()
 
 
-class SageForm(forms.Form):
+class SageForm(DuplicateValuesMixin):
     first_language = forms.ChoiceField()
     second_language = forms.ChoiceField()
 
