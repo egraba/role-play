@@ -12,7 +12,7 @@ class SkillsSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
     template_name = "character/skills_select.html"
 
     def get_success_url(self):
-        return reverse("equipment-select", args=(self.character.id,))
+        return reverse("background-complete", args=(self.character.id,))
 
     def get_form_class(self):
         match self.character.klass:
