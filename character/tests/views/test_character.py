@@ -783,6 +783,7 @@ class TestCharacterCreateView:
             character.personality_traits
             in BACKGROUNDS[Background.ACOLYTE]["personality_traits"].values()
         )
+        assert character.ideals in BACKGROUNDS[Background.ACOLYTE]["ideals"].values()
         assert character.bonds in BACKGROUNDS[Background.ACOLYTE]["bonds"].values()
         assert character.flaws in BACKGROUNDS[Background.ACOLYTE]["flaws"].values()
 
@@ -821,6 +822,7 @@ class TestCharacterCreateView:
             character.personality_traits
             in BACKGROUNDS[Background.CRIMINAL]["personality_traits"].values()
         )
+        assert character.ideals in BACKGROUNDS[Background.CRIMINAL]["ideals"].values()
         assert character.bonds in BACKGROUNDS[Background.CRIMINAL]["bonds"].values()
         assert character.flaws in BACKGROUNDS[Background.CRIMINAL]["flaws"].values()
 
@@ -862,6 +864,7 @@ class TestCharacterCreateView:
             character.personality_traits
             in BACKGROUNDS[Background.FOLK_HERO]["personality_traits"].values()
         )
+        assert character.ideals in BACKGROUNDS[Background.FOLK_HERO]["ideals"].values()
         assert character.bonds in BACKGROUNDS[Background.FOLK_HERO]["bonds"].values()
         assert character.flaws in BACKGROUNDS[Background.FOLK_HERO]["flaws"].values()
 
@@ -900,6 +903,7 @@ class TestCharacterCreateView:
             character.personality_traits
             in BACKGROUNDS[Background.NOBLE]["personality_traits"].values()
         )
+        assert character.ideals in BACKGROUNDS[Background.NOBLE]["ideals"].values()
         assert character.bonds in BACKGROUNDS[Background.NOBLE]["bonds"].values()
         assert character.flaws in BACKGROUNDS[Background.NOBLE]["flaws"].values()
 
@@ -938,6 +942,7 @@ class TestCharacterCreateView:
             character.personality_traits
             in BACKGROUNDS[Background.SAGE]["personality_traits"].values()
         )
+        assert character.ideals in BACKGROUNDS[Background.SAGE]["ideals"].values()
         assert character.bonds in BACKGROUNDS[Background.SAGE]["bonds"].values()
         assert character.flaws in BACKGROUNDS[Background.SAGE]["flaws"].values()
 
@@ -979,5 +984,6 @@ class TestCharacterCreateView:
             character.personality_traits
             in BACKGROUNDS[Background.SOLDIER]["personality_traits"].values()
         )
+        assert character.ideals in BACKGROUNDS[Background.SOLDIER]["ideals"].values()
         assert character.bonds in BACKGROUNDS[Background.SOLDIER]["bonds"].values()
         assert character.flaws in BACKGROUNDS[Background.SOLDIER]["flaws"].values()

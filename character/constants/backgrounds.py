@@ -146,7 +146,7 @@ BACKGROUNDS: dict = {
             7: "My favor, once lost, is lost forever.",
             8: "If you do me an injury, I will crush you, ruin your name, and salt your fields.",
         },
-        "ideal": {
+        "ideals": {
             1: "Respect. Respect is due to me because of my position, but all people regardless of station deserve to be treated with dignity. (Good)",
             2: "Responsibility. It is my duty to respect the authority of those above me, just as those below me must respect mine. (Lawful)",
             3: "Independence. I must prove that I can handle myself without the coddling of my family. (Chaotic)",

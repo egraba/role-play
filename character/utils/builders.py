@@ -141,6 +141,11 @@ class BackgroundBuilder:
             list(BACKGROUNDS[self.background]["personality_traits"].values())
         )
 
+    def select_ideal(self) -> None:
+        self.character.ideals = random.choice(
+            list(BACKGROUNDS[self.background]["ideals"].values())
+        )
+
     def select_bond(self) -> None:
         self.character.bonds = random.choice(
             list(BACKGROUNDS[self.background]["bonds"].values())
@@ -178,5 +183,6 @@ def build_character(
     background_builder.add_languages()
     background_builder.add_equipment()
     background_builder.select_personality_trait()
+    background_builder.select_ideal()
     background_builder.select_bond()
     background_builder.select_flaw()
