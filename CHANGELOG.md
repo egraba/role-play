@@ -2,7 +2,7 @@
 
 Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<patch>`).
 
-## Unreleased
+## v0.8.0 - 2024-03-23
 
 ### Added
 * DnD: Support backgrounds
