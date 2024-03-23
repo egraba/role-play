@@ -1,13 +1,17 @@
+import random
+
 from utils.dice import Dice
 
+from ..constants.backgrounds import BACKGROUNDS
 from ..constants.klasses import KLASS_FEATURES
 from ..constants.races import RACIAL_TRAITS
 from ..forms.character import CharacterCreateForm
-from ..models.abilities import AbilityType, Ability
+from ..models.abilities import Ability, AbilityType
 from ..models.character import Character
 from ..models.klasses import KlassAdvancement
-from ..models.proficiencies import SavingThrowProficiency
+from ..models.proficiencies import SavingThrowProficiency, SkillProficiency
 from ..models.races import Language, Sense
+from ..models.skills import Skill
 from .abilities import compute_ability_modifier
 
 
@@ -111,22 +115,74 @@ class KlassBuilder:
             )
 
 
-class Director:
-    def build(
-        self,
-        base_builder: BaseBuilder,
-        race_builder: RaceBuilder,
-        klass_builder: KlassBuilder,
-    ) -> None:
-        base_builder.initialize_ability_scores()
-        race_builder.apply_racial_traits()
-        race_builder.apply_ability_score_increases()
-        race_builder.compute_ability_modifiers()
-        race_builder.set_height()
-        race_builder.set_weight()
-        klass_builder.apply_advancement()
-        klass_builder.apply_hit_points()
-        klass_builder.apply_armor_proficiencies()
-        klass_builder.apply_weapons_proficiencies()
-        klass_builder.apply_tools_proficiencies()
-        klass_builder.apply_saving_throws_proficiencies()
+class BackgroundBuilder:
+    def __init__(self, character: Character) -> None:
+        self.character = character
+        self.background = character.background
+
+    def add_skill_proficiencies(self) -> None:
+        skill_proficiencies = BACKGROUNDS[self.background]["skill_proficiencies"]
+        for skill in skill_proficiencies:
+            SkillProficiency.objects.create(
+                character=self.character, skill=Skill.objects.get(name=skill)
+            )
+
+    def add_tool_proficiencies(self) -> None:
+        pass
+
+    def add_languages(self) -> None:
+        pass
+
+    def add_equipment(self) -> None:
+        pass
+
+    def select_personality_trait(self) -> None:
+        self.character.personality_trait = random.choice(
+            list(BACKGROUNDS[self.background]["personality_traits"].values())
+        )
+
+    def select_ideal(self) -> None:
+        self.character.ideal = random.choice(
+            list(BACKGROUNDS[self.background]["ideals"].values())
+        )
+
+    def select_bond(self) -> None:
+        self.character.bond = random.choice(
+            list(BACKGROUNDS[self.background]["bonds"].values())
+        )
+
+    def select_flaw(self) -> None:
+        self.character.flaw = random.choice(
+            list(BACKGROUNDS[self.background]["flaws"].values())
+        )
+
+
+def build_character(
+    base_builder: BaseBuilder,
+    race_builder: RaceBuilder,
+    klass_builder: KlassBuilder,
+    background_builder: BackgroundBuilder,
+) -> None:
+    base_builder.initialize_ability_scores()
+
+    race_builder.apply_racial_traits()
+    race_builder.apply_ability_score_increases()
+    race_builder.compute_ability_modifiers()
+    race_builder.set_height()
+    race_builder.set_weight()
+
+    klass_builder.apply_advancement()
+    klass_builder.apply_hit_points()
+    klass_builder.apply_armor_proficiencies()
+    klass_builder.apply_weapons_proficiencies()
+    klass_builder.apply_tools_proficiencies()
+    klass_builder.apply_saving_throws_proficiencies()
+
+    background_builder.add_skill_proficiencies()
+    background_builder.add_tool_proficiencies()
+    background_builder.add_languages()
+    background_builder.add_equipment()
+    background_builder.select_personality_trait()
+    background_builder.select_ideal()
+    background_builder.select_bond()
+    background_builder.select_flaw()

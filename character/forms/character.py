@@ -11,14 +11,12 @@ class CharacterCreateForm(forms.ModelForm):
             "name",
             "race",
             "klass",
-            "personality_traits",
-            "ideals",
-            "bonds",
-            "flaws",
+            "background",
         ]
         widgets = {
             "race": forms.Select(attrs={"class": "rpgui-dropdown"}),
             "klass": forms.Select(attrs={"class": "rpgui-dropdown"}),
+            "background": forms.Select(attrs={"class": "rpgui-dropdown"}),
         }
 
     strength = forms.TypedChoiceField(
@@ -51,22 +49,6 @@ class CharacterCreateForm(forms.ModelForm):
         coerce=int,
         widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
     )
-
-    field_order = [
-        "name",
-        "race",
-        "klass",
-        "strength",
-        "dexterity",
-        "constitution",
-        "intelligence",
-        "wisdom",
-        "charisma",
-        "personality_traits",
-        "ideals",
-        "bonds",
-        "flaws",
-    ]
 
     def clean(self):
         self.cleaned_data = super().clean()

@@ -5,12 +5,15 @@ from faker import Faker
 from pytest_django.asserts import assertContains, assertRedirects, assertTemplateUsed
 
 from character.constants.abilities import AbilityName
+from character.constants.backgrounds import BACKGROUNDS, Background
 from character.constants.character import Gender
 from character.constants.races import LanguageName, Race, SenseName
+from character.constants.skills import SkillName
 from character.forms.character import CharacterCreateForm
 from character.models.character import Character
 from character.models.klasses import Klass
-from character.models.proficiencies import SavingThrowProficiency
+from character.models.proficiencies import SavingThrowProficiency, SkillProficiency
+from character.models.skills import Skill
 from character.models.races import Language, Sense
 from character.utils.abilities import AbilityScore
 from character.views.character import (
@@ -135,6 +138,7 @@ class TestCharacterCreateView:
             "name": f"{fake.name()}",
             "race": f"{fake.enum(enum_cls=Race)}",
             "klass": f"{fake.enum(enum_cls=Klass)}",
+            "background": f"{fake.enum(enum_cls=Background)}",
             "strength": AbilityScore.SCORE_10,
             "dexterity": AbilityScore.SCORE_12,
             "constitution": AbilityScore.SCORE_13,
@@ -142,10 +146,6 @@ class TestCharacterCreateView:
             "wisdom": AbilityScore.SCORE_15,
             "charisma": AbilityScore.SCORE_8,
             "gender": f"{fake.enum(enum_cls=Gender)}",
-            "personality_traits": f"{fake.text(max_nb_chars=100)}",
-            "ideals": f"{fake.text(max_nb_chars=100)}",
-            "bonds": f"{fake.text(max_nb_chars=100)}",
-            "flaws": f"{fake.text(max_nb_chars=100)}",
         }
 
     def test_character_creation_common(self, client, character_form):
@@ -174,6 +174,7 @@ class TestCharacterCreateView:
             "name": f"{fake.name()}",
             "race": f"{fake.random_element(elements=(Race.HILL_DWARF, Race.MOUNTAIN_DWARF))}",
             "klass": f"{fake.enum(enum_cls=Klass)}",
+            "background": f"{fake.enum(enum_cls=Background)}",
             "strength": AbilityScore.SCORE_10,
             "dexterity": AbilityScore.SCORE_12,
             "constitution": AbilityScore.SCORE_13,
@@ -181,10 +182,6 @@ class TestCharacterCreateView:
             "wisdom": AbilityScore.SCORE_15,
             "charisma": AbilityScore.SCORE_8,
             "gender": f"{fake.enum(enum_cls=Gender)}",
-            "personality_traits": f"{fake.text(max_nb_chars=100)}",
-            "ideals": f"{fake.text(max_nb_chars=100)}",
-            "bonds": f"{fake.text(max_nb_chars=100)}",
-            "flaws": f"{fake.text(max_nb_chars=100)}",
         }
 
     def test_character_creation_dwarf(self, client, dwarf_form):
@@ -237,6 +234,7 @@ class TestCharacterCreateView:
             "name": f"{fake.name()}",
             "race": f"{Race.HILL_DWARF}",
             "klass": f"{fake.enum(enum_cls=Klass)}",
+            "background": f"{fake.enum(enum_cls=Background)}",
             "strength": AbilityScore.SCORE_10,
             "dexterity": AbilityScore.SCORE_12,
             "constitution": AbilityScore.SCORE_13,
@@ -244,10 +242,6 @@ class TestCharacterCreateView:
             "wisdom": AbilityScore.SCORE_15,
             "charisma": AbilityScore.SCORE_8,
             "gender": f"{fake.enum(enum_cls=Gender)}",
-            "personality_traits": f"{fake.text(max_nb_chars=100)}",
-            "ideals": f"{fake.text(max_nb_chars=100)}",
-            "bonds": f"{fake.text(max_nb_chars=100)}",
-            "flaws": f"{fake.text(max_nb_chars=100)}",
         }
 
     def test_character_creation_hill_dwarf(self, client, hill_dwarf_form):
@@ -277,6 +271,7 @@ class TestCharacterCreateView:
             "name": f"{fake.name()}",
             "race": f"{Race.MOUNTAIN_DWARF}",
             "klass": f"{fake.enum(enum_cls=Klass)}",
+            "background": f"{fake.enum(enum_cls=Background)}",
             "strength": AbilityScore.SCORE_10,
             "dexterity": AbilityScore.SCORE_12,
             "constitution": AbilityScore.SCORE_13,
@@ -284,10 +279,6 @@ class TestCharacterCreateView:
             "wisdom": AbilityScore.SCORE_15,
             "charisma": AbilityScore.SCORE_8,
             "gender": f"{fake.enum(enum_cls=Gender)}",
-            "personality_traits": f"{fake.text(max_nb_chars=100)}",
-            "ideals": f"{fake.text(max_nb_chars=100)}",
-            "bonds": f"{fake.text(max_nb_chars=100)}",
-            "flaws": f"{fake.text(max_nb_chars=100)}",
         }
 
     def test_character_creation_mountain_dwarf(self, client, moutain_dwarf_form):
@@ -317,6 +308,7 @@ class TestCharacterCreateView:
             "name": f"{fake.name()}",
             "race": f"{fake.random_element(elements=(Race.HIGH_ELF, Race.WOOD_ELF))}",
             "klass": f"{fake.enum(enum_cls=Klass)}",
+            "background": f"{fake.enum(enum_cls=Background)}",
             "strength": AbilityScore.SCORE_10,
             "dexterity": AbilityScore.SCORE_12,
             "constitution": AbilityScore.SCORE_13,
@@ -324,10 +316,6 @@ class TestCharacterCreateView:
             "wisdom": AbilityScore.SCORE_15,
             "charisma": AbilityScore.SCORE_8,
             "gender": f"{fake.enum(enum_cls=Gender)}",
-            "personality_traits": f"{fake.text(max_nb_chars=100)}",
-            "ideals": f"{fake.text(max_nb_chars=100)}",
-            "bonds": f"{fake.text(max_nb_chars=100)}",
-            "flaws": f"{fake.text(max_nb_chars=100)}",
         }
 
     def test_character_creation_elf(self, client, elf_form):
@@ -377,6 +365,7 @@ class TestCharacterCreateView:
             "name": f"{fake.name()}",
             "race": f"{Race.HIGH_ELF}",
             "klass": f"{fake.enum(enum_cls=Klass)}",
+            "background": f"{fake.enum(enum_cls=Background)}",
             "strength": AbilityScore.SCORE_10,
             "dexterity": AbilityScore.SCORE_12,
             "constitution": AbilityScore.SCORE_13,
@@ -384,10 +373,6 @@ class TestCharacterCreateView:
             "wisdom": AbilityScore.SCORE_15,
             "charisma": AbilityScore.SCORE_8,
             "gender": f"{fake.enum(enum_cls=Gender)}",
-            "personality_traits": f"{fake.text(max_nb_chars=100)}",
-            "ideals": f"{fake.text(max_nb_chars=100)}",
-            "bonds": f"{fake.text(max_nb_chars=100)}",
-            "flaws": f"{fake.text(max_nb_chars=100)}",
         }
 
     def test_character_creation_high_elf(self, client, high_elf_form):
@@ -421,6 +406,7 @@ class TestCharacterCreateView:
             "name": f"{fake.name()}",
             "race": f"{Race.WOOD_ELF}",
             "klass": f"{fake.enum(enum_cls=Klass)}",
+            "background": f"{fake.enum(enum_cls=Background)}",
             "strength": AbilityScore.SCORE_10,
             "dexterity": AbilityScore.SCORE_12,
             "constitution": AbilityScore.SCORE_13,
@@ -428,10 +414,6 @@ class TestCharacterCreateView:
             "wisdom": AbilityScore.SCORE_15,
             "charisma": AbilityScore.SCORE_8,
             "gender": f"{fake.enum(enum_cls=Gender)}",
-            "personality_traits": f"{fake.text(max_nb_chars=100)}",
-            "ideals": f"{fake.text(max_nb_chars=100)}",
-            "bonds": f"{fake.text(max_nb_chars=100)}",
-            "flaws": f"{fake.text(max_nb_chars=100)}",
         }
 
     def test_character_creation_wood_elf(self, client, wood_elf_form):
@@ -463,6 +445,7 @@ class TestCharacterCreateView:
             "name": f"{fake.name()}",
             "race": f"{Race.HALFLING}",
             "klass": f"{fake.enum(enum_cls=Klass)}",
+            "background": f"{fake.enum(enum_cls=Background)}",
             "strength": AbilityScore.SCORE_10,
             "dexterity": AbilityScore.SCORE_12,
             "constitution": AbilityScore.SCORE_13,
@@ -470,10 +453,6 @@ class TestCharacterCreateView:
             "wisdom": AbilityScore.SCORE_15,
             "charisma": AbilityScore.SCORE_8,
             "gender": f"{fake.enum(enum_cls=Gender)}",
-            "personality_traits": f"{fake.text(max_nb_chars=100)}",
-            "ideals": f"{fake.text(max_nb_chars=100)}",
-            "bonds": f"{fake.text(max_nb_chars=100)}",
-            "flaws": f"{fake.text(max_nb_chars=100)}",
         }
 
     def test_character_creation_halfling(self, client, halfling_form):
@@ -533,6 +512,7 @@ class TestCharacterCreateView:
             "name": f"{fake.name()}",
             "race": f"{Race.HUMAN}",
             "klass": f"{fake.enum(enum_cls=Klass)}",
+            "background": f"{fake.enum(enum_cls=Background)}",
             "strength": AbilityScore.SCORE_10,
             "dexterity": AbilityScore.SCORE_12,
             "constitution": AbilityScore.SCORE_13,
@@ -540,10 +520,6 @@ class TestCharacterCreateView:
             "wisdom": AbilityScore.SCORE_15,
             "charisma": AbilityScore.SCORE_8,
             "gender": f"{fake.enum(enum_cls=Gender)}",
-            "personality_traits": f"{fake.text(max_nb_chars=100)}",
-            "ideals": f"{fake.text(max_nb_chars=100)}",
-            "bonds": f"{fake.text(max_nb_chars=100)}",
-            "flaws": f"{fake.text(max_nb_chars=100)}",
         }
 
     def test_character_creation_human(self, client, human_form):
@@ -602,6 +578,7 @@ class TestCharacterCreateView:
             "name": f"{name}",
             "race": f"{race}",
             "klass": f"{klass}",
+            "background": f"{fake.enum(enum_cls=Background)}",
             "strength": AbilityScore.SCORE_10,
             "dexterity": AbilityScore.SCORE_12,
             "constitution": AbilityScore.SCORE_13,
@@ -609,10 +586,6 @@ class TestCharacterCreateView:
             "wisdom": AbilityScore.SCORE_15,
             "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
-            "personality_traits": f"{fake.text(max_nb_chars=100)}",
-            "ideals": f"{fake.text(max_nb_chars=100)}",
-            "bonds": f"{fake.text(max_nb_chars=100)}",
-            "flaws": f"{fake.text(max_nb_chars=100)}",
         }
         form = CharacterCreateForm(data)
         assert form.is_valid()
@@ -650,6 +623,7 @@ class TestCharacterCreateView:
             "name": f"{name}",
             "race": f"{race}",
             "klass": f"{klass}",
+            "background": f"{fake.enum(enum_cls=Background)}",
             "strength": AbilityScore.SCORE_10,
             "dexterity": AbilityScore.SCORE_12,
             "constitution": AbilityScore.SCORE_13,
@@ -657,10 +631,6 @@ class TestCharacterCreateView:
             "wisdom": AbilityScore.SCORE_15,
             "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
-            "personality_traits": f"{fake.text(max_nb_chars=100)}",
-            "ideals": f"{fake.text(max_nb_chars=100)}",
-            "bonds": f"{fake.text(max_nb_chars=100)}",
-            "flaws": f"{fake.text(max_nb_chars=100)}",
         }
         form = CharacterCreateForm(data)
         assert form.is_valid()
@@ -698,6 +668,7 @@ class TestCharacterCreateView:
             "name": f"{name}",
             "race": f"{race}",
             "klass": f"{klass}",
+            "background": f"{fake.enum(enum_cls=Background)}",
             "strength": AbilityScore.SCORE_10,
             "dexterity": AbilityScore.SCORE_12,
             "constitution": AbilityScore.SCORE_13,
@@ -705,10 +676,6 @@ class TestCharacterCreateView:
             "wisdom": AbilityScore.SCORE_15,
             "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
-            "personality_traits": f"{fake.text(max_nb_chars=100)}",
-            "ideals": f"{fake.text(max_nb_chars=100)}",
-            "bonds": f"{fake.text(max_nb_chars=100)}",
-            "flaws": f"{fake.text(max_nb_chars=100)}",
         }
         form = CharacterCreateForm(data)
         assert form.is_valid()
@@ -746,6 +713,7 @@ class TestCharacterCreateView:
             "name": f"{name}",
             "race": f"{race}",
             "klass": f"{klass}",
+            "background": f"{fake.enum(enum_cls=Background)}",
             "strength": AbilityScore.SCORE_10,
             "dexterity": AbilityScore.SCORE_12,
             "constitution": AbilityScore.SCORE_13,
@@ -753,10 +721,6 @@ class TestCharacterCreateView:
             "wisdom": AbilityScore.SCORE_15,
             "charisma": AbilityScore.SCORE_8,
             "gender": f"{gender}",
-            "personality_traits": f"{fake.text(max_nb_chars=100)}",
-            "ideals": f"{fake.text(max_nb_chars=100)}",
-            "bonds": f"{fake.text(max_nb_chars=100)}",
-            "flaws": f"{fake.text(max_nb_chars=100)}",
         }
         form = CharacterCreateForm(data)
         assert form.is_valid()
@@ -783,3 +747,243 @@ class TestCharacterCreateView:
                 | Q(ability_type_id=AbilityName.WISDOM)
             )
         )
+
+    def test_character_creation_acolyte(self, client):
+        fake = Faker()
+        data = {
+            "name": f"{fake.name()}",
+            "race": f"{fake.enum(enum_cls=Race)}",
+            "klass": f"{fake.enum(enum_cls=Klass)}",
+            "background": f"{Background.ACOLYTE}",
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
+            "gender": f"{fake.enum(enum_cls=Gender)}",
+        }
+        form = CharacterCreateForm(data)
+        assert form.is_valid()
+
+        response = client.post(
+            reverse(self.path_name),
+            data=form.cleaned_data,
+        )
+        assert response.status_code == 302
+        character = Character.objects.last()
+        assertRedirects(response, reverse("skills-select", args=(character.id,)))
+
+        SkillProficiency.objects.filter(
+            Q(character=character, skill=Skill.objects.get(name=SkillName.INSIGHT))
+            | Q(character=character, skill=Skill.objects.get(name=SkillName.RELIGION))
+        )
+
+        assert (
+            character.personality_trait
+            in BACKGROUNDS[Background.ACOLYTE]["personality_traits"].values()
+        )
+        assert character.ideal in BACKGROUNDS[Background.ACOLYTE]["ideals"].values()
+        assert character.bond in BACKGROUNDS[Background.ACOLYTE]["bonds"].values()
+        assert character.flaw in BACKGROUNDS[Background.ACOLYTE]["flaws"].values()
+
+    def test_character_creation_criminal(self, client):
+        fake = Faker()
+        data = {
+            "name": f"{fake.name()}",
+            "race": f"{fake.enum(enum_cls=Race)}",
+            "klass": f"{fake.enum(enum_cls=Klass)}",
+            "background": f"{Background.CRIMINAL}",
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
+            "gender": f"{fake.enum(enum_cls=Gender)}",
+        }
+        form = CharacterCreateForm(data)
+        assert form.is_valid()
+
+        response = client.post(
+            reverse(self.path_name),
+            data=form.cleaned_data,
+        )
+        assert response.status_code == 302
+        character = Character.objects.last()
+        assertRedirects(response, reverse("skills-select", args=(character.id,)))
+
+        SkillProficiency.objects.filter(
+            Q(character=character, skill=Skill.objects.get(name=SkillName.DECEPTION))
+            | Q(character=character, skill=Skill.objects.get(name=SkillName.STEALTH))
+        )
+
+        assert (
+            character.personality_trait
+            in BACKGROUNDS[Background.CRIMINAL]["personality_traits"].values()
+        )
+        assert character.ideal in BACKGROUNDS[Background.CRIMINAL]["ideals"].values()
+        assert character.bond in BACKGROUNDS[Background.CRIMINAL]["bonds"].values()
+        assert character.flaw in BACKGROUNDS[Background.CRIMINAL]["flaws"].values()
+
+    def test_character_creation_folk_hero(self, client):
+        fake = Faker()
+        data = {
+            "name": f"{fake.name()}",
+            "race": f"{fake.enum(enum_cls=Race)}",
+            "klass": f"{fake.enum(enum_cls=Klass)}",
+            "background": f"{Background.FOLK_HERO}",
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
+            "gender": f"{fake.enum(enum_cls=Gender)}",
+        }
+        form = CharacterCreateForm(data)
+        assert form.is_valid()
+
+        response = client.post(
+            reverse(self.path_name),
+            data=form.cleaned_data,
+        )
+        assert response.status_code == 302
+        character = Character.objects.last()
+        assertRedirects(response, reverse("skills-select", args=(character.id,)))
+
+        SkillProficiency.objects.filter(
+            Q(
+                character=character,
+                skill=Skill.objects.get(name=SkillName.ANIMAL_HANDLING),
+            )
+            | Q(character=character, skill=Skill.objects.get(name=SkillName.SURVIVAL))
+        )
+
+        assert (
+            character.personality_trait
+            in BACKGROUNDS[Background.FOLK_HERO]["personality_traits"].values()
+        )
+        assert character.ideal in BACKGROUNDS[Background.FOLK_HERO]["ideals"].values()
+        assert character.bond in BACKGROUNDS[Background.FOLK_HERO]["bonds"].values()
+        assert character.flaw in BACKGROUNDS[Background.FOLK_HERO]["flaws"].values()
+
+    def test_character_creation_noble(self, client):
+        fake = Faker()
+        data = {
+            "name": f"{fake.name()}",
+            "race": f"{fake.enum(enum_cls=Race)}",
+            "klass": f"{fake.enum(enum_cls=Klass)}",
+            "background": f"{Background.NOBLE}",
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
+            "gender": f"{fake.enum(enum_cls=Gender)}",
+        }
+        form = CharacterCreateForm(data)
+        assert form.is_valid()
+
+        response = client.post(
+            reverse(self.path_name),
+            data=form.cleaned_data,
+        )
+        assert response.status_code == 302
+        character = Character.objects.last()
+        assertRedirects(response, reverse("skills-select", args=(character.id,)))
+
+        SkillProficiency.objects.filter(
+            Q(character=character, skill=Skill.objects.get(name=SkillName.HISTORY))
+            | Q(character=character, skill=Skill.objects.get(name=SkillName.PERSUASION))
+        )
+
+        assert (
+            character.personality_trait
+            in BACKGROUNDS[Background.NOBLE]["personality_traits"].values()
+        )
+        assert character.ideal in BACKGROUNDS[Background.NOBLE]["ideals"].values()
+        assert character.bond in BACKGROUNDS[Background.NOBLE]["bonds"].values()
+        assert character.flaw in BACKGROUNDS[Background.NOBLE]["flaws"].values()
+
+    def test_character_creation_sage(self, client):
+        fake = Faker()
+        data = {
+            "name": f"{fake.name()}",
+            "race": f"{fake.enum(enum_cls=Race)}",
+            "klass": f"{fake.enum(enum_cls=Klass)}",
+            "background": f"{Background.SAGE}",
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
+            "gender": f"{fake.enum(enum_cls=Gender)}",
+        }
+        form = CharacterCreateForm(data)
+        assert form.is_valid()
+
+        response = client.post(
+            reverse(self.path_name),
+            data=form.cleaned_data,
+        )
+        assert response.status_code == 302
+        character = Character.objects.last()
+        assertRedirects(response, reverse("skills-select", args=(character.id,)))
+
+        SkillProficiency.objects.filter(
+            Q(character=character, skill=Skill.objects.get(name=SkillName.ARCANA))
+            | Q(character=character, skill=Skill.objects.get(name=SkillName.HISTORY))
+        )
+
+        assert (
+            character.personality_trait
+            in BACKGROUNDS[Background.SAGE]["personality_traits"].values()
+        )
+        assert character.ideal in BACKGROUNDS[Background.SAGE]["ideals"].values()
+        assert character.bond in BACKGROUNDS[Background.SAGE]["bonds"].values()
+        assert character.flaw in BACKGROUNDS[Background.SAGE]["flaws"].values()
+
+    def test_character_creation_soldier(self, client):
+        fake = Faker()
+        data = {
+            "name": f"{fake.name()}",
+            "race": f"{fake.enum(enum_cls=Race)}",
+            "klass": f"{fake.enum(enum_cls=Klass)}",
+            "background": f"{Background.SOLDIER}",
+            "strength": AbilityScore.SCORE_10,
+            "dexterity": AbilityScore.SCORE_12,
+            "constitution": AbilityScore.SCORE_13,
+            "intelligence": AbilityScore.SCORE_14,
+            "wisdom": AbilityScore.SCORE_15,
+            "charisma": AbilityScore.SCORE_8,
+            "gender": f"{fake.enum(enum_cls=Gender)}",
+        }
+        form = CharacterCreateForm(data)
+        assert form.is_valid()
+
+        response = client.post(
+            reverse(self.path_name),
+            data=form.cleaned_data,
+        )
+        assert response.status_code == 302
+        character = Character.objects.last()
+        assertRedirects(response, reverse("skills-select", args=(character.id,)))
+
+        SkillProficiency.objects.filter(
+            Q(character=character, skill=Skill.objects.get(name=SkillName.ATHLETICS))
+            | Q(
+                character=character,
+                skill=Skill.objects.get(name=SkillName.INTIMIDATION),
+            )
+        )
+
+        assert (
+            character.personality_trait
+            in BACKGROUNDS[Background.SOLDIER]["personality_traits"].values()
+        )
+        assert character.ideal in BACKGROUNDS[Background.SOLDIER]["ideals"].values()
+        assert character.bond in BACKGROUNDS[Background.SOLDIER]["bonds"].values()
+        assert character.flaw in BACKGROUNDS[Background.SOLDIER]["flaws"].values()

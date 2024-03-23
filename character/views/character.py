@@ -6,10 +6,11 @@ from ..forms.character import CharacterCreateForm
 from ..models.character import Character
 from ..models.equipment import Equipment, Inventory
 from ..utils.builders import (
-    Director,
+    BackgroundBuilder,
+    BaseBuilder,
     KlassBuilder,
     RaceBuilder,
-    BaseBuilder,
+    build_character,
 )
 
 
@@ -46,8 +47,8 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
         base_builder = BaseBuilder(character, form)
         race_builder = RaceBuilder(character)
         klass_builder = KlassBuilder(character)
-        director = Director()
-        director.build(base_builder, race_builder, klass_builder)
+        background_builder = BackgroundBuilder(character)
+        build_character(base_builder, race_builder, klass_builder, background_builder)
         character.save()
 
         # Inventory

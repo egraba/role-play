@@ -1,5 +1,6 @@
 from django.urls import path
 
+from .views.backgrounds import BackgroundCompleteView
 from .views.character import CharacterCreateView, CharacterDetailView, CharacterListView
 from .views.equipment import EquipmentSelectView
 from .views.glossary import GlossaryView
@@ -30,6 +31,11 @@ urlpatterns = [
         "<int:character_id>/select_skills",
         SkillsSelectView.as_view(),
         name="skills-select",
+    ),
+    path(
+        "<int:character_id>/complete_background",
+        BackgroundCompleteView.as_view(),
+        name="background-complete",
     ),
     path(
         "glossary",
