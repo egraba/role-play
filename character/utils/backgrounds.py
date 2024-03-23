@@ -17,22 +17,31 @@ def get_non_spoken_languages(character: Character) -> set[tuple[str, str]]:
     }
 
 
-def get_holy_symbols():
+def get_holy_symbols() -> set[tuple[str, str]]:
     """
-    Return the set of all holy symbols.
+    Return the set of all holy symbols names.
     """
-    return set(Gear.objects.filter(gear_type=GearType.HOLY_SYMBOL))
+    return {
+        (gear.name, gear.get_name_display())
+        for gear in Gear.objects.filter(gear_type=GearType.HOLY_SYMBOL)
+    }
 
 
-def get_gaming_set_tools():
+def get_gaming_set_tools() -> set[tuple[str, str]]:
     """
-    Return the set of gaming set tools.
+    Return the set of gaming set tools names.
     """
-    return set(Tool.objects.filter(tool_type=ToolType.GAMING_SET))
+    return {
+        (tool.name, tool.get_name_display())
+        for tool in Tool.objects.filter(tool_type=ToolType.GAMING_SET)
+    }
 
 
-def get_artisans_tools():
+def get_artisans_tools() -> set[tuple[str, str]]:
     """
-    Return the set of artisan's tools.
+    Return the set of artisan's tools names.
     """
-    return set(Tool.objects.filter(tool_type=ToolType.ARTISANS_TOOLS))
+    return {
+        (tool.name, tool.get_name_display())
+        for tool in Tool.objects.filter(tool_type=ToolType.ARTISANS_TOOLS)
+    }

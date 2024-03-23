@@ -36,17 +36,26 @@ def test_get_non_spoken_languages():
 
 @pytest.mark.django_db
 def test_get_holy_symbols():
-    holy_symbols = set(Gear.objects.filter(gear_type=GearType.HOLY_SYMBOL))
+    holy_symbols = {
+        (gear.name, gear.get_name_display())
+        for gear in Gear.objects.filter(gear_type=GearType.HOLY_SYMBOL)
+    }
     assert get_holy_symbols() == holy_symbols
 
 
 @pytest.mark.django_db
 def test_get_gaming_set_tools():
-    gaming_set_tools = set(Tool.objects.filter(tool_type=ToolType.GAMING_SET))
+    gaming_set_tools = {
+        (tool.name, tool.get_name_display())
+        for tool in Tool.objects.filter(tool_type=ToolType.GAMING_SET)
+    }
     assert get_gaming_set_tools() == gaming_set_tools
 
 
 @pytest.mark.django_db
 def test_get_artisans_tools():
-    artisans_tools = set(Tool.objects.filter(tool_type=ToolType.ARTISANS_TOOLS))
+    artisans_tools = {
+        (tool.name, tool.get_name_display())
+        for tool in Tool.objects.filter(tool_type=ToolType.ARTISANS_TOOLS)
+    }
     assert get_artisans_tools() == artisans_tools
