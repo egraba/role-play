@@ -1,6 +1,7 @@
 import factory
 
 from character.constants.abilities import AbilityName
+from character.constants.backgrounds import Background
 from character.constants.races import Race
 from character.models.abilities import Ability, AbilityType
 from character.models.character import Character
@@ -33,6 +34,7 @@ class CharacterFactory(factory.django.DjangoModelFactory):
     user = factory.SubFactory("utils.factories.UserFactory")
     race = factory.Faker("enum", enum_cls=Race)
     klass = factory.Faker("enum", enum_cls=Klass)
+    background = factory.Faker("enum", enum_cls=Background)
     xp = factory.Faker("random_int")
 
     @classmethod

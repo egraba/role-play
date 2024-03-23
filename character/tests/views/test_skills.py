@@ -43,7 +43,7 @@ class TestSkillsSelectView:
             data=form.cleaned_data,
         )
         assert response.status_code == 302
-        assertRedirects(response, reverse("equipment-select", args=(character.id,)))
+        assertRedirects(response, reverse("background-complete", args=(character.id,)))
 
         assert any(
             skills[0][0] in skill
@@ -73,7 +73,7 @@ class TestSkillsSelectView:
             data=form.cleaned_data,
         )
         assert response.status_code == 302
-        assertRedirects(response, reverse("equipment-select", args=(character.id,)))
+        assertRedirects(response, reverse("background-complete", args=(character.id,)))
 
         assert any(
             skills[0][0] in skill
@@ -105,7 +105,7 @@ class TestSkillsSelectView:
             data=form.cleaned_data,
         )
         assert response.status_code == 302
-        assertRedirects(response, reverse("equipment-select", args=(character.id,)))
+        assertRedirects(response, reverse("background-complete", args=(character.id,)))
 
         assert any(
             skills[0][0] in skill
@@ -143,7 +143,7 @@ class TestSkillsSelectView:
             data=form.cleaned_data,
         )
         assert response.status_code == 302
-        assertRedirects(response, reverse("equipment-select", args=(character.id,)))
+        assertRedirects(response, reverse("background-complete", args=(character.id,)))
 
         assert any(
             skills[0][0] in skill

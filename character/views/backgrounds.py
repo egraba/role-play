@@ -45,3 +45,6 @@ class BackgroundCompleteView(LoginRequiredMixin, CharacterContextMixin, FormView
                     "The selected background has no corresponding form..."
                 )
         return form_class
+
+    def get_initial(self):
+        return {"character": self.character}
