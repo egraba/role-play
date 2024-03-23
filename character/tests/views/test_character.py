@@ -780,12 +780,12 @@ class TestCharacterCreateView:
         )
 
         assert (
-            character.personality_traits
+            character.personality_trait
             in BACKGROUNDS[Background.ACOLYTE]["personality_traits"].values()
         )
-        assert character.ideals in BACKGROUNDS[Background.ACOLYTE]["ideals"].values()
-        assert character.bonds in BACKGROUNDS[Background.ACOLYTE]["bonds"].values()
-        assert character.flaws in BACKGROUNDS[Background.ACOLYTE]["flaws"].values()
+        assert character.ideal in BACKGROUNDS[Background.ACOLYTE]["ideals"].values()
+        assert character.bond in BACKGROUNDS[Background.ACOLYTE]["bonds"].values()
+        assert character.flaw in BACKGROUNDS[Background.ACOLYTE]["flaws"].values()
 
     def test_character_creation_criminal(self, client):
         fake = Faker()
@@ -819,12 +819,12 @@ class TestCharacterCreateView:
         )
 
         assert (
-            character.personality_traits
+            character.personality_trait
             in BACKGROUNDS[Background.CRIMINAL]["personality_traits"].values()
         )
-        assert character.ideals in BACKGROUNDS[Background.CRIMINAL]["ideals"].values()
-        assert character.bonds in BACKGROUNDS[Background.CRIMINAL]["bonds"].values()
-        assert character.flaws in BACKGROUNDS[Background.CRIMINAL]["flaws"].values()
+        assert character.ideal in BACKGROUNDS[Background.CRIMINAL]["ideals"].values()
+        assert character.bond in BACKGROUNDS[Background.CRIMINAL]["bonds"].values()
+        assert character.flaw in BACKGROUNDS[Background.CRIMINAL]["flaws"].values()
 
     def test_character_creation_folk_hero(self, client):
         fake = Faker()
@@ -861,12 +861,12 @@ class TestCharacterCreateView:
         )
 
         assert (
-            character.personality_traits
+            character.personality_trait
             in BACKGROUNDS[Background.FOLK_HERO]["personality_traits"].values()
         )
-        assert character.ideals in BACKGROUNDS[Background.FOLK_HERO]["ideals"].values()
-        assert character.bonds in BACKGROUNDS[Background.FOLK_HERO]["bonds"].values()
-        assert character.flaws in BACKGROUNDS[Background.FOLK_HERO]["flaws"].values()
+        assert character.ideal in BACKGROUNDS[Background.FOLK_HERO]["ideals"].values()
+        assert character.bond in BACKGROUNDS[Background.FOLK_HERO]["bonds"].values()
+        assert character.flaw in BACKGROUNDS[Background.FOLK_HERO]["flaws"].values()
 
     def test_character_creation_noble(self, client):
         fake = Faker()
@@ -900,12 +900,12 @@ class TestCharacterCreateView:
         )
 
         assert (
-            character.personality_traits
+            character.personality_trait
             in BACKGROUNDS[Background.NOBLE]["personality_traits"].values()
         )
-        assert character.ideals in BACKGROUNDS[Background.NOBLE]["ideals"].values()
-        assert character.bonds in BACKGROUNDS[Background.NOBLE]["bonds"].values()
-        assert character.flaws in BACKGROUNDS[Background.NOBLE]["flaws"].values()
+        assert character.ideal in BACKGROUNDS[Background.NOBLE]["ideals"].values()
+        assert character.bond in BACKGROUNDS[Background.NOBLE]["bonds"].values()
+        assert character.flaw in BACKGROUNDS[Background.NOBLE]["flaws"].values()
 
     def test_character_creation_sage(self, client):
         fake = Faker()
@@ -939,12 +939,12 @@ class TestCharacterCreateView:
         )
 
         assert (
-            character.personality_traits
+            character.personality_trait
             in BACKGROUNDS[Background.SAGE]["personality_traits"].values()
         )
-        assert character.ideals in BACKGROUNDS[Background.SAGE]["ideals"].values()
-        assert character.bonds in BACKGROUNDS[Background.SAGE]["bonds"].values()
-        assert character.flaws in BACKGROUNDS[Background.SAGE]["flaws"].values()
+        assert character.ideal in BACKGROUNDS[Background.SAGE]["ideals"].values()
+        assert character.bond in BACKGROUNDS[Background.SAGE]["bonds"].values()
+        assert character.flaw in BACKGROUNDS[Background.SAGE]["flaws"].values()
 
     def test_character_creation_soldier(self, client):
         fake = Faker()
@@ -981,9 +981,9 @@ class TestCharacterCreateView:
         )
 
         assert (
-            character.personality_traits
+            character.personality_trait
             in BACKGROUNDS[Background.SOLDIER]["personality_traits"].values()
         )
-        assert character.ideals in BACKGROUNDS[Background.SOLDIER]["ideals"].values()
-        assert character.bonds in BACKGROUNDS[Background.SOLDIER]["bonds"].values()
-        assert character.flaws in BACKGROUNDS[Background.SOLDIER]["flaws"].values()
+        assert character.ideal in BACKGROUNDS[Background.SOLDIER]["ideals"].values()
+        assert character.bond in BACKGROUNDS[Background.SOLDIER]["bonds"].values()
+        assert character.flaw in BACKGROUNDS[Background.SOLDIER]["flaws"].values()

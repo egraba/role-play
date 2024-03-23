@@ -137,22 +137,22 @@ class BackgroundBuilder:
         pass
 
     def select_personality_trait(self) -> None:
-        self.character.personality_traits = random.choice(
+        self.character.personality_trait = random.choice(
             list(BACKGROUNDS[self.background]["personality_traits"].values())
         )
 
     def select_ideal(self) -> None:
-        self.character.ideals = random.choice(
+        self.character.ideal = random.choice(
             list(BACKGROUNDS[self.background]["ideals"].values())
         )
 
     def select_bond(self) -> None:
-        self.character.bonds = random.choice(
+        self.character.bond = random.choice(
             list(BACKGROUNDS[self.background]["bonds"].values())
         )
 
     def select_flaw(self) -> None:
-        self.character.flaws = random.choice(
+        self.character.flaw = random.choice(
             list(BACKGROUNDS[self.background]["flaws"].values())
         )
 
