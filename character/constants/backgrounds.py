@@ -27,6 +27,14 @@ BACKGROUNDS: dict = {
             7: "I've enjoyed fine food, drink, and high society among my temple's elite. Rough living grates on me.",
             8: "I've spent so long in the temple that I have little practical experience dealing with people in the outside world.",
         },
+        "ideals": {
+            1: "Tradition. The ancient traditions of worship and sacrifice must be preserved and upheld. (Lawful)",
+            2: "Charity. I always try to help those in need, no matter what the personal cost. (Good)",
+            3: "Change. We must help bring about the changes the gods are constantly working in the world. (Chaotic)",
+            4: "Power. I hope to one day rise to the top of my faith's religious hierarchy. (Lawful)",
+            5: "Faith. I trust that my deity will guide my actions. I have faith that if I work hard, things will go well. (Lawful)",
+            6: "Aspiration. I seek to prove myself worthy of my god's favor by matching my actions against his or her teachings. (Any)",
+        },
         "bonds": {
             1: "I would die to recover an ancient relic of my faith that was lost long ago.",
             2: "I will someday get revenge on the corrupt temple hierarchy who branded me a heretic.",
@@ -59,6 +67,14 @@ BACKGROUNDS: dict = {
             7: "The best way to get me to do something is to tell me I can't do it.",
             8: "I blow up at the slightest insult.",
         },
+        "ideals": {
+            1: "Honor. I don't steal from others in the trade. (Lawful)",
+            2: "Freedom. Chains are meant to be broken, as are those who would forge them. (Chaotic)",
+            3: "Charity. I steal from the wealthy so that I can help people in need. (Good)",
+            4: "Greed. I will do whatever it takes to become wealthy. (Evil)",
+            5: "People. I'm loyal to my friends, not to any ideals, and everyone else can take a trip down the Styx for all I care. (Neutral)",
+            6: "Redemption. There’s a spark of good in everyone. (Good)",
+        },
         "bonds": {
             1: "I'm trying to pay off an old debt I owe to a generous benefactor.",
             2: "My ill-gotten gains go to support my family.",
@@ -89,6 +105,14 @@ BACKGROUNDS: dict = {
             6: "Thinking is for other people. I prefer action.",
             7: "I misuse long words in an attempt to sound smarter.",
             8: "I get bored easily. When am I going to get on with my destiny?",
+        },
+        "ideals": {
+            1: "Respect. People deserve to be treated with dignity and respect. (Good)",
+            2: "Fairness. No one should get preferential treatment before the law, and no one is above the law. (Lawful)",
+            3: "Freedom. Tyrants must not be allowed to oppress the people. (Chaotic)",
+            4: "Might. If I become strong, I can take what I want—what I deserve. (Evil)",
+            5: "Sincerity. There's no good in pretending to be something I'm not. (Neutral)",
+            6: "Destiny. Nothing and no one can steer me away from my higher calling. (Any)",
         },
         "bonds": {
             1: "I have a family, but I have no idea where they are. One day, I hope to see them again.",
@@ -122,6 +146,14 @@ BACKGROUNDS: dict = {
             7: "My favor, once lost, is lost forever.",
             8: "If you do me an injury, I will crush you, ruin your name, and salt your fields.",
         },
+        "ideal": {
+            1: "Respect. Respect is due to me because of my position, but all people regardless of station deserve to be treated with dignity. (Good)",
+            2: "Responsibility. It is my duty to respect the authority of those above me, just as those below me must respect mine. (Lawful)",
+            3: "Independence. I must prove that I can handle myself without the coddling of my family. (Chaotic)",
+            4: "Power. If I can attain more power, no one will tell me what to do. (Evil)",
+            5: "Family. Blood runs thicker than water. (Any)",
+            6: "Noble Obligation. It is my duty to protect and care for the people beneath me. (Good)",
+        },
         "bonds": {
             1: "I will face any challenge to win the approval of my family.",
             2: "My house's alliance with another noble family must be sustained at all costs.",
@@ -154,6 +186,14 @@ BACKGROUNDS: dict = {
             7: "I am horribly, horribly awkward in social situations.",
             8: "I'm convinced that people are always trying to steal my secrets.",
         },
+        "ideals": {
+            1: "Knowledge. The path to power and self-improvement is through knowledge. (Neutral)",
+            2: "Beauty. What is beautiful points us beyond itself toward what is true. (Good)",
+            3: "Logic. Emotions must not cloud our logical thinking. (Lawful)",
+            4: "No Limits. Nothing should fetter the infinite possibility inherent in all existence. (Chaotic)",
+            5: "Power. Knowledge is the path to power and domination. (Evil)",
+            6: "Self-Improvement. The goal of a life of study is the betterment of oneself. (Any)",
+        },
         "bonds": {
             1: "It is my duty to protect my students.",
             2: "I have an ancient text that holds terrible secrets that must not fall into the wrong hands.",
@@ -185,6 +225,14 @@ BACKGROUNDS: dict = {
             6: "I enjoy being strong and like breaking things.",
             7: "I have a crude sense of humor.",
             8: "I face problems head-on. A simple, direct solution is the best path to success.",
+        },
+        "ideals": {
+            1: "Greater Good. Our lot is to lay down our lives in defense of others. (Good)",
+            2: "Responsibility. I do what I must and obey just authority. (Lawful)",
+            3: "Independence. When people follow orders blindly, they embrace a kind of tyranny. (Chaotic)",
+            4: "Might. In life as in war, the stronger force wins. (Evil)",
+            5: "Live and Let Live. Ideals aren't worth killing over or going to war for. (Neutral)",
+            6: "Nation. My city, nation, or people are all that matter. (Any)",
         },
         "bonds": {
             1: "I would still lay down my life for the people I served with.",
