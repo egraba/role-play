@@ -21,10 +21,16 @@ def test_get_non_spoken_languages():
     fake = Faker()
     character.languages.add(Language.objects.get(name=fake.enum(enum_cls=LanguageName)))
     character.languages.add(Language.objects.get(name=fake.enum(enum_cls=LanguageName)))
-    character_languages = set(character.languages.all())
+    character_languages = {
+        (language.name, language.get_name_display())
+        for language in character.languages.all()
+    }
     language_choices = get_non_spoken_languages(character)
     assert character_languages & language_choices == set()
-    languages = set(Language.objects.all())
+    languages = {
+        (language.name, language.get_name_display())
+        for language in Language.objects.all()
+    }
     assert language_choices < languages
 
 
