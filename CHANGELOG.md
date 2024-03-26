@@ -2,6 +2,11 @@
 
 Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<patch>`).
 
+## Unreleased
+
+### Added
+* DnD: Add wealth at character creation
+
 ## v0.8.0 - 2024-03-23
 
 ### Added
