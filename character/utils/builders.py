@@ -114,6 +114,10 @@ class KlassBuilder:
                 ability_type=AbilityType.objects.get(name=ability),
             )
 
+    def add_wealth(self) -> None:
+        wealth_roll = Dice(KLASS_FEATURES[self.klass]["wealth"]).roll()
+        self.character.inventory.gp = wealth_roll * 10
+
 
 class BackgroundBuilder:
     def __init__(self, character: Character) -> None:
@@ -177,6 +181,7 @@ def build_character(
     klass_builder.apply_weapons_proficiencies()
     klass_builder.apply_tools_proficiencies()
     klass_builder.apply_saving_throws_proficiencies()
+    klass_builder.add_wealth()
 
     background_builder.add_skill_proficiencies()
     background_builder.add_tool_proficiencies()
