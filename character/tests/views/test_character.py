@@ -613,6 +613,8 @@ class TestCharacterCreateView:
             )
         )
 
+        assert 50 <= character.inventory.gp <= 200
+
     def test_character_creation_fighter(self, client):
         fake = Faker()
         name = fake.name()
@@ -657,6 +659,8 @@ class TestCharacterCreateView:
                 | Q(ability_type_id=AbilityName.CONSTITUTION)
             )
         )
+
+        assert 50 <= character.inventory.gp <= 200
 
     def test_character_creation_rogue(self, client):
         fake = Faker()
@@ -703,6 +707,8 @@ class TestCharacterCreateView:
             )
         )
 
+        assert 40 <= character.inventory.gp <= 160
+
     def test_character_creation_wizard(self, client):
         fake = Faker()
         name = fake.name()
@@ -747,6 +753,8 @@ class TestCharacterCreateView:
                 | Q(ability_type_id=AbilityName.WISDOM)
             )
         )
+
+        assert 40 <= character.inventory.gp <= 160
 
     def test_character_creation_acolyte(self, client):
         fake = Faker()

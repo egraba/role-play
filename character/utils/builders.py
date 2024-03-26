@@ -116,7 +116,9 @@ class KlassBuilder:
 
     def add_wealth(self) -> None:
         wealth_roll = Dice(KLASS_FEATURES[self.klass]["wealth"]).roll()
-        self.character.inventory.gp = wealth_roll * 10
+        inventory = self.character.inventory
+        inventory.gp = wealth_roll * 10
+        inventory.save()
 
 
 class BackgroundBuilder:
