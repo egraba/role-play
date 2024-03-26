@@ -18,6 +18,7 @@ KLASS_FEATURES: dict = {
             },
             "saving_throws": {AbilityName.WISDOM, AbilityName.CHARISMA},
         },
+        "wealth": "5d4",
     },
     Klass.FIGHTER: {
         "hit_points": {
@@ -35,6 +36,7 @@ KLASS_FEATURES: dict = {
             },
             "saving_throws": {AbilityName.STRENGTH, AbilityName.CONSTITUTION},
         },
+        "wealth": "5d4",
     },
     Klass.ROGUE: {
         "hit_points": {
@@ -50,6 +52,7 @@ KLASS_FEATURES: dict = {
                 AbilityName.INTELLIGENCE,
             },
         },
+        "wealth": "4d4",
     },
     Klass.WIZARD: {
         "hit_points": {
@@ -62,5 +65,6 @@ KLASS_FEATURES: dict = {
             "armor": {},
             "saving_throws": {AbilityName.INTELLIGENCE, AbilityName.WISDOM},
         },
+        "wealth": "4d4",
     },
 }

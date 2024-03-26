@@ -5,6 +5,11 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## v0.8.0 - 2024-03-23
 
 ### Added
+* DnD: Add wealth at character creation
+
+## v0.8.0 - 2024-03-23
+
+### Added
 * DnD: Support backgrounds
 * DnD: Support personality traits
 * DnD: Support more languages

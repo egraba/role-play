@@ -44,14 +44,14 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
         character = form.save(commit=False)
         character.user = self.request.user
 
+        # Inventory
+        character.inventory = Inventory.objects.create()
+
         base_builder = BaseBuilder(character, form)
         race_builder = RaceBuilder(character)
         klass_builder = KlassBuilder(character)
         background_builder = BackgroundBuilder(character)
         build_character(base_builder, race_builder, klass_builder, background_builder)
         character.save()
-
-        # Inventory
-        character.inventory = Inventory.objects.create()
 
         return super().form_valid(form)
