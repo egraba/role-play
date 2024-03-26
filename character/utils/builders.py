@@ -164,6 +164,9 @@ class _BackgroundBuilder:
 
 
 def build_character(character: Character, form: CharacterCreateForm) -> None:
+    """
+    Build character depending on its attributes (race, class, background, etc.).
+    """
     base_builder = _BaseBuilder(character, form)
     race_builder = _RaceBuilder(character)
     klass_builder = _KlassBuilder(character)
