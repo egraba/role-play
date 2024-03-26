@@ -15,7 +15,7 @@ from ..models.skills import Skill
 from .abilities import compute_ability_modifier
 
 
-class BaseBuilder:
+class _BaseBuilder:
     def __init__(self, character: Character, form: CharacterCreateForm) -> None:
         self.character = character
         self.form = form
@@ -30,7 +30,7 @@ class BaseBuilder:
             self.character.abilities.add(ability)
 
 
-class RaceBuilder:
+class _RaceBuilder:
     def __init__(self, character: Character) -> None:
         self.character = character
         self.race = character.race
@@ -75,7 +75,7 @@ class RaceBuilder:
             self.character.weight = base_weight + additional_weight
 
 
-class KlassBuilder:
+class _KlassBuilder:
     def __init__(self, character: Character) -> None:
         self.character = character
         self.klass = character.klass
@@ -121,7 +121,7 @@ class KlassBuilder:
         inventory.save()
 
 
-class BackgroundBuilder:
+class _BackgroundBuilder:
     def __init__(self, character: Character) -> None:
         self.character = character
         self.background = character.background
@@ -163,12 +163,15 @@ class BackgroundBuilder:
         )
 
 
-def build_character(
-    base_builder: BaseBuilder,
-    race_builder: RaceBuilder,
-    klass_builder: KlassBuilder,
-    background_builder: BackgroundBuilder,
-) -> None:
+def build_character(character: Character, form: CharacterCreateForm) -> None:
+    """
+    Build character depending on its attributes (race, class, background, etc.).
+    """
+    base_builder = _BaseBuilder(character, form)
+    race_builder = _RaceBuilder(character)
+    klass_builder = _KlassBuilder(character)
+    background_builder = _BackgroundBuilder(character)
+
     base_builder.initialize_ability_scores()
 
     race_builder.apply_racial_traits()

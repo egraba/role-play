@@ -6,10 +6,6 @@ from ..forms.character import CharacterCreateForm
 from ..models.character import Character
 from ..models.equipment import Equipment, Inventory
 from ..utils.builders import (
-    BackgroundBuilder,
-    BaseBuilder,
-    KlassBuilder,
-    RaceBuilder,
     build_character,
 )
 
@@ -43,15 +39,7 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         character = form.save(commit=False)
         character.user = self.request.user
-
-        # Inventory
         character.inventory = Inventory.objects.create()
-
-        base_builder = BaseBuilder(character, form)
-        race_builder = RaceBuilder(character)
-        klass_builder = KlassBuilder(character)
-        background_builder = BackgroundBuilder(character)
-        build_character(base_builder, race_builder, klass_builder, background_builder)
+        build_character(character, form)
         character.save()
-
         return super().form_valid(form)
