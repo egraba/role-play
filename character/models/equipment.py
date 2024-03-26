@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 
 from ..constants.equipment import (
@@ -38,12 +39,15 @@ class Weapon(models.Model):
         return str(self.name)
 
 
-class Armor(models.Model):
-    name = models.CharField(max_length=30, primary_key=True, choices=ArmorName.choices)
+class Armor(Equipment):
     armor_type = models.CharField(max_length=2, choices=ArmorType.choices)
+    ac = models.SmallIntegerField()
+    strength = models.CharField(max_length=6, null=True, blank=True)
+    stealth = models.CharField(max_length=1, null=True, blank=True)
 
-    def __str__(self):
-        return str(self.name)
+    def clean(self):
+        if self.name not in ArmorName.choices:
+            raise ValidationError("This armor does not exist...")
 
 
 class Pack(models.Model):
