@@ -15,7 +15,7 @@ from ..constants.equipment import (
 
 
 class Equipment(models.Model):
-    name = models.CharField(max_length=30, primary_key=True)
+    name = models.CharField(max_length=30)
     cost = models.SmallIntegerField()
     weight = models.SmallIntegerField()
 
