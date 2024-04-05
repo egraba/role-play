@@ -14,21 +14,19 @@ from ..constants.equipment import (
 )
 
 
-class Inventory(models.Model):
-    capacity = models.SmallIntegerField(default=0)
-    gp = models.SmallIntegerField(default=0)
-
-
 class Equipment(models.Model):
     name = models.CharField(max_length=30)
     cost = models.SmallIntegerField()
     weight = models.SmallIntegerField()
-    inventory = models.ForeignKey(
-        Inventory, on_delete=models.SET_NULL, null=True, blank=True
-    )
 
     def __str__(self):
         return str(self.name)
+
+
+class Inventory(models.Model):
+    capacity = models.SmallIntegerField(default=0)
+    gp = models.SmallIntegerField(default=0)
+    equipment = models.ManyToManyField(Equipment)
 
 
 class Weapon(models.Model):
