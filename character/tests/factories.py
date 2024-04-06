@@ -53,3 +53,5 @@ class EquipmentFactory(factory.django.DjangoModelFactory):
         django_get_or_create = ("name",)
 
     name = factory.Faker("word")
+    cost = factory.Faker("random_int")
+    weight = factory.Faker("random_int")
