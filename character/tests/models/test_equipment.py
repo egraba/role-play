@@ -1,6 +1,4 @@
 import pytest
-from django.core.exceptions import ValidationError
-from faker import Faker
 
 from character.models.equipment import Armor, Equipment, Gear, Pack, Tool, Weapon
 
@@ -49,11 +47,6 @@ class TestArmorModel:
 
     def test_creation(self):
         assert isinstance(self.armor, Armor)
-
-    def test_clean(self):
-        fake = Faker()
-        with pytest.raises(ValidationError):
-            Armor.objects.create(name=fake.pystr())
 
 
 @pytest.mark.django_db

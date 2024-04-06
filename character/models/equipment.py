@@ -1,10 +1,8 @@
-from django.core.exceptions import ValidationError
 from django.db import models
 
 from ..constants.equipment import (
     WeaponName,
     WeaponType,
-    ArmorName,
     ArmorType,
     GearName,
     GearType,
@@ -42,10 +40,6 @@ class Armor(Equipment):
     ac = models.SmallIntegerField()
     strength = models.CharField(max_length=6, null=True, blank=True)
     stealth = models.CharField(max_length=1, null=True, blank=True)
-
-    def clean(self):
-        if self.name not in ArmorName.choices:
-            raise ValidationError("This armor does not exist...")
 
 
 class Pack(models.Model):
