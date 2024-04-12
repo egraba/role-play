@@ -18,26 +18,26 @@ class Equipment(models.Model):
     weight = models.SmallIntegerField()
 
 
-class Inventory(models.Model):
-    capacity = models.SmallIntegerField(default=0)
-    gp = models.SmallIntegerField(default=0)
-    equipment = models.ManyToManyField(Equipment)
-
-
-class Weapon(models.Model):
-    name = models.CharField(max_length=30, primary_key=True, choices=WeaponName.choices)
-    weapon_type = models.CharField(max_length=2, choices=WeaponType.choices)
-
-    def __str__(self):
-        return str(self.name)
-
-
 class Armor(Equipment):
     name = models.CharField(max_length=30, choices=ArmorName.choices, unique=True)
     armor_type = models.CharField(max_length=2, choices=ArmorType.choices)
     ac = models.SmallIntegerField()
     strength = models.CharField(max_length=6, null=True, blank=True)
     stealth = models.CharField(max_length=1, null=True, blank=True)
+
+    def __str__(self):
+        return str(self.name)
+
+
+class Inventory(models.Model):
+    capacity = models.SmallIntegerField(default=0)
+    gp = models.SmallIntegerField(default=0)
+    armor = models.ForeignKey(Armor, null=True, on_delete=models.SET_NULL)
+
+
+class Weapon(models.Model):
+    name = models.CharField(max_length=30, primary_key=True, choices=WeaponName.choices)
+    weapon_type = models.CharField(max_length=2, choices=WeaponType.choices)
 
     def __str__(self):
         return str(self.name)
