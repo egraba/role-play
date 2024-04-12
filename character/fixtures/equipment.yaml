@@ -149,158 +149,107 @@
     weapon_type: MR
 
 # Armors
-- model: character.armor
-  pk: 38
+- model: character.armorsettings
   fields:
     name: Padded
     armor_type: LA
+    cost: 5
     ac: 11
     stealth: D
-- model: character.equipment
-  pk: 38
-  fields:
-    cost: 5
     weight: 8
-- model: character.armor
-  pk: 39
+- model: character.armorsettings
   fields:
     name: Leather
     armor_type: LA
-    ac: 11
-- model: character.equipment
-  pk: 39
-  fields:
     cost: 10
+    ac: 11
     weight: 10
-- model: character.armor
-  pk: 40
+- model: character.armorsettings
   fields:
     name: Studded leather
     armor_type: LA
-    ac: 12
-- model: character.equipment
-  pk: 40
-  fields:
     cost: 45
+    ac: 12
     weight: 13
-- model: character.armor
-  pk: 41
+- model: character.armorsettings
   fields:
     name: Hide
     armor_type: MA
-    ac: 12
-- model: character.equipment
-  pk: 41
-  fields:
     cost: 10
+    ac: 12
     weight: 12
-- model: character.armor
-  pk: 42
+- model: character.armorsettings
   fields:
     name: Chain shirt
     armor_type: MA
-    ac: 13
-- model: character.equipment
-  pk: 42
-  fields:
     cost: 50
+    ac: 13
     weight: 20
-- model: character.armor
-  pk: 43
+- model: character.armorsettings
   fields:
     name: Scale mail
     armor_type: MA
+    cost: 50
     ac: 14
     stealth: D
-- model: character.equipment
-  pk: 43
-  fields:
-    cost: 50
     weight: 45
-- model: character.armor
-  pk: 44
+- model: character.armorsettings
   fields:
     name: Breastplate
     armor_type: MA
-    ac: 14
-- model: character.equipment
-  pk: 44
-  fields:
     cost: 400
+    ac: 14
     weight: 20
-- model: character.armor
-  pk: 45
+- model: character.armorsettings
   fields:
     name: Half plate
     armor_type: MA
+    cost: 750
     ac: 15
     stealth: D
-- model: character.equipment
-  pk: 45
-  fields:
-    cost: 750
     weight: 40
-- model: character.armor
-  pk: 46
+- model: character.armorsettings
   fields:
     name: Ring mail
     armor_type: HA
+    cost: 30
     ac: 14
     stealth: D
-- model: character.equipment
-  pk: 46
-  fields:
-    cost: 30
     weight: 40
-- model: character.armor
-  pk: 47
+- model: character.armorsettings
   fields:
     name: Chain mail
     armor_type: HA
+    cost: 75
     ac: 16
     strength: Str 13
     stealth: D
-- model: character.equipment
-  pk: 47
-  fields:
-    cost: 75
     weight: 55
-- model: character.armor
-  pk: 48
+- model: character.armorsettings
   fields:
     name: Splint
     armor_type: HA
+    cost: 200
     ac: 17
     strength: Str 15
     stealth: D
-- model: character.equipment
-  pk: 48
-  fields:
-    cost: 200
     weight: 60
-- model: character.armor
-  pk: 49
+- model: character.armorsettings
   fields:
     name: Plate
     armor_type: HA
+    cost: 1500
     ac: 18
     strength: Str 15
     stealth: D
-- model: character.equipment
-  pk: 49
-  fields:
-    cost: 1500
     weight: 65
-- model: character.armor
+- model: character.armorsettings
   pk: 50
   fields:
     name: Shield
     armor_type: SH
-    ac: 2
-- model: character.equipment
-  pk: 50
-  fields:
     cost: 10
+    ac: 2
     weight: 6
 
 # Packs
