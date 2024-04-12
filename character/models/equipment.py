@@ -3,6 +3,7 @@ from django.db import models
 from ..constants.equipment import (
     WeaponName,
     WeaponType,
+    ArmorName,
     ArmorType,
     GearName,
     GearType,
@@ -13,12 +14,8 @@ from ..constants.equipment import (
 
 
 class Equipment(models.Model):
-    name = models.CharField(max_length=30)
     cost = models.SmallIntegerField()
     weight = models.SmallIntegerField()
-
-    def __str__(self):
-        return str(self.name)
 
 
 class Inventory(models.Model):
@@ -36,10 +33,14 @@ class Weapon(models.Model):
 
 
 class Armor(Equipment):
+    name = models.CharField(max_length=30, choices=ArmorName.choices, unique=True)
     armor_type = models.CharField(max_length=2, choices=ArmorType.choices)
     ac = models.SmallIntegerField()
     strength = models.CharField(max_length=6, null=True, blank=True)
     stealth = models.CharField(max_length=1, null=True, blank=True)
+
+    def __str__(self):
+        return str(self.name)
 
 
 class Pack(models.Model):
