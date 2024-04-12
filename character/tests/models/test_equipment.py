@@ -9,7 +9,7 @@ from character.models.equipment import (
     Weapon,
 )
 
-from ..factories import InventoryFactory
+from ..factories import ArmorFactory, InventoryFactory
 
 
 @pytest.mark.django_db
@@ -97,3 +97,7 @@ class TestInventoryModel:
 
     def test_creation(self):
         assert isinstance(self.inventory, Inventory)
+
+    def test_has_equipment_armor(self):
+        self.inventory.armor = ArmorFactory()
+        assert self.inventory.has_equipment(self.inventory.armor.settings.name)

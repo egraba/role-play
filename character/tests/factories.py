@@ -5,7 +5,7 @@ from character.constants.backgrounds import Background
 from character.constants.races import Race
 from character.models.abilities import Ability, AbilityType
 from character.models.character import Character
-from character.models.equipment import ArmorSettings, Inventory
+from character.models.equipment import Armor, ArmorSettings, Inventory
 from character.models.klasses import Klass
 
 
@@ -53,11 +53,19 @@ class CharacterFactory(factory.django.DjangoModelFactory):
         return character
 
 
-class ArmorFactory(factory.django.DjangoModelFactory):
+class ArmorSettingsFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = ArmorSettings
         django_get_or_create = ("name",)
 
     name = factory.Faker("word")
     cost = factory.Faker("random_int")
+    ac = factory.Faker("random_int")
     weight = factory.Faker("random_int")
+
+
+class ArmorFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Armor
+
+    settings = factory.SubFactory(ArmorSettingsFactory)
