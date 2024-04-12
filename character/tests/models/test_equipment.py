@@ -1,6 +1,15 @@
 import pytest
 
-from character.models.equipment import ArmorSettings, Gear, Pack, Tool, Weapon
+from character.models.equipment import (
+    ArmorSettings,
+    Gear,
+    Inventory,
+    Pack,
+    Tool,
+    Weapon,
+)
+
+from ..factories import InventoryFactory
 
 
 @pytest.mark.django_db
@@ -78,3 +87,13 @@ class TestToolModel:
 
     def test_str(self):
         assert str(self.tool) == self.tool.name
+
+
+@pytest.mark.django_db
+class TestInventoryModel:
+    @pytest.fixture(autouse=True)
+    def setup(self):
+        self.inventory = InventoryFactory()
+
+    def test_creation(self):
+        assert isinstance(self.inventory, Inventory)
