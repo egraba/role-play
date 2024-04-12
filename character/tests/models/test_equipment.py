@@ -1,6 +1,6 @@
 import pytest
 
-from character.models.equipment import ArmorSetting, Gear, Pack, Tool, Weapon
+from character.models.equipment import ArmorSettings, Gear, Pack, Tool, Weapon
 
 
 @pytest.mark.django_db
@@ -26,10 +26,10 @@ class TestArmorModel:
     @pytest.fixture(autouse=True)
     def setup(self):
         # Fixtures are automatically loaded during the test session initialization.
-        self.armor = ArmorSetting.objects.last()
+        self.armor = ArmorSettings.objects.last()
 
     def test_creation(self):
-        assert isinstance(self.armor, ArmorSetting)
+        assert isinstance(self.armor, ArmorSettings)
 
 
 @pytest.mark.django_db

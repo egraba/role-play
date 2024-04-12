@@ -10,7 +10,7 @@ from ..constants.equipment import (
     WeaponType,
     PackName,
 )
-from ..models.equipment import ArmorSetting, Gear, Pack, Weapon
+from ..models.equipment import ArmorSettings, Gear, Pack, Weapon
 
 
 class EquipmentChoicesProvider(ABC):
@@ -65,7 +65,7 @@ class ClericEquipmentChoicesProvider(EquipmentChoicesProvider):
         raise NotImplementedError
 
     def get_armor_choices(self):
-        queryset = ArmorSetting.objects.filter(
+        queryset = ArmorSettings.objects.filter(
             Q(name=ArmorName.SCALE_MAIL)
             | Q(name=ArmorName.LEATHER)
             | Q(name=ArmorName.CHAIN_MAIL)
@@ -89,9 +89,9 @@ class ClericEquipmentChoicesProvider(EquipmentChoicesProvider):
 class FighterEquipmentChoicesProvider(EquipmentChoicesProvider):
     def get_first_weapon_choices(self):
         choices = set()
-        chain_mail = ArmorSetting.objects.get(name=ArmorName.CHAIN_MAIL)
+        chain_mail = ArmorSettings.objects.get(name=ArmorName.CHAIN_MAIL)
         choices.add((chain_mail, chain_mail))
-        leather = ArmorSetting.objects.get(name=ArmorName.LEATHER)
+        leather = ArmorSettings.objects.get(name=ArmorName.LEATHER)
         longbow = Weapon.objects.get(name=WeaponName.LONGBOW).name
         choices.add((f"{leather} & {longbow}", f"{leather} & {longbow}"))
         return choices

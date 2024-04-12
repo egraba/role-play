@@ -5,7 +5,7 @@ from character.constants.backgrounds import Background
 from character.constants.races import Race
 from character.models.abilities import Ability, AbilityType
 from character.models.character import Character
-from character.models.equipment import ArmorSetting
+from character.models.equipment import ArmorSettings
 from character.models.klasses import Klass
 
 
@@ -49,7 +49,7 @@ class CharacterFactory(factory.django.DjangoModelFactory):
 
 class ArmorFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = ArmorSetting
+        model = ArmorSettings
         django_get_or_create = ("name",)
 
     name = factory.Faker("word")

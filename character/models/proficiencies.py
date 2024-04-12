@@ -2,13 +2,13 @@ from django.db import models
 
 from .abilities import AbilityType
 from .character import Character
-from .equipment import ArmorSetting, Tool, Weapon
+from .equipment import ArmorSettings, Tool, Weapon
 from .skills import Skill
 
 
 class ArmorProficiency(models.Model):
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
-    armor = models.ForeignKey(ArmorSetting, on_delete=models.CASCADE)
+    armor = models.ForeignKey(ArmorSettings, on_delete=models.CASCADE)
 
     class Meta:
         verbose_name_plural = "armor proficiencies"
