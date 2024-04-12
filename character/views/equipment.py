@@ -44,23 +44,23 @@ class EquipmentSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
             # KeyError exception is caught because the form is different per class.
             try:
                 weapon_name = form.cleaned_data[field]
-                inventory.add_equipment(weapon_name)
+                inventory.add(weapon_name)
             except KeyError:
                 pass
 
         # Some equipment is added without selection, depending on character's class.
         match self.character.klass:
             case Klass.CLERIC:
-                inventory.add_equipment(WeaponName.CROSSBOW_LIGHT)
-                inventory.add_equipment(GearName.CROSSBOW_BOLTS)
-                inventory.add_equipment(ArmorName.SHIELD)
+                inventory.add(WeaponName.CROSSBOW_LIGHT)
+                inventory.add(GearName.CROSSBOW_BOLTS)
+                inventory.add(ArmorName.SHIELD)
             case Klass.ROGUE:
-                inventory.add_equipment(WeaponName.SHORTBOW)
-                inventory.add_equipment(GearName.QUIVER)
-                inventory.add_equipment(ArmorName.LEATHER)
-                inventory.add_equipment(WeaponName.DAGGER)
-                inventory.add_equipment(WeaponName.DAGGER)
-                inventory.add_equipment(ToolName.THIEVES_TOOLS)
+                inventory.add(WeaponName.SHORTBOW)
+                inventory.add(GearName.QUIVER)
+                inventory.add(ArmorName.LEATHER)
+                inventory.add(WeaponName.DAGGER)
+                inventory.add(WeaponName.DAGGER)
+                inventory.add(ToolName.THIEVES_TOOLS)
             case Klass.WIZARD:
-                inventory.add_equipment(GearName.SPELLBOOK)
+                inventory.add(GearName.SPELLBOOK)
         return super().form_valid(form)

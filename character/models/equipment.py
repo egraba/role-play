@@ -45,7 +45,10 @@ class Inventory(models.Model):
     def _add_armor(self, name: str) -> None:
         self.armor = Armor.objects.create(settings=ArmorSettings.get(name=name))
 
-    def add_equipment(self, name: str) -> None:
+    def add(self, name: str) -> None:
+        """
+        Add an equipment to the inventory.
+        """
         if name in ArmorName.choices:
             self._add_armor(name)
         else:
