@@ -41,6 +41,11 @@ class Inventory(models.Model):
         else:
             raise EquipmentDoesNotExist
 
+    def has_equipment(self, name: str) -> bool:
+        if self.armor.name == name:
+            return True
+        return False
+
 
 class Weapon(models.Model):
     name = models.CharField(max_length=30, primary_key=True, choices=WeaponName.choices)
