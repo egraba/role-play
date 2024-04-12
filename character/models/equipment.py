@@ -41,7 +41,7 @@ class Inventory(models.Model):
         else:
             raise EquipmentDoesNotExist
 
-    def has_equipment(self, name: str) -> bool:
+    def has_equipment(self, name: str, quantity: int = 1) -> bool:
         if self.armor.name == name:
             return True
         return False

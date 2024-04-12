@@ -10,7 +10,6 @@ from character.forms.equipment import (
     RogueEquipmentSelectForm,
     WizardEquipmentSelectForm,
 )
-from character.models.equipment import Equipment
 from character.utils.equipment import (
     ClericEquipmentChoicesProvider,
     FighterEquipmentChoicesProvider,
@@ -65,20 +64,12 @@ class TestEquipmentSelectView:
         assertRedirects(response, character.get_absolute_url())
 
         inventory = character.inventory
-        assert (
-            Equipment.objects.filter(inventory=inventory, name=first_weapon) is not None
-        )
-        assert (
-            Equipment.objects.filter(inventory=inventory, name=second_weapon)
-            is not None
-        )
-        assert Equipment.objects.get(inventory=inventory, name=armor) is not None
-        assert Equipment.objects.get(inventory=inventory, name=gear) is not None
-        assert Equipment.objects.get(inventory=inventory, name=pack) is not None
-        assert (
-            Equipment.objects.get(inventory=inventory, name=ArmorName.SHIELD)
-            is not None
-        )
+        assert inventory.has_equipment(first_weapon)
+        assert inventory.has_equipment(second_weapon)
+        assert inventory.has_equipment(armor)
+        assert inventory.has_equipment(gear)
+        assert inventory.has_equipment(pack)
+        assert inventory.has_equipment(ArmorName.SHIELD)
 
     def test_fighter_equipment(self, client, fighter):
         equipment_manager = FighterEquipmentChoicesProvider()
@@ -111,12 +102,10 @@ class TestEquipmentSelectView:
         assertRedirects(response, character.get_absolute_url())
 
         inventory = character.inventory
-        assert Equipment.objects.get(inventory=inventory, name=first_weapon) is not None
-        assert (
-            Equipment.objects.get(inventory=inventory, name=second_weapon) is not None
-        )
-        assert Equipment.objects.get(inventory=inventory, name=third_weapon) is not None
-        assert Equipment.objects.get(inventory=inventory, name=pack) is not None
+        assert inventory.has_equipment(first_weapon)
+        assert inventory.has_equipment(second_weapon)
+        assert inventory.has_equipment(third_weapon)
+        assert inventory.has_equipment(pack)
 
     def test_rogue_equipment(self, client, rogue):
         equipment_manager = RogueEquipmentChoicesProvider()
@@ -145,28 +134,12 @@ class TestEquipmentSelectView:
         assertRedirects(response, character.get_absolute_url())
 
         inventory = character.inventory
-        assert (
-            Equipment.objects.filter(inventory=inventory, name=first_weapon) is not None
-        )
-        assert (
-            Equipment.objects.filter(inventory=inventory, name=second_weapon)
-            is not None
-        )
-        assert Equipment.objects.get(inventory=inventory, name=pack) is not None
-        assert (
-            Equipment.objects.get(inventory=inventory, name=ArmorName.LEATHER)
-            is not None
-        )
-        assert (
-            Equipment.objects.filter(
-                inventory=inventory, name=WeaponName.DAGGER
-            ).count()
-            == 2
-        )
-        assert (
-            Equipment.objects.get(inventory=inventory, name=ToolName.THIEVES_TOOLS)
-            is not None
-        )
+        assert inventory.has_equipment(first_weapon)
+        assert inventory.has_equipment(second_weapon)
+        assert inventory.has_equipment(pack)
+        assert inventory.has_equipment(ArmorName.LEATHER)
+        assert inventory.has_equipment(WeaponName.DAGGER, 2)
+        assert inventory.has_equipment(ToolName.THIEVES_TOOLS)
 
     def test_wizard_equipment(self, client, wizard):
         equipment_manager = WizardEquipmentChoicesProvider()
@@ -193,10 +166,7 @@ class TestEquipmentSelectView:
         assertRedirects(response, character.get_absolute_url())
 
         inventory = character.inventory
-        assert Equipment.objects.get(inventory=inventory, name=first_weapon) is not None
-        assert Equipment.objects.get(inventory=inventory, name=gear) is not None
-        assert Equipment.objects.get(inventory=inventory, name=pack) is not None
-        assert (
-            Equipment.objects.get(inventory=inventory, name=GearName.SPELLBOOK)
-            is not None
-        )
+        assert inventory.has_equipment(first_weapon)
+        assert inventory.has_equipment(name=gear)
+        assert inventory.has_equipment(name=pack)
+        assert inventory.has_equipment(GearName.SPELLBOOK)
