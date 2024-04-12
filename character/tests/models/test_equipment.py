@@ -1,23 +1,6 @@
 import pytest
 
-from character.models.equipment import Armor, Equipment, Gear, Pack, Tool, Weapon
-
-from ..factories import EquipmentFactory
-
-
-@pytest.mark.django_db
-class TestEquipmentModel:
-    equipment = None
-
-    @pytest.fixture(autouse=True)
-    def setup(self):
-        self.equipment = EquipmentFactory()
-
-    def test_creation(self):
-        assert isinstance(self.equipment, Equipment)
-
-    def test_str(self):
-        assert str(self.equipment) == self.equipment.name
+from character.models.equipment import ArmorSetting, Gear, Pack, Tool, Weapon
 
 
 @pytest.mark.django_db
@@ -43,10 +26,10 @@ class TestArmorModel:
     @pytest.fixture(autouse=True)
     def setup(self):
         # Fixtures are automatically loaded during the test session initialization.
-        self.armor = Armor.objects.last()
+        self.armor = ArmorSetting.objects.last()
 
     def test_creation(self):
-        assert isinstance(self.armor, Armor)
+        assert isinstance(self.armor, ArmorSetting)
 
 
 @pytest.mark.django_db

@@ -14,17 +14,14 @@ from ..constants.equipment import (
 from ..exceptions import EquipmentDoesNotExist
 
 
-class Equipment(models.Model):
-    cost = models.SmallIntegerField()
-    weight = models.SmallIntegerField()
-
-
-class Armor(Equipment):
-    name = models.CharField(max_length=30, choices=ArmorName.choices, unique=True)
+class ArmorSetting(models.Model):
+    name = models.CharField(max_length=30, choices=ArmorName.choices, primary_key=True)
     armor_type = models.CharField(max_length=2, choices=ArmorType.choices)
+    cost = models.SmallIntegerField()
     ac = models.SmallIntegerField()
     strength = models.CharField(max_length=6, null=True, blank=True)
     stealth = models.CharField(max_length=1, null=True, blank=True)
+    weight = models.SmallIntegerField()
 
     def __str__(self):
         return str(self.name)
@@ -33,7 +30,7 @@ class Armor(Equipment):
 class Inventory(models.Model):
     capacity = models.SmallIntegerField(default=0)
     gp = models.SmallIntegerField(default=0)
-    armor = models.ForeignKey(Armor, null=True, on_delete=models.SET_NULL)
+    armor = models.ForeignKey(ArmorSetting, null=True, on_delete=models.SET_NULL)
 
     def _add_armor(self, name: str) -> None:
         pass

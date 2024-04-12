@@ -1,7 +1,5 @@
 from django.db import models
 
-from .equipment import Equipment
-
 
 class Klass(models.TextChoices):
     CLERIC = "C", "Cleric"
@@ -12,7 +10,6 @@ class Klass(models.TextChoices):
 
 class KlassFeature(models.Model):
     klass = models.CharField(max_length=1, choices=Klass.choices, unique=True)
-    equipment = models.ManyToManyField(Equipment)
 
     def __str__(self):
         return f"{self.get_klass_display()}'s feature"

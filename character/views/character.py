@@ -4,7 +4,7 @@ from django.views.generic import CreateView, DetailView, ListView
 
 from ..forms.character import CharacterCreateForm
 from ..models.character import Character
-from ..models.equipment import Equipment, Inventory
+from ..models.equipment import Inventory
 from ..utils.builders import (
     build_character,
 )
@@ -16,7 +16,7 @@ class CharacterDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["inventory"] = Equipment.objects.filter(inventory=self.object.inventory)
+        context["inventory"] = None
         context["abilities"] = self.object.abilities.all()
         return context
 
