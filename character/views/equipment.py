@@ -9,7 +9,6 @@ from ..forms.equipment import (
 )
 from ..constants.equipment import ArmorName, WeaponName, ToolName, GearName
 from ..models.klasses import Klass
-from ..models.equipment import Equipment
 from .mixins import CharacterContextMixin
 
 
@@ -32,78 +31,36 @@ class EquipmentSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
         return form_class
 
     def form_valid(self, form):
-        # The form is different per class, so some fields have to be surrunded with try/except.
-        weapon_name = form.cleaned_data["first_weapon"]
-        Equipment.objects.create(name=weapon_name, inventory=self.character.inventory)
-
-        try:
-            weapon_name = form.cleaned_data["second_weapon"]
-            Equipment.objects.create(
-                name=weapon_name, inventory=self.character.inventory
-            )
-        except KeyError:
-            pass
-
-        try:
-            weapon_name = form.cleaned_data["third_weapon"]
-            Equipment.objects.create(
-                name=weapon_name, inventory=self.character.inventory
-            )
-        except KeyError:
-            pass
-
-        try:
-            name = form.cleaned_data["armor"]
-            Equipment.objects.create(name=name, inventory=self.character.inventory)
-        except KeyError:
-            pass
-
-        pack_name = form.cleaned_data["pack"]
-        Equipment.objects.create(name=pack_name, inventory=self.character.inventory)
-
-        try:
-            gear_name = form.cleaned_data["gear"]
-            Equipment.objects.create(name=gear_name, inventory=self.character.inventory)
-        except KeyError:
-            pass
+        inventory = self.character.inventory
+        form_fields = [
+            "first_weapon",
+            "second_weapon",
+            "third_weapon",
+            "armor",
+            "pack",
+            "gear",
+        ]
+        for field in form_fields:
+            # KeyError exception is caught because the form is different per class.
+            try:
+                weapon_name = form.cleaned_data[field]
+                inventory.add_equipment(weapon_name)
+            except KeyError:
+                pass
 
         # Some equipment is added without selection, depending on character's class.
         match self.character.klass:
             case Klass.CLERIC:
-                Equipment.objects.create(
-                    name=WeaponName.CROSSBOW_LIGHT, inventory=self.character.inventory
-                )
-                Equipment.objects.create(
-                    name=GearName.CROSSBOW_BOLTS,
-                    inventory=self.character.inventory,
-                )
-                Equipment.objects.create(
-                    name=ArmorName.SHIELD, inventory=self.character.inventory
-                )
-
+                inventory.add_equipment(WeaponName.CROSSBOW_LIGHT)
+                inventory.add_equipment(GearName.CROSSBOW_BOLTS)
+                inventory.add_equipment(ArmorName.SHIELD)
             case Klass.ROGUE:
-                Equipment.objects.create(
-                    name=WeaponName.SHORTBOW, inventory=self.character.inventory
-                )
-                Equipment.objects.create(
-                    name=GearName.QUIVER, inventory=self.character.inventory
-                )
-                Equipment.objects.create(
-                    name=ArmorName.LEATHER, inventory=self.character.inventory
-                )
-                Equipment.objects.create(
-                    name=WeaponName.DAGGER, inventory=self.character.inventory
-                )
-                Equipment.objects.create(
-                    name=WeaponName.DAGGER, inventory=self.character.inventory
-                )
-                Equipment.objects.create(
-                    name=ToolName.THIEVES_TOOLS, inventory=self.character.inventory
-                )
-
+                inventory.add_equipment(WeaponName.SHORTBOW)
+                inventory.add_equipment(GearName.QUIVER)
+                inventory.add_equipment(ArmorName.LEATHER)
+                inventory.add_equipment(WeaponName.DAGGER)
+                inventory.add_equipment(WeaponName.DAGGER)
+                inventory.add_equipment(ToolName.THIEVES_TOOLS)
             case Klass.WIZARD:
-                Equipment.objects.create(
-                    name=GearName.SPELLBOOK,
-                    inventory=self.character.inventory,
-                )
+                inventory.add_equipment(GearName.SPELLBOOK)
         return super().form_valid(form)
