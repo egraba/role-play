@@ -51,7 +51,10 @@ class Inventory(models.Model):
         else:
             raise EquipmentDoesNotExist
 
-    def has_equipment(self, name: str, quantity: int = 1) -> bool:
+    def contains(self, name: str, quantity: int = 1) -> bool:
+        """
+        Check if the inventory contains an equipment.
+        """
         if self.armor.settings.name == name:
             return True
         return False

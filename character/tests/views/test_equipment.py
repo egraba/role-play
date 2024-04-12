@@ -64,12 +64,12 @@ class TestEquipmentSelectView:
         assertRedirects(response, character.get_absolute_url())
 
         inventory = character.inventory
-        assert inventory.has_equipment(first_weapon)
-        assert inventory.has_equipment(second_weapon)
-        assert inventory.has_equipment(armor)
-        assert inventory.has_equipment(gear)
-        assert inventory.has_equipment(pack)
-        assert inventory.has_equipment(ArmorName.SHIELD)
+        assert inventory.contains(first_weapon)
+        assert inventory.contains(second_weapon)
+        assert inventory.contains(armor)
+        assert inventory.contains(gear)
+        assert inventory.contains(pack)
+        assert inventory.contains(ArmorName.SHIELD)
 
     def test_fighter_equipment(self, client, fighter):
         equipment_manager = FighterEquipmentChoicesProvider()
@@ -102,10 +102,10 @@ class TestEquipmentSelectView:
         assertRedirects(response, character.get_absolute_url())
 
         inventory = character.inventory
-        assert inventory.has_equipment(first_weapon)
-        assert inventory.has_equipment(second_weapon)
-        assert inventory.has_equipment(third_weapon)
-        assert inventory.has_equipment(pack)
+        assert inventory.contains(first_weapon)
+        assert inventory.contains(second_weapon)
+        assert inventory.contains(third_weapon)
+        assert inventory.contains(pack)
 
     def test_rogue_equipment(self, client, rogue):
         equipment_manager = RogueEquipmentChoicesProvider()
@@ -134,12 +134,12 @@ class TestEquipmentSelectView:
         assertRedirects(response, character.get_absolute_url())
 
         inventory = character.inventory
-        assert inventory.has_equipment(first_weapon)
-        assert inventory.has_equipment(second_weapon)
-        assert inventory.has_equipment(pack)
-        assert inventory.has_equipment(ArmorName.LEATHER)
-        assert inventory.has_equipment(WeaponName.DAGGER, 2)
-        assert inventory.has_equipment(ToolName.THIEVES_TOOLS)
+        assert inventory.contains(first_weapon)
+        assert inventory.contains(second_weapon)
+        assert inventory.contains(pack)
+        assert inventory.contains(ArmorName.LEATHER)
+        assert inventory.contains(WeaponName.DAGGER, 2)
+        assert inventory.contains(ToolName.THIEVES_TOOLS)
 
     def test_wizard_equipment(self, client, wizard):
         equipment_manager = WizardEquipmentChoicesProvider()
@@ -166,7 +166,7 @@ class TestEquipmentSelectView:
         assertRedirects(response, character.get_absolute_url())
 
         inventory = character.inventory
-        assert inventory.has_equipment(first_weapon)
-        assert inventory.has_equipment(name=gear)
-        assert inventory.has_equipment(name=pack)
-        assert inventory.has_equipment(GearName.SPELLBOOK)
+        assert inventory.contains(first_weapon)
+        assert inventory.contains(name=gear)
+        assert inventory.contains(name=pack)
+        assert inventory.contains(GearName.SPELLBOOK)

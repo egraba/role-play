@@ -98,6 +98,6 @@ class TestInventoryModel:
     def test_creation(self):
         assert isinstance(self.inventory, Inventory)
 
-    def test_has_equipment_armor(self):
+    def test_contains_armor(self):
         self.inventory.armor = ArmorFactory()
-        assert self.inventory.has_equipment(self.inventory.armor.settings.name)
+        assert self.inventory.contains(self.inventory.armor.settings.name)
