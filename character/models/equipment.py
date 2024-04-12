@@ -34,7 +34,7 @@ class Armor(models.Model):
     settings = models.ForeignKey(ArmorSettings, on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.name)
+        return str(self.settings.name)
 
 
 class Inventory(models.Model):
@@ -43,7 +43,7 @@ class Inventory(models.Model):
     armor = models.ForeignKey(Armor, null=True, on_delete=models.SET_NULL)
 
     def _add_armor(self, name: str) -> None:
-        pass
+        self.armor = Armor.objects.create(settings=ArmorSettings.get(name=name))
 
     def add_equipment(self, name: str) -> None:
         if name in ArmorName.choices:
