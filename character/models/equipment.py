@@ -11,6 +11,7 @@ from ..constants.equipment import (
     ToolType,
     PackName,
 )
+from ..exceptions import EquipmentDoesNotExist
 
 
 class Equipment(models.Model):
@@ -33,6 +34,15 @@ class Inventory(models.Model):
     capacity = models.SmallIntegerField(default=0)
     gp = models.SmallIntegerField(default=0)
     armor = models.ForeignKey(Armor, null=True, on_delete=models.SET_NULL)
+
+    def _add_armor(self, name: str) -> None:
+        pass
+
+    def add_equipment(self, name: str) -> None:
+        if name in ArmorName.choices:
+            self._add_armor(name)
+        else:
+            raise EquipmentDoesNotExist
 
 
 class Weapon(models.Model):
