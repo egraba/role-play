@@ -30,10 +30,17 @@ class ArmorSettings(models.Model):
         return str(self.name)
 
 
+class Armor(models.Model):
+    settings = models.ForeignKey(ArmorSettings, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.name)
+
+
 class Inventory(models.Model):
     capacity = models.SmallIntegerField(default=0)
     gp = models.SmallIntegerField(default=0)
-    armor = models.ForeignKey(ArmorSettings, null=True, on_delete=models.SET_NULL)
+    armor = models.ForeignKey(Armor, null=True, on_delete=models.SET_NULL)
 
     def _add_armor(self, name: str) -> None:
         pass
