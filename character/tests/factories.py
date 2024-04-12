@@ -5,7 +5,7 @@ from character.constants.backgrounds import Background
 from character.constants.races import Race
 from character.models.abilities import Ability, AbilityType
 from character.models.character import Character
-from character.models.equipment import ArmorSettings
+from character.models.equipment import ArmorSettings, Inventory
 from character.models.klasses import Klass
 
 
@@ -25,6 +25,11 @@ class AbilityFactory(factory.django.DjangoModelFactory):
     score = factory.Faker("random_int")
 
 
+class InventoryFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Inventory
+
+
 class CharacterFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Character
@@ -36,6 +41,7 @@ class CharacterFactory(factory.django.DjangoModelFactory):
     klass = factory.Faker("enum", enum_cls=Klass)
     background = factory.Faker("enum", enum_cls=Background)
     xp = factory.Faker("random_int")
+    inventory = factory.SubFactory(InventoryFactory)
 
     @classmethod
     def _create(cls, model_class, *args, **kwargs):

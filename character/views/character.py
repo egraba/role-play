@@ -39,7 +39,7 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         character = form.save(commit=False)
         character.user = self.request.user
-        character.inventory = Inventory.objects.create()
         build_character(character, form)
+        character.inventory = Inventory.objects.create()
         character.save()
         return super().form_valid(form)
