@@ -89,9 +89,9 @@ class ClericEquipmentChoicesProvider(EquipmentChoicesProvider):
 class FighterEquipmentChoicesProvider(EquipmentChoicesProvider):
     def get_first_weapon_choices(self):
         choices = set()
-        chain_mail = Armor.objects.get(name=ArmorName.CHAIN_MAIL).name
+        chain_mail = Armor.objects.get(name=ArmorName.CHAIN_MAIL)
         choices.add((chain_mail, chain_mail))
-        leather = Armor.objects.get(name=ArmorName.LEATHER).name
+        leather = Armor.objects.get(name=ArmorName.LEATHER)
         longbow = Weapon.objects.get(name=WeaponName.LONGBOW).name
         choices.add((f"{leather} & {longbow}", f"{leather} & {longbow}"))
         return choices

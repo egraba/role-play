@@ -53,10 +53,8 @@ class EquipmentSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
             pass
 
         try:
-            armor_name = form.cleaned_data["armor"]
-            Equipment.objects.create(
-                name=armor_name, inventory=self.character.inventory
-            )
+            name = form.cleaned_data["armor"]
+            Equipment.objects.create(name=name, inventory=self.character.inventory)
         except KeyError:
             pass
 
