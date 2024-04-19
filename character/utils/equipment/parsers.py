@@ -1,6 +1,6 @@
-def parse_ac_settings(settings: str) -> tuple[int, int, int]:
+def parse_ac_settings(settings: str) -> tuple[int, bool, int]:
     base_ac = 0
-    dexterity_modifier = 0
+    is_dex_modifier = False
     bonus = 0
     array = settings.split()
     first_part = array[0]
@@ -8,4 +8,7 @@ def parse_ac_settings(settings: str) -> tuple[int, int, int]:
         bonus = int(first_part)
     else:
         base_ac = int(array[0])
-    return base_ac, dexterity_modifier, bonus
+        second_part = " ".join(array[2:])
+        if second_part.startswith("Dex modifier"):
+            is_dex_modifier = True
+    return base_ac, is_dex_modifier, bonus
