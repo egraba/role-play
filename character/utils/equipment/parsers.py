@@ -1,6 +1,16 @@
-def parse_ac_settings(settings: str) -> tuple[int, bool, int]:
+def parse_ac_settings(settings: str) -> tuple[int, bool, int, int]:
+    """
+    Parse Armor Class (AC) settings.
+    These settings have the following form:
+        N + Dex modifier [(max 2)]
+        or
+        +N
+    where N is an integer.
+    The +N format means that N has to be added to character's AC.
+    """
     base_ac = 0
     is_dex_modifier = False
+    modifier_max = 0
     bonus = 0
     array = settings.split()
     first_part = array[0]
@@ -11,4 +21,6 @@ def parse_ac_settings(settings: str) -> tuple[int, bool, int]:
         second_part = " ".join(array[2:])
         if second_part.startswith("Dex modifier"):
             is_dex_modifier = True
-    return base_ac, is_dex_modifier, bonus
+            if second_part.endswith("(max 2)"):
+                modifier_max = 2
+    return base_ac, is_dex_modifier, modifier_max, bonus
