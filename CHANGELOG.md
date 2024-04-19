@@ -9,6 +9,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 
 ### Changed
 * Upgrade Django channels to 4.1.0
+* Upgrade Celery to 5.4
 
 ## v0.8.0 - 2024-03-23
 
