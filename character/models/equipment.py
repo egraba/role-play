@@ -13,7 +13,7 @@ from ..constants.equipment import (
     WeaponType,
 )
 from ..exceptions import EquipmentDoesNotExist
-from ..utils.equipment.parsers import parse_ac_settings
+from ..utils.equipment.parsers import parse_ac_settings, parse_strength
 
 
 class ArmorSettings(models.Model):
@@ -44,10 +44,12 @@ class Inventory(models.Model):
     gp = models.SmallIntegerField(default=0)
     armor = models.ForeignKey(Armor, null=True, on_delete=models.SET_NULL)
 
-    def _add_armor(self, name: str) -> None:
-        self.armor = Armor.objects.create(settings=ArmorSettings.get(name=name))
+    def _compute_ac(self):
+        """
+        Compute character's Armor Class (AC) depending on the selected armor.
+        """
         base_ac, is_dex_modifier, modifier_max, bonus = parse_ac_settings(
-            self.character.settings.ac
+            self.armor.settings.ac
         )
         self.character.ac = base_ac + bonus
         if is_dex_modifier:
@@ -55,6 +57,20 @@ class Inventory(models.Model):
                 name=AbilityName.DEXTERITY
             ).modifier
             self.character.ac += max(dex_modifier, modifier_max)
+
+    def _reduce_speed(self):
+        """
+        Reduce character's speed depending on the selected armor.
+        """
+        max_strength = parse_strength(self.armor.settings.strength)
+        strength = self.character.abilities.get(name=AbilityName.STRENGTH).score
+        if strength < max_strength:
+            self.character.speed -= 10
+
+    def _add_armor(self, name: str) -> None:
+        self.armor = Armor.objects.create(settings=ArmorSettings.get(name=name))
+        self._compute_ac()
+        self._reduce_speed()
 
     def add(self, name: str) -> None:
         """
