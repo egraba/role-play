@@ -17,6 +17,7 @@ env:
   PGPORT: 5432
   DJANGO_SECRET_KEY: ${{secrets.DJANGO_SECRET_KEY}}
   EMAIL_DOMAIN: ${{secrets.EMAIL_DOMAIN}}
+  PYTEST_PLUGINS: celery.contrib.pytest
 
 jobs:
   build:
