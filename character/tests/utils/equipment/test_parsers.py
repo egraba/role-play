@@ -1,7 +1,7 @@
 import pytest
 from faker import Faker
 
-from character.utils.equipment.parsers import parse_ac_settings, parse_stealth
+from character.utils.equipment.parsers import parse_ac_settings, parse_strength
 
 
 def test_parse_ac_settings_ac_only():
@@ -38,18 +38,18 @@ def test_parse_ac_settings_dex_modifier_max():
     assert parse_ac_settings(settings_str) == (12, True, 2, 0)
 
 
-def test_parse_stealth_empty():
+def test_parse_strength_empty():
     settings_str = None
-    assert parse_stealth(settings_str) == 0
+    assert parse_strength(settings_str) == 0
     settings_str = ""
-    assert parse_stealth(settings_str) == 0
+    assert parse_strength(settings_str) == 0
 
 
-def test_parse_stealth_good_format():
+def test_parse_strength_good_format():
     settings_str = "Str 15"
-    assert parse_stealth(settings_str) == 15
+    assert parse_strength(settings_str) == 15
 
 
-def test_parse_stealth_wrong_format():
+def test_parse_strength_wrong_format():
     settings_str = "Dex 20"
-    assert parse_stealth(settings_str) == 0
+    assert parse_strength(settings_str) == 0

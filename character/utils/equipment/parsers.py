@@ -26,7 +26,7 @@ def parse_ac_settings(settings: str) -> tuple[int, bool, int, int]:
     return base_ac, is_dex_modifier, modifier_max, bonus
 
 
-def parse_stealth(settings: str) -> int:
+def parse_strength(settings: str) -> int:
     """
     Parse stealth settings.
     These settings have the following form:
