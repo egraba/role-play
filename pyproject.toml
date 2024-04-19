@@ -41,7 +41,6 @@ faker = "*"
 pre-commit = "*"
 pytest = "*"
 pytest-asyncio = "*"
-pytest-celery = "*"
 pytest-django = "*"
 
 [tool.ruff]
