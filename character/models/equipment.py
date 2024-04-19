@@ -68,6 +68,9 @@ class Inventory(models.Model):
             self.character.speed -= 10
 
     def _add_armor(self, name: str) -> None:
+        """
+        Add an armor to the inventory.
+        """
         self.armor = Armor.objects.create(settings=ArmorSettings.get(name=name))
         self._compute_ac()
         self._reduce_speed()
