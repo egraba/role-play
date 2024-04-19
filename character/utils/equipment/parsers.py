@@ -24,3 +24,19 @@ def parse_ac_settings(settings: str) -> tuple[int, bool, int, int]:
             if second_part.endswith("(max 2)"):
                 modifier_max = 2
     return base_ac, is_dex_modifier, modifier_max, bonus
+
+
+def parse_stealth(settings: str) -> int:
+    """
+    Parse stealth settings.
+    These settings have the following form:
+        Str N
+    where N is an integer.
+    """
+    max_strength = 0
+    if settings == "" or settings is None:
+        return max_strength
+    array = settings.split()
+    if array[0] == "Str":
+        max_strength = int(array[1])
+    return max_strength
