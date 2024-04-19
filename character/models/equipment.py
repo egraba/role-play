@@ -1,17 +1,19 @@
 from django.db import models
 
+from ..constants.abilities import AbilityName
 from ..constants.equipment import (
-    WeaponName,
-    WeaponType,
     ArmorName,
     ArmorType,
     GearName,
     GearType,
+    PackName,
     ToolName,
     ToolType,
-    PackName,
+    WeaponName,
+    WeaponType,
 )
 from ..exceptions import EquipmentDoesNotExist
+from ..utils.equipment.parsers import parse_ac_settings
 
 
 class ArmorSettings(models.Model):
@@ -44,6 +46,15 @@ class Inventory(models.Model):
 
     def _add_armor(self, name: str) -> None:
         self.armor = Armor.objects.create(settings=ArmorSettings.get(name=name))
+        base_ac, is_dex_modifier, modifier_max, bonus = parse_ac_settings(
+            self.character.settings.ac
+        )
+        self.character.ac = base_ac + bonus
+        if is_dex_modifier:
+            dex_modifier = self.character.abilities.get(
+                name=AbilityName.DEXTERITY
+            ).modifier
+            self.character.ac += max(dex_modifier, modifier_max)
 
     def add(self, name: str) -> None:
         """
