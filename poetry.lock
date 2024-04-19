@@ -623,15 +623,33 @@ files = [
 Django = ">=3.2"
 
 [[package]]
-name = "django-fsm"
-version = "3.0.0"
-description = "Django friendly finite state machine support."
+name = "django-filter"
+version = "24.2"
+description = "Django-filter is a reusable Django application for allowing users to filter querysets dynamically."
 optional = false
-python-versions = "*"
+python-versions = ">=3.8"
 files = [
-    {file = "django-fsm-3.0.0.tar.gz", hash = "sha256:0112bcac573ad14051cf8ebe73bf296b6d5409f093e5f1677eb16e2196e263b3"},
-    {file = "django_fsm-3.0.0-py2.py3-none-any.whl", hash = "sha256:fa28f84f47eae7ce9247585ac6c1895e4ada08efff93fb243a59e9ff77b2d4ec"},
+    {file = "django-filter-24.2.tar.gz", hash = "sha256:48e5fc1da3ccd6ca0d5f9bb550973518ce977a4edde9d2a8a154a7f4f0b9f96e"},
+    {file = "django_filter-24.2-py3-none-any.whl", hash = "sha256:df2ee9857e18d38bed203c8745f62a803fa0f31688c9fe6f8e868120b1848e48"},
 ]
+
+[package.dependencies]
+Django = ">=4.2"
+
+[[package]]
+name = "django-viewflow"
+version = "2.0.2"
+description = "Reusable library to build business applications fast"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "django-viewflow-2.0.2.tar.gz", hash = "sha256:56e6010c4c86bda9fcc99857cac335fe8c02f3381e0bb1917364410292da3984"},
+    {file = "django_viewflow-2.0.2-py3-none-any.whl", hash = "sha256:581f94424d969274c75c895ac92489e3e0c1b8148b5e46fa04b60d7f8cbdd88d"},
+]
+
+[package.dependencies]
+Django = ">=4.2"
+django-filter = ">=2.3.0"
 
 [[package]]
 name = "dnspython"
@@ -1703,4 +1721,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "67c1c27a5826e86c038b2d95917cd7e4588471399b6ffaa5ad789db335de4f5b"
+content-hash = "2dbdac4233be9f78d4b9729e5c59f5bc816157dd5afd9b6ee6a2598813286566"
