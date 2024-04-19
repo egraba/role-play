@@ -7,6 +7,9 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ### Added
 * DnD: Add wealth at character creation
 
+### Changed
+* Upgrade Django channels to 4.1.0
+
 ## v0.8.0 - 2024-03-23
 
 ### Added
