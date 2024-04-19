@@ -18,7 +18,7 @@ class ArmorSettings(models.Model):
     name = models.CharField(max_length=30, choices=ArmorName.choices, primary_key=True)
     armor_type = models.CharField(max_length=2, choices=ArmorType.choices)
     cost = models.SmallIntegerField()
-    ac = models.SmallIntegerField()
+    ac = models.CharField(max_length=25)
     strength = models.CharField(max_length=6, null=True, blank=True)
     stealth = models.CharField(max_length=1, null=True, blank=True)
     weight = models.SmallIntegerField()

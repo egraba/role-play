@@ -154,7 +154,7 @@
     name: Padded
     armor_type: LA
     cost: 5
-    ac: 11
+    ac: 11 + Dex modifier
     stealth: D
     weight: 8
 - model: character.armorsettings
@@ -162,35 +162,35 @@
     name: Leather
     armor_type: LA
     cost: 10
-    ac: 11
+    ac: 11 + Dex modifier
     weight: 10
 - model: character.armorsettings
   fields:
     name: Studded leather
     armor_type: LA
     cost: 45
-    ac: 12
+    ac: 12 + Dex modifier
     weight: 13
 - model: character.armorsettings
   fields:
     name: Hide
     armor_type: MA
     cost: 10
-    ac: 12
+    ac: 12 + Dex modifier (max 2)
     weight: 12
 - model: character.armorsettings
   fields:
     name: Chain shirt
     armor_type: MA
     cost: 50
-    ac: 13
+    ac: 13 + Dex modifier (max 2)
     weight: 20
 - model: character.armorsettings
   fields:
     name: Scale mail
     armor_type: MA
     cost: 50
-    ac: 14
+    ac: 14 + Dex modifier (max 2)
     stealth: D
     weight: 45
 - model: character.armorsettings
@@ -198,14 +198,14 @@
     name: Breastplate
     armor_type: MA
     cost: 400
-    ac: 14
+    ac: 14 + Dex modifier (max 2)
     weight: 20
 - model: character.armorsettings
   fields:
     name: Half plate
     armor_type: MA
     cost: 750
-    ac: 15
+    ac: 15 + Dex modifier (max 2)
     stealth: D
     weight: 40
 - model: character.armorsettings
@@ -249,7 +249,7 @@
     name: Shield
     armor_type: SH
     cost: 10
-    ac: 2
+    ac: +2
     weight: 6
 
 # Packs
