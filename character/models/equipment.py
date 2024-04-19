@@ -54,7 +54,7 @@ class Inventory(models.Model):
         self.character.ac = base_ac + bonus
         if is_dex_modifier:
             dex_modifier = self.character.abilities.get(
-                name=AbilityName.DEXTERITY
+                ability_type=AbilityName.DEXTERITY
             ).modifier
             self.character.ac += max(dex_modifier, modifier_max)
 
@@ -63,7 +63,7 @@ class Inventory(models.Model):
         Reduce character's speed depending on the selected armor.
         """
         max_strength = parse_strength(self.armor.settings.strength)
-        strength = self.character.abilities.get(name=AbilityName.STRENGTH).score
+        strength = self.character.abilities.get(ability_type=AbilityName.STRENGTH).score
         if strength < max_strength:
             self.character.speed -= 10
 
@@ -71,7 +71,7 @@ class Inventory(models.Model):
         """
         Add an armor to the inventory.
         """
-        self.armor = Armor.objects.create(settings=ArmorSettings.get(name=name))
+        self.armor = Armor.objects.create(settings=ArmorSettings.objects.get(name=name))
         self._compute_ac()
         self._reduce_speed()
 
@@ -79,7 +79,7 @@ class Inventory(models.Model):
         """
         Add an equipment to the inventory.
         """
-        if name in ArmorName.choices:
+        if (name, name) in ArmorName.choices:
             self._add_armor(name)
         else:
             raise EquipmentDoesNotExist

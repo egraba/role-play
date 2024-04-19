@@ -23,6 +23,7 @@ class AbilityFactory(factory.django.DjangoModelFactory):
 
     ability_type = factory.SubFactory(AbilityTypeFactory)
     score = factory.Faker("random_int")
+    modifier = factory.Faker("random_int", min=-5, max=5)
 
 
 class InventoryFactory(factory.django.DjangoModelFactory):

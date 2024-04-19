@@ -1,5 +1,6 @@
 import pytest
 
+from character.constants.equipment import ArmorName
 from character.models.equipment import (
     ArmorSettings,
     Gear,
@@ -9,7 +10,12 @@ from character.models.equipment import (
     Weapon,
 )
 
-from ..factories import ArmorFactory, InventoryFactory
+from ..factories import (
+    ArmorFactory,
+    ArmorSettingsFactory,
+    CharacterFactory,
+    InventoryFactory,
+)
 
 
 @pytest.mark.django_db
@@ -94,9 +100,18 @@ class TestInventoryModel:
     @pytest.fixture(autouse=True)
     def setup(self):
         self.inventory = InventoryFactory()
+        self.inventory.character = CharacterFactory()
 
     def test_creation(self):
         assert isinstance(self.inventory, Inventory)
+
+    def test_add_armor(self):
+        padded_settings = ArmorSettingsFactory(
+            name=ArmorName.PADDED, ac="11 + Dex modifier"
+        )
+        padded = ArmorFactory(settings=padded_settings)
+        self.inventory.add(padded.settings.name)
+        assert self.inventory.character.ac == 11
 
     def test_contains_armor(self):
         self.inventory.armor = ArmorFactory()
