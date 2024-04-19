@@ -10,7 +10,7 @@ from character.forms.equipment import (
     RogueEquipmentSelectForm,
     WizardEquipmentSelectForm,
 )
-from character.utils.equipment import (
+from character.utils.equipment.choices_providers import (
     ClericEquipmentChoicesProvider,
     FighterEquipmentChoicesProvider,
     RogueEquipmentChoicesProvider,

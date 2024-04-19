@@ -1,7 +1,7 @@
 import pytest
 
 from character.constants.equipment import ArmorName, GearName, PackName, WeaponName
-from character.utils.equipment import (
+from character.utils.equipment.choices_providers import (
     ClericEquipmentChoicesProvider,
     FighterEquipmentChoicesProvider,
     RogueEquipmentChoicesProvider,
