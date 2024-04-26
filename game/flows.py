@@ -1,11 +1,11 @@
 from django.utils import timezone
 from viewflow import fsm
 
-from .constants.game import GameStatus
+from .constants.game import GameState
 
 
 class GameFlow:
-    state = fsm.State(GameStatus, default=GameStatus.UNDER_PREPARATION)
+    state = fsm.State(GameState, default=GameState.UNDER_PREPARATION)
 
     def __init__(self, game):
         self.game = game
@@ -26,8 +26,8 @@ class GameFlow:
         return self.game.player_set.count() >= 2
 
     @state.transition(
-        source=GameStatus.UNDER_PREPARATION,
-        target=GameStatus.ONGOING,
+        source=GameState.UNDER_PREPARATION,
+        target=GameState.ONGOING,
         conditions=[can_start],
     )
     def start(self):
@@ -35,7 +35,7 @@ class GameFlow:
         self.game.save()
 
     def is_under_preparation(self):
-        return self.game.status == GameStatus.UNDER_PREPARATION
+        return self.game.state == GameState.UNDER_PREPARATION
 
     def is_ongoing(self):
-        return self.game.status == GameStatus.ONGOING
+        return self.game.state == GameState.ONGOING

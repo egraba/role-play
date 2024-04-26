@@ -5,8 +5,8 @@ from .models.game import Game, Player
 
 
 class GameAdmin(admin.ModelAdmin):
-    fields = ["name", "status", "master"]
-    list_display = ["name", "status", "master", "start_date"]
+    fields = ["name", "state", "master"]
+    list_display = ["name", "state", "master", "start_date"]
 
 
 class PlayerAdmin(admin.ModelAdmin):
