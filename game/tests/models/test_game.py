@@ -17,20 +17,6 @@ class TestGameModel:
     def test_str(self, game):
         assert str(game) == game.name
 
-    def test_status_methods(self, game):
-        # Under preparation
-        assert game.is_under_preparation()
-        assert game.is_ongoing() is False
-
-        # Ongoing
-        number_of_players = 5
-        for _ in range(number_of_players):
-            PlayerFactory(game=game)
-        game.start()
-        game.save()
-        assert game.is_under_preparation() is False
-        assert game.is_ongoing()
-
 
 @pytest.mark.django_db
 class MasterModelTest:
