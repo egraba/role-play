@@ -11,6 +11,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * Upgrade Django channels to 4.1.0
 * Upgrade Celery to 5.4
 * Remove `pytest-celery` package
+* Migrate from `django-fsm`to `django-viewflow`
 
 ## v0.8.0 - 2024-03-23
 

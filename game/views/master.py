@@ -4,11 +4,12 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.views.generic import FormView, ListView, UpdateView
-from django_fsm import TransitionNotAllowed
+from viewflow.fsm import TransitionNotAllowed
 
 from character.models.character import Character
 
 from ..constants.events import RollType
+from ..flows import GameFlow
 from ..forms import AbilityCheckRequestForm, QuestCreateForm
 from ..models.events import Event, Quest
 from ..models.game import Player
@@ -66,9 +67,9 @@ class GameStartView(UserPassesTestMixin, GameStatusControlMixin):
 
     def post(self, request, *args, **kwargs):
         game = self.get_object()
+        flow = GameFlow(game)
         try:
-            game.start()
-            game.save()
+            flow.start()
             cache.set(game_key(game.id), game)
             event = Event.objects.create(game=game)
             event.date = timezone.now()

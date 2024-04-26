@@ -316,7 +316,7 @@ class TestGameCreateView:
         game = Game.objects.last()
         assertRedirects(response, game.get_absolute_url())
         assert game.name == f"{campaign.title} #{game.id}"
-        assert game.status == "P"
+        assert game.state == "P"
         assert game.master.user == logged_user
         quest = Quest.objects.last()
         assert quest.game == game

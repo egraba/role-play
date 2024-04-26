@@ -16,6 +16,7 @@ from pytest_django.asserts import (
 
 from character.models.character import Character
 from character.tests.factories import CharacterFactory
+from game.flows import GameFlow
 from game.forms import QuestCreateForm
 from game.models.events import Event, Quest
 from game.models.game import Game
@@ -225,7 +226,8 @@ class TestGameStartView:
         assert response.status_code == 302
         # Need to query the game again.
         game = Game.objects.last()
-        assert game.is_ongoing()
+        flow = GameFlow(game)
+        assert flow.is_ongoing()
         assert game.start_date.second - timezone.now().second <= 2
         event = Event.objects.last()
         assert event.date.second - timezone.now().second <= 2
@@ -237,7 +239,8 @@ class TestGameStartView:
         response = client.post(reverse(self.path_name, args=(game.id,)))
         assert response.status_code == 302
         assert pytest.raises(PermissionDenied)
-        assert game.is_under_preparation()
+        flow = GameFlow(game)
+        assert flow.is_under_preparation()
         assertRedirects(response, reverse("game-start-error", args=(game.id,)))
 
 
@@ -248,8 +251,8 @@ def started_game(django_db_blocker):
         number_of_players = 3
         for _ in range(number_of_players):
             PlayerFactory(game=game)
-        game.start()
-        game.save()
+        flow = GameFlow(game)
+        flow.start()
         return game
 
 
@@ -288,7 +291,7 @@ class TestQuestCreateView:
         assert response.context["game"] == started_game
 
     def test_game_is_under_preparation(self, client, login, started_game):
-        started_game.status = "P"
+        started_game.state = "P"
         started_game.save()
         response = client.get(reverse(self.path_name, args=(started_game.id,)))
         assert response.status_code == 403

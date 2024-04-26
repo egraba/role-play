@@ -2,12 +2,10 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.functions import Upper
 from django.urls import reverse
-from django.utils import timezone
-from django_fsm import FSMField, transition
 
 from character.models.character import Character
 from master.models import Campaign
-from ..constants.game import GameStatus
+from ..constants.game import GameState
 
 
 class Game(models.Model):
@@ -16,8 +14,8 @@ class Game(models.Model):
         Campaign, on_delete=models.SET_NULL, null=True, blank=True
     )
     start_date = models.DateTimeField(null=True, blank=True)
-    status = FSMField(
-        max_length=1, choices=GameStatus.choices, default=GameStatus.UNDER_PREPARATION
+    state = models.CharField(
+        max_length=1, choices=GameState.choices, default=GameState.UNDER_PREPARATION
     )
 
     class Meta:
@@ -30,24 +28,6 @@ class Game(models.Model):
 
     def get_absolute_url(self):
         return reverse("game", args=(self.id,))
-
-    def can_start(self):
-        return self.player_set.count() >= 2
-
-    @transition(
-        field=status,
-        source=GameStatus.UNDER_PREPARATION,
-        target=GameStatus.ONGOING,
-        conditions=[can_start],
-    )
-    def start(self):
-        self.start_date = timezone.now()
-
-    def is_under_preparation(self):
-        return self.status == GameStatus.UNDER_PREPARATION
-
-    def is_ongoing(self):
-        return self.status == GameStatus.ONGOING
 
 
 class Master(models.Model):
