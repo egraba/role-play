@@ -7,6 +7,7 @@ from django.views.generic.list import ContextMixin
 
 from ..models.game import Game
 from ..utils.cache import game_key
+from ..flows import GameFlow
 
 
 class GameContextMixin(ContextMixin, View):
@@ -70,8 +71,6 @@ class EventContextMixin(GameContextMixin, FormMixin):
 
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
-        if self.game.is_ongoing():
-            # Events can be created only when a game is ongoing.
-            pass
-        else:
+        flow = GameFlow(self.game)
+        if not flow.is_ongoing():
             raise PermissionDenied()
