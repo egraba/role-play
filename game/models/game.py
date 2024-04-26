@@ -5,7 +5,7 @@ from django.urls import reverse
 
 from character.models.character import Character
 from master.models import Campaign
-from ..constants.game import GameStatus
+from ..constants.game import GameState
 
 
 class Game(models.Model):
@@ -14,8 +14,8 @@ class Game(models.Model):
         Campaign, on_delete=models.SET_NULL, null=True, blank=True
     )
     start_date = models.DateTimeField(null=True, blank=True)
-    status = models.CharField(
-        max_length=1, choices=GameStatus.choices, default=GameStatus.UNDER_PREPARATION
+    state = models.CharField(
+        max_length=1, choices=GameState.choices, default=GameState.UNDER_PREPARATION
     )
 
     class Meta:
