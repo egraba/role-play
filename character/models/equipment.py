@@ -39,6 +39,24 @@ class Armor(models.Model):
         return str(self.settings.name)
 
 
+class WeaponSettings(models.Model):
+    name = models.CharField(max_length=30, primary_key=True, choices=WeaponName.choices)
+    weapon_type = models.CharField(max_length=2, choices=WeaponType.choices)
+
+    class Meta:
+        verbose_name_plural = "weapon settings"
+
+    def __str__(self):
+        return str(self.name)
+
+
+class Weapon(models.Model):
+    settings = models.ForeignKey(WeaponSettings, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.settings.name)
+
+
 class Inventory(models.Model):
     capacity = models.SmallIntegerField(default=0)
     gp = models.SmallIntegerField(default=0)
@@ -91,14 +109,6 @@ class Inventory(models.Model):
         if self.armor.settings.name == name:
             return True
         return False
-
-
-class Weapon(models.Model):
-    name = models.CharField(max_length=30, primary_key=True, choices=WeaponName.choices)
-    weapon_type = models.CharField(max_length=2, choices=WeaponType.choices)
-
-    def __str__(self):
-        return str(self.name)
 
 
 class Pack(models.Model):

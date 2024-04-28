@@ -1,149 +1,149 @@
 # Weapons
-- model: character.weapon
+- model: character.weaponsettings
   fields:
     name: Club
     weapon_type: SM
-- model: character.weapon
+- model: character.weaponsettings
   fields:
     name: Dagger
     weapon_type: SM
-- model: character.weapon
+- model: character.weaponsettings
   fields:
     name: Greatclub
     weapon_type: SM
-- model: character.weapon
+- model: character.weaponsettings
   fields:
     name: Handaxe
     weapon_type: SM
-- model: character.weapon
+- model: character.weaponsettings
   fields:
     name: Javelin
     weapon_type: SM
-- model: character.weapon
+- model: character.weaponsettings
   fields:
     name: Light hammer
     weapon_type: SM
-- model: character.weapon
+- model: character.weaponsettings
   fields:
     name: Mace
     weapon_type: SM
-- model: character.weapon
+- model: character.weaponsettings
   fields:
     name: Quarterstaff
     weapon_type: SM
-- model: character.weapon
+- model: character.weaponsettings
   fields:
     name: Sickle
     weapon_type: SM
-- model: character.weapon
+- model: character.weaponsettings
   fields:
     name: Spear
     weapon_type: SM
-- model: character.weapon
+- model: character.weaponsettings
   fields:
     name: Crossbow, light
     weapon_type: SR
-- model: character.weapon
+- model: character.weaponsettings
   fields:
     name: Dart
     weapon_type: SR
-- model: character.weapon
+- model: character.weaponsettings
   fields:
     name: Shortbow
     weapon_type: SR
-- model: character.weapon
+- model: character.weaponsettings
   fields:
     name: Sling
     weapon_type: SR
-- model: character.weapon
+- model: character.weaponsettings
   fields:
     name: Battleaxe
     weapon_type: MM
-- model: character.weapon
+- model: character.weaponsettings
   fields:
     name: Flail
     weapon_type: MM
-- model: character.weapon
+- model: character.weaponsettings
   fields:
     name: Glaive
     weapon_type: MM
-- model: character.weapon
+- model: character.weaponsettings
   fields:
     name: Greataxe
     weapon_type: MM
-- model: character.weapon
+- model: character.weaponsettings
   fields:
     name: Greatsword
     weapon_type: MM
-- model: character.weapon
+- model: character.weaponsettings
   fields:
     name: Halberd
     weapon_type: MM
-- model: character.weapon
+- model: character.weaponsettings
   fields:
     name: Lance
     weapon_type: MM
-- model: character.weapon
+- model: character.weaponsettings
   fields:
     name: Longsword
     weapon_type: MM
-- model: character.weapon
+- model: character.weaponsettings
   fields:
     name: Maul
     weapon_type: MM
-- model: character.weapon
+- model: character.weaponsettings
   fields:
     name: Morningstar
     weapon_type: MM
-- model: character.weapon
+- model: character.weaponsettings
   fields:
     name: Pike
     weapon_type: MM
-- model: character.weapon
+- model: character.weaponsettings
   fields:
     name: Rapier
     weapon_type: MM
-- model: character.weapon
+- model: character.weaponsettings
   fields:
     name: Scimitar
     weapon_type: MM
-- model: character.weapon
+- model: character.weaponsettings
   fields:
     name: Shortsword
     weapon_type: MM
-- model: character.weapon
+- model: character.weaponsettings
   fields:
     name: Trident
     weapon_type: MM
-- model: character.weapon
+- model: character.weaponsettings
   fields:
     name: War pick
     weapon_type: MM
-- model: character.weapon
+- model: character.weaponsettings
   fields:
     name: Warhammer
     weapon_type: MM
-- model: character.weapon
+- model: character.weaponsettings
   fields:
     name: Whip
     weapon_type: MM
-- model: character.weapon
+- model: character.weaponsettings
   fields:
     name: Blowgun
     weapon_type: MR
-- model: character.weapon
+- model: character.weaponsettings
   fields:
     name: Crossbow, hand
     weapon_type: MR
-- model: character.weapon
+- model: character.weaponsettings
   fields:
     name: Crossbow, heavy
     weapon_type: MR
-- model: character.weapon
+- model: character.weaponsettings
   fields:
     name: Longbow
     weapon_type: MR
-- model: character.weapon
+- model: character.weaponsettings
   fields:
     name: Net
     weapon_type: MR

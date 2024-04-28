@@ -10,7 +10,7 @@ from ...constants.equipment import (
     WeaponType,
     PackName,
 )
-from ...models.equipment import ArmorSettings, Gear, Pack, Weapon
+from ...models.equipment import ArmorSettings, Gear, Pack, WeaponSettings
 
 
 class EquipmentChoicesProvider(ABC):
@@ -46,14 +46,14 @@ class EquipmentChoicesProvider(ABC):
 
 class ClericEquipmentChoicesProvider(EquipmentChoicesProvider):
     def get_first_weapon_choices(self):
-        queryset = Weapon.objects.filter(
+        queryset = WeaponSettings.objects.filter(
             Q(name=WeaponName.MACE) | Q(name=WeaponName.WARHAMMER)
         )
         choices = {weapon + weapon for weapon in queryset.values_list("name")}
         return choices
 
     def get_second_weapon_choices(self):
-        queryset = Weapon.objects.filter(
+        queryset = WeaponSettings.objects.filter(
             Q(name=WeaponName.CROSSBOW_LIGHT)
             | Q(weapon_type=WeaponType.SIMPLE_MELEE)
             | Q(weapon_type=WeaponType.SIMPLE_RANGED)
@@ -92,12 +92,12 @@ class FighterEquipmentChoicesProvider(EquipmentChoicesProvider):
         chain_mail = ArmorSettings.objects.get(name=ArmorName.CHAIN_MAIL)
         choices.add((chain_mail, chain_mail))
         leather = ArmorSettings.objects.get(name=ArmorName.LEATHER)
-        longbow = Weapon.objects.get(name=WeaponName.LONGBOW).name
+        longbow = WeaponSettings.objects.get(name=WeaponName.LONGBOW).name
         choices.add((f"{leather} & {longbow}", f"{leather} & {longbow}"))
         return choices
 
     def get_second_weapon_choices(self):
-        queryset = Weapon.objects.filter(
+        queryset = WeaponSettings.objects.filter(
             Q(weapon_type=WeaponType.MARTIAL_MELEE)
             | Q(weapon_type=WeaponType.MARTIAL_RANGED)
         )
@@ -105,7 +105,7 @@ class FighterEquipmentChoicesProvider(EquipmentChoicesProvider):
         return choices
 
     def get_third_weapon_choices(self):
-        queryset = Weapon.objects.filter(
+        queryset = WeaponSettings.objects.filter(
             Q(name=WeaponName.CROSSBOW_LIGHT) | Q(name=WeaponName.HANDAXE)
         )
         choices = {weapon + weapon for weapon in queryset.values_list("name")}
@@ -127,14 +127,14 @@ class FighterEquipmentChoicesProvider(EquipmentChoicesProvider):
 
 class RogueEquipmentChoicesProvider(EquipmentChoicesProvider):
     def get_first_weapon_choices(self):
-        queryset = Weapon.objects.filter(
+        queryset = WeaponSettings.objects.filter(
             Q(name=WeaponName.RAPIER) | Q(name=WeaponName.SHORTSWORD)
         )
         choices = {weapon + weapon for weapon in queryset.values_list("name")}
         return choices
 
     def get_second_weapon_choices(self):
-        queryset = Weapon.objects.filter(
+        queryset = WeaponSettings.objects.filter(
             Q(name=WeaponName.SHORTBOW) | Q(name=WeaponName.SHORTSWORD)
         )
         choices = {weapon + weapon for weapon in queryset.values_list("name")}
@@ -161,7 +161,7 @@ class RogueEquipmentChoicesProvider(EquipmentChoicesProvider):
 
 class WizardEquipmentChoicesProvider(EquipmentChoicesProvider):
     def get_first_weapon_choices(self):
-        queryset = Weapon.objects.filter(
+        queryset = WeaponSettings.objects.filter(
             Q(name=WeaponName.QUARTERSTAFF) | Q(name=WeaponName.DAGGER)
         )
         choices = {weapon + weapon for weapon in queryset.values_list("name")}
