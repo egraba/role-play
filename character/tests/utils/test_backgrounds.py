@@ -3,7 +3,7 @@ from faker import Faker
 
 from character.constants.equipment import GearType, ToolType
 from character.constants.races import LanguageName
-from character.models.equipment import Gear, Tool
+from character.models.equipment import GearSettings, Tool
 from character.models.races import Language
 from character.utils.backgrounds import (
     get_artisans_tools,
@@ -38,7 +38,7 @@ def test_get_non_spoken_languages():
 def test_get_holy_symbols():
     holy_symbols = {
         (gear.name, gear.get_name_display())
-        for gear in Gear.objects.filter(gear_type=GearType.HOLY_SYMBOL)
+        for gear in GearSettings.objects.filter(gear_type=GearType.HOLY_SYMBOL)
     }
     assert get_holy_symbols() == holy_symbols
 

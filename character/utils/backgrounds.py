@@ -1,6 +1,6 @@
 from ..constants.equipment import GearType, ToolType
 from ..models.character import Character
-from ..models.equipment import Gear, Tool
+from ..models.equipment import GearSettings, Tool
 from ..models.races import Language
 
 
@@ -23,7 +23,7 @@ def get_holy_symbols() -> set[tuple[str, str]]:
     """
     return {
         (gear.name, gear.get_name_display())
-        for gear in Gear.objects.filter(gear_type=GearType.HOLY_SYMBOL)
+        for gear in GearSettings.objects.filter(gear_type=GearType.HOLY_SYMBOL)
     }
 
 

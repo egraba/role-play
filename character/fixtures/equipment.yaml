@@ -276,308 +276,308 @@
     name: Scholar's Pack
 
 # Gear
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Abacus
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Acid
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Alchemist's fire
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Arrows
     gear_type: AM
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Blowgun needles
     gear_type: AM
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Crossbow bolts
     gear_type: AM
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Sling bullets
     gear_type: AM
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Antitoxin
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Crystal
     gear_type: AF
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Orb
     gear_type: AF
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Rod
     gear_type: AF
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Staff
     gear_type: AF
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Wand
     gear_type: AF
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Backpack
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Ball bearings
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Basket
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Bedroll
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Bell
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Blanket
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Block and tackle
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Book
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Bottle, glass
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Caltrops
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Candle
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Case, crossbow bolt
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Case, map or scroll
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Chain
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Chalk
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Chest
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Climber's kit
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Clothes, common
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Clothes, costume
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Clothes, fine
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Clothes, traveler's
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Component pouch
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Crowbar
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Sprig of mistletoe
     gear_type: DF
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Totem
     gear_type: DF
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Wooden staff
     gear_type: DF
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Yew wand
     gear_type: DF
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Fishing tackle
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Flask or tankard
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Grappling hook
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Hammer
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Hammer, sledge
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Healer's kit
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Amulet
     gear_type: HS
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Emblem
     gear_type: HS
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Reliquary
     gear_type: HS
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Holy water
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Hourglass
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Hunting trap
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Ink
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Ink pen
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Jug or pitcher
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Ladder
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Lamp
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Lantern, bullseye
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Lantern, hooded
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Magnifying glass
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Manacles
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Mess kit
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Mirror, steel
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Oil
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Paper
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Parchment
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Perfume
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Pick, miner's
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Piton
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Poison, basic
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Pole
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Pot, iron
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Potion of healing
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Pouch
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Quiver
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Ram, portable
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Rations
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Robes
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Rope, hempen
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Rope, silk
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Sack
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Scale, merchant's
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Sealing wax
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Shovel
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Signal whistle
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Signet ring
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Soap
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Spellbook
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Spikes, iron
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Spyglass
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Tent, two-person
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Tinderbox
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Torch
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Vial
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Waterskin
-- model: character.gear
+- model: character.gearsettings
   fields:
     name: Whetstone
 

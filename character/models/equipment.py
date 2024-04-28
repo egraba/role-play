@@ -71,6 +71,23 @@ class Pack(models.Model):
         return str(self.settings.name)
 
 
+class GearSettings(models.Model):
+    name = models.CharField(max_length=30, primary_key=True, choices=GearName.choices)
+    gear_type = models.CharField(
+        max_length=2, choices=GearType.choices, default=GearType.MISC
+    )
+
+    def __str__(self):
+        return str(self.name)
+
+
+class Gear(models.Model):
+    settings = models.ForeignKey(GearSettings, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.settings.name)
+
+
 class Inventory(models.Model):
     capacity = models.SmallIntegerField(default=0)
     gp = models.SmallIntegerField(default=0)
@@ -141,16 +158,6 @@ class Inventory(models.Model):
         if self.armor.settings.name == name:
             return True
         return False
-
-
-class Gear(models.Model):
-    name = models.CharField(max_length=30, primary_key=True, choices=GearName.choices)
-    gear_type = models.CharField(
-        max_length=2, choices=GearType.choices, default=GearType.MISC
-    )
-
-    def __str__(self):
-        return str(self.name)
 
 
 class Tool(models.Model):

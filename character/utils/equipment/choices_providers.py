@@ -10,7 +10,12 @@ from ...constants.equipment import (
     WeaponType,
     PackName,
 )
-from ...models.equipment import ArmorSettings, Gear, PackSettings, WeaponSettings
+from ...models.equipment import (
+    ArmorSettings,
+    GearSettings,
+    PackSettings,
+    WeaponSettings,
+)
 
 
 class EquipmentChoicesProvider(ABC):
@@ -74,7 +79,7 @@ class ClericEquipmentChoicesProvider(EquipmentChoicesProvider):
         return choices
 
     def get_gear_choices(self):
-        queryset = Gear.objects.filter(Q(gear_type=GearType.HOLY_SYMBOL))
+        queryset = GearSettings.objects.filter(Q(gear_type=GearType.HOLY_SYMBOL))
         choices = {gear + gear for gear in queryset.values_list("name")}
         return choices
 
@@ -177,7 +182,7 @@ class WizardEquipmentChoicesProvider(EquipmentChoicesProvider):
         raise NotImplementedError
 
     def get_gear_choices(self):
-        queryset = Gear.objects.filter(
+        queryset = GearSettings.objects.filter(
             Q(name=GearName.COMPONENT_POUCH) | Q(gear_type=GearType.ARCANE_FOCUS)
         )
         choices = {gear + gear for gear in queryset.values_list("name")}

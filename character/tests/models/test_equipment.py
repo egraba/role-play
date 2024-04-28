@@ -3,7 +3,7 @@ import pytest
 from character.constants.equipment import ArmorName
 from character.models.equipment import (
     ArmorSettings,
-    Gear,
+    GearSettings,
     Inventory,
     PackSettings,
     Tool,
@@ -70,10 +70,10 @@ class TestGearModel:
     @pytest.fixture(autouse=True)
     def setup(self):
         # Fixtures are automatically loaded during the test session initialization.
-        self.gear = Gear.objects.last()
+        self.gear = GearSettings.objects.last()
 
     def test_creation(self):
-        assert isinstance(self.gear, Gear)
+        assert isinstance(self.gear, GearSettings)
 
     def test_str(self):
         assert str(self.gear) == self.gear.name
