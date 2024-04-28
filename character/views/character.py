@@ -4,7 +4,6 @@ from django.views.generic import CreateView, DetailView, ListView
 
 from ..forms.character import CharacterCreateForm
 from ..models.character import Character
-from ..models.equipment import Inventory
 from ..utils.builders import (
     build_character,
 )
@@ -40,6 +39,5 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
         character = form.save(commit=False)
         character.user = self.request.user
         build_character(character, form)
-        character.inventory = Inventory.objects.create()
         character.save()
         return super().form_valid(form)
