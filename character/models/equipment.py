@@ -138,6 +138,12 @@ class Inventory(models.Model):
         """
         self.pack = Pack.objects.create(settings=PackSettings.objects.get(name=name))
 
+    def _add_gear(self, name: str) -> None:
+        """
+        Add a gear to the inventory.
+        """
+        self.gear = Gear.objects.create(settings=GearSettings.objects.get(name=name))
+
     def add(self, name: str) -> None:
         """
         Add an equipment to the inventory.
@@ -148,6 +154,8 @@ class Inventory(models.Model):
             self._add_weapon(name)
         elif (name, name) in PackName.choices:
             self._add_pack(name)
+        elif (name, name) in GearSettings.choices:
+            self._add_gear(name)
         else:
             raise EquipmentDoesNotExist
 
