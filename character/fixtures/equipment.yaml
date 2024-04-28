@@ -253,25 +253,25 @@
     weight: 6
 
 # Packs
-- model: character.pack
+- model: character.packsettings
   fields:
     name: Burglar's Pack
-- model: character.pack
+- model: character.packsettings
   fields:
     name: Diplomat's Pack
-- model: character.pack
+- model: character.packsettings
   fields:
     name: Dungeoneer's Pack
-- model: character.pack
+- model: character.packsettings
   fields:
     name: Entertainer's Pack
-- model: character.pack
+- model: character.packsettings
   fields:
     name: Explorer's Pack
-- model: character.pack
+- model: character.packsettings
   fields:
     name: Priest's Pack
-- model: character.pack
+- model: character.packsettings
   fields:
     name: Scholar's Pack
 

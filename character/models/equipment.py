@@ -57,6 +57,20 @@ class Weapon(models.Model):
         return str(self.settings.name)
 
 
+class PackSettings(models.Model):
+    name = models.CharField(max_length=30, primary_key=True, choices=PackName.choices)
+
+    def __str__(self):
+        return str(self.name)
+
+
+class Pack(models.Model):
+    settings = models.ForeignKey(PackSettings, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.settings.name)
+
+
 class Inventory(models.Model):
     capacity = models.SmallIntegerField(default=0)
     gp = models.SmallIntegerField(default=0)
@@ -93,12 +107,22 @@ class Inventory(models.Model):
         self._compute_ac()
         self._reduce_speed()
 
+    def _add_weapon(self, name: str) -> None:
+        """
+        Add a weapon to the inventory.
+        """
+        self.weapon = Weapon.objects.create(
+            settings=WeaponSettings.objects.get(name=name)
+        )
+
     def add(self, name: str) -> None:
         """
         Add an equipment to the inventory.
         """
         if (name, name) in ArmorName.choices:
             self._add_armor(name)
+        elif (name, name) in WeaponName.choices:
+            self._add_weapon(name)
         else:
             raise EquipmentDoesNotExist
 
@@ -109,13 +133,6 @@ class Inventory(models.Model):
         if self.armor.settings.name == name:
             return True
         return False
-
-
-class Pack(models.Model):
-    name = models.CharField(max_length=30, primary_key=True, choices=PackName.choices)
-
-    def __str__(self):
-        return str(self.name)
 
 
 class Gear(models.Model):

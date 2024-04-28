@@ -10,7 +10,7 @@ from ...constants.equipment import (
     WeaponType,
     PackName,
 )
-from ...models.equipment import ArmorSettings, Gear, Pack, WeaponSettings
+from ...models.equipment import ArmorSettings, Gear, PackSettings, WeaponSettings
 
 
 class EquipmentChoicesProvider(ABC):
@@ -79,7 +79,7 @@ class ClericEquipmentChoicesProvider(EquipmentChoicesProvider):
         return choices
 
     def get_pack_choices(self):
-        queryset = Pack.objects.filter(
+        queryset = PackSettings.objects.filter(
             Q(name=PackName.PRIESTS_PACK) | Q(name=PackName.EXPLORERS_PACK)
         )
         choices = {armor + armor for armor in queryset.values_list("name")}
@@ -118,7 +118,7 @@ class FighterEquipmentChoicesProvider(EquipmentChoicesProvider):
         raise NotImplementedError
 
     def get_pack_choices(self):
-        queryset = Pack.objects.filter(
+        queryset = PackSettings.objects.filter(
             Q(name=PackName.DUNGEONEERS_PACK) | Q(name=PackName.EXPLORERS_PACK)
         )
         choices = {armor + armor for armor in queryset.values_list("name")}
@@ -150,7 +150,7 @@ class RogueEquipmentChoicesProvider(EquipmentChoicesProvider):
         raise NotImplementedError
 
     def get_pack_choices(self):
-        queryset = Pack.objects.filter(
+        queryset = PackSettings.objects.filter(
             Q(name=PackName.BURGLARS_PACK)
             | Q(name=PackName.DUNGEONEERS_PACK)
             | Q(name=PackName.EXPLORERS_PACK)
@@ -184,7 +184,7 @@ class WizardEquipmentChoicesProvider(EquipmentChoicesProvider):
         return choices
 
     def get_pack_choices(self):
-        queryset = Pack.objects.filter(
+        queryset = PackSettings.objects.filter(
             Q(name=PackName.SCHOLARS_PACK) | Q(name=PackName.EXPLORERS_PACK)
         )
         choices = {armor + armor for armor in queryset.values_list("name")}

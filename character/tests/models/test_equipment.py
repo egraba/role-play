@@ -5,7 +5,7 @@ from character.models.equipment import (
     ArmorSettings,
     Gear,
     Inventory,
-    Pack,
+    PackSettings,
     Tool,
     WeaponSettings,
 )
@@ -54,10 +54,10 @@ class TestPackModel:
     @pytest.fixture(autouse=True)
     def setup(self):
         # Fixtures are automatically loaded during the test session initialization.
-        self.pack = Pack.objects.last()
+        self.pack = PackSettings.objects.last()
 
     def test_creation(self):
-        assert isinstance(self.pack, Pack)
+        assert isinstance(self.pack, PackSettings)
 
     def test_str(self):
         assert str(self.pack) == self.pack.name
