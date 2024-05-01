@@ -44,23 +44,31 @@ class Inventory(models.Model):
             self.character.speed -= 10
 
     def _add_armor(self, name: str) -> None:
-        self.armor = Armor.objects.create(settings=ArmorSettings.objects.get(name=name))
+        Armor.objects.create(
+            settings=ArmorSettings.objects.get(name=name), inventory=self
+        )
         self._compute_ac()
         self._reduce_speed()
 
     def _add_weapon(self, name: str) -> None:
-        self.weapon = Weapon.objects.create(
-            settings=WeaponSettings.objects.get(name=name)
+        Weapon.objects.create(
+            settings=WeaponSettings.objects.get(name=name), inventory=self
         )
 
     def _add_pack(self, name: str) -> None:
-        self.pack = Pack.objects.create(settings=PackSettings.objects.get(name=name))
+        Pack.objects.create(
+            settings=PackSettings.objects.get(name=name), inventory=self
+        )
 
     def _add_gear(self, name: str) -> None:
-        self.gear = Gear.objects.create(settings=GearSettings.objects.get(name=name))
+        Gear.objects.create(
+            settings=GearSettings.objects.get(name=name), inventory=self
+        )
 
     def _add_tool(self, name: str) -> None:
-        self.tool = Tool.objects.create(settings=ToolSettings.objects.get(name=name))
+        Tool.objects.create(
+            settings=ToolSettings.objects.get(name=name), inventory=self
+        )
 
     def add(self, name: str) -> None:
         """
