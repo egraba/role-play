@@ -16,118 +16,9 @@ from ..exceptions import EquipmentDoesNotExist
 from ..utils.equipment.parsers import parse_ac_settings, parse_strength
 
 
-class ArmorSettings(models.Model):
-    name = models.CharField(max_length=30, choices=ArmorName.choices, primary_key=True)
-    armor_type = models.CharField(max_length=2, choices=ArmorType.choices)
-    cost = models.SmallIntegerField()
-    ac = models.CharField(max_length=25)
-    strength = models.CharField(max_length=6, null=True, blank=True)
-    stealth = models.CharField(max_length=1, null=True, blank=True)
-    weight = models.SmallIntegerField()
-
-    class Meta:
-        verbose_name_plural = "armor settings"
-
-    def __str__(self):
-        return str(self.name)
-
-
-class Armor(models.Model):
-    """Concrete armor"""
-
-    settings = models.ForeignKey(ArmorSettings, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return str(self.settings.name)
-
-
-class WeaponSettings(models.Model):
-    name = models.CharField(max_length=30, primary_key=True, choices=WeaponName.choices)
-    weapon_type = models.CharField(max_length=2, choices=WeaponType.choices)
-
-    class Meta:
-        verbose_name_plural = "weapon settings"
-
-    def __str__(self):
-        return str(self.name)
-
-
-class Weapon(models.Model):
-    """Concrete weapon"""
-
-    settings = models.ForeignKey(WeaponSettings, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return str(self.settings.name)
-
-
-class PackSettings(models.Model):
-    name = models.CharField(max_length=30, primary_key=True, choices=PackName.choices)
-
-    class Meta:
-        verbose_name_plural = "pack settings"
-
-    def __str__(self):
-        return str(self.name)
-
-
-class Pack(models.Model):
-    """Concrete pack"""
-
-    settings = models.ForeignKey(PackSettings, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return str(self.settings.name)
-
-
-class GearSettings(models.Model):
-    name = models.CharField(max_length=30, primary_key=True, choices=GearName.choices)
-    gear_type = models.CharField(
-        max_length=2, choices=GearType.choices, default=GearType.MISC
-    )
-
-    class Meta:
-        verbose_name_plural = "gear settings"
-
-    def __str__(self):
-        return str(self.name)
-
-
-class Gear(models.Model):
-    """Concrete gear"""
-
-    settings = models.ForeignKey(GearSettings, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return str(self.settings.name)
-
-
-class ToolSettings(models.Model):
-    name = models.CharField(max_length=30, primary_key=True, choices=ToolName.choices)
-    tool_type = models.CharField(
-        max_length=2, choices=ToolType.choices, default=ToolType.MISC
-    )
-
-    class Meta:
-        verbose_name_plural = "tool settings"
-
-    def __str__(self):
-        return str(self.name)
-
-
-class Tool(models.Model):
-    """Concrete tool"""
-
-    settings = models.ForeignKey(ToolSettings, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return str(self.settings.name)
-
-
 class Inventory(models.Model):
     capacity = models.SmallIntegerField(default=0)
     gp = models.SmallIntegerField(default=0)
-    armor = models.ForeignKey(Armor, null=True, on_delete=models.SET_NULL)
 
     def _compute_ac(self):
         """
@@ -195,3 +86,116 @@ class Inventory(models.Model):
         if self.armor.settings.name == name:
             return True
         return False
+
+
+class ArmorSettings(models.Model):
+    name = models.CharField(max_length=30, choices=ArmorName.choices, primary_key=True)
+    armor_type = models.CharField(max_length=2, choices=ArmorType.choices)
+    cost = models.SmallIntegerField()
+    ac = models.CharField(max_length=25)
+    strength = models.CharField(max_length=6, null=True, blank=True)
+    stealth = models.CharField(max_length=1, null=True, blank=True)
+    weight = models.SmallIntegerField()
+
+    class Meta:
+        verbose_name_plural = "armor settings"
+
+    def __str__(self):
+        return str(self.name)
+
+
+class Armor(models.Model):
+    """Concrete armor"""
+
+    settings = models.ForeignKey(ArmorSettings, on_delete=models.CASCADE)
+    inventory = models.ForeignKey(Inventory, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return str(self.settings.name)
+
+
+class WeaponSettings(models.Model):
+    name = models.CharField(max_length=30, primary_key=True, choices=WeaponName.choices)
+    weapon_type = models.CharField(max_length=2, choices=WeaponType.choices)
+
+    class Meta:
+        verbose_name_plural = "weapon settings"
+
+    def __str__(self):
+        return str(self.name)
+
+
+class Weapon(models.Model):
+    """Concrete weapon"""
+
+    settings = models.ForeignKey(WeaponSettings, on_delete=models.CASCADE)
+    inventory = models.ForeignKey(Inventory, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return str(self.settings.name)
+
+
+class PackSettings(models.Model):
+    name = models.CharField(max_length=30, primary_key=True, choices=PackName.choices)
+
+    class Meta:
+        verbose_name_plural = "pack settings"
+
+    def __str__(self):
+        return str(self.name)
+
+
+class Pack(models.Model):
+    """Concrete pack"""
+
+    settings = models.ForeignKey(PackSettings, on_delete=models.CASCADE)
+    inventory = models.ForeignKey(Inventory, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return str(self.settings.name)
+
+
+class GearSettings(models.Model):
+    name = models.CharField(max_length=30, primary_key=True, choices=GearName.choices)
+    gear_type = models.CharField(
+        max_length=2, choices=GearType.choices, default=GearType.MISC
+    )
+
+    class Meta:
+        verbose_name_plural = "gear settings"
+
+    def __str__(self):
+        return str(self.name)
+
+
+class Gear(models.Model):
+    """Concrete gear"""
+
+    settings = models.ForeignKey(GearSettings, on_delete=models.CASCADE)
+    inventory = models.ForeignKey(Inventory, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return str(self.settings.name)
+
+
+class ToolSettings(models.Model):
+    name = models.CharField(max_length=30, primary_key=True, choices=ToolName.choices)
+    tool_type = models.CharField(
+        max_length=2, choices=ToolType.choices, default=ToolType.MISC
+    )
+
+    class Meta:
+        verbose_name_plural = "tool settings"
+
+    def __str__(self):
+        return str(self.name)
+
+
+class Tool(models.Model):
+    """Concrete tool"""
+
+    settings = models.ForeignKey(ToolSettings, on_delete=models.CASCADE)
+    inventory = models.ForeignKey(Inventory, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return str(self.settings.name)
