@@ -60,6 +60,9 @@ class Weapon(models.Model):
 class PackSettings(models.Model):
     name = models.CharField(max_length=30, primary_key=True, choices=PackName.choices)
 
+    class Meta:
+        verbose_name_plural = "pack settings"
+
     def __str__(self):
         return str(self.name)
 
@@ -76,6 +79,9 @@ class GearSettings(models.Model):
     gear_type = models.CharField(
         max_length=2, choices=GearType.choices, default=GearType.MISC
     )
+
+    class Meta:
+        verbose_name_plural = "gear settings"
 
     def __str__(self):
         return str(self.name)
