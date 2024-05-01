@@ -93,7 +93,15 @@ class Inventory(models.Model):
         """
         Check if the inventory contains an equipment.
         """
-        if self.armor.settings.name == name:
+        if self.armor_set.filter(settings__name=name).count() == quantity:
+            return True
+        if self.weapon_set.filter(settings__name=name).count() == quantity:
+            return True
+        if self.pack_set.filter(settings__name=name).count() == quantity:
+            return True
+        if self.gear_set.filter(settings__name=name).count() == quantity:
+            return True
+        if self.tool_set.filter(settings__name=name).count() == quantity:
             return True
         return False
 
