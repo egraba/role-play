@@ -1,5 +1,7 @@
 from django.db import models
 
+from utils.lists import item_in_choices
+
 from ..constants.abilities import AbilityName
 from ..constants.equipment import (
     ArmorName,
@@ -74,15 +76,15 @@ class Inventory(models.Model):
         """
         Add an equipment to the inventory.
         """
-        if (name, name) in ArmorName.choices:
+        if item_in_choices(name, ArmorName.choices):
             self._add_armor(name)
-        elif (name, name) in WeaponName.choices:
+        elif item_in_choices(name, WeaponName.choices):
             self._add_weapon(name)
-        elif (name, name) in PackName.choices:
+        elif item_in_choices(name, PackName.choices):
             self._add_pack(name)
-        elif (name, name) in GearName.choices:
+        elif item_in_choices(name, GearName.choices):
             self._add_gear(name)
-        elif (name, name) in ToolName.choices:
+        elif item_in_choices(name, ToolName.choices):
             self._add_tool(name)
         else:
             raise EquipmentDoesNotExist
