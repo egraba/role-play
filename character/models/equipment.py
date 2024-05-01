@@ -20,12 +20,12 @@ class Inventory(models.Model):
     capacity = models.SmallIntegerField(default=0)
     gp = models.SmallIntegerField(default=0)
 
-    def _compute_ac(self):
+    def _compute_ac(self, armor):
         """
         Compute character's Armor Class (AC) depending on the selected armor.
         """
         base_ac, is_dex_modifier, modifier_max, bonus = parse_ac_settings(
-            self.armor.settings.ac
+            armor.settings.ac
         )
         self.character.ac = base_ac + bonus
         if is_dex_modifier:
@@ -34,21 +34,21 @@ class Inventory(models.Model):
             ).modifier
             self.character.ac += max(dex_modifier, modifier_max)
 
-    def _reduce_speed(self):
+    def _reduce_speed(self, armor):
         """
         Reduce character's speed depending on the selected armor.
         """
-        max_strength = parse_strength(self.armor.settings.strength)
+        max_strength = parse_strength(armor.settings.strength)
         strength = self.character.abilities.get(ability_type=AbilityName.STRENGTH).score
         if strength < max_strength:
             self.character.speed -= 10
 
     def _add_armor(self, name: str) -> None:
-        Armor.objects.create(
+        armor = Armor.objects.create(
             settings=ArmorSettings.objects.get(name=name), inventory=self
         )
-        self._compute_ac()
-        self._reduce_speed()
+        self._compute_ac(armor)
+        self._reduce_speed(armor)
 
     def _add_weapon(self, name: str) -> None:
         Weapon.objects.create(
