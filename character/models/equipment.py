@@ -181,9 +181,9 @@ class Inventory(models.Model):
             self._add_weapon(name)
         elif (name, name) in PackName.choices:
             self._add_pack(name)
-        elif (name, name) in GearSettings.choices:
+        elif (name, name) in GearName.choices:
             self._add_gear(name)
-        elif (name, name) in ToolSettings.choices:
+        elif (name, name) in ToolName.choices:
             self._add_tool(name)
         else:
             raise EquipmentDoesNotExist
