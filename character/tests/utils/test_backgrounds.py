@@ -3,7 +3,7 @@ from faker import Faker
 
 from character.constants.equipment import GearType, ToolType
 from character.constants.races import LanguageName
-from character.models.equipment import GearSettings, Tool
+from character.models.equipment import GearSettings, ToolSettings
 from character.models.races import Language
 from character.utils.backgrounds import (
     get_artisans_tools,
@@ -47,7 +47,7 @@ def test_get_holy_symbols():
 def test_get_gaming_set_tools():
     gaming_set_tools = {
         (tool.name, tool.get_name_display())
-        for tool in Tool.objects.filter(tool_type=ToolType.GAMING_SET)
+        for tool in ToolSettings.objects.filter(tool_type=ToolType.GAMING_SET)
     }
     assert get_gaming_set_tools() == gaming_set_tools
 
@@ -56,6 +56,6 @@ def test_get_gaming_set_tools():
 def test_get_artisans_tools():
     artisans_tools = {
         (tool.name, tool.get_name_display())
-        for tool in Tool.objects.filter(tool_type=ToolType.ARTISANS_TOOLS)
+        for tool in ToolSettings.objects.filter(tool_type=ToolType.ARTISANS_TOOLS)
     }
     assert get_artisans_tools() == artisans_tools

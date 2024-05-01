@@ -2,7 +2,7 @@ from django.db import models
 
 from .abilities import AbilityType
 from .character import Character
-from .equipment import ArmorSettings, Tool, WeaponSettings
+from .equipment import ArmorSettings, ToolSettings, WeaponSettings
 from .skills import Skill
 
 
@@ -30,7 +30,7 @@ class WeaponProficiency(models.Model):
 
 class ToolProficiency(models.Model):
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
-    tool = models.ForeignKey(Tool, on_delete=models.CASCADE)
+    tool = models.ForeignKey(ToolSettings, on_delete=models.CASCADE)
 
     class Meta:
         verbose_name_plural = "tools proficiencies"

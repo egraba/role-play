@@ -582,145 +582,145 @@
     name: Whetstone
 
 # Tools
-- model: character.tool
+- model: character.toolsettings
   fields:
     name: Alchemist's supplies
     tool_type: AT
-- model: character.tool
+- model: character.toolsettings
   fields:
     name: Brewer's supplies
     tool_type: AT
-- model: character.tool
+- model: character.toolsettings
   fields:
     name: Calligrapher's supplies
     tool_type: AT
-- model: character.tool
+- model: character.toolsettings
   fields:
     name: Carpenter's tools
     tool_type: AT
-- model: character.tool
+- model: character.toolsettings
   fields:
     name: Cartographer's tools
     tool_type: AT
-- model: character.tool
+- model: character.toolsettings
   fields:
     name: Cobbler's tools
     tool_type: AT
-- model: character.tool
+- model: character.toolsettings
   fields:
     name: Cook's utensils
     tool_type: AT
-- model: character.tool
+- model: character.toolsettings
   fields:
     name: Glassblower's tools
     tool_type: AT
-- model: character.tool
+- model: character.toolsettings
   fields:
     name: Jeweler's tools
     tool_type: AT
-- model: character.tool
+- model: character.toolsettings
   fields:
     name: Leatherworker's tools
     tool_type: AT
-- model: character.tool
+- model: character.toolsettings
   fields:
     name: Mason's tools
     tool_type: AT
-- model: character.tool
+- model: character.toolsettings
   fields:
     name: Painter's supplies
     tool_type: AT
-- model: character.tool
+- model: character.toolsettings
   fields:
     name: Potter's tools
     tool_type: AT
-- model: character.tool
+- model: character.toolsettings
   fields:
     name: Smith's tools
     tool_type: AT
-- model: character.tool
+- model: character.toolsettings
   fields:
     name: Tinker's tools
     tool_type: AT
-- model: character.tool
+- model: character.toolsettings
   fields:
     name: Weaver's tools
     tool_type: AT
-- model: character.tool
+- model: character.toolsettings
   fields:
     name: Woodcarver's tools
     tool_type: AT
-- model: character.tool
+- model: character.toolsettings
   fields:
     name: Disguise kit
-- model: character.tool
+- model: character.toolsettings
   fields:
     name: Forgery kit
-- model: character.tool
+- model: character.toolsettings
   fields:
     name: Dice set
     tool_type: GS
-- model: character.tool
+- model: character.toolsettings
   fields:
     name: Dragonchess set
     tool_type: GS
-- model: character.tool
+- model: character.toolsettings
   fields:
     name: Playing card set
     tool_type: GS
-- model: character.tool
+- model: character.toolsettings
   fields:
     name: Three-Dragon Ante set
     tool_type: GS
-- model: character.tool
+- model: character.toolsettings
   fields:
     name: Herbalism kit
-- model: character.tool
+- model: character.toolsettings
   fields:
     name: Bagpipes
     tool_type: MU
-- model: character.tool
+- model: character.toolsettings
   fields:
     name: Drum
     tool_type: MU
-- model: character.tool
+- model: character.toolsettings
   fields:
     name: Dulcimer
     tool_type: MU
-- model: character.tool
+- model: character.toolsettings
   fields:
     name: Flute
     tool_type: MU
-- model: character.tool
+- model: character.toolsettings
   fields:
     name: Lute
     tool_type: MU
-- model: character.tool
+- model: character.toolsettings
   fields:
     name: Lyre
     tool_type: MU
-- model: character.tool
+- model: character.toolsettings
   fields:
     name: Horn
     tool_type: MU
-- model: character.tool
+- model: character.toolsettings
   fields:
     name: Pan flute
     tool_type: MU
-- model: character.tool
+- model: character.toolsettings
   fields:
     name: Shawm
     tool_type: MU
-- model: character.tool
+- model: character.toolsettings
   fields:
     name: Viol
     tool_type: MU
-- model: character.tool
+- model: character.toolsettings
   fields:
     name: Navigator's tools
-- model: character.tool
+- model: character.toolsettings
   fields:
     name: Poisoner's kit
-- model: character.tool
+- model: character.toolsettings
   fields:
     name: "Thieves' tools"

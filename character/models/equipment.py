@@ -88,6 +88,26 @@ class Gear(models.Model):
         return str(self.settings.name)
 
 
+class ToolSettings(models.Model):
+    name = models.CharField(max_length=30, primary_key=True, choices=ToolName.choices)
+    tool_type = models.CharField(
+        max_length=2, choices=ToolType.choices, default=ToolType.MISC
+    )
+
+    class Meta:
+        verbose_name_plural = "tool settings"
+
+    def __str__(self):
+        return str(self.name)
+
+
+class Tool(models.Model):
+    settings = models.ForeignKey(ToolSettings, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.settings.name)
+
+
 class Inventory(models.Model):
     capacity = models.SmallIntegerField(default=0)
     gp = models.SmallIntegerField(default=0)
@@ -166,13 +186,3 @@ class Inventory(models.Model):
         if self.armor.settings.name == name:
             return True
         return False
-
-
-class Tool(models.Model):
-    name = models.CharField(max_length=30, primary_key=True, choices=ToolName.choices)
-    tool_type = models.CharField(
-        max_length=2, choices=ToolType.choices, default=ToolType.MISC
-    )
-
-    def __str__(self):
-        return str(self.name)
