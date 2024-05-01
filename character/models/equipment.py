@@ -153,31 +153,19 @@ class Inventory(models.Model):
             self.character.speed -= 10
 
     def _add_armor(self, name: str) -> None:
-        """
-        Add an armor to the inventory.
-        """
         self.armor = Armor.objects.create(settings=ArmorSettings.objects.get(name=name))
         self._compute_ac()
         self._reduce_speed()
 
     def _add_weapon(self, name: str) -> None:
-        """
-        Add a weapon to the inventory.
-        """
         self.weapon = Weapon.objects.create(
             settings=WeaponSettings.objects.get(name=name)
         )
 
     def _add_pack(self, name: str) -> None:
-        """
-        Add a pack to the inventory.
-        """
         self.pack = Pack.objects.create(settings=PackSettings.objects.get(name=name))
 
     def _add_gear(self, name: str) -> None:
-        """
-        Add a gear to the inventory.
-        """
         self.gear = Gear.objects.create(settings=GearSettings.objects.get(name=name))
 
     def add(self, name: str) -> None:
