@@ -33,6 +33,8 @@ class ArmorSettings(models.Model):
 
 
 class Armor(models.Model):
+    """Concrete armor"""
+
     settings = models.ForeignKey(ArmorSettings, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -51,6 +53,8 @@ class WeaponSettings(models.Model):
 
 
 class Weapon(models.Model):
+    """Concrete weapon"""
+
     settings = models.ForeignKey(WeaponSettings, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -68,6 +72,8 @@ class PackSettings(models.Model):
 
 
 class Pack(models.Model):
+    """Concrete pack"""
+
     settings = models.ForeignKey(PackSettings, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -88,6 +94,8 @@ class GearSettings(models.Model):
 
 
 class Gear(models.Model):
+    """Concrete gear"""
+
     settings = models.ForeignKey(GearSettings, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -108,6 +116,8 @@ class ToolSettings(models.Model):
 
 
 class Tool(models.Model):
+    """Concrete tool"""
+
     settings = models.ForeignKey(ToolSettings, on_delete=models.CASCADE)
 
     def __str__(self):
