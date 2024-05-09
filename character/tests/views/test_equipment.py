@@ -138,6 +138,7 @@ class TestEquipmentSelectView:
         assertRedirects(response, character.get_absolute_url())
 
         inventory = character.inventory
+        print(first_weapon, second_weapon)
         assert inventory.contains(first_weapon)
         assert inventory.contains(second_weapon)
         assert inventory.contains(pack)
