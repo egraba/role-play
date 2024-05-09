@@ -1,7 +1,5 @@
 from django.db import models
 
-from utils.lists import item_in_choices
-
 from ..constants.abilities import AbilityName
 from ..constants.equipment import (
     ArmorName,
@@ -18,8 +16,8 @@ from ..constants.equipment import (
 from ..exceptions import EquipmentDoesNotExist
 from ..models.disadvantages import (
     AbilityCheckDisadvantage,
-    SavingThrowDisadvantage,
     AttackRollDisadvantage,
+    SavingThrowDisadvantage,
     SpellCastDisadvantage,
 )
 from ..models.proficiencies import ArmorProficiency
@@ -111,15 +109,15 @@ class Inventory(models.Model):
         """
         Add an equipment to the inventory.
         """
-        if item_in_choices(name, ArmorName.choices):
+        if name in ArmorName.values:
             self._add_armor(name)
-        elif item_in_choices(name, WeaponName.choices):
+        elif name in WeaponName.values:
             self._add_weapon(name)
-        elif item_in_choices(name, PackName.choices):
+        elif name in PackName.values:
             self._add_pack(name)
-        elif item_in_choices(name, GearName.choices):
+        elif name in GearName.values:
             self._add_gear(name)
-        elif item_in_choices(name, ToolName.choices):
+        elif name in ToolName.values:
             self._add_tool(name)
         else:
             raise EquipmentDoesNotExist

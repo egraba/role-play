@@ -1,5 +1,4 @@
 from utils.dice import Dice, DiceStringFormatError
-from utils.lists import item_in_choices
 from ...constants.equipment import DamageType
 
 
@@ -59,7 +58,7 @@ def parse_damage(settings: str) -> tuple[str, str]:
         dice_str = Dice(array[0])
     except DiceStringFormatError as exc:
         raise ValueError from exc
-    if item_in_choices(array[1], DamageType.choices):
+    if array[1] in DamageType.values:
         damage_type = array[1]
     else:
         raise ValueError("This damage type does not exist")
