@@ -174,7 +174,7 @@ class WeaponSettings(models.Model):
     cost = models.SmallIntegerField()
     damage = models.CharField(max_length=15)
     weight = models.SmallIntegerField()
-    properties = models.CharField(max_length=50)
+    properties = models.CharField(max_length=50, null=True)
 
     class Meta:
         verbose_name_plural = "weapon settings"
