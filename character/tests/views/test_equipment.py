@@ -102,7 +102,11 @@ class TestEquipmentSelectView:
         assertRedirects(response, character.get_absolute_url())
 
         inventory = character.inventory
-        assert inventory.contains(first_weapon)
+        assert (
+            inventory.contains(ArmorName.CHAIN_MAIL)
+            or inventory.contains(ArmorName.LEATHER)
+            and inventory.contains(WeaponName.LONGBOW)
+        )
         assert inventory.contains(second_weapon)
         assert inventory.contains(third_weapon)
         assert inventory.contains(pack)
