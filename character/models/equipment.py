@@ -16,7 +16,14 @@ from ..constants.equipment import (
     WeaponType,
 )
 from ..exceptions import EquipmentDoesNotExist
-from ..models.disadvantages import DexterityCheckDisadvantage
+from ..models.disadvantages import (
+    DexterityCheckDisadvantage,
+    AbilityCheckDisadvantage,
+    SavingThrowDisadvantage,
+    AttackRollDisadvantage,
+    SpellCastDisadvantage,
+)
+from ..models.proficiencies import ArmorProficiency
 from ..utils.equipment.parsers import parse_ac_settings, parse_strength
 
 
@@ -54,6 +61,21 @@ class Inventory(models.Model):
         """
         Set disadvantage on dexterity rolls depending on the selected armor.
         """
+        if not ArmorProficiency.objects.get(
+            character=self.character, armor=armor
+        ).exists():
+            for ability_name in AbilityName.choices:
+                AbilityCheckDisadvantage.objects.create(
+                    character=self.character, ability_type__name=ability_name
+                )
+            SavingThrowDisadvantage.objects.create(character=self.character)
+            AttackRollDisadvantage.objects.create(
+                character=self.character, ability_type__name=AbilityName.STRENGTH
+            )
+            AttackRollDisadvantage.objects.create(
+                character=self.character, ability_type__name=AbilityName.DEXTERITY
+            )
+            SpellCastDisadvantage.objects.create(character=self.character)
         if armor.settings.stealth == Disadvantage.DISADVANTAGE:
             DexterityCheckDisadvantage.objects.create(character=self.character)
 
