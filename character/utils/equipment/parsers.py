@@ -1,5 +1,5 @@
 from utils.dice import Dice, DiceStringFormatError
-from ...constants.equipment import DamageType
+from ...constants.equipment import DamageType, WeaponProperty
 
 
 def parse_ac_settings(settings: str) -> tuple[int, bool, int, int]:
@@ -63,3 +63,11 @@ def parse_damage(settings: str) -> tuple[str, str]:
     else:
         raise ValueError("This damage type does not exist")
     return str(dice_str), damage_type
+
+
+def parse_properties(settings: str) -> set[str]:
+    """
+    Parse weapon properties settings.
+    """
+    array = settings.lower().split(", ")
+    return {property for property in array if property in WeaponProperty.values}
