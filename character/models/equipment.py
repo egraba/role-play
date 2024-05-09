@@ -6,6 +6,7 @@ from ..constants.abilities import AbilityName
 from ..constants.equipment import (
     ArmorName,
     ArmorType,
+    Disadvantage,
     GearName,
     GearType,
     PackName,
@@ -15,6 +16,13 @@ from ..constants.equipment import (
     WeaponType,
 )
 from ..exceptions import EquipmentDoesNotExist
+from ..models.disadvantages import (
+    AbilityCheckDisadvantage,
+    SavingThrowDisadvantage,
+    AttackRollDisadvantage,
+    SpellCastDisadvantage,
+)
+from ..models.proficiencies import ArmorProficiency
 from ..utils.equipment.parsers import parse_ac_settings, parse_strength
 
 
@@ -22,7 +30,7 @@ class Inventory(models.Model):
     capacity = models.SmallIntegerField(default=0)
     gp = models.SmallIntegerField(default=0)
 
-    def _compute_ac(self, armor):
+    def _compute_ac(self, armor) -> None:
         """
         Compute character's Armor Class (AC) depending on the selected armor.
         """
@@ -39,7 +47,7 @@ class Inventory(models.Model):
             else:
                 self.character.ac += dex_modifier
 
-    def _reduce_speed(self, armor):
+    def _reduce_speed(self, armor) -> None:
         """
         Reduce character's speed depending on the selected armor.
         """
@@ -47,6 +55,30 @@ class Inventory(models.Model):
         strength = self.character.abilities.get(ability_type=AbilityName.STRENGTH).score
         if strength < max_strength:
             self.character.speed -= 10
+
+    def _set_disadvantage(self, armor) -> None:
+        """
+        Set disadvantage on dexterity rolls depending on the selected armor.
+        """
+        if not ArmorProficiency.objects.get(
+            character=self.character, armor=armor
+        ).exists():
+            for ability_name in AbilityName.choices:
+                AbilityCheckDisadvantage.objects.create(
+                    character=self.character, ability_type__name=ability_name
+                )
+            SavingThrowDisadvantage.objects.create(character=self.character)
+            AttackRollDisadvantage.objects.create(
+                character=self.character, ability_type__name=AbilityName.STRENGTH
+            )
+            AttackRollDisadvantage.objects.create(
+                character=self.character, ability_type__name=AbilityName.DEXTERITY
+            )
+            SpellCastDisadvantage.objects.create(character=self.character)
+        if armor.settings.stealth == Disadvantage.DISADVANTAGE:
+            AbilityCheckDisadvantage.objects.create(
+                character=self.character, ability_type__name=AbilityName.DEXTERITY
+            )
 
     def _add_armor(self, name: str) -> None:
         armor = Armor.objects.create(

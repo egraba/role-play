@@ -1,6 +1,33 @@
 from django.db.models import TextChoices
 
 
+class ArmorName(TextChoices):
+    PADDED = "Padded"
+    LEATHER = "Leather"
+    STUDDED_LEATHER = "Studded leather"
+    HIDE = "Hide"
+    CHAIN_SHIRT = "Chain shirt"
+    SCALE_MAIL = "Scale mail"
+    BREASTPLATE = "Breastplate"
+    HALF_PLATE = "Half plate"
+    RING_MAIL = "Ring mail"
+    CHAIN_MAIL = "Chain mail"
+    SPLINT = "Splint"
+    PLATE = "Plate"
+    SHIELD = "Shield"
+
+
+class ArmorType(TextChoices):
+    LIGHT_ARMOR = "LA", "Light Armor"
+    MEDIUM_ARMOR = "MA", "Medium Armor"
+    HEAVY_ARMOR = "HA", "Heavy Armor"
+    SHIELD = "SH", "Shield"
+
+
+class Disadvantage(TextChoices):
+    DISADVANTAGE = "D", "disadvantage"
+
+
 class WeaponName(TextChoices):
     CLUB = "Club"
     DAGGER = "Dagger"
@@ -46,29 +73,6 @@ class WeaponType(TextChoices):
     SIMPLE_RANGED = "SR", "Simple Ranged"
     MARTIAL_MELEE = "MM", "Martial Melee"
     MARTIAL_RANGED = "MR", "Marial Ranged"
-
-
-class ArmorName(TextChoices):
-    PADDED = "Padded"
-    LEATHER = "Leather"
-    STUDDED_LEATHER = "Studded leather"
-    HIDE = "Hide"
-    CHAIN_SHIRT = "Chain shirt"
-    SCALE_MAIL = "Scale mail"
-    BREASTPLATE = "Breastplate"
-    HALF_PLATE = "Half plate"
-    RING_MAIL = "Ring mail"
-    CHAIN_MAIL = "Chain mail"
-    SPLINT = "Splint"
-    PLATE = "Plate"
-    SHIELD = "Shield"
-
-
-class ArmorType(TextChoices):
-    LIGHT_ARMOR = "LA", "Light Armor"
-    MEDIUM_ARMOR = "MA", "Medium Armor"
-    HEAVY_ARMOR = "HA", "Heavy Armor"
-    SHIELD = "SH", "Shield"
 
 
 class PackName(TextChoices):

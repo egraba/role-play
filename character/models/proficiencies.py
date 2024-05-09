@@ -1,14 +1,9 @@
 from django.db import models
 
-from .abilities import AbilityType
-from .character import Character
-from .equipment import ArmorSettings, ToolSettings, WeaponSettings
-from .skills import Skill
-
 
 class ArmorProficiency(models.Model):
-    character = models.ForeignKey(Character, on_delete=models.CASCADE)
-    armor = models.ForeignKey(ArmorSettings, on_delete=models.CASCADE)
+    character = models.ForeignKey("character.Character", on_delete=models.CASCADE)
+    armor = models.ForeignKey("character.ArmorSettings", on_delete=models.CASCADE)
 
     class Meta:
         verbose_name_plural = "armor proficiencies"
@@ -18,8 +13,8 @@ class ArmorProficiency(models.Model):
 
 
 class WeaponProficiency(models.Model):
-    character = models.ForeignKey(Character, on_delete=models.CASCADE)
-    weapon = models.ForeignKey(WeaponSettings, on_delete=models.CASCADE)
+    character = models.ForeignKey("character.Character", on_delete=models.CASCADE)
+    weapon = models.ForeignKey("character.WeaponSettings", on_delete=models.CASCADE)
 
     class Meta:
         verbose_name_plural = "weapons proficiencies"
@@ -29,8 +24,8 @@ class WeaponProficiency(models.Model):
 
 
 class ToolProficiency(models.Model):
-    character = models.ForeignKey(Character, on_delete=models.CASCADE)
-    tool = models.ForeignKey(ToolSettings, on_delete=models.CASCADE)
+    character = models.ForeignKey("character.Character", on_delete=models.CASCADE)
+    tool = models.ForeignKey("character.ToolSettings", on_delete=models.CASCADE)
 
     class Meta:
         verbose_name_plural = "tools proficiencies"
@@ -40,8 +35,8 @@ class ToolProficiency(models.Model):
 
 
 class SavingThrowProficiency(models.Model):
-    character = models.ForeignKey(Character, on_delete=models.CASCADE)
-    ability_type = models.ForeignKey(AbilityType, on_delete=models.CASCADE)
+    character = models.ForeignKey("character.Character", on_delete=models.CASCADE)
+    ability_type = models.ForeignKey("character.AbilityType", on_delete=models.CASCADE)
 
     class Meta:
         verbose_name_plural = "saving throws proficiencies"
@@ -51,8 +46,8 @@ class SavingThrowProficiency(models.Model):
 
 
 class SkillProficiency(models.Model):
-    character = models.ForeignKey(Character, on_delete=models.CASCADE)
-    skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
+    character = models.ForeignKey("character.Character", on_delete=models.CASCADE)
+    skill = models.ForeignKey("character.Skill", on_delete=models.CASCADE)
 
     class Meta:
         verbose_name_plural = "skills proficiencies"
