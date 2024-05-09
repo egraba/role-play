@@ -5,6 +5,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Added
+* DnD: Implement amor-related disadvantages
 * DnD: Equipment is now properly instantiated
 * DnD: Add wealth at character creation
 
