@@ -1,4 +1,3 @@
-import re
 from django.db import models
 
 from utils.lists import item_in_choices
@@ -17,8 +16,6 @@ from ..constants.equipment import (
 )
 from ..exceptions import EquipmentDoesNotExist
 from ..utils.equipment.parsers import parse_ac_settings, parse_strength
-
-MULTI_EQUIPMENT_REGEX = r"\S+\s&\s\S+"
 
 
 class Inventory(models.Model):
@@ -79,13 +76,6 @@ class Inventory(models.Model):
         """
         Add an equipment to the inventory.
         """
-        # It is possible to add equipment using string argument of the following
-        # form: "equipment_name1 & equipment_name2".
-        if re.match(MULTI_EQUIPMENT_REGEX, name):
-            names = name.split(" & ")
-            for name in names:
-                self.add(name)
-
         if item_in_choices(name, ArmorName.choices):
             self._add_armor(name)
         elif item_in_choices(name, WeaponName.choices):

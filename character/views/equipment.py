@@ -1,3 +1,4 @@
+import re
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import FormView
 
@@ -10,6 +11,8 @@ from ..forms.equipment import (
 from ..constants.equipment import ArmorName, WeaponName, ToolName, GearName
 from ..models.klasses import Klass
 from .mixins import CharacterContextMixin
+
+MULTI_EQUIPMENT_REGEX = r"\S+\s&\s\S+"
 
 
 class EquipmentSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
@@ -43,8 +46,15 @@ class EquipmentSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
         for field in form_fields:
             # KeyError exception is caught because the form is different per class.
             try:
-                weapon_name = form.cleaned_data[field]
-                inventory.add(weapon_name)
+                equipment_name = form.cleaned_data[field]
+                # If the field is under the form "equipment_name1 & equipment_name2",
+                # each equipment must be added separately.
+                if re.match(MULTI_EQUIPMENT_REGEX, equipment_name):
+                    names = equipment_name.split(" & ")
+                    for name in names:
+                        inventory.add(name)
+                else:
+                    inventory.add(equipment_name)
             except KeyError:
                 pass
 

@@ -1,14 +1,13 @@
 import pytest
 from faker import Faker
 
-from character.constants.equipment import ArmorName, WeaponName
+from character.constants.equipment import ArmorName
 from character.models.equipment import (
     ArmorSettings,
     GearSettings,
     Inventory,
     PackSettings,
     ToolSettings,
-    Weapon,
     WeaponSettings,
 )
 
@@ -118,14 +117,6 @@ class TestInventoryModel:
         padded = ArmorFactory(settings=padded_settings)
         self.inventory.add(padded.settings.name)
         assert self.inventory.character.ac == 11
-
-    def test_add_multiple_items(self):
-        fake = Faker()
-        name1 = fake.random_element(WeaponName.choices[0])
-        name2 = fake.random_element(WeaponName.choices[0])
-        self.inventory.add(f"{name1} & {name2}")
-        assert Weapon.objects.filter(settings__name=name1, inventory=self.inventory)
-        assert Weapon.objects.filter(settings__name=name2, inventory=self.inventory)
 
     def test_contains_armor(self):
         armor = ArmorFactory()
