@@ -2,6 +2,7 @@ import factory
 
 from character.constants.abilities import AbilityName
 from character.constants.backgrounds import Background
+from character.constants.equipment import ArmorName
 from character.constants.races import Race
 from character.models.abilities import Ability, AbilityType
 from character.models.character import Character
@@ -59,7 +60,7 @@ class ArmorSettingsFactory(factory.django.DjangoModelFactory):
         model = ArmorSettings
         django_get_or_create = ("name",)
 
-    name = factory.Faker("word")
+    name = factory.Faker("random_element", elements=ArmorName)
     cost = factory.Faker("random_int")
     ac = factory.Faker("random_int")
     weight = factory.Faker("random_int")

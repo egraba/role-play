@@ -124,5 +124,6 @@ class TestInventoryModel:
         assert Weapon.objects.filter(settings__name=name2, inventory=self.inventory)
 
     def test_contains_armor(self):
-        self.inventory.armor = ArmorFactory()
-        assert self.inventory.contains(self.inventory.armor.settings.name)
+        armor = ArmorFactory()
+        self.inventory.armor_set.add(armor)
+        assert self.inventory.contains(armor.settings.name)
