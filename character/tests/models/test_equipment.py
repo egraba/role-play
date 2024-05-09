@@ -149,4 +149,16 @@ class TestInventoryModel:
 
     def test_contains_unkown_equipment(self):
         fake = Faker()
-        assert self.inventory.contains(fake.pystr()) is False
+        assert not self.inventory.contains(fake.pystr())
+
+    def test_contains_below_quantity(self):
+        weapon = WeaponFactory()
+        self.inventory.weapon_set.add(weapon)
+        self.inventory.weapon_set.add(weapon)
+        assert not self.inventory.contains(weapon.settings.name, 3)
+
+    def test_contains_above_quantity(self):
+        weapon = WeaponFactory()
+        self.inventory.weapon_set.add(weapon)
+        self.inventory.weapon_set.add(weapon)
+        assert self.inventory.contains(weapon.settings.name)

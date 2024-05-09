@@ -91,17 +91,18 @@ class Inventory(models.Model):
 
     def contains(self, name: str, quantity: int = 1) -> bool:
         """
-        Check if the inventory contains an equipment.
+        Check if the inventory contains an equipment, with at least
+        the specified quantity.
         """
-        if 0 < self.armor_set.filter(settings__name=name).count() <= quantity:
+        if self.armor_set.filter(settings__name=name).count() >= quantity:
             return True
-        if 0 < self.weapon_set.filter(settings__name=name).count() <= quantity:
+        if self.weapon_set.filter(settings__name=name).count() >= quantity:
             return True
-        if 0 < self.pack_set.filter(settings__name=name).count() <= quantity:
+        if self.pack_set.filter(settings__name=name).count() >= quantity:
             return True
-        if 0 < self.gear_set.filter(settings__name=name).count() <= quantity:
+        if self.gear_set.filter(settings__name=name).count() >= quantity:
             return True
-        if 0 < self.tool_set.filter(settings__name=name).count() <= quantity:
+        if self.tool_set.filter(settings__name=name).count() >= quantity:
             return True
         return False
 
