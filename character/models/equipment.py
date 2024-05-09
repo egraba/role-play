@@ -172,9 +172,9 @@ class WeaponSettings(models.Model):
     name = models.CharField(max_length=30, primary_key=True, choices=WeaponName.choices)
     weapon_type = models.CharField(max_length=2, choices=WeaponType.choices)
     cost = models.SmallIntegerField()
-    damage = models.CharField(max_length=15)
+    damage = models.CharField(max_length=15, null=True)
     weight = models.SmallIntegerField()
-    properties = models.CharField(max_length=50, null=True)
+    properties = models.CharField(max_length=60, null=True)
 
     class Meta:
         verbose_name_plural = "weapon settings"
