@@ -6,6 +6,7 @@ from ..constants.abilities import AbilityName
 from ..constants.equipment import (
     ArmorName,
     ArmorType,
+    Disadvantage,
     GearName,
     GearType,
     PackName,
@@ -15,6 +16,7 @@ from ..constants.equipment import (
     WeaponType,
 )
 from ..exceptions import EquipmentDoesNotExist
+from ..models.disadvantages import DexterityCheckDisadvantage
 from ..utils.equipment.parsers import parse_ac_settings, parse_strength
 
 
@@ -22,7 +24,7 @@ class Inventory(models.Model):
     capacity = models.SmallIntegerField(default=0)
     gp = models.SmallIntegerField(default=0)
 
-    def _compute_ac(self, armor):
+    def _compute_ac(self, armor) -> None:
         """
         Compute character's Armor Class (AC) depending on the selected armor.
         """
@@ -39,7 +41,7 @@ class Inventory(models.Model):
             else:
                 self.character.ac += dex_modifier
 
-    def _reduce_speed(self, armor):
+    def _reduce_speed(self, armor) -> None:
         """
         Reduce character's speed depending on the selected armor.
         """
@@ -47,6 +49,13 @@ class Inventory(models.Model):
         strength = self.character.abilities.get(ability_type=AbilityName.STRENGTH).score
         if strength < max_strength:
             self.character.speed -= 10
+
+    def _set_disadvantage(self, armor) -> None:
+        """
+        Set disadvantage on dexterity rolls depending on the selected armor.
+        """
+        if armor.settings.stealth == Disadvantage.DISADVANTAGE:
+            DexterityCheckDisadvantage.objects.create(character=self.character)
 
     def _add_armor(self, name: str) -> None:
         armor = Armor.objects.create(
