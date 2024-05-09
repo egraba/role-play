@@ -75,6 +75,12 @@ class WeaponType(TextChoices):
     MARTIAL_RANGED = "MR", "Marial Ranged"
 
 
+class DamageType(TextChoices):
+    BLUDGEONING = "bludgeoning", "bludgeoning"
+    PIERCING = "piercing", "piercing"
+    SLASHING = "slashing", "slashing"
+
+
 class PackName(TextChoices):
     BURGLARS_PACK = "Burglar's Pack"
     DIPLOMATS_PACK = "Diplomat's Pack"

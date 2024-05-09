@@ -1,3 +1,8 @@
+from utils.dice import Dice, DiceStringFormatError
+from utils.lists import item_in_choices
+from ...constants.equipment import DamageType
+
+
 def parse_ac_settings(settings: str) -> tuple[int, bool, int, int]:
     """
     Parse Armor Class (AC) settings.
@@ -40,3 +45,22 @@ def parse_strength(settings: str) -> int:
     if array[0] == "Str":
         max_strength = int(array[1])
     return max_strength
+
+
+def parse_damage(settings: str) -> tuple[str, str]:
+    """
+    Parse damage settings.
+    These settings have the following form:
+        NdS damage_type
+    where NdS is a dice string and damage_type a type of damage.
+    """
+    array = settings.split()
+    try:
+        dice_str = Dice(array[0])
+    except DiceStringFormatError as exc:
+        raise ValueError from exc
+    if item_in_choices(array[1], DamageType.choices):
+        damage_type = array[1]
+    else:
+        raise ValueError("This damage type does not exist")
+    return str(dice_str), damage_type
