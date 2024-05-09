@@ -8,15 +8,19 @@ from character.models.equipment import (
     Inventory,
     PackSettings,
     ToolSettings,
-    WeaponSettings,
     Weapon,
+    WeaponSettings,
 )
 
 from ..factories import (
     ArmorFactory,
     ArmorSettingsFactory,
     CharacterFactory,
+    GearFactory,
     InventoryFactory,
+    PackFactory,
+    ToolFactory,
+    WeaponFactory,
 )
 
 
@@ -127,3 +131,27 @@ class TestInventoryModel:
         armor = ArmorFactory()
         self.inventory.armor_set.add(armor)
         assert self.inventory.contains(armor.settings.name)
+
+    def test_contains_weapon(self):
+        weapon = WeaponFactory()
+        self.inventory.weapon_set.add(weapon)
+        assert self.inventory.contains(weapon.settings.name)
+
+    def test_contains_pack(self):
+        pack = PackFactory()
+        self.inventory.pack_set.add(pack)
+        assert self.inventory.contains(pack.settings.name)
+
+    def test_contains_gear(self):
+        gear = GearFactory()
+        self.inventory.gear_set.add(gear)
+        assert self.inventory.contains(gear.settings.name)
+
+    def test_contains_tool(self):
+        tool = ToolFactory()
+        self.inventory.tool_set.add(tool)
+        assert self.inventory.contains(tool.settings.name)
+
+    def test_contains_unkown_equipment(self):
+        fake = Faker()
+        assert self.inventory.contains(fake.pystr()) is False

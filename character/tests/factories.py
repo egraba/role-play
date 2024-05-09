@@ -2,11 +2,29 @@ import factory
 
 from character.constants.abilities import AbilityName
 from character.constants.backgrounds import Background
-from character.constants.equipment import ArmorName
+from character.constants.equipment import (
+    ArmorName,
+    GearName,
+    PackName,
+    ToolName,
+    WeaponName,
+)
 from character.constants.races import Race
 from character.models.abilities import Ability, AbilityType
 from character.models.character import Character
-from character.models.equipment import Armor, ArmorSettings, Inventory
+from character.models.equipment import (
+    Armor,
+    ArmorSettings,
+    Gear,
+    GearSettings,
+    Inventory,
+    Pack,
+    PackSettings,
+    Tool,
+    ToolSettings,
+    Weapon,
+    WeaponSettings,
+)
 from character.models.klasses import Klass
 
 
@@ -71,3 +89,63 @@ class ArmorFactory(factory.django.DjangoModelFactory):
         model = Armor
 
     settings = factory.SubFactory(ArmorSettingsFactory)
+
+
+class WeponSettingsFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = WeaponSettings
+        django_get_or_create = ("name",)
+
+    name = factory.Faker("random_element", elements=WeaponName)
+
+
+class WeaponFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Weapon
+
+    settings = factory.SubFactory(WeponSettingsFactory)
+
+
+class PackSettingsFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = PackSettings
+        django_get_or_create = ("name",)
+
+    name = factory.Faker("random_element", elements=PackName)
+
+
+class PackFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Pack
+
+    settings = factory.SubFactory(PackSettingsFactory)
+
+
+class GearSettingsFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = GearSettings
+        django_get_or_create = ("name",)
+
+    name = factory.Faker("random_element", elements=GearName)
+
+
+class GearFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Gear
+
+    settings = factory.SubFactory(GearSettingsFactory)
+
+
+class ToolSettingsFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ToolSettings
+        django_get_or_create = ("name",)
+
+    name = factory.Faker("random_element", elements=ToolName)
+
+
+class ToolFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Tool
+
+    settings = factory.SubFactory(ToolSettingsFactory)
