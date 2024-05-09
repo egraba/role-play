@@ -1,6 +1,7 @@
 import pytest
 from faker import Faker
 
+from character.constants.abilities import AbilityName
 from character.constants.equipment import ArmorName
 from character.models.equipment import (
     ArmorSettings,
@@ -116,7 +117,10 @@ class TestInventoryModel:
         )
         padded = ArmorFactory(settings=padded_settings)
         self.inventory.add(padded.settings.name)
-        assert self.inventory.character.ac == 11
+        dex_modifier = self.inventory.character.abilities.get(
+            ability_type__name=AbilityName.DEXTERITY
+        ).modifier
+        assert self.inventory.character.ac == 11 + dex_modifier
 
     def test_contains_armor(self):
         armor = ArmorFactory()
