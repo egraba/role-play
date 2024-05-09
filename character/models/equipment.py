@@ -34,7 +34,10 @@ class Inventory(models.Model):
             dex_modifier = self.character.abilities.get(
                 ability_type=AbilityName.DEXTERITY
             ).modifier
-            self.character.ac += max(dex_modifier, modifier_max)
+            if modifier_max > 0 and dex_modifier > modifier_max:
+                self.character.ac += modifier_max
+            else:
+                self.character.ac += dex_modifier
 
     def _reduce_speed(self, armor):
         """

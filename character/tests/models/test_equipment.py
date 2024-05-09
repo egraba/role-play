@@ -111,7 +111,13 @@ class TestInventoryModel:
     def test_creation(self):
         assert isinstance(self.inventory, Inventory)
 
-    def test_add_armor(self):
+    def test_add_armor_simple_ac(self):
+        ring_mail_settings = ArmorSettingsFactory(name=ArmorName.RING_MAIL, ac="14")
+        ring_mail = ArmorFactory(settings=ring_mail_settings)
+        self.inventory.add(ring_mail.settings.name)
+        assert self.inventory.character.ac == 14
+
+    def test_add_armor_ac_plus_dex_modifier(self):
         padded_settings = ArmorSettingsFactory(
             name=ArmorName.PADDED, ac="11 + Dex modifier"
         )
@@ -121,6 +127,20 @@ class TestInventoryModel:
             ability_type__name=AbilityName.DEXTERITY
         ).modifier
         assert self.inventory.character.ac == 11 + dex_modifier
+
+    def test_add_armor_ac_plus_dex_modifier_max(self):
+        hide_settings = ArmorSettingsFactory(
+            name=ArmorName.HIDE, ac="12 + Dex modifier (max 2)"
+        )
+        hide = ArmorFactory(settings=hide_settings)
+        self.inventory.add(hide.settings.name)
+        dex_modifier = self.inventory.character.abilities.get(
+            ability_type__name=AbilityName.DEXTERITY
+        ).modifier
+        if dex_modifier > 2:
+            assert self.inventory.character.ac == 12 + 2
+        else:
+            assert self.inventory.character.ac == 12 + dex_modifier
 
     def test_contains_armor(self):
         armor = ArmorFactory()
