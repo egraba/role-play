@@ -17,7 +17,6 @@ from ..constants.equipment import (
 )
 from ..exceptions import EquipmentDoesNotExist
 from ..models.disadvantages import (
-    DexterityCheckDisadvantage,
     AbilityCheckDisadvantage,
     SavingThrowDisadvantage,
     AttackRollDisadvantage,
@@ -77,7 +76,9 @@ class Inventory(models.Model):
             )
             SpellCastDisadvantage.objects.create(character=self.character)
         if armor.settings.stealth == Disadvantage.DISADVANTAGE:
-            DexterityCheckDisadvantage.objects.create(character=self.character)
+            AbilityCheckDisadvantage.objects.create(
+                character=self.character, ability_type__name=AbilityName.DEXTERITY
+            )
 
     def _add_armor(self, name: str) -> None:
         armor = Armor.objects.create(

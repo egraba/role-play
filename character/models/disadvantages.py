@@ -3,10 +3,6 @@ from django.db import models
 from .abilities import AbilityType
 
 
-class DexterityCheckDisadvantage(models.Model):
-    character = models.ForeignKey("character.Character", on_delete=models.CASCADE)
-
-
 class AbilityCheckDisadvantage(models.Model):
     character = models.ForeignKey("character.Character", on_delete=models.CASCADE)
     ability_type = models.ForeignKey(AbilityType, on_delete=models.CASCADE)
