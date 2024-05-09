@@ -7,3 +7,7 @@ class AbilityNotFound(ObjectDoesNotExist):
     def __init__(self, ability_type):
         self.message = f"[{ability_type}] is not found..."
         super().__init__(self.message)
+
+
+class EquipmentDoesNotExist(Exception):
+    pass

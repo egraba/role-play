@@ -4,7 +4,6 @@ from django.views.generic import CreateView, DetailView, ListView
 
 from ..forms.character import CharacterCreateForm
 from ..models.character import Character
-from ..models.equipment import Equipment, Inventory
 from ..utils.builders import (
     build_character,
 )
@@ -16,7 +15,7 @@ class CharacterDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["inventory"] = Equipment.objects.filter(inventory=self.object.inventory)
+        context["inventory"] = None
         context["abilities"] = self.object.abilities.all()
         return context
 
@@ -39,7 +38,6 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         character = form.save(commit=False)
         character.user = self.request.user
-        character.inventory = Inventory.objects.create()
         build_character(character, form)
         character.save()
         return super().form_valid(form)

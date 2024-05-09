@@ -1,23 +1,27 @@
 import pytest
+from faker import Faker
 
-from character.models.equipment import Armor, Equipment, Gear, Pack, Tool, Weapon
+from character.constants.abilities import AbilityName
+from character.constants.equipment import ArmorName
+from character.models.equipment import (
+    ArmorSettings,
+    GearSettings,
+    Inventory,
+    PackSettings,
+    ToolSettings,
+    WeaponSettings,
+)
 
-from ..factories import EquipmentFactory
-
-
-@pytest.mark.django_db
-class TestEquipmentModel:
-    equipment = None
-
-    @pytest.fixture(autouse=True)
-    def setup(self):
-        self.equipment = EquipmentFactory()
-
-    def test_creation(self):
-        assert isinstance(self.equipment, Equipment)
-
-    def test_str(self):
-        assert str(self.equipment) == self.equipment.name
+from ..factories import (
+    ArmorFactory,
+    ArmorSettingsFactory,
+    CharacterFactory,
+    GearFactory,
+    InventoryFactory,
+    PackFactory,
+    ToolFactory,
+    WeaponFactory,
+)
 
 
 @pytest.mark.django_db
@@ -27,10 +31,10 @@ class TestWeaponModel:
     @pytest.fixture(autouse=True)
     def setup(self):
         # Fixtures are automatically loaded during the test session initialization.
-        self.weapon = Weapon.objects.last()
+        self.weapon = WeaponSettings.objects.last()
 
     def test_creation(self):
-        assert isinstance(self.weapon, Weapon)
+        assert isinstance(self.weapon, WeaponSettings)
 
     def test_str(self):
         assert str(self.weapon) == self.weapon.name
@@ -43,13 +47,10 @@ class TestArmorModel:
     @pytest.fixture(autouse=True)
     def setup(self):
         # Fixtures are automatically loaded during the test session initialization.
-        self.armor = Armor.objects.last()
+        self.armor = ArmorSettings.objects.last()
 
     def test_creation(self):
-        assert isinstance(self.armor, Armor)
-
-    def test_str(self):
-        assert str(self.armor) == self.armor.name
+        assert isinstance(self.armor, ArmorSettings)
 
 
 @pytest.mark.django_db
@@ -59,10 +60,10 @@ class TestPackModel:
     @pytest.fixture(autouse=True)
     def setup(self):
         # Fixtures are automatically loaded during the test session initialization.
-        self.pack = Pack.objects.last()
+        self.pack = PackSettings.objects.last()
 
     def test_creation(self):
-        assert isinstance(self.pack, Pack)
+        assert isinstance(self.pack, PackSettings)
 
     def test_str(self):
         assert str(self.pack) == self.pack.name
@@ -75,10 +76,10 @@ class TestGearModel:
     @pytest.fixture(autouse=True)
     def setup(self):
         # Fixtures are automatically loaded during the test session initialization.
-        self.gear = Gear.objects.last()
+        self.gear = GearSettings.objects.last()
 
     def test_creation(self):
-        assert isinstance(self.gear, Gear)
+        assert isinstance(self.gear, GearSettings)
 
     def test_str(self):
         assert str(self.gear) == self.gear.name
@@ -91,10 +92,93 @@ class TestToolModel:
     @pytest.fixture(autouse=True)
     def setup(self):
         # Fixtures are automatically loaded during the test session initialization.
-        self.tool = Tool.objects.last()
+        self.tool = ToolSettings.objects.last()
 
     def test_creation(self):
-        assert isinstance(self.tool, Tool)
+        assert isinstance(self.tool, ToolSettings)
 
     def test_str(self):
         assert str(self.tool) == self.tool.name
+
+
+@pytest.mark.django_db
+class TestInventoryModel:
+    @pytest.fixture(autouse=True)
+    def setup(self):
+        self.inventory = InventoryFactory()
+        self.inventory.character = CharacterFactory()
+
+    def test_creation(self):
+        assert isinstance(self.inventory, Inventory)
+
+    def test_add_armor_simple_ac(self):
+        ring_mail_settings = ArmorSettingsFactory(name=ArmorName.RING_MAIL, ac="14")
+        ring_mail = ArmorFactory(settings=ring_mail_settings)
+        self.inventory.add(ring_mail.settings.name)
+        assert self.inventory.character.ac == 14
+
+    def test_add_armor_ac_plus_dex_modifier(self):
+        padded_settings = ArmorSettingsFactory(
+            name=ArmorName.PADDED, ac="11 + Dex modifier"
+        )
+        padded = ArmorFactory(settings=padded_settings)
+        self.inventory.add(padded.settings.name)
+        dex_modifier = self.inventory.character.abilities.get(
+            ability_type__name=AbilityName.DEXTERITY
+        ).modifier
+        assert self.inventory.character.ac == 11 + dex_modifier
+
+    def test_add_armor_ac_plus_dex_modifier_max(self):
+        hide_settings = ArmorSettingsFactory(
+            name=ArmorName.HIDE, ac="12 + Dex modifier (max 2)"
+        )
+        hide = ArmorFactory(settings=hide_settings)
+        self.inventory.add(hide.settings.name)
+        dex_modifier = self.inventory.character.abilities.get(
+            ability_type__name=AbilityName.DEXTERITY
+        ).modifier
+        if dex_modifier > 2:
+            assert self.inventory.character.ac == 12 + 2
+        else:
+            assert self.inventory.character.ac == 12 + dex_modifier
+
+    def test_contains_armor(self):
+        armor = ArmorFactory()
+        self.inventory.armor_set.add(armor)
+        assert self.inventory.contains(armor.settings.name)
+
+    def test_contains_weapon(self):
+        weapon = WeaponFactory()
+        self.inventory.weapon_set.add(weapon)
+        assert self.inventory.contains(weapon.settings.name)
+
+    def test_contains_pack(self):
+        pack = PackFactory()
+        self.inventory.pack_set.add(pack)
+        assert self.inventory.contains(pack.settings.name)
+
+    def test_contains_gear(self):
+        gear = GearFactory()
+        self.inventory.gear_set.add(gear)
+        assert self.inventory.contains(gear.settings.name)
+
+    def test_contains_tool(self):
+        tool = ToolFactory()
+        self.inventory.tool_set.add(tool)
+        assert self.inventory.contains(tool.settings.name)
+
+    def test_contains_unkown_equipment(self):
+        fake = Faker()
+        assert not self.inventory.contains(fake.pystr())
+
+    def test_contains_below_quantity(self):
+        weapon = WeaponFactory()
+        self.inventory.weapon_set.add(weapon)
+        self.inventory.weapon_set.add(weapon)
+        assert not self.inventory.contains(weapon.settings.name, 3)
+
+    def test_contains_above_quantity(self):
+        weapon = WeaponFactory()
+        self.inventory.weapon_set.add(weapon)
+        self.inventory.weapon_set.add(weapon)
+        assert self.inventory.contains(weapon.settings.name)

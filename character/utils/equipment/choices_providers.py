@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from django.db.models import Q
 
-from ..constants.equipment import (
+from ...constants.equipment import (
     ArmorName,
     GearName,
     GearType,
@@ -10,7 +10,12 @@ from ..constants.equipment import (
     WeaponType,
     PackName,
 )
-from ..models.equipment import Armor, Gear, Pack, Weapon
+from ...models.equipment import (
+    ArmorSettings,
+    GearSettings,
+    PackSettings,
+    WeaponSettings,
+)
 
 
 class EquipmentChoicesProvider(ABC):
@@ -46,14 +51,14 @@ class EquipmentChoicesProvider(ABC):
 
 class ClericEquipmentChoicesProvider(EquipmentChoicesProvider):
     def get_first_weapon_choices(self):
-        queryset = Weapon.objects.filter(
+        queryset = WeaponSettings.objects.filter(
             Q(name=WeaponName.MACE) | Q(name=WeaponName.WARHAMMER)
         )
         choices = {weapon + weapon for weapon in queryset.values_list("name")}
         return choices
 
     def get_second_weapon_choices(self):
-        queryset = Weapon.objects.filter(
+        queryset = WeaponSettings.objects.filter(
             Q(name=WeaponName.CROSSBOW_LIGHT)
             | Q(weapon_type=WeaponType.SIMPLE_MELEE)
             | Q(weapon_type=WeaponType.SIMPLE_RANGED)
@@ -65,7 +70,7 @@ class ClericEquipmentChoicesProvider(EquipmentChoicesProvider):
         raise NotImplementedError
 
     def get_armor_choices(self):
-        queryset = Armor.objects.filter(
+        queryset = ArmorSettings.objects.filter(
             Q(name=ArmorName.SCALE_MAIL)
             | Q(name=ArmorName.LEATHER)
             | Q(name=ArmorName.CHAIN_MAIL)
@@ -74,12 +79,12 @@ class ClericEquipmentChoicesProvider(EquipmentChoicesProvider):
         return choices
 
     def get_gear_choices(self):
-        queryset = Gear.objects.filter(Q(gear_type=GearType.HOLY_SYMBOL))
+        queryset = GearSettings.objects.filter(Q(gear_type=GearType.HOLY_SYMBOL))
         choices = {gear + gear for gear in queryset.values_list("name")}
         return choices
 
     def get_pack_choices(self):
-        queryset = Pack.objects.filter(
+        queryset = PackSettings.objects.filter(
             Q(name=PackName.PRIESTS_PACK) | Q(name=PackName.EXPLORERS_PACK)
         )
         choices = {armor + armor for armor in queryset.values_list("name")}
@@ -89,15 +94,15 @@ class ClericEquipmentChoicesProvider(EquipmentChoicesProvider):
 class FighterEquipmentChoicesProvider(EquipmentChoicesProvider):
     def get_first_weapon_choices(self):
         choices = set()
-        chain_mail = Armor.objects.get(name=ArmorName.CHAIN_MAIL).name
+        chain_mail = ArmorSettings.objects.get(name=ArmorName.CHAIN_MAIL).name
         choices.add((chain_mail, chain_mail))
-        leather = Armor.objects.get(name=ArmorName.LEATHER).name
-        longbow = Weapon.objects.get(name=WeaponName.LONGBOW).name
+        leather = ArmorSettings.objects.get(name=ArmorName.LEATHER).name
+        longbow = WeaponSettings.objects.get(name=WeaponName.LONGBOW).name
         choices.add((f"{leather} & {longbow}", f"{leather} & {longbow}"))
         return choices
 
     def get_second_weapon_choices(self):
-        queryset = Weapon.objects.filter(
+        queryset = WeaponSettings.objects.filter(
             Q(weapon_type=WeaponType.MARTIAL_MELEE)
             | Q(weapon_type=WeaponType.MARTIAL_RANGED)
         )
@@ -105,7 +110,7 @@ class FighterEquipmentChoicesProvider(EquipmentChoicesProvider):
         return choices
 
     def get_third_weapon_choices(self):
-        queryset = Weapon.objects.filter(
+        queryset = WeaponSettings.objects.filter(
             Q(name=WeaponName.CROSSBOW_LIGHT) | Q(name=WeaponName.HANDAXE)
         )
         choices = {weapon + weapon for weapon in queryset.values_list("name")}
@@ -118,7 +123,7 @@ class FighterEquipmentChoicesProvider(EquipmentChoicesProvider):
         raise NotImplementedError
 
     def get_pack_choices(self):
-        queryset = Pack.objects.filter(
+        queryset = PackSettings.objects.filter(
             Q(name=PackName.DUNGEONEERS_PACK) | Q(name=PackName.EXPLORERS_PACK)
         )
         choices = {armor + armor for armor in queryset.values_list("name")}
@@ -127,14 +132,14 @@ class FighterEquipmentChoicesProvider(EquipmentChoicesProvider):
 
 class RogueEquipmentChoicesProvider(EquipmentChoicesProvider):
     def get_first_weapon_choices(self):
-        queryset = Weapon.objects.filter(
+        queryset = WeaponSettings.objects.filter(
             Q(name=WeaponName.RAPIER) | Q(name=WeaponName.SHORTSWORD)
         )
         choices = {weapon + weapon for weapon in queryset.values_list("name")}
         return choices
 
     def get_second_weapon_choices(self):
-        queryset = Weapon.objects.filter(
+        queryset = WeaponSettings.objects.filter(
             Q(name=WeaponName.SHORTBOW) | Q(name=WeaponName.SHORTSWORD)
         )
         choices = {weapon + weapon for weapon in queryset.values_list("name")}
@@ -150,7 +155,7 @@ class RogueEquipmentChoicesProvider(EquipmentChoicesProvider):
         raise NotImplementedError
 
     def get_pack_choices(self):
-        queryset = Pack.objects.filter(
+        queryset = PackSettings.objects.filter(
             Q(name=PackName.BURGLARS_PACK)
             | Q(name=PackName.DUNGEONEERS_PACK)
             | Q(name=PackName.EXPLORERS_PACK)
@@ -161,7 +166,7 @@ class RogueEquipmentChoicesProvider(EquipmentChoicesProvider):
 
 class WizardEquipmentChoicesProvider(EquipmentChoicesProvider):
     def get_first_weapon_choices(self):
-        queryset = Weapon.objects.filter(
+        queryset = WeaponSettings.objects.filter(
             Q(name=WeaponName.QUARTERSTAFF) | Q(name=WeaponName.DAGGER)
         )
         choices = {weapon + weapon for weapon in queryset.values_list("name")}
@@ -177,14 +182,14 @@ class WizardEquipmentChoicesProvider(EquipmentChoicesProvider):
         raise NotImplementedError
 
     def get_gear_choices(self):
-        queryset = Gear.objects.filter(
+        queryset = GearSettings.objects.filter(
             Q(name=GearName.COMPONENT_POUCH) | Q(gear_type=GearType.ARCANE_FOCUS)
         )
         choices = {gear + gear for gear in queryset.values_list("name")}
         return choices
 
     def get_pack_choices(self):
-        queryset = Pack.objects.filter(
+        queryset = PackSettings.objects.filter(
             Q(name=PackName.SCHOLARS_PACK) | Q(name=PackName.EXPLORERS_PACK)
         )
         choices = {armor + armor for armor in queryset.values_list("name")}

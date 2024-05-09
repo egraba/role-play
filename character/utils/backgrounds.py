@@ -1,6 +1,6 @@
 from ..constants.equipment import GearType, ToolType
 from ..models.character import Character
-from ..models.equipment import Gear, Tool
+from ..models.equipment import GearSettings, ToolSettings
 from ..models.races import Language
 
 
@@ -23,7 +23,7 @@ def get_holy_symbols() -> set[tuple[str, str]]:
     """
     return {
         (gear.name, gear.get_name_display())
-        for gear in Gear.objects.filter(gear_type=GearType.HOLY_SYMBOL)
+        for gear in GearSettings.objects.filter(gear_type=GearType.HOLY_SYMBOL)
     }
 
 
@@ -33,7 +33,7 @@ def get_gaming_set_tools() -> set[tuple[str, str]]:
     """
     return {
         (tool.name, tool.get_name_display())
-        for tool in Tool.objects.filter(tool_type=ToolType.GAMING_SET)
+        for tool in ToolSettings.objects.filter(tool_type=ToolType.GAMING_SET)
     }
 
 
@@ -43,5 +43,5 @@ def get_artisans_tools() -> set[tuple[str, str]]:
     """
     return {
         (tool.name, tool.get_name_display())
-        for tool in Tool.objects.filter(tool_type=ToolType.ARTISANS_TOOLS)
+        for tool in ToolSettings.objects.filter(tool_type=ToolType.ARTISANS_TOOLS)
     }

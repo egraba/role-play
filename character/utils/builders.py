@@ -8,6 +8,7 @@ from ..constants.races import RACIAL_TRAITS
 from ..forms.character import CharacterCreateForm
 from ..models.abilities import Ability, AbilityType
 from ..models.character import Character
+from ..models.equipment import Inventory
 from ..models.klasses import KlassAdvancement
 from ..models.proficiencies import SavingThrowProficiency, SkillProficiency
 from ..models.races import Language, Sense
@@ -19,6 +20,9 @@ class _BaseBuilder:
     def __init__(self, character: Character, form: CharacterCreateForm) -> None:
         self.character = character
         self.form = form
+
+    def add_inventory(self) -> None:
+        self.character.inventory = Inventory.objects.create()
 
     def initialize_ability_scores(self) -> None:
         for ability_type in AbilityType.objects.all():
@@ -172,6 +176,7 @@ def build_character(character: Character, form: CharacterCreateForm) -> None:
     klass_builder = _KlassBuilder(character)
     background_builder = _BackgroundBuilder(character)
 
+    base_builder.add_inventory()
     base_builder.initialize_ability_scores()
 
     race_builder.apply_racial_traits()
