@@ -17,6 +17,9 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * Remove `pytest-celery` package
 * Migrate from `django-fsm`to `django-viewflow`
 
+### Fixed
+* Fixed background completion form display
+
 ## v0.8.0 - 2024-03-23
 
 ### Added
