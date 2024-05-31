@@ -5,10 +5,9 @@ from character.utils.equipment.parsers import (
     parse_ac_settings,
     parse_damage,
     parse_strength,
-    parse_properties,
 )
 
-from character.constants.equipment import DamageType, WeaponProperty
+from character.constants.equipment import DamageType
 
 
 def test_parse_ac_settings_ac_only():
@@ -77,11 +76,3 @@ def test_parse_damage_invalid_action():
     settings_str = "1d6 something"
     with pytest.raises(ValueError):
         parse_damage(settings_str)
-
-
-def test_parse_properties():
-    settings_str = "Special, thrown (range 5/15)"
-    assert parse_properties(settings_str) == {
-        WeaponProperty.SPECIAL,
-        WeaponProperty.THROWN,
-    }

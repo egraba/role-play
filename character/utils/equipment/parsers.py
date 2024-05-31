@@ -1,5 +1,8 @@
+from pydantic import BaseModel, ValidationError
+
 from utils.dice import Dice, DiceStringFormatError
-from ...constants.equipment import DamageType, WeaponProperty
+
+from ...constants.equipment import DamageType
 
 
 def parse_ac_settings(settings: str) -> tuple[int, bool, int, int]:
@@ -65,9 +68,21 @@ def parse_damage(settings: str) -> tuple[str, str]:
     return str(dice_str), damage_type
 
 
-def parse_properties(settings: str) -> set[str]:
-    """
-    Parse weapon properties settings.
-    """
-    array = settings.lower().split(", ")
-    return {property for property in array if property in WeaponProperty.values}
+class WeaponProperty(BaseModel):
+    ammunition: dict[int, int] | None
+    finesse: bool | None
+    heavy: bool | None
+    light: bool | None
+    loading: bool | None
+    reach: bool | None
+    special: bool | None
+    thrown: dict[int, int] | None
+    two_handed: bool | None
+    versatile: int | None
+
+
+def validate_weapon_properties(**settings) -> None:
+    try:
+        WeaponProperty(**settings)
+    except ValidationError as exc:
+        raise ValidationError from exc
