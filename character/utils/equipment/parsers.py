@@ -1,3 +1,10 @@
+from pydantic import BaseModel, ValidationError
+
+from utils.dice import Dice, DiceStringFormatError
+
+from ...constants.equipment import DamageType
+
+
 def parse_ac_settings(settings: str) -> tuple[int, bool, int, int]:
     """
     Parse Armor Class (AC) settings.
@@ -40,3 +47,42 @@ def parse_strength(settings: str) -> int:
     if array[0] == "Str":
         max_strength = int(array[1])
     return max_strength
+
+
+def parse_damage(settings: str) -> tuple[str, str]:
+    """
+    Parse damage settings.
+    These settings have the following form:
+        NdS damage_type
+    where NdS is a dice string and damage_type a type of damage.
+    """
+    array = settings.split()
+    try:
+        dice_str = Dice(array[0])
+    except DiceStringFormatError as exc:
+        raise ValueError from exc
+    if array[1] in DamageType.values:
+        damage_type = array[1]
+    else:
+        raise ValueError("This damage type does not exist")
+    return str(dice_str), damage_type
+
+
+class WeaponProperty(BaseModel):
+    ammunition: dict[int, int] | None
+    finesse: bool | None
+    heavy: bool | None
+    light: bool | None
+    loading: bool | None
+    reach: bool | None
+    special: bool | None
+    thrown: dict[int, int] | None
+    two_handed: bool | None
+    versatile: int | None
+
+
+def validate_weapon_properties(**settings) -> None:
+    try:
+        WeaponProperty(**settings)
+    except ValidationError as exc:
+        raise ValidationError from exc

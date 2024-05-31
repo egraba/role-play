@@ -3,150 +3,293 @@
   fields:
     name: Club
     weapon_type: SM
+    cost: 0
+    damage: 1d4 bludgeoning
+    weight: 2
+    properties: Light
 - model: character.weaponsettings
   fields:
     name: Dagger
     weapon_type: SM
+    cost: 2
+    damage: 1d4 piercing
+    weight: 1
+    properties: Finesse, light, thrown (range 20/60)
 - model: character.weaponsettings
   fields:
     name: Greatclub
     weapon_type: SM
+    cost: 0
+    damage: 1d8 bludgeoning
+    weight: 10
+    properties: Two-handed
 - model: character.weaponsettings
   fields:
     name: Handaxe
     weapon_type: SM
+    cost: 5
+    damage: 1d6 slashing
+    weight: 2
+    properties: Light, thrown (range 20/60)
 - model: character.weaponsettings
   fields:
     name: Javelin
     weapon_type: SM
+    cost: 0
+    damage: 1d6 piercing
+    weight: 2
+    properties: Thrown (range 30/120)
 - model: character.weaponsettings
   fields:
     name: Light hammer
     weapon_type: SM
+    cost: 2
+    damage: 1d4 bludgeoning
+    weight: 2
+    properties: Light, thrown (range 20/60)
 - model: character.weaponsettings
   fields:
     name: Mace
     weapon_type: SM
+    cost: 5
+    damage: 1d6 bludgeoning
+    weight: 4
 - model: character.weaponsettings
   fields:
     name: Quarterstaff
     weapon_type: SM
+    cost: 2
+    damage: 1d6 bludgeoning
+    weight: 4
+    properties: Versatile (1d8)
 - model: character.weaponsettings
   fields:
     name: Sickle
     weapon_type: SM
+    cost: 1
+    damage: 1d4 slashing
+    weight: 2
+    properties: Light
 - model: character.weaponsettings
   fields:
     name: Spear
     weapon_type: SM
+    cost: 1
+    damage: 1d6 piercing
+    weight: 3
+    properties: Thrown (range 20/60), versatile (1d8)
 - model: character.weaponsettings
   fields:
     name: Crossbow, light
     weapon_type: SR
+    cost: 25
+    damage: 1d8 piercing
+    weight: 5
+    properties: Ammunition (range 80/320), loading, two-handed
 - model: character.weaponsettings
   fields:
     name: Dart
     weapon_type: SR
+    cost: 0
+    damage: 1d4 piercing
+    weight: 0
+    properties: Finesse, thrown (range 20/60)
 - model: character.weaponsettings
   fields:
     name: Shortbow
     weapon_type: SR
+    cost: 25
+    damage: 1d6 piercing
+    weight: 2
+    properties: Ammunition (range 80/320), two-handed
 - model: character.weaponsettings
   fields:
     name: Sling
     weapon_type: SR
+    cost: 0
+    damage: 1d4 bludgeoning
+    weight: 0
+    properties: Ammunition (range 30/120)
 - model: character.weaponsettings
   fields:
     name: Battleaxe
     weapon_type: MM
+    cost: 10
+    damage: 1d8 slashing
+    weight: 4
+    properties: Versatile (1d10)
 - model: character.weaponsettings
   fields:
     name: Flail
     weapon_type: MM
+    cost: 10
+    damage: 1d8 bludgeoning
+    weight: 2
 - model: character.weaponsettings
   fields:
     name: Glaive
     weapon_type: MM
+    cost: 20
+    damage: 1d10 slashing
+    weight: 6
+    properties: Heavy, reach, two-handed
 - model: character.weaponsettings
   fields:
     name: Greataxe
     weapon_type: MM
+    cost: 30
+    damage: 1d12 slashing
+    weight: 6
+    properties: Heavy, two-handed
 - model: character.weaponsettings
   fields:
     name: Greatsword
     weapon_type: MM
+    cost: 50
+    damage: 2d6 slashing
+    weight: 6
+    properties: Heavy, two-handed
 - model: character.weaponsettings
   fields:
     name: Halberd
     weapon_type: MM
+    cost: 20
+    damage: 1d10 slashing
+    weight: 6
+    properties: Heavy, reach, two-handed
 - model: character.weaponsettings
   fields:
     name: Lance
     weapon_type: MM
+    cost: 10
+    damage: 1d12 piercing
+    weight: 6
+    properties: Reach, special
 - model: character.weaponsettings
   fields:
     name: Longsword
     weapon_type: MM
+    cost: 15
+    damage: 1d8 slashing
+    weight: 3
+    properties: Versatile (1d10)
 - model: character.weaponsettings
   fields:
     name: Maul
     weapon_type: MM
+    cost: 10
+    damage: 2d6 bludgeoning
+    weight: 10
+    properties: Heavy, two-handed
 - model: character.weaponsettings
   fields:
     name: Morningstar
     weapon_type: MM
+    cost: 15
+    damage: 1d8 piercing
+    weight: 4
 - model: character.weaponsettings
   fields:
     name: Pike
     weapon_type: MM
+    cost: 5
+    damage: 1d10 piercing
+    weight: 18
+    properties: Heavy, reach, two-handed
 - model: character.weaponsettings
   fields:
     name: Rapier
     weapon_type: MM
+    cost: 25
+    damage: 1d8 piercing
+    weight: 2
+    properties: Finesse
 - model: character.weaponsettings
   fields:
     name: Scimitar
     weapon_type: MM
+    cost: 25
+    damage: 1d6 slashing
+    weight: 3
+    properties: Finesse, light
 - model: character.weaponsettings
   fields:
     name: Shortsword
     weapon_type: MM
+    cost: 10
+    damage: 1d6 piercing
+    weight: 2
+    properties: Finesse, light
 - model: character.weaponsettings
   fields:
     name: Trident
     weapon_type: MM
+    cost: 5
+    damage: 1d6 piercing
+    weight: 4
+    properties: Thrown (range 20/60), versatile (1d8)
 - model: character.weaponsettings
   fields:
     name: War pick
     weapon_type: MM
+    cost: 5
+    damage: 1d8 piercing
+    weight: 2
 - model: character.weaponsettings
   fields:
     name: Warhammer
     weapon_type: MM
+    cost: 15
+    damage: 1d8 bludgeoning
+    weight: 2
+    properties: Versatile (1d10)
 - model: character.weaponsettings
   fields:
     name: Whip
     weapon_type: MM
+    cost: 2
+    damage: 1d4 slashing
+    weight: 3
+    properties: Finesse, reach
 - model: character.weaponsettings
   fields:
     name: Blowgun
     weapon_type: MR
+    cost: 10
+    damage: 1 piercing
+    weight: 1
+    properties: Ammunition (range 25/100), loading
 - model: character.weaponsettings
   fields:
     name: Crossbow, hand
     weapon_type: MR
+    cost: 75
+    damage: 1d6 piercing
+    weight: 3
+    properties: Ammunition (range 30/120), light, loading
 - model: character.weaponsettings
   fields:
     name: Crossbow, heavy
     weapon_type: MR
+    cost: 50
+    damage: 1d10 piercing
+    weight: 18
+    properties: Ammunition (range 100/400), heavy, loading, two-handed
 - model: character.weaponsettings
   fields:
     name: Longbow
     weapon_type: MR
+    cost: 50
+    damage: 1d8 piercing
+    weight: 2
+    properties: Ammunition (range 150/600), heavy, two-handed
 - model: character.weaponsettings
   fields:
     name: Net
     weapon_type: MR
+    cost: 1
+    weight: 3
+    properties: Special, thrown (range 5/15)
 
 # Armors
 - model: character.armorsettings

@@ -1,7 +1,13 @@
 import pytest
 from faker import Faker
 
-from character.utils.equipment.parsers import parse_ac_settings, parse_strength
+from character.utils.equipment.parsers import (
+    parse_ac_settings,
+    parse_damage,
+    parse_strength,
+)
+
+from character.constants.equipment import DamageType
 
 
 def test_parse_ac_settings_ac_only():
@@ -53,3 +59,20 @@ def test_parse_strength_good_format():
 def test_parse_strength_wrong_format():
     settings_str = "Dex 20"
     assert parse_strength(settings_str) == 0
+
+
+def test_parse_damage_valid_format():
+    settings_str = "1d8 slashing"
+    assert parse_damage(settings_str) == ("1d8", DamageType.SLASHING)
+
+
+def test_parse_damage_invalid_dice_str():
+    settings_str = "1d40 slashing"
+    with pytest.raises(ValueError):
+        parse_damage(settings_str)
+
+
+def test_parse_damage_invalid_action():
+    settings_str = "1d6 something"
+    with pytest.raises(ValueError):
+        parse_damage(settings_str)

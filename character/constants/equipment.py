@@ -28,6 +28,19 @@ class Disadvantage(TextChoices):
     DISADVANTAGE = "D", "disadvantage"
 
 
+class WeaponProperty(TextChoices):
+    AMMUNITION = "ammunition", "Amnunition"
+    FINESSE = "finesse", "Finesse"
+    HEAVY = "heavy", "Heavy"
+    LIGHT = "light", "Light"
+    LOADING = "loading", "Loading"
+    REACH = "reach", "Reach"
+    SPECIAL = "special", "Special"
+    THROWN = "thrown", "Thrown"
+    TWO_HANDED = "two_handed", "Two-handed"
+    VERSATILE = "versatile", "Versatile"
+
+
 class WeaponName(TextChoices):
     CLUB = "Club"
     DAGGER = "Dagger"
@@ -73,6 +86,12 @@ class WeaponType(TextChoices):
     SIMPLE_RANGED = "SR", "Simple Ranged"
     MARTIAL_MELEE = "MM", "Martial Melee"
     MARTIAL_RANGED = "MR", "Marial Ranged"
+
+
+class DamageType(TextChoices):
+    BLUDGEONING = "bludgeoning", "bludgeoning"
+    PIERCING = "piercing", "piercing"
+    SLASHING = "slashing", "slashing"
 
 
 class PackName(TextChoices):
