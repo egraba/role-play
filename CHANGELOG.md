@@ -11,6 +11,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * DnD: Add wealth at character creation
 
 ### Changed
+* Improve `delete_character` command
 * Upgrade Django channels to 4.1.0
 * Upgrade Celery to 5.4
 * Remove `pytest-celery` package
