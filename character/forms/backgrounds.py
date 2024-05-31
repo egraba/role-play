@@ -31,12 +31,21 @@ class AcolyteForm(DuplicateValuesMixin):
 
 
 class CriminalForm(forms.Form):
-    tool_proficiency = forms.ChoiceField(choices=get_gaming_set_tools())
+    tool_proficiency = forms.ChoiceField(
+        choices=get_gaming_set_tools(),
+        widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
+    )
 
 
 class FolkHeroForm(forms.Form):
-    tool_proficiency = forms.ChoiceField(choices=get_artisans_tools())
-    equipment = forms.ChoiceField(choices=get_artisans_tools())
+    tool_proficiency = forms.ChoiceField(
+        choices=get_artisans_tools(),
+        widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
+    )
+    equipment = forms.ChoiceField(
+        choices=get_artisans_tools(),
+        widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
+    )
 
 
 class NobleForm(forms.Form):
@@ -49,7 +58,10 @@ class NobleForm(forms.Form):
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
 
-    tool_proficiency = forms.ChoiceField(choices=get_gaming_set_tools())
+    tool_proficiency = forms.ChoiceField(
+        choices=get_gaming_set_tools(),
+        widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
+    )
 
 
 class SageForm(DuplicateValuesMixin):
@@ -69,4 +81,7 @@ class SageForm(DuplicateValuesMixin):
 
 
 class SoldierForm(forms.Form):
-    tool_proficiency = forms.ChoiceField(choices=get_gaming_set_tools())
+    tool_proficiency = forms.ChoiceField(
+        choices=get_gaming_set_tools(),
+        widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
+    )
