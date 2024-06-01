@@ -80,9 +80,34 @@
                 <td id="inventory">
                     <table class="rpgui-container framed-golden">
                         <tr><th><h3>Inventory</h3></th></tr>
-                        {% for equipment in inventory %}
+                        <tr><th><h4>Armor</h4></th></tr>
+                        {% for armor in inventory.armor_set.all %}
                             <tr>
-                                <td><p>{{ equipment }}</p></td>
+                                <td><p>{{ armor }}</p></td>
+                            </tr>
+                        {% endfor %}
+                        <tr><th><h4>Weapons</h4></th></tr>
+                        {% for weapon in inventory.weapon_set.all %}
+                            <tr>
+                                <td><p>{{ weapon }}</p></td>
+                            </tr>
+                        {% endfor %}
+                        <tr><th><h4>Pack</h4></th></tr>
+                        {% for pack in inventory.pack_set.all %}
+                            <tr>
+                                <td><p>{{ pack }}</p></td>
+                            </tr>
+                        {% endfor %}
+                        <tr><th><h4>Gear</h4></th></tr>
+                        {% for gear in inventory.gear_set.all %}
+                            <tr>
+                                <td><p>{{ gear }}</p></td>
+                            </tr>
+                        {% endfor %}
+                        <tr><th><h4>Tools</h4></th></tr>
+                        {% for tool in inventory.tool_set.all %}
+                            <tr>
+                                <td><p>{{ tool }}</p></td>
                             </tr>
                         {% endfor %}
                     </table>
