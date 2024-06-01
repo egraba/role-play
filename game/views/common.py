@@ -9,6 +9,7 @@ from character.models.character import Character
 from master.models import Campaign
 
 from ..constants.events import RollStatus
+from ..flows import GameFlow
 from ..models.events import Event, Quest, RollRequest
 from ..models.game import Game, Master, Player
 from ..views.mixins import GameContextMixin
@@ -52,6 +53,7 @@ class GameView(LoginRequiredMixin, ListView, GameContextMixin):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context["flow"] = GameFlow(self.game)
         context["quest"] = Quest.objects.filter(game=self.game.id).last()
         context["character_list"] = Character.objects.filter(
             player__game=self.game.id

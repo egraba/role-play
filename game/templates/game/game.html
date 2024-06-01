@@ -28,7 +28,7 @@
                 </div>
             </div>
 
-            {% if game.is_ongoing %}
+            {% if flow.is_ongoing %}
                 <div id="messaging">
                     <p>
                         <label>Message:</label>
@@ -86,13 +86,13 @@
                     <div id="master" class="rpgui-container framed-grey">
                         <h3>Master's panel</h3>
                         <div class="rpgui-center">
-                            {% if game.is_under_preparation %}
+                            {% if flow.is_under_preparation %}
                                 <p>
                                     <a href={% url 'game-start' game.id %}>
                                         <button class="rpgui-button"><p>Start the game</p></button>
                                     </a>
                                 </p>
-                            {% elif game.is_ongoing %}
+                            {% elif flow.is_ongoing %}
                                 <p>
                                     <a href={% url 'quest-create' game.id %}>
                                         <button class="rpgui-button"><p>Update the quest</p></button>
