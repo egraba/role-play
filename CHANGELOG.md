@@ -5,6 +5,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Added
+* Inventory is now displayed in character's detail view
 * DnD: Implement weapon settings
 * DnD: Implement amor-related disadvantages
 * DnD: Equipment is now properly instantiated
