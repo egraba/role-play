@@ -68,11 +68,11 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                 case GameEventType.ABILITY_CHECK:
                     try:
                         character = Character.objects.get(user=self.user)
-                    except Character.DoesNotExist as e:
+                    except Character.DoesNotExist as exc:
                         self.close()
                         raise DenyConnection(
                             f"Character of user [{self.user}] not found..."
-                        ) from e
+                        ) from exc
                     process_roll.delay(
                         game_id=self.game.id,
                         roll_type=RollType.ABILITY_CHECK,
@@ -83,11 +83,11 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                 case GameEventType.SAVING_THROW:
                     try:
                         character = Character.objects.get(user=self.user)
-                    except Character.DoesNotExist as e:
+                    except Character.DoesNotExist as exc:
                         self.close()
                         raise DenyConnection(
                             f"Character of user [{self.user}] not found..."
-                        ) from e
+                        ) from exc
                     process_roll.delay(
                         game_id=self.game.id,
                         roll_type=RollType.SAVING_THROW,
