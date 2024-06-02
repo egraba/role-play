@@ -2,15 +2,13 @@ from asgiref.sync import async_to_sync
 from channels.exceptions import DenyConnection
 from channels.generic.websocket import JsonWebsocketConsumer
 from django.core.cache import cache
-from django.core.exceptions import ObjectDoesNotExist
 
 from character.models.character import Character
 
+from .commands import AbilityCheckCommand, SavingThrowCommand, MessageCommand
 from .models.game import Game
 from .schemas import GameEventOrigin, GameEventType
-from .tasks import process_roll, store_message
 from .utils.cache import game_key
-from .constants.events import RollType
 
 
 class GameEventsConsumer(JsonWebsocketConsumer):
@@ -33,9 +31,9 @@ class GameEventsConsumer(JsonWebsocketConsumer):
             self.game = cache.get_or_set(
                 game_key(game_id), Game.objects.get(id=game_id)
             )
-        except ObjectDoesNotExist as e:
+        except Game.DoesNotExist as exc:
             self.close()
-            raise DenyConnection(f"Game [{game_id}] not found...") from e
+            raise DenyConnection(f"Game [{game_id}] not found...") from exc
 
         self.game_group_name = f"game_{self.game.id}_events"
 
@@ -57,47 +55,26 @@ class GameEventsConsumer(JsonWebsocketConsumer):
         if "origin" in content:
             if content["origin"] == GameEventOrigin.SERVER_SIDE:
                 pass
-
         else:
             match content["type"]:
                 case GameEventType.MESSAGE:
-                    store_message.delay(
-                        game_id=self.game.id,
-                        date=content["date"],
-                        message=content["message"],
-                    )
+                    command = MessageCommand()
                 case GameEventType.ABILITY_CHECK:
-                    try:
-                        character = Character.objects.get(user=self.user)
-                    except ObjectDoesNotExist as e:
-                        self.close()
-                        raise DenyConnection(
-                            f"Character of user [{self.user}] not found..."
-                        ) from e
-                    process_roll.delay(
-                        game_id=self.game.id,
-                        roll_type=RollType.ABILITY_CHECK,
-                        date=content["date"],
-                        character_id=character.id,
-                        message=content["message"],
-                    )
+                    command = AbilityCheckCommand()
                 case GameEventType.SAVING_THROW:
-                    try:
-                        character = Character.objects.get(user=self.user)
-                    except ObjectDoesNotExist as e:
-                        self.close()
-                        raise DenyConnection(
-                            f"Character of user [{self.user}] not found..."
-                        ) from e
-                    process_roll.delay(
-                        game_id=self.game.id,
-                        roll_type=RollType.SAVING_THROW,
-                        date=content["date"],
-                        character_id=character.id,
-                        message=content["message"],
-                    )
+                    command = SavingThrowCommand()
                 case _:
                     pass
+            try:
+                command.execute(
+                    date=content["date"],
+                    message=content["message"],
+                    user=self.user,
+                    game=self.game,
+                )
+            except Character.DoesNotExist as exc:
+                self.close()
+                raise DenyConnection(exc.__traceback__) from exc
 
         async_to_sync(self.channel_layer.group_send)(self.game_group_name, content)
 

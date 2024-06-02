@@ -5,6 +5,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Changed
+* Refactor consumers using command pattern
 * Decouple character's advantages and roll functions
 
 ### Fixed
