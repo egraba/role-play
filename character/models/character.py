@@ -4,11 +4,12 @@ from django.db import models
 from django.db.models.functions import Upper
 from django.urls import reverse
 
+from game.constants.events import Against, RollType
 from utils.dice import Dice
 
 from ..constants.backgrounds import Background
 from ..constants.character import Gender
-from ..constants.races import Alignment, Race, Size
+from ..constants.races import Alignment, Race, SenseName, Size
 from ..utils.cache import advancement_key
 from .abilities import Ability
 from .advancement import Advancement
@@ -99,3 +100,26 @@ class Character(models.Model):
             proficiency["ability_type_id"] == ability.ability_type.name
             for proficiency in self.savingthrowproficiency_set.values()
         )
+
+    def has_advantage(self, roll_type: RollType, against: Against) -> bool:
+        has_dwarven_resilience = bool(
+            self.senses.filter(name=SenseName.DWARVEN_RESILIENCE)
+        )
+        has_fey_ancestry = bool(self.senses.filter(name=SenseName.FEY_ANCESTRY))
+        is_brave = bool(self.senses.filter(name=SenseName.BRAVE))
+
+        if (
+            has_dwarven_resilience
+            and roll_type == RollType.SAVING_THROW
+            and against == Against.POISON
+        ):
+            return True
+        if has_fey_ancestry and RollType.SAVING_THROW and against == Against.CHARM:
+            return True
+        if is_brave and RollType.SAVING_THROW and against == Against.BEING_FRIGHTENED:
+            return True
+        return False
+
+    def has_disadvantage(self, roll_type: RollType, against: Against) -> bool:
+        # Not supported.
+        return False

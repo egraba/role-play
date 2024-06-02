@@ -1,12 +1,11 @@
 from django.core.exceptions import ObjectDoesNotExist
 
-from character.constants.races import SenseName
 from character.exceptions import AbilityNotFound
 from character.models.abilities import AbilityType
 from character.models.character import Character
 from utils.dice import Dice
 
-from ..constants.events import Against, RollResult, RollType
+from ..constants.events import RollResult
 from ..models.events import RollRequest
 
 
@@ -20,52 +19,6 @@ def _roll(character: Character, ability_type: AbilityType) -> int:
     if character.is_proficient(ability):
         score += character.proficiency_bonus
     return score
-
-
-def _has_advantage(character: Character, roll_type: RollType, against: str) -> bool:
-    """
-    Indicate if a character has an advantage or not.
-
-    Args:
-        character (Character): The character who performs the roll.
-        roll_type (RollType): The type of roll
-        against (str): Against which attack the advantage is.
-
-    Returns:
-        bool: True if the character has an advantage, False otherwise.
-    """
-    has_dwarven_resilience = bool(
-        character.senses.filter(name=SenseName.DWARVEN_RESILIENCE)
-    )
-    has_fey_ancestry = bool(character.senses.filter(name=SenseName.FEY_ANCESTRY))
-    is_brave = bool(character.senses.filter(name=SenseName.BRAVE))
-
-    if (
-        has_dwarven_resilience
-        and roll_type == RollType.SAVING_THROW
-        and against == Against.POISON
-    ):
-        return True
-    if has_fey_ancestry and RollType.SAVING_THROW and against == Against.CHARM:
-        return True
-    if is_brave and RollType.SAVING_THROW and against == Against.BEING_FRIGHTENED:
-        return True
-    return False
-
-
-def _has_disadvantage(character: Character, roll_type: RollType, against: str) -> bool:
-    """
-    Indicate if a character has a disadvantage or not.
-
-    Args:
-        character (Character): The character who performs the roll.
-        roll_type (RollType): The type of roll
-        against (str): Against which attack the disadvantage is.
-
-    Returns:
-        bool: True if the character has a disadvantage, False otherwise.
-    """
-    return False
 
 
 def perform_roll(
@@ -84,8 +37,8 @@ def perform_roll(
 
     score = _roll(character, request.ability_type)
 
-    has_advantage = _has_advantage(character, request.roll_type, request.against)
-    has_disadvantage = _has_disadvantage(character, request.roll_type, request.against)
+    has_advantage = character.has_advantage(request.roll_type, request.against)
+    has_disadvantage = character.has_disadvantage(request.roll_type, request.against)
     if has_advantage and has_disadvantage:
         # If the character has both advantage and disadantage, there is no more roll.
         pass
