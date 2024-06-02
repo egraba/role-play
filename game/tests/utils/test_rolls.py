@@ -1,8 +1,6 @@
 import pytest
 
 from character.constants.abilities import AbilityName
-from character.constants.races import SenseName
-from character.models.races import Sense
 from character.tests.factories import CharacterFactory
 from game.constants.events import Against, DifficultyClass, RollResult, RollType
 from game.tests.factories import RollRequestFactory
@@ -66,17 +64,21 @@ def test_perform_roll_with_proficiency(monkeypatch):
     assert score == 12
 
 
-def test_perform_roll_with_advantage_dwarven_resistance(monkeypatch):
+def test_perform_roll_with_advantage(monkeypatch):
     score_generator = (score for score in range(10, 20, 5))
 
-    def patched_roll(modifier=0):
+    def patched_roll(self, modifier=0):
         return next(score_generator)
 
+    def patched_advantage(self, roll_type, against):
+        return True
+
     monkeypatch.setattr("utils.dice.Dice.roll", patched_roll)
+    monkeypatch.setattr(
+        "character.models.character.Character.has_advantage", patched_advantage
+    )
 
     character = CharacterFactory()
-    character.senses.add(Sense.objects.get(name=SenseName.DWARVEN_RESILIENCE))
-    character.save()
     request = RollRequestFactory(
         character=character,
         roll_type=RollType.SAVING_THROW,
