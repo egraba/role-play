@@ -101,7 +101,7 @@ class Character(models.Model):
             for proficiency in self.savingthrowproficiency_set.values()
         )
 
-    def has_advantage(self, roll_type: RollType, against: str) -> bool:
+    def has_advantage(self, roll_type: RollType, against: Against) -> bool:
         has_dwarven_resilience = bool(
             self.senses.filter(name=SenseName.DWARVEN_RESILIENCE)
         )
@@ -120,5 +120,5 @@ class Character(models.Model):
             return True
         return False
 
-    def has_disadvantage(self, roll_type: RollType, against: str) -> bool:
+    def has_disadvantage(self, roll_type: RollType, against: Against) -> bool:
         return False
