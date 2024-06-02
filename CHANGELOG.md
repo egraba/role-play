@@ -4,10 +4,13 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 
 ## Unreleased
 
+### Changed
+* Decouple character's advantages and roll functions
+
 ### Fixed
 * Suppress `factory-boy` warnings
 
-## v0.8.0 - 2024-06-02
+## v0.9.0 - 2024-06-02
 
 ### Added
 * Inventory is now displayed in character's detail view
