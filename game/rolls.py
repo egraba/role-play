@@ -5,8 +5,8 @@ from character.models.abilities import AbilityType
 from character.models.character import Character
 from utils.dice import Dice
 
-from ..constants.events import RollResult
-from ..models.events import RollRequest
+from .constants.events import RollResult
+from .models.events import RollRequest
 
 
 def _roll(character: Character, ability_type: AbilityType) -> int:

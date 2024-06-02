@@ -4,7 +4,7 @@ from character.constants.abilities import AbilityName
 from character.tests.factories import CharacterFactory
 from game.constants.events import Against, DifficultyClass, RollResult, RollType
 from game.tests.factories import RollRequestFactory
-from game.utils.rolls import perform_roll
+from game.rolls import perform_roll
 
 pytestmark = pytest.mark.django_db
 
