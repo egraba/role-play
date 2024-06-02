@@ -2,6 +2,11 @@
 
 Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<patch>`).
 
+## Unreleased
+
+### Fixed
+* Suppress `factory-boy` warnings
+
 ## v0.8.0 - 2024-06-02
 
 ### Added
