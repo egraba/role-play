@@ -121,4 +121,5 @@ class Character(models.Model):
         return False
 
     def has_disadvantage(self, roll_type: RollType, against: Against) -> bool:
+        # Not supported.
         return False
