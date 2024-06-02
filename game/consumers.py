@@ -2,7 +2,6 @@ from asgiref.sync import async_to_sync
 from channels.exceptions import DenyConnection
 from channels.generic.websocket import JsonWebsocketConsumer
 from django.core.cache import cache
-from django.core.exceptions import ObjectDoesNotExist
 
 from character.models.character import Character
 
@@ -33,7 +32,7 @@ class GameEventsConsumer(JsonWebsocketConsumer):
             self.game = cache.get_or_set(
                 game_key(game_id), Game.objects.get(id=game_id)
             )
-        except ObjectDoesNotExist as exc:
+        except Game.DoesNotExist as exc:
             self.close()
             raise DenyConnection(f"Game [{game_id}] not found...") from exc
 
@@ -69,7 +68,7 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                 case GameEventType.ABILITY_CHECK:
                     try:
                         character = Character.objects.get(user=self.user)
-                    except ObjectDoesNotExist as e:
+                    except Character.DoesNotExist as e:
                         self.close()
                         raise DenyConnection(
                             f"Character of user [{self.user}] not found..."
@@ -84,7 +83,7 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                 case GameEventType.SAVING_THROW:
                     try:
                         character = Character.objects.get(user=self.user)
-                    except ObjectDoesNotExist as e:
+                    except Character.DoesNotExist as e:
                         self.close()
                         raise DenyConnection(
                             f"Character of user [{self.user}] not found..."
