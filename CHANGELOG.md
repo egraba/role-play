@@ -2,7 +2,7 @@
 
 Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<patch>`).
 
-## Unreleased
+## v0.8.0 - 2024-06-02
 
 ### Added
 * Inventory is now displayed in character's detail view
