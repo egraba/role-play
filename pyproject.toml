@@ -4,7 +4,7 @@ omit = ["manage.py", "tasks/*"]
 
 [tool.poetry]
 name = "role-play"
-version = "0.8.0"
+version = "0.9.0"
 description = "Role playing game."
 authors = ["Eric Grabarczyk <eric.grabarczyk@gmail.com>"]
 license = "GNU Affero General Public License v3.0"
