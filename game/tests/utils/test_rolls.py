@@ -2,8 +2,6 @@ import pytest
 
 from character.constants.abilities import AbilityName
 from character.constants.races import SenseName
-from character.models.abilities import AbilityType
-from character.models.proficiencies import SavingThrowProficiency
 from character.models.races import Sense
 from character.tests.factories import CharacterFactory
 from game.constants.events import Against, DifficultyClass, RollResult, RollType
@@ -49,13 +47,15 @@ def test_perform_roll_proficient(monkeypatch):
     def patched_roll(self, modifier=0):
         return 10
 
+    def patched_is_proficient(self, ability):
+        return True
+
     monkeypatch.setattr("utils.dice.Dice.roll", patched_roll)
+    monkeypatch.setattr(
+        "character.models.character.Character.is_proficient", patched_is_proficient
+    )
 
     character = CharacterFactory()
-    SavingThrowProficiency.objects.create(
-        character=character,
-        ability_type=AbilityType.objects.get(name=AbilityName.CHARISMA),
-    )
     request = RollRequestFactory(
         character=character,
         ability_type=AbilityName.CHARISMA,
