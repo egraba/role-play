@@ -5,10 +5,9 @@ from django.core.cache import cache
 
 from character.models.character import Character
 
-from .commands import AbilityCheckCommand, SavingThrowCommand
+from .commands import AbilityCheckCommand, SavingThrowCommand, MessageCommand
 from .models.game import Game
 from .schemas import GameEventOrigin, GameEventType
-from .tasks import store_message
 from .utils.cache import game_key
 
 
@@ -56,15 +55,10 @@ class GameEventsConsumer(JsonWebsocketConsumer):
         if "origin" in content:
             if content["origin"] == GameEventOrigin.SERVER_SIDE:
                 pass
-
         else:
             match content["type"]:
                 case GameEventType.MESSAGE:
-                    store_message.delay(
-                        game_id=self.game.id,
-                        date=content["date"],
-                        message=content["message"],
-                    )
+                    command = MessageCommand()
                 case GameEventType.ABILITY_CHECK:
                     command = AbilityCheckCommand()
                 case GameEventType.SAVING_THROW:

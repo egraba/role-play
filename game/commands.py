@@ -7,7 +7,7 @@ from character.models.character import Character
 from game.models.game import Game
 
 from .constants.events import RollType
-from .tasks import process_roll
+from .tasks import process_roll, store_message
 
 
 class Command(ABC):
@@ -16,6 +16,15 @@ class Command(ABC):
     @abstractmethod
     def execute(self, date: datetime, message: str, user: User, game: Game) -> None:
         pass
+
+
+class MessageCommand(Command):
+    def execute(self, date: datetime, message: str, user: User, game: Game) -> None:
+        store_message.delay(
+            game_id=game.id,
+            date=date,
+            message=message,
+        )
 
 
 class CharacterCommand(Command):
