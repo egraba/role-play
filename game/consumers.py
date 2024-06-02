@@ -33,9 +33,9 @@ class GameEventsConsumer(JsonWebsocketConsumer):
             self.game = cache.get_or_set(
                 game_key(game_id), Game.objects.get(id=game_id)
             )
-        except ObjectDoesNotExist as e:
+        except ObjectDoesNotExist as exc:
             self.close()
-            raise DenyConnection(f"Game [{game_id}] not found...") from e
+            raise DenyConnection(f"Game [{game_id}] not found...") from exc
 
         self.game_group_name = f"game_{self.game.id}_events"
 
