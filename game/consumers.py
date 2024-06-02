@@ -66,29 +66,21 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                         message=content["message"],
                     )
                 case GameEventType.ABILITY_CHECK:
-                    try:
-                        AbilityCheckCommand(
-                            date=content["date"],
-                            message=content["message"],
-                            user=self.user,
-                            game=self.game,
-                        )
-                    except Character.DoesNotExist as exc:
-                        self.close()
-                        raise DenyConnection(exc.__traceback__) from exc
+                    command = AbilityCheckCommand()
                 case GameEventType.SAVING_THROW:
-                    try:
-                        SavingThrowCommand(
-                            date=content["date"],
-                            message=content["message"],
-                            user=self.user,
-                            game=self.game,
-                        )
-                    except Character.DoesNotExist as exc:
-                        self.close()
-                        raise DenyConnection(exc.__traceback__) from exc
+                    command = SavingThrowCommand()
                 case _:
                     pass
+            try:
+                command.execute(
+                    date=content["date"],
+                    message=content["message"],
+                    user=self.user,
+                    game=self.game,
+                )
+            except Character.DoesNotExist as exc:
+                self.close()
+                raise DenyConnection(exc.__traceback__) from exc
 
         async_to_sync(self.channel_layer.group_send)(self.game_group_name, content)
 
