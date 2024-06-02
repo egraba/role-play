@@ -5,11 +5,11 @@ from django.core.cache import cache
 
 from character.models.character import Character
 
+from .commands import AbilityCheckCommand, SavingThrowCommand
 from .models.game import Game
 from .schemas import GameEventOrigin, GameEventType
-from .tasks import process_roll, store_message
+from .tasks import store_message
 from .utils.cache import game_key
-from .constants.events import RollType
 
 
 class GameEventsConsumer(JsonWebsocketConsumer):
@@ -67,34 +67,26 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                     )
                 case GameEventType.ABILITY_CHECK:
                     try:
-                        character = Character.objects.get(user=self.user)
+                        AbilityCheckCommand(
+                            date=content["date"],
+                            message=content["message"],
+                            user=self.user,
+                            game=self.game,
+                        )
                     except Character.DoesNotExist as exc:
                         self.close()
-                        raise DenyConnection(
-                            f"Character of user [{self.user}] not found..."
-                        ) from exc
-                    process_roll.delay(
-                        game_id=self.game.id,
-                        roll_type=RollType.ABILITY_CHECK,
-                        date=content["date"],
-                        character_id=character.id,
-                        message=content["message"],
-                    )
+                        raise DenyConnection(exc.__traceback__) from exc
                 case GameEventType.SAVING_THROW:
                     try:
-                        character = Character.objects.get(user=self.user)
+                        SavingThrowCommand(
+                            date=content["date"],
+                            message=content["message"],
+                            user=self.user,
+                            game=self.game,
+                        )
                     except Character.DoesNotExist as exc:
                         self.close()
-                        raise DenyConnection(
-                            f"Character of user [{self.user}] not found..."
-                        ) from exc
-                    process_roll.delay(
-                        game_id=self.game.id,
-                        roll_type=RollType.SAVING_THROW,
-                        date=content["date"],
-                        character_id=character.id,
-                        message=content["message"],
-                    )
+                        raise DenyConnection(exc.__traceback__) from exc
                 case _:
                     pass
 

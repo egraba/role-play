@@ -24,8 +24,10 @@ class CharacterCommand(Command):
     def execute(self, date: datetime, message: str, user: User, game: Game) -> None:
         try:
             self.character = Character.objects.get(user=user)
-        except Character.DoesNotExist:
-            raise
+        except Character.DoesNotExist as exc:
+            raise Character.DoesNotExist(
+                f"Character of user [{user}] not found"
+            ) from exc
 
 
 class AbilityCheckCommand(CharacterCommand):
