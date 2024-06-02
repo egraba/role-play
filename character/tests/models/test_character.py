@@ -2,8 +2,11 @@ import pytest
 from faker import Faker
 
 from character.constants.character import Gender
+from character.constants.races import SenseName
 from character.models.character import Character
 from character.models.proficiencies import SavingThrowProficiency
+from character.models.races import Sense
+from game.constants.events import Against, RollType
 from utils.dice import Dice
 
 from ..factories import AbilityFactory, CharacterFactory
@@ -71,3 +74,23 @@ class TestCharacterModel:
     def test_is_proficient_ability_absent(self, character):
         ability = AbilityFactory(character=character)
         assert character.is_proficient(ability) is False
+
+    def test_has_advantage_dwarven_resilience(self, character):
+        character.senses.add(Sense.objects.get(name=SenseName.DWARVEN_RESILIENCE))
+        assert character.has_advantage(RollType.SAVING_THROW, Against.POISON)
+
+    def test_has_advantage_fey_ancestry(self, character):
+        character.senses.add(Sense.objects.get(name=SenseName.FEY_ANCESTRY))
+        assert character.has_advantage(RollType.SAVING_THROW, Against.CHARM)
+
+    def test_has_advantage_brave(self, character):
+        character.senses.add(Sense.objects.get(name=SenseName.BRAVE))
+        assert character.has_advantage(RollType.SAVING_THROW, Against.BEING_FRIGHTENED)
+
+    def test_has_advantage_not_valid(self, character):
+        fake = Faker()
+        assert not character.has_advantage(fake.enum(RollType), fake.enum(Against))
+
+    def test_has_disadvantage(self, character):
+        fake = Faker()
+        assert not character.has_disadvantage(fake.enum(RollType), fake.enum(Against))
