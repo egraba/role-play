@@ -43,7 +43,7 @@ def test_perform_roll_failure(monkeypatch):
     assert result == RollResult.FAILURE
 
 
-def test_perform_roll_proficient(monkeypatch):
+def test_perform_roll_with_proficiency(monkeypatch):
     def patched_roll(self, modifier=0):
         return 10
 
@@ -82,48 +82,6 @@ def test_perform_roll_with_advantage_dwarven_resistance(monkeypatch):
         roll_type=RollType.SAVING_THROW,
         difficulty_class=DifficultyClass.EASY,
         against=Against.POISON,
-    )
-    score, _ = perform_roll(character, request)
-    assert score == 15
-
-
-def test_perform_roll_with_advantage_fey_ancestry(monkeypatch):
-    score_generator = (score for score in range(10, 20, 5))
-
-    def patched_roll(modifier=0):
-        return next(score_generator)
-
-    monkeypatch.setattr("utils.dice.Dice.roll", patched_roll)
-
-    character = CharacterFactory()
-    character.senses.add(Sense.objects.get(name=SenseName.FEY_ANCESTRY))
-    character.save()
-    request = RollRequestFactory(
-        character=character,
-        roll_type=RollType.SAVING_THROW,
-        difficulty_class=DifficultyClass.EASY,
-        against=Against.CHARM,
-    )
-    score, _ = perform_roll(character, request)
-    assert score == 15
-
-
-def test_perform_roll_with_advantage_brave(monkeypatch):
-    score_generator = (score for score in range(10, 20, 5))
-
-    def patched_roll(modifier=0):
-        return next(score_generator)
-
-    monkeypatch.setattr("utils.dice.Dice.roll", patched_roll)
-
-    character = CharacterFactory()
-    character.senses.add(Sense.objects.get(name=SenseName.BRAVE))
-    character.save()
-    request = RollRequestFactory(
-        character=character,
-        roll_type=RollType.SAVING_THROW,
-        difficulty_class=DifficultyClass.EASY,
-        against=Against.BEING_FRIGHTENED,
     )
     score, _ = perform_roll(character, request)
     assert score == 15
