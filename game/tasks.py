@@ -13,7 +13,7 @@ from .models.events import Event, Roll, RollRequest
 from .models.game import Game
 from .schemas import GameEventType, PlayerType
 from .utils.channels import send_to_channel
-from .utils.rolls import perform_roll
+from .rolls import perform_roll
 
 logger = get_task_logger(__name__)
 
