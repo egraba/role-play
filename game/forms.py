@@ -4,6 +4,7 @@ from character.models.abilities import AbilityType
 from character.models.character import Character
 
 from .models.events import RollRequest
+from .constants.combat import COMBAT_CHOICES
 
 
 class QuestCreateForm(forms.Form):
@@ -33,4 +34,13 @@ class AbilityCheckRequestForm(forms.ModelForm):
 
 
 class CombatCreateForm(forms.Form):
-    pass
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        game = self.initial["game"]
+        queryset = Character.objects.filter(player__game=game)
+        for character in queryset:
+            self.fields[character.name] = forms.MultipleChoiceField(
+                required=False,
+                widget=forms.CheckboxSelectMultiple,
+                choices=COMBAT_CHOICES,
+            )

@@ -179,6 +179,17 @@ class AbilityCheckRequestView(
         return super().form_valid(form)
 
 
-class CombatCreate(FormView):
+class CombatCreate(
+    UserPassesTestMixin,
+    FormView,
+    EventContextMixin,
+):
     form_class = CombatCreateForm
     template_name = "game/combat_create.html"
+
+    def test_func(self):
+        return self.is_user_master()
+
+    def get_initial(self):
+        initial = {"game": self.game}
+        return initial
