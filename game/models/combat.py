@@ -1,6 +1,7 @@
 from django.db import models
 
 from .game import Game, Player
+from ..constants.combat import CombatAction
 
 
 class Combat(models.Model):
@@ -15,7 +16,7 @@ class Turn(models.Model):
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
     round = models.ForeignKey(Round, on_delete=models.CASCADE)
     move = models.IntegerField()
-    action = models.CharField()
+    action = models.CharField(choices=CombatAction)
 
 
 class Fighter(models.Model):
