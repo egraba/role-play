@@ -30,3 +30,7 @@ class AbilityCheckRequestForm(forms.ModelForm):
 
         self.fields["ability_type"].label = "Ability"
         self.fields["ability_type"].choices = AbilityType.AbilityName.choices
+
+
+class CombatCreateForm(forms.Form):
+    pass

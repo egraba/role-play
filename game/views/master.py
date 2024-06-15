@@ -10,7 +10,7 @@ from character.models.character import Character
 
 from ..constants.events import RollType
 from ..flows import GameFlow
-from ..forms import AbilityCheckRequestForm, QuestCreateForm
+from ..forms import AbilityCheckRequestForm, QuestCreateForm, CombatCreateForm
 from ..models.events import Event, Quest
 from ..models.game import Player
 from ..schemas import GameEventType, PlayerType
@@ -180,4 +180,5 @@ class AbilityCheckRequestView(
 
 
 class CombatCreate(FormView):
-    pass
+    form_class = CombatCreateForm
+    template_name = "game/combat_create.html"
