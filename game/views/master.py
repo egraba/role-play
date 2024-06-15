@@ -11,6 +11,7 @@ from character.models.character import Character
 from ..constants.events import RollType
 from ..flows import GameFlow
 from ..forms import AbilityCheckRequestForm, QuestCreateForm, CombatCreateForm
+from ..models.combat import Combat, Fighter
 from ..models.events import Event, Quest
 from ..models.game import Player
 from ..schemas import GameEventType, PlayerType
@@ -196,3 +197,21 @@ class CombatCreate(
     def get_initial(self):
         initial = {"game": self.game}
         return initial
+
+    def form_valid(self, form):
+        combat = Combat.objects.create(game=self.game)
+        combat.message = "Combat!"
+        for fighter_name in form.fields:
+            Fighter.objects.create(
+                combat=combat, character=Character.objects.get(name=fighter_name)
+            )
+        send_to_channel(
+            game_id=self.game.id,
+            game_event={
+                "type": GameEventType.COMBAT_INITIATION,
+                "player_type": PlayerType.MASTER,
+                "date": combat.date.isoformat(),
+                "message": combat.message,
+            },
+        )
+        return super().form_valid(form)
