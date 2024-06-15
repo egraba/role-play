@@ -14,6 +14,8 @@ class Round(models.Model):
 class Turn(models.Model):
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
     round = models.ForeignKey(Round, on_delete=models.CASCADE)
+    move = models.IntegerField()
+    action = models.CharField()
 
 
 class Fighter(models.Model):
