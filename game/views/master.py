@@ -190,6 +190,9 @@ class CombatCreate(
     def test_func(self):
         return self.is_user_master()
 
+    def get_success_url(self):
+        return reverse_lazy("game", args=(self.game.id,))
+
     def get_initial(self):
         initial = {"game": self.game}
         return initial
