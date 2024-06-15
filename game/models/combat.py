@@ -14,3 +14,8 @@ class Round(models.Model):
 class Turn(models.Model):
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
     round = models.ForeignKey(Round, on_delete=models.CASCADE)
+
+
+class Fighter(models.Model):
+    character = models.ForeignKey("character.Character", on_delete=models.CASCADE)
+    is_surprised = models.BooleanField(default=False)
