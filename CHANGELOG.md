@@ -4,6 +4,9 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 
 ## Unreleased
 
+### Added
+* DnD: Implement combat structure
+
 ### Changed
 * Move rolls module outside of `game.utils`
 * Refactor consumers using command pattern
