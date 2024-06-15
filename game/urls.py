@@ -46,4 +46,9 @@ urlpatterns = [
         master.AbilityCheckRequestView.as_view(),
         name="ability-check-request-create",
     ),
+    path(
+        "<int:game_id>/create_combat",
+        master.CombatCreate.as_view(),
+        name="combat-create",
+    ),
 ]

@@ -177,3 +177,7 @@ class AbilityCheckRequestView(
         )
 
         return super().form_valid(form)
+
+
+class CombatCreate(FormView):
+    pass
