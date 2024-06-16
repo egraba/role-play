@@ -63,6 +63,8 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                     command = AbilityCheckCommand()
                 case GameEventType.SAVING_THROW:
                     command = SavingThrowCommand()
+                case GameEventType.COMBAT_INITIATION:
+                    command = MessageCommand()
                 case _:
                     pass
             try:
@@ -112,4 +114,8 @@ class GameEventsConsumer(JsonWebsocketConsumer):
 
     def saving_throw_result(self, event):
         """Saving throw result."""
+        self.send_json(event)
+
+    def combat_initiation(self, event):
+        """Combat initiation."""
         self.send_json(event)

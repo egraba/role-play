@@ -199,8 +199,7 @@ class CombatCreate(
         return initial
 
     def form_valid(self, form):
-        combat = Combat.objects.create(game=self.game)
-        combat.message = "Combat!"
+        combat = Combat.objects.create(game=self.game, message="Combat!")
         for fighter_name in form.fields:
             Fighter.objects.create(
                 combat=combat, character=Character.objects.get(name=fighter_name)

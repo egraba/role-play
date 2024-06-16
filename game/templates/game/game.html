@@ -140,12 +140,8 @@
 
         const MESSAGE = "message";
         const QUEST_UPDATE = "quest.update";
-        const ABILITY_CHECK_REQUEST = "ability.check.request";
         const ABILITY_CHECK = "ability.check";
-        const ABILITY_CHECK_RESULT = "ability.check.result";
-        const SAVING_THROW_REQUEST = "saving.throw.request";
         const SAVING_THROW = "saving.throw";
-        const SAVING_THROW_RESULT = "saving.throw.result";
 
         eventsSocket.onmessage = function(event) {
             message = JSON.parse(event.data)
@@ -157,8 +153,7 @@
             }
             if (message["type"] === QUEST_UPDATE) {
                 $("#quest").load(" #quest > *");
-            }
-            if (message["type"] === ABILITY_CHECK_REQUEST || message["type"] === ABILITY_CHECK_RESULT || message["type"] === SAVING_THROW_REQUEST || message["type"] === SAVING_THROW_RESULT) {
+            } else {
                 // The full page has to be reloaded, otherwise clicking on the button
                 // triggers no action.
                 location.reload();
