@@ -8,6 +8,7 @@ from viewflow.fsm import TransitionNotAllowed
 
 from character.models.character import Character
 
+from ..constants.combat import CombatChoices
 from ..constants.events import RollType
 from ..flows import GameFlow
 from ..forms import AbilityCheckRequestForm, QuestCreateForm, CombatCreateForm
@@ -199,11 +200,27 @@ class CombatCreate(
         return initial
 
     def form_valid(self, form):
-        combat = Combat.objects.create(game=self.game, message="Combat!")
-        for fighter_name in form.fields:
-            Fighter.objects.create(
-                combat=combat, character=Character.objects.get(name=fighter_name)
+        combat = Combat(game=self.game)
+        fighters = set()
+        surpised_fighters = set()
+        # The fighters must be created when they have been selected in the form.
+        for fighter_field in form.fields:
+            fighter = Fighter(
+                combat=combat, character=Character.objects.get(name=fighter_field)
             )
+            if CombatChoices.IS_FIGHTING in form.cleaned_data[fighter_field]:
+                fighters.add(fighter.character.name)
+                if CombatChoices.IS_SURPRISED in form.cleaned_data[fighter_field]:
+                    surpised_fighters.add(fighter.character.name)
+        # The combat initiation string must contain the fighters list and their
+        # attributes.
+        fighters_str = ""
+        for fighter in fighters:
+            fighters_str += fighter
+            if fighter in surpised_fighters:
+                fighters_str += " (surprised)"
+        combat.message = f"Combat! {fighters_str}"
+        combat.save()
         send_to_channel(
             game_id=self.game.id,
             game_event={

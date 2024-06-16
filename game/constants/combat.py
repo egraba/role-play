@@ -1,7 +1,9 @@
 from django.db.models import TextChoices
 
 
-COMBAT_CHOICES = {"is_fighting": "Is fighting?", "is_suprised": "Is surprised?"}
+class CombatChoices(TextChoices):
+    IS_FIGHTING = "is_fighting", "Is fighting?"
+    IS_SURPRISED = "is_suprised", "Is surprised?"
 
 
 class CombatAction(TextChoices):
