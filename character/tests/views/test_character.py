@@ -4,7 +4,7 @@ from django.urls import reverse
 from faker import Faker
 from pytest_django.asserts import assertContains, assertRedirects, assertTemplateUsed
 
-from character.constants.abilities import AbilityName
+from character.constants.abilities import AbilityName, AbilityScore
 from character.constants.backgrounds import BACKGROUNDS, Background
 from character.constants.character import Gender
 from character.constants.races import LanguageName, Race, SenseName
@@ -15,7 +15,6 @@ from character.models.klasses import Klass
 from character.models.proficiencies import SavingThrowProficiency, SkillProficiency
 from character.models.skills import Skill
 from character.models.races import Language, Sense
-from character.abilities import AbilityScore
 from character.views.character import (
     CharacterCreateView,
     CharacterDetailView,
