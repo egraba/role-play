@@ -32,8 +32,10 @@ class StoreMessageCommand(Command):
         )
 
 
-class CharacterCommand(Command):
-    """Game command issued by a character."""
+class CharacterCommandMixin(Command):
+    """
+    Mixin to inherit from when a command is issued by a character.
+    """
 
     def execute(self, date: datetime, message: str, user: User, game: Game) -> None:
         try:
@@ -44,7 +46,7 @@ class CharacterCommand(Command):
             ) from exc
 
 
-class AbilityCheckCommand(CharacterCommand):
+class AbilityCheckCommand(CharacterCommandMixin):
     def execute(self, date: datetime, message: str, user: User, game: Game) -> None:
         super().execute(date, message, user, game)
         process_roll.delay(
@@ -56,7 +58,7 @@ class AbilityCheckCommand(CharacterCommand):
         )
 
 
-class SavingThrowCommand(CharacterCommand):
+class SavingThrowCommand(CharacterCommandMixin):
     def execute(self, date: datetime, message: str, user: User, game: Game) -> None:
         super().execute(date, message, user, game)
         process_roll.delay(
