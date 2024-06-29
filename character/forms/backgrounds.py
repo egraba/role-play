@@ -7,7 +7,7 @@ from ..models.races import Language
 from .mixins import DuplicateValuesMixin
 
 
-def get_non_spoken_languages(character: Character) -> set[tuple[str, str]]:
+def _get_non_spoken_languages(character: Character) -> set[tuple[str, str]]:
     """
     Return the set of language names a character does not speak.
     """
@@ -20,7 +20,7 @@ def get_non_spoken_languages(character: Character) -> set[tuple[str, str]]:
     }
 
 
-def get_holy_symbols() -> set[tuple[str, str]]:
+def _get_holy_symbols() -> set[tuple[str, str]]:
     """
     Return the set of all holy symbols names.
     """
@@ -30,7 +30,7 @@ def get_holy_symbols() -> set[tuple[str, str]]:
     }
 
 
-def get_gaming_set_tools() -> set[tuple[str, str]]:
+def _get_gaming_set_tools() -> set[tuple[str, str]]:
     """
     Return the set of gaming set tools names.
     """
@@ -40,7 +40,7 @@ def get_gaming_set_tools() -> set[tuple[str, str]]:
     }
 
 
-def get_artisans_tools() -> set[tuple[str, str]]:
+def _get_artisans_tools() -> set[tuple[str, str]]:
     """
     Return the set of artisan's tools names.
     """
@@ -55,15 +55,15 @@ class AcolyteForm(DuplicateValuesMixin):
         super().__init__(*args, **kwargs)
         character = self.initial["character"]
         self.fields["first_language"] = forms.ChoiceField(
-            choices=get_non_spoken_languages(character),
+            choices=_get_non_spoken_languages(character),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
         self.fields["second_language"] = forms.ChoiceField(
-            choices=get_non_spoken_languages(character),
+            choices=_get_non_spoken_languages(character),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
         self.fields["equipment"] = forms.ChoiceField(
-            choices=get_holy_symbols(),
+            choices=_get_holy_symbols(),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
 
@@ -72,7 +72,7 @@ class CriminalForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["tool_proficiency"] = forms.ChoiceField(
-            choices=get_gaming_set_tools(),
+            choices=_get_gaming_set_tools(),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
 
@@ -81,11 +81,11 @@ class FolkHeroForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["tool_proficiency"] = forms.ChoiceField(
-            choices=get_artisans_tools(),
+            choices=_get_artisans_tools(),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
         self.fields["equipment"] = forms.ChoiceField(
-            choices=get_artisans_tools(),
+            choices=_get_artisans_tools(),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
 
@@ -95,11 +95,11 @@ class NobleForm(forms.Form):
         super().__init__(*args, **kwargs)
         character = self.initial["character"]
         self.fields["language"] = forms.ChoiceField(
-            choices=get_non_spoken_languages(character),
+            choices=_get_non_spoken_languages(character),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
         self.fields["tool_proficiency"] = forms.ChoiceField(
-            choices=get_gaming_set_tools(),
+            choices=_get_gaming_set_tools(),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
 
@@ -109,11 +109,11 @@ class SageForm(DuplicateValuesMixin):
         super().__init__(*args, **kwargs)
         character = self.initial["character"]
         self.fields["first_language"] = forms.ChoiceField(
-            choices=get_non_spoken_languages(character),
+            choices=_get_non_spoken_languages(character),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
         self.fields["second_language"] = forms.ChoiceField(
-            choices=get_non_spoken_languages(character),
+            choices=_get_non_spoken_languages(character),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
 
@@ -122,6 +122,6 @@ class SoldierForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["tool_proficiency"] = forms.ChoiceField(
-            choices=get_gaming_set_tools(),
+            choices=_get_gaming_set_tools(),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
