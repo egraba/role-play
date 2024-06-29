@@ -12,6 +12,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * Move rolls module outside of `game.utils`
 * Refactor consumers using command pattern
 * Decouple character's advantages and roll functions
+* Various code and comments improvements
 
 ### Fixed
 * Suppress `factory-boy` warnings
