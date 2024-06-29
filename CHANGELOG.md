@@ -8,6 +8,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * DnD: Implement combat structure
 
 ### Changed
+* Refactor character app utils
 * Move rolls module outside of `game.utils`
 * Refactor consumers using command pattern
 * Decouple character's advantages and roll functions
