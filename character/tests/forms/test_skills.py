@@ -2,7 +2,7 @@ from character.forms.skills import ExtendedSkillsSelectForm, SkillsSelectForm
 
 
 class TestSkillsSelectForm:
-    form = SkillsSelectForm(initial={"choices": None})
+    form = SkillsSelectForm(initial={"klass": None})
 
     def test_first_skill_field_exists(self):
         assert "first_skill" in self.form.fields
@@ -12,7 +12,7 @@ class TestSkillsSelectForm:
 
 
 class TestExtendedSkillsSelectForm:
-    form = ExtendedSkillsSelectForm(initial={"choices": None})
+    form = ExtendedSkillsSelectForm(initial={"klass": None})
 
     def test_first_skill_field_exists(self):
         assert "first_skill" in self.form.fields
