@@ -11,7 +11,12 @@ from .tasks import process_roll, store_message
 
 
 class Command(ABC):
-    """Generic game command."""
+    """
+    Generic game command.
+
+    Game commands are executed when events are received by a client.
+    In general, the commands are executing asynchronous tasks.
+    """
 
     @abstractmethod
     def execute(self, date: datetime, message: str, user: User, game: Game) -> None:
