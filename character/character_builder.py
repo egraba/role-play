@@ -2,17 +2,17 @@ import random
 
 from utils.dice import Dice
 
-from ..constants.backgrounds import BACKGROUNDS
-from ..constants.klasses import KLASS_FEATURES
-from ..constants.races import RACIAL_TRAITS
-from ..forms.character import CharacterCreateForm
-from ..models.abilities import Ability, AbilityType
-from ..models.character import Character
-from ..models.equipment import Inventory
-from ..models.klasses import KlassAdvancement
-from ..models.proficiencies import SavingThrowProficiency, SkillProficiency
-from ..models.races import Language, Sense
-from ..models.skills import Skill
+from .constants.backgrounds import BACKGROUNDS
+from .constants.klasses import KLASS_FEATURES
+from .constants.races import RACIAL_TRAITS
+from .forms.character import CharacterCreateForm
+from .models.abilities import Ability, AbilityType
+from .models.character import Character
+from .models.equipment import Inventory
+from .models.klasses import KlassAdvancement
+from .models.proficiencies import SavingThrowProficiency, SkillProficiency
+from .models.races import Language, Sense
+from .models.skills import Skill
 from .abilities import compute_ability_modifier
 
 
