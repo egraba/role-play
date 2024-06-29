@@ -3,13 +3,7 @@ from ..models.game import Game, Player
 
 def get_players_emails(game: Game) -> list[str]:
     """
-    Get players emails.
-
-    Args:
-        game (Game): Current game.
-
-    Returns:
-        list[str]: email list.
+    Get the list of emails of all players from a game.
     """
     players = Player.objects.filter(game=game)
     email_set = {
