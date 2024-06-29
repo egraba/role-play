@@ -6,7 +6,7 @@ from ..constants.skills import SkillName
 from ..models.klasses import Klass
 
 
-def get_skills(klass: Klass) -> set[tuple[str, str]] | None:
+def _get_skills(klass: Klass) -> set[tuple[str, str]] | None:
     match klass:
         case Klass.CLERIC:
             return {
@@ -59,11 +59,11 @@ class SkillsSelectForm(forms.Form):
         super().__init__(*args, **kwargs)
         klass = self.initial["klass"]
         self.fields["first_skill"] = forms.ChoiceField(
-            choices=get_skills(klass),
+            choices=_get_skills(klass),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
         self.fields["second_skill"] = forms.ChoiceField(
-            choices=get_skills(klass),
+            choices=_get_skills(klass),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
 
@@ -78,10 +78,10 @@ class ExtendedSkillsSelectForm(SkillsSelectForm):
         super().__init__(*args, **kwargs)
         klass = self.initial["klass"]
         self.fields["third_skill"] = forms.ChoiceField(
-            choices=get_skills(klass),
+            choices=_get_skills(klass),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
         self.fields["fourth_skill"] = forms.ChoiceField(
-            choices=get_skills(klass),
+            choices=_get_skills(klass),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
