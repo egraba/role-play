@@ -4,10 +4,10 @@ from faker import Faker
 from character.constants.equipment import GearType, ToolType
 from character.constants.races import LanguageName
 from character.forms.backgrounds import (
-    get_artisans_tools,
-    get_gaming_set_tools,
-    get_holy_symbols,
-    get_non_spoken_languages,
+    _get_artisans_tools,
+    _get_gaming_set_tools,
+    _get_holy_symbols,
+    _get_non_spoken_languages,
 )
 from character.models.equipment import GearSettings, ToolSettings
 from character.models.races import Language
@@ -26,7 +26,7 @@ def test_get_non_spoken_languages():
         (language.name, language.get_name_display())
         for language in character.languages.all()
     }
-    language_choices = get_non_spoken_languages(character)
+    language_choices = _get_non_spoken_languages(character)
     assert character_languages & language_choices == set()
     languages = {
         (language.name, language.get_name_display())
@@ -40,7 +40,7 @@ def test_get_holy_symbols():
         (gear.name, gear.get_name_display())
         for gear in GearSettings.objects.filter(gear_type=GearType.HOLY_SYMBOL)
     }
-    assert get_holy_symbols() == holy_symbols
+    assert _get_holy_symbols() == holy_symbols
 
 
 def test_get_gaming_set_tools():
@@ -48,7 +48,7 @@ def test_get_gaming_set_tools():
         (tool.name, tool.get_name_display())
         for tool in ToolSettings.objects.filter(tool_type=ToolType.GAMING_SET)
     }
-    assert get_gaming_set_tools() == gaming_set_tools
+    assert _get_gaming_set_tools() == gaming_set_tools
 
 
 def test_get_artisans_tools():
@@ -56,4 +56,4 @@ def test_get_artisans_tools():
         (tool.name, tool.get_name_display())
         for tool in ToolSettings.objects.filter(tool_type=ToolType.ARTISANS_TOOLS)
     }
-    assert get_artisans_tools() == artisans_tools
+    assert _get_artisans_tools() == artisans_tools
