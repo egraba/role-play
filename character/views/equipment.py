@@ -2,7 +2,7 @@ import re
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import FormView
 
-from ..forms.equipment import (
+from ..forms.equipment.forms import (
     ClericEquipmentSelectForm,
     FighterEquipmentSelectForm,
     RogueEquipmentSelectForm,
