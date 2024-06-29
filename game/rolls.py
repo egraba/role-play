@@ -26,7 +26,9 @@ def perform_roll(
     character: Character, request: RollRequest
 ) -> tuple[int, tuple[str, str]]:
     """
-    Perform dice roll.
+    Perform dice roll, according to DnD rules:
+    - It adds proficiency bonus in case the character has the ability given in the roll request.
+    - It adds or remove points in case the character has advantages or disadvantages.
 
     Args:
         character (Character): The character who performs the roll.
@@ -37,7 +39,6 @@ def perform_roll(
     """
 
     score = _roll(character, request.ability_type)
-
     has_advantage = character.has_advantage(request.roll_type, request.against)
     has_disadvantage = character.has_disadvantage(request.roll_type, request.against)
     if has_advantage and has_disadvantage:
@@ -49,7 +50,6 @@ def perform_roll(
             score = max(score, new_score)
         if has_disadvantage:
             score = min(score, new_score)
-
     if score >= request.difficulty_class:
         return score, RollResult.SUCCESS
     return score, RollResult.FAILURE
