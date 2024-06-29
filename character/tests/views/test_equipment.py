@@ -4,13 +4,13 @@ from faker import Faker
 from pytest_django.asserts import assertRedirects, assertTemplateUsed
 
 from character.constants.equipment import ArmorName, GearName, ToolName, WeaponName
-from character.forms.equipment import (
+from character.forms.equipment.forms import (
     ClericEquipmentSelectForm,
     FighterEquipmentSelectForm,
     RogueEquipmentSelectForm,
     WizardEquipmentSelectForm,
 )
-from character.equipment.choices_providers import (
+from character.forms.equipment.choices_providers import (
     ClericEquipmentChoicesProvider,
     FighterEquipmentChoicesProvider,
     RogueEquipmentChoicesProvider,
