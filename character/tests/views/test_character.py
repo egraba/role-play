@@ -15,7 +15,7 @@ from character.models.klasses import Klass
 from character.models.proficiencies import SavingThrowProficiency, SkillProficiency
 from character.models.skills import Skill
 from character.models.races import Language, Sense
-from character.utils.abilities import AbilityScore
+from character.abilities import AbilityScore
 from character.views.character import (
     CharacterCreateView,
     CharacterDetailView,

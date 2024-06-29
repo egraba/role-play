@@ -13,7 +13,7 @@ from ..models.klasses import KlassAdvancement
 from ..models.proficiencies import SavingThrowProficiency, SkillProficiency
 from ..models.races import Language, Sense
 from ..models.skills import Skill
-from .abilities import compute_ability_modifier
+from ..abilities import compute_ability_modifier
 
 
 class _BaseBuilder:
