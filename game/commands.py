@@ -11,14 +11,19 @@ from .tasks import process_roll, store_message
 
 
 class Command(ABC):
-    """Generic game command."""
+    """
+    Generic game command.
+
+    Game commands are executed when events are received by a client.
+    In general, the commands are executing asynchronous tasks.
+    """
 
     @abstractmethod
     def execute(self, date: datetime, message: str, user: User, game: Game) -> None:
         pass
 
 
-class MessageCommand(Command):
+class StoreMessageCommand(Command):
     def execute(self, date: datetime, message: str, user: User, game: Game) -> None:
         store_message.delay(
             game_id=game.id,
@@ -27,8 +32,10 @@ class MessageCommand(Command):
         )
 
 
-class CharacterCommand(Command):
-    """Game command issued by a character."""
+class CharacterCommandMixin(Command):
+    """
+    Mixin to inherit from when a command is issued by a character.
+    """
 
     def execute(self, date: datetime, message: str, user: User, game: Game) -> None:
         try:
@@ -39,7 +46,7 @@ class CharacterCommand(Command):
             ) from exc
 
 
-class AbilityCheckCommand(CharacterCommand):
+class AbilityCheckCommand(CharacterCommandMixin):
     def execute(self, date: datetime, message: str, user: User, game: Game) -> None:
         super().execute(date, message, user, game)
         process_roll.delay(
@@ -51,7 +58,7 @@ class AbilityCheckCommand(CharacterCommand):
         )
 
 
-class SavingThrowCommand(CharacterCommand):
+class SavingThrowCommand(CharacterCommandMixin):
     def execute(self, date: datetime, message: str, user: User, game: Game) -> None:
         super().execute(date, message, user, game)
         process_roll.delay(
