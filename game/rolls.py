@@ -1,12 +1,10 @@
-from django.core.exceptions import ObjectDoesNotExist
-
-from character.exceptions import AbilityNotFound
-from character.models.abilities import AbilityType
+from character.models.abilities import AbilityType, Ability
 from character.models.character import Character
 from utils.dice import Dice
 
 from .constants.events import RollResult
 from .models.events import RollRequest
+from .exceptions import RollInvalid
 
 
 def _roll(character: Character, ability_type: AbilityType) -> int:
@@ -16,9 +14,8 @@ def _roll(character: Character, ability_type: AbilityType) -> int:
     """
     try:
         ability = character.abilities.get(ability_type=ability_type)
-    except ObjectDoesNotExist as exc:
-        raise AbilityNotFound(ability_type) from exc
-
+    except Ability.DoesNotExist:
+        raise RollInvalid(f"[{character}] does not have the ability: {ability_type}")
     score = Dice("d20").roll(ability.modifier)
     if character.is_proficient(ability):
         score += character.proficiency_bonus
