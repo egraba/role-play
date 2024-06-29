@@ -1,7 +1,7 @@
 from django import forms
 
 from ..models.character import Character
-from ..utils.abilities import AbilityScore
+from ..abilities import AbilityScore
 
 
 class CharacterCreateForm(forms.ModelForm):
