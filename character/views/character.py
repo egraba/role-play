@@ -4,7 +4,7 @@ from django.views.generic import CreateView, DetailView, ListView
 
 from ..forms.character import CharacterCreateForm
 from ..models.character import Character
-from ..utils.builders import (
+from ..character_builder import (
     build_character,
 )
 
