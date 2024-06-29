@@ -23,7 +23,6 @@ class GameEventsConsumer(JsonWebsocketConsumer):
     def connect(self):
         # self.scope is set in parent's connect()
         self.user = self.scope["user"]
-
         # The game ID has to be retrieved to create a channel.
         # There is one room per game.
         game_id = self.scope["url_route"]["kwargs"]["game_id"]
@@ -33,10 +32,8 @@ class GameEventsConsumer(JsonWebsocketConsumer):
             )
         except Game.DoesNotExist as exc:
             self.close()
-            raise DenyConnection(f"Game [{game_id}] not found...") from exc
-
+            raise DenyConnection(f"Game [{game_id}] not found") from exc
         self.game_group_name = f"game_{self.game.id}_events"
-
         async_to_sync(self.channel_layer.group_add)(
             self.game_group_name, self.channel_name
         )
@@ -77,7 +74,6 @@ class GameEventsConsumer(JsonWebsocketConsumer):
             except Character.DoesNotExist as exc:
                 self.close()
                 raise DenyConnection(exc.__traceback__) from exc
-
         async_to_sync(self.channel_layer.group_send)(self.game_group_name, content)
 
     def message(self, event):
