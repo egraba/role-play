@@ -23,7 +23,7 @@ class Command(ABC):
         pass
 
 
-class MessageCommand(Command):
+class StoreMessageCommand(Command):
     def execute(self, date: datetime, message: str, user: User, game: Game) -> None:
         store_message.delay(
             game_id=game.id,
