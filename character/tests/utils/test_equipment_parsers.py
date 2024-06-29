@@ -1,7 +1,7 @@
 import pytest
 from faker import Faker
 
-from character.utils.equipment.parsers import (
+from character.utils.equipment_parsers import (
     parse_ac_settings,
     parse_damage,
     parse_strength,

@@ -21,7 +21,7 @@ from ..models.disadvantages import (
     SpellCastDisadvantage,
 )
 from ..models.proficiencies import ArmorProficiency
-from ..utils.equipment.parsers import parse_ac_settings, parse_strength
+from ..utils.equipment_parsers import parse_ac_settings, parse_strength
 
 
 class Inventory(models.Model):
