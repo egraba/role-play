@@ -10,6 +10,10 @@ from .models.events import RollRequest
 
 
 def _roll(character: Character, ability_type: AbilityType) -> int:
+    """
+    Perform a roll and add proficiency bonus to the score,
+    if the character is proficient in the ability passed as argument.
+    """
     try:
         ability = character.abilities.get(ability_type=ability_type)
     except ObjectDoesNotExist as exc:
