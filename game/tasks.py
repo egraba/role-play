@@ -25,6 +25,7 @@ logger = get_task_logger(__name__)
 def send_mail(
     subject: str, message: str, from_email: str, recipient_list: list[str]
 ) -> int:
+    logger.info(f"{subject=}, {message=}, {from_email=}, {recipient_list=}")
     return django_send_mail(subject, message, from_email, recipient_list)
 
 
