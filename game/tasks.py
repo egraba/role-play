@@ -38,6 +38,8 @@ def store_message(game_id: int, date: datetime, message: str) -> None:
         date (datetime): Date on which the message has been sent.
         message (str): Message content.
     """
+    logger.info(f"{game_id=}, {date=}, {message=}")
+
     try:
         game = cache.get_or_set(game_key(game_id), Game.objects.get(id=game_id))
     except Game.DoesNotExist as exc:
