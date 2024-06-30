@@ -119,7 +119,6 @@ def process_roll(
             result_type = GameEventType.ABILITY_CHECK_RESULT
         case RollType.SAVING_THROW:
             result_type = GameEventType.SAVING_THROW_RESULT
-
     send_to_channel(
         game_id=game.id,
         game_event={
