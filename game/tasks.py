@@ -4,7 +4,7 @@ from celery import shared_task
 from celery.exceptions import InvalidTaskError
 from celery.utils.log import get_task_logger
 from django.core.cache import cache
-from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
+from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail as django_send_mail
 from django.utils import timezone
 
@@ -70,9 +70,12 @@ def process_roll(
     logger.info(f"{game_id=}, {roll_type=}, {date=}, {character_id=}, {message=}")
     try:
         game = Game.objects.get(id=game_id)
+    except Game.DoesNotExist as exc:
+        raise InvalidTaskError(f"Game [{game_id}] not found") from exc
+    try:
         character = Character.objects.get(id=character_id, player__game=game)
-    except ObjectDoesNotExist as exc:
-        raise PermissionDenied from exc
+    except Character.DoesNotExist as exc:
+        raise InvalidTaskError(f"Character [{character_id}] not found") from exc
 
     # Retrieve the corresponding request.
     request = RollRequest.objects.filter(
