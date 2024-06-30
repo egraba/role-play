@@ -14,7 +14,7 @@ from ..forms import AbilityCheckRequestForm, QuestCreateForm
 from ..models.events import Event, Quest
 from ..models.game import Player
 from ..schemas import GameEventType, PlayerType
-from ..tasks import send_email
+from ..tasks import send_mail
 from ..utils.cache import game_key
 from ..utils.channels import send_to_channel
 from ..utils.emails import get_players_emails
@@ -49,7 +49,7 @@ class CharacterInviteConfirmView(UserPassesTestMixin, UpdateView, GameContextMix
         event.date = timezone.now()
         event.message = f"{character} was added to the game."
         event.save()
-        send_email.delay(
+        send_mail.delay(
             subject=f"The Master invited you to join [{self.game}].",
             message=f"{character}, the Master invited you to join [{self.game}].",
             from_email=self.game.master.user.email,
@@ -128,7 +128,7 @@ class QuestCreateView(UserPassesTestMixin, FormView, EventContextMixin):
             },
         )
 
-        send_email.delay(
+        send_mail.delay(
             subject=f"[{self.game}] The Master updated the quest.",
             message=f"The Master said:\n{quest.content}",
             from_email=self.game.master.user.email,
