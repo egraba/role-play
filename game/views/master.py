@@ -209,17 +209,19 @@ class CombatCreate(
                 combat=combat, character=Character.objects.get(name=fighter_field)
             )
             if CombatChoices.IS_FIGHTING in form.cleaned_data[fighter_field]:
-                fighters.add(fighter.character.name)
                 if CombatChoices.IS_SURPRISED in form.cleaned_data[fighter_field]:
                     surpised_fighters.add(fighter.character.name)
-        # The combat initiation string must contain the fighters list and their
-        # attributes.
-        fighters_str = ""
+                fighters.add(fighter.character.name)
+        # List used to display fighters in a human readable format.
+        # It contains the fighters list and their attributes.
+        fighters_display_list = []
         for fighter in fighters:
-            fighters_str += fighter
             if fighter in surpised_fighters:
-                fighters_str += " (surprised)"
-        combat.message = f"Combat! {fighters_str}"
+                fighters_display_list.append(f"{fighter} (surprised)")
+            else:
+                fighters_display_list.append(fighter)
+        fighters_message = ", ".join(fighters_display_list)
+        combat.message = f"Combat! {fighters_message}"
         combat.save()
         send_to_channel(
             game_id=self.game.id,
