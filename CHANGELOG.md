@@ -5,6 +5,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Added
+* DnD: Implement combat initiation
 * DnD: Implement combat structure
 
 ### Changed
