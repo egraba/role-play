@@ -199,10 +199,22 @@ class CombatCreate(
         initial = {"game": self.game}
         return initial
 
+    def _get_fighters_display(self, fighters: set, surprised_fighters: set) -> str:
+        """
+        Display fighters in a human readable format, in combat event messages.
+        """
+        fighters_display_list = []
+        for fighter in fighters:
+            if fighter in surprised_fighters:
+                fighters_display_list.append(f"{fighter} (surprised)")
+            else:
+                fighters_display_list.append(fighter)
+        return ", ".join(fighters_display_list)
+
     def form_valid(self, form):
         combat = Combat(game=self.game)
         fighters = set()
-        surpised_fighters = set()
+        surprised_fighters = set()
         # The fighters must be created when they have been selected in the form.
         for fighter_field in form.fields:
             fighter = Fighter(
@@ -210,18 +222,11 @@ class CombatCreate(
             )
             if CombatChoices.IS_FIGHTING in form.cleaned_data[fighter_field]:
                 if CombatChoices.IS_SURPRISED in form.cleaned_data[fighter_field]:
-                    surpised_fighters.add(fighter.character.name)
+                    surprised_fighters.add(fighter.character.name)
                 fighters.add(fighter.character.name)
-        # List used to display fighters in a human readable format.
-        # It contains the fighters list and their attributes.
-        fighters_display_list = []
-        for fighter in fighters:
-            if fighter in surpised_fighters:
-                fighters_display_list.append(f"{fighter} (surprised)")
-            else:
-                fighters_display_list.append(fighter)
-        fighters_message = ", ".join(fighters_display_list)
-        combat.message = f"Combat! {fighters_message}"
+        combat.message = (
+            f"Combat! {self._get_fighters_display(fighters, surprised_fighters)}"
+        )
         combat.save()
         send_to_channel(
             game_id=self.game.id,
