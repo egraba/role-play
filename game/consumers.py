@@ -60,6 +60,8 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                     command = AbilityCheckCommand()
                 case GameEventType.SAVING_THROW:
                     command = SavingThrowCommand()
+                case GameEventType.COMBAT_INITIATION:
+                    command = StoreMessageCommand()
                 case _:
                     pass
             try:
@@ -72,7 +74,6 @@ class GameEventsConsumer(JsonWebsocketConsumer):
             except Character.DoesNotExist as exc:
                 self.close()
                 raise DenyConnection(exc.__traceback__) from exc
-
         async_to_sync(self.channel_layer.group_send)(self.game_group_name, content)
 
     def message(self, event):
@@ -109,4 +110,8 @@ class GameEventsConsumer(JsonWebsocketConsumer):
 
     def saving_throw_result(self, event):
         """Saving throw result."""
+        self.send_json(event)
+
+    def combat_initiation(self, event):
+        """Combat initiation."""
         self.send_json(event)

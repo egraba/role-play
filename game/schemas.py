@@ -19,6 +19,7 @@ class GameEventType(StrEnum):
     SAVING_THROW_REQUEST = "saving.throw.request"
     SAVING_THROW = "saving.throw"
     SAVING_THROW_RESULT = "saving.throw.result"
+    COMBAT_INITIATION = "combat.initiation"
 
 
 class PlayerType(StrEnum):

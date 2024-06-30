@@ -1,11 +1,12 @@
 from django.db import models
 
-from .game import Game, Player
+from .events import Event
+from .game import Player
 from ..constants.combat import CombatAction
 
 
-class Combat(models.Model):
-    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+class Combat(Event):
+    pass
 
 
 class Round(models.Model):
@@ -22,3 +23,4 @@ class Turn(models.Model):
 class Fighter(models.Model):
     character = models.ForeignKey("character.Character", on_delete=models.CASCADE)
     is_surprised = models.BooleanField(default=False)
+    combat = models.ForeignKey(Combat, on_delete=models.CASCADE)
