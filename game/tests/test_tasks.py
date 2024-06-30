@@ -1,12 +1,12 @@
 from difflib import SequenceMatcher
 
 import pytest
-from django.core.exceptions import PermissionDenied
+from celery.exceptions import InvalidTaskError
 from django.utils import timezone
 from faker import Faker
 
 from character.models.character import Character
-from game.constants.events import RollType, RollStatus
+from game.constants.events import RollStatus, RollType
 from game.models.events import Roll, RollRequest
 from game.models.game import Game
 from game.tasks import process_roll
@@ -65,7 +65,7 @@ class TestProcessRoll:
         fake = Faker()
         date = timezone.now()
         message = fake.text(100)
-        with pytest.raises(PermissionDenied):
+        with pytest.raises(InvalidTaskError):
             process_roll.delay(
                 game_id=fake.random_int(min=1000),
                 roll_type=RollType.ABILITY_CHECK,
@@ -83,7 +83,7 @@ class TestProcessRoll:
         fake = Faker()
         date = timezone.now()
         message = fake.text(100)
-        with pytest.raises(PermissionDenied):
+        with pytest.raises(InvalidTaskError):
             process_roll.delay(
                 game_id=game.id,
                 roll_type=RollType.ABILITY_CHECK,
@@ -102,7 +102,7 @@ class TestProcessRoll:
         date = timezone.now()
         message = fake.text(100)
         RollRequest.objects.last().delete()
-        with pytest.raises(PermissionDenied):
+        with pytest.raises(InvalidTaskError):
             process_roll.delay(
                 game_id=game.id,
                 roll_type=RollType.ABILITY_CHECK,
