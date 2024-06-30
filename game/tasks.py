@@ -68,6 +68,7 @@ def process_roll(
         message (str): Message content.
     """
     logger.info(f"{game_id=}, {roll_type=}, {date=}, {character_id=}, {message=}")
+
     try:
         game = Game.objects.get(id=game_id)
     except Game.DoesNotExist as exc:
