@@ -60,13 +60,19 @@ class GameView(LoginRequiredMixin, ListView, GameContextMixin):
         ).order_by("name")
         try:
             context["player"] = Player.objects.get(character__user=self.request.user)
+        except Player.DoesNotExist:
+            pass
+        try:
             context["ability_check_request"] = RollRequest.objects.filter(
                 status=RollStatus.PENDING
             ).first()
+        except RollRequest.DoesNotExist:
+            pass
+        try:
             context["saving_throw_request"] = RollRequest.objects.filter(
                 status=RollStatus.PENDING
             ).first()
-        except ObjectDoesNotExist:
+        except RollRequest.DoesNotExist:
             pass
         return context
 
