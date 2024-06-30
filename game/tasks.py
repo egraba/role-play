@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from celery import shared_task
+from celery.exceptions import InvalidTaskError
 from celery.utils.log import get_task_logger
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.core.mail import send_mail as django_send_mail
@@ -35,7 +36,10 @@ def store_message(game_id: int, date: datetime, message: str) -> None:
         date (datetime): Date on which the message has been sent.
         message (str): Message content.
     """
-    game = Game.objects.get(id=game_id)
+    try:
+        game = Game.objects.get(id=game_id)
+    except Game.DoesNotExist as exc:
+        raise InvalidTaskError from exc
     Event.objects.create(
         game=game,
         date=date,
