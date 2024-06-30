@@ -165,7 +165,7 @@ class AbilityCheckRequestView(
         ability_check_request.date = timezone.now()
         ability_check_request.message = f"[{ability_check_request.character.user}] \
             needs to perform a {ability_check_request.ability_type} ability check! \
-            Difficulty: {ability_check_request.get_difficulty_klass_display()}."
+            Difficulty: {ability_check_request.get_difficulty_class_display()}."
         ability_check_request.save()
 
         send_to_channel(
