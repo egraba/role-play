@@ -14,6 +14,12 @@ from game.tasks import process_roll
 from .factories import RollRequestFactory
 
 
+@pytest.fixture(scope="session")
+def celery_parameters():
+    # Used to suppress warnings during test sessions.
+    return {"broker_connection_retry_on_startup": True}
+
+
 @pytest.mark.django_db(transaction=True)
 class TestProcessRoll:
     @pytest.fixture
@@ -30,6 +36,7 @@ class TestProcessRoll:
         # Retrieved from RollRequestFactory.
         return Character.objects.last()
 
+    # @pytest.mark.celery(broker_connection_retry_on_startup=True)
     def test_process_roll_ability_check_success(
         self, celery_worker, ability_check_request, game, character
     ):
