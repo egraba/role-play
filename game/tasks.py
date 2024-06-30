@@ -41,7 +41,7 @@ def store_message(game_id: int, date: datetime, message: str) -> None:
     try:
         game = cache.get_or_set(game_key(game_id), Game.objects.get(id=game_id))
     except Game.DoesNotExist as exc:
-        raise InvalidTaskError from exc
+        raise InvalidTaskError(f"Game [{game_id}] not found") from exc
     Event.objects.create(
         game=game,
         date=date,
