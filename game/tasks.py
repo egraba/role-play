@@ -109,7 +109,7 @@ def process_roll(
         {roll_type} result: {roll.get_result_display()}"
     roll.save()
 
-    # The corresponding request is considered now as done.
+    # The corresponding roll request is considered now as done.
     request.status = RollStatus.DONE
     request.save()
 
