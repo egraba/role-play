@@ -1,17 +1,23 @@
 from difflib import SequenceMatcher
 
 import pytest
-from django.core.exceptions import PermissionDenied
+from celery.exceptions import InvalidTaskError
 from django.utils import timezone
 from faker import Faker
 
 from character.models.character import Character
-from game.constants.events import RollType, RollStatus
+from game.constants.events import RollStatus, RollType
 from game.models.events import Roll, RollRequest
 from game.models.game import Game
 from game.tasks import process_roll
 
 from .factories import RollRequestFactory
+
+
+@pytest.fixture(scope="session")
+def celery_parameters():
+    # Used to suppress warnings during test sessions.
+    return {"broker_connection_retry_on_startup": True}
 
 
 @pytest.mark.django_db(transaction=True)
@@ -30,6 +36,7 @@ class TestProcessRoll:
         # Retrieved from RollRequestFactory.
         return Character.objects.last()
 
+    # @pytest.mark.celery(broker_connection_retry_on_startup=True)
     def test_process_roll_ability_check_success(
         self, celery_worker, ability_check_request, game, character
     ):
@@ -65,7 +72,7 @@ class TestProcessRoll:
         fake = Faker()
         date = timezone.now()
         message = fake.text(100)
-        with pytest.raises(PermissionDenied):
+        with pytest.raises(InvalidTaskError):
             process_roll.delay(
                 game_id=fake.random_int(min=1000),
                 roll_type=RollType.ABILITY_CHECK,
@@ -83,7 +90,7 @@ class TestProcessRoll:
         fake = Faker()
         date = timezone.now()
         message = fake.text(100)
-        with pytest.raises(PermissionDenied):
+        with pytest.raises(InvalidTaskError):
             process_roll.delay(
                 game_id=game.id,
                 roll_type=RollType.ABILITY_CHECK,
@@ -102,7 +109,7 @@ class TestProcessRoll:
         date = timezone.now()
         message = fake.text(100)
         RollRequest.objects.last().delete()
-        with pytest.raises(PermissionDenied):
+        with pytest.raises(InvalidTaskError):
             process_roll.delay(
                 game_id=game.id,
                 roll_type=RollType.ABILITY_CHECK,
