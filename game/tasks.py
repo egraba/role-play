@@ -88,11 +88,7 @@ def process_roll(
         raise InvalidTaskError("Roll request not found")
 
     # Store the message send when the player has clicked on the sending button.
-    Event.objects.create(
-        game=game,
-        date=date,
-        message=message,
-    )
+    store_message(game_id, date, message)
 
     score, result = perform_roll(character, request)
     # Roll's message must be created after Roll() constructor call
@@ -120,7 +116,7 @@ def process_roll(
         case RollType.SAVING_THROW:
             result_type = GameEventType.SAVING_THROW_RESULT
     send_to_channel(
-        game_id=game.id,
+        game_id=game_id,
         game_event={
             "type": result_type,
             "player_type": PlayerType.MASTER,
