@@ -3,7 +3,7 @@ from datetime import datetime
 from celery import shared_task
 from celery.utils.log import get_task_logger
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
-from django.core.mail import send_mail
+from django.core.mail import send_mail as django_send_mail
 from django.utils import timezone
 
 from character.models.character import Character
@@ -19,11 +19,10 @@ logger = get_task_logger(__name__)
 
 
 @shared_task
-def send_email(
+def send_mail(
     subject: str, message: str, from_email: str, recipient_list: list[str]
 ) -> int:
-    """Send an email."""
-    return send_mail(subject, message, from_email, recipient_list)
+    return django_send_mail(subject, message, from_email, recipient_list)
 
 
 @shared_task
