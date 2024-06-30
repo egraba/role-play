@@ -4,7 +4,6 @@ from celery import shared_task
 from celery.exceptions import InvalidTaskError
 from celery.utils.log import get_task_logger
 from django.core.cache import cache
-from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail as django_send_mail
 from django.utils import timezone
 
@@ -81,12 +80,12 @@ def process_roll(
     except Character.DoesNotExist as exc:
         raise InvalidTaskError(f"Character [{character_id}] not found") from exc
 
-    # Retrieve the corresponding request.
+    # Retrieve the corresponding roll request.
     request = RollRequest.objects.filter(
         roll_type=roll_type, character=character, status=RollStatus.PENDING
     ).first()
     if request is None:
-        raise PermissionDenied
+        raise InvalidTaskError("Roll request not found")
 
     # Store the message send when the player has clicked on the sending button.
     Event.objects.create(
