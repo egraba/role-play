@@ -3,6 +3,7 @@ from datetime import datetime
 from celery import shared_task
 from celery.exceptions import InvalidTaskError
 from celery.utils.log import get_task_logger
+from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.core.mail import send_mail as django_send_mail
 from django.utils import timezone
@@ -12,9 +13,10 @@ from character.models.character import Character
 from .constants.events import RollStatus, RollType
 from .models.events import Event, Roll, RollRequest
 from .models.game import Game
-from .schemas import GameEventType, PlayerType
-from .utils.channels import send_to_channel
 from .rolls import perform_roll
+from .schemas import GameEventType, PlayerType
+from .utils.cache import game_key
+from .utils.channels import send_to_channel
 
 logger = get_task_logger(__name__)
 
@@ -37,7 +39,7 @@ def store_message(game_id: int, date: datetime, message: str) -> None:
         message (str): Message content.
     """
     try:
-        game = Game.objects.get(id=game_id)
+        game = cache.get_or_set(game_key(game_id), Game.objects.get(id=game_id))
     except Game.DoesNotExist as exc:
         raise InvalidTaskError from exc
     Event.objects.create(
