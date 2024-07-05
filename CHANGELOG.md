@@ -17,6 +17,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * Various code and comments improvements
 
 ### Fixed
+* Remove unnecessary `create()` calls
 * Suppress `factory-boy` warnings
 
 ## v0.9.0 - 2024-06-02
