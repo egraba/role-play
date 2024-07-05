@@ -6,14 +6,15 @@ from django.utils import timezone
 from django.views.generic import FormView, ListView, UpdateView
 from viewflow.fsm import TransitionNotAllowed
 
+from character.constants.abilities import AbilityName
 from character.models.character import Character
 
 from ..constants.combat import CombatChoices
 from ..constants.events import RollType
 from ..flows import GameFlow
-from ..forms import AbilityCheckRequestForm, QuestCreateForm, CombatCreateForm
+from ..forms import AbilityCheckRequestForm, CombatCreateForm, QuestCreateForm
 from ..models.combat import Combat, Fighter
-from ..models.events import Event, Quest
+from ..models.events import Event, Quest, RollRequest
 from ..models.game import Player
 from ..schemas import GameEventType, PlayerType
 from ..tasks import send_mail
@@ -210,12 +211,12 @@ class CombatCreate(
         return ", ".join(fighters_display_list)
 
     def form_valid(self, form):
-        combat = Combat(game=self.game)
+        combat = Combat.objects.create(game=self.game)
         fighters = set()
         surprised_fighters = set()
         # The fighters must be created when they have been selected in the form.
         for fighter_field in form.fields:
-            fighter = Fighter(
+            fighter = Fighter.objects.create(
                 combat=combat, character=Character.objects.get(name=fighter_field)
             )
             if CombatChoices.IS_FIGHTING in form.cleaned_data[fighter_field]:
@@ -235,4 +236,23 @@ class CombatCreate(
                 "message": combat.message,
             },
         )
+        for fighter in Fighter.objects.filter(combat=combat):
+            dexterity_check_request = RollRequest()
+            dexterity_check_request.game = self.game
+            dexterity_check_request.character = fighter.character
+            dexterity_check_request.roll_type = RollType.ABILITY_CHECK
+            dexterity_check_request.ability_type = AbilityName.DEXTERITY
+            dexterity_check_request.date = timezone.now()
+            dexterity_check_request.message = f"[{dexterity_check_request.character.user}] \
+                needs to perform a {dexterity_check_request.ability_type} ability check!"
+            dexterity_check_request.save()
+            send_to_channel(
+                game_id=self.game.id,
+                game_event={
+                    "type": GameEventType.ABILITY_CHECK_REQUEST,
+                    "player_type": PlayerType.MASTER,
+                    "date": dexterity_check_request.date.isoformat(),
+                    "message": dexterity_check_request.message,
+                },
+            )
         return super().form_valid(form)

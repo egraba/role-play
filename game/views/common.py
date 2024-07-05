@@ -5,6 +5,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views.generic import CreateView, ListView, TemplateView
 
+from character.constants.abilities import AbilityName
 from character.models.character import Character
 from master.models import Campaign
 
@@ -64,6 +65,12 @@ class GameView(LoginRequiredMixin, ListView, GameContextMixin):
             context["ability_check_request"] = RollRequest.objects.filter(
                 character__player=current_player,
                 roll_type=RollType.ABILITY_CHECK,
+                status=RollStatus.PENDING,
+            ).first()
+            context["dexterity_check_request"] = RollRequest.objects.filter(
+                character__player=current_player,
+                roll_type=RollType.ABILITY_CHECK,
+                ability_type=AbilityName.DEXTERITY,
                 status=RollStatus.PENDING,
             ).first()
             context["saving_throw_request"] = RollRequest.objects.filter(

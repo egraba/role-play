@@ -43,7 +43,11 @@ class RollRequest(Event):
         max_length=3,
         choices=AbilityName,
     )
-    difficulty_class = models.SmallIntegerField(choices=DifficultyClass)
+    difficulty_class = models.SmallIntegerField(
+        choices=DifficultyClass,
+        blank=True,
+        null=True,
+    )
     roll_type = models.SmallIntegerField(choices=RollType)
     against = models.CharField(max_length=1, choices=Against, blank=True, null=True)
 
