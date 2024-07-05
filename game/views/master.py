@@ -47,7 +47,7 @@ class CharacterInviteConfirmView(UserPassesTestMixin, UpdateView, GameContextMix
     def post(self, request, *args, **kwargs):
         character = self.get_object()
         Player.objects.create(character=character, game=self.game)
-        event = Event.objects.create(game=self.game)
+        event = Event(game=self.game)
         event.date = timezone.now()
         event.message = f"{character} was added to the game."
         event.save()
@@ -73,11 +73,10 @@ class GameStartView(UserPassesTestMixin, GameStatusControlMixin):
         try:
             flow.start()
             cache.set(game_key(game.id), game)
-            event = Event.objects.create(game=game)
+            event = Event(game=game)
             event.date = timezone.now()
             event.message = "the game started."
             event.save()
-
             send_to_channel(
                 game_id=game.id,
                 game_event={
@@ -87,7 +86,6 @@ class GameStartView(UserPassesTestMixin, GameStatusControlMixin):
                     "message": event.message,
                 },
             )
-
         except TransitionNotAllowed:
             return HttpResponseRedirect(reverse("game-start-error", args=(game.id,)))
         return HttpResponseRedirect(game.get_absolute_url())
