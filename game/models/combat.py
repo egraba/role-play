@@ -34,3 +34,4 @@ class Fighter(models.Model):
     character = models.ForeignKey("character.Character", on_delete=models.CASCADE)
     is_surprised = models.BooleanField(default=False)
     combat = models.ForeignKey(Combat, on_delete=models.CASCADE)
+    dexterity_check = models.SmallIntegerField(null=True, blank=True)
