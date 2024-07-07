@@ -35,7 +35,7 @@ def perform_roll(
         request (RollRequest): The corresponding roll request from the master.
 
     Returns:
-        tuple[int, tuple[str, str]]: Dice roll score and roll type result.
+        tuple[int, tuple[str, str] | None]: Dice roll score and roll type result (if any).
     """
 
     score = _roll(character, request.ability_type)
