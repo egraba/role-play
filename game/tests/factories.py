@@ -2,6 +2,7 @@ import factory
 
 from character.constants.abilities import AbilityName
 from game.constants.events import DifficultyClass, RollType
+from game.models.combat import Combat
 from game.models.events import Event, Quest, RollRequest
 from game.models.game import Game, Master, Player
 from utils.factories import UserFactory
@@ -72,3 +73,11 @@ class RollRequestFactory(factory.django.DjangoModelFactory):
         game = obj.game
         PlayerFactory(character=character, game=game)
         character.save()
+
+
+class CombatFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Combat
+
+    game = factory.SubFactory(GameFactory)
+    message = factory.Faker("text", max_nb_chars=50)
