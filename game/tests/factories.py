@@ -98,4 +98,4 @@ class CombatFactory(factory.django.DjangoModelFactory):
         if not create:
             return
         for _ in range(random.randint(2, 8)):
-            FighterFactory(combat=obj)
+            FighterFactory(combat=obj, dexterity_check=random.randint(1, 20))
