@@ -27,6 +27,10 @@ class Turn(models.Model):
 
 
 class Fighter(models.Model):
+    """
+    A fighter represents a character during a combat.
+    """
+
     character = models.ForeignKey("character.Character", on_delete=models.CASCADE)
     is_surprised = models.BooleanField(default=False)
     combat = models.ForeignKey(Combat, on_delete=models.CASCADE)
