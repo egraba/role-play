@@ -1,8 +1,10 @@
+import random
+
 import factory
 
 from character.constants.abilities import AbilityName
 from game.constants.events import DifficultyClass, RollType
-from game.models.combat import Combat
+from game.models.combat import Combat, Fighter
 from game.models.events import Event, Quest, RollRequest
 from game.models.game import Game, Master, Player
 from utils.factories import UserFactory
@@ -75,9 +77,25 @@ class RollRequestFactory(factory.django.DjangoModelFactory):
         character.save()
 
 
+class FighterFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Fighter
+
+    character = factory.SubFactory("character.tests.factories.CharacterFactory")
+    combat = factory.SubFactory("game.tests.factories.CombatFactory")
+
+
 class CombatFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Combat
+        skip_postgeneration_save = True
 
     game = factory.SubFactory(GameFactory)
     message = factory.Faker("text", max_nb_chars=50)
+
+    @factory.post_generation
+    def add_fighters(obj, create, extracted, **kwargs):
+        if not create:
+            return
+        for _ in range(random.randint(2, 8)):
+            FighterFactory(combat=obj)
