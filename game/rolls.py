@@ -24,7 +24,7 @@ def _roll(character: Character, ability_type: AbilityType) -> int:
 
 def perform_roll(
     character: Character, request: RollRequest
-) -> tuple[int, tuple[str, str]]:
+) -> tuple[int, tuple[str, str] | None]:
     """
     Perform dice roll, according to DnD rules:
     - It adds proficiency bonus in case the character has the ability given in the roll request.
@@ -50,6 +50,11 @@ def perform_roll(
             score = max(score, new_score)
         if has_disadvantage:
             score = min(score, new_score)
+    if request.difficulty_class is None:
+        # There is no difficulty class, in some cases.
+        # For instance, in a combat, the Master asks fighters to perform a dextery check,
+        # to get the order of the fighters. Therefore, no success nor failure is expected.
+        return score, None
     if score >= request.difficulty_class:
         return score, RollResult.SUCCESS
     return score, RollResult.FAILURE
