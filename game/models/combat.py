@@ -11,8 +11,9 @@ class Combat(Event):
         Collects all dexterity checks from fighters, sort them and return
         the order of turns during combat.
         """
-        initiative_order = [fighter for fighter in self.fighter_set.all()]
-        return initiative_order
+        return [
+            fighter for fighter in self.fighter_set.all().order_by("-dexterity_check")
+        ]
 
 
 class Round(models.Model):

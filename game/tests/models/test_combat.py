@@ -11,5 +11,7 @@ class TestCombatModel:
         return CombatFactory()
 
     def test_get_initiative_order(self, combat):
-        fighters = list(Fighter.objects.filter(combat=combat))
+        fighters = list(
+            Fighter.objects.filter(combat=combat).order_by("-dexterity_check")
+        )
         assert combat.get_initiative_order() == fighters
