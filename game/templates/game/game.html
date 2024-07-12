@@ -44,6 +44,11 @@
                                     <p>Perform ability check</p>
                                 </button>
                             {% endif %}
+                            {% if dexterity_check_request %}
+                                <button id="dexterity-check-submit" class="rpgui-button" type="submit">
+                                    <p>Perform dexterity check</p>
+                                </button>
+                            {% endif %}
                             {% if saving_throw_request %}
                                 <button id="saving-throw-submit" class="rpgui-button" type="submit">
                                     <p>Perform saving throw</p>
@@ -136,12 +141,14 @@
         const input = document.getElementById('message-input');
         const sendButton = document.getElementById('message-submit');
         const abilityCheckButton = document.getElementById('ability-check-submit');
+        const dexterityCheckButton = document.getElementById('dexterity-check-submit');
         const savingThrowButton = document.getElementById('saving-throw-submit');
 
         const MESSAGE = "message";
         const QUEST_UPDATE = "quest.update";
         const ABILITY_CHECK = "ability.check";
         const SAVING_THROW = "saving.throw";
+        const COMBAT_ROLL_INITIATIVE = "combat.roll.initiative";
 
         eventsSocket.onmessage = function(event) {
             message = JSON.parse(event.data)
@@ -216,6 +223,17 @@
                     'date': Date.now(),
                     'player_type': PLAYER,
                     'message': senderStr + ' performed a saving throw!',
+                }));
+            });
+        }
+
+        if (dexterityCheckButton !== null) {
+            dexterityCheckButton.addEventListener('click', function(event) {
+                eventsSocket.send(JSON.stringify({
+                    'type': COMBAT_ROLL_INITIATIVE,
+                    'date': Date.now(),
+                    'player_type': PLAYER,
+                    'message': senderStr + ' performed a dexterity check!',
                 }));
             });
         }
