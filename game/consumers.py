@@ -5,7 +5,12 @@ from django.core.cache import cache
 
 from character.models.character import Character
 
-from .commands import AbilityCheckCommand, SavingThrowCommand, StoreMessageCommand
+from .commands import (
+    AbilityCheckCommand,
+    CombatRollInitiativeCommand,
+    SavingThrowCommand,
+    StoreMessageCommand,
+)
 from .models.game import Game
 from .schemas import GameEventOrigin, GameEventType
 from .utils.cache import game_key
@@ -62,6 +67,8 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                     command = SavingThrowCommand()
                 case GameEventType.COMBAT_INITIALIZATION:
                     command = StoreMessageCommand()
+                case GameEventType.COMBAT_ROLL_INITIATIVE:
+                    command = CombatRollInitiativeCommand()
                 case _:
                     pass
             try:
@@ -114,4 +121,11 @@ class GameEventsConsumer(JsonWebsocketConsumer):
 
     def combat_initiation(self, event):
         """Combat initiation."""
+        self.send_json(event)
+
+    def combat_roll_initiative(self, event):
+        """
+        Combat roll initiative.
+        All players have to perform a dexterity check.
+        """
         self.send_json(event)

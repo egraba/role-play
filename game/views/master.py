@@ -249,7 +249,7 @@ class CombatCreate(
             send_to_channel(
                 game_id=self.game.id,
                 game_event={
-                    "type": GameEventType.ABILITY_CHECK_REQUEST,
+                    "type": GameEventType.COMBAT_ROLL_INITIATIVE,
                     "player_type": PlayerType.MASTER,
                     "date": dexterity_check_request.date.isoformat(),
                     "message": dexterity_check_request.message,
