@@ -60,7 +60,7 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                     command = AbilityCheckCommand()
                 case GameEventType.SAVING_THROW:
                     command = SavingThrowCommand()
-                case GameEventType.COMBAT_INITIATION:
+                case GameEventType.COMBAT_INITIALIZATION:
                     command = StoreMessageCommand()
                 case _:
                     pass

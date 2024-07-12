@@ -230,7 +230,7 @@ class CombatCreate(
         send_to_channel(
             game_id=self.game.id,
             game_event={
-                "type": GameEventType.COMBAT_INITIATION,
+                "type": GameEventType.COMBAT_INITIALIZATION,
                 "player_type": PlayerType.MASTER,
                 "date": combat.date.isoformat(),
                 "message": combat.message,
