@@ -23,6 +23,7 @@ from game.models.game import Game
 from game.views.master import (
     CharacterInviteConfirmView,
     CharacterInviteView,
+    CombatCreateView,
     GameStartView,
     QuestCreateView,
 )
@@ -255,9 +256,6 @@ def started_game(django_db_blocker):
         return game
 
 
-pytestmark = pytest.mark.django_db
-
-
 class TestQuestCreateView:
     path_name = "quest-create"
 
@@ -314,3 +312,22 @@ class TestQuestCreateView:
         assert quest.message == "the Master updated the campaign."
         assert quest.content == form.cleaned_data["content"]
         assertRedirects(response, started_game.get_absolute_url())
+
+
+class TestCombatCreateView:
+    path_name = "combat-create"
+
+    @pytest.fixture
+    def login(self, client):
+        user = User.objects.get(username="master")
+        client.force_login(user)
+
+    def test_view_mapping(self, client, login, started_game):
+        response = client.get(reverse(self.path_name, args=(started_game.id,)))
+        assert response.status_code == 200
+        assert response.resolver_match.func.view_class == CombatCreateView
+
+    def test_template_mapping(self, client, login, started_game):
+        response = client.get(reverse(self.path_name, args=(started_game.id,)))
+        assert response.status_code == 200
+        assertTemplateUsed(response, "game/combat_create.html")

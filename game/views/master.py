@@ -181,7 +181,7 @@ class AbilityCheckRequestView(
         return super().form_valid(form)
 
 
-class CombatCreate(
+class CombatCreateView(
     UserPassesTestMixin,
     FormView,
     EventContextMixin,
