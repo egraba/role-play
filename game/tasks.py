@@ -124,3 +124,8 @@ def process_roll(
             "message": roll.message,
         },
     )
+
+
+@shared_task
+def check_combat_roll_initiative_complete():
+    pass

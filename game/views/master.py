@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.views.generic import FormView, ListView, UpdateView
+from django_celery_beat.models import IntervalSchedule, PeriodicTask
 from viewflow.fsm import TransitionNotAllowed
 
 from character.constants.abilities import AbilityName
@@ -255,4 +256,12 @@ class CombatCreate(
                     "message": dexterity_check_request.message,
                 },
             )
+        schedule, _ = IntervalSchedule.objects.get_or_create(
+            every=10,
+            period=IntervalSchedule.SECONDS,
+        )
+        PeriodicTask.objects.create(
+            interval=schedule,
+            task="game.tasks.check_combat_roll_initiative_complete",
+        )
         return super().form_valid(form)
