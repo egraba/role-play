@@ -247,6 +247,7 @@ class CombatCreate(
             dexterity_check_request.character = fighter.character
             dexterity_check_request.roll_type = RollType.ABILITY_CHECK
             dexterity_check_request.ability_type = AbilityName.DEXTERITY
+            dexterity_check_request.is_combat = True
             dexterity_check_request.date = timezone.now()
             dexterity_check_request.message = f"[{dexterity_check_request.character.user}] \
                 needs to perform a {dexterity_check_request.ability_type} ability check!"
