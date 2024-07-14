@@ -131,6 +131,7 @@ def process_roll(
 def check_combat_roll_initiative_complete():
     latest_combat = Combat.objects.all().last()
     for fighter in latest_combat.fighter_set.all():
+        logger.info(f"{fighter.character.name=} {fighter.dexterity_check}")
         if fighter.dexterity_check is None:
             logger.info(f"Waiting for {fighter.character.name=}")
             break

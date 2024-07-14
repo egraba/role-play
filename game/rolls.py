@@ -51,7 +51,9 @@ def perform_roll(
         if has_disadvantage:
             score = min(score, new_score)
     if request.is_combat:
-        character.fighter.dexterity_check = score
+        fighter = character.fighter
+        fighter.dexterity_check = score
+        fighter.save()
     if request.difficulty_class is None:
         # There is no difficulty class, in some cases.
         # For instance, in a combat, the Master asks fighters to perform a dextery check,
