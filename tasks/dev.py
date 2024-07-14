@@ -21,7 +21,7 @@ def run(context):
 def run_worker(context):
     """Run Celery worker"""
     context.run(
-        "celery -A role_play worker --beat --scheduler django -l INFO", pty=True
+        "celery -A role_play worker --beat --scheduler django --loglevel=info", pty=True
     )
 
 
