@@ -217,9 +217,13 @@ class CombatCreate(
         surprised_fighters = set()
         # The fighters must be created when they have been selected in the form.
         for fighter_field in form.fields:
-            fighter = Fighter.objects.create(
-                combat=combat, character=Character.objects.get(name=fighter_field)
+            # As Fighter is a one-to-one relation with Character, the fighter has
+            # to be either created or retrieved properly.
+            fighter, _ = Fighter.objects.get_or_create(
+                character=Character.objects.get(name=fighter_field)
             )
+            fighter.combat = combat
+            fighter.save()
             if CombatChoices.IS_FIGHTING in form.cleaned_data[fighter_field]:
                 if CombatChoices.IS_SURPRISED in form.cleaned_data[fighter_field]:
                     surprised_fighters.add(fighter.character.name)
