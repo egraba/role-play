@@ -66,12 +66,14 @@ class GameView(LoginRequiredMixin, ListView, GameContextMixin):
                 character__player=current_player,
                 roll_type=RollType.ABILITY_CHECK,
                 status=RollStatus.PENDING,
+                is_combat=False,
             ).first()
             context["dexterity_check_request"] = RollRequest.objects.filter(
                 character__player=current_player,
                 roll_type=RollType.ABILITY_CHECK,
                 ability_type=AbilityName.DEXTERITY,
                 status=RollStatus.PENDING,
+                is_combat=True,
             ).first()
             context["saving_throw_request"] = RollRequest.objects.filter(
                 character__player=current_player,

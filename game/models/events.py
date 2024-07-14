@@ -50,6 +50,7 @@ class RollRequest(Event):
     )
     roll_type = models.SmallIntegerField(choices=RollType)
     against = models.CharField(max_length=1, choices=Against, blank=True, null=True)
+    is_combat = models.BooleanField(default=False)
 
 
 class Roll(Event):
