@@ -260,7 +260,7 @@ class CombatCreate(
             every=10,
             period=IntervalSchedule.SECONDS,
         )
-        PeriodicTask.objects.create(
+        PeriodicTask.objects.get_or_create(
             interval=schedule,
             task="game.tasks.check_combat_roll_initiative_complete",
         )
