@@ -30,6 +30,8 @@ from utils.factories import UserFactory
 
 from ..factories import GameFactory, PlayerFactory
 
+pytestmark = pytest.mark.django_db
+
 
 @pytest.fixture(scope="class")
 def create_characters(django_db_blocker):
@@ -45,7 +47,6 @@ def create_characters(django_db_blocker):
             CharacterFactory()
 
 
-@pytest.mark.django_db
 class TestCharacterInviteView:
     path_name = "game-invite-character"
 
@@ -114,7 +115,6 @@ def create_player(django_db_blocker):
         PlayerFactory(game=game)
 
 
-@pytest.mark.django_db
 class TestCharacterInviteConfirmView:
     path_name = "game-invite-character-confirm"
 
@@ -188,7 +188,6 @@ class TestCharacterInviteConfirmView:
         assert event.message == f"{character} was added to the game."
 
 
-@pytest.mark.django_db
 class TestGameStartView:
     path_name = "game-start"
 
@@ -256,7 +255,9 @@ def started_game(django_db_blocker):
         return game
 
 
-@pytest.mark.django_db
+pytestmark = pytest.mark.django_db
+
+
 class TestQuestCreateView:
     path_name = "quest-create"
 
