@@ -10,6 +10,7 @@ from django.utils import timezone
 from character.models.character import Character
 
 from .constants.events import RollStatus, RollType
+from .models.combat import Combat
 from .models.events import Event, Roll, RollRequest
 from .models.game import Game
 from .rolls import perform_roll
@@ -128,4 +129,10 @@ def process_roll(
 
 @shared_task
 def check_combat_roll_initiative_complete():
-    pass
+    latest_combat = Combat.objects.all().last()
+    for fighter in latest_combat.fighter_set.all():
+        if fighter.dexterity_check is None:
+            logger.info(f"Waiting for {fighter.character.name=}")
+            break
+    else:
+        logger.info("Roll complete!")
