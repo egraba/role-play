@@ -137,3 +137,4 @@ def check_combat_roll_initiative_complete():
             break
     else:
         logger.info("Roll complete!")
+        logger.info(f"Initiative order={latest_combat.get_initiative_order()}")
