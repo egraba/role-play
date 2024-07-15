@@ -30,8 +30,9 @@ from utils.factories import UserFactory
 
 from ..factories import EventFactory, GameFactory, PlayerFactory, QuestFactory
 
+pytestmark = pytest.mark.django_db
 
-@pytest.mark.django_db
+
 class TestIndexView:
     path_name = "index"
 
@@ -96,7 +97,6 @@ def create_games(django_db_blocker):
             )
 
 
-@pytest.mark.django_db
 class TestGameListView:
     path_name = "game-list"
 
@@ -162,7 +162,6 @@ def populated_game(django_db_blocker):
         return game
 
 
-@pytest.mark.django_db
 class TestGameView:
     @pytest.fixture(autouse=True)
     def login(self, client):
@@ -286,7 +285,6 @@ class TestGameView:
         assertContains(response, "The campaign did not start yet...")
 
 
-@pytest.mark.django_db
 class TestGameCreateView:
     path_name = "game-create"
 
@@ -331,7 +329,6 @@ class TestGameCreateView:
         assertRedirects(response, reverse("game-create-error", args=(fake_slug,)))
 
 
-@pytest.mark.django_db
 class TestGameCreateErrorView:
     path_name = "game-create-error"
     fake = Faker()
