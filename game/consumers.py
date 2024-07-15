@@ -119,8 +119,8 @@ class GameEventsConsumer(JsonWebsocketConsumer):
         """Saving throw result."""
         self.send_json(event)
 
-    def combat_initiation(self, event):
-        """Combat initiation."""
+    def combat_initialization(self, event):
+        """Combat initialization."""
         self.send_json(event)
 
     def combat_roll_initiative(self, event):
