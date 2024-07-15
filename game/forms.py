@@ -35,10 +35,18 @@ class CombatCreateForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         game = self.initial["game"]
-        queryset = Character.objects.filter(player__game=game)
-        for character in queryset:
+        characters = Character.objects.filter(player__game=game)
+        for character in characters:
             self.fields[character.name] = forms.MultipleChoiceField(
                 required=False,
                 widget=forms.CheckboxSelectMultiple,
                 choices=FighterAttributeChoices,
             )
+
+    def clean(self):
+        self.cleaned_data = super().clean()
+        if not any(
+            FighterAttributeChoices.IS_FIGHTING in value
+            for value in self.cleaned_data.values()
+        ):
+            raise forms.ValidationError("A combat should have at least one fighter")
