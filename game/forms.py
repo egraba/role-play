@@ -42,6 +42,12 @@ class CombatCreateForm(forms.Form):
                 widget=forms.CheckboxSelectMultiple,
                 choices=FighterAttributeChoices,
             )
+        try:
+            data = kwargs.pop("data")
+            for key in data.keys():
+                self.fields[key] = data[key]
+        except KeyError:
+            pass
         self.is_bound = True
 
     def clean(self):
