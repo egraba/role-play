@@ -93,7 +93,7 @@ def create_games(django_db_blocker):
         for _ in range(number_of_games):
             GameFactory(
                 start_date=datetime.now(tz=timezone.utc),
-                master__user__username="master",
+                master__user__username="master-game-list",
             )
 
 
@@ -103,7 +103,7 @@ class TestGameListView:
     @pytest.fixture(autouse=True)
     def setup(self, client):
         # Only games created by their own master are displayed to them.
-        user = UserFactory(username="master")
+        user = UserFactory(username="master-game-list")
         client.force_login(user)
 
     def test_view_mapping(self, client):
