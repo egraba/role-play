@@ -50,3 +50,9 @@ class CombatCreateForm(forms.Form):
             for value in self.cleaned_data.values()
         ):
             raise forms.ValidationError("A combat should have at least one fighter")
+        if any(
+            FighterAttributeChoices.IS_SURPRISED in value
+            and FighterAttributeChoices.IS_FIGHTING not in value
+            for value in self.cleaned_data.values()
+        ):
+            raise forms.ValidationError("Surprised characters must be fighters")
