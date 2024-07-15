@@ -43,9 +43,7 @@ class CombatCreateForm(forms.Form):
                 choices=FighterAttributeChoices,
             )
         try:
-            data = kwargs.pop("data")
-            for key in data.keys():
-                self.fields[key] = data[key]
+            kwargs.pop("data")
         except KeyError:
             pass
         self.is_bound = True

@@ -206,31 +206,31 @@ class CombatCreateView(
         fighters_display_list = []
         for fighter in fighters:
             if fighter in surprised_fighters:
-                fighters_display_list.append(f"{fighter} (surprised)")
+                fighters_display_list.append(f"{str(fighter)} (surprised)")
             else:
-                fighters_display_list.append(fighter)
+                fighters_display_list.append(str(fighter))
         return ", ".join(fighters_display_list)
 
     def form_valid(self, form):
+        # Combat can be created here as the form has been validated to contain fighters.
         combat = Combat.objects.create(game=self.game)
-        fighters = set()
-        surprised_fighters = set()
         # Fighters must be created only for selected characters.
         for fighter_field in form.fields:
-            # As Fighter is a one-to-one relation with Character, the fighter has
-            # to be either created or retrieved properly.
-            fighter, _ = Fighter.objects.get_or_create(
-                character=Character.objects.get(name=fighter_field)
-            )
-            fighter.combat = combat
-            fighter.save()
             if FighterAttributeChoices.IS_FIGHTING in form.cleaned_data[fighter_field]:
+                is_surprised = False
                 if (
                     FighterAttributeChoices.IS_SURPRISED
                     in form.cleaned_data[fighter_field]
                 ):
-                    surprised_fighters.add(fighter.character.name)
-                fighters.add(fighter.character.name)
+                    is_surprised = True
+                fighter, _ = Fighter.objects.get_or_create(
+                    character=Character.objects.get(name=fighter_field),
+                    is_surprised=is_surprised,
+                )
+            fighter.combat = combat
+            fighter.save()
+        fighters = Fighter.objects.filter(combat=combat)
+        surprised_fighters = Fighter.objects.filter(combat=combat, is_surprised=True)
         combat.message = (
             f"Combat! {self._get_fighters_display(fighters, surprised_fighters)}"
         )
