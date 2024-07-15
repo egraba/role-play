@@ -36,3 +36,10 @@ class TestCombatCreateForm:
     def test_form_invalid_no_fighters(self, started_game):
         form = CombatCreateForm(initial={"game": f"{started_game.id}"})
         assert not form.is_valid()
+
+    def test_form_invalid_surprised_non_fighter(self, started_game):
+        characters = Character.objects.filter(player__game=started_game)
+        data = {}
+        data[characters.first().name] = [FighterAttributeChoices.IS_SURPRISED]
+        form = CombatCreateForm(initial={"game": f"{started_game.id}"})
+        assert not form.is_valid()
