@@ -215,7 +215,7 @@ class CombatCreateView(
         combat = Combat.objects.create(game=self.game)
         fighters = set()
         surprised_fighters = set()
-        # The fighters must be created when they have been selected in the form.
+        # Fighters must be created only for selected characters.
         for fighter_field in form.fields:
             # As Fighter is a one-to-one relation with Character, the fighter has
             # to be either created or retrieved properly.
