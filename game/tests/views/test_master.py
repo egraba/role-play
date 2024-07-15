@@ -17,7 +17,7 @@ from pytest_django.asserts import (
 from character.models.character import Character
 from character.tests.factories import CharacterFactory
 from game.flows import GameFlow
-from game.forms import QuestCreateForm
+from game.forms import CombatCreateForm, QuestCreateForm
 from game.models.events import Event, Quest
 from game.models.game import Game
 from game.views.master import (
@@ -290,7 +290,6 @@ class TestQuestCreateView:
         data = {"content": f"{content}"}
         form = QuestCreateForm(data)
         assert form.is_valid()
-
         response = client.post(
             reverse(self.path_name, args=(started_game.id,)), data=form.cleaned_data
         )
@@ -319,3 +318,12 @@ class TestCombatCreateView:
         response = client.get(reverse(self.path_name, args=(started_game.id,)))
         assert response.status_code == 200
         assertTemplateUsed(response, "game/combat_create.html")
+
+    def test_form_valid(self, client, started_game):
+        form = CombatCreateForm(initial={"game": f"{started_game.id}"}, data={})
+        assert form.is_valid()
+        response = client.post(
+            reverse(self.path_name, args=(started_game.id,)), data=form.cleaned_data
+        )
+        assert response.status_code == 302
+        assertRedirects(response, started_game.get_absolute_url())

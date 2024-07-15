@@ -34,7 +34,7 @@ class Fighter(models.Model):
 
     character = models.OneToOneField("character.Character", on_delete=models.CASCADE)
     is_surprised = models.BooleanField(default=False)
-    combat = models.ForeignKey(Combat, on_delete=models.CASCADE)
+    combat = models.ForeignKey(Combat, on_delete=models.CASCADE, null=True, blank=True)
     dexterity_check = models.SmallIntegerField(null=True, blank=True)
 
     def __str__(self):
