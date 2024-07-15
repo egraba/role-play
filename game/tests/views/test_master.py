@@ -305,17 +305,17 @@ class TestQuestCreateView:
 class TestCombatCreateView:
     path_name = "combat-create"
 
-    @pytest.fixture
+    @pytest.fixture(autouse=True)
     def login(self, client):
         user = User.objects.get(username="master")
         client.force_login(user)
 
-    def test_view_mapping(self, client, login, started_game):
+    def test_view_mapping(self, client, started_game):
         response = client.get(reverse(self.path_name, args=(started_game.id,)))
         assert response.status_code == 200
         assert response.resolver_match.func.view_class == CombatCreateView
 
-    def test_template_mapping(self, client, login, started_game):
+    def test_template_mapping(self, client, started_game):
         response = client.get(reverse(self.path_name, args=(started_game.id,)))
         assert response.status_code == 200
         assertTemplateUsed(response, "game/combat_create.html")
