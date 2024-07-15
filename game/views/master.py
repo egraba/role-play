@@ -10,7 +10,7 @@ from viewflow.fsm import TransitionNotAllowed
 from character.constants.abilities import AbilityName
 from character.models.character import Character
 
-from ..constants.combat import CombatChoices
+from ..constants.combat import FighterAttributeChoices
 from ..constants.events import RollType
 from ..flows import GameFlow
 from ..forms import AbilityCheckRequestForm, CombatCreateForm, QuestCreateForm
@@ -224,8 +224,11 @@ class CombatCreateView(
             )
             fighter.combat = combat
             fighter.save()
-            if CombatChoices.IS_FIGHTING in form.cleaned_data[fighter_field]:
-                if CombatChoices.IS_SURPRISED in form.cleaned_data[fighter_field]:
+            if FighterAttributeChoices.IS_FIGHTING in form.cleaned_data[fighter_field]:
+                if (
+                    FighterAttributeChoices.IS_SURPRISED
+                    in form.cleaned_data[fighter_field]
+                ):
                     surprised_fighters.add(fighter.character.name)
                 fighters.add(fighter.character.name)
         combat.message = (

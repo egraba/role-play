@@ -4,7 +4,7 @@ from character.constants.abilities import AbilityName
 from character.models.character import Character
 
 from .models.events import RollRequest
-from .constants.combat import CombatChoices
+from .constants.combat import FighterAttributeChoices
 
 
 class QuestCreateForm(forms.Form):
@@ -40,5 +40,5 @@ class CombatCreateForm(forms.Form):
             self.fields[character.name] = forms.MultipleChoiceField(
                 required=False,
                 widget=forms.CheckboxSelectMultiple,
-                choices=CombatChoices,
+                choices=FighterAttributeChoices,
             )
