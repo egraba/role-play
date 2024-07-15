@@ -19,4 +19,7 @@ pytestmark = pytest.mark.django_db
 
 class TestCombatCreateForm:
     def test_character_fields(self, started_game):
-        CombatCreateForm(initial={"game": f"{started_game.id}"})
+        form = CombatCreateForm(initial={"game": f"{started_game.id}"})
+        players = started_game.player_set.all()
+        character_name_list = [player.character.name for player in players]
+        assert list(form.fields.keys()) == character_name_list
