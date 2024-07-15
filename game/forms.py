@@ -42,6 +42,7 @@ class CombatCreateForm(forms.Form):
                 widget=forms.CheckboxSelectMultiple,
                 choices=FighterAttributeChoices,
             )
+        self.is_bound = True
 
     def clean(self):
         self.cleaned_data = super().clean()
