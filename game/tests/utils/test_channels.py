@@ -9,8 +9,12 @@ from ..factories import GameFactory
 pytestmark = pytest.mark.django_db
 
 
-def test_send_to_channel_origin_is_server():
-    game = GameFactory()
+@pytest.fixture
+def game():
+    return GameFactory()
+
+
+def test_send_to_channel_origin_is_server(game):
     game_event = {
         "type": GameEventType.GAME_START,
         "player_type": PlayerType.MASTER,
@@ -21,8 +25,7 @@ def test_send_to_channel_origin_is_server():
     assert game_event["origin"] == GameEventOrigin.SERVER_SIDE
 
 
-def test_send_to_channel_invalid_game_event():
-    game = GameFactory()
+def test_send_to_channel_invalid_game_event(game):
     game_event = {
         "type": GameEventType.GAME_START,
         "date": timezone.now().isoformat(),
