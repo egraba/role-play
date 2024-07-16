@@ -82,6 +82,10 @@ class QuestUpdate(Event):
         return "The Master updated the quest."
 
 
+class GameStart(Event):
+    pass
+
+
 class RollRequest(Event):
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
     status = models.CharField(
