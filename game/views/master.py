@@ -142,22 +142,11 @@ class AbilityCheckRequestView(
         ability_check_request = form.save(commit=False)
         ability_check_request.game = self.game
         ability_check_request.roll_type = RollType.ABILITY_CHECK
-        ability_check_request.date = timezone.now()
         ability_check_request.message = f"[{ability_check_request.character.user}] \
             needs to perform a {ability_check_request.ability_type} ability check! \
             Difficulty: {ability_check_request.get_difficulty_class_display()}."
         ability_check_request.save()
-
-        send_to_channel(
-            game_id=self.game.id,
-            game_event={
-                "type": EventType.ABILITY_CHECK_REQUEST,
-                "player_type": PlayerType.MASTER,
-                "date": ability_check_request.date.isoformat(),
-                "message": ability_check_request.message,
-            },
-        )
-
+        send_to_channel(ability_check_request)
         return super().form_valid(form)
 
 
