@@ -31,7 +31,7 @@ class Quest(Event):
     content = models.CharField(max_length=1000)
 
     def __str__(self):
-        return str(self.content)
+        return self.content
 
 
 class RollRequest(Event):
