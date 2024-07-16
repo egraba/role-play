@@ -24,7 +24,7 @@ class Event(models.Model):
         ]
 
     def __str__(self):
-        return str(self.message)
+        return self.message
 
 
 class Quest(Event):
