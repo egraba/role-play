@@ -1,8 +1,9 @@
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 
-from ..models.events import Event, Quest, GameStart
-from ..schemas import EventSchema, EventOrigin, PlayerType, EventType
+from ..constants.events import RollType
+from ..models.events import Event, GameStart, Quest, RollRequest
+from ..schemas import EventOrigin, EventSchema, EventType, PlayerType
 
 
 def _get_event_type(event: Event) -> EventType:
@@ -13,6 +14,9 @@ def _get_event_type(event: Event) -> EventType:
         event_type = EventType.QUEST_UPDATE
     elif isinstance(event, GameStart):
         event_type = EventType.GAME_START
+    elif isinstance(event, RollRequest):
+        if event.roll_type == RollType.ABILITY_CHECK:
+            event_type = EventType.ABILITY_CHECK_REQUEST
     return event_type
 
 
