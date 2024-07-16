@@ -39,8 +39,8 @@ class GameEventOrigin(IntFlag):
     SERVER_SIDE = auto()
 
 
-class GameEvent(BaseModel):
-    """Game events are all the communication events that occur during a game."""
+class EventSchema(BaseModel):
+    """Schema used for communication within channels."""
 
     type: GameEventType  # "type" field is necessary for Django channels.
     date: datetime
