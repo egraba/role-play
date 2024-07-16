@@ -7,7 +7,7 @@ from character.models.character import Character
 
 from .commands import AbilityCheckCommand, SavingThrowCommand, StoreMessageCommand
 from .models.game import Game
-from .schemas import GameEventOrigin, GameEventType
+from .schemas import EventOrigin, EventType
 from .utils.cache import game_key
 
 
@@ -50,17 +50,17 @@ class GameEventsConsumer(JsonWebsocketConsumer):
         # If the event comes from the client, the data needs to be stored in the database,
         # when it is received by the server.
         if "origin" in content:
-            if content["origin"] == GameEventOrigin.SERVER_SIDE:
+            if content["origin"] == EventOrigin.SERVER_SIDE:
                 pass
         else:
             match content["type"]:
-                case GameEventType.MESSAGE:
+                case EventType.MESSAGE:
                     command = StoreMessageCommand()
-                case GameEventType.ABILITY_CHECK:
+                case EventType.ABILITY_CHECK:
                     command = AbilityCheckCommand()
-                case GameEventType.SAVING_THROW:
+                case EventType.SAVING_THROW:
                     command = SavingThrowCommand()
-                case GameEventType.COMBAT_INITIATION:
+                case EventType.COMBAT_INITIATION:
                     command = StoreMessageCommand()
                 case _:
                     pass

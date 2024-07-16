@@ -5,7 +5,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class GameEventType(StrEnum):
+class EventType(StrEnum):
     """
     The game event type corresponds to a specific action that can be done during a game.
     """
@@ -29,7 +29,7 @@ class PlayerType(StrEnum):
     PLAYER = "player"
 
 
-class GameEventOrigin(IntFlag):
+class EventOrigin(IntFlag):
     """
     Game events can be initiated from the client side (e.g. via a browser),
     or via the server (e.g. via a form).
@@ -42,8 +42,8 @@ class GameEventOrigin(IntFlag):
 class EventSchema(BaseModel):
     """Schema used for communication within channels."""
 
-    type: GameEventType  # "type" field is necessary for Django channels.
+    type: EventType  # "type" field is necessary for Django channels.
     date: datetime
     player_type: PlayerType
     message: str
-    origin: Optional[GameEventOrigin] = None
+    origin: Optional[EventOrigin] = None

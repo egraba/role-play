@@ -2,7 +2,7 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 
 from ..models.events import Event
-from ..schemas import EventSchema, GameEventOrigin, PlayerType
+from ..schemas import EventSchema, EventOrigin, PlayerType
 
 
 def send_to_channel(event: Event) -> None:
@@ -14,7 +14,7 @@ def send_to_channel(event: Event) -> None:
         date=event.date,
         player_type=PlayerType.MASTER,
         message=event.message,
-        origin=GameEventOrigin.SERVER_SIDE,
+        origin=EventOrigin.SERVER_SIDE,
     )
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
