@@ -4,7 +4,22 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from .constants.events import EventType
+
+class EventType(StrEnum):
+    """
+    The game event type corresponds to a specific action that can be done during a game.
+    """
+
+    MESSAGE = "message"
+    GAME_START = "game.start"
+    QUEST_UPDATE = "quest.update"
+    ABILITY_CHECK_REQUEST = "ability.check.request"
+    ABILITY_CHECK = "ability.check"
+    ABILITY_CHECK_RESULT = "ability.check.result"
+    SAVING_THROW_REQUEST = "saving.throw.request"
+    SAVING_THROW = "saving.throw"
+    SAVING_THROW_RESULT = "saving.throw.result"
+    COMBAT_INITIATION = "combat.initiation"
 
 
 class PlayerType(StrEnum):
