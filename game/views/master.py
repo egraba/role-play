@@ -15,7 +15,6 @@ from ..forms import AbilityCheckRequestForm, QuestCreateForm, CombatCreateForm
 from ..models.combat import Combat, Fighter
 from ..models.events import Event, Quest, GameStart
 from ..models.game import Player
-from ..schemas import EventType, PlayerType
 from ..tasks import send_mail
 from ..utils.cache import game_key
 from ..utils.channels import send_to_channel
@@ -195,13 +194,5 @@ class CombatCreate(
             f"Combat! {self._get_fighters_display(fighters, surprised_fighters)}"
         )
         combat.save()
-        send_to_channel(
-            game_id=self.game.id,
-            game_event={
-                "type": EventType.COMBAT_INITIATION,
-                "player_type": PlayerType.MASTER,
-                "date": combat.date.isoformat(),
-                "message": combat.message,
-            },
-        )
+        send_to_channel(combat)
         return super().form_valid(form)
