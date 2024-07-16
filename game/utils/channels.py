@@ -1,7 +1,7 @@
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 
-from ..models.events import Event, Quest
+from ..models.events import Event, Quest, GameStart
 from ..schemas import EventSchema, EventOrigin, PlayerType, EventType
 
 
@@ -11,6 +11,8 @@ def _get_event_type(event: Event) -> EventType:
     """
     if isinstance(event, Quest):
         event_type = EventType.QUEST_UPDATE
+    elif isinstance(event, GameStart):
+        event_type = EventType.GAME_START
     return event_type
 
 

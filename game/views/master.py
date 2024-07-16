@@ -13,7 +13,7 @@ from ..constants.events import RollType
 from ..flows import GameFlow
 from ..forms import AbilityCheckRequestForm, QuestCreateForm, CombatCreateForm
 from ..models.combat import Combat, Fighter
-from ..models.events import Event, Quest
+from ..models.events import Event, Quest, GameStart
 from ..models.game import Player
 from ..schemas import EventType, PlayerType
 from ..tasks import send_mail
@@ -73,19 +73,10 @@ class GameStartView(UserPassesTestMixin, GameStatusControlMixin):
         try:
             flow.start()
             cache.set(game_key(game.id), game)
-            event = Event(game=game)
-            event.date = timezone.now()
-            event.message = "the game started."
-            event.save()
-            send_to_channel(
-                game_id=game.id,
-                game_event={
-                    "type": EventType.GAME_START,
-                    "player_type": PlayerType.MASTER,
-                    "date": event.date.isoformat(),
-                    "message": event.message,
-                },
-            )
+            game_start = GameStart(game=game)
+            game_start.message = "the game started."
+            game_start.save()
+            send_to_channel(game_start)
         except TransitionNotAllowed:
             return HttpResponseRedirect(reverse("game-start-error", args=(game.id,)))
         return HttpResponseRedirect(game.get_absolute_url())

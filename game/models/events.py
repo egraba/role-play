@@ -34,6 +34,10 @@ class Quest(Event):
         return self.content
 
 
+class GameStart(Event):
+    pass
+
+
 class RollRequest(Event):
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
     status = models.CharField(
