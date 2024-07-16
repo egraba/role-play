@@ -17,7 +17,6 @@ from ..forms import AbilityCheckRequestForm, CombatCreateForm, QuestCreateForm
 from ..models.combat import Combat, Fighter
 from ..models.events import Event, Quest, GameStart, RollRequest
 from ..models.game import Player
-from ..schemas import EventType, PlayerType
 from ..tasks import send_mail
 from ..utils.cache import game_key
 from ..utils.channels import send_to_channel
@@ -204,41 +203,5 @@ class CombatCreateView(
             f"Combat! {self._get_fighters_display(fighters, surprised_fighters)}"
         )
         combat.save()
-        send_to_channel(
-            game_id=self.game.id,
-            game_event={
-                "type": EventType.COMBAT_INITIALIZATION,
-                "player_type": PlayerType.MASTER,
-                "date": combat.date.isoformat(),
-                "message": combat.message,
-            },
-        )
-        for fighter in Fighter.objects.filter(combat=combat):
-            dexterity_check_request = RollRequest()
-            dexterity_check_request.game = self.game
-            dexterity_check_request.character = fighter.character
-            dexterity_check_request.roll_type = RollType.ABILITY_CHECK
-            dexterity_check_request.ability_type = AbilityName.DEXTERITY
-            dexterity_check_request.is_combat = True
-            dexterity_check_request.date = timezone.now()
-            dexterity_check_request.message = f"[{dexterity_check_request.character.user}] \
-                needs to perform a {dexterity_check_request.ability_type} ability check!"
-            dexterity_check_request.save()
-            send_to_channel(
-                game_id=self.game.id,
-                game_event={
-                    "type": GameEventType.COMBAT_ROLL_INITIATIVE,
-                    "player_type": PlayerType.MASTER,
-                    "date": dexterity_check_request.date.isoformat(),
-                    "message": dexterity_check_request.message,
-                },
-            )
-        schedule, _ = IntervalSchedule.objects.get_or_create(
-            every=10,
-            period=IntervalSchedule.SECONDS,
-        )
-        PeriodicTask.objects.get_or_create(
-            interval=schedule,
-            task="game.tasks.check_combat_roll_initiative_complete",
-        )
+        send_to_channel(combat)
         return super().form_valid(form)
