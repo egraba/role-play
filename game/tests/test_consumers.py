@@ -7,7 +7,7 @@ from faker import Faker
 
 from character.tests.factories import CharacterFactory
 from game.consumers import GameEventsConsumer
-from game.schemas import EventSchema, GameEventOrigin, GameEventType, PlayerType
+from game.schemas import EventSchema, EventOrigin, EventType, PlayerType
 
 from .factories import GameFactory
 
@@ -46,7 +46,7 @@ class TestGameEventsConsumer:
         date = fake.date_time().isoformat()
         message = fake.text(100)
         game_event = {
-            "type": GameEventType.MESSAGE,
+            "type": EventType.MESSAGE,
             "player_type": PlayerType.MASTER,
             "date": date,
             "message": message,
@@ -71,7 +71,7 @@ class TestGameEventsConsumer:
         date = fake.date_time().isoformat()
         message = fake.text(100)
         game_event = {
-            "type": GameEventType.MESSAGE,
+            "type": EventType.MESSAGE,
             "player_type": PlayerType.PLAYER,
             "date": date,
             "message": message,
@@ -96,11 +96,11 @@ class TestGameEventsConsumer:
         date = fake.date_time().isoformat()
         message = "the Master updated the quest."
         game_event = {
-            "type": GameEventType.QUEST_UPDATE,
+            "type": EventType.QUEST_UPDATE,
             "player_type": PlayerType.MASTER,
             "date": date,
             "message": message,
-            "origin": GameEventOrigin.SERVER_SIDE,
+            "origin": EventOrigin.SERVER_SIDE,
         }
         assert EventSchema(**game_event)
 
@@ -122,11 +122,11 @@ class TestGameEventsConsumer:
         date = fake.date_time().isoformat()
         message = "the game started."
         game_event = {
-            "type": GameEventType.GAME_START,
+            "type": EventType.GAME_START,
             "player_type": PlayerType.MASTER,
             "date": date,
             "message": message,
-            "origin": GameEventOrigin.SERVER_SIDE,
+            "origin": EventOrigin.SERVER_SIDE,
         }
         assert EventSchema(**game_event)
 
@@ -148,11 +148,11 @@ class TestGameEventsConsumer:
         date = fake.date_time().isoformat()
         message = fake.text(100)
         game_event = {
-            "type": GameEventType.ABILITY_CHECK_REQUEST,
+            "type": EventType.ABILITY_CHECK_REQUEST,
             "player_type": PlayerType.MASTER,
             "date": date,
             "message": message,
-            "origin": GameEventOrigin.SERVER_SIDE,
+            "origin": EventOrigin.SERVER_SIDE,
         }
         assert EventSchema(**game_event)
 

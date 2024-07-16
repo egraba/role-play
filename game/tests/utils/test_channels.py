@@ -1,7 +1,7 @@
 import pytest
 from django.utils import timezone
 
-from game.schemas import GameEventOrigin, GameEventType, PlayerType
+from game.schemas import EventOrigin, EventType, PlayerType
 from game.utils.channels import send_to_channel
 
 from ..factories import GameFactory
@@ -16,10 +16,10 @@ def game():
 
 def test_send_to_channel_origin_is_server(game):
     game_event = {
-        "type": GameEventType.GAME_START,
+        "type": EventType.GAME_START,
         "player_type": PlayerType.MASTER,
         "date": timezone.now().isoformat(),
         "message": "tamer",
     }
     send_to_channel(game.id, game_event)
-    assert game_event["origin"] == GameEventOrigin.SERVER_SIDE
+    assert game_event["origin"] == EventOrigin.SERVER_SIDE

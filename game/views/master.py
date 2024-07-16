@@ -17,7 +17,7 @@ from ..forms import AbilityCheckRequestForm, CombatCreateForm, QuestCreateForm
 from ..models.combat import Combat, Fighter
 from ..models.events import Event, Quest, RollRequest
 from ..models.game import Player
-from ..schemas import GameEventType, PlayerType
+from ..schemas import EventType, PlayerType
 from ..tasks import send_mail
 from ..utils.cache import game_key
 from ..utils.channels import send_to_channel
@@ -82,7 +82,7 @@ class GameStartView(UserPassesTestMixin, GameStatusControlMixin):
             send_to_channel(
                 game_id=game.id,
                 game_event={
-                    "type": GameEventType.GAME_START,
+                    "type": EventType.GAME_START,
                     "player_type": PlayerType.MASTER,
                     "date": event.date.isoformat(),
                     "message": event.message,
@@ -123,7 +123,7 @@ class QuestCreateView(UserPassesTestMixin, FormView, EventContextMixin):
         send_to_channel(
             game_id=self.game.id,
             game_event={
-                "type": GameEventType.QUEST_UPDATE,
+                "type": EventType.QUEST_UPDATE,
                 "player_type": PlayerType.MASTER,
                 "date": quest.date.isoformat(),
                 "message": quest.message,
@@ -171,7 +171,7 @@ class AbilityCheckRequestView(
         send_to_channel(
             game_id=self.game.id,
             game_event={
-                "type": GameEventType.ABILITY_CHECK_REQUEST,
+                "type": EventType.ABILITY_CHECK_REQUEST,
                 "player_type": PlayerType.MASTER,
                 "date": ability_check_request.date.isoformat(),
                 "message": ability_check_request.message,
@@ -238,7 +238,7 @@ class CombatCreateView(
         send_to_channel(
             game_id=self.game.id,
             game_event={
-                "type": GameEventType.COMBAT_INITIALIZATION,
+                "type": EventType.COMBAT_INITIALIZATION,
                 "player_type": PlayerType.MASTER,
                 "date": combat.date.isoformat(),
                 "message": combat.message,
