@@ -2,14 +2,14 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 
 from ..models.events import Event
-from ..schemas import GameEvent, GameEventOrigin, PlayerType
+from ..schemas import EventSchema, GameEventOrigin, PlayerType
 
 
 def send_to_channel(event: Event) -> None:
     """
     Serialize an game event to a JSON and send it in the right channel.
     """
-    game_event = GameEvent(
+    game_event = EventSchema(
         type=None,
         date=event.date,
         player_type=PlayerType.MASTER,

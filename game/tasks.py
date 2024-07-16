@@ -5,7 +5,6 @@ from celery.exceptions import InvalidTaskError
 from celery.utils.log import get_task_logger
 from django.core.cache import cache
 from django.core.mail import send_mail as django_send_mail
-from django.utils import timezone
 
 from character.models.character import Character
 
@@ -14,7 +13,6 @@ from .models.combat import Combat
 from .models.events import Event, Roll, RollRequest
 from .models.game import Game
 from .rolls import perform_roll
-from .schemas import GameEventType, PlayerType
 from .utils.cache import game_key
 from .utils.channels import send_to_channel
 
@@ -110,21 +108,7 @@ def process_roll(
     request.status = RollStatus.DONE
     request.save()
 
-    # Send the right message to the channel.
-    match roll_type:
-        case RollType.ABILITY_CHECK:
-            result_type = GameEventType.ABILITY_CHECK_RESULT
-        case RollType.SAVING_THROW:
-            result_type = GameEventType.SAVING_THROW_RESULT
-    send_to_channel(
-        game_id=game_id,
-        game_event={
-            "type": result_type,
-            "player_type": PlayerType.MASTER,
-            "date": timezone.now().isoformat(),
-            "message": roll.message,
-        },
-    )
+    send_to_channel(roll)
 
 
 @shared_task

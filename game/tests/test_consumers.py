@@ -7,7 +7,7 @@ from faker import Faker
 
 from character.tests.factories import CharacterFactory
 from game.consumers import GameEventsConsumer
-from game.schemas import GameEvent, GameEventOrigin, GameEventType, PlayerType
+from game.schemas import EventSchema, GameEventOrigin, GameEventType, PlayerType
 
 from .factories import GameFactory
 
@@ -51,7 +51,7 @@ class TestGameEventsConsumer:
             "date": date,
             "message": message,
         }
-        assert GameEvent(**game_event)
+        assert EventSchema(**game_event)
 
         await communicator.send_json_to(game_event)
         response = await communicator.receive_json_from()
@@ -76,7 +76,7 @@ class TestGameEventsConsumer:
             "date": date,
             "message": message,
         }
-        assert GameEvent(**game_event)
+        assert EventSchema(**game_event)
 
         await communicator.send_json_to(game_event)
         response = await communicator.receive_json_from()
@@ -102,7 +102,7 @@ class TestGameEventsConsumer:
             "message": message,
             "origin": GameEventOrigin.SERVER_SIDE,
         }
-        assert GameEvent(**game_event)
+        assert EventSchema(**game_event)
 
         await communicator.send_json_to(game_event)
         response = await communicator.receive_json_from()
@@ -128,7 +128,7 @@ class TestGameEventsConsumer:
             "message": message,
             "origin": GameEventOrigin.SERVER_SIDE,
         }
-        assert GameEvent(**game_event)
+        assert EventSchema(**game_event)
 
         await communicator.send_json_to(game_event)
         response = await communicator.receive_json_from()
@@ -154,7 +154,7 @@ class TestGameEventsConsumer:
             "message": message,
             "origin": GameEventOrigin.SERVER_SIDE,
         }
-        assert GameEvent(**game_event)
+        assert EventSchema(**game_event)
 
         await communicator.send_json_to(game_event)
         response = await communicator.receive_json_from()
