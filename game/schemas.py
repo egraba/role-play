@@ -48,3 +48,7 @@ class EventSchema(BaseModel):
     player_type: PlayerType
     message: str
     origin: Optional[EventOrigin] = None
+
+
+class EventSchemaValidationError(TypeError):
+    pass

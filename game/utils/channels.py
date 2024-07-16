@@ -1,10 +1,17 @@
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
+from pydantic import ValidationError
 
 from ..constants.events import RollType
 from ..models.combat import Combat
 from ..models.events import Event, GameStart, Quest, RollRequest
-from ..schemas import EventOrigin, EventSchema, EventType, PlayerType
+from ..schemas import (
+    EventOrigin,
+    EventSchema,
+    EventSchemaValidationError,
+    EventType,
+    PlayerType,
+)
 
 
 def _get_event_type(event: Event) -> EventType:
@@ -27,13 +34,17 @@ def send_to_channel(event: Event) -> None:
     """
     Serialize an game event to a JSON and send it in the right channel.
     """
-    game_event = EventSchema(
-        type=_get_event_type(event),
-        date=event.date,
-        player_type=PlayerType.MASTER,
-        message=event.message,
-        origin=EventOrigin.SERVER_SIDE,
-    )
+    game_event = {
+        "type": _get_event_type(event),
+        "date": event.date.isoformat(),
+        "player_type": PlayerType.MASTER,
+        "message": event.message,
+        "origin": EventOrigin.SERVER_SIDE,
+    }
+    try:
+        EventSchema(**game_event)
+    except ValidationError as exc:
+        raise EventSchemaValidationError(exc.errors()) from exc
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
         group=f"game_{event.game.id}_events", message=game_event
