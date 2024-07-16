@@ -117,24 +117,13 @@ class QuestCreateView(UserPassesTestMixin, FormView, EventContextMixin):
         quest.message = "the Master updated the campaign."
         quest.content = form.cleaned_data["content"]
         quest.save()
-
-        send_to_channel(
-            game_id=self.game.id,
-            game_event={
-                "type": EventType.QUEST_UPDATE,
-                "player_type": PlayerType.MASTER,
-                "date": quest.date.isoformat(),
-                "message": quest.message,
-            },
-        )
-
+        send_to_channel(quest)
         send_mail.delay(
             subject=f"[{self.game}] The Master updated the quest.",
             message=f"The Master said:\n{quest.content}",
             from_email=self.game.master.user.email,
             recipient_list=get_players_emails(game=self.game),
         )
-
         return super().form_valid(form)
 
 
