@@ -47,7 +47,3 @@ class EventSchema(BaseModel):
     player_type: PlayerType
     message: str
     origin: Optional[GameEventOrigin] = None
-
-
-class GameEventError(TypeError):
-    """Raised when an error occurs during GameEvent schema validation."""
