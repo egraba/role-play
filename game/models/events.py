@@ -9,12 +9,14 @@ from ..constants.events import (
     RollResult,
     RollStatus,
     RollType,
+    EventType,
 )
 from .game import Game
 
 
 class Event(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    event_type = models.CharField(max_length=30, choices=EventType)
     date = models.DateTimeField(auto_now_add=True)
     message = models.CharField(max_length=100)
 
