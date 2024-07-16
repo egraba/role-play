@@ -12,6 +12,7 @@ from ..constants.events import (
     RollResultType,
     RollStatus,
     RollType,
+    EventType,
 )
 from .combat import Combat, Fighter
 from .game import Game, Player
@@ -26,6 +27,7 @@ class Event(models.Model):
 
     objects = InheritanceManager()
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    event_type = models.CharField(max_length=30, choices=EventType)
     date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
