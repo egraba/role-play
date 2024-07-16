@@ -27,15 +27,19 @@ class Event(models.Model):
         return self.message
 
 
+class GameStart(Event):
+    pass
+
+
+class CharacterInvitation(Event):
+    character = models.ForeignKey(Character, on_delete=models.CASCADE)
+
+
 class Quest(Event):
     content = models.CharField(max_length=1000)
 
     def __str__(self):
         return self.content
-
-
-class GameStart(Event):
-    pass
 
 
 class RollRequest(Event):
