@@ -5,8 +5,12 @@ from django.urls import re_path
 from faker import Faker
 
 from game.consumers import GameEventsConsumer
+<<<<<<< HEAD
 from game.schemas import EventSchema, EventType, PlayerType
 from utils.factories import UserFactory
+=======
+from game.schemas import EventSchema, EventOrigin, EventType, PlayerType
+>>>>>>> 1780978 (rename classes)
 
 from .factories import GameFactory
 
