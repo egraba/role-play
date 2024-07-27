@@ -15,7 +15,7 @@ from ..constants.events import RollType
 from ..flows import GameFlow
 from ..forms import AbilityCheckRequestForm, CombatCreateForm, QuestCreateForm
 from ..models.combat import Combat, Fighter
-from ..models.events import Event, Quest, GameStart, RollRequest
+from ..models.events import Event, QuestUpdate, GameStart, RollRequest
 from ..models.game import Player
 from ..tasks import send_mail
 from ..utils.cache import game_key
@@ -92,7 +92,7 @@ class GameStartErrorView(UserPassesTestMixin, GameStatusControlMixin):
 
 
 class QuestCreateView(UserPassesTestMixin, FormView, EventContextMixin):
-    model = Quest
+    model = QuestUpdate
     fields = ["description"]
     template_name = "game/quest_create.html"
     form_class = QuestCreateForm
@@ -104,15 +104,15 @@ class QuestCreateView(UserPassesTestMixin, FormView, EventContextMixin):
         return reverse_lazy("game", args=(self.game.id,))
 
     def form_valid(self, form):
-        quest = Quest()
-        quest.game = self.game
-        quest.message = "the Master updated the campaign."
-        quest.content = form.cleaned_data["content"]
-        quest.save()
-        send_to_channel(quest)
+        quest_update = QuestUpdate()
+        quest_update.game = self.game
+        quest_update.message = "the Master updated the campaign."
+        quest_update.content = form.cleaned_data["content"]
+        quest_update.save()
+        send_to_channel(quest_update)
         send_mail.delay(
             subject=f"[{self.game}] The Master updated the quest.",
-            message=f"The Master said:\n{quest.content}",
+            message=f"The Master said:\n{quest_update.content}",
             from_email=self.game.master.user.email,
             recipient_list=get_players_emails(game=self.game),
         )
