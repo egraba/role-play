@@ -16,15 +16,11 @@ from .game import Game
 class Event(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
-    message = models.CharField(max_length=100)
 
     class Meta:
         indexes = [
             models.Index(fields=["-date"]),
         ]
-
-    def __str__(self):
-        return self.message
 
 
 class GameStart(Event):
