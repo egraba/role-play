@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models.events import Event, Quest
+from .models.events import Quest
 from .models.game import Game, Player
 
 
@@ -27,4 +27,3 @@ class EventAdmin(admin.ModelAdmin):
 admin.site.register(Game, GameAdmin)
 admin.site.register(Player, PlayerAdmin)
 admin.site.register(Quest, QuestAdmin)
-admin.site.register(Event, EventAdmin)
