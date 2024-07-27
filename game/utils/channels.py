@@ -5,7 +5,7 @@ from pydantic import ValidationError
 from ..constants.events import RollType
 from ..messages import get_message
 from ..models.combat import Combat
-from ..models.events import Event, GameStart, Quest, RollRequest
+from ..models.events import Event, GameStart, QuestUpdate, RollRequest
 from ..schemas import (
     EventOrigin,
     EventSchema,
@@ -19,7 +19,7 @@ def _get_event_type(event: Event) -> EventType:
     """
     Retrieve event type according to Event instance class.
     """
-    if isinstance(event, Quest):
+    if isinstance(event, QuestUpdate):
         event_type = EventType.QUEST_UPDATE
     elif isinstance(event, GameStart):
         event_type = EventType.GAME_START

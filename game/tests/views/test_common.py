@@ -16,7 +16,7 @@ from pytest_django.asserts import (
 
 from character.models.character import Character
 from character.tests.factories import CharacterFactory
-from game.models.events import Event, Quest
+from game.models.events import Event, QuestUpdate
 from game.models.game import Game, Player
 from game.views.common import (
     GameCreateErrorView,
@@ -225,18 +225,18 @@ class TestGameView:
         assert pytest.raises(Http404)
 
     def test_game_last_quest(self, client, populated_game):
-        quest = Quest.objects.filter(game=populated_game).last()
+        quest_update = QuestUpdate.objects.filter(game=populated_game).last()
         response = client.get(populated_game.get_absolute_url())
         assert response.status_code == 200
-        assert response.context["quest"] == quest
+        assert response.context["quest"] == quest_update
 
     def test_context_data_master(self, client, populated_game):
         response = client.get(populated_game.get_absolute_url())
         assert response.status_code == 200
 
-        quest_list = Quest.objects.filter(game=populated_game)
-        quest = quest_list.last()
-        assert response.context["quest"] == quest
+        quest_list = QuestUpdate.objects.filter(game=populated_game)
+        quest_update = quest_list.last()
+        assert response.context["quest"] == quest_update
         character_list = Character.objects.filter(player__game=populated_game)
         assertQuerySetEqual(
             set(response.context["character_list"]), set(character_list)
@@ -256,9 +256,9 @@ class TestGameView:
         response = client.get(populated_game.get_absolute_url())
         assert response.status_code == 200
 
-        quest_list = Quest.objects.filter(game=populated_game)
-        quest = quest_list.last()
-        assert response.context["quest"] == quest
+        quest_list = QuestUpdate.objects.filter(game=populated_game)
+        quest_update = quest_list.last()
+        assert response.context["quest"] == quest_update
         character_list = Character.objects.filter(player__game=populated_game)
         assertQuerySetEqual(
             set(response.context["character_list"]), set(character_list)
@@ -318,10 +318,10 @@ class TestGameCreateView:
         assert game.name == f"{campaign.title} #{game.id}"
         assert game.state == "P"
         assert game.master.user == logged_user
-        quest = Quest.objects.last()
-        assert quest.game == game
-        assert quest.message == "The Master created the campaign."
-        assert quest.content == campaign.synopsis
+        quest_update = QuestUpdate.objects.last()
+        assert quest_update.game == game
+        assert quest_update.message == "The Master created the campaign."
+        assert quest_update.content == campaign.synopsis
 
     def test_game_creation_campaign_does_not_exist(self, client, logged_user):
         fake = Faker()

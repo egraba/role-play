@@ -31,7 +31,7 @@ class CharacterInvitation(Event):
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
 
 
-class Quest(Event):
+class QuestUpdate(Event):
     content = models.CharField(max_length=1000)
 
     def __str__(self):

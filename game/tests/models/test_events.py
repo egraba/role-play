@@ -1,7 +1,7 @@
 import pytest
 from django.utils import timezone
 
-from game.models.events import Event, Quest
+from game.models.events import Event, QuestUpdate
 
 from ..factories import EventFactory, QuestFactory
 
@@ -27,7 +27,7 @@ class TestQuestModel:
         return QuestFactory()
 
     def test_creation(self, quest):
-        assert isinstance(quest, Quest)
+        assert isinstance(quest, QuestUpdate)
 
     def test_str(self, quest):
         assert str(quest) == quest.content

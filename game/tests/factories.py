@@ -2,7 +2,7 @@ import factory
 
 from character.constants.abilities import AbilityName
 from game.constants.events import DifficultyClass, RollType
-from game.models.events import Event, Quest, RollRequest
+from game.models.events import Event, QuestUpdate, RollRequest
 from game.models.game import Game, Master, Player
 from utils.factories import UserFactory
 
@@ -26,7 +26,7 @@ class GameFactory(factory.django.DjangoModelFactory):
 
 class QuestFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = Quest
+        model = QuestUpdate
 
     game = factory.SubFactory(GameFactory)
     message = "The Master created the campaign."
