@@ -3,6 +3,7 @@ from channels.layers import get_channel_layer
 from pydantic import ValidationError
 
 from ..constants.events import RollType
+from ..messages import get_message
 from ..models.combat import Combat
 from ..models.events import Event, GameStart, Quest, RollRequest
 from ..schemas import (
@@ -38,7 +39,7 @@ def send_to_channel(event: Event) -> None:
         "type": _get_event_type(event),
         "date": event.date.isoformat(),
         "player_type": PlayerType.MASTER,
-        "message": event.message,
+        "message": get_message(event.message),
         "origin": EventOrigin.SERVER_SIDE,
     }
     try:
