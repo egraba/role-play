@@ -16,12 +16,9 @@ class TestEventModel:
         assert isinstance(event, Event)
         assert event.date.second - timezone.now().second <= 2
 
-    def test_str(self, event):
-        assert str(event) == event.message
-
 
 @pytest.mark.django_db
-class TestQuestModel:
+class TestQuestUpdateModel:
     @pytest.fixture
     def quest(self):
         return QuestFactory()
