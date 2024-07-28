@@ -1,4 +1,5 @@
 from django.db import models
+from model_utils.managers import InheritanceManager
 
 from character.constants.abilities import AbilityName
 from character.models.character import Character
@@ -14,6 +15,7 @@ from .game import Game
 
 
 class Event(models.Model):
+    objects = InheritanceManager()
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
 
@@ -29,6 +31,9 @@ class GameStart(Event):
 
 class CharacterInvitation(Event):
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
+
+    def get_message(self):
+        return f"{self.character} was added to the game."
 
 
 class Message(Event):
