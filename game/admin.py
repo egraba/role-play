@@ -19,11 +19,6 @@ class QuestAdmin(admin.ModelAdmin):
     list_display = ["game", "content", "date"]
 
 
-class EventAdmin(admin.ModelAdmin):
-    fields = ["game", "message"]
-    list_display = ["game", "date", "message"]
-
-
 admin.site.register(Game, GameAdmin)
 admin.site.register(Player, PlayerAdmin)
 admin.site.register(QuestUpdate, QuestAdmin)
