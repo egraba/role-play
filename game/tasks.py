@@ -10,7 +10,7 @@ from character.models.character import Character
 
 from .constants.events import RollStatus, RollType
 from .models.combat import Combat
-from .models.events import Event, Roll, RollRequest
+from .models.events import Message, Roll, RollRequest
 from .models.game import Game
 from .rolls import perform_roll
 from .utils.cache import game_key
@@ -38,15 +38,14 @@ def store_message(game_id: int, date: datetime, message: str) -> None:
         message (str): Message content.
     """
     logger.info(f"{game_id=}, {date=}, {message=}")
-
     try:
         game = cache.get_or_set(game_key(game_id), Game.objects.get(id=game_id))
     except Game.DoesNotExist as exc:
         raise InvalidTaskError(f"Game [{game_id}] not found") from exc
-    Event.objects.create(
+    Message.objects.create(
         game=game,
         date=date,
-        message=message,
+        content=message,
     )
 
 
