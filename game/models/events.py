@@ -68,3 +68,7 @@ class Roll(Event):
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
     request = models.ForeignKey(RollRequest, on_delete=models.CASCADE)
     result = models.CharField(max_length=1, choices=RollResult, blank=True, null=True)
+
+
+class CombatInitialization(Event):
+    pass
