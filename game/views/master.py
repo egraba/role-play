@@ -2,7 +2,6 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.cache import cache
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
-from django.utils import timezone
 from django.views.generic import FormView, ListView, UpdateView
 from django_celery_beat.models import IntervalSchedule, PeriodicTask
 from viewflow.fsm import TransitionNotAllowed
@@ -15,7 +14,7 @@ from ..constants.events import RollType
 from ..flows import GameFlow
 from ..forms import AbilityCheckRequestForm, CombatCreateForm, QuestCreateForm
 from ..models.combat import Combat, Fighter
-from ..models.events import Event, QuestUpdate, GameStart, RollRequest
+from ..models.events import QuestUpdate, GameStart, CharacterInvitation, RollRequest
 from ..models.game import Player
 from ..tasks import send_mail
 from ..utils.cache import game_key
@@ -48,10 +47,7 @@ class CharacterInviteConfirmView(UserPassesTestMixin, UpdateView, GameContextMix
     def post(self, request, *args, **kwargs):
         character = self.get_object()
         Player.objects.create(character=character, game=self.game)
-        event = Event(game=self.game)
-        event.date = timezone.now()
-        event.message = f"{character} was added to the game."
-        event.save()
+        CharacterInvitation.objects.create(game=self.game)
         send_mail.delay(
             subject=f"The Master invited you to join [{self.game}].",
             message=f"{character}, the Master invited you to join [{self.game}].",
