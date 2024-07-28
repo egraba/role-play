@@ -76,7 +76,7 @@ class GameView(LoginRequiredMixin, ListView, GameContextMixin):
         return context
 
     def get_queryset(self):
-        return super().get_queryset().filter(game=self.game.id)
+        return super().get_queryset().filter(game=self.game.id).select_subclasses()
 
 
 class GameCreateView(LoginRequiredMixin, CreateView):
