@@ -1,3 +1,5 @@
+from abc import abstractmethod
+
 from django.db import models
 from model_utils.managers import InheritanceManager
 
@@ -29,6 +31,16 @@ class Event(models.Model):
         indexes = [
             models.Index(fields=["-date"]),
         ]
+
+    @abstractmethod
+    def get_message(self):
+        """
+        Retrieve messages of an event.
+
+        Messages represent "logs" of an event.
+        Messages are not stored in database, only event content is.
+        """
+        pass
 
 
 class GameStart(Event):
