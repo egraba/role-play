@@ -96,11 +96,9 @@ class QuestCreateView(UserPassesTestMixin, FormView, EventContextMixin):
         return reverse_lazy("game", args=(self.game.id,))
 
     def form_valid(self, form):
-        quest_update = QuestUpdate()
-        quest_update.game = self.game
-        quest_update.message = "the Master updated the campaign."
-        quest_update.content = form.cleaned_data["content"]
-        quest_update.save()
+        quest_update = QuestUpdate.objects.create(
+            game=self.game, content=form.cleaned_data["content"]
+        )
         send_to_channel(quest_update)
         send_mail.delay(
             subject=f"[{self.game}] The Master updated the quest.",
