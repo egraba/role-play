@@ -68,9 +68,7 @@ class GameStartView(UserPassesTestMixin, GameStatusControlMixin):
         try:
             flow.start()
             cache.set(game_key(game.id), game)
-            game_start = GameStart(game=game)
-            game_start.message = "the game started."
-            game_start.save()
+            game_start = GameStart.objects.create(game=game)
             send_to_channel(game_start)
         except TransitionNotAllowed:
             return HttpResponseRedirect(reverse("game-start-error", args=(game.id,)))
