@@ -15,6 +15,12 @@ from .game import Game
 
 
 class Event(models.Model):
+    """
+    Events are everything that occur in a game.
+
+    This class shall not be instantiated explicitly.
+    """
+
     objects = InheritanceManager()
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
