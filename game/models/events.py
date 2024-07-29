@@ -68,6 +68,9 @@ class QuestUpdate(Event):
     def __str__(self):
         return self.content
 
+    def get_message(self):
+        return "The Master created the campaign."
+
 
 class RollRequest(Event):
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
