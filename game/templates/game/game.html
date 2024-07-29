@@ -21,7 +21,7 @@
                 <h3>Game events</h3>
                 <div id="event-list">
                     {% for event in event_list reversed %}
-                        <p>{{ event.date|naturaltime }}, {{ event.get_message }}</p>
+                        <p>[{{ event.date|date:"H:i" }}] {{ event.get_message }}</p>
                     {% empty %}
                         <p>The campaign did not start yet...</p>
                     {% endfor %}
