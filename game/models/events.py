@@ -13,7 +13,7 @@ from ..constants.events import (
     RollStatus,
     RollType,
 )
-from .game import Game
+from .game import Game, Player
 
 
 class Event(models.Model):
@@ -57,9 +57,18 @@ class CharacterInvitation(Event):
 
 class Message(Event):
     content = models.CharField(max_length=100)
+    is_from_master = models.BooleanField()
+    author = models.ForeignKey(Player, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.content
+
+    def get_message(self):
+        if self.is_from_master:
+            author = "the Master"
+        else:
+            author = str(self.author)
+        return f"{author} said: {self.content}"
 
 
 class QuestUpdate(Event):
