@@ -128,7 +128,6 @@
         </div>
     </div>
 
-    <script src="https://momentjs.com/downloads/moment.js"></script>
     <script>
         if (window.location.protocol === 'https:') {
             wsProtocol = 'wss://'
@@ -152,7 +151,8 @@
 
         eventsSocket.onmessage = function(event) {
             message = JSON.parse(event.data)
-            eventList.innerHTML += '<p>[' + moment(message["date"]).format("hh:mm") + '], ' + message["message"] + '</p>'
+            date = new Date(message["date"]);
+            eventList.innerHTML += '<p>[' + date.getUTCHours() + ':' + date.getUTCMinutes() + '], ' + message["message"] + '</p>'
             lines = eventList.innerHTML.split('</p>');
             if (lines.length > 10) {
                 lines.splice(0, 1);
