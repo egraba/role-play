@@ -145,7 +145,6 @@
 
         eventsSocket.onmessage = function(event) {
             message = JSON.parse(event.data)
-            eventList.innerHTML += '<p>' + moment(message["date"]).fromNow() + ', ' + message["message"] + '</p>'
             lines = eventList.innerHTML.split('</p>');
             if (lines.length > 10) {
                 lines.splice(0, 1);
@@ -169,10 +168,8 @@
         const PLAYER = "player";
         if ("{{ game.master.user }}" == "{{ user }}") {
             player_type = MASTER;
-            senderStr = "the Master";
         } else {
             player_type = PLAYER;
-            senderStr = "[{{ user }}]";
         }
 
         if (sendButton !== null) {
@@ -183,7 +180,7 @@
                         'type': MESSAGE,
                         'date': Date.now(),
                         'player_type': player_type,
-                        'message': senderStr + ' said: ' + userInput,
+                        'message': userInput,
                     }));
                     input.value = '';
                     input.focus();
