@@ -11,7 +11,7 @@ from character.models.character import Character
 from .constants.events import RollStatus, RollType
 from .models.combat import Combat
 from .models.events import Message, Roll, RollRequest
-from .models.game import Game
+from .models.game import Game, Player
 from .rolls import perform_roll
 from .utils.cache import game_key
 from .utils.channels import send_to_channel
@@ -28,14 +28,15 @@ def send_mail(
 
 
 @shared_task
-def store_message(game_id: int, date: datetime, message: str) -> None:
+def store_message(
+    game_id: int,
+    date: datetime,
+    message: str,
+    is_from_master: bool = True,
+    author: Player | None = None,
+) -> None:
     """
     Store the message received in the channel.
-
-    Args:
-        game_id (int): Identifier of the game.
-        date (datetime): Date on which the message has been sent.
-        message (str): Message content.
     """
     logger.info(f"{game_id=}, {date=}, {message=}")
     try:
@@ -46,6 +47,8 @@ def store_message(game_id: int, date: datetime, message: str) -> None:
         game=game,
         date=date,
         content=message,
+        is_from_master=is_from_master,
+        author=author,
     )
 
 

@@ -2,17 +2,13 @@ from asgiref.sync import async_to_sync
 from channels.exceptions import DenyConnection
 from channels.generic.websocket import JsonWebsocketConsumer
 from django.core.cache import cache
+from pydantic import ValidationError
 
 from character.models.character import Character
 
-from .commands import (
-    AbilityCheckCommand,
-    CombatRollInitiativeCommand,
-    SavingThrowCommand,
-    StoreMessageCommand,
-)
+from .commands import AbilityCheckCommand, SavingThrowCommand, ProcessMessageCommand
 from .models.game import Game
-from .schemas import EventOrigin, EventType
+from .schemas import EventOrigin, EventSchema, EventSchemaValidationError, EventType
 from .utils.cache import game_key
 
 
@@ -50,6 +46,10 @@ class GameEventsConsumer(JsonWebsocketConsumer):
         )
 
     def receive_json(self, content, **kwargs):
+        try:
+            EventSchema(**content)
+        except ValidationError as exc:
+            raise EventSchemaValidationError(exc.errors()) from exc
         # If the event comes from the server, the related data has already been stored
         # in the database, so the event has just to be sent to the group.
         # If the event comes from the client, the data needs to be stored in the database,
@@ -60,21 +60,20 @@ class GameEventsConsumer(JsonWebsocketConsumer):
         else:
             match content["type"]:
                 case EventType.MESSAGE:
-                    command = StoreMessageCommand()
+                    command = ProcessMessageCommand()
                 case EventType.ABILITY_CHECK:
                     command = AbilityCheckCommand()
                 case EventType.SAVING_THROW:
                     command = SavingThrowCommand()
                 case EventType.COMBAT_INITIALIZATION:
-                    command = StoreMessageCommand()
+                    command = ProcessMessageCommand()
                 case GameEventType.COMBAT_ROLL_INITIATIVE:
                     command = CombatRollInitiativeCommand()
                 case _:
                     pass
             try:
                 command.execute(
-                    date=content["date"],
-                    message=content["message"],
+                    content=content,
                     user=self.user,
                     game=self.game,
                 )
