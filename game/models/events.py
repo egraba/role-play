@@ -94,6 +94,10 @@ class RollRequest(Event):
     roll_type = models.SmallIntegerField(choices=RollType)
     against = models.CharField(max_length=1, choices=Against, blank=True, null=True)
 
+    def get_message(self):
+        return f"{self.character} needs to perform a {self.ability_type} check! \
+            Difficulty: {self.get_difficulty_class_display()}."
+
 
 class Roll(Event):
     character = models.ForeignKey(Character, on_delete=models.CASCADE)

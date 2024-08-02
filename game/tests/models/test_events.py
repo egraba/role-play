@@ -7,6 +7,7 @@ from game.models.events import (
     GameStart,
     Message,
     QuestUpdate,
+    RollRequest,
 )
 
 from ..factories import (
@@ -16,6 +17,7 @@ from ..factories import (
     MessageFactory,
     PlayerFactory,
     QuestUpdateFactory,
+    RollRequestFactory,
 )
 
 pytestmark = pytest.mark.django_db
@@ -100,3 +102,19 @@ class TestQuestUpdateModel:
 
     def test_get_message(self, quest):
         assert quest.get_message() == "The Master updated the quest."
+
+
+class TestRollRequestModel:
+    @pytest.fixture
+    def roll_request(self):
+        return RollRequestFactory()
+
+    def test_creation(self, roll_request):
+        assert isinstance(roll_request, RollRequest)
+
+    def test_get_message(self, roll_request):
+        assert (
+            roll_request.get_message()
+            == f"{roll_request.character} needs to perform a {roll_request.ability_type} check! \
+            Difficulty: {roll_request.get_difficulty_class_display()}."
+        )
