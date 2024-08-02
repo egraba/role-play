@@ -21,7 +21,7 @@
                 <h3>Game events</h3>
                 <div id="event-list">
                     {% for event in event_list reversed %}
-                        <p>[{{ event.date|date:"H:i" }}] {{ event.get_message }}</p>
+                        <p>[{{ event.date|date:"G:i" }}] {{ event.get_message }}</p>
                     {% empty %}
                         <p>The campaign did not start yet...</p>
                     {% endfor %}
@@ -152,7 +152,7 @@
         eventsSocket.onmessage = function(event) {
             message = JSON.parse(event.data)
             date = new Date(message["date"]);
-            eventList.innerHTML += '<p>[' + date.getUTCHours() + ':' + date.getUTCMinutes() + '], ' + message["message"] + '</p>'
+            eventList.innerHTML += '<p>[' + date.getUTCHours() + ':' + date.getUTCMinutes() + '] ' + message["message"] + '</p>'
             lines = eventList.innerHTML.split('</p>');
             if (lines.length > 10) {
                 lines.splice(0, 1);
