@@ -75,7 +75,7 @@ class QuestUpdate(Event):
     content = models.CharField(max_length=1000)
 
     def __str__(self):
-        return self.content
+        return self.content[:10]
 
     def get_message(self):
         return "The Master created the campaign."
