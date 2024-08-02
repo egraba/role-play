@@ -29,7 +29,6 @@ class QuestFactory(factory.django.DjangoModelFactory):
         model = QuestUpdate
 
     game = factory.SubFactory(GameFactory)
-    message = "The Master created the campaign."
     content = factory.Faker("paragraph", nb_sentences=10)
 
 
@@ -50,7 +49,6 @@ class EventFactory(factory.django.DjangoModelFactory):
         model = Event
 
     game = factory.SubFactory(GameFactory)
-    message = factory.Faker("text", max_nb_chars=50)
 
 
 class GameStartFactory(factory.django.DjangoModelFactory):
