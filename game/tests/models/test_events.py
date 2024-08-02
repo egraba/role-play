@@ -96,4 +96,4 @@ class TestQuestUpdateModel:
         assert isinstance(quest, QuestUpdate)
 
     def test_str(self, quest):
-        assert str(quest) == quest.content
+        assert str(quest) == quest.content[:10]
