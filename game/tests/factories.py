@@ -34,7 +34,7 @@ class GameFactory(factory.django.DjangoModelFactory):
     master = factory.RelatedFactory(MasterFactory, factory_related_name="game")
 
 
-class QuestFactory(factory.django.DjangoModelFactory):
+class QuestUpdateFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = QuestUpdate
 
