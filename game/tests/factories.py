@@ -6,11 +6,12 @@ from character.constants.abilities import AbilityName
 from game.constants.events import DifficultyClass, RollType
 from game.models.combat import Combat, Fighter
 from game.models.events import (
+    CharacterInvitation,
     Event,
     GameStart,
+    Message,
     QuestUpdate,
     RollRequest,
-    CharacterInvitation,
 )
 from game.models.game import Game, Master, Player
 from utils.factories import UserFactory
@@ -73,6 +74,15 @@ class CharacterInvitationFactory(factory.django.DjangoModelFactory):
 
     game = factory.SubFactory(GameFactory)
     character = factory.SubFactory("character.tests.factories.CharacterFactory")
+
+
+class MessageFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Message
+
+    game = factory.SubFactory(GameFactory)
+    content = factory.Faker("text", max_nb_chars=100)
+    is_from_master = factory.Faker("boolean")
 
 
 class RollRequestFactory(factory.django.DjangoModelFactory):
