@@ -318,7 +318,6 @@ class TestGameCreateView:
         assert game.master.user == logged_user
         quest_update = QuestUpdate.objects.last()
         assert quest_update.game == game
-        assert quest_update.message == "The Master created the campaign."
         assert quest_update.content == campaign.synopsis
 
     def test_game_creation_campaign_does_not_exist(self, client, logged_user):

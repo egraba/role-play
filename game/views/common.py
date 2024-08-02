@@ -100,7 +100,6 @@ class GameCreateView(LoginRequiredMixin, CreateView):
         Master.objects.create(user=self.request.user, game=game)
         quest_update = QuestUpdate()
         quest_update.game = game
-        quest_update.message = "The Master created the campaign."
         quest_update.content = campaign.synopsis
         quest_update.save()
         return HttpResponseRedirect(game.get_absolute_url())
