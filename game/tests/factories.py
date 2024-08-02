@@ -12,6 +12,7 @@ from game.models.events import (
     Message,
     QuestUpdate,
     RollRequest,
+    RollResponse,
 )
 from game.models.game import Game, Master, Player
 from utils.factories import UserFactory
@@ -27,7 +28,6 @@ class MasterFactory(factory.django.DjangoModelFactory):
 class GameFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Game
-        skip_postgeneration_save = True
 
     name = factory.Sequence(lambda n: f"game{n}")
     campaign = factory.SubFactory("master.tests.factories.CampaignFactory")
@@ -88,7 +88,6 @@ class QuestUpdateFactory(factory.django.DjangoModelFactory):
 class RollRequestFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = RollRequest
-        skip_postgeneration_save = True
 
     game = factory.SubFactory(GameFactory)
     character = factory.SubFactory("character.tests.factories.CharacterFactory")
@@ -104,6 +103,15 @@ class RollRequestFactory(factory.django.DjangoModelFactory):
         game = obj.game
         PlayerFactory(character=character, game=game)
         character.save()
+
+
+class RollResponseFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = RollResponse
+
+    game = factory.SubFactory(GameFactory)
+    character = factory.SubFactory("character.tests.factories.CharacterFactory")
+    request = factory.SubFactory(RollRequest)
 
 
 class FighterFactory(factory.django.DjangoModelFactory):
