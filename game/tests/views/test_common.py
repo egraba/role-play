@@ -240,7 +240,7 @@ class TestGameView:
         assertQuerySetEqual(
             set(response.context["character_list"]), set(character_list)
         )
-        event_list = Event.objects.filter(game=populated_game)
+        event_list = Event.objects.filter(game=populated_game).select_subclasses()
         # issubset() is used because of pagination.
         assert set(response.context["event_list"]).issubset(set(event_list))
         with pytest.raises(KeyError):
@@ -262,7 +262,7 @@ class TestGameView:
         assertQuerySetEqual(
             set(response.context["character_list"]), set(character_list)
         )
-        event_list = Event.objects.filter(game=populated_game)
+        event_list = Event.objects.filter(game=populated_game).select_subclasses()
         # issubset() is used because of pagination.
         assert set(response.context["event_list"]).issubset(set(event_list))
         player = Player.objects.get(game=populated_game, character__user=user)
