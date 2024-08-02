@@ -8,7 +8,6 @@ from game.models.game import Game
 from .constants.events import RollType
 from .tasks import process_roll, store_message
 from .schemas import EventSchema
-from .models.events import Message
 
 
 class Command(ABC):
@@ -31,9 +30,6 @@ class ProcessMessageCommand(Command):
             date=content["date"],
             message=content["message"],
         )
-        content["message"] = Message(
-            game, date=content["date"], content=content["message"], is_from_master=True
-        ).get_message()
 
 
 class CharacterCommandMixin(Command):

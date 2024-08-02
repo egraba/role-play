@@ -10,6 +10,7 @@ from .commands import AbilityCheckCommand, ProcessMessageCommand, SavingThrowCom
 from .models.game import Game
 from .schemas import EventOrigin, EventSchema, EventSchemaValidationError, EventType
 from .utils.cache import game_key
+from .event_enrichers import MessageEnricher
 
 
 class GameEventsConsumer(JsonWebsocketConsumer):
@@ -61,6 +62,7 @@ class GameEventsConsumer(JsonWebsocketConsumer):
             match content["type"]:
                 case EventType.MESSAGE:
                     command = ProcessMessageCommand()
+                    message_enricher = MessageEnricher(self.game, content)
                 case EventType.ABILITY_CHECK:
                     command = AbilityCheckCommand()
                 case EventType.SAVING_THROW:
@@ -78,6 +80,7 @@ class GameEventsConsumer(JsonWebsocketConsumer):
             except Character.DoesNotExist as exc:
                 self.close()
                 raise DenyConnection(exc.__traceback__) from exc
+            message_enricher.enrich()
         async_to_sync(self.channel_layer.group_send)(self.game_group_name, content)
 
     def message(self, event):
