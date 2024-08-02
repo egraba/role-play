@@ -88,6 +88,13 @@ class QuestUpdateFactory(factory.django.DjangoModelFactory):
     content = factory.Faker("paragraph", nb_sentences=10)
 
 
+class GameStartFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = GameStart
+
+    game = factory.SubFactory(GameFactory)
+
+
 class RollRequestFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = RollRequest
