@@ -45,7 +45,7 @@ class Event(models.Model):
 
 class GameStart(Event):
     def get_message(self):
-        return "the game started."
+        return "The game started."
 
 
 class CharacterInvitation(Event):
