@@ -1,8 +1,8 @@
 from abc import abstractmethod
 
 from .models.events import Message
-from .models.game import Game
-from .schemas import EventSchema
+from .models.game import Game, Player
+from .schemas import EventSchema, PlayerType
 
 
 class Enricher:
@@ -29,9 +29,18 @@ class Enricher:
 
 class MessageEnricher(Enricher):
     def enrich(self):
+        if self.content["player_type"] == PlayerType.MASTER:
+            is_from_master = True
+            author = None
+        else:
+            is_from_master = False
+            author = Player.objects.get(
+                character__user__username=self.content["username"]
+            )
         self.content["message"] = Message(
             game=self.game,
             date=self.content["date"],
             content=self.content["message"],
-            is_from_master=True,
+            is_from_master=is_from_master,
+            author=author,
         ).get_message()
