@@ -5,8 +5,9 @@ from game.models.events import Event, QuestUpdate
 
 from ..factories import EventFactory, QuestFactory
 
+pytestmark = pytest.mark.django_db
 
-@pytest.mark.django_db
+
 class TestEventModel:
     @pytest.fixture
     def event(self):
@@ -17,7 +18,6 @@ class TestEventModel:
         assert event.date.second - timezone.now().second <= 2
 
 
-@pytest.mark.django_db
 class TestQuestUpdateModel:
     @pytest.fixture
     def quest(self):
