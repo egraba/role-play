@@ -1,12 +1,20 @@
 import pytest
 from django.utils import timezone
 
-from game.models.events import CharacterInvitation, Event, GameStart, QuestUpdate
+from game.models.events import (
+    CharacterInvitation,
+    Event,
+    GameStart,
+    Message,
+    QuestUpdate,
+)
 
 from ..factories import (
     CharacterInvitationFactory,
     EventFactory,
     GameStartFactory,
+    MessageFactory,
+    PlayerFactory,
     QuestFactory,
 )
 
@@ -47,6 +55,35 @@ class TestCharacterInvitationModel:
         assert (
             character_invitation.get_message()
             == f"{character_invitation.character} was added to the game."
+        )
+
+
+class TestMessageModel:
+    @pytest.fixture
+    def message(self):
+        return MessageFactory()
+
+    def test_creation(self, message):
+        assert isinstance(message, Message)
+
+    @pytest.fixture
+    def message_from_master(self):
+        return MessageFactory(is_from_master=True)
+
+    def test_get_message_from_master(self, message_from_master):
+        assert (
+            message_from_master.get_message()
+            == f"The Master said: {message_from_master.content}"
+        )
+
+    @pytest.fixture
+    def message_from_player(self):
+        return MessageFactory(is_from_master=False, author=PlayerFactory())
+
+    def test_get_message_from_player(self, message_from_player):
+        assert (
+            message_from_player.get_message()
+            == f"{message_from_player.author} said: {message_from_player.content}"
         )
 
 
