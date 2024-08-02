@@ -97,3 +97,6 @@ class TestQuestUpdateModel:
 
     def test_str(self, quest):
         assert str(quest) == quest.content[:10]
+
+    def test_get_message(self, quest):
+        assert quest.get_message() == "The Master updated the quest."

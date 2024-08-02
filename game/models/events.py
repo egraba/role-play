@@ -78,7 +78,7 @@ class QuestUpdate(Event):
         return self.content[:10]
 
     def get_message(self):
-        return "The Master created the campaign."
+        return "The Master updated the quest."
 
 
 class RollRequest(Event):
