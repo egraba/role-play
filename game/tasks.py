@@ -32,8 +32,8 @@ def store_message(
     game_id: int,
     date: datetime,
     message: str,
-    is_from_master: bool = True,
-    author: Player | None = None,
+    is_from_master: bool,
+    author_name: str | None = None,
 ) -> None:
     """
     Store the message received in the channel.
@@ -43,6 +43,13 @@ def store_message(
         game = cache.get_or_set(game_key(game_id), Game.objects.get(id=game_id))
     except Game.DoesNotExist as exc:
         raise InvalidTaskError(f"Game [{game_id}] not found") from exc
+    if author_name is None:
+        author = None
+    else:
+        try:
+            author = Player.objects.get(character__user__username=author_name)
+        except Player.DoesNotExist as exc:
+            raise InvalidTaskError(f"Player [{author_name}] not found") from exc
     Message.objects.create(
         game=game,
         date=date,

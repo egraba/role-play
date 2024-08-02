@@ -65,7 +65,7 @@ class Message(Event):
 
     def get_message(self):
         if self.is_from_master:
-            author = "the Master"
+            author = "The Master"
         else:
             author = str(self.author)
         return f"{author} said: {self.content}"

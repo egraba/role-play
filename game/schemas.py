@@ -46,6 +46,7 @@ class EventSchema(BaseModel):
     type: EventType  # "type" field is necessary for Django channels.
     date: datetime
     player_type: PlayerType
+    username: Optional[str] = None
     message: str
     origin: Optional[EventOrigin] = None
 
