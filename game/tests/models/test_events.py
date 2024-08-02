@@ -15,7 +15,7 @@ from ..factories import (
     GameStartFactory,
     MessageFactory,
     PlayerFactory,
-    QuestFactory,
+    QuestUpdateFactory,
 )
 
 pytestmark = pytest.mark.django_db
@@ -90,7 +90,7 @@ class TestMessageModel:
 class TestQuestUpdateModel:
     @pytest.fixture
     def quest(self):
-        return QuestFactory()
+        return QuestUpdateFactory()
 
     def test_creation(self, quest):
         assert isinstance(quest, QuestUpdate)

@@ -28,7 +28,7 @@ from game.views.common import (
 from master.tests.factories import CampaignFactory
 from utils.factories import UserFactory
 
-from ..factories import EventFactory, GameFactory, PlayerFactory, QuestFactory
+from ..factories import EventFactory, GameFactory, PlayerFactory, QuestUpdateFactory
 
 
 @pytest.mark.django_db
@@ -155,7 +155,7 @@ def populated_game(django_db_blocker):
             EventFactory(game=game)
         number_of_quests = 3
         for _ in range(number_of_quests):
-            QuestFactory(game=game)
+            QuestUpdateFactory(game=game)
         number_of_players = 8
         for _ in range(number_of_players):
             PlayerFactory(game=game)
