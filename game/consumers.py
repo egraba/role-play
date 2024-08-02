@@ -62,7 +62,7 @@ class GameEventsConsumer(JsonWebsocketConsumer):
             match content["type"]:
                 case EventType.MESSAGE:
                     command = ProcessMessageCommand()
-                    message_enricher = MessageEnricher(self.game, content)
+                    event_enricher = MessageEnricher(self.game, content)
                 case EventType.ABILITY_CHECK:
                     command = AbilityCheckCommand()
                 case EventType.SAVING_THROW:
@@ -82,7 +82,7 @@ class GameEventsConsumer(JsonWebsocketConsumer):
             except Character.DoesNotExist as exc:
                 self.close()
                 raise DenyConnection(exc.__traceback__) from exc
-            message_enricher.enrich()
+            event_enricher.enrich()
         async_to_sync(self.channel_layer.group_send)(self.game_group_name, content)
 
     def message(self, event):
