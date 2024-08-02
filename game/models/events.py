@@ -108,6 +108,10 @@ class RollRequest(Event):
         return f"{self.character} needs to perform a {self.ability_type} check! \
             Difficulty: {self.get_difficulty_class_display()}."
 
+    def get_message(self):
+        return f"{self.character} needs to perform a {self.ability_type} check! \
+            Difficulty: {self.get_difficulty_class_display()}."
+
 
 class RollResponse(Event):
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
