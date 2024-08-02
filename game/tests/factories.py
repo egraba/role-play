@@ -34,14 +34,6 @@ class GameFactory(factory.django.DjangoModelFactory):
     master = factory.RelatedFactory(MasterFactory, factory_related_name="game")
 
 
-class QuestUpdateFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = QuestUpdate
-
-    game = factory.SubFactory(GameFactory)
-    content = factory.Faker("paragraph", nb_sentences=10)
-
-
 class PlayerFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Player
@@ -83,6 +75,14 @@ class MessageFactory(factory.django.DjangoModelFactory):
     game = factory.SubFactory(GameFactory)
     content = factory.Faker("text", max_nb_chars=100)
     is_from_master = factory.Faker("boolean")
+
+
+class QuestUpdateFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = QuestUpdate
+
+    game = factory.SubFactory(GameFactory)
+    content = factory.Faker("paragraph", nb_sentences=10)
 
 
 class RollRequestFactory(factory.django.DjangoModelFactory):
