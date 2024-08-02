@@ -9,7 +9,7 @@ from character.models.character import Character
 from ..constants.events import (
     Against,
     DifficultyClass,
-    RollResult,
+    RollResultType,
     RollStatus,
     RollType,
 )
@@ -99,10 +99,24 @@ class RollRequest(Event):
             Difficulty: {self.get_difficulty_class_display()}."
 
 
-class Roll(Event):
+class RollResponse(Event):
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
     request = models.ForeignKey(RollRequest, on_delete=models.CASCADE)
-    result = models.CharField(max_length=1, choices=RollResult)
+
+    def get_message(self):
+        return f"{self.character} performed an ability check!"
+
+
+class RollResult(Event):
+    character = models.ForeignKey(Character, on_delete=models.CASCADE)
+    request = models.ForeignKey(RollRequest, on_delete=models.CASCADE)
+    response = models.ForeignKey(RollResponse, on_delete=models.CASCADE)
+    score = models.SmallIntegerField()
+    result = models.CharField(max_length=1, choices=RollResultType)
+
+    def get_message(self):
+        return f"[{self.character.user}]'s score: {self.score}, \
+            {self.request.roll_type} result: {self.get_result_display()}"
 
 
 class CombatInitialization(Event):
