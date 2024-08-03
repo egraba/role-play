@@ -80,29 +80,30 @@ def process_roll(
         raise InvalidTaskError(f"Character [{character_id}] not found") from exc
 
     # Retrieve the corresponding roll request.
-    request = RollRequest.objects.filter(
+    roll_request = RollRequest.objects.filter(
         roll_type=roll_type, character=character, status=RollStatus.PENDING
     ).first()
-    if request is None:
+    if roll_request is None:
         raise InvalidTaskError("Roll request not found")
 
     # Store the roll response.
-    RollResponse.objects.create(
-        game=game, date=date, character=character, request=request
+    roll_response = RollResponse.objects.create(
+        game=game, date=date, character=character, request=roll_request
     )
 
-    score, result = perform_roll(character, request)
-    roll_result = RollResult(
+    score, result = perform_roll(character, roll_request)
+    roll_result = RollResult.objects.create(
         game=game,
         date=date,
         character=character,
-        request=request,
+        request=roll_request,
+        response=roll_response,
         score=score,
         result=result,
     )
 
     # The corresponding roll request is considered now as done.
-    request.status = RollStatus.DONE
-    request.save()
+    roll_request.status = RollStatus.DONE
+    roll_request.save()
 
     send_to_channel(roll_result)
