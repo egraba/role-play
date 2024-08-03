@@ -104,9 +104,6 @@ def process_roll(
         request=request,
         result=result,
     )
-    roll_result.message = f"[{character.user}]'s score: {score}, \
-        {roll_type} result: {roll_result.get_result_display()}"
-    roll_result.save()
 
     # The corresponding roll request is considered now as done.
     request.status = RollStatus.DONE
