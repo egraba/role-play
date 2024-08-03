@@ -5,15 +5,13 @@ from celery.exceptions import InvalidTaskError
 from celery.utils.log import get_task_logger
 from django.core.cache import cache
 from django.core.mail import send_mail as django_send_mail
-from django.utils import timezone
 
 from character.models.character import Character
 
 from .constants.events import RollStatus, RollType
-from .models.events import Event, Roll, RollRequest
-from .models.game import Game
+from .models.events import Message, RollRequest, RollResponse, RollResult
+from .models.game import Game, Player
 from .rolls import perform_roll
-from .schemas import GameEventType, PlayerType
 from .utils.cache import game_key
 from .utils.channels import send_to_channel
 
@@ -29,25 +27,34 @@ def send_mail(
 
 
 @shared_task
-def store_message(game_id: int, date: datetime, message: str) -> None:
+def store_message(
+    game_id: int,
+    date: datetime,
+    message: str,
+    is_from_master: bool,
+    author_name: str | None = None,
+) -> None:
     """
     Store the message received in the channel.
-
-    Args:
-        game_id (int): Identifier of the game.
-        date (datetime): Date on which the message has been sent.
-        message (str): Message content.
     """
     logger.info(f"{game_id=}, {date=}, {message=}")
-
     try:
         game = cache.get_or_set(game_key(game_id), Game.objects.get(id=game_id))
     except Game.DoesNotExist as exc:
         raise InvalidTaskError(f"Game [{game_id}] not found") from exc
-    Event.objects.create(
+    if author_name is None:
+        author = None
+    else:
+        try:
+            author = Player.objects.get(character__user__username=author_name)
+        except Player.DoesNotExist as exc:
+            raise InvalidTaskError(f"Player [{author_name}] not found") from exc
+    Message.objects.create(
         game=game,
         date=date,
-        message=message,
+        content=message,
+        is_from_master=is_from_master,
+        author=author,
     )
 
 
@@ -57,19 +64,11 @@ def process_roll(
     roll_type: RollType,
     date: datetime,
     character_id: int,
-    message: str,
 ) -> None:
     """
     Process a dice roll.
-
-    Args:
-        game_id (int): Identifier of the game.
-        roll_type (RollType): Type of the roll.
-        date (datetime): Date on which the message has been sent from the player.
-        character_id (int): Identifier of the character who did the roll.
-        message (str): Message content.
     """
-    logger.info(f"{game_id=}, {roll_type=}, {date=}, {character_id=}, {message=}")
+    logger.info(f"{game_id=}, {roll_type=}, {date=}, {character_id=}")
 
     try:
         game = Game.objects.get(id=game_id)
@@ -81,46 +80,30 @@ def process_roll(
         raise InvalidTaskError(f"Character [{character_id}] not found") from exc
 
     # Retrieve the corresponding roll request.
-    request = RollRequest.objects.filter(
+    roll_request = RollRequest.objects.filter(
         roll_type=roll_type, character=character, status=RollStatus.PENDING
     ).first()
-    if request is None:
+    if roll_request is None:
         raise InvalidTaskError("Roll request not found")
 
-    # Store the message send when the player has clicked on the sending button.
-    store_message(game_id, date, message)
+    # Store the roll response.
+    roll_response = RollResponse.objects.create(
+        game=game, date=date, character=character, request=roll_request
+    )
 
-    score, result = perform_roll(character, request)
-    # Roll's message must be created after Roll() constructor call
-    # in order to be able to call get_FOO_display(), to display the
-    # result in verbose format.
-    roll = Roll(
+    score, result = perform_roll(character, roll_request)
+    roll_result = RollResult.objects.create(
         game=game,
         date=date,
         character=character,
-        request=request,
+        request=roll_request,
+        response=roll_response,
+        score=score,
         result=result,
     )
-    roll.message = f"[{character.user}]'s score: {score}, \
-        {roll_type} result: {roll.get_result_display()}"
-    roll.save()
 
     # The corresponding roll request is considered now as done.
-    request.status = RollStatus.DONE
-    request.save()
+    roll_request.status = RollStatus.DONE
+    roll_request.save()
 
-    # Send the right message to the channel.
-    match roll_type:
-        case RollType.ABILITY_CHECK:
-            result_type = GameEventType.ABILITY_CHECK_RESULT
-        case RollType.SAVING_THROW:
-            result_type = GameEventType.SAVING_THROW_RESULT
-    send_to_channel(
-        game_id=game_id,
-        game_event={
-            "type": result_type,
-            "player_type": PlayerType.MASTER,
-            "date": timezone.now().isoformat(),
-            "message": roll.message,
-        },
-    )
+    send_to_channel(roll_result)

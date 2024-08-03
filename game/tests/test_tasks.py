@@ -1,5 +1,3 @@
-from difflib import SequenceMatcher
-
 import pytest
 from celery.exceptions import InvalidTaskError
 from django.utils import timezone
@@ -7,7 +5,7 @@ from faker import Faker
 
 from character.models.character import Character
 from game.constants.events import RollStatus, RollType
-from game.models.events import Roll, RollRequest
+from game.models.events import RollRequest, RollResult, RollResponse
 from game.models.game import Game
 from game.tasks import process_roll
 
@@ -36,32 +34,26 @@ class TestProcessRoll:
         # Retrieved from RollRequestFactory.
         return Character.objects.last()
 
-    # @pytest.mark.celery(broker_connection_retry_on_startup=True)
     def test_process_roll_ability_check_success(
         self, celery_worker, ability_check_request, game, character
     ):
-        fake = Faker()
         date = timezone.now()
-        message = fake.text(100)
         process_roll.delay(
             game_id=game.id,
             roll_type=RollType.ABILITY_CHECK,
-            date=date.isoformat(),
+            date=date,
             character_id=character.id,
-            message=message,
         ).get()
 
         assert character.player.game == game
 
-        roll = Roll.objects.last()
-        assert roll.game == game
-        assert (roll.date.second - date.second) <= 2
-        # SequenceMatcher is used as the score is a random value, and therefore
-        # cannot be guessed.
-        expected_str = f"[{character.user}]'s score: 5, \
-            {RollType.ABILITY_CHECK} result: {roll.get_result_display()}"
-        s = SequenceMatcher(None, roll.message, expected_str)
-        assert s.ratio() > 0.9
+        roll_response = RollResponse.objects.last()
+        assert roll_response.game == game
+        assert (roll_response.date.second - date.second) <= 2
+
+        roll_result = RollResult.objects.last()
+        assert roll_result.game == game
+        assert (roll_result.date.second - date.second) <= 2
 
         ability_check_request = RollRequest.objects.last()
         assert ability_check_request.status == RollStatus.DONE
@@ -71,14 +63,12 @@ class TestProcessRoll:
     ):
         fake = Faker()
         date = timezone.now()
-        message = fake.text(100)
         with pytest.raises(InvalidTaskError):
             process_roll.delay(
                 game_id=fake.random_int(min=1000),
                 roll_type=RollType.ABILITY_CHECK,
                 date=date.isoformat(),
                 character_id=character.id,
-                message=message,
             ).get()
 
         ability_check_request = RollRequest.objects.last()
@@ -89,14 +79,12 @@ class TestProcessRoll:
     ):
         fake = Faker()
         date = timezone.now()
-        message = fake.text(100)
         with pytest.raises(InvalidTaskError):
             process_roll.delay(
                 game_id=game.id,
                 roll_type=RollType.ABILITY_CHECK,
                 date=date.isoformat(),
                 character_id=fake.random_int(min=1000),
-                message=message,
             ).get()
 
         ability_check_request = RollRequest.objects.last()
@@ -105,9 +93,7 @@ class TestProcessRoll:
     def test_process_roll_failure_request_not_found(
         self, celery_worker, ability_check_request, game, character
     ):
-        fake = Faker()
         date = timezone.now()
-        message = fake.text(100)
         RollRequest.objects.last().delete()
         with pytest.raises(InvalidTaskError):
             process_roll.delay(
@@ -115,7 +101,6 @@ class TestProcessRoll:
                 roll_type=RollType.ABILITY_CHECK,
                 date=date.isoformat(),
                 character_id=character.id,
-                message=message,
             ).get()
 
     @pytest.fixture
@@ -125,28 +110,19 @@ class TestProcessRoll:
     def test_process_roll_saving_throw_success(
         self, celery_worker, saving_throw_request, game, character
     ):
-        fake = Faker()
         date = timezone.now()
-        message = fake.text(100)
         process_roll.delay(
             game_id=game.id,
             roll_type=RollType.SAVING_THROW,
             date=date.isoformat(),
             character_id=character.id,
-            message=message,
         ).get()
 
         assert character.player.game == game
 
-        roll = Roll.objects.last()
-        assert roll.game == game
-        assert (roll.date.second - date.second) <= 2
-        # SequenceMatcher is used as the score is a random value, and therefore
-        # cannot be guessed.
-        expected_str = f"[{character.user}]'s score: 5, \
-            {RollType.SAVING_THROW} result: {roll.get_result_display()}"
-        s = SequenceMatcher(None, roll.message, expected_str)
-        assert s.ratio() > 0.9
+        roll_result = RollResult.objects.last()
+        assert roll_result.game == game
+        assert (roll_result.date.second - date.second) <= 2
 
         saving_throw_request = RollRequest.objects.last()
         assert saving_throw_request.status == RollStatus.DONE

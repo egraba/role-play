@@ -1,4 +1,7 @@
+from abc import abstractmethod
+
 from django.db import models
+from model_utils.managers import InheritanceManager
 
 from character.constants.abilities import AbilityName
 from character.models.character import Character
@@ -6,32 +9,76 @@ from character.models.character import Character
 from ..constants.events import (
     Against,
     DifficultyClass,
-    RollResult,
+    RollResultType,
     RollStatus,
     RollType,
 )
-from .game import Game
+from .game import Game, Player
 
 
 class Event(models.Model):
+    """
+    Events are everything that occur in a game.
+
+    This class shall not be instantiated explicitly.
+    """
+
+    objects = InheritanceManager()
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
-    message = models.CharField(max_length=100)
 
     class Meta:
         indexes = [
             models.Index(fields=["-date"]),
         ]
 
+    @abstractmethod
+    def get_message(self):
+        """
+        Retrieve messages of an event.
+
+        Messages represent "logs" of an event.
+        Messages are not stored in database, only event content is.
+        """
+        pass
+
+
+class GameStart(Event):
+    def get_message(self):
+        return "The game started."
+
+
+class CharacterInvitation(Event):
+    character = models.ForeignKey(Character, on_delete=models.CASCADE)
+
+    def get_message(self):
+        return f"{self.character} was added to the game."
+
+
+class Message(Event):
+    content = models.CharField(max_length=100)
+    is_from_master = models.BooleanField()
+    author = models.ForeignKey(Player, on_delete=models.CASCADE, null=True)
+
     def __str__(self):
-        return str(self.message)
+        return self.content
+
+    def get_message(self):
+        if self.is_from_master:
+            author = "The Master"
+        else:
+            author = str(self.author)
+        return f"{author} said: {self.content}"
 
 
-class Quest(Event):
+class QuestUpdate(Event):
     content = models.CharField(max_length=1000)
 
     def __str__(self):
-        return str(self.content)
+        return self.content[:10]
+
+    def get_message(self):
+        return "The Master updated the quest."
 
 
 class RollRequest(Event):
@@ -47,8 +94,30 @@ class RollRequest(Event):
     roll_type = models.SmallIntegerField(choices=RollType)
     against = models.CharField(max_length=1, choices=Against, blank=True, null=True)
 
+    def get_message(self):
+        return f"{self.character} needs to perform a {self.ability_type} check! \
+            Difficulty: {self.get_difficulty_class_display()}."
 
-class Roll(Event):
+
+class RollResponse(Event):
     character = models.ForeignKey(Character, on_delete=models.CASCADE)
     request = models.ForeignKey(RollRequest, on_delete=models.CASCADE)
-    result = models.CharField(max_length=1, choices=RollResult)
+
+    def get_message(self):
+        return f"{self.character} performed an ability check!"
+
+
+class RollResult(Event):
+    character = models.ForeignKey(Character, on_delete=models.CASCADE)
+    request = models.ForeignKey(RollRequest, on_delete=models.CASCADE)
+    response = models.ForeignKey(RollResponse, on_delete=models.CASCADE)
+    score = models.SmallIntegerField()
+    result = models.CharField(max_length=1, choices=RollResultType)
+
+    def get_message(self):
+        return f"[{self.character.user}]'s score: {self.score}, \
+            {self.request.roll_type} result: {self.get_result_display()}"
+
+
+class CombatInitialization(Event):
+    pass

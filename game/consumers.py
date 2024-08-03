@@ -2,12 +2,18 @@ from asgiref.sync import async_to_sync
 from channels.exceptions import DenyConnection
 from channels.generic.websocket import JsonWebsocketConsumer
 from django.core.cache import cache
+from pydantic import ValidationError
 
 from character.models.character import Character
 
-from .commands import AbilityCheckCommand, SavingThrowCommand, StoreMessageCommand
+from .commands import (
+    AbilityCheckResponseCommand,
+    ProcessMessageCommand,
+    SavingThrowCommand,
+)
+from .event_enrichers import MessageEnricher, RollResponseEnricher
 from .models.game import Game
-from .schemas import GameEventOrigin, GameEventType
+from .schemas import EventOrigin, EventSchema, EventSchemaValidationError, EventType
 from .utils.cache import game_key
 
 
@@ -45,35 +51,41 @@ class GameEventsConsumer(JsonWebsocketConsumer):
         )
 
     def receive_json(self, content, **kwargs):
+        try:
+            EventSchema(**content)
+        except ValidationError as exc:
+            raise EventSchemaValidationError(exc.errors()) from exc
         # If the event comes from the server, the related data has already been stored
         # in the database, so the event has just to be sent to the group.
         # If the event comes from the client, the data needs to be stored in the database,
         # when it is received by the server.
         if "origin" in content:
-            if content["origin"] == GameEventOrigin.SERVER_SIDE:
+            if content["origin"] == EventOrigin.SERVER_SIDE:
                 pass
         else:
             match content["type"]:
-                case GameEventType.MESSAGE:
-                    command = StoreMessageCommand()
-                case GameEventType.ABILITY_CHECK:
-                    command = AbilityCheckCommand()
-                case GameEventType.SAVING_THROW:
+                case EventType.MESSAGE:
+                    command = ProcessMessageCommand()
+                    event_enricher = MessageEnricher(self.game, content)
+                case EventType.ABILITY_CHECK_RESPONSE:
+                    command = AbilityCheckResponseCommand()
+                    event_enricher = RollResponseEnricher(self.game, content)
+                case EventType.SAVING_THROW:
                     command = SavingThrowCommand()
-                case GameEventType.COMBAT_INITIATION:
-                    command = StoreMessageCommand()
+                case EventType.COMBAT_INITIATION:
+                    command = ProcessMessageCommand()
                 case _:
                     pass
             try:
                 command.execute(
-                    date=content["date"],
-                    message=content["message"],
+                    content=content,
                     user=self.user,
                     game=self.game,
                 )
             except Character.DoesNotExist as exc:
                 self.close()
                 raise DenyConnection(exc.__traceback__) from exc
+            event_enricher.enrich()
         async_to_sync(self.channel_layer.group_send)(self.game_group_name, content)
 
     def message(self, event):
@@ -92,7 +104,7 @@ class GameEventsConsumer(JsonWebsocketConsumer):
         """Ability check request from the master."""
         self.send_json(event)
 
-    def ability_check(self, event):
+    def ability_check_response(self, event):
         """Ability check roll from the player."""
         self.send_json(event)
 

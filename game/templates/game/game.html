@@ -21,7 +21,7 @@
                 <h3>Game events</h3>
                 <div id="event-list">
                     {% for event in event_list reversed %}
-                        <p>{{ event.date|naturaltime }}, {{ event.message }}</p>
+                        <p>[{{ event.date|date:"G:i" }}] {{ event.get_message }}</p>
                     {% empty %}
                         <p>The campaign did not start yet...</p>
                     {% endfor %}
@@ -123,7 +123,6 @@
         </div>
     </div>
 
-    <script src="https://momentjs.com/downloads/moment.js"></script>
     <script>
         if (window.location.protocol === 'https:') {
             wsProtocol = 'wss://'
@@ -140,12 +139,15 @@
 
         const MESSAGE = "message";
         const QUEST_UPDATE = "quest.update";
-        const ABILITY_CHECK = "ability.check";
+        const ABILITY_CHECK_REQUEST = "ability.check.request";
+        const ABILITY_CHECK_RESPONSE = "ability.check.response";
+        const ABILITY_CHECK_RESULT = "ability.check.result";
         const SAVING_THROW = "saving.throw";
 
         eventsSocket.onmessage = function(event) {
             message = JSON.parse(event.data)
-            eventList.innerHTML += '<p>' + moment(message["date"]).fromNow() + ', ' + message["message"] + '</p>'
+            date = new Date(message["date"]);
+            eventList.innerHTML += '<p>[' + date.getUTCHours() + ':' + date.getUTCMinutes() + '] ' + message["message"] + '</p>'
             lines = eventList.innerHTML.split('</p>');
             if (lines.length > 10) {
                 lines.splice(0, 1);
@@ -153,11 +155,13 @@
             }
             if (message["type"] === QUEST_UPDATE) {
                 $("#quest").load(" #quest > *");
-            } else {
+            } else if (message["type"] === ABILITY_CHECK_REQUEST
+                || message["type"] === ABILITY_CHECK_RESPONSE
+                || message["type"] === ABILITY_CHECK_RESULT) {
                 // The full page has to be reloaded, otherwise clicking on the button
                 // triggers no action.
-                location.reload();
-            }
+                    location.reload();
+                }
         };
 
         eventsSocket.onclose = function(event) {
@@ -169,10 +173,8 @@
         const PLAYER = "player";
         if ("{{ game.master.user }}" == "{{ user }}") {
             player_type = MASTER;
-            senderStr = "the Master";
         } else {
             player_type = PLAYER;
-            senderStr = "[{{ user }}]";
         }
 
         if (sendButton !== null) {
@@ -183,7 +185,8 @@
                         'type': MESSAGE,
                         'date': Date.now(),
                         'player_type': player_type,
-                        'message': senderStr + ' said: ' + userInput,
+                        'username': '{{ user }}',
+                        'message': userInput,
                     }));
                     input.value = '';
                     input.focus();
@@ -201,10 +204,10 @@
         if (abilityCheckButton !== null) {
             abilityCheckButton.addEventListener('click', function(event) {
                 eventsSocket.send(JSON.stringify({
-                    'type': ABILITY_CHECK,
+                    'type': ABILITY_CHECK_RESPONSE,
                     'date': Date.now(),
                     'player_type': PLAYER,
-                    'message': senderStr + ' performed an ability check!',
+                    'username': '{{ user }}',
                 }));
             });
         }

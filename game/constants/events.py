@@ -27,6 +27,6 @@ class Against(TextChoices):
     POISON = "P", "Poison"
 
 
-class RollResult(TextChoices):
+class RollResultType(TextChoices):
     SUCCESS = "S", "Success"
     FAILURE = "F", "Failure"

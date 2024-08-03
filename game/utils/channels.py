@@ -1,27 +1,72 @@
-from typing import Any
+import datetime
 
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from pydantic import ValidationError
 
-from ..schemas import GameEvent, GameEventError, GameEventOrigin
+from ..constants.events import RollType
+from ..models.combat import Combat
+from ..models.events import (
+    Event,
+    GameStart,
+    QuestUpdate,
+    RollRequest,
+    RollResponse,
+    RollResult,
+)
+from ..schemas import (
+    EventOrigin,
+    EventSchema,
+    EventSchemaValidationError,
+    EventType,
+    PlayerType,
+)
 
 
-def send_to_channel(game_id: int, game_event: dict[str, Any]) -> None:
+def _get_event_type(event: Event) -> EventType:
     """
-    Send game events to the game channel layer.
-
-    Args:
-        game_id (int): Game identifier.
-        game_event (dict[str, Any]): Game event.
+    Retrieve event type according to Event instance class.
     """
-    # All the events sent by this function are server-side events.
-    game_event["origin"] = GameEventOrigin.SERVER_SIDE
+    if isinstance(event, QuestUpdate):
+        event_type = EventType.QUEST_UPDATE
+    elif isinstance(event, GameStart):
+        event_type = EventType.GAME_START
+    elif isinstance(event, RollRequest):
+        if event.roll_type == RollType.ABILITY_CHECK:
+            event_type = EventType.ABILITY_CHECK_REQUEST
+        elif event.roll_type == RollType.SAVING_THROW:
+            event_type = EventType.SAVING_THROW_REQUEST
+    elif isinstance(event, RollResponse):
+        if event.request.roll_type == RollType.ABILITY_CHECK:
+            event_type = EventType.ABILITY_CHECK_RESPONSE
+    elif isinstance(event, RollResult):
+        if event.request.roll_type == RollType.ABILITY_CHECK:
+            event_type = EventType.ABILITY_CHECK_RESULT
+        if event.request.roll_type == RollType.SAVING_THROW:
+            event_type = EventType.SAVING_THROW_RESULT
+    elif isinstance(event, Combat):
+        event_type = EventType.COMBAT_INITIATION
+    return event_type
+
+
+def send_to_channel(event: Event) -> None:
+    """
+    Serialize an game event to a JSON and send it in the right channel.
+    """
+    if isinstance(event.date, int):
+        event.date = datetime.datetime.fromtimestamp(event.date / 1e3)
+    game_event = {
+        "type": _get_event_type(event),
+        "date": event.date.isoformat(),
+        "player_type": PlayerType.MASTER,
+        "message": event.get_message(),
+        "origin": EventOrigin.SERVER_SIDE,
+    }
     try:
-        GameEvent(**game_event)
+        EventSchema(**game_event)
     except ValidationError as exc:
-        raise GameEventError(exc.errors()) from exc
+        raise EventSchemaValidationError(exc.errors()) from exc
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
-        group=f"game_{game_id}_events", message=game_event
+        group=f"game_{event.game.id}_events", message=game_event
     )

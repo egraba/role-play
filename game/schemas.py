@@ -5,7 +5,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class GameEventType(StrEnum):
+class EventType(StrEnum):
     """
     The game event type corresponds to a specific action that can be done during a game.
     """
@@ -14,7 +14,7 @@ class GameEventType(StrEnum):
     GAME_START = "game.start"
     QUEST_UPDATE = "quest.update"
     ABILITY_CHECK_REQUEST = "ability.check.request"
-    ABILITY_CHECK = "ability.check"
+    ABILITY_CHECK_RESPONSE = "ability.check.response"
     ABILITY_CHECK_RESULT = "ability.check.result"
     SAVING_THROW_REQUEST = "saving.throw.request"
     SAVING_THROW = "saving.throw"
@@ -29,7 +29,7 @@ class PlayerType(StrEnum):
     PLAYER = "player"
 
 
-class GameEventOrigin(IntFlag):
+class EventOrigin(IntFlag):
     """
     Game events can be initiated from the client side (e.g. via a browser),
     or via the server (e.g. via a form).
@@ -39,15 +39,16 @@ class GameEventOrigin(IntFlag):
     SERVER_SIDE = auto()
 
 
-class GameEvent(BaseModel):
-    """Game events are all the communication events that occur during a game."""
+class EventSchema(BaseModel):
+    """Schema used for communication within channels."""
 
-    type: GameEventType  # "type" field is necessary for Django channels.
+    type: EventType  # "type" field is necessary for Django channels.
     date: datetime
     player_type: PlayerType
-    message: str
-    origin: Optional[GameEventOrigin] = None
+    username: Optional[str] = None
+    message: Optional[str] = None
+    origin: Optional[EventOrigin] = None
 
 
-class GameEventError(TypeError):
-    """Raised when an error occurs during GameEvent schema validation."""
+class EventSchemaValidationError(TypeError):
+    pass

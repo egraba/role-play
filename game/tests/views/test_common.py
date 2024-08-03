@@ -16,7 +16,7 @@ from pytest_django.asserts import (
 
 from character.models.character import Character
 from character.tests.factories import CharacterFactory
-from game.models.events import Event, Quest
+from game.models.events import Event, QuestUpdate
 from game.models.game import Game, Player
 from game.views.common import (
     GameCreateErrorView,
@@ -28,10 +28,11 @@ from game.views.common import (
 from master.tests.factories import CampaignFactory
 from utils.factories import UserFactory
 
-from ..factories import EventFactory, GameFactory, PlayerFactory, QuestFactory
+from ..factories import EventFactory, GameFactory, PlayerFactory, QuestUpdateFactory
+
+pytestmark = pytest.mark.django_db
 
 
-@pytest.mark.django_db
 class TestIndexView:
     path_name = "index"
 
@@ -96,7 +97,6 @@ def create_games(django_db_blocker):
             )
 
 
-@pytest.mark.django_db
 class TestGameListView:
     path_name = "game-list"
 
@@ -155,14 +155,13 @@ def populated_game(django_db_blocker):
             EventFactory(game=game)
         number_of_quests = 3
         for _ in range(number_of_quests):
-            QuestFactory(game=game)
+            QuestUpdateFactory(game=game)
         number_of_players = 8
         for _ in range(number_of_players):
             PlayerFactory(game=game)
         return game
 
 
-@pytest.mark.django_db
 class TestGameView:
     @pytest.fixture(autouse=True)
     def login(self, client):
@@ -225,23 +224,23 @@ class TestGameView:
         assert pytest.raises(Http404)
 
     def test_game_last_quest(self, client, populated_game):
-        quest = Quest.objects.filter(game=populated_game).last()
+        quest_update = QuestUpdate.objects.filter(game=populated_game).last()
         response = client.get(populated_game.get_absolute_url())
         assert response.status_code == 200
-        assert response.context["quest"] == quest
+        assert response.context["quest"] == quest_update
 
     def test_context_data_master(self, client, populated_game):
         response = client.get(populated_game.get_absolute_url())
         assert response.status_code == 200
 
-        quest_list = Quest.objects.filter(game=populated_game)
-        quest = quest_list.last()
-        assert response.context["quest"] == quest
+        quest_list = QuestUpdate.objects.filter(game=populated_game)
+        quest_update = quest_list.last()
+        assert response.context["quest"] == quest_update
         character_list = Character.objects.filter(player__game=populated_game)
         assertQuerySetEqual(
             set(response.context["character_list"]), set(character_list)
         )
-        event_list = Event.objects.filter(game=populated_game)
+        event_list = Event.objects.filter(game=populated_game).select_subclasses()
         # issubset() is used because of pagination.
         assert set(response.context["event_list"]).issubset(set(event_list))
         with pytest.raises(KeyError):
@@ -256,14 +255,14 @@ class TestGameView:
         response = client.get(populated_game.get_absolute_url())
         assert response.status_code == 200
 
-        quest_list = Quest.objects.filter(game=populated_game)
-        quest = quest_list.last()
-        assert response.context["quest"] == quest
+        quest_list = QuestUpdate.objects.filter(game=populated_game)
+        quest_update = quest_list.last()
+        assert response.context["quest"] == quest_update
         character_list = Character.objects.filter(player__game=populated_game)
         assertQuerySetEqual(
             set(response.context["character_list"]), set(character_list)
         )
-        event_list = Event.objects.filter(game=populated_game)
+        event_list = Event.objects.filter(game=populated_game).select_subclasses()
         # issubset() is used because of pagination.
         assert set(response.context["event_list"]).issubset(set(event_list))
         player = Player.objects.get(game=populated_game, character__user=user)
@@ -286,7 +285,6 @@ class TestGameView:
         assertContains(response, "The campaign did not start yet...")
 
 
-@pytest.mark.django_db
 class TestGameCreateView:
     path_name = "game-create"
 
@@ -318,10 +316,9 @@ class TestGameCreateView:
         assert game.name == f"{campaign.title} #{game.id}"
         assert game.state == "P"
         assert game.master.user == logged_user
-        quest = Quest.objects.last()
-        assert quest.game == game
-        assert quest.message == "The Master created the campaign."
-        assert quest.content == campaign.synopsis
+        quest_update = QuestUpdate.objects.last()
+        assert quest_update.game == game
+        assert quest_update.content == campaign.synopsis
 
     def test_game_creation_campaign_does_not_exist(self, client, logged_user):
         fake = Faker()
@@ -331,7 +328,6 @@ class TestGameCreateView:
         assertRedirects(response, reverse("game-create-error", args=(fake_slug,)))
 
 
-@pytest.mark.django_db
 class TestGameCreateErrorView:
     path_name = "game-create-error"
     fake = Faker()

@@ -18,7 +18,7 @@ from character.models.character import Character
 from character.tests.factories import CharacterFactory
 from game.flows import GameFlow
 from game.forms import QuestCreateForm
-from game.models.events import Event, Quest
+from game.models.events import Event, QuestUpdate
 from game.models.game import Game
 from game.views.master import (
     CharacterInviteConfirmView,
@@ -29,6 +29,8 @@ from game.views.master import (
 from utils.factories import UserFactory
 
 from ..factories import GameFactory, PlayerFactory
+
+pytestmark = pytest.mark.django_db
 
 
 @pytest.fixture(scope="class")
@@ -45,7 +47,6 @@ def create_characters(django_db_blocker):
             CharacterFactory()
 
 
-@pytest.mark.django_db
 class TestCharacterInviteView:
     path_name = "game-invite-character"
 
@@ -114,7 +115,6 @@ def create_player(django_db_blocker):
         PlayerFactory(game=game)
 
 
-@pytest.mark.django_db
 class TestCharacterInviteConfirmView:
     path_name = "game-invite-character-confirm"
 
@@ -185,10 +185,8 @@ class TestCharacterInviteConfirmView:
         event = Event.objects.last()
         assert event.date.second - timezone.now().second <= 2
         assert event.game == game
-        assert event.message == f"{character} was added to the game."
 
 
-@pytest.mark.django_db
 class TestGameStartView:
     path_name = "game-start"
 
@@ -232,7 +230,6 @@ class TestGameStartView:
         event = Event.objects.last()
         assert event.date.second - timezone.now().second <= 2
         assert event.game == game
-        assert event.message == "the game started."
 
     def test_game_start_not_enough_characters(self, client, game):
         PlayerFactory(game=game)
@@ -256,7 +253,6 @@ def started_game(django_db_blocker):
         return game
 
 
-@pytest.mark.django_db
 class TestQuestCreateView:
     path_name = "quest-create"
 
@@ -308,8 +304,7 @@ class TestQuestCreateView:
             reverse(self.path_name, args=(started_game.id,)), data=form.cleaned_data
         )
         assert response.status_code == 302
-        quest = Quest.objects.filter(game=started_game).last()
-        assert quest.game == started_game
-        assert quest.message == "the Master updated the campaign."
-        assert quest.content == form.cleaned_data["content"]
+        quest_update = QuestUpdate.objects.filter(game=started_game).last()
+        assert quest_update.game == started_game
+        assert quest_update.content == form.cleaned_data["content"]
         assertRedirects(response, started_game.get_absolute_url())

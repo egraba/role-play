@@ -2,7 +2,6 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.cache import cache
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
-from django.utils import timezone
 from django.views.generic import FormView, ListView, UpdateView
 from viewflow.fsm import TransitionNotAllowed
 
@@ -13,9 +12,8 @@ from ..constants.events import RollType
 from ..flows import GameFlow
 from ..forms import AbilityCheckRequestForm, QuestCreateForm, CombatCreateForm
 from ..models.combat import Combat, Fighter
-from ..models.events import Event, Quest
+from ..models.events import QuestUpdate, GameStart, CharacterInvitation
 from ..models.game import Player
-from ..schemas import GameEventType, PlayerType
 from ..tasks import send_mail
 from ..utils.cache import game_key
 from ..utils.channels import send_to_channel
@@ -46,11 +44,8 @@ class CharacterInviteConfirmView(UserPassesTestMixin, UpdateView, GameContextMix
 
     def post(self, request, *args, **kwargs):
         character = self.get_object()
+        CharacterInvitation.objects.create(game=self.game, character=character)
         Player.objects.create(character=character, game=self.game)
-        event = Event(game=self.game)
-        event.date = timezone.now()
-        event.message = f"{character} was added to the game."
-        event.save()
         send_mail.delay(
             subject=f"The Master invited you to join [{self.game}].",
             message=f"{character}, the Master invited you to join [{self.game}].",
@@ -73,19 +68,8 @@ class GameStartView(UserPassesTestMixin, GameStatusControlMixin):
         try:
             flow.start()
             cache.set(game_key(game.id), game)
-            event = Event(game=game)
-            event.date = timezone.now()
-            event.message = "the game started."
-            event.save()
-            send_to_channel(
-                game_id=game.id,
-                game_event={
-                    "type": GameEventType.GAME_START,
-                    "player_type": PlayerType.MASTER,
-                    "date": event.date.isoformat(),
-                    "message": event.message,
-                },
-            )
+            game_start = GameStart.objects.create(game=game)
+            send_to_channel(game_start)
         except TransitionNotAllowed:
             return HttpResponseRedirect(reverse("game-start-error", args=(game.id,)))
         return HttpResponseRedirect(game.get_absolute_url())
@@ -100,7 +84,7 @@ class GameStartErrorView(UserPassesTestMixin, GameStatusControlMixin):
 
 
 class QuestCreateView(UserPassesTestMixin, FormView, EventContextMixin):
-    model = Quest
+    model = QuestUpdate
     fields = ["description"]
     template_name = "game/quest_create.html"
     form_class = QuestCreateForm
@@ -112,29 +96,16 @@ class QuestCreateView(UserPassesTestMixin, FormView, EventContextMixin):
         return reverse_lazy("game", args=(self.game.id,))
 
     def form_valid(self, form):
-        quest = Quest()
-        quest.game = self.game
-        quest.message = "the Master updated the campaign."
-        quest.content = form.cleaned_data["content"]
-        quest.save()
-
-        send_to_channel(
-            game_id=self.game.id,
-            game_event={
-                "type": GameEventType.QUEST_UPDATE,
-                "player_type": PlayerType.MASTER,
-                "date": quest.date.isoformat(),
-                "message": quest.message,
-            },
+        quest_update = QuestUpdate.objects.create(
+            game=self.game, content=form.cleaned_data["content"]
         )
-
+        send_to_channel(quest_update)
         send_mail.delay(
             subject=f"[{self.game}] The Master updated the quest.",
-            message=f"The Master said:\n{quest.content}",
+            message=f"The Master said:\n{quest_update.content}",
             from_email=self.game.master.user.email,
             recipient_list=get_players_emails(game=self.game),
         )
-
         return super().form_valid(form)
 
 
@@ -160,22 +131,8 @@ class AbilityCheckRequestView(
         ability_check_request = form.save(commit=False)
         ability_check_request.game = self.game
         ability_check_request.roll_type = RollType.ABILITY_CHECK
-        ability_check_request.date = timezone.now()
-        ability_check_request.message = f"[{ability_check_request.character.user}] \
-            needs to perform a {ability_check_request.ability_type} ability check! \
-            Difficulty: {ability_check_request.get_difficulty_class_display()}."
         ability_check_request.save()
-
-        send_to_channel(
-            game_id=self.game.id,
-            game_event={
-                "type": GameEventType.ABILITY_CHECK_REQUEST,
-                "player_type": PlayerType.MASTER,
-                "date": ability_check_request.date.isoformat(),
-                "message": ability_check_request.message,
-            },
-        )
-
+        send_to_channel(ability_check_request)
         return super().form_valid(form)
 
 
@@ -226,13 +183,5 @@ class CombatCreate(
             f"Combat! {self._get_fighters_display(fighters, surprised_fighters)}"
         )
         combat.save()
-        send_to_channel(
-            game_id=self.game.id,
-            game_event={
-                "type": GameEventType.COMBAT_INITIATION,
-                "player_type": PlayerType.MASTER,
-                "date": combat.date.isoformat(),
-                "message": combat.message,
-            },
-        )
+        send_to_channel(combat)
         return super().form_valid(form)

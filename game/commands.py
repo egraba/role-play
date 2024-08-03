@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from datetime import datetime
 
 from django.contrib.auth.models import User
 
@@ -8,6 +7,7 @@ from game.models.game import Game
 
 from .constants.events import RollType
 from .tasks import process_roll, store_message
+from .schemas import EventSchema, PlayerType
 
 
 class Command(ABC):
@@ -19,16 +19,24 @@ class Command(ABC):
     """
 
     @abstractmethod
-    def execute(self, date: datetime, message: str, user: User, game: Game) -> None:
+    def execute(self, content: EventSchema, user: User, game: Game) -> None:
         pass
 
 
-class StoreMessageCommand(Command):
-    def execute(self, date: datetime, message: str, user: User, game: Game) -> None:
+class ProcessMessageCommand(Command):
+    def execute(self, content: EventSchema, user: User, game: Game) -> None:
+        if content["player_type"] == PlayerType.MASTER:
+            is_from_master = True
+            author_name = None
+        else:
+            is_from_master = False
+            author_name = Character.objects.get(user=user).user.username
         store_message.delay(
             game_id=game.id,
-            date=date,
-            message=message,
+            date=content["date"],
+            message=content["message"],
+            is_from_master=is_from_master,
+            author_name=author_name,
         )
 
 
@@ -37,7 +45,7 @@ class CharacterCommandMixin(Command):
     Mixin to inherit from when a command is issued by a character.
     """
 
-    def execute(self, date: datetime, message: str, user: User, game: Game) -> None:
+    def execute(self, content: EventSchema, user: User, game: Game) -> None:
         try:
             self.character = Character.objects.get(user=user)
         except Character.DoesNotExist as exc:
@@ -45,25 +53,24 @@ class CharacterCommandMixin(Command):
             raise
 
 
-class AbilityCheckCommand(CharacterCommandMixin):
-    def execute(self, date: datetime, message: str, user: User, game: Game) -> None:
-        super().execute(date, message, user, game)
+class AbilityCheckResponseCommand(CharacterCommandMixin):
+    def execute(self, content: EventSchema, user: User, game: Game) -> None:
+        super().execute(content, user, game)
         process_roll.delay(
             game_id=game.id,
             roll_type=RollType.ABILITY_CHECK,
-            date=date,
+            date=content["date"],
             character_id=self.character.id,
-            message=message,
         )
 
 
 class SavingThrowCommand(CharacterCommandMixin):
-    def execute(self, date: datetime, message: str, user: User, game: Game) -> None:
-        super().execute(date, message, user, game)
+    def execute(self, content: EventSchema, user: User, game: Game) -> None:
+        super().execute(content, user, game)
         process_roll.delay(
             game_id=game.id,
             roll_type=RollType.SAVING_THROW,
-            date=date,
+            date=content["date"],
             character_id=self.character.id,
-            message=message,
+            message=content["message"],
         )
