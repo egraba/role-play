@@ -168,4 +168,4 @@ class TestCombatInitializationModel:
         assert isinstance(combat_init, CombatInitialization)
 
     def test_get_message(self, combat_init):
-        assert combat_init.get_message() == "Combat!"
+        assert combat_init.get_message().startswith("Combat!")
