@@ -46,7 +46,7 @@ class MessageEnricher(Enricher):
         ).get_message()
 
 
-class RollReponseEnricher(Enricher):
+class RollResponseEnricher(Enricher):
     def enrich(self):
         character = Character.objects.get(user__username=self.content["username"])
         self.content["message"] = RollResponse(
