@@ -1,10 +1,12 @@
 from django.db import models
 
-from .game import Player
 from ..constants.combat import CombatAction
+from .game import Game, Player
 
 
 class Combat(models.Model):
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
+
     def get_initiative_order(self):
         """
         Collects all dexterity checks from fighters, sort them and return
