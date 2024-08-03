@@ -144,3 +144,27 @@ class CombatInitialization(Event):
         fighters = self.combat.fighter_set.all()
         surprised_fighters = self.combat.fighter_set.filter(is_surprised=True)
         return f"Combat! {self._get_fighters_display(fighters, surprised_fighters)}"
+
+
+class CombatInitiativeRequest(Event):
+    combat = models.OneToOneField(Combat, on_delete=models.CASCADE)
+
+    def get_message(self):
+        return "initiative request"
+
+
+class CombatInitiativeResponse(Event):
+    combat = models.OneToOneField(Combat, on_delete=models.CASCADE)
+    request = models.OneToOneField(CombatInitiativeRequest, on_delete=models.CASCADE)
+
+    def get_message(self):
+        return "initiative response"
+
+
+class CombatInitiativeResult(Event):
+    combat = models.OneToOneField(Combat, on_delete=models.CASCADE)
+    request = models.OneToOneField(CombatInitiativeRequest, on_delete=models.CASCADE)
+    response = models.OneToOneField(CombatInitiativeResponse, on_delete=models.CASCADE)
+
+    def get_message(self):
+        return "initiative result"
