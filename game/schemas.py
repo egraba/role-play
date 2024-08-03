@@ -14,7 +14,7 @@ class EventType(StrEnum):
     GAME_START = "game.start"
     QUEST_UPDATE = "quest.update"
     ABILITY_CHECK_REQUEST = "ability.check.request"
-    ABILITY_CHECK = "ability.check"
+    ABILITY_CHECK_RESPONSE = "ability.check.response"
     ABILITY_CHECK_RESULT = "ability.check.result"
     SAVING_THROW_REQUEST = "saving.throw.request"
     SAVING_THROW = "saving.throw"
@@ -46,7 +46,7 @@ class EventSchema(BaseModel):
     date: datetime
     player_type: PlayerType
     username: Optional[str] = None
-    message: str
+    message: Optional[str] = None
     origin: Optional[EventOrigin] = None
 
 
