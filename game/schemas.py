@@ -20,7 +20,7 @@ class EventType(StrEnum):
     SAVING_THROW = "saving.throw"
     SAVING_THROW_RESULT = "saving.throw.result"
     COMBAT_INITIALIZATION = "combat.initialization"
-    COMBAT_ROLL_INITIATIVE = "combat.roll.initiative"
+    COMBAT_INITIATIVE_REQUEST = "combat.initiative.request"
 
 
 class PlayerType(StrEnum):

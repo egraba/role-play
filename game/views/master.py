@@ -17,6 +17,7 @@ from ..models.events import (
     GameStart,
     QuestUpdate,
     CombatInitialization,
+    CombatInitiativeRequest,
 )
 from ..models.game import Player
 from ..tasks import send_mail
@@ -178,4 +179,8 @@ class CombatCreateView(
                 )
         combat_init = CombatInitialization.objects.create(game=self.game, combat=combat)
         send_to_channel(combat_init)
+        initiative_request = CombatInitiativeRequest.objects.create(
+            game=self.game, combat=combat
+        )
+        send_to_channel(initiative_request)
         return super().form_valid(form)

@@ -7,6 +7,7 @@ from pydantic import ValidationError
 from ..constants.events import RollType
 from ..models.events import (
     CombatInitialization,
+    CombatInitiativeRequest,
     Event,
     GameStart,
     QuestUpdate,
@@ -46,6 +47,8 @@ def _get_event_type(event: Event) -> EventType:
             event_type = EventType.SAVING_THROW_RESULT
     elif isinstance(event, CombatInitialization):
         event_type = EventType.COMBAT_INITIALIZATION
+    elif isinstance(event, CombatInitiativeRequest):
+        event_type = EventType.COMBAT_INITIATIVE_REQUEST
     return event_type
 
 

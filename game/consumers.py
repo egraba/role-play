@@ -75,7 +75,7 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                     command = SavingThrowCommand()
                 case EventType.COMBAT_INITIALIZATION:
                     command = ProcessMessageCommand()
-                case EventType.COMBAT_ROLL_INITIATIVE:
+                case EventType.COMBAT_INITIATIVE_REQUEST:
                     command = CombatRollInitiativeCommand()
                 case _:
                     pass
