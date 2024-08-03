@@ -34,12 +34,16 @@ def _get_event_type(event: Event) -> EventType:
     elif isinstance(event, RollRequest):
         if event.roll_type == RollType.ABILITY_CHECK:
             event_type = EventType.ABILITY_CHECK_REQUEST
+        elif event.roll_type == RollType.SAVING_THROW:
+            event_type = EventType.SAVING_THROW_REQUEST
     elif isinstance(event, RollResponse):
         if event.request.roll_type == RollType.ABILITY_CHECK:
             event_type = EventType.ABILITY_CHECK_RESPONSE
     elif isinstance(event, RollResult):
         if event.request.roll_type == RollType.ABILITY_CHECK:
             event_type = EventType.ABILITY_CHECK_RESULT
+        if event.request.roll_type == RollType.SAVING_THROW:
+            event_type = EventType.SAVING_THROW_RESULT
     elif isinstance(event, Combat):
         event_type = EventType.COMBAT_INITIATION
     return event_type
