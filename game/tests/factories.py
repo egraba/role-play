@@ -29,6 +29,7 @@ class MasterFactory(factory.django.DjangoModelFactory):
 class GameFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Game
+        skip_postgeneration_save = True
 
     name = factory.Sequence(lambda n: f"game{n}")
     campaign = factory.SubFactory("master.tests.factories.CampaignFactory")
@@ -89,6 +90,7 @@ class QuestUpdateFactory(factory.django.DjangoModelFactory):
 class RollRequestFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = RollRequest
+        skip_postgeneration_save = True
 
     game = factory.SubFactory(GameFactory)
     character = factory.SubFactory("character.tests.factories.CharacterFactory")
