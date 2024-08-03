@@ -5,7 +5,7 @@ from faker import Faker
 
 from character.models.character import Character
 from game.constants.events import RollStatus, RollType
-from game.models.events import RollRequest, RollResult
+from game.models.events import RollRequest, RollResult, RollResponse
 from game.models.game import Game
 from game.tasks import process_roll
 
@@ -41,11 +41,15 @@ class TestProcessRoll:
         process_roll.delay(
             game_id=game.id,
             roll_type=RollType.ABILITY_CHECK,
-            date=date.isoformat(),
+            date=date,
             character_id=character.id,
         ).get()
 
         assert character.player.game == game
+
+        roll_response = RollResponse.objects.last()
+        assert roll_response.game == game
+        assert (roll_response.date.second - date.second) <= 2
 
         roll_result = RollResult.objects.last()
         assert roll_result.game == game
