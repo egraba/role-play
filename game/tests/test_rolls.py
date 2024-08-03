@@ -2,7 +2,7 @@ import pytest
 
 from character.constants.abilities import AbilityName
 from character.tests.factories import CharacterFactory
-from game.constants.events import Against, DifficultyClass, RollResult, RollType
+from game.constants.events import Against, DifficultyClass, RollResultType, RollType
 from game.tests.factories import RollRequestFactory
 from game.rolls import perform_roll
 
@@ -22,7 +22,7 @@ def test_perform_roll_success(monkeypatch):
         difficulty_class=DifficultyClass.EASY,
     )
     _, result = perform_roll(character, request)
-    assert result == RollResult.SUCCESS
+    assert result == RollResultType.SUCCESS
 
 
 def test_perform_roll_failure(monkeypatch):
@@ -38,7 +38,7 @@ def test_perform_roll_failure(monkeypatch):
         difficulty_class=DifficultyClass.HARD,
     )
     _, result = perform_roll(character, request)
-    assert result == RollResult.FAILURE
+    assert result == RollResultType.FAILURE
 
 
 def test_perform_roll_with_proficiency(monkeypatch):
