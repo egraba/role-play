@@ -1,3 +1,5 @@
+import datetime
+
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from pydantic import ValidationError
@@ -47,6 +49,8 @@ def send_to_channel(event: Event) -> None:
     """
     Serialize an game event to a JSON and send it in the right channel.
     """
+    if isinstance(event.date, int):
+        event.date = datetime.datetime.fromtimestamp(event.date / 1e3)
     game_event = {
         "type": _get_event_type(event),
         "date": event.date.isoformat(),
