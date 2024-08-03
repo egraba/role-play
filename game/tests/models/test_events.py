@@ -3,6 +3,7 @@ from django.utils import timezone
 
 from game.models.events import (
     CharacterInvitation,
+    CombatInitialization,
     Event,
     GameStart,
     Message,
@@ -14,6 +15,7 @@ from game.models.events import (
 
 from ..factories import (
     CharacterInvitationFactory,
+    CombatInitalizationFactory,
     EventFactory,
     GameStartFactory,
     MessageFactory,
@@ -155,3 +157,15 @@ class TestRollResultModel:
             == f"[{roll_result.character.user}]'s score: {roll_result.score}, \
             {roll_result.request.roll_type} result: {roll_result.get_result_display()}"
         )
+
+
+class TestCombatInitializationModel:
+    @pytest.fixture
+    def combat_init(self):
+        return CombatInitalizationFactory()
+
+    def test_creation(self, combat_init):
+        assert isinstance(combat_init, CombatInitialization)
+
+    def test_get_message(self, combat_init):
+        assert combat_init.get_message() == "Combat!"

@@ -13,6 +13,7 @@ from ..constants.events import (
     RollStatus,
     RollType,
 )
+from .combat import Combat
 from .game import Game, Player
 
 
@@ -125,4 +126,21 @@ class RollResult(Event):
 
 
 class CombatInitialization(Event):
-    pass
+    combat = models.OneToOneField(Combat, on_delete=models.CASCADE)
+
+    def _get_fighters_display(self, fighters: set, surprised_fighters: set) -> str:
+        """
+        Display fighters in a human readable format, in combat event messages.
+        """
+        fighters_display_list = []
+        for fighter in fighters:
+            if fighter in surprised_fighters:
+                fighters_display_list.append(f"{str(fighter)} (surprised)")
+            else:
+                fighters_display_list.append(str(fighter))
+        return ", ".join(fighters_display_list)
+
+    def get_message(self):
+        fighters = self.combat.fighter_set.all()
+        surprised_fighters = self.combat.fighter_set.filter(is_surprised=True)
+        return f"Combat! {self._get_fighters_display(fighters, surprised_fighters)}"

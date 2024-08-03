@@ -12,7 +12,12 @@ from ..constants.events import RollType
 from ..flows import GameFlow
 from ..forms import AbilityCheckRequestForm, CombatCreateForm, QuestCreateForm
 from ..models.combat import Combat, Fighter
-from ..models.events import CharacterInvitation, GameStart, QuestUpdate
+from ..models.events import (
+    CharacterInvitation,
+    GameStart,
+    QuestUpdate,
+    CombatInitialization,
+)
 from ..models.game import Player
 from ..tasks import send_mail
 from ..utils.cache import game_key
@@ -154,18 +159,6 @@ class CombatCreateView(
         initial = {"game": self.game}
         return initial
 
-    def _get_fighters_display(self, fighters: set, surprised_fighters: set) -> str:
-        """
-        Display fighters in a human readable format, in combat event messages.
-        """
-        fighters_display_list = []
-        for fighter in fighters:
-            if fighter in surprised_fighters:
-                fighters_display_list.append(f"{str(fighter)} (surprised)")
-            else:
-                fighters_display_list.append(str(fighter))
-        return ", ".join(fighters_display_list)
-
     def form_valid(self, form):
         # Combat can be created here as the form has been validated to contain fighters.
         combat = Combat.objects.create(game=self.game)
@@ -184,11 +177,6 @@ class CombatCreateView(
                 )
             fighter.combat = combat
             fighter.save()
-        fighters = Fighter.objects.filter(combat=combat)
-        surprised_fighters = Fighter.objects.filter(combat=combat, is_surprised=True)
-        combat.message = (
-            f"Combat! {self._get_fighters_display(fighters, surprised_fighters)}"
-        )
-        combat.save()
-        send_to_channel(combat)
+        combat_init = CombatInitialization.objects.create(game=self.game, combat=combat)
+        send_to_channel(combat_init)
         return super().form_valid(form)

@@ -7,6 +7,7 @@ from game.constants.events import DifficultyClass, RollResultType, RollType
 from game.models.combat import Combat, Fighter
 from game.models.events import (
     CharacterInvitation,
+    CombatInitialization,
     Event,
     GameStart,
     Message,
@@ -127,6 +128,14 @@ class RollResultFactory(factory.django.DjangoModelFactory):
     response = factory.SubFactory(RollResponse)
     score = factory.Faker("random_int", min=1, max=20)
     result = factory.Faker("enum", enum_cls=RollResultType)
+
+
+class CombatInitalizationFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = CombatInitialization
+
+    game = factory.SubFactory(GameFactory)
+    combat = factory.SubFactory("game.tests.factories.CombatFactory")
 
 
 class FighterFactory(factory.django.DjangoModelFactory):
