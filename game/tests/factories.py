@@ -143,7 +143,6 @@ class CombatFactory(factory.django.DjangoModelFactory):
         skip_postgeneration_save = True
 
     game = factory.SubFactory(GameFactory)
-    message = factory.Faker("text", max_nb_chars=50)
 
     @factory.post_generation
     def add_fighters(obj, create, extracted, **kwargs):
