@@ -4,7 +4,14 @@ from pydantic import ValidationError
 
 from ..constants.events import RollType
 from ..models.combat import Combat
-from ..models.events import Event, GameStart, QuestUpdate, RollRequest
+from ..models.events import (
+    Event,
+    GameStart,
+    QuestUpdate,
+    RollRequest,
+    RollResponse,
+    RollResult,
+)
 from ..schemas import (
     EventOrigin,
     EventSchema,
@@ -25,6 +32,12 @@ def _get_event_type(event: Event) -> EventType:
     elif isinstance(event, RollRequest):
         if event.roll_type == RollType.ABILITY_CHECK:
             event_type = EventType.ABILITY_CHECK_REQUEST
+    elif isinstance(event, RollResponse):
+        if event.request.roll_type == RollType.ABILITY_CHECK:
+            event_type = EventType.ABILITY_CHECK_RESPONSE
+    elif isinstance(event, RollResult):
+        if event.request.roll_type == RollType.ABILITY_CHECK:
+            event_type = EventType.ABILITY_CHECK_RESULT
     elif isinstance(event, Combat):
         event_type = EventType.COMBAT_INITIATION
     return event_type
