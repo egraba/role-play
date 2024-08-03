@@ -64,7 +64,6 @@ def process_roll(
     roll_type: RollType,
     date: datetime,
     character_id: int,
-    message: str,
 ) -> None:
     """
     Process a dice roll.
@@ -76,7 +75,7 @@ def process_roll(
         character_id (int): Identifier of the character who did the roll.
         message (str): Message content.
     """
-    logger.info(f"{game_id=}, {roll_type=}, {date=}, {character_id=}, {message=}")
+    logger.info(f"{game_id=}, {roll_type=}, {date=}, {character_id=}")
 
     try:
         game = Game.objects.get(id=game_id)
@@ -93,9 +92,6 @@ def process_roll(
     ).first()
     if request is None:
         raise InvalidTaskError("Roll request not found")
-
-    # Store the message send when the player has clicked on the sending button.
-    store_message(game_id, date, message)
 
     score, result = perform_roll(character, request)
     # Roll's message must be created after Roll() constructor call
