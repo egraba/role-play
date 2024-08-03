@@ -171,12 +171,11 @@ class CombatCreateView(
                     in form.cleaned_data[fighter_field]
                 ):
                     is_surprised = True
-                fighter, _ = Fighter.objects.get_or_create(
+                Fighter.objects.create(
                     character=Character.objects.get(name=fighter_field),
                     is_surprised=is_surprised,
+                    combat=combat,
                 )
-            fighter.combat = combat
-            fighter.save()
         combat_init = CombatInitialization.objects.create(game=self.game, combat=combat)
         send_to_channel(combat_init)
         return super().form_valid(form)
