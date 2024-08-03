@@ -10,7 +10,7 @@ from character.models.character import Character
 
 from .constants.events import RollStatus, RollType
 from .models.combat import Combat
-from .models.events import Message, Roll, RollRequest
+from .models.events import Message, RollRequest, RollResult
 from .models.game import Game, Player
 from .rolls import perform_roll
 from .utils.cache import game_key
@@ -102,22 +102,22 @@ def process_roll(
     # Roll's message must be created after Roll() constructor call
     # in order to be able to call get_FOO_display(), to display the
     # result in verbose format.
-    roll = Roll(
+    roll_result = RollResult(
         game=game,
         date=date,
         character=character,
         request=request,
         result=result,
     )
-    roll.message = f"[{character.user}]'s score: {score}, \
-        {roll_type} result: {roll.get_result_display()}"
-    roll.save()
+    roll_result.message = f"[{character.user}]'s score: {score}, \
+        {roll_type} result: {roll_result.get_result_display()}"
+    roll_result.save()
 
     # The corresponding roll request is considered now as done.
     request.status = RollStatus.DONE
     request.save()
 
-    send_to_channel(roll)
+    send_to_channel(roll_result)
 
 
 @shared_task
