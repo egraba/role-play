@@ -9,6 +9,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * DnD: Implement combat structure
 
 ### Changed
+* Enhance game events and their messages handling
 * Make celery tasks more robust
 * Refactor character app utils
 * Move rolls module outside of `game.utils`
