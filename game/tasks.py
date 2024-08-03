@@ -10,7 +10,7 @@ from character.models.character import Character
 
 from .constants.events import RollStatus, RollType
 from .models.combat import Combat
-from .models.events import Message, RollRequest, RollResult
+from .models.events import Message, RollRequest, RollResponse, RollResult
 from .models.game import Game, Player
 from .rolls import perform_roll
 from .utils.cache import game_key
@@ -86,6 +86,11 @@ def process_roll(
     ).first()
     if request is None:
         raise InvalidTaskError("Roll request not found")
+
+    # Store the roll response.
+    RollResponse.objects.create(
+        game=game, date=date, character=character, request=request
+    )
 
     score, result = perform_roll(character, request)
     # Roll's message must be created after Roll() constructor call
