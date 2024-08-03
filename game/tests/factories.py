@@ -3,7 +3,7 @@ import random
 import factory
 
 from character.constants.abilities import AbilityName
-from game.constants.events import DifficultyClass, RollType
+from game.constants.events import DifficultyClass, RollResultType, RollType
 from game.models.combat import Combat, Fighter
 from game.models.events import (
     CharacterInvitation,
@@ -13,6 +13,7 @@ from game.models.events import (
     QuestUpdate,
     RollRequest,
     RollResponse,
+    RollResult,
 )
 from game.models.game import Game, Master, Player
 from utils.factories import UserFactory
@@ -112,6 +113,18 @@ class RollResponseFactory(factory.django.DjangoModelFactory):
     game = factory.SubFactory(GameFactory)
     character = factory.SubFactory("character.tests.factories.CharacterFactory")
     request = factory.SubFactory(RollRequest)
+
+
+class RollResultFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = RollResult
+
+    game = factory.SubFactory(GameFactory)
+    character = factory.SubFactory("character.tests.factories.CharacterFactory")
+    request = factory.SubFactory(RollRequest)
+    response = factory.SubFactory(RollResponse)
+    score = factory.Faker("random_int", min=1, max=20)
+    result = factory.Faker("enum", enum_cls=RollResultType)
 
 
 class FighterFactory(factory.django.DjangoModelFactory):

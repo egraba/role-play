@@ -9,6 +9,7 @@ from game.models.events import (
     QuestUpdate,
     RollRequest,
     RollResponse,
+    RollResult,
 )
 
 from ..factories import (
@@ -20,6 +21,7 @@ from ..factories import (
     QuestUpdateFactory,
     RollRequestFactory,
     RollResponseFactory,
+    RollResultFactory,
 )
 
 pytestmark = pytest.mark.django_db
@@ -134,4 +136,22 @@ class TestRollResponseModel:
         assert (
             roll_response.get_message()
             == f"{roll_response.character} performed an ability check!"
+        )
+
+
+class TestRollResultModel:
+    @pytest.fixture
+    def roll_result(self):
+        roll_request = RollRequestFactory()
+        roll_response = RollResponseFactory(request=roll_request)
+        return RollResultFactory(request=roll_request, response=roll_response)
+
+    def test_creation(self, roll_result):
+        assert isinstance(roll_result, RollResult)
+
+    def test_get_message(self, roll_result):
+        assert (
+            roll_result.get_message()
+            == f"[{roll_result.character.user}]'s score: {roll_result.score}, \
+            {roll_result.request.roll_type} result: {roll_result.get_result_display()}"
         )
