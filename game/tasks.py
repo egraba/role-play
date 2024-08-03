@@ -73,7 +73,6 @@ def process_roll(
         roll_type (RollType): Type of the roll.
         date (datetime): Date on which the message has been sent from the player.
         character_id (int): Identifier of the character who did the roll.
-        message (str): Message content.
     """
     logger.info(f"{game_id=}, {roll_type=}, {date=}, {character_id=}")
 
