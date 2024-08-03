@@ -7,7 +7,7 @@ from faker import Faker
 
 from character.models.character import Character
 from game.constants.events import RollStatus, RollType
-from game.models.events import Roll, RollRequest
+from game.models.events import RollResult, RollRequest
 from game.models.game import Game
 from game.tasks import process_roll
 
@@ -53,14 +53,14 @@ class TestProcessRoll:
 
         assert character.player.game == game
 
-        roll = Roll.objects.last()
-        assert roll.game == game
-        assert (roll.date.second - date.second) <= 2
+        roll_result = RollResult.objects.last()
+        assert roll_result.game == game
+        assert (roll_result.date.second - date.second) <= 2
         # SequenceMatcher is used as the score is a random value, and therefore
         # cannot be guessed.
         expected_str = f"[{character.user}]'s score: 5, \
-            {RollType.ABILITY_CHECK} result: {roll.get_result_display()}"
-        s = SequenceMatcher(None, roll.message, expected_str)
+            {RollType.ABILITY_CHECK} result: {roll_result.get_result_display()}"
+        s = SequenceMatcher(None, roll_result.message, expected_str)
         assert s.ratio() > 0.9
 
         ability_check_request = RollRequest.objects.last()
@@ -138,14 +138,14 @@ class TestProcessRoll:
 
         assert character.player.game == game
 
-        roll = Roll.objects.last()
-        assert roll.game == game
-        assert (roll.date.second - date.second) <= 2
+        roll_result = RollResult.objects.last()
+        assert roll_result.game == game
+        assert (roll_result.date.second - date.second) <= 2
         # SequenceMatcher is used as the score is a random value, and therefore
         # cannot be guessed.
         expected_str = f"[{character.user}]'s score: 5, \
-            {RollType.SAVING_THROW} result: {roll.get_result_display()}"
-        s = SequenceMatcher(None, roll.message, expected_str)
+            {RollType.SAVING_THROW} result: {roll_result.get_result_display()}"
+        s = SequenceMatcher(None, roll_result.message, expected_str)
         assert s.ratio() > 0.9
 
         saving_throw_request = RollRequest.objects.last()
