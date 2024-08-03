@@ -61,7 +61,6 @@ class AbilityCheckResponseCommand(CharacterCommandMixin):
             roll_type=RollType.ABILITY_CHECK,
             date=content["date"],
             character_id=self.character.id,
-            message=content["message"],
         )
 
 
