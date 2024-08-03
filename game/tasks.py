@@ -93,14 +93,12 @@ def process_roll(
     )
 
     score, result = perform_roll(character, request)
-    # Roll's message must be created after Roll() constructor call
-    # in order to be able to call get_FOO_display(), to display the
-    # result in verbose format.
     roll_result = RollResult(
         game=game,
         date=date,
         character=character,
         request=request,
+        score=score,
         result=result,
     )
 
