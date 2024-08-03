@@ -1,7 +1,7 @@
 from abc import abstractmethod
 
-from .models.events import Message
-from .models.game import Game, Player
+from .models.events import Message, RollResponse
+from .models.game import Game, Player, Character
 from .schemas import EventSchema, PlayerType
 
 
@@ -43,4 +43,14 @@ class MessageEnricher(Enricher):
             content=self.content["message"],
             is_from_master=is_from_master,
             author=author,
+        ).get_message()
+
+
+class RollReponseEnricher(Enricher):
+    def enrich(self):
+        character = Character.objects.get(user__username=self.content["username"])
+        self.content["message"] = RollResponse(
+            game=self.game,
+            date=self.content["date"],
+            character=character,
         ).get_message()
