@@ -7,10 +7,10 @@ from pydantic import ValidationError
 from character.models.character import Character
 
 from .commands import AbilityCheckCommand, SavingThrowCommand, ProcessMessageCommand
+from .event_enrichers import MessageEnricher
 from .models.game import Game
 from .schemas import EventOrigin, EventSchema, EventSchemaValidationError, EventType
 from .utils.cache import game_key
-from .event_enrichers import MessageEnricher
 
 
 class GameEventsConsumer(JsonWebsocketConsumer):
@@ -63,7 +63,7 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                 case EventType.MESSAGE:
                     command = ProcessMessageCommand()
                     event_enricher = MessageEnricher(self.game, content)
-                case EventType.ABILITY_CHECK:
+                case EventType.ABILITY_CHECK_RESPONSE:
                     command = AbilityCheckCommand()
                 case EventType.SAVING_THROW:
                     command = SavingThrowCommand()
@@ -101,7 +101,7 @@ class GameEventsConsumer(JsonWebsocketConsumer):
         """Ability check request from the master."""
         self.send_json(event)
 
-    def ability_check(self, event):
+    def ability_check_response(self, event):
         """Ability check roll from the player."""
         self.send_json(event)
 

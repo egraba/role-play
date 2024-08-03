@@ -145,7 +145,7 @@
 
         const MESSAGE = "message";
         const QUEST_UPDATE = "quest.update";
-        const ABILITY_CHECK = "ability.check";
+        const ABILITY_CHECK_RESPONSE = "ability.check.response";
         const SAVING_THROW = "saving.throw";
         const COMBAT_ROLL_INITIATIVE = "combat.roll.initiative";
 
@@ -203,10 +203,10 @@
         if (abilityCheckButton !== null) {
             abilityCheckButton.addEventListener('click', function(event) {
                 eventsSocket.send(JSON.stringify({
-                    'type': ABILITY_CHECK,
+                    'type': ABILITY_CHECK_RESPONSE,
                     'date': Date.now(),
                     'player_type': PLAYER,
-                    'message': senderStr + ' performed an ability check!',
+                    'username': '{{ user }}',
                 }));
             });
         }
