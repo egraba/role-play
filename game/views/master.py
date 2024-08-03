@@ -3,10 +3,8 @@ from django.core.cache import cache
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import FormView, ListView, UpdateView
-from django_celery_beat.models import IntervalSchedule, PeriodicTask
 from viewflow.fsm import TransitionNotAllowed
 
-from character.constants.abilities import AbilityName
 from character.models.character import Character
 
 from ..constants.combat import FighterAttributeChoices
@@ -14,7 +12,7 @@ from ..constants.events import RollType
 from ..flows import GameFlow
 from ..forms import AbilityCheckRequestForm, CombatCreateForm, QuestCreateForm
 from ..models.combat import Combat, Fighter
-from ..models.events import QuestUpdate, GameStart, CharacterInvitation, RollRequest
+from ..models.events import CharacterInvitation, GameStart, QuestUpdate
 from ..models.game import Player
 from ..tasks import send_mail
 from ..utils.cache import game_key

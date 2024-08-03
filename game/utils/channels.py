@@ -45,7 +45,7 @@ def _get_event_type(event: Event) -> EventType:
         if event.request.roll_type == RollType.SAVING_THROW:
             event_type = EventType.SAVING_THROW_RESULT
     elif isinstance(event, Combat):
-        event_type = EventType.COMBAT_INITIATION
+        event_type = EventType.COMBAT_INITIALIZATION
     return event_type
 
 
