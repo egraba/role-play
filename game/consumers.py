@@ -8,6 +8,7 @@ from character.models.character import Character
 
 from .commands import (
     AbilityCheckResponseCommand,
+    CombatRollInitiativeCommand,
     ProcessMessageCommand,
     SavingThrowCommand,
 )
@@ -74,7 +75,7 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                     command = SavingThrowCommand()
                 case EventType.COMBAT_INITIALIZATION:
                     command = ProcessMessageCommand()
-                case GameEventType.COMBAT_ROLL_INITIATIVE:
+                case EventType.COMBAT_ROLL_INITIATIVE:
                     command = CombatRollInitiativeCommand()
                 case _:
                     pass
