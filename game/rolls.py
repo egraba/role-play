@@ -2,7 +2,7 @@ from character.models.abilities import AbilityType, Ability
 from character.models.character import Character
 from utils.dice import Dice
 
-from .constants.events import RollResult
+from .constants.events import RollResultType
 from .models.events import RollRequest
 from .exceptions import RollInvalid
 
@@ -60,5 +60,5 @@ def perform_roll(
         # to get the order of the fighters. Therefore, no success nor failure is expected.
         return score, None
     if score >= request.difficulty_class:
-        return score, RollResult.SUCCESS
-    return score, RollResult.FAILURE
+        return score, RollResultType.SUCCESS
+    return score, RollResultType.FAILURE
