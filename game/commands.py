@@ -53,7 +53,7 @@ class CharacterCommandMixin(Command):
             raise
 
 
-class AbilityCheckCommand(CharacterCommandMixin):
+class AbilityCheckResponseCommand(CharacterCommandMixin):
     def execute(self, content: EventSchema, user: User, game: Game) -> None:
         super().execute(content, user, game)
         process_roll.delay(
