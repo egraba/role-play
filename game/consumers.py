@@ -11,7 +11,7 @@ from .commands import (
     ProcessMessageCommand,
     SavingThrowCommand,
 )
-from .event_enrichers import MessageEnricher
+from .event_enrichers import MessageEnricher, RollReponseEnricher
 from .models.game import Game
 from .schemas import EventOrigin, EventSchema, EventSchemaValidationError, EventType
 from .utils.cache import game_key
@@ -69,6 +69,7 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                     event_enricher = MessageEnricher(self.game, content)
                 case EventType.ABILITY_CHECK_RESPONSE:
                     command = AbilityCheckResponseCommand()
+                    event_enricher = RollReponseEnricher(self.game, content)
                 case EventType.SAVING_THROW:
                     command = SavingThrowCommand()
                 case EventType.COMBAT_INITIALIZATION:
