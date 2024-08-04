@@ -131,9 +131,8 @@ class GameEventsConsumer(JsonWebsocketConsumer):
         """Combat initialization."""
         self.send_json(event)
 
-    def combat_roll_initiative(self, event):
+    def combat_initiative_request(self, event):
         """
-        Combat roll initiative.
-        All players have to perform a dexterity check.
+        All players have to perform a dexterity check to determine combat order.
         """
         self.send_json(event)

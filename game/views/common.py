@@ -68,7 +68,7 @@ class GameView(LoginRequiredMixin, ListView, GameContextMixin):
                 status=RollStatus.PENDING,
                 is_combat=False,
             ).first()
-            context["dexterity_check_request"] = RollRequest.objects.filter(
+            context["combat_initiative_request"] = RollRequest.objects.filter(
                 character__player=current_player,
                 roll_type=RollType.ABILITY_CHECK,
                 ability_type=AbilityName.DEXTERITY,

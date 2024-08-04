@@ -44,14 +44,14 @@
                                     <p>Perform ability check</p>
                                 </button>
                             {% endif %}
-                            {% if dexterity_check_request %}
-                                <button id="dexterity-check-submit" class="rpgui-button" type="submit">
-                                    <p>Perform dexterity check</p>
-                                </button>
-                            {% endif %}
                             {% if saving_throw_request %}
                                 <button id="saving-throw-submit" class="rpgui-button" type="submit">
                                     <p>Perform saving throw</p>
+                                </button>
+                            {% endif %}
+                            {% if combat_initiative_request %}
+                                <button id="dexterity-check-submit" class="rpgui-button" type="submit">
+                                    <p>Perform dexterity check</p>
                                 </button>
                             {% endif %}
                         {% endif%}
@@ -149,7 +149,7 @@
         const ABILITY_CHECK_RESPONSE = "ability.check.response";
         const ABILITY_CHECK_RESULT = "ability.check.result";
         const SAVING_THROW = "saving.throw";
-        const COMBAT_ROLL_INITIATIVE = "combat.roll.initiative";
+        const COMBAT_INITIATIVE_REQUEST = "combat.initiative.request";
 
         eventsSocket.onmessage = function(event) {
             message = JSON.parse(event.data)
@@ -164,7 +164,8 @@
                 $("#quest").load(" #quest > *");
             } else if (message["type"] === ABILITY_CHECK_REQUEST
                 || message["type"] === ABILITY_CHECK_RESPONSE
-                || message["type"] === ABILITY_CHECK_RESULT) {
+                || message["type"] === ABILITY_CHECK_RESULT
+                || message["type"] === COMBAT_INITIATIVE_REQUEST) {
                 // The full page has to be reloaded, otherwise clicking on the button
                 // triggers no action.
                     location.reload();
