@@ -1,6 +1,6 @@
 from abc import abstractmethod
 
-from .models.events import Message, RollResponse
+from .models.events import Message, RollResponse, CombatInitiativeResponse
 from .models.game import Game, Player, Character
 from .schemas import EventSchema, PlayerType
 
@@ -50,6 +50,16 @@ class RollResponseEnricher(Enricher):
     def enrich(self):
         character = Character.objects.get(user__username=self.content["username"])
         self.content["message"] = RollResponse(
+            game=self.game,
+            date=self.content["date"],
+            character=character,
+        ).get_message()
+
+
+class CombatInitiativeResponseEnricher(Enricher):
+    def enrich(self):
+        character = Character.objects.get(user__username=self.content["username"])
+        self.content["message"] = CombatInitiativeResponse(
             game=self.game,
             date=self.content["date"],
             character=character,

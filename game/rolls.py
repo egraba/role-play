@@ -1,10 +1,10 @@
-from character.models.abilities import AbilityType, Ability
+from character.models.abilities import Ability, AbilityType
 from character.models.character import Character
 from utils.dice import Dice
 
-from .constants.events import RollResultType
-from .models.events import RollRequest
+from .constants.events import RollResultType, RollType
 from .exceptions import RollInvalid
+from .models.events import RollRequest
 
 
 def _roll(character: Character, ability_type: AbilityType) -> int:
@@ -38,7 +38,12 @@ def perform_roll(
         tuple[int, tuple[str, str] | None]: Dice roll score and roll type result (if any).
     """
 
-    score = _roll(character, request.ability_type)
+    if hasattr(request, "ability_type"):
+        score = _roll(character, request.ability_type)
+    else:
+        # Combat initialization
+        # score = _roll(character, AbilityName.DEXTERITY[0])
+        setattr(request, "roll_type", RollType.ABILITY_CHECK)
     has_advantage = character.has_advantage(request.roll_type, request.against)
     has_disadvantage = character.has_disadvantage(request.roll_type, request.against)
     if has_advantage and has_disadvantage:

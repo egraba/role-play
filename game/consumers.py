@@ -77,6 +77,7 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                     command = ProcessMessageCommand()
                 case EventType.COMBAT_INITIATIVE_RESPONSE:
                     command = CombatInitiativeResponseCommand()
+                    event_enricher = RollResponseEnricher(self.game, content)
                 case _:
                     pass
             try:

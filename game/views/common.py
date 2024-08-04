@@ -70,6 +70,7 @@ class GameView(LoginRequiredMixin, ListView, GameContextMixin):
             context["combat_initiative_request"] = (
                 CombatInitiativeRequest.objects.filter(
                     fighter__character__player=current_player,
+                    status=RollStatus.PENDING,
                 ).first()
             )
             context["saving_throw_request"] = RollRequest.objects.filter(

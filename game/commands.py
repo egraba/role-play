@@ -84,4 +84,5 @@ class CombatInitiativeResponseCommand(CharacterCommandMixin):
             roll_type=RollType.ABILITY_CHECK,
             date=content["date"],
             character_id=self.character.id,
+            is_combat_initiative=True,
         )

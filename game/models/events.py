@@ -148,13 +148,15 @@ class CombatInitialization(Event):
 
 class CombatInitiativeRequest(Event):
     fighter = models.OneToOneField(Fighter, on_delete=models.CASCADE)
+    status = models.CharField(
+        max_length=1, choices=RollStatus, default=RollStatus.PENDING
+    )
 
     def get_message(self):
         return f"{self.fighter} needs to perform a {AbilityName.DEXTERITY} check!"
 
 
 class CombatInitiativeResponse(Event):
-    combat = models.OneToOneField(Combat, on_delete=models.CASCADE)
     request = models.OneToOneField(CombatInitiativeRequest, on_delete=models.CASCADE)
 
     def get_message(self):
@@ -162,9 +164,10 @@ class CombatInitiativeResponse(Event):
 
 
 class CombatInitiativeResult(Event):
-    combat = models.OneToOneField(Combat, on_delete=models.CASCADE)
+    fighter = models.OneToOneField(Fighter, on_delete=models.CASCADE)
     request = models.OneToOneField(CombatInitiativeRequest, on_delete=models.CASCADE)
     response = models.OneToOneField(CombatInitiativeResponse, on_delete=models.CASCADE)
+    score = models.SmallIntegerField()
 
     def get_message(self):
         return "initiative result"
