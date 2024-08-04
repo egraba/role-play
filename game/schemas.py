@@ -21,6 +21,7 @@ class EventType(StrEnum):
     SAVING_THROW_RESULT = "saving.throw.result"
     COMBAT_INITIALIZATION = "combat.initialization"
     COMBAT_INITIATIVE_REQUEST = "combat.initiative.request"
+    COMBAT_INITIATIVE_RESPONSE = "combat.initiative.response"
 
 
 class PlayerType(StrEnum):

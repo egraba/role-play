@@ -76,7 +76,7 @@ class SavingThrowCommand(CharacterCommandMixin):
         )
 
 
-class CombatRollInitiativeCommand(CharacterCommandMixin):
+class CombatInitiativeResponseCommand(CharacterCommandMixin):
     def execute(self, content: EventSchema, user: User, game: Game) -> None:
         super().execute(content, user, game)
         process_roll.delay(
@@ -84,5 +84,4 @@ class CombatRollInitiativeCommand(CharacterCommandMixin):
             roll_type=RollType.ABILITY_CHECK,
             date=content["date"],
             character_id=self.character.id,
-            message=content["message"],
         )

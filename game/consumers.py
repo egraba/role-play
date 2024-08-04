@@ -8,7 +8,7 @@ from character.models.character import Character
 
 from .commands import (
     AbilityCheckResponseCommand,
-    CombatRollInitiativeCommand,
+    CombatInitiativeResponseCommand,
     ProcessMessageCommand,
     SavingThrowCommand,
 )
@@ -75,8 +75,8 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                     command = SavingThrowCommand()
                 case EventType.COMBAT_INITIALIZATION:
                     command = ProcessMessageCommand()
-                case EventType.COMBAT_INITIATIVE_REQUEST:
-                    command = CombatRollInitiativeCommand()
+                case EventType.COMBAT_INITIATIVE_RESPONSE:
+                    command = CombatInitiativeResponseCommand()
                 case _:
                     pass
             try:
@@ -135,4 +135,8 @@ class GameEventsConsumer(JsonWebsocketConsumer):
         """
         All players have to perform a dexterity check to determine combat order.
         """
+        self.send_json(event)
+
+    def combat_initiative_response(self, event):
+        """Dexterity check roll from the player."""
         self.send_json(event)
