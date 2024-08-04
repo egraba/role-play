@@ -179,8 +179,9 @@ class CombatCreateView(
                 )
         combat_init = CombatInitialization.objects.create(game=self.game, combat=combat)
         send_to_channel(combat_init)
-        initiative_request = CombatInitiativeRequest.objects.create(
-            game=self.game, combat=combat
-        )
-        send_to_channel(initiative_request)
+        for fighter in combat.fighter_set.all():
+            initiative_request = CombatInitiativeRequest.objects.create(
+                game=self.game, fighter=fighter
+            )
+            send_to_channel(initiative_request)
         return super().form_valid(form)

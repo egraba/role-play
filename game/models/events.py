@@ -13,7 +13,7 @@ from ..constants.events import (
     RollStatus,
     RollType,
 )
-from .combat import Combat
+from .combat import Combat, Fighter
 from .game import Game, Player
 
 
@@ -147,10 +147,10 @@ class CombatInitialization(Event):
 
 
 class CombatInitiativeRequest(Event):
-    combat = models.OneToOneField(Combat, on_delete=models.CASCADE)
+    fighter = models.OneToOneField(Fighter, on_delete=models.CASCADE)
 
     def get_message(self):
-        return "initiative request"
+        return f"{self.fighter} needs to perform a {AbilityName.DEXTERITY} check!"
 
 
 class CombatInitiativeResponse(Event):
