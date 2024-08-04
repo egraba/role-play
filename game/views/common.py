@@ -5,13 +5,12 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views.generic import CreateView, ListView, TemplateView
 
-from character.constants.abilities import AbilityName
 from character.models.character import Character
 from master.models import Campaign
 
 from ..constants.events import RollStatus, RollType
 from ..flows import GameFlow
-from ..models.events import Event, QuestUpdate, RollRequest
+from ..models.events import Event, QuestUpdate, RollRequest, CombatInitiativeRequest
 from ..models.game import Game, Master, Player
 from ..views.mixins import GameContextMixin
 
@@ -68,13 +67,11 @@ class GameView(LoginRequiredMixin, ListView, GameContextMixin):
                 status=RollStatus.PENDING,
                 is_combat=False,
             ).first()
-            context["combat_initiative_request"] = RollRequest.objects.filter(
-                character__player=current_player,
-                roll_type=RollType.ABILITY_CHECK,
-                ability_type=AbilityName.DEXTERITY,
-                status=RollStatus.PENDING,
-                is_combat=True,
-            ).first()
+            context["combat_initiative_request"] = (
+                CombatInitiativeRequest.objects.filter(
+                    fighter__character__player=current_player,
+                ).first()
+            )
             context["saving_throw_request"] = RollRequest.objects.filter(
                 character__player=current_player,
                 roll_type=RollType.SAVING_THROW,
