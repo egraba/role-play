@@ -6,7 +6,7 @@ from faker import Faker
 
 from character.tests.factories import CharacterFactory
 from game.consumers import GameEventsConsumer
-from game.schemas import EventSchema, EventType, PlayerType
+from game.schemas import EventSchema, EventSchemaValidationError, EventType, PlayerType
 from utils.factories import UserFactory
 
 from .factories import GameFactory, PlayerFactory
@@ -54,6 +54,24 @@ async def test_connect_game_not_found(application, user):
     communicator.scope["game_id"] = game_id
     connected, _ = await communicator.connect()
     assert not connected
+
+
+@pytest.mark.asyncio
+async def test_communication_schema_not_valid(application, game, user):
+    communicator = WebsocketCommunicator(application, f"/events/{game.id}/")
+    communicator.scope["user"] = user
+    communicator.scope["game_id"] = game.id
+    connected, _ = await communicator.connect()
+    assert connected
+
+    game_event = {
+        "some_field": "some_value",
+    }
+
+    await communicator.send_json_to(game_event)
+    with pytest.raises(EventSchemaValidationError):
+        await communicator.receive_json_from()
+        await communicator.disconnect()
 
 
 @pytest.mark.asyncio
