@@ -4,11 +4,12 @@ from channels.testing import WebsocketCommunicator
 from django.urls import re_path
 from faker import Faker
 
+from character.tests.factories import CharacterFactory
 from game.consumers import GameEventsConsumer
 from game.schemas import EventSchema, EventType, PlayerType
 from utils.factories import UserFactory
 
-from .factories import GameFactory
+from .factories import GameFactory, PlayerFactory
 
 pytestmark = pytest.mark.django_db(transaction=True)
 
@@ -28,8 +29,11 @@ def game():
 
 
 @pytest.fixture
-def user():
-    return UserFactory()
+def user(game):
+    user = UserFactory(username="player")
+    character = CharacterFactory(user=user)
+    PlayerFactory(game=game, character=character)
+    return user
 
 
 @pytest.mark.asyncio
@@ -53,7 +57,7 @@ async def test_connect_game_not_found(application, user):
 
 
 @pytest.mark.asyncio
-async def test_communication_message(application, game, user):
+async def test_communication_message_from_master(application, game, user):
     communicator = WebsocketCommunicator(application, f"/events/{game.id}/")
     communicator.scope["user"] = user
     communicator.scope["game_id"] = game.id
@@ -66,6 +70,33 @@ async def test_communication_message(application, game, user):
     game_event = {
         "type": EventType.MESSAGE,
         "player_type": PlayerType.MASTER,
+        "date": date,
+        "message": message,
+    }
+    assert EventSchema(**game_event)
+
+    await communicator.send_json_to(game_event)
+    response = await communicator.receive_json_from()
+    assert EventSchema(**response)
+
+    await communicator.disconnect()
+
+
+@pytest.mark.asyncio
+async def test_communication_message_from_player(application, game, user):
+    communicator = WebsocketCommunicator(application, f"/events/{game.id}/")
+    communicator.scope["user"] = user
+    communicator.scope["game_id"] = game.id
+    connected, _ = await communicator.connect()
+    assert connected
+
+    fake = Faker()
+    date = fake.date_time().isoformat()
+    message = fake.text(100)
+    game_event = {
+        "type": EventType.MESSAGE,
+        "player_type": PlayerType.PLAYER,
+        "username": "player",
         "date": date,
         "message": message,
     }
