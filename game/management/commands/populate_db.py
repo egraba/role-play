@@ -16,13 +16,13 @@ class Command(BaseCommand):
         seb = UserWithPasswordFactory(username="seb")  # Another player
 
         # Games
-        for _ in range(5):
+        for _ in range(3):
             GameFactory(master__user=thomas)
 
         # Characters
         CharacterFactory(user=eric, name="Eric")
         CharacterFactory(user=seb, name="Seb")
-        for i in range(2, 10):
+        for i in range(2, 8):
             CharacterFactory(__sequence=i)
 
         self.stdout.write(self.style.SUCCESS("Successfully populated the database"))
