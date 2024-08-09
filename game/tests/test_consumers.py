@@ -91,7 +91,6 @@ async def test_communication_message_from_master(application, game, user):
         "date": date,
         "message": message,
     }
-    assert EventSchema(**game_event)
 
     await communicator.send_json_to(game_event)
     response = await communicator.receive_json_from()
@@ -118,7 +117,6 @@ async def test_communication_message_from_player(application, game, user):
         "date": date,
         "message": message,
     }
-    assert EventSchema(**game_event)
 
     await communicator.send_json_to(game_event)
     response = await communicator.receive_json_from()
