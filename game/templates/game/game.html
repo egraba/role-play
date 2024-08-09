@@ -167,6 +167,7 @@
                 || message["type"] === ABILITY_CHECK_RESPONSE
                 || message["type"] === ABILITY_CHECK_RESULT
                 || message["type"] === COMBAT_INITIATIVE_REQUEST) {
+                || message["type"] === ABILITY_CHECK_RESULT) {
                 // The full page has to be reloaded, otherwise clicking on the button
                 // triggers no action.
                     location.reload();

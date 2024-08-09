@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name="Event",
+            name="Combat",
             fields=[
                 (
                     "id",
@@ -66,19 +66,29 @@ class Migration(migrations.Migration):
             name="QuestUpdate",
             fields=[
                 (
-                    "event_ptr",
-                    models.OneToOneField(
+                    "id",
+                    models.BigAutoField(
                         auto_created=True,
-                        on_delete=django.db.models.deletion.CASCADE,
-                        parent_link=True,
                         primary_key=True,
                         serialize=False,
-                        to="game.event",
+                        verbose_name="ID",
                     ),
                 ),
-                ("content", models.CharField(max_length=1000)),
+                ("is_surprised", models.BooleanField(default=False)),
+                (
+                    "character",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="character.character",
+                    ),
+                ),
+                (
+                    "combat",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="game.combat"
+                    ),
+                ),
             ],
-            bases=("game.event",),
         ),
         migrations.CreateModel(
             name="Fighter",
@@ -145,12 +155,84 @@ class Migration(migrations.Migration):
                 ),
             ],
         ),
-        migrations.AddField(
-            model_name="event",
-            name="game",
-            field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to="game.game"
-            ),
+        migrations.CreateModel(
+            name="CombatInitialization",
+            fields=[
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("date", models.DateTimeField(auto_now_add=True)),
+                (
+                    "game",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="game.game"
+                    ),
+                ),
+            ],
+            options={
+                "abstract": False,
+            },
+        ),
+        migrations.CreateModel(
+            name="CharacterInvitation",
+            fields=[
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("date", models.DateTimeField(auto_now_add=True)),
+                (
+                    "character",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="character.character",
+                    ),
+                ),
+                (
+                    "game",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="game.game"
+                    ),
+                ),
+            ],
+            options={
+                "abstract": False,
+            },
+        ),
+        migrations.CreateModel(
+            name="GameStart",
+            fields=[
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("date", models.DateTimeField(auto_now_add=True)),
+                (
+                    "game",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="game.game"
+                    ),
+                ),
+            ],
+            options={
+                "abstract": False,
+            },
         ),
         migrations.AddField(
             model_name="combat",
@@ -185,6 +267,31 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
+        ),
+        migrations.CreateModel(
+            name="Message",
+            fields=[
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("date", models.DateTimeField(auto_now_add=True)),
+                ("content", models.CharField(max_length=100)),
+                (
+                    "game",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="game.game"
+                    ),
+                ),
+            ],
+            options={
+                "abstract": False,
+            },
         ),
         migrations.CreateModel(
             name="Player",
@@ -448,16 +555,15 @@ class Migration(migrations.Migration):
             name="RollRequest",
             fields=[
                 (
-                    "event_ptr",
-                    models.OneToOneField(
+                    "id",
+                    models.BigAutoField(
                         auto_created=True,
-                        on_delete=django.db.models.deletion.CASCADE,
-                        parent_link=True,
                         primary_key=True,
                         serialize=False,
-                        to="game.event",
+                        verbose_name="ID",
                     ),
                 ),
+                ("date", models.DateTimeField(auto_now_add=True)),
                 (
                     "status",
                     models.CharField(
@@ -558,20 +664,20 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            bases=("game.event",),
+            options={
+                "abstract": False,
+            },
         ),
         migrations.CreateModel(
             name="RollResult",
             fields=[
                 (
-                    "event_ptr",
-                    models.OneToOneField(
+                    "id",
+                    models.BigAutoField(
                         auto_created=True,
-                        on_delete=django.db.models.deletion.CASCADE,
-                        parent_link=True,
                         primary_key=True,
                         serialize=False,
-                        to="game.event",
+                        verbose_name="ID",
                     ),
                 ),
                 ("score", models.SmallIntegerField()),
@@ -589,6 +695,12 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
+                    "game",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="game.game"
+                    ),
+                ),
+                (
                     "request",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
@@ -603,7 +715,73 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            bases=("game.event",),
+            options={
+                "abstract": False,
+            },
+        ),
+        migrations.CreateModel(
+            name="Round",
+            fields=[
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "combat",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="game.combat"
+                    ),
+                ),
+            ],
+        ),
+        migrations.CreateModel(
+            name="Turn",
+            fields=[
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("move", models.IntegerField()),
+                (
+                    "action",
+                    models.CharField(
+                        choices=[
+                            ("attack", "Attack"),
+                            ("cast_spell", "Cast Spell"),
+                            ("dash", "Dash"),
+                            ("disangage", "Disengage"),
+                            ("dodge", "Dodge"),
+                            ("help", "Help"),
+                            ("hide", "Hide"),
+                            ("ready", "Ready"),
+                            ("search", "Search"),
+                            ("use_object", "Use Object"),
+                        ]
+                    ),
+                ),
+                (
+                    "player",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="game.player"
+                    ),
+                ),
+                (
+                    "round",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE, to="game.round"
+                    ),
+                ),
+            ],
         ),
         migrations.AddIndex(
             model_name="game",
@@ -613,7 +791,31 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AddIndex(
-            model_name="event",
-            index=models.Index(fields=["-date"], name="game_event_date_707313_idx"),
+            model_name="combatinitialization",
+            index=models.Index(fields=["-date"], name="game_combat_date_1b2c1a_idx"),
+        ),
+        migrations.AddIndex(
+            model_name="characterinvitation",
+            index=models.Index(fields=["-date"], name="game_charac_date_882223_idx"),
+        ),
+        migrations.AddIndex(
+            model_name="gamestart",
+            index=models.Index(fields=["-date"], name="game_gamest_date_edf9a6_idx"),
+        ),
+        migrations.AddIndex(
+            model_name="message",
+            index=models.Index(fields=["-date"], name="game_messag_date_bac6ca_idx"),
+        ),
+        migrations.AddIndex(
+            model_name="questupdate",
+            index=models.Index(fields=["-date"], name="game_questu_date_73d038_idx"),
+        ),
+        migrations.AddIndex(
+            model_name="rollrequest",
+            index=models.Index(fields=["-date"], name="game_rollre_date_d85969_idx"),
+        ),
+        migrations.AddIndex(
+            model_name="roll",
+            index=models.Index(fields=["-date"], name="game_roll_date_201db4_idx"),
         ),
     ]

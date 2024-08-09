@@ -98,6 +98,9 @@ def process_roll(
         roll_request = RollRequest.objects.filter(
             roll_type=roll_type, character=character, status=RollStatus.PENDING
         ).first()
+    roll_request = RollRequest.objects.filter(
+        roll_type=roll_type, character=character, status=RollStatus.PENDING
+    ).first()
     if roll_request is None:
         raise InvalidTaskError("Roll request not found")
 

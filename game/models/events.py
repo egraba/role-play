@@ -71,7 +71,6 @@ class Message(Event):
             author = str(self.author)
         return f"{author} said: {self.content}"
 
-
 class QuestUpdate(Event):
     content = models.CharField(max_length=1000)
 
@@ -99,6 +98,10 @@ class RollRequest(Event):
     roll_type = models.SmallIntegerField(choices=RollType)
     against = models.CharField(max_length=1, choices=Against, blank=True, null=True)
     is_combat = models.BooleanField(default=False)
+
+    def get_message(self):
+        return f"{self.character} needs to perform a {self.ability_type} check! \
+            Difficulty: {self.get_difficulty_class_display()}."
 
     def get_message(self):
         return f"{self.character} needs to perform a {self.ability_type} check! \

@@ -8,6 +8,8 @@ from ..constants.events import RollType
 from ..models.events import (
     CombatInitialization,
     CombatInitiativeRequest,
+from ..models.combat import Combat
+from ..models.events import (
     Event,
     GameStart,
     QuestUpdate,

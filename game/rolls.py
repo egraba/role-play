@@ -3,6 +3,7 @@ from character.models.character import Character
 from utils.dice import Dice
 
 from .constants.events import RollResultType, RollType
+from .models.events import RollRequest
 from .exceptions import RollInvalid
 from .models.events import RollRequest
 

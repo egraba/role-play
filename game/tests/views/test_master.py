@@ -341,6 +341,9 @@ class TestCombatCreateView:
             reverse(self.path_name, args=(started_game.id,)), data=form.cleaned_data
         )
         assert response.status_code == 302
+        quest_update = QuestUpdate.objects.filter(game=started_game).last()
+        assert quest_update.game == started_game
+        assert quest_update.content == form.cleaned_data["content"]
         assertRedirects(response, started_game.get_absolute_url())
         combat = Combat.objects.filter(game=started_game).last()
         assert combat
