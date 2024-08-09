@@ -1,7 +1,9 @@
+import pytest
 from django import forms
 
-from character.forms.character import CharacterCreateForm
-from game.forms import QuestCreateForm
+from character.models.character import Character
+from game.constants.combat import FighterAttributeChoices
+from game.forms import CombatCreateForm, QuestCreateForm
 
 
 class TestQuestCreateForm:
@@ -14,15 +16,30 @@ class TestQuestCreateForm:
         assert form.fields["content"].max_length == 1000
 
 
-class TestCharacterCreateForm:
-    def test_name_type(self):
-        form = CharacterCreateForm()
-        assert isinstance(form.fields["name"].widget, forms.TextInput)
+pytestmark = pytest.mark.django_db
 
-    def test_name_max_length(self):
-        form = CharacterCreateForm()
-        assert form.fields["name"].max_length == 100
 
-    def test_race_type(self):
-        form = CharacterCreateForm()
-        assert isinstance(form.fields["race"].widget, forms.Select)
+class TestCombatCreateForm:
+    def test_character_fields(self, started_game):
+        form = CombatCreateForm(initial={"game": f"{started_game.id}"})
+        players = started_game.player_set.all()
+        character_name_list = [player.character.name for player in players]
+        assert list(form.fields.keys()) == character_name_list
+
+    def test_form_valid_one_fighter(self, started_game):
+        characters = Character.objects.filter(player__game=started_game)
+        data = {}
+        data[characters.first().name] = [FighterAttributeChoices.IS_FIGHTING]
+        form = CombatCreateForm(data, initial={"game": f"{started_game.id}"})
+        assert form.is_valid()
+
+    def test_form_invalid_no_fighters(self, started_game):
+        form = CombatCreateForm(initial={"game": f"{started_game.id}"})
+        assert not form.is_valid()
+
+    def test_form_invalid_surprised_non_fighter(self, started_game):
+        characters = Character.objects.filter(player__game=started_game)
+        data = {}
+        data[characters.first().name] = [FighterAttributeChoices.IS_SURPRISED]
+        form = CombatCreateForm(initial={"game": f"{started_game.id}"})
+        assert not form.is_valid()

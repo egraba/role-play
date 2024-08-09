@@ -48,7 +48,7 @@ urlpatterns = [
     ),
     path(
         "<int:game_id>/create_combat",
-        master.CombatCreate.as_view(),
+        master.CombatCreateView.as_view(),
         name="combat-create",
     ),
 ]

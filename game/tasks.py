@@ -9,7 +9,16 @@ from django.core.mail import send_mail as django_send_mail
 from character.models.character import Character
 
 from .constants.events import RollStatus, RollType
-from .models.events import Message, RollRequest, RollResponse, RollResult
+from .models.combat import Combat
+from .models.events import (
+    CombatInitiativeRequest,
+    CombatInitiativeResponse,
+    CombatInitiativeResult,
+    Message,
+    RollRequest,
+    RollResponse,
+    RollResult,
+)
 from .models.game import Game, Player
 from .rolls import perform_roll
 from .utils.cache import game_key
@@ -64,6 +73,7 @@ def process_roll(
     roll_type: RollType,
     date: datetime,
     character_id: int,
+    is_combat_initiative: bool = False,
 ) -> None:
     """
     Process a dice roll.
@@ -80,6 +90,14 @@ def process_roll(
         raise InvalidTaskError(f"Character [{character_id}] not found") from exc
 
     # Retrieve the corresponding roll request.
+    if is_combat_initiative:
+        roll_request = CombatInitiativeRequest.objects.filter(
+            fighter__character=character, status=RollStatus.PENDING
+        ).first()
+    else:
+        roll_request = RollRequest.objects.filter(
+            roll_type=roll_type, character=character, status=RollStatus.PENDING
+        ).first()
     roll_request = RollRequest.objects.filter(
         roll_type=roll_type, character=character, status=RollStatus.PENDING
     ).first()
@@ -87,23 +105,51 @@ def process_roll(
         raise InvalidTaskError("Roll request not found")
 
     # Store the roll response.
-    roll_response = RollResponse.objects.create(
-        game=game, date=date, character=character, request=roll_request
-    )
+    if is_combat_initiative:
+        roll_response = CombatInitiativeResponse.objects.create(
+            game=game, date=date, request=roll_request
+        )
+    else:
+        roll_response = RollResponse.objects.create(
+            game=game, date=date, character=character, request=roll_request
+        )
 
     score, result = perform_roll(character, roll_request)
-    roll_result = RollResult.objects.create(
-        game=game,
-        date=date,
-        character=character,
-        request=roll_request,
-        response=roll_response,
-        score=score,
-        result=result,
-    )
+    if is_combat_initiative:
+        roll_result = CombatInitiativeResult.objects.create(
+            game=game,
+            date=date,
+            fighter=character.fighter,
+            request=roll_request,
+            response=roll_response,
+            score=score,
+        )
+    else:
+        roll_result = RollResult.objects.create(
+            game=game,
+            date=date,
+            character=character,
+            request=roll_request,
+            response=roll_response,
+            score=score,
+            result=result,
+        )
 
     # The corresponding roll request is considered now as done.
     roll_request.status = RollStatus.DONE
     roll_request.save()
 
     send_to_channel(roll_result)
+
+
+@shared_task
+def check_combat_roll_initiative_complete():
+    latest_combat = Combat.objects.all().last()
+    for fighter in latest_combat.fighter_set.all():
+        logger.info(f"{fighter.character.name=} {fighter.dexterity_check}")
+        if fighter.dexterity_check is None:
+            logger.info(f"Waiting for {fighter.character.name=}")
+            break
+    else:
+        logger.info("Roll complete!")
+        logger.info(f"Initiative order={latest_combat.get_initiative_order()}")

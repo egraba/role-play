@@ -13,6 +13,7 @@ from ..constants.events import (
     RollStatus,
     RollType,
 )
+from .combat import Combat, Fighter
 from .game import Game, Player
 
 
@@ -90,9 +91,14 @@ class RollRequest(Event):
         max_length=3,
         choices=AbilityName,
     )
-    difficulty_class = models.SmallIntegerField(choices=DifficultyClass)
+    difficulty_class = models.SmallIntegerField(
+        choices=DifficultyClass,
+        blank=True,
+        null=True,
+    )
     roll_type = models.SmallIntegerField(choices=RollType)
     against = models.CharField(max_length=1, choices=Against, blank=True, null=True)
+    is_combat = models.BooleanField(default=False)
 
     def get_message(self):
         return f"{self.character} needs to perform a {self.ability_type} check! \
@@ -120,4 +126,48 @@ class RollResult(Event):
 
 
 class CombatInitialization(Event):
-    pass
+    combat = models.OneToOneField(Combat, on_delete=models.CASCADE)
+
+    def _get_fighters_display(self, fighters: set, surprised_fighters: set) -> str:
+        """
+        Display fighters in a human readable format, in combat event messages.
+        """
+        fighters_display_list = []
+        for fighter in fighters:
+            if fighter in surprised_fighters:
+                fighters_display_list.append(f"{str(fighter)} (surprised)")
+            else:
+                fighters_display_list.append(str(fighter))
+        return ", ".join(fighters_display_list)
+
+    def get_message(self):
+        fighters = self.combat.fighter_set.all()
+        surprised_fighters = self.combat.fighter_set.filter(is_surprised=True)
+        return f"Combat! {self._get_fighters_display(fighters, surprised_fighters)}"
+
+
+class CombatInitiativeRequest(Event):
+    fighter = models.OneToOneField(Fighter, on_delete=models.CASCADE)
+    status = models.CharField(
+        max_length=1, choices=RollStatus, default=RollStatus.PENDING
+    )
+
+    def get_message(self):
+        return f"{self.fighter} needs to perform a {AbilityName.DEXTERITY} check!"
+
+
+class CombatInitiativeResponse(Event):
+    request = models.OneToOneField(CombatInitiativeRequest, on_delete=models.CASCADE)
+
+    def get_message(self):
+        return "initiative response"
+
+
+class CombatInitiativeResult(Event):
+    fighter = models.OneToOneField(Fighter, on_delete=models.CASCADE)
+    request = models.OneToOneField(CombatInitiativeRequest, on_delete=models.CASCADE)
+    response = models.OneToOneField(CombatInitiativeResponse, on_delete=models.CASCADE)
+    score = models.SmallIntegerField()
+
+    def get_message(self):
+        return "initiative result"

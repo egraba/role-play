@@ -7,12 +7,18 @@ from viewflow.fsm import TransitionNotAllowed
 
 from character.models.character import Character
 
-from ..constants.combat import CombatChoices
+from ..constants.combat import FighterAttributeChoices
 from ..constants.events import RollType
 from ..flows import GameFlow
-from ..forms import AbilityCheckRequestForm, QuestCreateForm, CombatCreateForm
+from ..forms import AbilityCheckRequestForm, CombatCreateForm, QuestCreateForm
 from ..models.combat import Combat, Fighter
-from ..models.events import QuestUpdate, GameStart, CharacterInvitation
+from ..models.events import (
+    CharacterInvitation,
+    GameStart,
+    QuestUpdate,
+    CombatInitialization,
+    CombatInitiativeRequest,
+)
 from ..models.game import Player
 from ..tasks import send_mail
 from ..utils.cache import game_key
@@ -136,7 +142,7 @@ class AbilityCheckRequestView(
         return super().form_valid(form)
 
 
-class CombatCreate(
+class CombatCreateView(
     UserPassesTestMixin,
     FormView,
     EventContextMixin,
@@ -154,34 +160,28 @@ class CombatCreate(
         initial = {"game": self.game}
         return initial
 
-    def _get_fighters_display(self, fighters: set, surprised_fighters: set) -> str:
-        """
-        Display fighters in a human readable format, in combat event messages.
-        """
-        fighters_display_list = []
-        for fighter in fighters:
-            if fighter in surprised_fighters:
-                fighters_display_list.append(f"{fighter} (surprised)")
-            else:
-                fighters_display_list.append(fighter)
-        return ", ".join(fighters_display_list)
-
     def form_valid(self, form):
-        combat = Combat(game=self.game)
-        fighters = set()
-        surprised_fighters = set()
-        # The fighters must be created when they have been selected in the form.
+        # Combat can be created here as the form has been validated to contain fighters.
+        combat = Combat.objects.create(game=self.game)
+        # Fighters must be created only for selected characters.
         for fighter_field in form.fields:
-            fighter = Fighter(
-                combat=combat, character=Character.objects.get(name=fighter_field)
+            if FighterAttributeChoices.IS_FIGHTING in form.cleaned_data[fighter_field]:
+                is_surprised = False
+                if (
+                    FighterAttributeChoices.IS_SURPRISED
+                    in form.cleaned_data[fighter_field]
+                ):
+                    is_surprised = True
+                Fighter.objects.create(
+                    character=Character.objects.get(name=fighter_field),
+                    is_surprised=is_surprised,
+                    combat=combat,
+                )
+        combat_init = CombatInitialization.objects.create(game=self.game, combat=combat)
+        send_to_channel(combat_init)
+        for fighter in combat.fighter_set.all():
+            initiative_request = CombatInitiativeRequest.objects.create(
+                game=self.game, fighter=fighter
             )
-            if CombatChoices.IS_FIGHTING in form.cleaned_data[fighter_field]:
-                if CombatChoices.IS_SURPRISED in form.cleaned_data[fighter_field]:
-                    surprised_fighters.add(fighter.character.name)
-                fighters.add(fighter.character.name)
-        combat.message = (
-            f"Combat! {self._get_fighters_display(fighters, surprised_fighters)}"
-        )
-        combat.save()
-        send_to_channel(combat)
+            send_to_channel(initiative_request)
         return super().form_valid(form)

@@ -5,8 +5,9 @@ from channels.layers import get_channel_layer
 from pydantic import ValidationError
 
 from ..constants.events import RollType
-from ..models.combat import Combat
 from ..models.events import (
+    CombatInitialization,
+    CombatInitiativeRequest,
     Event,
     GameStart,
     QuestUpdate,
@@ -44,8 +45,10 @@ def _get_event_type(event: Event) -> EventType:
             event_type = EventType.ABILITY_CHECK_RESULT
         if event.request.roll_type == RollType.SAVING_THROW:
             event_type = EventType.SAVING_THROW_RESULT
-    elif isinstance(event, Combat):
-        event_type = EventType.COMBAT_INITIATION
+    elif isinstance(event, CombatInitialization):
+        event_type = EventType.COMBAT_INITIALIZATION
+    elif isinstance(event, CombatInitiativeRequest):
+        event_type = EventType.COMBAT_INITIATIVE_REQUEST
     return event_type
 
 

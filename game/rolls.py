@@ -1,10 +1,11 @@
-from character.models.abilities import AbilityType, Ability
+from character.models.abilities import Ability, AbilityType
 from character.models.character import Character
 from utils.dice import Dice
 
-from .constants.events import RollResultType
+from .constants.events import RollResultType, RollType
 from .models.events import RollRequest
 from .exceptions import RollInvalid
+from .models.events import RollRequest
 
 
 def _roll(character: Character, ability_type: AbilityType) -> int:
@@ -24,7 +25,7 @@ def _roll(character: Character, ability_type: AbilityType) -> int:
 
 def perform_roll(
     character: Character, request: RollRequest
-) -> tuple[int, tuple[str, str]]:
+) -> tuple[int, tuple[str, str] | None]:
     """
     Perform dice roll, according to DnD rules:
     - It adds proficiency bonus in case the character has the ability given in the roll request.
@@ -35,10 +36,15 @@ def perform_roll(
         request (RollRequest): The corresponding roll request from the master.
 
     Returns:
-        tuple[int, tuple[str, str]]: Dice roll score and roll type result.
+        tuple[int, tuple[str, str] | None]: Dice roll score and roll type result (if any).
     """
 
-    score = _roll(character, request.ability_type)
+    if hasattr(request, "ability_type"):
+        score = _roll(character, request.ability_type)
+    else:
+        # Combat initialization
+        # score = _roll(character, AbilityName.DEXTERITY[0])
+        setattr(request, "roll_type", RollType.ABILITY_CHECK)
     has_advantage = character.has_advantage(request.roll_type, request.against)
     has_disadvantage = character.has_disadvantage(request.roll_type, request.against)
     if has_advantage and has_disadvantage:
@@ -50,6 +56,15 @@ def perform_roll(
             score = max(score, new_score)
         if has_disadvantage:
             score = min(score, new_score)
+    if request.is_combat:
+        fighter = character.fighter
+        fighter.dexterity_check = score
+        fighter.save()
+    if request.difficulty_class is None:
+        # There is no difficulty class, in some cases.
+        # For instance, in a combat, the Master asks fighters to perform a dextery check,
+        # to get the order of the fighters. Therefore, no success nor failure is expected.
+        return score, None
     if score >= request.difficulty_class:
         return score, RollResultType.SUCCESS
     return score, RollResultType.FAILURE

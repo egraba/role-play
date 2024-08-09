@@ -4,7 +4,7 @@ from character.constants.abilities import AbilityName
 from character.models.character import Character
 
 from .models.events import RollRequest
-from .constants.combat import CombatChoices
+from .constants.combat import FighterAttributeChoices
 
 
 class QuestCreateForm(forms.Form):
@@ -35,10 +35,29 @@ class CombatCreateForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         game = self.initial["game"]
-        queryset = Character.objects.filter(player__game=game)
-        for character in queryset:
+        characters = Character.objects.filter(player__game=game)
+        for character in characters:
             self.fields[character.name] = forms.MultipleChoiceField(
                 required=False,
                 widget=forms.CheckboxSelectMultiple,
-                choices=CombatChoices,
+                choices=FighterAttributeChoices,
             )
+        try:
+            kwargs.pop("data")
+        except KeyError:
+            pass
+        self.is_bound = True
+
+    def clean(self):
+        self.cleaned_data = super().clean()
+        if not any(
+            FighterAttributeChoices.IS_FIGHTING in value
+            for value in self.cleaned_data.values()
+        ):
+            raise forms.ValidationError("A combat should have at least one fighter")
+        if any(
+            FighterAttributeChoices.IS_SURPRISED in value
+            and FighterAttributeChoices.IS_FIGHTING not in value
+            for value in self.cleaned_data.values()
+        ):
+            raise forms.ValidationError("Surprised characters must be fighters")
