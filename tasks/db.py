@@ -8,6 +8,18 @@ def reset(context):
 
 
 @task
+def make_migrations(context):
+    """Make Django migrations"""
+    context.run("python manage.py makemigrations", pty=True)
+
+
+@task
+def migrate(context):
+    """Apply database migrations"""
+    context.run("python manage.py migrate", pty=True)
+
+
+@task
 def load_settings(context):
     """Load app settings"""
     patterns = [
@@ -23,19 +35,7 @@ def load_settings(context):
         context.run(f"python manage.py loaddata {pattern}", pty=True)
 
 
-@task(load_settings)
+@task(reset, migrate, load_settings)
 def populate(context):
     """Populate the DB with realistic data"""
-    context.run("python manage.py populatedb", pty=True)
-
-
-@task
-def make_migrations(context):
-    """Make Django migrations"""
-    context.run("python manage.py makemigrations", pty=True)
-
-
-@task
-def migrate(context):
-    """Apply database migrations"""
-    context.run("python manage.py migrate", pty=True)
+    context.run("python manage.py populate_db", pty=True)
