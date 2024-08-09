@@ -42,6 +42,17 @@ async def test_connect_ok(application, game, user):
 
 
 @pytest.mark.asyncio
+async def test_connect_game_not_found(application, user):
+    fake = Faker()
+    game_id = fake.random_int(min=9999)
+    communicator = WebsocketCommunicator(application, f"/events/{game_id}/")
+    communicator.scope["user"] = user
+    communicator.scope["game_id"] = game_id
+    connected, _ = await communicator.connect()
+    assert not connected
+
+
+@pytest.mark.asyncio
 async def test_game_events_communication(application, game, user):
     communicator = WebsocketCommunicator(application, f"/events/{game.id}/")
     communicator.scope["user"] = user
