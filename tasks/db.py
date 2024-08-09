@@ -38,4 +38,4 @@ def load_settings(context):
 @task(reset, migrate, load_settings)
 def populate(context):
     """Populate the DB with realistic data"""
-    context.run("python manage.py populatedb", pty=True)
+    context.run("python manage.py populate_db", pty=True)
