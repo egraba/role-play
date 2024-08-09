@@ -5,6 +5,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Added
+* Add `delete_combats` command
 * DnD: Implement combat initiation
 * DnD: Implement combat structure
 
