@@ -33,6 +33,15 @@ def user():
 
 
 @pytest.mark.asyncio
+async def test_connect_ok(application, game, user):
+    communicator = WebsocketCommunicator(application, f"/events/{game.id}/")
+    communicator.scope["user"] = user
+    communicator.scope["game_id"] = game.id
+    connected, _ = await communicator.connect()
+    assert connected
+
+
+@pytest.mark.asyncio
 async def test_game_events_communication(application, game, user):
     communicator = WebsocketCommunicator(application, f"/events/{game.id}/")
     communicator.scope["user"] = user
