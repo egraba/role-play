@@ -53,7 +53,7 @@ async def test_connect_game_not_found(application, user):
 
 
 @pytest.mark.asyncio
-async def test_communication_message_event(application, game, user):
+async def test_communication_message(application, game, user):
     communicator = WebsocketCommunicator(application, f"/events/{game.id}/")
     communicator.scope["user"] = user
     communicator.scope["game_id"] = game.id
