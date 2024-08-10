@@ -1,2 +1,2 @@
-class RollInvalid(Exception):
+class InvalidRoll(Exception):
     pass

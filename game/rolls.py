@@ -4,8 +4,7 @@ from utils.dice import Dice
 
 from .constants.events import RollResultType, RollType
 from .models.events import RollRequest
-from .exceptions import RollInvalid
-from .models.events import RollRequest
+from .exceptions import InvalidRoll
 
 
 def _roll(character: Character, ability_type: AbilityType) -> int:
@@ -16,7 +15,7 @@ def _roll(character: Character, ability_type: AbilityType) -> int:
     try:
         ability = character.abilities.get(ability_type=ability_type)
     except Ability.DoesNotExist:
-        raise RollInvalid(f"[{character}] does not have the ability: {ability_type}")
+        raise InvalidRoll(f"[{character}] does not have the ability: {ability_type}")
     score = Dice("d20").roll(ability.modifier)
     if character.is_proficient(ability):
         score += character.proficiency_bonus
