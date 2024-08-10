@@ -4,3 +4,7 @@ class InvalidRoll(Exception):
     """
 
     pass
+
+
+class EventSchemaValidationError(TypeError):
+    pass

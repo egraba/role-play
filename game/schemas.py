@@ -50,7 +50,3 @@ class EventSchema(BaseModel):
     username: Optional[str] = None
     message: Optional[str] = None
     origin: Optional[EventOrigin] = None
-
-
-class EventSchemaValidationError(TypeError):
-    pass

@@ -12,8 +12,9 @@ from .commands import (
     SavingThrowCommand,
 )
 from .event_enrichers import MessageEnricher, RollResponseEnricher
+from .exceptions import EventSchemaValidationError
 from .models.game import Game
-from .schemas import EventOrigin, EventSchema, EventSchemaValidationError, EventType
+from .schemas import EventOrigin, EventSchema, EventType
 from .utils.cache import game_key
 
 

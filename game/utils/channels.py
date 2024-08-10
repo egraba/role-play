@@ -5,6 +5,7 @@ from channels.layers import get_channel_layer
 from pydantic import ValidationError
 
 from ..constants.events import RollType
+from ..exceptions import EventSchemaValidationError
 from ..models.events import (
     CombatInitialization,
     CombatInitiativeRequest,
@@ -18,7 +19,6 @@ from ..models.events import (
 from ..schemas import (
     EventOrigin,
     EventSchema,
-    EventSchemaValidationError,
     EventType,
     PlayerType,
 )
