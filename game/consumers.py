@@ -1,5 +1,4 @@
 from asgiref.sync import async_to_sync
-from channels.exceptions import DenyConnection
 from channels.generic.websocket import JsonWebsocketConsumer
 from django.core.cache import cache
 from pydantic import ValidationError
@@ -37,9 +36,8 @@ class GameEventsConsumer(JsonWebsocketConsumer):
             self.game = cache.get_or_set(
                 game_key(game_id), Game.objects.get(id=game_id)
             )
-        except Game.DoesNotExist as exc:
-            self.close()
-            raise DenyConnection(f"Game [{game_id}] not found") from exc
+        except Game.DoesNotExist:
+            self.close(reason=f"Game [{game_id}] not found")
         self.game_group_name = f"game_{self.game.id}_events"
         async_to_sync(self.channel_layer.group_add)(
             self.game_group_name, self.channel_name
@@ -86,9 +84,8 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                     user=self.user,
                     game=self.game,
                 )
-            except Character.DoesNotExist as exc:
-                self.close()
-                raise DenyConnection(exc.__traceback__) from exc
+            except Character.DoesNotExist:
+                self.close(reason="Character not found")
             event_enricher.enrich()
         async_to_sync(self.channel_layer.group_send)(self.game_group_name, content)
 
