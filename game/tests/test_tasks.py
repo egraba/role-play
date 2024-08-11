@@ -5,11 +5,11 @@ from faker import Faker
 
 from character.models.character import Character
 from game.constants.events import RollStatus, RollType
-from game.models.events import RollRequest, RollResult, RollResponse
+from game.models.events import RollRequest, RollResponse, RollResult
 from game.models.game import Game
-from game.tasks import process_roll
+from game.tasks import process_roll, store_message
 
-from .factories import RollRequestFactory
+from .factories import MessageFactory, RollRequestFactory
 
 pytestmark = pytest.mark.django_db(transaction=True)
 
@@ -18,6 +18,27 @@ pytestmark = pytest.mark.django_db(transaction=True)
 def celery_parameters():
     # Used to suppress warnings during test sessions.
     return {"broker_connection_retry_on_startup": True}
+
+
+class TestStoreMessage:
+    @pytest.fixture
+    def message(self):
+        return MessageFactory()
+
+    def test_message_game_not_found(self):
+        fake = Faker()
+        game_id = fake.random_int(min=9999)
+        date = timezone.now()
+        message = fake.text(100)
+        is_from_master = fake.boolean()
+        with pytest.raises(InvalidTaskError):
+            store_message(
+                game_id=game_id,
+                date=date,
+                message=message,
+                is_from_master=is_from_master,
+                author_name=None,
+            )
 
 
 class TestProcessRoll:
