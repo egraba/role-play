@@ -11,6 +11,8 @@ from game.tasks import process_roll
 
 from .factories import RollRequestFactory
 
+pytestmark = pytest.mark.django_db(transaction=True)
+
 
 @pytest.fixture(scope="session")
 def celery_parameters():
@@ -18,7 +20,6 @@ def celery_parameters():
     return {"broker_connection_retry_on_startup": True}
 
 
-@pytest.mark.django_db(transaction=True)
 class TestProcessRoll:
     @pytest.fixture
     def ability_check_request(self):
