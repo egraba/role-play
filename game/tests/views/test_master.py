@@ -8,6 +8,7 @@ from django.http import Http404
 from django.urls import reverse
 from django.utils import timezone
 from faker import Faker
+from freezegun import freeze_time
 from pytest_django.asserts import (
     assertQuerySetEqual,
     assertRedirects,
@@ -29,6 +30,7 @@ from game.views.master import (
     GameStartView,
     QuestCreateView,
 )
+from utils.constants import FREEZED_TIME
 from utils.factories import UserFactory
 
 from ..factories import GameFactory, PlayerFactory
@@ -171,6 +173,7 @@ class TestCharacterInviteConfirmView:
         assert response.status_code == 404
         assert pytest.raises(Http404)
 
+    @freeze_time(FREEZED_TIME)
     def test_character_added_to_game(self, client, game, character):
         character = CharacterFactory()
         response = client.post(
@@ -186,7 +189,7 @@ class TestCharacterInviteConfirmView:
         assertRedirects(response, reverse("game", args=(game.id,)))
         assert character.player.game == game
         event = Event.objects.last()
-        assert event.date.second - timezone.now().second <= 2
+        assert event.date == timezone.now()
         assert event.game == game
 
 
@@ -219,6 +222,7 @@ class TestGameStartView:
         assert response.status_code == 404
         assert pytest.raises(Http404)
 
+    @freeze_time(FREEZED_TIME)
     def test_game_start_ok(self, client, game):
         number_of_players = 2
         for _ in range(number_of_players):
@@ -229,9 +233,9 @@ class TestGameStartView:
         game = Game.objects.last()
         flow = GameFlow(game)
         assert flow.is_ongoing()
-        assert game.start_date.second - timezone.now().second <= 2
+        assert game.start_date == timezone.now()
         event = Event.objects.last()
-        assert event.date.second - timezone.now().second <= 2
+        assert event.date == timezone.now()
         assert event.game == game
 
     def test_game_start_not_enough_characters(self, client, game):
