@@ -1,5 +1,5 @@
-import pytest
 import freezegun
+import pytest
 
 from game.flows import GameFlow
 
