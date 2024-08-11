@@ -2,16 +2,19 @@ import pytest
 from celery.exceptions import InvalidTaskError
 from django.utils import timezone
 from faker import Faker
+from freezegun import configure, freeze_time
 
 from character.models.character import Character
 from game.constants.events import RollStatus, RollType
 from game.models.events import Message, RollRequest, RollResponse, RollResult
 from game.models.game import Game
 from game.tasks import process_roll, store_message
+from utils.constants import FREEZED_TIME
 
-from .factories import MessageFactory, RollRequestFactory, GameFactory
+from .factories import GameFactory, MessageFactory, RollRequestFactory
 
 pytestmark = pytest.mark.django_db(transaction=True)
+configure(extend_ignore_list=["celery"])
 
 
 @pytest.fixture(scope="session")
@@ -29,6 +32,7 @@ class TestStoreMessage:
     def message(self):
         return MessageFactory()
 
+    @freeze_time(FREEZED_TIME)
     def test_message_message_stored(self, celery_worker, game):
         fake = Faker()
         date = timezone.now()
@@ -41,7 +45,7 @@ class TestStoreMessage:
         ).get()
         message = Message.objects.last()
         assert message.game == game
-        assert (message.date.second - date.second) <= 2
+        assert message.date == date
 
     def test_message_game_not_found(self, celery_worker):
         fake = Faker()
@@ -70,6 +74,7 @@ class TestProcessRoll:
     def ability_check_request(self):
         return RollRequestFactory(roll_type=RollType.ABILITY_CHECK)
 
+    @freeze_time(FREEZED_TIME)
     def test_process_roll_ability_check_success(
         self, celery_worker, ability_check_request, game, character
     ):
@@ -85,11 +90,11 @@ class TestProcessRoll:
 
         roll_response = RollResponse.objects.last()
         assert roll_response.game == game
-        assert (roll_response.date.second - date.second) <= 2
+        assert roll_response.date == date
 
         roll_result = RollResult.objects.last()
         assert roll_result.game == game
-        assert (roll_result.date.second - date.second) <= 2
+        assert roll_result.date == date
 
         ability_check_request = RollRequest.objects.last()
         assert ability_check_request.status == RollStatus.DONE
@@ -143,6 +148,7 @@ class TestProcessRoll:
     def saving_throw_request(self):
         return RollRequestFactory(roll_type=RollType.SAVING_THROW)
 
+    @freeze_time(FREEZED_TIME)
     def test_process_roll_saving_throw_success(
         self, celery_worker, saving_throw_request, game, character
     ):
@@ -158,7 +164,7 @@ class TestProcessRoll:
 
         roll_result = RollResult.objects.last()
         assert roll_result.game == game
-        assert (roll_result.date.second - date.second) <= 2
+        assert roll_result.date == date
 
         saving_throw_request = RollRequest.objects.last()
         assert saving_throw_request.status == RollStatus.DONE
