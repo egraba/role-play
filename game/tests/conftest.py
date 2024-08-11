@@ -1,11 +1,8 @@
-import freezegun
 import pytest
 
 from game.flows import GameFlow
 
 from .factories import GameFactory, PlayerFactory
-
-freezegun.configure(extend_ignore_list=["celery"])
 
 
 @pytest.fixture(scope="session")
