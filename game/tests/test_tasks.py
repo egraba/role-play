@@ -32,13 +32,11 @@ class TestStoreMessage:
     def test_message_message_stored(self, celery_worker, game):
         fake = Faker()
         date = timezone.now()
-        message = fake.text(100)
-        is_from_master = fake.boolean()
         store_message.delay(
             game_id=game.id,
             date=date,
-            message=message,
-            is_from_master=is_from_master,
+            message=fake.text(100),
+            is_from_master=fake.boolean(),
             author_name=None,
         ).get()
         message = Message.objects.last()
@@ -47,16 +45,12 @@ class TestStoreMessage:
 
     def test_message_game_not_found(self, celery_worker):
         fake = Faker()
-        game_id = fake.random_int(min=9999)
-        date = timezone.now()
-        message = fake.text(100)
-        is_from_master = fake.boolean()
         with pytest.raises(InvalidTaskError):
             store_message.delay(
-                game_id=game_id,
-                date=date,
-                message=message,
-                is_from_master=is_from_master,
+                game_id=fake.random_int(min=9999),
+                date=timezone.now(),
+                message=fake.text(100),
+                is_from_master=fake.boolean(),
                 author_name=None,
             ).get()
 
