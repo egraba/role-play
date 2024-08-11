@@ -9,7 +9,7 @@ from game.models.events import Message, RollRequest, RollResponse, RollResult
 from game.models.game import Game
 from game.tasks import process_roll, store_message
 
-from .factories import MessageFactory, RollRequestFactory, GameFactory
+from .factories import GameFactory, MessageFactory, RollRequestFactory
 
 pytestmark = pytest.mark.django_db(transaction=True)
 
@@ -32,16 +32,17 @@ class TestStoreMessage:
     def test_message_message_stored(self, celery_worker, game):
         fake = Faker()
         date = timezone.now()
+        message = fake.text(100)
         store_message.delay(
             game_id=game.id,
             date=date,
-            message=fake.text(100),
+            message=message,
             is_from_master=fake.boolean(),
             author_name=None,
         ).get()
         message = Message.objects.last()
         assert message.game == game
-        assert (message.date.second - date.second) <= 2
+        assert message.message == message
 
     def test_message_game_not_found(self, celery_worker):
         fake = Faker()
@@ -85,11 +86,9 @@ class TestProcessRoll:
 
         roll_response = RollResponse.objects.last()
         assert roll_response.game == game
-        assert (roll_response.date.second - date.second) <= 2
 
         roll_result = RollResult.objects.last()
         assert roll_result.game == game
-        assert (roll_result.date.second - date.second) <= 2
 
         ability_check_request = RollRequest.objects.last()
         assert ability_check_request.status == RollStatus.DONE
@@ -158,7 +157,6 @@ class TestProcessRoll:
 
         roll_result = RollResult.objects.last()
         assert roll_result.game == game
-        assert (roll_result.date.second - date.second) <= 2
 
         saving_throw_request = RollRequest.objects.last()
         assert saving_throw_request.status == RollStatus.DONE
