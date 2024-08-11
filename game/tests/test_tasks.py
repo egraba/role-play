@@ -5,11 +5,11 @@ from faker import Faker
 
 from character.models.character import Character
 from game.constants.events import RollStatus, RollType
-from game.models.events import RollRequest, RollResponse, RollResult
+from game.models.events import Message, RollRequest, RollResponse, RollResult
 from game.models.game import Game
 from game.tasks import process_roll, store_message
 
-from .factories import MessageFactory, RollRequestFactory
+from .factories import MessageFactory, RollRequestFactory, GameFactory
 
 pytestmark = pytest.mark.django_db(transaction=True)
 
@@ -22,30 +22,46 @@ def celery_parameters():
 
 class TestStoreMessage:
     @pytest.fixture
+    def game(self):
+        return GameFactory()
+
+    @pytest.fixture
     def message(self):
         return MessageFactory()
 
-    def test_message_game_not_found(self):
+    def test_message_message_stored(self, celery_worker, game):
+        fake = Faker()
+        date = timezone.now()
+        message = fake.text(100)
+        is_from_master = fake.boolean()
+        store_message.delay(
+            game_id=game.id,
+            date=date,
+            message=message,
+            is_from_master=is_from_master,
+            author_name=None,
+        ).get()
+        message = Message.objects.last()
+        assert message.game == game
+        assert (message.date.second - date.second) <= 2
+
+    def test_message_game_not_found(self, celery_worker):
         fake = Faker()
         game_id = fake.random_int(min=9999)
         date = timezone.now()
         message = fake.text(100)
         is_from_master = fake.boolean()
         with pytest.raises(InvalidTaskError):
-            store_message(
+            store_message.delay(
                 game_id=game_id,
                 date=date,
                 message=message,
                 is_from_master=is_from_master,
                 author_name=None,
-            )
+            ).get()
 
 
 class TestProcessRoll:
-    @pytest.fixture
-    def ability_check_request(self):
-        return RollRequestFactory(roll_type=RollType.ABILITY_CHECK)
-
     @pytest.fixture
     def game(self):
         # Retrieved from RollRequestFactory.
@@ -55,6 +71,10 @@ class TestProcessRoll:
     def character(self):
         # Retrieved from RollRequestFactory.
         return Character.objects.last()
+
+    @pytest.fixture
+    def ability_check_request(self):
+        return RollRequestFactory(roll_type=RollType.ABILITY_CHECK)
 
     def test_process_roll_ability_check_success(
         self, celery_worker, ability_check_request, game, character
