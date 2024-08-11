@@ -14,12 +14,23 @@ from utils.constants import FREEZED_TIME
 from .factories import GameFactory, MessageFactory, RollRequestFactory
 
 pytestmark = pytest.mark.django_db(transaction=True)
+freezer = freeze_time(FREEZED_TIME)
 
 
 @pytest.fixture(scope="session")
 def celery_parameters():
     # Used to suppress warnings during test sessions.
     return {"broker_connection_retry_on_startup": True}
+
+
+@pytest.fixture(scope="class")
+def use_freezer():
+    freezer.start()
+
+
+@pytest.fixture(scope="class")
+def stop_freezer(use_freezer):
+    yield freezer.stop()
 
 
 class TestStoreMessage:
@@ -31,8 +42,7 @@ class TestStoreMessage:
     def message(self):
         return MessageFactory()
 
-    @freeze_time(FREEZED_TIME)
-    def test_message_message_stored(self, celery_worker, game):
+    def test_message_message_stored(self, celery_worker, use_freezer, game):
         fake = Faker()
         date = timezone.now()
         store_message.delay(
@@ -73,9 +83,8 @@ class TestProcessRoll:
     def ability_check_request(self):
         return RollRequestFactory(roll_type=RollType.ABILITY_CHECK)
 
-    @freeze_time(FREEZED_TIME)
     def test_process_roll_ability_check_success(
-        self, celery_worker, ability_check_request, game, character
+        self, celery_worker, use_freezer, ability_check_request, game, character
     ):
         date = timezone.now()
         process_roll.delay(
@@ -147,9 +156,8 @@ class TestProcessRoll:
     def saving_throw_request(self):
         return RollRequestFactory(roll_type=RollType.SAVING_THROW)
 
-    @freeze_time(FREEZED_TIME)
     def test_process_roll_saving_throw_success(
-        self, celery_worker, saving_throw_request, game, character
+        self, celery_worker, use_freezer, saving_throw_request, game, character
     ):
         date = timezone.now()
         process_roll.delay(
