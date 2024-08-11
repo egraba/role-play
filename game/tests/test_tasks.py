@@ -2,7 +2,7 @@ import pytest
 from celery.exceptions import InvalidTaskError
 from django.utils import timezone
 from faker import Faker
-from freezegun import configure, freeze_time
+from freezegun import freeze_time
 
 from character.models.character import Character
 from game.constants.events import RollStatus, RollType
@@ -14,7 +14,6 @@ from utils.constants import FREEZED_TIME
 from .factories import GameFactory, MessageFactory, RollRequestFactory
 
 pytestmark = pytest.mark.django_db(transaction=True)
-configure(extend_ignore_list=["celery"])
 
 
 @pytest.fixture(scope="session")
