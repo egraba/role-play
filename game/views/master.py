@@ -19,7 +19,7 @@ from ..models.events import (
     CombatInitialization,
     CombatInitiativeRequest,
 )
-from ..models.game import Player
+from ..models.game import Player, Quest
 from ..tasks import send_mail
 from ..utils.cache import game_key
 from ..utils.channels import send_to_channel
@@ -102,13 +102,14 @@ class QuestCreateView(UserPassesTestMixin, FormView, EventContextMixin):
         return reverse_lazy("game", args=(self.game.id,))
 
     def form_valid(self, form):
-        quest_update = QuestUpdate.objects.create(
-            game=self.game, content=form.cleaned_data["content"]
+        quest = Quest.objects.create(
+            environment=form.cleaned_data["environment"], game=self.game
         )
+        quest_update = QuestUpdate.objects.create(game=self.game, quest=quest)
         send_to_channel(quest_update)
         send_mail.delay(
             subject=f"[{self.game}] The Master updated the quest.",
-            message=f"The Master said:\n{quest_update.content}",
+            message=f"The Master said:\n{quest.environment}",
             from_email=self.game.master.user.email,
             recipient_list=get_players_emails(game=self.game),
         )

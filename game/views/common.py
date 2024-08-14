@@ -10,8 +10,8 @@ from master.models import Campaign
 
 from ..constants.events import RollStatus, RollType
 from ..flows import GameFlow
-from ..models.events import Event, QuestUpdate, RollRequest, CombatInitiativeRequest
-from ..models.game import Game, Master, Player
+from ..models.events import Event, RollRequest, CombatInitiativeRequest
+from ..models.game import Game, Master, Player, Quest
 from ..views.mixins import GameContextMixin
 
 
@@ -54,7 +54,7 @@ class GameView(LoginRequiredMixin, ListView, GameContextMixin):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["flow"] = GameFlow(self.game)
-        context["quest"] = QuestUpdate.objects.filter(game=self.game.id).last()
+        context["quest"] = Quest.objects.filter(game=self.game.id).last()
         context["character_list"] = Character.objects.filter(
             player__game=self.game.id
         ).order_by("name")
@@ -105,10 +105,7 @@ class GameCreateView(LoginRequiredMixin, CreateView):
         game.campaign = campaign
         game.save()
         Master.objects.create(user=self.request.user, game=game)
-        quest_update = QuestUpdate()
-        quest_update.game = game
-        quest_update.content = campaign.synopsis
-        quest_update.save()
+        Quest.objects.create(environment=campaign.synopsis, game=game)
         return HttpResponseRedirect(game.get_absolute_url())
 
 

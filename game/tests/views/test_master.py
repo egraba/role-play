@@ -20,7 +20,7 @@ from game.constants.combat import FighterAttributeChoices
 from game.flows import GameFlow
 from game.forms import CombatCreateForm, QuestCreateForm
 from game.models.combat import Combat, Fighter
-from game.models.events import Event, QuestUpdate
+from game.models.events import Event, Quest
 from game.models.game import Game
 from game.views.master import (
     CharacterInviteConfirmView,
@@ -302,17 +302,17 @@ class TestQuestCreateView:
 
     def test_quest_creation(self, client, login, started_game):
         fake = Faker()
-        content = fake.text(100)
-        data = {"content": f"{content}"}
+        environment = fake.text(100)
+        data = {"environment": f"{environment}"}
         form = QuestCreateForm(data)
         assert form.is_valid()
         response = client.post(
             reverse(self.path_name, args=(started_game.id,)), data=form.cleaned_data
         )
         assert response.status_code == 302
-        quest_update = QuestUpdate.objects.filter(game=started_game).last()
-        assert quest_update.game == started_game
-        assert quest_update.content == form.cleaned_data["content"]
+        quest = Quest.objects.filter(game=started_game).last()
+        assert quest.game == started_game
+        assert quest.environment == form.cleaned_data["environment"]
         assertRedirects(response, started_game.get_absolute_url())
 
 

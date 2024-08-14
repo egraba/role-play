@@ -97,17 +97,17 @@ class TestMessageModel:
 
 class TestQuestUpdateModel:
     @pytest.fixture
-    def quest(self):
+    def quest_update(self):
         return QuestUpdateFactory()
 
-    def test_creation(self, quest):
-        assert isinstance(quest, QuestUpdate)
+    def test_creation(self, quest_update):
+        assert isinstance(quest_update, QuestUpdate)
 
-    def test_str(self, quest):
-        assert str(quest) == quest.content[:10]
+    def test_str(self, quest_update):
+        assert str(quest_update) == quest_update.quest.environment[:10]
 
-    def test_get_message(self, quest):
-        assert quest.get_message() == "The Master updated the quest."
+    def test_get_message(self, quest_update):
+        assert quest_update.get_message() == "The Master updated the quest."
 
 
 class TestRollRequestModel:

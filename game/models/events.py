@@ -14,7 +14,7 @@ from ..constants.events import (
     RollType,
 )
 from .combat import Combat, Fighter
-from .game import Game, Player
+from .game import Game, Player, Quest
 
 
 class Event(models.Model):
@@ -73,10 +73,10 @@ class Message(Event):
 
 
 class QuestUpdate(Event):
-    content = models.CharField(max_length=1000)
+    quest = models.OneToOneField(Quest, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.content[:10]
+        return self.quest.environment[:10]
 
     def get_message(self):
         return "The Master updated the quest."

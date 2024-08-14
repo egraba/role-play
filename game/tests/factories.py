@@ -16,7 +16,7 @@ from game.models.events import (
     RollResponse,
     RollResult,
 )
-from game.models.game import Game, Master, Player
+from game.models.game import Game, Master, Player, Quest
 from user.tests.factories import UserFactory
 
 
@@ -36,6 +36,12 @@ class GameFactory(factory.django.DjangoModelFactory):
     campaign = factory.SubFactory("master.tests.factories.CampaignFactory")
     master = factory.RelatedFactory(MasterFactory, factory_related_name="game")
 
+    @factory.post_generation
+    def add_quest(obj, create, extracted, **kwargs):
+        if not create:
+            return
+        QuestFactory(game=obj)
+
 
 class PlayerFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -47,6 +53,14 @@ class PlayerFactory(factory.django.DjangoModelFactory):
 
     game = factory.SubFactory(GameFactory)
     character = factory.SubFactory("character.tests.factories.CharacterFactory")
+
+
+class QuestFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Quest
+
+    environment = factory.Faker("text", max_nb_chars=1000)
+    game = factory.SubFactory(GameFactory)
 
 
 class EventFactory(factory.django.DjangoModelFactory):
@@ -84,8 +98,8 @@ class QuestUpdateFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = QuestUpdate
 
+    quest = factory.SubFactory(QuestFactory)
     game = factory.SubFactory(GameFactory)
-    content = factory.Faker("paragraph", nb_sentences=10)
 
 
 class RollRequestFactory(factory.django.DjangoModelFactory):

@@ -14,7 +14,7 @@
         <br />
 
         <h2>Quest</h2>
-        <div id="quest" class="rpgui-container framed-golden-2"><p >{{ quest|linebreaks }}</p></div>
+        <div id="quest" class="rpgui-container framed-golden-2"><p >{{ quest.environment|linebreaks }}</p></div>
 
         <div id="game">
             <div id="events" class="rpgui-container framed-grey">
@@ -167,11 +167,11 @@
                 || message["type"] === ABILITY_CHECK_RESPONSE
                 || message["type"] === ABILITY_CHECK_RESULT
                 || message["type"] === COMBAT_INITIATIVE_REQUEST) {
-                || message["type"] === ABILITY_CHECK_RESULT) {
+                    || message["type"] === ABILITY_CHECK_RESULT) {
                 // The full page has to be reloaded, otherwise clicking on the button
                 // triggers no action.
-                    location.reload();
-                }
+                        location.reload();
+                    }
         };
 
         eventsSocket.onclose = function(event) {

@@ -1,6 +1,5 @@
 from django.contrib import admin
 
-from .models.events import QuestUpdate
 from .models.game import Game, Player
 
 
@@ -14,11 +13,5 @@ class PlayerAdmin(admin.ModelAdmin):
     list_display = fields
 
 
-class QuestAdmin(admin.ModelAdmin):
-    fields = ["game", "description"]
-    list_display = ["game", "content", "date"]
-
-
 admin.site.register(Game, GameAdmin)
 admin.site.register(Player, PlayerAdmin)
-admin.site.register(QuestUpdate, QuestAdmin)
