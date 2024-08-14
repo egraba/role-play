@@ -16,7 +16,7 @@ from game.models.events import (
     RollResponse,
     RollResult,
 )
-from game.models.game import Game, Master, Player
+from game.models.game import Game, Master, Player, Quest
 from user.tests.factories import UserFactory
 
 
@@ -47,6 +47,14 @@ class PlayerFactory(factory.django.DjangoModelFactory):
 
     game = factory.SubFactory(GameFactory)
     character = factory.SubFactory("character.tests.factories.CharacterFactory")
+
+
+class QuestFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Quest
+
+    environment = factory.Faker("text", max_nb_chars=3000)
+    game = factory.SubFactory(GameFactory)
 
 
 class EventFactory(factory.django.DjangoModelFactory):
