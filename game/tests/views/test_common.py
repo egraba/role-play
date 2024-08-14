@@ -26,7 +26,7 @@ from game.views.common import (
     IndexView,
 )
 from master.tests.factories import CampaignFactory
-from utils.factories import UserFactory
+from user.tests.factories import UserFactory
 
 from ..factories import EventFactory, GameFactory, PlayerFactory, QuestUpdateFactory
 

@@ -10,6 +10,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * DnD: Implement combat structure
 
 ### Changed
+* Use customer User model instead of Django one
 * Use `freezegun` to test times
 * Improve and rename some invoke commands
 * Enhance game events and their messages handling

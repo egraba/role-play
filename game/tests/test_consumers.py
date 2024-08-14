@@ -8,7 +8,7 @@ from character.tests.factories import CharacterFactory
 from game.consumers import GameEventsConsumer
 from game.exceptions import EventSchemaValidationError
 from game.schemas import EventSchema, EventType, PlayerType
-from utils.factories import UserFactory
+from user.tests.factories import UserFactory
 
 from .factories import GameFactory, PlayerFactory
 

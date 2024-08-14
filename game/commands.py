@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from django.contrib.auth.models import User
+from user.models import User
 
 from character.models.character import Character
 from game.models.game import Game

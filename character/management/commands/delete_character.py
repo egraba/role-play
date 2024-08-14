@@ -1,5 +1,6 @@
-from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand, CommandError
+
+from user.models import User
 
 from ...models.character import Character
 

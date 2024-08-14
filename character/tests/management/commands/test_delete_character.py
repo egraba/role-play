@@ -7,7 +7,7 @@ from faker import Faker
 
 from character.models.character import Character
 from character.tests.factories import CharacterFactory
-from utils.factories import UserFactory
+from user.tests.factories import UserFactory
 
 pytestmark = pytest.mark.django_db
 

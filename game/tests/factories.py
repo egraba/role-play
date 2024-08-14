@@ -17,7 +17,7 @@ from game.models.events import (
     RollResult,
 )
 from game.models.game import Game, Master, Player
-from utils.factories import UserFactory
+from user.tests.factories import UserFactory
 
 
 class MasterFactory(factory.django.DjangoModelFactory):

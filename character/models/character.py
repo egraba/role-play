@@ -1,5 +1,5 @@
-from django.contrib.auth.models import User
 from django.core.cache import cache
+from django.conf import settings
 from django.db import models
 from django.db.models.functions import Upper
 from django.urls import reverse
@@ -21,7 +21,7 @@ from .skills import Skill
 
 class Character(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     race = models.CharField(max_length=14, choices=Race.choices)
     height = models.FloatField(default=0)
     weight = models.SmallIntegerField(default=0)
