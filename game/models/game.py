@@ -33,7 +33,7 @@ class Game(models.Model):
 
 class Quest(models.Model):
     environment = models.TextField(max_length=3000)
-    game = models.OneToOneField(Game, on_delete=models.CASCADE)
+    game = models.ForeignKey(Game, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.environment[:10]
