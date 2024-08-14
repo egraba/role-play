@@ -4,8 +4,9 @@ from game.models.game import Game, Master, Player
 
 from ..factories import GameFactory, MasterFactory, PlayerFactory
 
+pytestmark = pytest.mark.django_db
 
-@pytest.mark.django_db
+
 class TestGameModel:
     @pytest.fixture
     def game(self):
@@ -18,7 +19,6 @@ class TestGameModel:
         assert str(game) == game.name
 
 
-@pytest.mark.django_db
 class MasterModelTest:
     @pytest.fixture
     def master(self):
@@ -31,7 +31,6 @@ class MasterModelTest:
         assert str(master) == master.user.username
 
 
-@pytest.mark.django_db
 class TestPlayerModel:
     @pytest.fixture
     def player(self):
