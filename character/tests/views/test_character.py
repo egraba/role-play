@@ -21,7 +21,7 @@ from character.views.character import (
     CharacterListView,
 )
 from game.tests.factories import GameFactory, PlayerFactory
-from utils.factories import UserFactory
+from user.tests.factories import UserFactory
 
 from ..factories import CharacterFactory
 

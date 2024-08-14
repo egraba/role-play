@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 
 from character.tests.factories import CharacterFactory
-from utils.factories import UserWithPasswordFactory
+from user.tests.factories import UserWithPasswordFactory
 
 from ...tests.factories import GameFactory
 

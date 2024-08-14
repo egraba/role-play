@@ -56,7 +56,7 @@ class CharacterFactory(factory.django.DjangoModelFactory):
         django_get_or_create = ("name",)
 
     name = factory.Sequence(lambda n: f"character{n}")
-    user = factory.SubFactory("utils.factories.UserFactory")
+    user = factory.SubFactory("user.tests.factories.UserFactory")
     race = factory.Faker("enum", enum_cls=Race)
     klass = factory.Faker("enum", enum_cls=Klass)
     background = factory.Faker("enum", enum_cls=Background)

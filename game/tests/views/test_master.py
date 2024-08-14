@@ -31,7 +31,7 @@ from game.views.master import (
 )
 from user.models import User
 from utils.constants import FREEZED_TIME
-from utils.factories import UserFactory
+from user.tests.factories import UserFactory
 
 from ..factories import GameFactory, PlayerFactory
 

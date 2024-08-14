@@ -11,7 +11,7 @@ from master.views import (
     CampaignListView,
     CampaignUpdateView,
 )
-from utils.factories import UserFactory
+from user.tests.factories import UserFactory
 
 from .factories import CampaignFactory
 
