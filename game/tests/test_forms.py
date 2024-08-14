@@ -7,13 +7,13 @@ from game.forms import CombatCreateForm, QuestCreateForm
 
 
 class TestQuestCreateForm:
-    def test_content_type(self):
+    def test_environment_type(self):
         form = QuestCreateForm()
-        assert isinstance(form.fields["content"].widget, forms.Textarea)
+        assert isinstance(form.fields["environment"].widget, forms.Textarea)
 
-    def test_content_max_length(self):
+    def test_environment_max_length(self):
         form = QuestCreateForm()
-        assert form.fields["content"].max_length == 1000
+        assert form.fields["environment"].max_length == 3000
 
 
 pytestmark = pytest.mark.django_db

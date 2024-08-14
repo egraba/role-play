@@ -8,7 +8,7 @@ from .constants.combat import FighterAttributeChoices
 
 
 class QuestCreateForm(forms.Form):
-    content = forms.CharField(widget=forms.Textarea, max_length=1000)
+    environment = forms.CharField(widget=forms.Textarea, max_length=3000)
 
 
 class AbilityCheckRequestForm(forms.ModelForm):

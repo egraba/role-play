@@ -103,7 +103,7 @@ class QuestCreateView(UserPassesTestMixin, FormView, EventContextMixin):
 
     def form_valid(self, form):
         quest = Quest.objects.create(
-            environment=form.cleaned_data["content"], game=self.game
+            environment=form.cleaned_data["environment"], game=self.game
         )
         quest_update = QuestUpdate.objects.create(game=self.game, quest=quest)
         send_to_channel(quest_update)

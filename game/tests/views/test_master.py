@@ -302,8 +302,8 @@ class TestQuestCreateView:
 
     def test_quest_creation(self, client, login, started_game):
         fake = Faker()
-        content = fake.text(100)
-        data = {"content": f"{content}"}
+        environment = fake.text(100)
+        data = {"environment": f"{environment}"}
         form = QuestCreateForm(data)
         assert form.is_valid()
         response = client.post(
@@ -312,7 +312,7 @@ class TestQuestCreateView:
         assert response.status_code == 302
         quest = Quest.objects.filter(game=started_game).last()
         assert quest.game == started_game
-        assert quest.environment == form.cleaned_data["content"]
+        assert quest.environment == form.cleaned_data["environment"]
         assertRedirects(response, started_game.get_absolute_url())
 
 
