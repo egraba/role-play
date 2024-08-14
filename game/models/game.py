@@ -31,6 +31,14 @@ class Game(models.Model):
         return reverse("game", args=(self.id,))
 
 
+class Quest(models.Model):
+    environment = models.TextField(max_length=3000)
+    game = models.OneToOneField(Game, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.environment[:10]
+
+
 class Master(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     game = models.OneToOneField(Game, on_delete=models.CASCADE)
