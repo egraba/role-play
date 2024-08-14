@@ -53,7 +53,7 @@ class QuestFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Quest
 
-    environment = factory.Faker("text", max_nb_chars=3000)
+    environment = factory.Faker("text", max_nb_chars=1000)
     game = factory.SubFactory(GameFactory)
 
 
