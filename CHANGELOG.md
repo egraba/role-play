@@ -22,6 +22,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * Various code and comments improvements
 
 ### Fixed
+* Remove end date column in game list
 * Remove unnecessary `create()` calls
 * Suppress `factory-boy` warnings
 
