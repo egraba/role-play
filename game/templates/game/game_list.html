@@ -18,7 +18,6 @@
                     <th><p>Status</p></th>
                     <th><p>Number of players</p></th>
                     <th><p>Start date</p></th>
-                    <th><p>End date</p></th>
                 </tr>
             {% endif %}
             {% for game in page_obj %}
@@ -28,7 +27,6 @@
                     <td><p>{{ game.get_state_display }}</p></td>
                     <td><p>{{ game.character_set.all|length }}</p></td>
                     <td><p>{{ game.start_date }}</p></td>
-                    <td><p>{{ game.end_date }}</p></td>
                 </tr>
             {% empty %}
                 <tr><td><p>There is no game available...</p></td></tr>
