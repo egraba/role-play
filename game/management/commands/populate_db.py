@@ -3,7 +3,7 @@ from django.core.management.base import BaseCommand
 from character.tests.factories import CharacterFactory
 from user.tests.factories import UserWithPasswordFactory
 
-from ...tests.factories import GameFactory, QuestFactory
+from ...tests.factories import GameFactory
 
 
 class Command(BaseCommand):
@@ -17,8 +17,7 @@ class Command(BaseCommand):
 
         # Games
         for _ in range(3):
-            game = GameFactory(master__user=thomas)
-            QuestFactory(game=game)
+            GameFactory(master__user=thomas)
 
         # Characters
         CharacterFactory(user=eric, name="Eric")
