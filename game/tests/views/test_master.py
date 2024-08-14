@@ -1,7 +1,6 @@
 import random
 
 import pytest
-from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
@@ -30,6 +29,7 @@ from game.views.master import (
     GameStartView,
     QuestCreateView,
 )
+from user.models import User
 from utils.constants import FREEZED_TIME
 from utils.factories import UserFactory
 

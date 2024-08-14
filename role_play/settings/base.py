@@ -9,6 +9,7 @@ INSTALLED_APPS = [
     "daphne",
     "game.apps.GameConfig",
     "master.apps.MasterConfig",
+    "user.apps.UserConfig",
     "character.apps.CharacterConfig",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -103,3 +104,6 @@ STATIC_URL = "static/"
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# User model
+AUTH_USER_MODEL = "user.User"
