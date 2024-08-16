@@ -160,7 +160,7 @@ class CombatInitiativeResponse(Event):
     request = models.OneToOneField(CombatInitiativeRequest, on_delete=models.CASCADE)
 
     def get_message(self):
-        return "initiative response"
+        return f"{self.request.fighter.character} performed a dexterity check!"
 
 
 class CombatInitiativeResult(Event):
@@ -170,4 +170,4 @@ class CombatInitiativeResult(Event):
     score = models.SmallIntegerField()
 
     def get_message(self):
-        return "initiative result"
+        return f"[{self.fighter.character.user}]'s score: {self.score}"

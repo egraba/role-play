@@ -9,6 +9,8 @@ from ..exceptions import EventSchemaValidationError
 from ..models.events import (
     CombatInitialization,
     CombatInitiativeRequest,
+    CombatInitiativeResponse,
+    CombatInitiativeResult,
     Event,
     GameStart,
     QuestUpdate,
@@ -49,6 +51,10 @@ def _get_event_type(event: Event) -> EventType:
         event_type = EventType.COMBAT_INITIALIZATION
     elif isinstance(event, CombatInitiativeRequest):
         event_type = EventType.COMBAT_INITIATIVE_REQUEST
+    elif isinstance(event, CombatInitiativeResponse):
+        event_type = EventType.COMBAT_INITIATIVE_RESPONSE
+    elif isinstance(event, CombatInitiativeResult):
+        event_type = EventType.COMBAT_INITIATIVE_RESPONSE
     return event_type
 
 
