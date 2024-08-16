@@ -11,6 +11,7 @@ from ..models.events import (
     CombatInitiativeRequest,
     CombatInitiativeResponse,
     CombatInitiativeResult,
+    CombatInitativeOrderSet,
     Event,
     GameStart,
     QuestUpdate,
@@ -55,6 +56,8 @@ def _get_event_type(event: Event) -> EventType:
         event_type = EventType.COMBAT_INITIATIVE_RESPONSE
     elif isinstance(event, CombatInitiativeResult):
         event_type = EventType.COMBAT_INITIATIVE_RESPONSE
+    elif isinstance(event, CombatInitativeOrderSet):
+        event_type = EventType.COMBAT_INITIALIZATION_COMPLETE
     return event_type
 
 

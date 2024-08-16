@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import FormView, ListView, UpdateView
 from viewflow.fsm import TransitionNotAllowed
+from django_celery_beat.models import PeriodicTask, IntervalSchedule
 
 from character.models.character import Character
 
@@ -76,6 +77,15 @@ class GameStartView(UserPassesTestMixin, GameStatusControlMixin):
             cache.set(game_key(game.id), game)
             game_start = GameStart.objects.create(game=game)
             send_to_channel(game_start)
+            schedule, _ = IntervalSchedule.objects.get_or_create(
+                every=10,
+                period=IntervalSchedule.SECONDS,
+            )
+            PeriodicTask.objects.get_or_create(
+                interval=schedule,
+                name="Check if combat roll initiative is complete",
+                task="game.tasks.check_combat_roll_initiative_complete",
+            )
         except TransitionNotAllowed:
             return HttpResponseRedirect(reverse("game-start-error", args=(game.id,)))
         return HttpResponseRedirect(game.get_absolute_url())

@@ -171,3 +171,10 @@ class CombatInitiativeResult(Event):
 
     def get_message(self):
         return f"[{self.fighter.character.user}]'s score: {self.score}"
+
+
+class CombatInitativeOrderSet(Event):
+    combat = models.OneToOneField(Combat, on_delete=models.CASCADE)
+
+    def get_message(self):
+        return f"Initiative order: {self.combat.get_initiative_order()}"
