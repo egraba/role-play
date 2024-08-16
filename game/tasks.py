@@ -92,9 +92,9 @@ def process_roll(
     roll_request = RollRequest.objects.filter(
         roll_type=roll_type, character=character, status=RollStatus.PENDING
     ).first()
-    logger.info(f"{roll_request=}, {roll_request.character=}")
     if roll_request is None:
         raise InvalidTaskError("Roll request not found")
+    logger.info(f"{roll_request=}, {roll_request.character=}")
 
     # Store the roll response.
     roll_response = RollResponse.objects.create(
@@ -146,9 +146,9 @@ def process_combat_initiative_roll(
     roll_request = CombatInitiativeRequest.objects.filter(
         fighter__character=character, status=RollStatus.PENDING
     ).first()
-    logger.info(f"{roll_request=}, {roll_request.fighter=}")
     if roll_request is None:
         raise InvalidTaskError("Roll request not found")
+    logger.info(f"{roll_request=}, {roll_request.fighter=}")
 
     # Store the roll response.
     roll_response = CombatInitiativeResponse.objects.create(
