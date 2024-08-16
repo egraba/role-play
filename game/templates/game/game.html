@@ -163,14 +163,13 @@
             }
             if (message["type"] === QUEST_UPDATE) {
                 $("#quest").load(" #quest > *");
-            } else if (message["type"] === ABILITY_CHECK_REQUEST
-                || message["type"] === ABILITY_CHECK_RESPONSE
-                || message["type"] === ABILITY_CHECK_RESULT
-                || message["type"] === COMBAT_INITIATIVE_REQUEST) {
+            } else if (message["type"] === MESSAGE) {
+                // Do nothing.
+            } else {
                 // The full page has to be reloaded, otherwise clicking on the button
                 // triggers no action.
-                    location.reload();
-                }
+                location.reload();
+            }
         };
 
         eventsSocket.onclose = function(event) {
