@@ -140,3 +140,7 @@ class GameEventsConsumer(JsonWebsocketConsumer):
     def combat_initiative_response(self, event):
         """Dexterity check roll from the player."""
         self.send_json(event)
+
+    def combat_initiative_result(self, event):
+        """Dexterity check roll result."""
+        self.send_json(event)
