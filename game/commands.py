@@ -1,13 +1,12 @@
 from abc import ABC, abstractmethod
 
-from user.models import User
-
 from character.models.character import Character
 from game.models.game import Game
+from user.models import User
 
 from .constants.events import RollType
-from .tasks import process_roll, store_message
 from .schemas import EventSchema, PlayerType
+from .tasks import process_combat_initiative_roll, process_roll, store_message
 
 
 class Command(ABC):
@@ -78,10 +77,9 @@ class SavingThrowResponseCommand(CharacterCommandMixin):
 class CombatInitiativeResponseCommand(CharacterCommandMixin):
     def execute(self, content: EventSchema, user: User, game: Game) -> None:
         super().execute(content, user, game)
-        process_roll.delay(
+        process_combat_initiative_roll.delay(
             game_id=game.id,
             roll_type=RollType.ABILITY_CHECK,
             date=content["date"],
             character_id=self.character.id,
-            is_combat_initiative=True,
         )
