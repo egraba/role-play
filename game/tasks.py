@@ -5,6 +5,7 @@ from celery.exceptions import InvalidTaskError
 from celery.utils.log import get_task_logger
 from django.core.cache import cache
 from django.core.mail import send_mail as django_send_mail
+from django.utils import timezone
 
 from character.models.character import Character
 
@@ -14,6 +15,7 @@ from .models.events import (
     CombatInitiativeRequest,
     CombatInitiativeResponse,
     CombatInitiativeResult,
+    CombatInitativeOrderSet,
     Message,
     RollRequest,
     RollResponse,
@@ -189,3 +191,12 @@ def check_combat_roll_initiative_complete():
         else:
             logger.info("Roll complete!")
             logger.info(f"Initiative order={latest_combat.get_initiative_order()}")
+            initiative_order_set, created = (
+                CombatInitativeOrderSet.objects.get_or_create(
+                    combat=latest_combat,
+                    game=latest_combat.game,
+                    date=timezone.now(),
+                )
+            )
+            if created:
+                send_to_channel(initiative_order_set)

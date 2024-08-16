@@ -23,6 +23,7 @@ class EventType(StrEnum):
     COMBAT_INITIATIVE_REQUEST = "combat.initiative.request"
     COMBAT_INITIATIVE_RESPONSE = "combat.initiative.response"
     COMBAT_INITIATIVE_RESULT = "combat.initiative.result"
+    COMBAT_INITIALIZATION_COMPLETE = "combat.initialization.complete"
 
 
 class PlayerType(StrEnum):
