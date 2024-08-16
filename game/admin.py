@@ -4,7 +4,7 @@ from .models.game import Game, Player
 
 
 class GameAdmin(admin.ModelAdmin):
-    fields = ["name", "state", "master"]
+    fields = ["name", "state"]
     list_display = ["name", "state", "master", "start_date"]
 
 
