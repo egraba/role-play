@@ -103,6 +103,7 @@ def process_roll(
     ).first()
     if roll_request is None:
         raise InvalidTaskError("Roll request not found")
+    logger.info(f"{roll_request=}, {roll_request.character=}")
 
     # Store the roll response.
     if is_combat_initiative:
@@ -113,6 +114,7 @@ def process_roll(
         roll_response = RollResponse.objects.create(
             game=game, date=date, character=character, request=roll_request
         )
+    logger.info(f"{roll_response.request=}")
 
     score, result = perform_roll(character, roll_request)
     if is_combat_initiative:
@@ -139,6 +141,7 @@ def process_roll(
     roll_request.status = RollStatus.DONE
     roll_request.save()
 
+    logger.info(f"{roll_result.request=}, {roll_result.score=}, {roll_result.result=}")
     send_to_channel(roll_result)
 
 
