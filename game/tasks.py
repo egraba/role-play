@@ -5,7 +5,6 @@ from celery.exceptions import InvalidTaskError
 from celery.utils.log import get_task_logger
 from django.core.cache import cache
 from django.core.mail import send_mail as django_send_mail
-from django.utils import timezone
 
 from character.models.character import Character
 
@@ -195,7 +194,6 @@ def check_combat_roll_initiative_complete():
                 CombatInitativeOrderSet.objects.get_or_create(
                     combat=latest_combat,
                     game=latest_combat.game,
-                    date=timezone.now(),
                 )
             )
             if created:
