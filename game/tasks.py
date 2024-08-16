@@ -178,6 +178,7 @@ def process_combat_initiative_roll(
 def check_combat_roll_initiative_complete():
     latest_combat = Combat.objects.all().last()
     if latest_combat is None:
+        logger.info("No combat to check")
         pass
     else:
         for fighter in latest_combat.fighter_set.all():
