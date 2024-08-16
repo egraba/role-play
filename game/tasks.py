@@ -177,11 +177,14 @@ def process_combat_initiative_roll(
 @shared_task
 def check_combat_roll_initiative_complete():
     latest_combat = Combat.objects.all().last()
-    for fighter in latest_combat.fighter_set.all():
-        logger.info(f"{fighter.character.name=} {fighter.dexterity_check}")
-        if fighter.dexterity_check is None:
-            logger.info(f"Waiting for {fighter.character.name=}")
-            break
+    if latest_combat is None:
+        pass
     else:
-        logger.info("Roll complete!")
-        logger.info(f"Initiative order={latest_combat.get_initiative_order()}")
+        for fighter in latest_combat.fighter_set.all():
+            logger.info(f"{fighter.character.name=} {fighter.dexterity_check}")
+            if fighter.dexterity_check is None:
+                logger.info(f"Waiting for {fighter.character.name=}")
+                break
+        else:
+            logger.info("Roll complete!")
+            logger.info(f"Initiative order={latest_combat.get_initiative_order()}")
