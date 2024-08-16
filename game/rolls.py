@@ -42,7 +42,6 @@ def perform_roll(
         score = _roll(character, request.ability_type)
     else:
         # Combat initialization
-        # score = _roll(character, AbilityName.DEXTERITY[0])
         setattr(request, "roll_type", RollType.ABILITY_CHECK)
     has_advantage = character.has_advantage(request.roll_type, request.against)
     has_disadvantage = character.has_disadvantage(request.roll_type, request.against)
