@@ -2,7 +2,7 @@
 
 Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<patch>`).
 
-## Unreleased
+## v0.10.0 - 2024-08-16
 
 ### Added
 * DnD: Implement combat initialization
