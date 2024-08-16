@@ -17,7 +17,7 @@ class EventType(StrEnum):
     ABILITY_CHECK_RESPONSE = "ability.check.response"
     ABILITY_CHECK_RESULT = "ability.check.result"
     SAVING_THROW_REQUEST = "saving.throw.request"
-    SAVING_THROW = "saving.throw"
+    SAVING_THROW_RESPONSE = "saving.throw.response"
     SAVING_THROW_RESULT = "saving.throw.result"
     COMBAT_INITIALIZATION = "combat.initialization"
     COMBAT_INITIATIVE_REQUEST = "combat.initiative.request"

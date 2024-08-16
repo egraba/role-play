@@ -9,7 +9,7 @@ from .commands import (
     AbilityCheckResponseCommand,
     CombatInitiativeResponseCommand,
     ProcessMessageCommand,
-    SavingThrowCommand,
+    SavingThrowResponseCommand,
 )
 from .event_enrichers import MessageEnricher, RollResponseEnricher
 from .exceptions import EventSchemaValidationError
@@ -70,8 +70,9 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                 case EventType.ABILITY_CHECK_RESPONSE:
                     command = AbilityCheckResponseCommand()
                     event_enricher = RollResponseEnricher(self.game, content)
-                case EventType.SAVING_THROW:
-                    command = SavingThrowCommand()
+                case EventType.SAVING_THROW_RESPONSE:
+                    command = SavingThrowResponseCommand()
+                    event_enricher = RollResponseEnricher(self.game, content)
                 case EventType.COMBAT_INITIALIZATION:
                     command = ProcessMessageCommand()
                 case EventType.COMBAT_INITIATIVE_RESPONSE:
@@ -118,7 +119,7 @@ class GameEventsConsumer(JsonWebsocketConsumer):
         """Saving throw request from the master."""
         self.send_json(event)
 
-    def saving_throw(self, event):
+    def saving_throw_response(self, event):
         """Saving throw roll from the player."""
         self.send_json(event)
 

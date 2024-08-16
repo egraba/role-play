@@ -145,11 +145,8 @@
 
         const MESSAGE = "message";
         const QUEST_UPDATE = "quest.update";
-        const ABILITY_CHECK_REQUEST = "ability.check.request";
         const ABILITY_CHECK_RESPONSE = "ability.check.response";
-        const ABILITY_CHECK_RESULT = "ability.check.result";
-        const SAVING_THROW = "saving.throw";
-        const COMBAT_INITIATIVE_REQUEST = "combat.initiative.request";
+        const SAVING_THROW_RESPONSE = "saving.throw.response";
         const COMBAT_INITIATIVE_RESPONSE = "combat.initiative.response";
 
         eventsSocket.onmessage = function(event) {
@@ -223,10 +220,10 @@
         if (savingThrowButton !== null) {
             savingThrowButton.addEventListener('click', function(event) {
                 eventsSocket.send(JSON.stringify({
-                    'type': SAVING_THROW,
+                    'type': SAVING_THROW_RESPONSE,
                     'date': Date.now(),
                     'player_type': PLAYER,
-                    'message': senderStr + ' performed a saving throw!',
+                    'username': '{{ user }}',
                 }));
             });
         }
