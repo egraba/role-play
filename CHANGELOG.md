@@ -2,6 +2,11 @@
 
 Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<patch>`).
 
+## Unreleased
+
+### Changed
+* Migrate to Django 5.1
+
 ## v0.10.0 - 2024-08-16
 
 ### Added
