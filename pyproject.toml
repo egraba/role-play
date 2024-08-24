@@ -47,7 +47,7 @@ pytest-asyncio = "*"
 pytest-django = "*"
 
 [tool.ruff]
-exclude = ["role_play/asgi.py", "role_play/urls.py", "role_play/settings/*"]
+exclude = ["**/role_play/asgi.py", "**/role_play/urls.py", "**/role_play/settings/*"]
 
 [tool.pytest.ini_options]
 python_files = ["test_*.py", "*_test.py", "testing/python/*.py"]
