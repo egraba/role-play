@@ -1,4 +1,3 @@
-import json
 import secrets
 
 import dj_database_url
@@ -9,10 +8,9 @@ SECRET_KEY = secrets.token_urlsafe(50)
 
 DEBUG = False
 
-ALLOWED_HOSTS = json.loads(os.environ["ALLOWED_HOSTS"])
-
 # Security
-CSRF_TRUSTED_ORIGINS = json.loads(os.environ["CSRF_TRUSTED_ORIGINS"])
+ALLOWED_HOSTS = os.environ["ALLOWED_HOSTS"]
+CSRF_TRUSTED_ORIGINS = os.environ["CSRF_TRUSTED_ORIGINS"]
 CSRF_COOKIE_SECURE = True
 SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True
