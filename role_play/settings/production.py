@@ -1,8 +1,11 @@
 import json
+import secrets
 
 import dj_database_url
 
 from role_play.settings.base import *
+
+SECRET_KEY = secrets.token_urlsafe(50)
 
 DEBUG = False
 
