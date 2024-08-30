@@ -9,8 +9,8 @@ SECRET_KEY = secrets.token_urlsafe(50)
 DEBUG = False
 
 # Security
-ALLOWED_HOSTS = os.environ["ALLOWED_HOSTS"]
-CSRF_TRUSTED_ORIGINS = os.environ["CSRF_TRUSTED_ORIGINS"]
+ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1", "role-play.fly.dev"]
+CSRF_TRUSTED_ORIGINS = ["https://role-play.fly.dev"]
 CSRF_COOKIE_SECURE = True
 SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True
