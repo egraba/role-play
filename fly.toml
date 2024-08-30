@@ -16,9 +16,11 @@ release_command = 'python manage.py migrate --noinput'
 PORT = '8000'
 DJANGO_SETTINGS_MODULE = "role_play.settings.production"
 REDIS_URL = "fly-role-play-redis.upstash.io"
-PGUSER="postgres"
-PGHOST="role-play-db.internal"
-PGPORT="5433"
+PGUSER = "postgres"
+PGHOST = "role-play-db.internal"
+PGPORT = "5433"
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'role-play.fly.dev']
+CSRF_TRUSTED_ORIGINS = ['https://role-play.fly.dev']
 
 [http_service]
 internal_port = 8000
