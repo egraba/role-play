@@ -10,9 +10,9 @@ DEBUG = False
 
 # Security
 ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1", "role-play.fly.dev"]
-CSRF_TRUSTED_ORIGINS = ["https://role-play.fly.dev"]
+CSRF_TRUSTED_ORIGINS = ["https://role-play.fly.dev/"]
 CSRF_COOKIE_SECURE = True
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = False
 SESSION_COOKIE_SECURE = True
 SECURE_HSTS_SECONDS = 3600
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
