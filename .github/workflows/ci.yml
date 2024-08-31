@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 env:
-  DJANGO_SETTINGS_MODULE: role_play.settings.local
+  DJANGO_SETTINGS_MODULE: role_play.settings.ci
   PGPASSWORD: ${{secrets.PGPASSWORD}}
   DJANGO_SECRET_KEY: ${{secrets.DJANGO_SECRET_KEY}}
   PYTEST_PLUGINS: celery.contrib.pytest
