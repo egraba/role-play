@@ -4,6 +4,9 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 
 ## Unreleased
 
+## Added
+* App is now deployable on Fly.io
+
 ### Changed
 * Migrate to Django 5.1
 
