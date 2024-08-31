@@ -23,4 +23,4 @@ COPY . /code
 
 EXPOSE 8000
 
-CMD ["/bin/bash", "-c", "python manage.py collectstatic --noinput; daphne -b 0.0.0.0 -p 8000 role_play.asgi:application"]
+CMD ["invoke", "prod.deploy"]
