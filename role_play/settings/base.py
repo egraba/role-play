@@ -34,13 +34,19 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "role_play.urls"
 
+redis_password = os.getenv("REDIS_PASSWORD")
+if redis_password is None:
+    REDIS_URL = f"redis://{os.environ['REDISHOST']}:{os.environ['REDISPORT']}"
+else:
+    REDIS_URL = f"redis://default:{redis_password}@{os.environ['REDISHOST']}:{os.environ['REDISPORT']}"
+
 # Channels
 ASGI_APPLICATION = "role_play.asgi.application"
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [(os.environ["REDIS_URL"])],
+            "hosts": [REDIS_URL],
         },
     },
 }
@@ -61,14 +67,14 @@ DATABASES = {
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": os.environ["REDIS_URL"],
+        "LOCATION": REDIS_URL,
     }
 }
 SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
 
 # Celery
-CELERY_BROKER_URL = os.environ["REDIS_URL"]
-CELERY_RESULT_BACKEND = os.environ["REDIS_URL"]
+CELERY_BROKER_URL = REDIS_URL
+CELERY_RESULT_BACKEND = REDIS_URL
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 
 # Authentication
