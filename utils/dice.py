@@ -33,16 +33,12 @@ class Dice(UserString):
         super().__init__(dice_str)
         if not re.match(DICE_REGEX, dice_str):
             raise DiceStringFormatError(f"[{dice_str}] does not match a dice regex...")
-
         dice_str_parts = self.split("d")
-        print(dice_str_parts)
-
         try:
             self.throws = int(dice_str_parts[0])
         except ValueError:
             # This is raised when no throw is specified in the dice string.
             self.throws = 1
-
         dice_type = int(dice_str_parts[1])
         if dice_type not in dice_types:
             raise DiceStringFormatError("The provided dice type is not supported...")
