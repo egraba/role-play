@@ -6,14 +6,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []  # type: list
 
-INSTALLED_APPS += [
-    "debug_toolbar",
-]
-
-MIDDLEWARE = [
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
-] + MIDDLEWARE
-
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -36,8 +28,8 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "role-play",
-        "USER": "devuser",
-        "PASSWORD": "devpwd",
+        "USER": "ciuser",
+        "PASSWORD": os.environ["PGPASSWORD"],
         "HOST": "127.0.0.1",
         "PORT": "5432",
     }

@@ -8,6 +8,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * App is now deployable on Fly.io
 
 ### Changed
+* Simplify settings per environment
 * Migrate to Django 5.1
 
 ## v0.10.0 - 2024-08-16
