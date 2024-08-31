@@ -23,4 +23,4 @@ COPY . /code
 
 EXPOSE 8000
 
-CMD ["invoke", "prod.deploy"]
+CMD ["invoke", "prod.run"]
