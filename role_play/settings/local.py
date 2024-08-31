@@ -1,5 +1,7 @@
 from role_play.settings.base import *
 
+SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
+
 DEBUG = True
 
 ALLOWED_HOSTS = []  # type: list

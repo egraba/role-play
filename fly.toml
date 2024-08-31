@@ -1,0 +1,45 @@
+# fly.toml app configuration file generated for role-play on 2024-08-30T18:01:39+02:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'role-play'
+primary_region = 'cdg'
+console_command = '/code/manage.py shell'
+
+[build]
+
+[deploy]
+release_command = 'invoke prod.deploy'
+
+[env]
+PORT = '8000'
+DJANGO_SETTINGS_MODULE = "role_play.settings.production"
+REDISHOST = "fly-role-play-redis.upstash.io"
+REDISPORT = "6379"
+PGUSER = "postgres"
+PGHOST = "role-play-db.internal"
+PGPORT = "5433"
+DEFAULT_FROM_EMAIL = "grandmaster@egrabaroleplay.org"
+EMAIL_HOST = "smtp.sendgrid.net"
+EMAIL_PORT = "587"
+EMAIL_HOST_USER = "apikey"
+EMAIL_DOMAIN = "egrabaroleplay.org"
+
+
+[http_service]
+internal_port = 8000
+force_https = true
+auto_stop_machines = 'stop'
+auto_start_machines = true
+min_machines_running = 0
+processes = ['app']
+
+[[vm]]
+memory = '1gb'
+cpu_kind = 'shared'
+cpus = 1
+
+[[statics]]
+guest_path = '/code/staticfiles'
+url_prefix = '/static/'
