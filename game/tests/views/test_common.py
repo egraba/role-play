@@ -75,7 +75,7 @@ class TestIndexView:
         assertContains(response, "Create a new character")
         assertNotContains(response, "View your character")
         with pytest.raises(KeyError):
-            print(response.context["user_character"])
+            response.context["user_character"]
 
     def test_content_logged_user_existing_character(self, client):
         character = CharacterFactory()
@@ -250,7 +250,7 @@ class TestGameView:
         # issubset() is used because of pagination.
         assert set(response.context["event_list"]).issubset(set(event_list))
         with pytest.raises(KeyError):
-            print(response.context["player"])
+            response.context["player"]
 
     def test_context_data_player(self, client, populated_game):
         client.logout()
