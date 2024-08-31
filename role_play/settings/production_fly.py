@@ -36,11 +36,48 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "role_play.wsgi.application"
 
+# Channels
+ASGI_APPLICATION = "role_play.asgi.application"
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [f"redis://default:{os.environ['REDIS_PASSWORD']}@fly-role-play-redis.upstash.io:6379"],
+        },
+    },
+}
+
+# Database
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "role-play",
+        "USER": "postgres",
+        "PASSWORD": os.environ["PGPASSWORD"],
+        "HOST": "role-play-db.internal",
+        "PORT": "5433",
+    }
+}
+
+# Cache
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": f"redis://default:{os.environ['REDIS_PASSWORD']}@fly-role-play-redis.upstash.io:6379",
+    }
+}
+SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
+
+# Celery
+CELERY_BROKER_URL = f"redis://default:{os.environ['REDIS_PASSWORD']}@fly-role-play-redis.upstash.io:6379"
+CELERY_RESULT_BACKEND = f"redis://default:{os.environ['REDIS_PASSWORD']}@fly-role-play-redis.upstash.io:6379"
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+
 # Email backend
-DEFAULT_FROM_EMAIL = os.environ["DEFAULT_FROM_EMAIL"]
-EMAIL_HOST = os.environ["EMAIL_HOST"]
-EMAIL_PORT = os.environ["EMAIL_PORT"]
-EMAIL_HOST_USER = os.environ["EMAIL_HOST_USER"]
+DEFAULT_FROM_EMAIL = "grandmaster@egrabaroleplay.org"
+EMAIL_HOST = "smtp.sendgrid.net"
+EMAIL_PORT = "587"
+EMAIL_HOST_USER = "apikey"
 EMAIL_HOST_PASSWORD = os.environ["EMAIL_HOST_PASSWORD"]
 EMAIL_USE_TLS = True
 EMAIL_TIMEOUT = 10

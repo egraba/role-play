@@ -15,17 +15,6 @@ release_command = 'invoke prod.deploy'
 [env]
 PORT = '8000'
 DJANGO_SETTINGS_MODULE = "role_play.settings.production_fly"
-REDISHOST = "fly-role-play-redis.upstash.io"
-REDISPORT = "6379"
-PGUSER = "postgres"
-PGHOST = "role-play-db.internal"
-PGPORT = "5433"
-DEFAULT_FROM_EMAIL = "grandmaster@egrabaroleplay.org"
-EMAIL_HOST = "smtp.sendgrid.net"
-EMAIL_PORT = "587"
-EMAIL_HOST_USER = "apikey"
-EMAIL_DOMAIN = "egrabaroleplay.org"
-
 
 [http_service]
 internal_port = 8000
