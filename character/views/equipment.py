@@ -1,14 +1,16 @@
 import re
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import FormView
 
+from ..constants.equipment import ArmorName, GearName, ToolName, WeaponName
+from ..flows import CreationFlow
 from ..forms.equipment.forms import (
     ClericEquipmentSelectForm,
     FighterEquipmentSelectForm,
     RogueEquipmentSelectForm,
     WizardEquipmentSelectForm,
 )
-from ..constants.equipment import ArmorName, WeaponName, ToolName, GearName
 from ..models.klasses import Klass
 from .mixins import CharacterContextMixin
 
@@ -57,7 +59,6 @@ class EquipmentSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
                     inventory.add(equipment_name)
             except KeyError:
                 pass
-
         # Some equipment is added without selection, depending on character's class.
         match self.character.klass:
             case Klass.CLERIC:
@@ -73,4 +74,5 @@ class EquipmentSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
                 inventory.add(ToolName.THIEVES_TOOLS)
             case Klass.WIZARD:
                 inventory.add(GearName.SPELLBOOK)
+        CreationFlow(self.character).complete()
         return super().form_valid(form)

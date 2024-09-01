@@ -107,7 +107,31 @@ class CreationFlow:
     @state.transition(
         source=CreationState.BACKGROUND_COMPLETION,
         target=CreationState.EQUIPMENT_SELECTION,
-        conditions=[are_skills_selected],
+        conditions=[is_background_completed],
     )
     def select_equipment(self):
+        pass
+
+    def is_equipment_selected(self):
+        try:
+            self._check_one_attribute_exists(
+                [
+                    "first_weapon",
+                    "second_weapon",
+                    "third_weapon",
+                    "armor",
+                    "pack",
+                    "gear",
+                ]
+            )
+        except CharacterAttributeError:
+            return False
+        return True
+
+    @state.transition(
+        source=CreationState.EQUIPMENT_SELECTION,
+        target=CreationState.COMPLETE,
+        conditions=[is_equipment_selected],
+    )
+    def complete(self):
         pass
