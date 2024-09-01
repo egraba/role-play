@@ -22,16 +22,28 @@ class CreationFlow:
     def _on_transition_success(self, descriptor, source, target):
         self.character.save()
 
-    def _check_attributes_exist(self, fields: list[str]) -> None:
+    def _check_all_attributes_exist(self, fields: list[str]) -> None:
         for field in fields:
             try:
                 assert getattr(self.character, field) is not None
             except AttributeError as exc:
                 raise CharacterAttributeError from exc
 
+    def _check_one_attribute_exists(self, fields: list[str]) -> None:
+        is_found = False
+        for field in fields:
+            try:
+                assert getattr(self.character, field) is not None
+                is_found = True
+                break
+            except AttributeError:
+                pass
+        if not is_found:
+            raise CharacterAttributeError(f"No field found among {fields}")
+
     def are_base_attributes_selected(self):
         try:
-            self._check_attributes_exist(
+            self._check_all_attributes_exist(
                 [
                     "name",
                     "race",
@@ -59,7 +71,7 @@ class CreationFlow:
 
     def are_skills_selected(self):
         try:
-            self._check_attributes_exist(
+            self._check_all_attributes_exist(
                 [
                     "first_skill",
                     "second_skill",
@@ -75,4 +87,27 @@ class CreationFlow:
         conditions=[are_skills_selected],
     )
     def complete_background(self):
+        pass
+
+    def is_background_completed(self):
+        try:
+            self._check_one_attribute_exists(
+                [
+                    "equipment",
+                    "language",
+                    "first_language",
+                    "second_language",
+                    "tool_proficiency",
+                ]
+            )
+        except CharacterAttributeError:
+            return False
+        return True
+
+    @state.transition(
+        source=CreationState.BACKGROUND_COMPLETION,
+        target=CreationState.EQUIPMENT_SELECTION,
+        conditions=[are_skills_selected],
+    )
+    def select_equipment(self):
         pass
