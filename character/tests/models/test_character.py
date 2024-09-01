@@ -2,7 +2,7 @@ import pytest
 from faker import Faker
 
 from character.constants.abilities import AbilityName
-from character.constants.character import Gender
+from character.constants.character import Gender, CreationState
 from character.constants.races import SenseName
 from character.models.character import Character
 from character.models.proficiencies import SavingThrowProficiency
@@ -60,6 +60,9 @@ class TestCharacterModel:
         assert character.charisma == character.abilities.get(
             ability_type__name=AbilityName.CHARISMA
         )
+
+    def test_creation_state(self, character):
+        assert character.creation_state == CreationState.BASE_ATTRIBUTES_SELECTION
 
     def test_xp_increase_no_level_increase(self, character):
         fake = Faker()
