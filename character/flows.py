@@ -22,24 +22,32 @@ class CreationFlow:
     def _on_transition_success(self, descriptor, source, target):
         self.character.save()
 
-    def are_base_attributes_selected(self):
-        base_attributes_fields = [
-            "name",
-            "race",
-            "klass",
-            "background",
-            "strength",
-            "dexterity",
-            "constitution",
-            "intelligence",
-            "wisdom",
-            "charisma",
-        ]
-        for field in base_attributes_fields:
+    def _check_attributes_exist(self, fields: list[str]) -> None:
+        for field in fields:
             try:
                 assert getattr(self.character, field) is not None
             except AttributeError as exc:
                 raise CharacterAttributeError from exc
+
+    def are_base_attributes_selected(self):
+        try:
+            self._check_attributes_exist(
+                [
+                    "name",
+                    "race",
+                    "klass",
+                    "background",
+                    "strength",
+                    "dexterity",
+                    "constitution",
+                    "intelligence",
+                    "wisdom",
+                    "charisma",
+                ]
+            )
+        except CharacterAttributeError:
+            return False
+        return True
 
     @state.transition(
         source=CreationState.BASE_ATTRIBUTES_SELECTION,
@@ -47,4 +55,24 @@ class CreationFlow:
         conditions=[are_base_attributes_selected],
     )
     def select_skills(self):
+        pass
+
+    def are_skills_selected(self):
+        try:
+            self._check_attributes_exist(
+                [
+                    "first_skill",
+                    "second_skill",
+                ]
+            )
+        except CharacterAttributeError:
+            return False
+        return True
+
+    @state.transition(
+        source=CreationState.SKILLS_SELECTION,
+        target=CreationState.BACKGROUND_COMPLETION,
+        conditions=[are_skills_selected],
+    )
+    def complete_background(self):
         pass

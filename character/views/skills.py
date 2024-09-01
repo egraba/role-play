@@ -5,6 +5,7 @@ from django.views.generic import FormView
 from ..forms.skills import ExtendedSkillsSelectForm, SkillsSelectForm
 from ..models.klasses import Klass
 from .mixins import CharacterContextMixin
+from ..flows import CreationFlow
 
 
 class SkillsSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
@@ -43,4 +44,5 @@ class SkillsSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
             self.character.skills.add(fourth_skill)
         except KeyError:
             pass
+        CreationFlow(self.character).complete_background()
         return super().form_valid(form)
