@@ -5,6 +5,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ## Added
+* Characters' attributes are now accessible by properties
 * App is now deployable on Fly.io
 
 ### Changed
