@@ -1,4 +1,4 @@
-from django.db.models import TextChoices
+from django.db.models import IntegerChoices, TextChoices
 
 
 class Gender(TextChoices):
@@ -7,6 +7,6 @@ class Gender(TextChoices):
     ANDROGYNOUS = "A", "Androgynous"
 
 
-class CreationState(TextChoices):
-    BASE_ATTRIBUTES_SELECTION = "B", "base_attributes_selection"
-    COMPLETE = "C", "complete"
+class CreationState(IntegerChoices):
+    BASE_ATTRIBUTES_SELECTION = 1, "base_attributes_selection"
+    COMPLETE = 0, "complete"

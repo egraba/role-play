@@ -52,7 +52,6 @@ class CharacterCreateForm(forms.ModelForm):
 
     def clean(self):
         self.cleaned_data = super().clean()
-
         # The ability scores must be unique per ability.
         if len(self.cleaned_data) != len(set(self.cleaned_data.values())):
             raise forms.ValidationError("Each ability must have a different score...")
