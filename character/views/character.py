@@ -40,6 +40,5 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
         character = form.save(commit=False)
         character.user = self.request.user
         build_character(character, form)
-        creation_flow = CreationFlow(character)
-        creation_flow.select_skills()
+        CreationFlow(character).select_skills()
         return super().form_valid(form)
