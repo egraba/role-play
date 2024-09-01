@@ -1,6 +1,7 @@
 import pytest
 from faker import Faker
 
+from character.constants.abilities import AbilityName
 from character.constants.character import Gender
 from character.constants.races import SenseName
 from character.models.character import Character
@@ -29,6 +30,36 @@ class TestCharacterModel:
 
     def test_str(self, character):
         assert str(character) == character.name
+
+    def test_strength(self, character):
+        assert character.strength == character.abilities.get(
+            ability_type__name=AbilityName.STRENGTH
+        )
+
+    def test_dexterity(self, character):
+        assert character.dexterity == character.abilities.get(
+            ability_type__name=AbilityName.DEXTERITY
+        )
+
+    def test_constitution(self, character):
+        assert character.constitution == character.abilities.get(
+            ability_type__name=AbilityName.CONSTITUTION
+        )
+
+    def test_intelligence(self, character):
+        assert character.intelligence == character.abilities.get(
+            ability_type__name=AbilityName.INTELLIGENCE
+        )
+
+    def test_wisdom(self, character):
+        assert character.wisdom == character.abilities.get(
+            ability_type__name=AbilityName.WISDOM
+        )
+
+    def test_charisma(self, character):
+        assert character.charisma == character.abilities.get(
+            ability_type__name=AbilityName.CHARISMA
+        )
 
     def test_xp_increase_no_level_increase(self, character):
         fake = Faker()
