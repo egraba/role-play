@@ -43,8 +43,8 @@ class CreationFlow:
 
     @state.transition(
         source=CreationState.BASE_ATTRIBUTES_SELECTION,
-        target=CreationState.COMPLETE,
+        target=CreationState.SKILLS_SELECTION,
         conditions=[are_base_attributes_selected],
     )
-    def complete(self):
+    def select_skills(self):
         pass

@@ -2,11 +2,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.views.generic import CreateView, DetailView, ListView
 
-from ..forms.character import CharacterCreateForm
-from ..models.character import Character
 from ..character_builder import (
     build_character,
 )
+from ..flows import CreationFlow
+from ..forms.character import CharacterCreateForm
+from ..models.character import Character
 
 
 class CharacterDetailView(LoginRequiredMixin, DetailView):
@@ -39,5 +40,6 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
         character = form.save(commit=False)
         character.user = self.request.user
         build_character(character, form)
-        character.save()
+        creation_flow = CreationFlow(character)
+        creation_flow.select_skills()
         return super().form_valid(form)
