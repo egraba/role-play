@@ -7,6 +7,7 @@ from django.urls import reverse
 from game.constants.events import Against, RollType
 from utils.dice import Dice
 
+from ..constants.abilities import AbilityName
 from ..constants.backgrounds import Background
 from ..constants.character import Gender, CreationState
 from ..constants.races import Alignment, Race, SenseName, Size
@@ -65,6 +66,30 @@ class Character(models.Model):
 
     def __str__(self):
         return str(self.name)
+
+    @property
+    def strength(self):
+        return self.abilities.get(ability_type__name=AbilityName.STRENGTH)
+
+    @property
+    def dexterity(self):
+        return self.abilities.get(ability_type__name=AbilityName.DEXTERITY)
+
+    @property
+    def constitution(self):
+        return self.abilities.get(ability_type__name=AbilityName.CONSTITUTION)
+
+    @property
+    def intelligence(self):
+        return self.abilities.get(ability_type__name=AbilityName.INTELLIGENCE)
+
+    @property
+    def wisdom(self):
+        return self.abilities.get(ability_type__name=AbilityName.WISDOM)
+
+    @property
+    def charisma(self):
+        return self.abilities.get(ability_type__name=AbilityName.CHARISMA)
 
     def get_absolute_url(self):
         return reverse("character-detail", args=(self.id,))
