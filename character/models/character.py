@@ -9,7 +9,7 @@ from utils.dice import Dice
 
 from ..constants.abilities import AbilityName
 from ..constants.backgrounds import Background
-from ..constants.character import Gender
+from ..constants.character import Gender, CreationState
 from ..constants.races import Alignment, Race, SenseName, Size
 from ..utils.cache import advancement_key
 from .abilities import Ability
@@ -54,6 +54,9 @@ class Character(models.Model):
     flaw = models.TextField(max_length=150, null=True, blank=True)
     inventory = models.OneToOneField(
         Inventory, on_delete=models.CASCADE, blank=True, null=True
+    )
+    creation_state = models.SmallIntegerField(
+        choices=CreationState.choices, default=CreationState.BASE_ATTRIBUTES_SELECTION
     )
 
     class Meta:
