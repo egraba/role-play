@@ -70,14 +70,7 @@ class CreationFlow:
         pass
 
     def are_skills_selected(self):
-        try:
-            self._check_all_attributes_exist(
-                [
-                    "first_skill",
-                    "second_skill",
-                ]
-            )
-        except CharacterAttributeError:
+        if self.character.skills.all() is None:
             return False
         return True
 
