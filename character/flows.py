@@ -113,18 +113,8 @@ class CreationFlow:
         pass
 
     def is_equipment_selected(self):
-        try:
-            self._check_one_attribute_exists(
-                [
-                    "first_weapon",
-                    "second_weapon",
-                    "third_weapon",
-                    "armor",
-                    "pack",
-                    "gear",
-                ]
-            )
-        except CharacterAttributeError:
+        # Only pack field is checked, as all characters have a pack.
+        if self.character.inventory.pack_set.all() is None:
             return False
         return True
 
