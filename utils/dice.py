@@ -53,8 +53,6 @@ class DiceString(UserString):
             raise DiceStringFormatError(
                 f"{nb_throws=} must be a strictly positive integer"
             )
-        if self.nb_throws is None:
-            self.nb_throws = 0
         self.nb_throws += nb_throws
         self.data = f"{self.nb_throws}d{self.dice_type}"
         return self.data
