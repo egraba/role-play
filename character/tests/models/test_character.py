@@ -8,7 +8,7 @@ from character.models.character import Character
 from character.models.proficiencies import SavingThrowProficiency
 from character.models.races import Sense
 from game.constants.events import Against, RollType
-from utils.dice import Dice
+from utils.dice import DiceString
 
 from ..factories import AbilityFactory, CharacterFactory
 
@@ -77,25 +77,25 @@ class TestCharacterModel:
         old_xp = character.xp
         old_level = character.level
         old_bonus = character.proficiency_bonus
-        old_throws = Dice(character.hit_dice).throws
+        old_throws = DiceString(character.hit_dice).throws
         old_max_hp = character.max_hp
         character.increase_xp(new_xp)
         assert character.xp == old_xp + new_xp
         assert character.level == old_level + 1
         assert character.proficiency_bonus == old_bonus + 2
-        assert Dice(character.hit_dice).throws == old_throws + 1
+        assert DiceString(character.hit_dice).throws == old_throws + 1
         assert character.max_hp == old_max_hp + character.hp_increase
 
     def test_xp_increase_several_level_increase(self, character):
         new_xp = 50_000
         old_xp = character.xp
-        old_throws = Dice(character.hit_dice).throws
+        old_throws = DiceString(character.hit_dice).throws
         old_max_hp = character.max_hp
         character.increase_xp(new_xp)
         assert character.xp == old_xp + new_xp
         assert character.level == 9
         assert character.proficiency_bonus == 24
-        assert Dice(character.hit_dice).throws == old_throws + 8
+        assert DiceString(character.hit_dice).throws == old_throws + 8
         assert character.max_hp == old_max_hp + character.hp_increase * 8
 
     def test_is_proficient_ability_present(self, character):

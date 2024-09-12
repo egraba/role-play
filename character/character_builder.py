@@ -1,6 +1,6 @@
 import random
 
-from utils.dice import Dice
+from utils.dice import DiceString
 
 from .constants.backgrounds import BACKGROUNDS
 from .constants.klasses import KLASS_FEATURES
@@ -66,7 +66,7 @@ class _RaceBuilder:
     def set_height(self) -> None:
         base_height = RACIAL_TRAITS[self.race]["height"]["base_height"]
         height_modifier = RACIAL_TRAITS[self.race]["height"]["height_modifier"]
-        additional_height = Dice(height_modifier).roll() / 12  # inches
+        additional_height = DiceString(height_modifier).roll() / 12  # inches
         self.character.height = base_height + additional_height
 
     def set_weight(self) -> None:
@@ -75,7 +75,7 @@ class _RaceBuilder:
         if weight_modifier is None:
             self.character.weight = base_weight
         else:
-            additional_weight = Dice(weight_modifier).roll() * 12  # pounds
+            additional_weight = DiceString(weight_modifier).roll() * 12  # pounds
             self.character.weight = base_weight + additional_weight
 
 
@@ -92,7 +92,7 @@ class _KlassBuilder:
 
     def apply_hit_points(self) -> None:
         hit_points = KLASS_FEATURES[self.klass]["hit_points"]
-        self.character.hit_dice = Dice(hit_points["hit_dice"])
+        self.character.hit_dice = DiceString(hit_points["hit_dice"])
         self.character.hp += hit_points["hp_first_level"]
         modifier = self.character.abilities.get(
             ability_type=hit_points["hp_modifier_ability"]
@@ -119,7 +119,7 @@ class _KlassBuilder:
             )
 
     def add_wealth(self) -> None:
-        wealth_roll = Dice(KLASS_FEATURES[self.klass]["wealth"]).roll()
+        wealth_roll = DiceString(KLASS_FEATURES[self.klass]["wealth"]).roll()
         inventory = self.character.inventory
         inventory.gp = wealth_roll * 10
         inventory.save()

@@ -13,12 +13,10 @@ class DiceStringFormatError(Exception):
     """Raised when a dice string is wrongly formatted."""
 
 
-class Dice(UserString):
+class DiceString(UserString):
     """
-    Class managing dice strings.
-
     A dice string looks like '[N]dT', where N is the number of dice throws
-        and T the type of the dice.
+    and T the type of the dice.
 
     Attributes:
         throws (int): Number of throws.

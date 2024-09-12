@@ -5,7 +5,7 @@ from django.db.models.functions import Upper
 from django.urls import reverse
 
 from game.constants.events import Against, RollType
-from utils.dice import Dice
+from utils.dice import DiceString
 
 from ..constants.abilities import AbilityName
 from ..constants.backgrounds import Background
@@ -111,7 +111,7 @@ class Character(models.Model):
         self.proficiency_bonus += advancement.proficiency_bonus
 
         # Increase hit dice
-        self.hit_dice = Dice(self.hit_dice).add_throws(1)
+        self.hit_dice = DiceString(self.hit_dice).add_throws(1)
 
         # Increase HP
         self.max_hp += self.hp_increase

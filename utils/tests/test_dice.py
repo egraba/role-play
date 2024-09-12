@@ -1,7 +1,7 @@
 import pytest
 from faker import Faker
 
-from utils.dice import Dice, DiceStringFormatError, dice_types
+from utils.dice import DiceString, DiceStringFormatError, dice_types
 
 
 @pytest.fixture
@@ -9,14 +9,14 @@ def dice_str():
     fake = Faker()
     dice_throws = fake.random_int(min=1, max=10)
     dice_type = fake.random_element(elements=dice_types)
-    return Dice(f"{dice_throws}d{dice_type}")
+    return DiceString(f"{dice_throws}d{dice_type}")
 
 
 @pytest.fixture
 def dice_str_no_throw():
     fake = Faker()
     dice_type = fake.random_element(elements=dice_types)
-    return Dice(f"d{dice_type}")
+    return DiceString(f"d{dice_type}")
 
 
 def test_constructor_valid_dice(dice_str, dice_str_no_throw):
@@ -27,7 +27,7 @@ def test_constructor_valid_dice(dice_str, dice_str_no_throw):
 def test_constructor_invalid_dice_str():
     fake = Faker()
     with pytest.raises(DiceStringFormatError):
-        Dice(fake.pystr(max_chars=5))
+        DiceString(fake.pystr(max_chars=5))
 
 
 def test_constructor_invalid_dice_type():
@@ -35,7 +35,7 @@ def test_constructor_invalid_dice_type():
     dice_throws = fake.random_int(min=1, max=10)
     dice_type = fake.random_element(elements=(2, 3, 5, 100))
     with pytest.raises(DiceStringFormatError):
-        Dice(f"{dice_throws}d{dice_type}")
+        DiceString(f"{dice_throws}d{dice_type}")
 
 
 def test_add_throws_valid_thows(dice_str):
