@@ -11,6 +11,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ### Changed
 * Simplify settings per environment
 * Migrate to Django 5.1
+* Various code and comments improvements
 
 ## v0.10.0 - 2024-08-16
 

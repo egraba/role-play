@@ -1,6 +1,6 @@
 from pydantic import BaseModel, ValidationError
 
-from utils.dice import Dice, DiceStringFormatError
+from utils.dice import DiceString, DiceStringFormatError
 
 from ..constants.equipment import DamageType
 
@@ -58,7 +58,7 @@ def parse_damage(settings: str) -> tuple[str, str]:
     """
     array = settings.split()
     try:
-        dice_str = Dice(array[0])
+        dice_str = DiceString(array[0])
     except DiceStringFormatError as exc:
         raise ValueError from exc
     if array[1] in DamageType.values:
