@@ -38,24 +38,24 @@ class DiceString(UserString):
             raise DiceStringFormatError(f"{dice_type=} is not supported")
         self.type = dice_type
 
-    def add_throws(self, throws: int) -> str:
+    def add_throws(self, nb_throws: int) -> str:
         """
         Add throws to a dice string.
 
         Args:
-            throws (int): Number of throws.
+            nb_throws (int): Number of throws.
 
         Returns:
             str: New dice string.
         """
 
-        if throws <= 0:
+        if nb_throws <= 0:
             raise DiceStringFormatError(
                 "The number of throws must be a strictly positive integer..."
             )
         if self.nb_throws is None:
             self.nb_throws = 0
-        self.nb_throws += throws
+        self.nb_throws += nb_throws
         self.data = f"{self.nb_throws}d{self.type}"
         return self.data
 
