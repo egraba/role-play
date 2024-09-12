@@ -7,9 +7,9 @@ from utils.dice import DiceString, DiceStringFormatError, dice_types
 @pytest.fixture
 def dice_str():
     fake = Faker()
-    dice_throws = fake.random_int(min=1, max=10)
+    nb_throws = fake.random_int(min=1, max=10)
     dice_type = fake.random_element(elements=dice_types)
-    return DiceString(f"{dice_throws}d{dice_type}")
+    return DiceString(f"{nb_throws}d{dice_type}")
 
 
 @pytest.fixture
@@ -32,37 +32,34 @@ def test_constructor_invalid_dice_str():
 
 def test_constructor_invalid_dice_type():
     fake = Faker()
-    dice_throws = fake.random_int(min=1, max=10)
+    nb_throws = fake.random_int(min=1, max=10)
     dice_type = fake.random_element(elements=(2, 3, 5, 100))
     with pytest.raises(DiceStringFormatError):
-        DiceString(f"{dice_throws}d{dice_type}")
+        DiceString(f"{nb_throws}d{dice_type}")
 
 
 def test_add_throws_valid_thows(dice_str):
     fake = Faker()
-    number_of_throws = fake.random_int(min=1, max=10)
+    nb_throws = fake.random_int(min=1, max=10)
     old_throws = dice_str.throws
-    assert (
-        dice_str.add_throws(number_of_throws)
-        == f"{old_throws + number_of_throws}d{dice_str.type}"
-    )
+    assert dice_str.add_throws(nb_throws) == f"{old_throws + nb_throws}d{dice_str.type}"
 
 
 def test_add_throws_no_throw(dice_str_no_throw):
     fake = Faker()
-    number_of_throws = fake.random_int(min=1, max=10)
+    nb_throws = fake.random_int(min=1, max=10)
     old_throws = dice_str_no_throw.throws
     assert (
-        dice_str_no_throw.add_throws(number_of_throws)
-        == f"{old_throws + number_of_throws}d{dice_str_no_throw.type}"
+        dice_str_no_throw.add_throws(nb_throws)
+        == f"{old_throws + nb_throws}d{dice_str_no_throw.type}"
     )
 
 
 def test_add_throws_invalid_thows(dice_str):
     fake = Faker()
-    number_of_throws = fake.random_int(min=-10, max=0)
+    nb_throws = fake.random_int(min=-10, max=0)
     with pytest.raises(DiceStringFormatError):
-        dice_str.add_throws(number_of_throws)
+        dice_str.add_throws(nb_throws)
 
 
 def test_roll_one_throw(dice_str_no_throw):
