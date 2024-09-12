@@ -51,7 +51,7 @@ class DiceString(UserString):
 
         if nb_throws <= 0:
             raise DiceStringFormatError(
-                "The number of throws must be a strictly positive integer..."
+                f"{nb_throws=} must be a strictly positive integer"
             )
         if self.nb_throws is None:
             self.nb_throws = 0
