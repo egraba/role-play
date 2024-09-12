@@ -35,7 +35,7 @@ class DiceString(UserString):
             self.nb_throws = 1
         dice_type = int(dice_str_parts[1])
         if dice_type not in dice_types:
-            raise DiceStringFormatError("The provided dice type is not supported...")
+            raise DiceStringFormatError(f"{dice_type=} is not supported")
         self.type = dice_type
 
     def add_throws(self, throws: int) -> str:
