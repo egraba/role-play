@@ -6,11 +6,7 @@ import dice
 DICE_REGEX = r"(\d+)?d(\d+)([\+\-]\d+)?"
 
 dice_types = {4, 6, 8, 10, 12, 20}
-"""
-set[int]: Dice types.
-
-The dice type is the number of dice faces.
-"""
+"""The dice type is the number of dice faces."""
 
 
 class DiceStringFormatError(TypeError):
