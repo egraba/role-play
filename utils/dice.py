@@ -43,10 +43,10 @@ class DiceString(UserString):
         Add throws to a dice string.
 
         Args:
-            nb_throws (int): Number of throws.
+            nb_throws (int): Number of throws to add.
 
         Returns:
-            str: New dice string.
+            str: The new dice string.
         """
 
         if nb_throws <= 0:
