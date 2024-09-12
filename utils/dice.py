@@ -26,7 +26,7 @@ class DiceString(UserString):
     def __init__(self, dice_str: str):
         super().__init__(dice_str)
         if not re.match(DICE_REGEX, dice_str):
-            raise DiceStringFormatError(f"[{dice_str}] does not match a dice regex...")
+            raise DiceStringFormatError(f"{dice_str=} is not a dice string")
         dice_str_parts = self.split("d")
         try:
             self.nb_throws = int(dice_str_parts[0])
