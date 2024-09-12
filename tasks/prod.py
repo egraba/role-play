@@ -19,4 +19,6 @@ def run(context):
 @task
 def run_worker(context):
     """Run Celery worker"""
-    context.run("celery -A role_play worker -l INFO", asynchronous=True)
+    context.run(
+        "celery -A role_play worker --beat --scheduler django --loglevel=info", pty=True
+    )
