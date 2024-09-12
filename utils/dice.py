@@ -61,13 +61,13 @@ class DiceString(UserString):
 
     def roll(self, modifier: int = 0) -> int:
         """
-        Rolls the dice.
+        Roll the dice defined in the dice string.
 
         In case of several rolls, it sums the values of each roll and adds
         the modifier value (if any).
 
         Args:
-            modifier (int): Positive or negative integer to add on a roll.
+            modifier (int): Positive or negative integer to add on a roll result.
 
         Returns:
             int: Sum of dice rolls results.
