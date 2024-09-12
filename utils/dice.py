@@ -36,7 +36,7 @@ class DiceString(UserString):
         dice_type = int(dice_str_parts[1])
         if dice_type not in dice_types:
             raise DiceStringFormatError(f"{dice_type=} is not supported")
-        self.type = dice_type
+        self.dice_type = dice_type
 
     def add_throws(self, nb_throws: int) -> str:
         """
@@ -56,7 +56,7 @@ class DiceString(UserString):
         if self.nb_throws is None:
             self.nb_throws = 0
         self.nb_throws += nb_throws
-        self.data = f"{self.nb_throws}d{self.type}"
+        self.data = f"{self.nb_throws}d{self.dice_type}"
         return self.data
 
     def roll(self, modifier: int = 0) -> int:

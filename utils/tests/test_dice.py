@@ -19,9 +19,9 @@ def dice_str_no_throw():
     return DiceString(f"d{dice_type}")
 
 
-def test_constructor_valid_dice(dice_str, dice_str_no_throw):
-    assert dice_str == f"{dice_str.throws}d{dice_str.type}"
-    assert dice_str_no_throw == f"d{dice_str_no_throw.type}"
+def test_constructor_valid_dice_str(dice_str, dice_str_no_throw):
+    assert dice_str == f"{dice_str.nb_throws}d{dice_str.dice_type}"
+    assert dice_str_no_throw == f"d{dice_str_no_throw.dice_type}"
 
 
 def test_constructor_invalid_dice_str():
@@ -38,24 +38,27 @@ def test_constructor_invalid_dice_type():
         DiceString(f"{nb_throws}d{dice_type}")
 
 
-def test_add_throws_valid_thows(dice_str):
+def test_add_throws_valid_nb_throws(dice_str):
     fake = Faker()
     nb_throws = fake.random_int(min=1, max=10)
-    old_throws = dice_str.throws
-    assert dice_str.add_throws(nb_throws) == f"{old_throws + nb_throws}d{dice_str.type}"
-
-
-def test_add_throws_no_throw(dice_str_no_throw):
-    fake = Faker()
-    nb_throws = fake.random_int(min=1, max=10)
-    old_throws = dice_str_no_throw.throws
+    old_throws = dice_str.nb_throws
     assert (
-        dice_str_no_throw.add_throws(nb_throws)
-        == f"{old_throws + nb_throws}d{dice_str_no_throw.type}"
+        dice_str.add_throws(nb_throws)
+        == f"{old_throws + nb_throws}d{dice_str.dice_type}"
     )
 
 
-def test_add_throws_invalid_thows(dice_str):
+def test_add_throws_no_throw_dice_str(dice_str_no_throw):
+    fake = Faker()
+    nb_throws = fake.random_int(min=1, max=10)
+    old_throws = dice_str_no_throw.nb_throws
+    assert (
+        dice_str_no_throw.add_throws(nb_throws)
+        == f"{old_throws + nb_throws}d{dice_str_no_throw.dice_type}"
+    )
+
+
+def test_add_throws_invalid_nb_throws(dice_str):
     fake = Faker()
     nb_throws = fake.random_int(min=-10, max=0)
     with pytest.raises(DiceStringFormatError):
@@ -64,12 +67,12 @@ def test_add_throws_invalid_thows(dice_str):
 
 def test_roll_one_throw(dice_str_no_throw):
     roll = dice_str_no_throw.roll()
-    assert roll <= dice_str_no_throw.type
+    assert roll <= dice_str_no_throw.dice_type
 
 
 def test_roll_several_throws(dice_str):
     roll = dice_str.roll()
-    assert roll <= dice_str.type * dice_str.throws
+    assert roll <= dice_str.dice_type * dice_str.nb_throws
 
 
 def test_roll_with_modifier(dice_str):
@@ -79,7 +82,7 @@ def test_roll_with_modifier(dice_str):
     modifier = fake.random_int(min=min_modifier, max=max_modifier)
     roll = dice_str.roll(modifier)
     assert (
-        1 * dice_str.throws + min_modifier
+        1 * dice_str.nb_throws + min_modifier
         <= roll
-        <= dice_str.type * dice_str.throws + max_modifier
+        <= dice_str.dice_type * dice_str.nb_throws + max_modifier
     )
