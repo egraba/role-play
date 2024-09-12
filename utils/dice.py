@@ -19,8 +19,8 @@ class DiceString(UserString):
     and T the type of the dice.
 
     Attributes:
-        throws (int): Number of throws.
-        type (int): Dice type.
+        nb_throws (int): Number of throws.
+        dice_type (int): Dice type.
     """
 
     def __init__(self, dice_str: str):
@@ -29,10 +29,10 @@ class DiceString(UserString):
             raise DiceStringFormatError(f"[{dice_str}] does not match a dice regex...")
         dice_str_parts = self.split("d")
         try:
-            self.throws = int(dice_str_parts[0])
+            self.nb_throws = int(dice_str_parts[0])
         except ValueError:
             # This is raised when no throw is specified in the dice string.
-            self.throws = 1
+            self.nb_throws = 1
         dice_type = int(dice_str_parts[1])
         if dice_type not in dice_types:
             raise DiceStringFormatError("The provided dice type is not supported...")
@@ -53,10 +53,10 @@ class DiceString(UserString):
             raise DiceStringFormatError(
                 "The number of throws must be a strictly positive integer..."
             )
-        if self.throws is None:
-            self.throws = 0
-        self.throws += throws
-        self.data = f"{self.throws}d{self.type}"
+        if self.nb_throws is None:
+            self.nb_throws = 0
+        self.nb_throws += throws
+        self.data = f"{self.nb_throws}d{self.type}"
         return self.data
 
     def roll(self, modifier: int = 0) -> int:
