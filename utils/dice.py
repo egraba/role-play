@@ -9,7 +9,7 @@ dice_types = {4, 6, 8, 10, 12, 20}
 """The dice type is the number of dice faces."""
 
 
-class DiceStringFormatError(TypeError):
+class DiceStringFormatError(Exception):
     """Raised when a dice string is wrongly formatted."""
 
 
