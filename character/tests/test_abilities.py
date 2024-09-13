@@ -1,4 +1,4 @@
-from character.abilities import compute_ability_modifier
+from character.ability_modifiers import compute_ability_modifier
 
 
 def test_compute_ability_modifier():
