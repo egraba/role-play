@@ -13,7 +13,7 @@ def test_perform_roll_success(monkeypatch):
     def patched_roll(self, modifier=0):
         return 10
 
-    monkeypatch.setattr("utils.dice.Dice.roll", patched_roll)
+    monkeypatch.setattr("utils.dice.DiceString.roll", patched_roll)
 
     character = CharacterFactory()
     request = RollRequestFactory(
@@ -29,7 +29,7 @@ def test_perform_roll_failure(monkeypatch):
     def patched_roll(self, modifier=0):
         return 10
 
-    monkeypatch.setattr("utils.dice.Dice.roll", patched_roll)
+    monkeypatch.setattr("utils.dice.DiceString.roll", patched_roll)
 
     character = CharacterFactory()
     request = RollRequestFactory(
@@ -48,7 +48,7 @@ def test_perform_roll_with_proficiency(monkeypatch):
     def patched_is_proficient(self, ability):
         return True
 
-    monkeypatch.setattr("utils.dice.Dice.roll", patched_roll)
+    monkeypatch.setattr("utils.dice.DiceString.roll", patched_roll)
     monkeypatch.setattr(
         "character.models.character.Character.is_proficient", patched_is_proficient
     )
@@ -73,7 +73,7 @@ def test_perform_roll_with_advantage(monkeypatch):
     def patched_advantage(self, roll_type, against):
         return True
 
-    monkeypatch.setattr("utils.dice.Dice.roll", patched_roll)
+    monkeypatch.setattr("utils.dice.DiceString.roll", patched_roll)
     monkeypatch.setattr(
         "character.models.character.Character.has_advantage", patched_advantage
     )

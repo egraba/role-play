@@ -21,6 +21,7 @@ class DiceString(UserString):
     Attributes:
         nb_throws (int): Number of throws.
         dice_type (int): Dice type.
+        data (str): The dice string itself, inherited from Userstring class.
     """
 
     def __init__(self, dice_str: str):
