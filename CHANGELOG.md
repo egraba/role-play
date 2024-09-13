@@ -9,6 +9,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * App is now deployable on Fly.io
 
 ### Changed
+* Improve combat inittiative task management
 * Simplify settings per environment
 * Migrate to Django 5.1
 * Various code and comments improvements

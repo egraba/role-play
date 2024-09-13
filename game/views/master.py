@@ -3,8 +3,8 @@ from django.core.cache import cache
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import FormView, ListView, UpdateView
+from django_celery_beat.models import IntervalSchedule, PeriodicTask
 from viewflow.fsm import TransitionNotAllowed
-from django_celery_beat.models import PeriodicTask, IntervalSchedule
 
 from character.models.character import Character
 
@@ -15,10 +15,10 @@ from ..forms import AbilityCheckRequestForm, CombatCreateForm, QuestCreateForm
 from ..models.combat import Combat, Fighter
 from ..models.events import (
     CharacterInvitation,
-    GameStart,
-    QuestUpdate,
     CombatInitialization,
     CombatInitiativeRequest,
+    GameStart,
+    QuestUpdate,
 )
 from ..models.game import Player, Quest
 from ..tasks import send_mail
@@ -77,15 +77,6 @@ class GameStartView(UserPassesTestMixin, GameStatusControlMixin):
             cache.set(game_key(game.id), game)
             game_start = GameStart.objects.create(game=game)
             send_to_channel(game_start)
-            schedule, _ = IntervalSchedule.objects.get_or_create(
-                every=10,
-                period=IntervalSchedule.SECONDS,
-            )
-            PeriodicTask.objects.get_or_create(
-                interval=schedule,
-                name="Check if combat roll initiative is complete",
-                task="game.tasks.check_combat_roll_initiative_complete",
-            )
         except TransitionNotAllowed:
             return HttpResponseRedirect(reverse("game-start-error", args=(game.id,)))
         return HttpResponseRedirect(game.get_absolute_url())
@@ -195,4 +186,13 @@ class CombatCreateView(
                 game=self.game, fighter=fighter
             )
             send_to_channel(initiative_request)
+            schedule, _ = IntervalSchedule.objects.get_or_create(
+                every=2,
+                period=IntervalSchedule.SECONDS,
+            )
+            PeriodicTask.objects.get_or_create(
+                interval=schedule,
+                name=f"game{self.game.id}: Check if combat roll initiative is complete",
+                task="game.tasks.check_combat_roll_initiative_complete",
+            )
         return super().form_valid(form)
