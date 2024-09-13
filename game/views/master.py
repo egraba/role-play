@@ -192,7 +192,7 @@ class CombatCreateView(
             )
             PeriodicTask.objects.get_or_create(
                 interval=schedule,
-                name="Check if combat roll initiative is complete",
+                name=f"game{self.game.id}: Check if combat roll initiative is complete",
                 task="game.tasks.check_combat_roll_initiative_complete",
             )
         return super().form_valid(form)

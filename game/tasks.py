@@ -198,7 +198,9 @@ def check_combat_roll_initiative_complete():
                 )
             )
             if created:
-                periodic_task = PeriodicTask.objects.last()
+                periodic_task = PeriodicTask.objects.get(
+                    name__startswith=f"game{latest_combat.game.id}"
+                )
                 periodic_task.enabled = False
                 periodic_task.save()
                 send_to_channel(initiative_order_set)
