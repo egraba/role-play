@@ -1,7 +1,8 @@
-from character.abilities import compute_ability_modifier
+from character.ability_modifiers import compute_ability_modifier
 
 
 def test_compute_ability_modifier():
+    # Just to be sure that the whole table described in DnD docs is covered.
     assert compute_ability_modifier(1) == -5
     assert compute_ability_modifier(2) == -4
     assert compute_ability_modifier(3) == -4
