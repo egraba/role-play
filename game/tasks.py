@@ -5,16 +5,17 @@ from celery.exceptions import InvalidTaskError
 from celery.utils.log import get_task_logger
 from django.core.cache import cache
 from django.core.mail import send_mail as django_send_mail
+from django_celery_beat.models import PeriodicTask
 
 from character.models.character import Character
 
 from .constants.events import RollStatus, RollType
 from .models.combat import Combat
 from .models.events import (
+    CombatInitativeOrderSet,
     CombatInitiativeRequest,
     CombatInitiativeResponse,
     CombatInitiativeResult,
-    CombatInitativeOrderSet,
     Message,
     RollRequest,
     RollResponse,
@@ -197,4 +198,7 @@ def check_combat_roll_initiative_complete():
                 )
             )
             if created:
+                periodic_task = PeriodicTask.objects.last()
+                periodic_task.enabled = False
+                periodic_task.save()
                 send_to_channel(initiative_order_set)
