@@ -187,7 +187,7 @@ class CombatCreateView(
             )
             send_to_channel(initiative_request)
             schedule, _ = IntervalSchedule.objects.get_or_create(
-                every=10,
+                every=2,
                 period=IntervalSchedule.SECONDS,
             )
             PeriodicTask.objects.get_or_create(
