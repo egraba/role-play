@@ -1,3 +1,4 @@
+from enum import StrEnum
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.urls import reverse
@@ -32,14 +33,20 @@ class CharacterCreateView(LoginRequiredMixin, SessionWizardView):
     form_list = [CharacterCreateForm, SkillsSelectForm, BackgroundForm]
     template_name = "character/character_create.html"
 
+    class Step(StrEnum):
+        BASE_ATTRIBUTES_SELECTION = "0"
+        SKILLS_SELECTION = "1"
+        BACKGROUND_COMPLETION = "2"
+        EQUIPMENT_SELECTION = "3"
+
     def get_form_initial(self, step):
-        if step == "1":  # Skills selection
-            data = self.storage.get_step_data("0")
+        if step == self.Step.SKILLS_SELECTION or step == self.Step.EQUIPMENT_SELECTION:
+            data = self.storage.get_step_data(self.Step.BASE_ATTRIBUTES_SELECTION)
             if data:
                 klass = data.get("0-klass")
                 return self.initial_dict.get(step, {"klass": klass})
-        if step == "2":  # Background completion
-            data = self.storage.get_step_data("0")
+        if step == self.Step.BACKGROUND_COMPLETION:
+            data = self.storage.get_step_data(self.Step.BASE_ATTRIBUTES_SELECTION)
             if data:
                 race = data.get("0-race")
                 background = data.get("0-background")
