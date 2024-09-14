@@ -67,7 +67,7 @@ class ClericEquipmentChoicesProvider(EquipmentChoicesProvider):
         return choices
 
     def get_third_weapon_choices(self):
-        raise NotImplementedError
+        pass
 
     def get_armor_choices(self):
         queryset = ArmorSettings.objects.filter(
@@ -117,7 +117,7 @@ class FighterEquipmentChoicesProvider(EquipmentChoicesProvider):
         return choices
 
     def get_armor_choices(self):
-        raise NotImplementedError
+        pass
 
     def get_gear_choices(self):
         raise NotImplementedError
@@ -146,13 +146,13 @@ class RogueEquipmentChoicesProvider(EquipmentChoicesProvider):
         return choices
 
     def get_third_weapon_choices(self):
-        raise NotImplementedError
+        pass
 
     def get_armor_choices(self):
-        raise NotImplementedError
+        pass
 
     def get_gear_choices(self):
-        raise NotImplementedError
+        pass
 
     def get_pack_choices(self):
         queryset = PackSettings.objects.filter(
@@ -173,13 +173,13 @@ class WizardEquipmentChoicesProvider(EquipmentChoicesProvider):
         return choices
 
     def get_second_weapon_choices(self):
-        raise NotImplementedError
+        pass
 
     def get_third_weapon_choices(self):
-        raise NotImplementedError
+        pass
 
     def get_armor_choices(self):
-        raise NotImplementedError
+        pass
 
     def get_gear_choices(self):
         queryset = GearSettings.objects.filter(

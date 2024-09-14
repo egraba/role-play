@@ -1,17 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.exceptions import ValidationError
 from django.urls import reverse
 from django.views.generic import FormView
 
-from ..constants.backgrounds import Background
-from ..forms.backgrounds import (
-    AcolyteForm,
-    CriminalForm,
-    FolkHeroForm,
-    NobleForm,
-    SageForm,
-    SoldierForm,
-)
 from .mixins import CharacterContextMixin
 
 
@@ -25,26 +15,6 @@ class BackgroundCompleteView(LoginRequiredMixin, CharacterContextMixin, FormView
 
     def get_success_url(self):
         return reverse("equipment-select", args=(self.character.id,))
-
-    def get_form_class(self):
-        match self.character.background:
-            case Background.ACOLYTE:
-                form_class = AcolyteForm
-            case Background.CRIMINAL:
-                form_class = CriminalForm
-            case Background.FOLK_HERO:
-                form_class = FolkHeroForm
-            case Background.NOBLE:
-                form_class = NobleForm
-            case Background.SAGE:
-                form_class = SageForm
-            case Background.SOLDIER:
-                form_class = SoldierForm
-            case _:
-                raise ValidationError(
-                    "The selected background has no corresponding form..."
-                )
-        return form_class
 
     def get_initial(self):
         return {"character": self.character}
