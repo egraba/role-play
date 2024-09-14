@@ -5,7 +5,6 @@ from django.views.generic import CreateView, DetailView, ListView
 from ..character_builder import (
     build_character,
 )
-from ..flows import CreationFlow
 from ..forms.character import CharacterCreateForm
 from ..models.character import Character
 
@@ -40,5 +39,4 @@ class CharacterCreateView(LoginRequiredMixin, CreateView):
         character = form.save(commit=False)
         character.user = self.request.user
         build_character(character, form)
-        CreationFlow(character).select_skills()
         return super().form_valid(form)

@@ -3,7 +3,6 @@ from django.urls import reverse
 from faker import Faker
 from pytest_django.asserts import assertRedirects, assertTemplateUsed
 
-from character.constants.character import CreationState
 from character.constants.equipment import ArmorName, GearName, ToolName, WeaponName
 from character.forms.equipment.forms import (
     ClericEquipmentSelectForm,
@@ -35,8 +34,6 @@ class TestEquipmentSelectView:
         assertTemplateUsed(response, "character/equipment_select.html")
 
     def test_cleric_equipment(self, client, cleric):
-        cleric.creation_state = CreationState.EQUIPMENT_SELECTION
-        cleric.save()
         equipment_manager = ClericEquipmentChoicesProvider()
         fake = Faker()
         first_weapon = fake.random_element(
@@ -75,8 +72,6 @@ class TestEquipmentSelectView:
         assert inventory.contains(ArmorName.SHIELD)
 
     def test_fighter_equipment(self, client, fighter):
-        fighter.creation_state = CreationState.EQUIPMENT_SELECTION
-        fighter.save()
         equipment_manager = FighterEquipmentChoicesProvider()
         fake = Faker()
         first_weapon = fake.random_element(
@@ -117,8 +112,6 @@ class TestEquipmentSelectView:
         assert inventory.contains(pack)
 
     def test_rogue_equipment(self, client, rogue):
-        rogue.creation_state = CreationState.EQUIPMENT_SELECTION
-        rogue.save()
         equipment_manager = RogueEquipmentChoicesProvider()
         fake = Faker()
         first_weapon = fake.random_element(
@@ -153,8 +146,6 @@ class TestEquipmentSelectView:
         assert inventory.contains(ToolName.THIEVES_TOOLS)
 
     def test_wizard_equipment(self, client, wizard):
-        wizard.creation_state = CreationState.EQUIPMENT_SELECTION
-        wizard.save()
         equipment_manager = WizardEquipmentChoicesProvider()
         fake = Faker()
         first_weapon = fake.random_element(

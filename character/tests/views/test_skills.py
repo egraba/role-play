@@ -3,7 +3,6 @@ from django.urls import reverse
 from faker import Faker
 from pytest_django.asserts import assertRedirects, assertTemplateUsed
 
-from character.constants.character import CreationState
 from character.constants.klasses import Klass
 from character.constants.skills import SkillName
 from character.forms.skills import ExtendedSkillsSelectForm, SkillsSelectForm
@@ -27,8 +26,6 @@ class TestSkillsSelectView:
         assertTemplateUsed(response, "character/skills_select.html")
 
     def test_cleric_skills(self, client, cleric):
-        cleric.creation_state = CreationState.SKILLS_SELECTION
-        cleric.save()
         fake = Faker()
         skills_set = {
             duplicate_choice(SkillName.HISTORY),
@@ -65,8 +62,6 @@ class TestSkillsSelectView:
         )
 
     def test_fighter_skills(self, client, fighter):
-        fighter.creation_state = CreationState.SKILLS_SELECTION
-        fighter.save()
         fake = Faker()
         skills_set = {
             duplicate_choice(SkillName.ACROBATICS),
@@ -106,8 +101,6 @@ class TestSkillsSelectView:
         )
 
     def test_rogue_skills(self, client, rogue):
-        rogue.creation_state = CreationState.SKILLS_SELECTION
-        rogue.save()
         fake = Faker()
         skills_set = {
             duplicate_choice(SkillName.ACROBATICS),
@@ -160,8 +153,6 @@ class TestSkillsSelectView:
         )
 
     def test_wizard_skills(self, client, wizard):
-        wizard.creation_state = CreationState.SKILLS_SELECTION
-        wizard.save()
         fake = Faker()
         skills_set = {
             duplicate_choice(SkillName.ARCANA),

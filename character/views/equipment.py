@@ -4,7 +4,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import FormView
 
 from ..constants.equipment import ArmorName, GearName, ToolName, WeaponName
-from ..flows import CreationFlow
 from ..forms.equipment.forms import (
     ClericEquipmentSelectForm,
     FighterEquipmentSelectForm,
@@ -74,5 +73,4 @@ class EquipmentSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
                 inventory.add(ToolName.THIEVES_TOOLS)
             case Klass.WIZARD:
                 inventory.add(GearName.SPELLBOOK)
-        CreationFlow(self.character).complete()
         return super().form_valid(form)

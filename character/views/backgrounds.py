@@ -13,7 +13,6 @@ from ..forms.backgrounds import (
     SoldierForm,
 )
 from .mixins import CharacterContextMixin
-from ..flows import CreationFlow
 
 
 class BackgroundCompleteView(LoginRequiredMixin, CharacterContextMixin, FormView):
@@ -51,5 +50,4 @@ class BackgroundCompleteView(LoginRequiredMixin, CharacterContextMixin, FormView
         return {"character": self.character}
 
     def form_valid(self, form):
-        CreationFlow(self.character).select_equipment()
         return super().form_valid(form)
