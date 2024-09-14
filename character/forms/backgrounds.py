@@ -1,20 +1,20 @@
 from django import forms
 
+from ..constants.backgrounds import Background
 from ..constants.equipment import GearType, ToolType
-from ..models.character import Character
+from ..constants.races import RACIAL_TRAITS, LanguageName, Race
 from ..models.equipment import GearSettings, ToolSettings
-from ..models.races import Language
 from .mixins import DuplicateValuesMixin
 
 
-def _get_non_spoken_languages(character: Character) -> set[tuple[str, str]]:
+def _get_non_spoken_languages(race: Race) -> set[tuple[str, str]]:
     """
     Return the set of language names a character does not speak.
     """
-    languages = set(Language.objects.all())
-    character_languages = set(character.languages.all())
+    languages = LanguageName.choices
+    character_languages = RACIAL_TRAITS[race]
     return {
-        (language.name, language.get_name_display())
+        (language[0], language[1])
         for language in languages
         if language not in character_languages
     }
@@ -125,3 +125,46 @@ class SoldierForm(forms.Form):
             choices=_get_gaming_set_tools(),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
+
+
+class BackgroundForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        race = self.initial["race"]
+        background = self.initial["background"]
+        all_fields = {}
+        all_fields["language"] = forms.ChoiceField(
+            choices=_get_non_spoken_languages(race),
+            widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
+        )
+        all_fields["first_language"] = forms.ChoiceField(
+            choices=_get_non_spoken_languages(race),
+            widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
+        )
+        all_fields["second_language"] = forms.ChoiceField(
+            choices=_get_non_spoken_languages(race),
+            widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
+        )
+        all_fields["equipment"] = forms.ChoiceField(
+            choices=_get_holy_symbols(),
+            widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
+        )
+        all_fields["tool_proficiency"] = forms.ChoiceField(
+            choices=_get_gaming_set_tools(),
+            widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
+        )
+        match background:
+            case Background.ACOLYTE:
+                fields = ["first_language", "second_language", "equipment"]
+            case Background.CRIMINAL:
+                fields = ["tool_proficiency"]
+            case Background.FOLK_HERO:
+                fields = ["tool_proficiency", "equipment"]
+            case Background.NOBLE:
+                fields = ["language", "tool_proficiency"]
+            case Background.SAGE:
+                fields = ["first_language", "second_language"]
+            case Background.SOLDIER:
+                fields = ["tool_proficiency"]
+        for field in fields:
+            self.fields[field] = all_fields[field]

@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.views.generic import DetailView, ListView
 from formtools.wizard.views import SessionWizardView
 
+from ..forms.backgrounds import BackgroundForm
 from ..forms.character import CharacterCreateForm
 from ..forms.skills import SkillsSelectForm
 from ..models.character import Character
@@ -28,15 +29,23 @@ class CharacterListView(LoginRequiredMixin, ListView):
 
 
 class CharacterCreateView(LoginRequiredMixin, SessionWizardView):
-    form_list = [CharacterCreateForm, SkillsSelectForm]
+    form_list = [CharacterCreateForm, SkillsSelectForm, BackgroundForm]
     template_name = "character/character_create.html"
 
     def get_form_initial(self, step):
-        if step == "1":
+        if step == "1":  # Skills selection
             data = self.storage.get_step_data("0")
             if data:
                 klass = data.get("0-klass")
                 return self.initial_dict.get(step, {"klass": klass})
+        if step == "2":  # Background completion
+            data = self.storage.get_step_data("0")
+            if data:
+                race = data.get("0-race")
+                background = data.get("0-background")
+                return self.initial_dict.get(
+                    step, {"race": race, "background": background}
+                )
         return self.initial_dict.get(step, {})
 
     def done(self, form_list, **kwargs):
