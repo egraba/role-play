@@ -1,11 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseRedirect
 from django.urls import reverse
-from django.views.generic import CreateView, DetailView, ListView
+from django.views.generic import DetailView, ListView
+from formtools.wizard.views import SessionWizardView
 
-from ..character_builder import (
-    build_character,
-)
-from ..forms.character import CharacterCreateForm
 from ..models.character import Character
 
 
@@ -27,16 +25,8 @@ class CharacterListView(LoginRequiredMixin, ListView):
     template_name = "character/character_list.html"
 
 
-class CharacterCreateView(LoginRequiredMixin, CreateView):
-    model = Character
-    form_class = CharacterCreateForm
+class CharacterCreateView(LoginRequiredMixin, SessionWizardView):
     template_name = "character/character_create.html"
 
-    def get_success_url(self):
-        return reverse("skills-select", args=(self.object.id,))
-
-    def form_valid(self, form):
-        character = form.save(commit=False)
-        character.user = self.request.user
-        build_character(character, form)
-        return super().form_valid(form)
+    def done(self, form_list, **kwargs):
+        return HttpResponseRedirect(reverse("index"))

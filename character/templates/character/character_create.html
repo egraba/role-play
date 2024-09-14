@@ -1,14 +1,33 @@
 {% extends 'base.html' %}
 
+{% block head %}
+  {{ wizard.form.media }}
+{% endblock %}
+
 {% block content %}
-    <div class="form rpgui-container framed-golden">
-        <h1>New character</h1>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <div class="rpgui-center">
-                <button class="rpgui-button" type="submit"><p>Submit</p></button>
-            </div>
-        </form>
-    </div>
-{% endblock%}
+  <div class="form rpgui-container framed-golden">
+    <h1>New character</h1>
+    <p>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</p>
+    <form action="" method="post">
+      {% csrf_token %}
+      <table>
+        {{ wizard.management_form }}
+        {% if wizard.form.forms %}
+          {{ wizard.form.management_form }}
+          {% for form in wizard.form.forms %}
+            {{ form.as_table }}
+          {% endfor %}
+        {% else %}
+          {{ wizard.form }}
+        {% endif %}
+      </table>
+      {% if wizard.steps.prev %}
+        <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.first }}">first step</button>
+        <button name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">prev step</button>
+      {% endif %}
+      <div class="rpgui-center">
+        <button class="rpgui-button" type="submit"><p>Submit</p></button>
+      </div>
+    </form>
+  </div>
+{% endblock %}
