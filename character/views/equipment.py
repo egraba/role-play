@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import FormView
 
 from ..constants.equipment import ArmorName, GearName, ToolName, WeaponName
-from ..forms.equipment.equipment import (
+from ..forms.equipment import (
     ClericEquipmentSelectForm,
     FighterEquipmentSelectForm,
     RogueEquipmentSelectForm,
