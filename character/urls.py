@@ -1,6 +1,5 @@
 from django.urls import path
 
-from .forms.character import CharacterCreateForm
 from .views.backgrounds import BackgroundCompleteView
 from .views.character import CharacterCreateView, CharacterDetailView, CharacterListView
 from .views.equipment import EquipmentSelectView
@@ -20,7 +19,7 @@ urlpatterns = [
     ),
     path(
         "create_character",
-        CharacterCreateView.as_view([CharacterCreateForm]),
+        CharacterCreateView.as_view(),
         name="character-create",
     ),
     path(
