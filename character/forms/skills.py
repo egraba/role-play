@@ -80,17 +80,3 @@ class SkillsSelectForm(forms.Form):
         self.cleaned_data = super().clean()
         if len(self.cleaned_data) != len(set(self.cleaned_data.values())):
             raise forms.ValidationError("The selected skills must be unique...")
-
-
-class ExtendedSkillsSelectForm(SkillsSelectForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        klass = self.initial["klass"]
-        self.fields["third_skill"] = forms.ChoiceField(
-            choices=_get_skills(klass),
-            widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
-        )
-        self.fields["fourth_skill"] = forms.ChoiceField(
-            choices=_get_skills(klass),
-            widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
-        )
