@@ -1,7 +1,7 @@
 import pytest
 from django import forms
 
-from character.forms.equipment.forms import (
+from character.forms.equipment.equipment import (
     ClericEquipmentSelectForm,
     FighterEquipmentSelectForm,
     RogueEquipmentSelectForm,
