@@ -2,8 +2,8 @@ from django import forms
 
 from utils.converters import duplicate_choice
 
+from ..constants.klasses import Klass
 from ..constants.skills import SkillName
-from ..models.klasses import Klass
 
 
 def _get_skills(klass: Klass) -> set[tuple[str, str]] | None:
@@ -66,6 +66,15 @@ class SkillsSelectForm(forms.Form):
             choices=_get_skills(klass),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
+        if klass == Klass.ROGUE:
+            self.fields["third_skill"] = forms.ChoiceField(
+                choices=_get_skills(klass),
+                widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
+            )
+            self.fields["fourth_skill"] = forms.ChoiceField(
+                choices=_get_skills(klass),
+                widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
+            )
 
     def clean(self):
         self.cleaned_data = super().clean()
