@@ -25,8 +25,9 @@ from user.tests.factories import UserFactory
 
 from ..factories import CharacterFactory
 
+pytestmark = pytest.mark.django_db
 
-@pytest.mark.django_db
+
 class TestCharacterDetailView:
     def test_view_mapping(self, client, character):
         response = client.get(character.get_absolute_url())
@@ -54,7 +55,6 @@ def create_characters(django_db_blocker):
             CharacterFactory()
 
 
-@pytest.mark.django_db
 class TestCharacterListView:
     path_name = "character-list"
 
@@ -111,7 +111,6 @@ class TestCharacterListView:
         assertContains(response, game.name)
 
 
-@pytest.mark.django_db
 class TestCharacterCreateView:
     path_name = "character-create"
 
