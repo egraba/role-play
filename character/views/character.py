@@ -62,4 +62,18 @@ class CharacterCreateView(LoginRequiredMixin, SessionWizardView):
         return self.initial_dict.get(step, {})
 
     def done(self, form_list, **kwargs):
+        for form in form_list:
+            if isinstance(form, CharacterCreateForm):
+                character = form.save(commit=False)
+                character.user = self.request.user
+                character.save()
+            elif isinstance(form, SkillsSelectForm):
+                for field in form.cleaned_data.keys():
+                    character.skills.add(form.cleaned_data[field])
+            elif isinstance(form, BackgroundForm):
+                pass
+            elif isinstance(form, EquipmentSelectForm):
+                pass
+            else:
+                raise NotImplementedError(f"{form=} is not implemented")
         return HttpResponseRedirect(reverse("index"))
