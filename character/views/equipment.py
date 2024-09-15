@@ -4,12 +4,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import FormView
 
 from ..constants.equipment import ArmorName, GearName, ToolName, WeaponName
-from ..forms.equipment import (
-    ClericEquipmentSelectForm,
-    FighterEquipmentSelectForm,
-    RogueEquipmentSelectForm,
-    WizardEquipmentSelectForm,
-)
 from ..models.klasses import Klass
 from .mixins import CharacterContextMixin
 
@@ -21,18 +15,6 @@ class EquipmentSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
 
     def get_success_url(self):
         return self.character.get_absolute_url()
-
-    def get_form_class(self):
-        match self.character.klass:
-            case Klass.CLERIC:
-                form_class = ClericEquipmentSelectForm
-            case Klass.FIGHTER:
-                form_class = FighterEquipmentSelectForm
-            case Klass.ROGUE:
-                form_class = RogueEquipmentSelectForm
-            case Klass.WIZARD:
-                form_class = WizardEquipmentSelectForm
-        return form_class
 
     def form_valid(self, form):
         inventory = self.character.inventory
