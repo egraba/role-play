@@ -1,7 +1,6 @@
 from enum import StrEnum
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
-from django.urls import reverse
 from django.views.generic import DetailView, ListView
 from formtools.wizard.views import SessionWizardView
 
@@ -76,4 +75,5 @@ class CharacterCreateView(LoginRequiredMixin, SessionWizardView):
                 pass
             else:
                 raise NotImplementedError(f"{form=} is not implemented")
-        return HttpResponseRedirect(reverse("index"))
+        breakpoint()
+        return HttpResponseRedirect(character.get_absolute_url())

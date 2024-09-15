@@ -10,11 +10,12 @@ from character.constants.character import Gender
 from character.constants.races import LanguageName, Race, SenseName
 from character.constants.skills import SkillName
 from character.forms.character import CharacterCreateForm
+from character.forms.skills import _get_skills
 from character.models.character import Character
 from character.models.klasses import Klass
 from character.models.proficiencies import SavingThrowProficiency, SkillProficiency
-from character.models.skills import Skill
 from character.models.races import Language, Sense
+from character.models.skills import Skill
 from character.views.character import (
     CharacterCreateView,
     CharacterDetailView,
@@ -146,7 +147,25 @@ class TestCharacterCreateView:
             "gender": f"{fake.enum(enum_cls=Gender)}",
         }
 
-    def test_character_creation_common(self, client, character_form):
+    @pytest.fixture
+    def skills_form(self, character_form):
+        fake = Faker()
+        skills = fake.random_elements(
+            sorted(_get_skills(character_form["klass"])), unique=True
+        )
+        data = {
+            "first_skill": skills[0],
+            "second_skill": skills[1],
+        }
+        if character_form["klass"] == Klass.ROGUE:
+            data.update(
+                {
+                    "third_skill": skills[2],
+                    "fourth_skill": skills[3],
+                }
+            )
+
+    def test_character_creation_common(self, client, character_form, skills_form):
         form = CharacterCreateForm(character_form)
         assert form.is_valid()
 
@@ -156,7 +175,7 @@ class TestCharacterCreateView:
         )
         assert response.status_code == 302
         character = Character.objects.last()
-        assertRedirects(response, reverse("skills-select", args=(character.id,)))
+        assertRedirects(response, character.get_absolute_url())
 
         assert character.name, form.cleaned_data["name"]
         assert character.race, form.cleaned_data["race"]
