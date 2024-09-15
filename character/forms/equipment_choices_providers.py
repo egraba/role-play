@@ -120,7 +120,7 @@ class FighterEquipmentChoicesProvider(EquipmentChoicesProvider):
         pass
 
     def get_gear_choices(self):
-        raise NotImplementedError
+        pass
 
     def get_pack_choices(self):
         queryset = PackSettings.objects.filter(
