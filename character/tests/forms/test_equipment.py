@@ -1,14 +1,14 @@
 import pytest
 from django import forms
 
-from character.forms.equipment import EquipmentForm
+from character.forms.equipment import EquipmentSelectForm
 
 pytestmark = pytest.mark.django_db
 
 
 @pytest.fixture
 def form():
-    return EquipmentForm
+    return EquipmentSelectForm
 
 
 @pytest.fixture

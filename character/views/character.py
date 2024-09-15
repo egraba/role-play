@@ -7,7 +7,7 @@ from formtools.wizard.views import SessionWizardView
 
 from ..forms.backgrounds import BackgroundForm
 from ..forms.character import CharacterCreateForm
-from ..forms.equipment import EquipmentForm
+from ..forms.equipment import EquipmentSelectForm
 from ..forms.skills import SkillsSelectForm
 from ..models.character import Character
 
@@ -31,7 +31,12 @@ class CharacterListView(LoginRequiredMixin, ListView):
 
 
 class CharacterCreateView(LoginRequiredMixin, SessionWizardView):
-    form_list = [CharacterCreateForm, SkillsSelectForm, BackgroundForm, EquipmentForm]
+    form_list = [
+        CharacterCreateForm,
+        SkillsSelectForm,
+        BackgroundForm,
+        EquipmentSelectForm,
+    ]
     template_name = "character/character_create.html"
 
     class Step(StrEnum):
