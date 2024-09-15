@@ -10,13 +10,8 @@ def cleric_form():
     return SkillsSelectForm(initial={"klass": Klass.CLERIC})
 
 
-@pytest.fixture
-def cleric_fields():
-    return ["first_skill", "second_skill"]
-
-
-def test_cleric_fields_presence(cleric_form, cleric_fields):
-    assert cleric_fields == list(cleric_form.fields)
+def test_cleric_fields_presence(cleric_form):
+    assert list(cleric_form.fields) == ["first_skill", "second_skill"]
 
 
 def test_cleric_fields_type(cleric_form):
@@ -29,13 +24,8 @@ def fighter_form():
     return SkillsSelectForm(initial={"klass": Klass.FIGHTER})
 
 
-@pytest.fixture
-def fighter_fields():
-    return ["first_skill", "second_skill"]
-
-
-def test_fighter_fields_presence(fighter_form, fighter_fields):
-    assert fighter_fields == list(fighter_form.fields)
+def test_fighter_fields_presence(fighter_form):
+    assert list(fighter_form.fields) == ["first_skill", "second_skill"]
 
 
 def test_fighter_fields_type(fighter_form):
@@ -48,13 +38,13 @@ def rogue_form():
     return SkillsSelectForm(initial={"klass": Klass.ROGUE})
 
 
-@pytest.fixture
-def rogue_fields():
-    return ["first_skill", "second_skill", "third_skill", "fourth_skill"]
-
-
-def test_rogue_fields_presence(rogue_form, rogue_fields):
-    assert rogue_fields == list(rogue_form.fields)
+def test_rogue_fields_presence(rogue_form):
+    assert list(rogue_form.fields) == [
+        "first_skill",
+        "second_skill",
+        "third_skill",
+        "fourth_skill",
+    ]
 
 
 def test_rogue_fields_type(rogue_form):
@@ -67,13 +57,8 @@ def wizard_form():
     return SkillsSelectForm(initial={"klass": Klass.WIZARD})
 
 
-@pytest.fixture
-def wizard_fields():
-    return ["first_skill", "second_skill"]
-
-
-def test_wizard_fields_presence(wizard_form, wizard_fields):
-    assert wizard_fields == list(wizard_form.fields)
+def test_wizard_fields_presence(wizard_form):
+    assert list(wizard_form.fields) == ["first_skill", "second_skill"]
 
 
 def test_wizard_fields_type(wizard_form):
