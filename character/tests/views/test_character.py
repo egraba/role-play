@@ -10,6 +10,12 @@ from character.constants.character import Gender
 from character.constants.races import LanguageName, Race, SenseName
 from character.constants.skills import SkillName
 from character.forms.character import CharacterCreateForm
+from character.forms.backgrounds import (
+    _get_artisans_tools,
+    _get_gaming_set_tools,
+    _get_holy_symbols,
+    _get_non_spoken_languages,
+)
 from character.forms.skills import _get_skills
 from character.models.character import Character
 from character.models.klasses import Klass
@@ -165,20 +171,62 @@ class TestCharacterCreateView:
                 }
             )
 
+    def background_form(self, character_form):
+        fake = Faker()
+        race = character_form["race"]
+        match character_form["background"]:
+            case Background.ACOLYTE:
+                return {
+                    "first_language": fake.random_element(
+                        _get_non_spoken_languages(race)
+                    ),
+                    "second_language": fake.random_element(
+                        _get_non_spoken_languages(race)
+                    ),
+                    "equipment": fake.random_element(_get_holy_symbols()),
+                }
+            case Background.CRIMINAL:
+                return {
+                    "tool_proficiency": fake.random_element(_get_gaming_set_tools())
+                }
+            case Background.FOLK_HERO:
+                return {
+                    "tool_proficiency": fake.random_element(_get_artisans_tools()),
+                    "equipment": fake.random_element(_get_artisans_tools()),
+                }
+            case Background.NOBLE:
+                return {
+                    "tool_proficiency": fake.random_element(_get_gaming_set_tools()),
+                    "language": fake.random_element(_get_non_spoken_languages(race)),
+                }
+            case Background.SAGE:
+                return {
+                    "first_language": fake.random_element(
+                        _get_non_spoken_languages(race)
+                    ),
+                    "second_language": fake.random_element(
+                        _get_non_spoken_languages(race)
+                    ),
+                }
+            case Background.SOLDIER:
+                return {
+                    "tool_proficiency": fake.random_element(_get_gaming_set_tools())
+                }
+
     def test_character_creation_common(self, client, character_form, skills_form):
-        form = CharacterCreateForm(character_form)
-        assert form.is_valid()
+        form_list = [character_form, skills_form]
 
-        response = client.post(
-            reverse(self.path_name),
-            data=form.cleaned_data,
-        )
-        assert response.status_code == 302
-        character = Character.objects.last()
-        assertRedirects(response, character.get_absolute_url())
+        for step, data_step in enumerate(form_list, 1):
+            response = client.post((reverse(self.path_name)), data_step)
 
-        assert character.name, form.cleaned_data["name"]
-        assert character.race, form.cleaned_data["race"]
+            if step == len(form_list):
+                character = Character.objects.last()
+                assertRedirects(response, character.get_absolute_url())
+            else:
+                assert response.status_code == 200
+
+        assert character.name, character_form.cleaned_data["name"]
+        assert character.race, character_form.cleaned_data["race"]
         assert character.xp == 0
         assert character.hp >= 100
         assert character.max_hp >= 100
