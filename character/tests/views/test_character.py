@@ -216,8 +216,10 @@ class TestCharacterCreateView:
                     "tool_proficiency": fake.random_element(_get_gaming_set_tools())
                 }
 
-    def test_character_creation_common(self, client, character_form, skills_form):
-        form_list = [character_form, skills_form]
+    def test_character_creation_common(
+        self, client, character_form, skills_form, background_form
+    ):
+        form_list = [character_form, skills_form, background_form]
 
         for step, data_step in enumerate(form_list, 1):
             response = client.post((reverse(self.path_name)), data_step)
