@@ -158,7 +158,7 @@ class TestCharacterCreateView:
     def skills_form(self, character_form):
         fake = Faker()
         skills = fake.random_elements(
-            sorted(_get_skills(character_form["klass"])), unique=True
+            sorted(_get_skills(character_form["klass"])), length=4, unique=True
         )
         data = {
             "first_skill": skills[0],
