@@ -9,11 +9,11 @@ services:
     image: "postgres:alpine"
     restart: always
     environment:
-      - POSTGRES_USER=${PGUSER}
-      - POSTGRES_PASSWORD=${PGPASSWORD}
-      - POSTGRES_DB=${PGDB}
+      - POSTGRES_USER=devuser
+      - POSTGRES_PASSWORD=devpwd
+      - POSTGRES_DB=role-play
     ports:
-      - "${PGPORT}:5432"
+      - "5432:5432"
     volumes:
       - db-data:/var/lib/postgresql/data
 
