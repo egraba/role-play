@@ -171,6 +171,7 @@ class TestCharacterCreateView:
                     "fourth_skill": skills[3],
                 }
             )
+        return data
 
     @pytest.fixture
     def background_form(self, character_form):
