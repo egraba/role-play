@@ -20,8 +20,8 @@ from character.forms.skills import _get_skills
 from character.models.character import Character
 from character.models.klasses import Klass
 from character.models.proficiencies import SavingThrowProficiency, SkillProficiency
-from character.models.races import Language, Sense
 from character.models.skills import Skill
+from character.models.races import Language, Sense
 from character.views.character import (
     CharacterCreateView,
     CharacterDetailView,
@@ -32,9 +32,8 @@ from user.tests.factories import UserFactory
 
 from ..factories import CharacterFactory
 
-pytestmark = pytest.mark.django_db
 
-
+@pytest.mark.django_db
 class TestCharacterDetailView:
     def test_view_mapping(self, client, character):
         response = client.get(character.get_absolute_url())
@@ -62,6 +61,7 @@ def create_characters(django_db_blocker):
             CharacterFactory()
 
 
+@pytest.mark.django_db
 class TestCharacterListView:
     path_name = "character-list"
 
@@ -118,6 +118,7 @@ class TestCharacterListView:
         assertContains(response, game.name)
 
 
+@pytest.mark.django_db
 class TestCharacterCreateView:
     path_name = "character-create"
 
@@ -171,6 +172,7 @@ class TestCharacterCreateView:
                 }
             )
 
+    @pytest.fixture
     def background_form(self, character_form):
         fake = Faker()
         race = character_form["race"]
