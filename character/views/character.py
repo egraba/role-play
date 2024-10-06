@@ -75,5 +75,4 @@ class CharacterCreateView(LoginRequiredMixin, SessionWizardView):
                 pass
             else:
                 raise NotImplementedError(f"{form=} is not implemented")
-        breakpoint()
         return HttpResponseRedirect(character.get_absolute_url())

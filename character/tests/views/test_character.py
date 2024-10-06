@@ -158,6 +158,7 @@ class TestCharacterCreateView:
             "wisdom": AbilityScore.SCORE_15,
             "charisma": AbilityScore.SCORE_8,
             "gender": f"{fake.enum(enum_cls=Gender)}",
+            "character_create_view-current_step": "0",
         }
 
     @pytest.fixture
@@ -177,6 +178,11 @@ class TestCharacterCreateView:
                     "fourth_skill": skills[3],
                 }
             )
+        data.update(
+            {
+                "character_create_view-current_step": "1",
+            }
+        )
         return data
 
     @pytest.fixture
@@ -185,7 +191,7 @@ class TestCharacterCreateView:
         race = character_form["race"]
         match character_form["background"]:
             case Background.ACOLYTE:
-                return {
+                data = {
                     "first_language": fake.random_element(
                         _get_non_spoken_languages(race)
                     ),
@@ -195,21 +201,21 @@ class TestCharacterCreateView:
                     "equipment": fake.random_element(_get_holy_symbols()),
                 }
             case Background.CRIMINAL:
-                return {
+                data = {
                     "tool_proficiency": fake.random_element(_get_gaming_set_tools())
                 }
             case Background.FOLK_HERO:
-                return {
+                data = {
                     "tool_proficiency": fake.random_element(_get_artisans_tools()),
                     "equipment": fake.random_element(_get_artisans_tools()),
                 }
             case Background.NOBLE:
-                return {
+                data = {
                     "tool_proficiency": fake.random_element(_get_gaming_set_tools()),
                     "language": fake.random_element(_get_non_spoken_languages(race)),
                 }
             case Background.SAGE:
-                return {
+                data = {
                     "first_language": fake.random_element(
                         _get_non_spoken_languages(race)
                     ),
@@ -218,9 +224,11 @@ class TestCharacterCreateView:
                     ),
                 }
             case Background.SOLDIER:
-                return {
+                data = {
                     "tool_proficiency": fake.random_element(_get_gaming_set_tools())
                 }
+        data.update({"character_create_view-current_step": "2"})
+        return data
 
     @pytest.fixture
     def equipment_form(self, character_form):
@@ -255,6 +263,7 @@ class TestCharacterCreateView:
         for field in fields:
             if field in field_list:
                 data[field] = fields[field]
+        data.update({"character_create_view-current_step": "3"})
         return data
 
     def test_character_creation_common(
