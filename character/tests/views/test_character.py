@@ -9,19 +9,25 @@ from character.constants.backgrounds import BACKGROUNDS, Background
 from character.constants.character import Gender
 from character.constants.races import LanguageName, Race, SenseName
 from character.constants.skills import SkillName
-from character.forms.character import CharacterCreateForm
 from character.forms.backgrounds import (
     _get_artisans_tools,
     _get_gaming_set_tools,
     _get_holy_symbols,
     _get_non_spoken_languages,
 )
+from character.forms.character import CharacterCreateForm
+from character.forms.equipment_choices_providers import (
+    ClericEquipmentChoicesProvider,
+    FighterEquipmentChoicesProvider,
+    RogueEquipmentChoicesProvider,
+    WizardEquipmentChoicesProvider,
+)
 from character.forms.skills import _get_skills
 from character.models.character import Character
 from character.models.klasses import Klass
 from character.models.proficiencies import SavingThrowProficiency, SkillProficiency
-from character.models.skills import Skill
 from character.models.races import Language, Sense
+from character.models.skills import Skill
 from character.views.character import (
     CharacterCreateView,
     CharacterDetailView,
@@ -216,10 +222,45 @@ class TestCharacterCreateView:
                     "tool_proficiency": fake.random_element(_get_gaming_set_tools())
                 }
 
+    @pytest.fixture
+    def equipment_form(self, character_form):
+        fake = Faker()
+        match character_form["klass"]:
+            case Klass.CLERIC:
+                equipment_manager = ClericEquipmentChoicesProvider()
+                field_list = ["first_weapon", "second_weapon", "armor", "gear", "pack"]
+            case Klass.FIGHTER:
+                equipment_manager = FighterEquipmentChoicesProvider()
+                field_list = ["first_weapon", "second_weapon", "third_weapon", "pack"]
+            case Klass.ROGUE:
+                equipment_manager = RogueEquipmentChoicesProvider()
+                field_list = ["first_weapon", "second_weapon", "pack"]
+            case Klass.WIZARD:
+                equipment_manager = WizardEquipmentChoicesProvider()
+                field_list = ["first_weapon", "gear", "pack"]
+        fields = {}
+        if first_weapon_choices := equipment_manager.get_first_weapon_choices():
+            fields["first_weapon"] = fake.random_element(first_weapon_choices)[1]
+        if second_weapon_choices := equipment_manager.get_second_weapon_choices():
+            fields["second_weapon"] = fake.random_element(second_weapon_choices)[1]
+        if third_weapon_choices := equipment_manager.get_third_weapon_choices():
+            fields["third_weapon"] = fake.random_element(third_weapon_choices)[1]
+        if armor_choices := equipment_manager.get_armor_choices():
+            fields["armor"] = fake.random_element(armor_choices)[1]
+        if gear_choices := equipment_manager.get_gear_choices():
+            fields["gear"] = fake.random_element(gear_choices)[1]
+        if pack_choices := equipment_manager.get_pack_choices():
+            fields["pack"] = fake.random_element(pack_choices)[1]
+        data = {}
+        for field in fields:
+            if field in field_list:
+                data[field] = fields[field]
+        return data
+
     def test_character_creation_common(
-        self, client, character_form, skills_form, background_form
+        self, client, character_form, skills_form, background_form, equipment_form
     ):
-        form_list = [character_form, skills_form, background_form]
+        form_list = [character_form, skills_form, background_form, equipment_form]
 
         for step, data_step in enumerate(form_list, 1):
             response = client.post((reverse(self.path_name)), data_step)
