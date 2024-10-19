@@ -310,15 +310,12 @@ class TestCharacterCreateView:
         character = None
         for step, data_step in enumerate(form_list, 1):
             response = client.post((reverse(self.path_name)), data_step)
-            print("=====")
-            print(data_step)
-            print("=====")
-            print(response.content)
-            assert response.status_code == 200
-            assertContains(response, f"Step {step + 1}")
-
-        character = Character.objects.last()
-        assertRedirects(response, character.get_absolute_url())
+            if step == len(form_list):
+                character = Character.objects.last()
+                assertRedirects(response, character.get_absolute_url())
+            else:
+                assert response.status_code == 200
+                assertContains(response, f"Step {step + 1}")
 
         assert character.name, character_form.cleaned_data["name"]
         assert character.race, character_form.cleaned_data["race"]
