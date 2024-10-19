@@ -146,94 +146,126 @@ class TestCharacterCreateView:
     @pytest.fixture
     def character_form(self):
         fake = Faker()
+        current_step = CharacterCreateView.Step.BASE_ATTRIBUTES_SELECTION
         return {
-            "name": f"{fake.name()}",
-            "race": f"{fake.enum(enum_cls=Race)}",
-            "klass": f"{fake.enum(enum_cls=Klass)}",
-            "background": f"{fake.enum(enum_cls=Background)}",
-            "strength": AbilityScore.SCORE_10,
-            "dexterity": AbilityScore.SCORE_12,
-            "constitution": AbilityScore.SCORE_13,
-            "intelligence": AbilityScore.SCORE_14,
-            "wisdom": AbilityScore.SCORE_15,
-            "charisma": AbilityScore.SCORE_8,
-            "gender": f"{fake.enum(enum_cls=Gender)}",
-            "character_create_view-current_step": "0",
+            "character_create_view-current_step": current_step,
+            f"{current_step}-name": f"{fake.name()}",
+            f"{current_step}-race": f"{fake.enum(enum_cls=Race)}",
+            f"{current_step}-klass": f"{fake.enum(enum_cls=Klass)}",
+            f"{current_step}-background": f"{fake.enum(enum_cls=Background)}",
+            f"{current_step}-strength": AbilityScore.SCORE_10,
+            f"{current_step}-dexterity": AbilityScore.SCORE_12,
+            f"{current_step}-constitution": AbilityScore.SCORE_13,
+            f"{current_step}-intelligence": AbilityScore.SCORE_14,
+            f"{current_step}-wisdom": AbilityScore.SCORE_15,
+            f"{current_step}-charisma": AbilityScore.SCORE_8,
+            f"{current_step}-gender": f"{fake.enum(enum_cls=Gender)}",
         }
 
     @pytest.fixture
     def skills_form(self, character_form):
         fake = Faker()
+        klass_key = f"{CharacterCreateView.Step.BASE_ATTRIBUTES_SELECTION}-klass"
+        current_step = CharacterCreateView.Step.SKILLS_SELECTION
         skills = fake.random_elements(
-            sorted(_get_skills(character_form["klass"])), length=4, unique=True
+            sorted(_get_skills(character_form[klass_key])), length=4, unique=True
         )
         data = {
-            "first_skill": skills[0],
-            "second_skill": skills[1],
+            "character_create_view-current_step": current_step,
+            f"{current_step}-first_skill": skills[0],
+            f"{current_step}-second_skill": skills[1],
         }
-        if character_form["klass"] == Klass.ROGUE:
+        if character_form[klass_key] == Klass.ROGUE:
             data.update(
                 {
-                    "third_skill": skills[2],
-                    "fourth_skill": skills[3],
+                    f"{current_step}-third_skill": skills[2],
+                    f"{current_step}-fourth_skill": skills[3],
                 }
             )
-        data.update(
-            {
-                "character_create_view-current_step": "1",
-            }
-        )
         return data
 
     @pytest.fixture
     def background_form(self, character_form):
         fake = Faker()
-        race = character_form["race"]
-        match character_form["background"]:
+        race_key = f"{CharacterCreateView.Step.BASE_ATTRIBUTES_SELECTION}-race"
+        background_key = (
+            f"{CharacterCreateView.Step.BASE_ATTRIBUTES_SELECTION}-background"
+        )
+        current_step = CharacterCreateView.Step.BACKGROUND_COMPLETION
+        race = character_form[race_key]
+        data = {"character_create_view-current_step": current_step}
+        match character_form[background_key]:
             case Background.ACOLYTE:
-                data = {
-                    "first_language": fake.random_element(
-                        _get_non_spoken_languages(race)
-                    ),
-                    "second_language": fake.random_element(
-                        _get_non_spoken_languages(race)
-                    ),
-                    "equipment": fake.random_element(_get_holy_symbols()),
-                }
+                data.update(
+                    {
+                        f"{current_step}-first_language": fake.random_element(
+                            _get_non_spoken_languages(race)
+                        ),
+                        f"{current_step}-second_language": fake.random_element(
+                            _get_non_spoken_languages(race)
+                        ),
+                        f"{current_step}-equipment": fake.random_element(
+                            _get_holy_symbols()
+                        ),
+                    }
+                )
             case Background.CRIMINAL:
-                data = {
-                    "tool_proficiency": fake.random_element(_get_gaming_set_tools())
-                }
+                data.update(
+                    {
+                        f"{current_step}-tool_proficiency": fake.random_element(
+                            _get_gaming_set_tools()
+                        )
+                    }
+                )
             case Background.FOLK_HERO:
-                data = {
-                    "tool_proficiency": fake.random_element(_get_artisans_tools()),
-                    "equipment": fake.random_element(_get_artisans_tools()),
-                }
+                data.update(
+                    {
+                        f"{current_step}-tool_proficiency": fake.random_element(
+                            _get_artisans_tools()
+                        ),
+                        f"{current_step}-equipment": fake.random_element(
+                            _get_artisans_tools()
+                        ),
+                    }
+                )
             case Background.NOBLE:
-                data = {
-                    "tool_proficiency": fake.random_element(_get_gaming_set_tools()),
-                    "language": fake.random_element(_get_non_spoken_languages(race)),
-                }
+                data.update(
+                    {
+                        f"{current_step}-tool_proficiency": fake.random_element(
+                            _get_gaming_set_tools()
+                        ),
+                        f"{current_step}-language": fake.random_element(
+                            _get_non_spoken_languages(race)
+                        ),
+                    }
+                )
             case Background.SAGE:
-                data = {
-                    "first_language": fake.random_element(
-                        _get_non_spoken_languages(race)
-                    ),
-                    "second_language": fake.random_element(
-                        _get_non_spoken_languages(race)
-                    ),
-                }
+                data.update(
+                    {
+                        f"{current_step}-first_language": fake.random_element(
+                            _get_non_spoken_languages(race)
+                        ),
+                        f"{current_step}-second_language": fake.random_element(
+                            _get_non_spoken_languages(race)
+                        ),
+                    }
+                )
             case Background.SOLDIER:
-                data = {
-                    "tool_proficiency": fake.random_element(_get_gaming_set_tools())
-                }
-        data.update({"character_create_view-current_step": "2"})
+                data.update(
+                    {
+                        f"{current_step}-tool_proficiency": fake.random_element(
+                            _get_gaming_set_tools()
+                        )
+                    }
+                )
         return data
 
     @pytest.fixture
     def equipment_form(self, character_form):
         fake = Faker()
-        match character_form["klass"]:
+        klass_key = f"{CharacterCreateView.Step.BASE_ATTRIBUTES_SELECTION}-klass"
+        current_step = CharacterCreateView.Step.EQUIPMENT_SELECTION
+        match character_form[klass_key]:
             case Klass.CLERIC:
                 equipment_manager = ClericEquipmentChoicesProvider()
                 field_list = ["first_weapon", "second_weapon", "armor", "gear", "pack"]
@@ -259,11 +291,10 @@ class TestCharacterCreateView:
             fields["gear"] = fake.random_element(gear_choices)[1]
         if pack_choices := equipment_manager.get_pack_choices():
             fields["pack"] = fake.random_element(pack_choices)[1]
-        data = {}
+        data = {"character_create_view-current_step": current_step}
         for field in fields:
             if field in field_list:
-                data[field] = fields[field]
-        data.update({"character_create_view-current_step": "3"})
+                data[f"{current_step}-{field}"] = fields[field]
         return data
 
     def test_character_creation_common(
@@ -271,14 +302,18 @@ class TestCharacterCreateView:
     ):
         form_list = [character_form, skills_form, background_form, equipment_form]
 
+        character = None
         for step, data_step in enumerate(form_list, 1):
             response = client.post((reverse(self.path_name)), data_step)
+            print("=====")
+            print(data_step)
+            print("=====")
+            print(response.content)
+            assert response.status_code == 200
+            assertContains(response, f"Step {step + 1}")
 
-            if step == len(form_list):
-                character = Character.objects.last()
-                assertRedirects(response, character.get_absolute_url())
-            else:
-                assert response.status_code == 200
+        character = Character.objects.last()
+        assertRedirects(response, character.get_absolute_url())
 
         assert character.name, character_form.cleaned_data["name"]
         assert character.race, character_form.cleaned_data["race"]
