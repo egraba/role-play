@@ -61,7 +61,6 @@ class CharacterCreateView(LoginRequiredMixin, SessionWizardView):
         return self.initial_dict.get(step, {})
 
     def done(self, form_list, **kwargs):
-        breakpoint()
         for form in form_list:
             if isinstance(form, CharacterCreateForm):
                 character = form.save(commit=False)

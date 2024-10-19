@@ -186,7 +186,12 @@ class TestCharacterCreateView:
 
     @pytest.fixture
     def background_form(self, character_form):
-        fake = Faker()
+        def _get_random_element(choices):
+            fake = Faker()
+            choice = fake.random_element(choices)
+            # This is necessary to send valid data to the form.
+            return (choice[0], choice[0])
+
         race_key = f"{CharacterCreateView.Step.BASE_ATTRIBUTES_SELECTION}-race"
         background_key = (
             f"{CharacterCreateView.Step.BASE_ATTRIBUTES_SELECTION}-background"
@@ -198,13 +203,13 @@ class TestCharacterCreateView:
             case Background.ACOLYTE:
                 data.update(
                     {
-                        f"{current_step}-first_language": fake.random_element(
+                        f"{current_step}-first_language": _get_random_element(
                             _get_non_spoken_languages(race)
                         ),
-                        f"{current_step}-second_language": fake.random_element(
+                        f"{current_step}-second_language": _get_random_element(
                             _get_non_spoken_languages(race)
                         ),
-                        f"{current_step}-equipment": fake.random_element(
+                        f"{current_step}-equipment": _get_random_element(
                             _get_holy_symbols()
                         ),
                     }
@@ -212,7 +217,7 @@ class TestCharacterCreateView:
             case Background.CRIMINAL:
                 data.update(
                     {
-                        f"{current_step}-tool_proficiency": fake.random_element(
+                        f"{current_step}-tool_proficiency": _get_random_element(
                             _get_gaming_set_tools()
                         )
                     }
@@ -220,10 +225,10 @@ class TestCharacterCreateView:
             case Background.FOLK_HERO:
                 data.update(
                     {
-                        f"{current_step}-tool_proficiency": fake.random_element(
+                        f"{current_step}-tool_proficiency": _get_random_element(
                             _get_artisans_tools()
                         ),
-                        f"{current_step}-equipment": fake.random_element(
+                        f"{current_step}-equipment": _get_random_element(
                             _get_artisans_tools()
                         ),
                     }
@@ -231,10 +236,10 @@ class TestCharacterCreateView:
             case Background.NOBLE:
                 data.update(
                     {
-                        f"{current_step}-tool_proficiency": fake.random_element(
+                        f"{current_step}-tool_proficiency": _get_random_element(
                             _get_gaming_set_tools()
                         ),
-                        f"{current_step}-language": fake.random_element(
+                        f"{current_step}-language": _get_random_element(
                             _get_non_spoken_languages(race)
                         ),
                     }
@@ -242,10 +247,10 @@ class TestCharacterCreateView:
             case Background.SAGE:
                 data.update(
                     {
-                        f"{current_step}-first_language": fake.random_element(
+                        f"{current_step}-first_language": _get_random_element(
                             _get_non_spoken_languages(race)
                         ),
-                        f"{current_step}-second_language": fake.random_element(
+                        f"{current_step}-second_language": _get_random_element(
                             _get_non_spoken_languages(race)
                         ),
                     }
@@ -253,7 +258,7 @@ class TestCharacterCreateView:
             case Background.SOLDIER:
                 data.update(
                     {
-                        f"{current_step}-tool_proficiency": fake.random_element(
+                        f"{current_step}-tool_proficiency": _get_random_element(
                             _get_gaming_set_tools()
                         )
                     }
