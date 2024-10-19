@@ -71,7 +71,11 @@ class BackgroundForm(forms.Form):
             choices=_get_holy_symbols(),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
-        all_fields["tool_proficiency"] = forms.ChoiceField(
+        all_fields["tool_proficiency_artisans"] = forms.ChoiceField(
+            choices=_get_artisans_tools(),
+            widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
+        )
+        all_fields["tool_proficiency_gaming_set"] = forms.ChoiceField(
             choices=_get_gaming_set_tools(),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
@@ -80,13 +84,24 @@ class BackgroundForm(forms.Form):
                 fields = ["first_language", "second_language", "equipment"]
             case Background.CRIMINAL:
                 fields = ["tool_proficiency"]
+                tool_type = ToolType.GAMING_SET
             case Background.FOLK_HERO:
                 fields = ["tool_proficiency", "equipment"]
+                tool_type = ToolType.ARTISANS_TOOLS
             case Background.NOBLE:
                 fields = ["language", "tool_proficiency"]
+                tool_type = ToolType.GAMING_SET
             case Background.SAGE:
                 fields = ["first_language", "second_language"]
             case Background.SOLDIER:
                 fields = ["tool_proficiency"]
+                tool_type = ToolType.GAMING_SET
         for field in fields:
-            self.fields[field] = all_fields[field]
+            if field == "tool_proficiency":
+                match tool_type:
+                    case ToolType.ARTISANS_TOOLS:
+                        self.fields[field] = all_fields["tool_proficiency_artisans"]
+                    case ToolType.GAMING_SET:
+                        self.fields[field] = all_fields["tool_proficiency_gaming_set"]
+            else:
+                self.fields[field] = all_fields[field]
