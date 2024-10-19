@@ -315,6 +315,7 @@ class TestCharacterCreateView:
                 assertRedirects(response, character.get_absolute_url())
             else:
                 assert response.status_code == 200
+                # To be sure there is no error at each step.
                 assertContains(response, f"Step {step + 1}")
 
         assert character.name, character_form.cleaned_data["name"]
