@@ -163,6 +163,15 @@ class TestCharacterCreateView:
         }
 
     @pytest.fixture
+    def dwarf_form(self, character_form):
+        fake = Faker()
+        current_step = character_form["character_create_view-current_step"]
+        character_form[f"{current_step}-race"] = (
+            f"{fake.random_element(elements=(Race.HILL_DWARF, Race.MOUNTAIN_DWARF))}",
+        )
+        return character_form
+
+    @pytest.fixture
     def skills_form(self, character_form):
         fake = Faker()
         klass_key = f"{CharacterCreateView.Step.BASE_ATTRIBUTES_SELECTION}-klass"
@@ -324,23 +333,6 @@ class TestCharacterCreateView:
         assert character.hp >= 100
         assert character.max_hp >= 100
         assert character.hp == character.max_hp
-
-    @pytest.fixture
-    def dwarf_form(self):
-        fake = Faker()
-        return {
-            "name": f"{fake.name()}",
-            "race": f"{fake.random_element(elements=(Race.HILL_DWARF, Race.MOUNTAIN_DWARF))}",
-            "klass": f"{fake.enum(enum_cls=Klass)}",
-            "background": f"{fake.enum(enum_cls=Background)}",
-            "strength": AbilityScore.SCORE_10,
-            "dexterity": AbilityScore.SCORE_12,
-            "constitution": AbilityScore.SCORE_13,
-            "intelligence": AbilityScore.SCORE_14,
-            "wisdom": AbilityScore.SCORE_15,
-            "charisma": AbilityScore.SCORE_8,
-            "gender": f"{fake.enum(enum_cls=Gender)}",
-        }
 
     def test_character_creation_dwarf(self, client, dwarf_form):
         form = CharacterCreateForm(dwarf_form)
