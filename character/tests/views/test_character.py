@@ -205,6 +205,18 @@ class TestCharacterCreateView:
         return character_form
 
     @pytest.fixture
+    def halfling_form(self, character_form):
+        current_step = character_form["character_create_view-current_step"]
+        character_form[f"{current_step}-race"] = Race.HALFLING
+        return character_form
+
+    @pytest.fixture
+    def human_form(self, character_form):
+        current_step = character_form["character_create_view-current_step"]
+        character_form[f"{current_step}-race"] = Race.HUMAN
+        return character_form
+
+    @pytest.fixture
     def skills_form(self, character_form):
         fake = Faker()
         klass_key = f"{CharacterCreateView.Step.BASE_ATTRIBUTES_SELECTION}-klass"
@@ -456,133 +468,47 @@ class TestCharacterCreateView:
         assert character.senses.get(name=SenseName.FLEET_OF_FOOT)
         assert character.senses.get(name=SenseName.MASK_OF_THE_WILD)
 
-    @pytest.fixture
-    def halfling_form(self):
-        fake = Faker()
-        return {
-            "name": f"{fake.name()}",
-            "race": f"{Race.HALFLING}",
-            "klass": f"{fake.enum(enum_cls=Klass)}",
-            "background": f"{fake.enum(enum_cls=Background)}",
-            "strength": AbilityScore.SCORE_10,
-            "dexterity": AbilityScore.SCORE_12,
-            "constitution": AbilityScore.SCORE_13,
-            "intelligence": AbilityScore.SCORE_14,
-            "wisdom": AbilityScore.SCORE_15,
-            "charisma": AbilityScore.SCORE_8,
-            "gender": f"{fake.enum(enum_cls=Gender)}",
-        }
-
-    def test_character_creation_halfling(self, client, halfling_form):
-        form = CharacterCreateForm(halfling_form)
-        assert form.is_valid()
-
-        response = client.post(
-            reverse(self.path_name),
-            data=form.cleaned_data,
-        )
-        assert response.status_code == 302
-        character = Character.objects.last()
-        assertRedirects(response, reverse("skills-select", args=(character.id,)))
-
+    def test_halfling_creation(
+        self, client, halfling_form, skills_form, background_form, equipment_form
+    ):
+        form_list = [halfling_form, skills_form, background_form, equipment_form]
+        character = self._create_character(client, form_list)
         assert 2.7 < character.height <= 2.7 + 2 * 4 / 12
         assert 35 == character.weight
-
-        strength = character.abilities.get(ability_type=AbilityName.STRENGTH).score
-        assert strength == AbilityScore.SCORE_10
-
-        dexterity = character.abilities.get(ability_type=AbilityName.DEXTERITY).score
-        assert dexterity == AbilityScore.SCORE_12 + 2
-
-        constitution = character.abilities.get(
-            ability_type=AbilityName.CONSTITUTION
-        ).score
-        assert constitution == AbilityScore.SCORE_13
-
-        intelligence = character.abilities.get(
-            ability_type=AbilityName.INTELLIGENCE
-        ).score
-        assert intelligence == AbilityScore.SCORE_14
-
-        wisdom = character.abilities.get(ability_type=AbilityName.WISDOM).score
-        assert wisdom == AbilityScore.SCORE_15
-
-        charisma = character.abilities.get(ability_type=AbilityName.CHARISMA).score
-        assert charisma == AbilityScore.SCORE_8
-
+        assert character.strength.score == AbilityScore.SCORE_10
+        assert character.dexterity.score == AbilityScore.SCORE_12 + 2
+        assert character.constitution.score == AbilityScore.SCORE_13
+        assert character.intelligence.score == AbilityScore.SCORE_14
+        assert character.wisdom.score == AbilityScore.SCORE_15
+        assert character.charisma.score == AbilityScore.SCORE_8
         assert character.speed == 25
-
         languages = set()
         languages.add(Language.objects.get(name=LanguageName.COMMON))
         languages.add(Language.objects.get(name=LanguageName.HALFLING))
         assert set(character.languages.all()) == languages
-
         senses = set()
         senses.add(Sense.objects.get(name=SenseName.LUCKY))
         senses.add(Sense.objects.get(name=SenseName.BRAVE))
         senses.add(Sense.objects.get(name=SenseName.HALFLING_NIMBLENESS))
         assert set(character.senses.all()) == senses
 
-    @pytest.fixture
-    def human_form(self):
-        fake = Faker()
-        return {
-            "name": f"{fake.name()}",
-            "race": f"{Race.HUMAN}",
-            "klass": f"{fake.enum(enum_cls=Klass)}",
-            "background": f"{fake.enum(enum_cls=Background)}",
-            "strength": AbilityScore.SCORE_10,
-            "dexterity": AbilityScore.SCORE_12,
-            "constitution": AbilityScore.SCORE_13,
-            "intelligence": AbilityScore.SCORE_14,
-            "wisdom": AbilityScore.SCORE_15,
-            "charisma": AbilityScore.SCORE_8,
-            "gender": f"{fake.enum(enum_cls=Gender)}",
-        }
-
-    def test_character_creation_human(self, client, human_form):
-        form = CharacterCreateForm(human_form)
-        assert form.is_valid()
-
-        response = client.post(
-            reverse(self.path_name),
-            data=form.cleaned_data,
-        )
-        assert response.status_code == 302
-        character = Character.objects.last()
-        assertRedirects(response, reverse("skills-select", args=(character.id,)))
-
+    def test_human_creation(
+        self, client, human_form, skills_form, background_form, equipment_form
+    ):
+        form_list = [human_form, skills_form, background_form, equipment_form]
+        character = self._create_character(client, form_list)
         assert 4.8 < character.height <= 4.8 + 2 * 10 / 12
         assert 110 < character.weight <= 110 + 2 * 4 * 12
-
-        strength = character.abilities.get(ability_type=AbilityName.STRENGTH).score
-        assert strength == AbilityScore.SCORE_10 + 1
-
-        dexterity = character.abilities.get(ability_type=AbilityName.DEXTERITY).score
-        assert dexterity == AbilityScore.SCORE_12 + 1
-
-        constitution = character.abilities.get(
-            ability_type=AbilityName.CONSTITUTION
-        ).score
-        assert constitution == AbilityScore.SCORE_13 + 1
-
-        intelligence = character.abilities.get(
-            ability_type=AbilityName.INTELLIGENCE
-        ).score
-        assert intelligence == AbilityScore.SCORE_14 + 1
-
-        wisdom = character.abilities.get(ability_type=AbilityName.WISDOM).score
-        assert wisdom == AbilityScore.SCORE_15 + 1
-
-        charisma = character.abilities.get(ability_type=AbilityName.CHARISMA).score
-        assert charisma == AbilityScore.SCORE_8 + 1
-
+        assert character.strength.score == AbilityScore.SCORE_10 + 1
+        assert character.dexterity.score == AbilityScore.SCORE_12 + 1
+        assert character.constitution.score == AbilityScore.SCORE_13 + 1
+        assert character.intelligence.score == AbilityScore.SCORE_14 + 1
+        assert character.wisdom.score == AbilityScore.SCORE_15 + 1
+        assert character.charisma.score == AbilityScore.SCORE_8 + 1
         assert character.speed == 30
-
         languages = set()
         languages.add(Language.objects.get(name=LanguageName.COMMON))
         assert set(character.languages.all()) == languages
-
         senses = set()
         assert set(character.senses.all()) == senses
 
