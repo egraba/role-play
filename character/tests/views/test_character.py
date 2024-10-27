@@ -172,6 +172,18 @@ class TestCharacterCreateView:
         return character_form
 
     @pytest.fixture
+    def hill_dwarf_form(self, character_form):
+        current_step = character_form["character_create_view-current_step"]
+        character_form[f"{current_step}-race"] = Race.HILL_DWARF
+        return character_form
+
+    @pytest.fixture
+    def mountain_dwarf_form(self, character_form):
+        current_step = character_form["character_create_view-current_step"]
+        character_form[f"{current_step}-race"] = Race.MOUNTAIN_DWARF
+        return character_form
+
+    @pytest.fixture
     def skills_form(self, character_form):
         fake = Faker()
         klass_key = f"{CharacterCreateView.Step.BASE_ATTRIBUTES_SELECTION}-klass"
@@ -341,19 +353,15 @@ class TestCharacterCreateView:
     ):
         form_list = [dwarf_form, skills_form, background_form, equipment_form]
         character = self._create_character(client, form_list)
-
         assert character.dexterity.score == AbilityScore.SCORE_12
         assert character.constitution.score == AbilityScore.SCORE_13 + 2
         assert character.intelligence.score == AbilityScore.SCORE_14
         assert character.charisma.score == AbilityScore.SCORE_8
-
         assert character.speed == 25
-
         languages = set()
         languages.add(Language.objects.get(name=LanguageName.COMMON))
         languages.add(Language.objects.get(name=LanguageName.DWARVISH))
         assert set(character.languages.all()) == languages
-
         senses = set()
         senses.add(Sense.objects.get(name=SenseName.DARKVISION))
         senses.add(Sense.objects.get(name=SenseName.DWARVEN_RESILIENCE))
@@ -362,78 +370,24 @@ class TestCharacterCreateView:
         senses.add(Sense.objects.get(name=SenseName.STONECUNNING))
         assert senses.issubset(set(character.senses.all()))
 
-    @pytest.fixture
-    def hill_dwarf_form(self):
-        fake = Faker()
-        return {
-            "name": f"{fake.name()}",
-            "race": f"{Race.HILL_DWARF}",
-            "klass": f"{fake.enum(enum_cls=Klass)}",
-            "background": f"{fake.enum(enum_cls=Background)}",
-            "strength": AbilityScore.SCORE_10,
-            "dexterity": AbilityScore.SCORE_12,
-            "constitution": AbilityScore.SCORE_13,
-            "intelligence": AbilityScore.SCORE_14,
-            "wisdom": AbilityScore.SCORE_15,
-            "charisma": AbilityScore.SCORE_8,
-            "gender": f"{fake.enum(enum_cls=Gender)}",
-        }
-
-    def test_character_creation_hill_dwarf(self, client, hill_dwarf_form):
-        form = CharacterCreateForm(hill_dwarf_form)
-        assert form.is_valid()
-
-        response = client.post(
-            reverse(self.path_name),
-            data=form.cleaned_data,
-        )
-        assert response.status_code == 302
-        character = Character.objects.last()
-        assertRedirects(response, reverse("skills-select", args=(character.id,)))
-
+    def test_hill_dwarf_creation(
+        self, client, hill_dwarf_form, skills_form, background_form, equipment_form
+    ):
+        form_list = [hill_dwarf_form, skills_form, background_form, equipment_form]
+        character = self._create_character(client, form_list)
         assert 3.8 < character.height <= 3.8 + 2 * 4 / 12
         assert 115 < character.weight <= 115 + 2 * 6 * 12
-
-        wisdom = character.abilities.get(ability_type=AbilityName.WISDOM).score
-        assert wisdom == AbilityScore.SCORE_15 + 1
-
+        assert character.wisdom.score == AbilityScore.SCORE_15 + 1
         assert character.senses.get(name=SenseName.DWARVEN_TOUGHNESS)
 
-    @pytest.fixture
-    def moutain_dwarf_form(self):
-        fake = Faker()
-        return {
-            "name": f"{fake.name()}",
-            "race": f"{Race.MOUNTAIN_DWARF}",
-            "klass": f"{fake.enum(enum_cls=Klass)}",
-            "background": f"{fake.enum(enum_cls=Background)}",
-            "strength": AbilityScore.SCORE_10,
-            "dexterity": AbilityScore.SCORE_12,
-            "constitution": AbilityScore.SCORE_13,
-            "intelligence": AbilityScore.SCORE_14,
-            "wisdom": AbilityScore.SCORE_15,
-            "charisma": AbilityScore.SCORE_8,
-            "gender": f"{fake.enum(enum_cls=Gender)}",
-        }
-
-    def test_character_creation_mountain_dwarf(self, client, moutain_dwarf_form):
-        form = CharacterCreateForm(moutain_dwarf_form)
-        assert form.is_valid()
-
-        response = client.post(
-            reverse(self.path_name),
-            data=form.cleaned_data,
-        )
-        assert response.status_code == 302
-        character = Character.objects.last()
-        assertRedirects(response, reverse("skills-select", args=(character.id,)))
-
+    def test_mountain_dwarf_creation(
+        self, client, moutain_dwarf_form, skills_form, background_form, equipment_form
+    ):
+        form_list = [moutain_dwarf_form, skills_form, background_form, equipment_form]
+        character = self._create_character(client, form_list)
         assert 4 < character.height <= 4 + 2 * 4 / 12
         assert 130 < character.weight <= 130 + 2 * 6 * 12
-
-        strength = character.abilities.get(ability_type=AbilityName.STRENGTH).score
-        assert strength == AbilityScore.SCORE_10 + 2
-
+        assert character.strength.score == AbilityScore.SCORE_10 + 2
         assert character.senses.get(name=SenseName.DWARVEN_ARMOR_TRAINING)
 
     @pytest.fixture
