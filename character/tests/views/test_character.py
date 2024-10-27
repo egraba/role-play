@@ -512,51 +512,26 @@ class TestCharacterCreateView:
         senses = set()
         assert set(character.senses.all()) == senses
 
-    def test_character_creation_cleric(self, client):
-        fake = Faker()
-        name = fake.name()
-        race = fake.enum(enum_cls=Race)
-        klass = Klass.CLERIC
-        gender = fake.enum(enum_cls=Gender)
-        data = {
-            "name": f"{name}",
-            "race": f"{race}",
-            "klass": f"{klass}",
-            "background": f"{fake.enum(enum_cls=Background)}",
-            "strength": AbilityScore.SCORE_10,
-            "dexterity": AbilityScore.SCORE_12,
-            "constitution": AbilityScore.SCORE_13,
-            "intelligence": AbilityScore.SCORE_14,
-            "wisdom": AbilityScore.SCORE_15,
-            "charisma": AbilityScore.SCORE_8,
-            "gender": f"{gender}",
-        }
-        form = CharacterCreateForm(data)
-        assert form.is_valid()
+    @pytest.fixture
+    def cleric_form(self, character_form):
+        current_step = character_form["character_create_view-current_step"]
+        character_form[f"{current_step}-klass"] = Klass.CLERIC
+        return character_form
 
-        response = client.post(
-            reverse(self.path_name),
-            data=form.cleaned_data,
-        )
-        assert response.status_code == 302
-        character = Character.objects.last()
-        assertRedirects(response, reverse("skills-select", args=(character.id,)))
-
+    def test_cleric_creation(
+        self, client, cleric_form, skills_form, background_form, equipment_form
+    ):
+        form_list = [cleric_form, skills_form, background_form, equipment_form]
+        character = self._create_character(client, form_list)
         assert character.hit_dice == "1d8"
-
-        constitution_modifier = character.abilities.get(
-            ability_type=AbilityName.CONSTITUTION
-        ).modifier
-        hp = 100 + 8 + constitution_modifier
+        hp = 100 + 8 + character.constitution.modifier
         assert character.hp == hp
-
         assert set(character.savingthrowproficiency_set.all()) == set(
             SavingThrowProficiency.objects.filter(
                 Q(ability_type_id=AbilityName.WISDOM)
                 | Q(ability_type_id=AbilityName.CHARISMA)
             )
         )
-
         assert 50 <= character.inventory.gp <= 200
 
     def test_character_creation_fighter(self, client):
