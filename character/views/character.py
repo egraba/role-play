@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.views.generic import DetailView, ListView
 from formtools.wizard.views import SessionWizardView
 
-from ..character_builder import BaseBuilder
+from ..character_builder import BaseBuilder, RaceBuilder, KlassBuilder
 from ..forms.backgrounds import BackgroundForm
 from ..forms.character import CharacterCreateForm
 from ..forms.equipment import EquipmentSelectForm
@@ -68,6 +68,8 @@ class CharacterCreateView(LoginRequiredMixin, SessionWizardView):
                 character = form.save(commit=False)
                 character.user = self.request.user
                 BaseBuilder(character, form).build()
+                RaceBuilder(character).build()
+                KlassBuilder(character).build()
             elif isinstance(form, SkillsSelectForm):
                 for field in form.cleaned_data.keys():
                     character.skills.add(form.cleaned_data[field])

@@ -1,7 +1,9 @@
 import random
+from abc import ABC, abstractmethod
 
 from utils.dice import DiceString
 
+from .ability_modifiers import compute_ability_modifier
 from .constants.backgrounds import BACKGROUNDS
 from .constants.klasses import KLASS_FEATURES
 from .constants.races import RACIAL_TRAITS
@@ -13,10 +15,15 @@ from .models.klasses import KlassAdvancement
 from .models.proficiencies import SavingThrowProficiency, SkillProficiency
 from .models.races import Language, Sense
 from .models.skills import Skill
-from .ability_modifiers import compute_ability_modifier
 
 
-class BaseBuilder:
+class CharacterAttributesBuilder(ABC):
+    @abstractmethod
+    def build(self) -> None:
+        pass
+
+
+class BaseBuilder(CharacterAttributesBuilder):
     def __init__(self, character: Character, form: CharacterCreateForm) -> None:
         self.character = character
         self.form = form
@@ -34,16 +41,16 @@ class BaseBuilder:
 
     def build(self) -> None:
         self._add_inventory()
-        self._initialize_ability_scores()
         self.character.save()
+        self._initialize_ability_scores()
 
 
-class _RaceBuilder:
+class RaceBuilder(CharacterAttributesBuilder):
     def __init__(self, character: Character) -> None:
         self.character = character
         self.race = character.race
 
-    def apply_racial_traits(self) -> None:
+    def _apply_racial_traits(self) -> None:
         self.character.adult_age = RACIAL_TRAITS[self.race]["adult_age"]
         self.character.life_expectancy = RACIAL_TRAITS[self.race]["life_expectancy"]
         self.character.alignment = RACIAL_TRAITS[self.race]["alignment"]
@@ -56,24 +63,24 @@ class _RaceBuilder:
         for sense in RACIAL_TRAITS[self.race]["senses"]:
             self.character.senses.add(Sense.objects.get(name=sense))
 
-    def apply_ability_score_increases(self) -> None:
+    def _apply_ability_score_increases(self) -> None:
         increases = RACIAL_TRAITS[self.race]["ability_score_increases"]
         for increase in increases:
             ability = self.character.abilities.get(ability_type__name=increase)
             ability.score += increases[increase]
             ability.save()
 
-    def compute_ability_modifiers(self) -> None:
+    def _compute_ability_modifiers(self) -> None:
         for ability in self.character.abilities.all():
             ability.modifier = compute_ability_modifier(ability.score)
 
-    def set_height(self) -> None:
+    def _set_height(self) -> None:
         base_height = RACIAL_TRAITS[self.race]["height"]["base_height"]
         height_modifier = RACIAL_TRAITS[self.race]["height"]["height_modifier"]
         additional_height = DiceString(height_modifier).roll() / 12  # inches
         self.character.height = base_height + additional_height
 
-    def set_weight(self) -> None:
+    def _set_weight(self) -> None:
         base_weight = RACIAL_TRAITS[self.race]["weight"]["base_weight"]
         weight_modifier = RACIAL_TRAITS[self.race]["weight"]["weight_modifier"]
         if weight_modifier is None:
@@ -82,19 +89,27 @@ class _RaceBuilder:
             additional_weight = DiceString(weight_modifier).roll() * 12  # pounds
             self.character.weight = base_weight + additional_weight
 
+    def build(self) -> None:
+        self._apply_racial_traits()
+        self._apply_ability_score_increases()
+        self._compute_ability_modifiers()
+        self._set_height()
+        self._set_weight()
+        self.character.save()
 
-class _KlassBuilder:
+
+class KlassBuilder(CharacterAttributesBuilder):
     def __init__(self, character: Character) -> None:
         self.character = character
         self.klass = character.klass
 
-    def apply_advancement(self) -> None:
+    def _apply_advancement(self) -> None:
         klass_advancement = KlassAdvancement.objects.get(
             klass=self.character.klass, level=1
         )
         self.character.proficiency_bonus += klass_advancement.proficiency_bonus
 
-    def apply_hit_points(self) -> None:
+    def _apply_hit_points(self) -> None:
         hit_points = KLASS_FEATURES[self.klass]["hit_points"]
         self.character.hit_dice = DiceString(hit_points["hit_dice"])
         self.character.hp += hit_points["hp_first_level"]
@@ -105,16 +120,16 @@ class _KlassBuilder:
         self.character.max_hp = self.character.hp
         self.character.hp_increase = hit_points["hp_higher_levels"]
 
-    def apply_armor_proficiencies(self) -> None:
+    def _apply_armor_proficiencies(self) -> None:
         pass
 
-    def apply_weapons_proficiencies(self) -> None:
+    def _apply_weapons_proficiencies(self) -> None:
         pass
 
-    def apply_tools_proficiencies(self) -> None:
+    def _apply_tools_proficiencies(self) -> None:
         pass
 
-    def apply_saving_throws_proficiencies(self) -> None:
+    def _apply_saving_throws_proficiencies(self) -> None:
         saving_throws = KLASS_FEATURES[self.klass]["proficiencies"]["saving_throws"]
         for ability in saving_throws:
             SavingThrowProficiency.objects.create(
@@ -122,11 +137,21 @@ class _KlassBuilder:
                 ability_type=AbilityType.objects.get(name=ability),
             )
 
-    def add_wealth(self) -> None:
+    def _add_wealth(self) -> None:
         wealth_roll = DiceString(KLASS_FEATURES[self.klass]["wealth"]).roll()
         inventory = self.character.inventory
         inventory.gp = wealth_roll * 10
         inventory.save()
+
+    def build(self) -> None:
+        self._apply_advancement()
+        self._apply_hit_points()
+        self._apply_armor_proficiencies()
+        self._apply_weapons_proficiencies()
+        self._apply_tools_proficiencies()
+        self._apply_saving_throws_proficiencies()
+        self._add_wealth()
+        self.character.save()
 
 
 class _BackgroundBuilder:
@@ -175,23 +200,7 @@ def build_character(character: Character, form: CharacterCreateForm) -> None:
     """
     Build character depending on its attributes (race, class, background, etc.).
     """
-    race_builder = _RaceBuilder(character)
-    klass_builder = _KlassBuilder(character)
     background_builder = _BackgroundBuilder(character)
-
-    race_builder.apply_racial_traits()
-    race_builder.apply_ability_score_increases()
-    race_builder.compute_ability_modifiers()
-    race_builder.set_height()
-    race_builder.set_weight()
-
-    klass_builder.apply_advancement()
-    klass_builder.apply_hit_points()
-    klass_builder.apply_armor_proficiencies()
-    klass_builder.apply_weapons_proficiencies()
-    klass_builder.apply_tools_proficiencies()
-    klass_builder.apply_saving_throws_proficiencies()
-    klass_builder.add_wealth()
 
     background_builder.add_skill_proficiencies()
     background_builder.add_tool_proficiencies()
