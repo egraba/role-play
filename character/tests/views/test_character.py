@@ -167,7 +167,7 @@ class TestCharacterCreateView:
         fake = Faker()
         current_step = character_form["character_create_view-current_step"]
         character_form[f"{current_step}-race"] = (
-            f"{fake.random_element(elements=(Race.HILL_DWARF, Race.MOUNTAIN_DWARF))}",
+            f"{fake.random_element(elements=(Race.HILL_DWARF, Race.MOUNTAIN_DWARF))}"
         )
         return character_form
 
@@ -311,11 +311,7 @@ class TestCharacterCreateView:
                 data[f"{current_step}-{field}"] = fields[field]
         return data
 
-    def test_character_creation_common(
-        self, client, character_form, skills_form, background_form, equipment_form
-    ):
-        form_list = [character_form, skills_form, background_form, equipment_form]
-
+    def _create_character(self, client, form_list):
         character = None
         for step, data_step in enumerate(form_list, 1):
             response = client.post((reverse(self.path_name)), data_step)
@@ -326,7 +322,13 @@ class TestCharacterCreateView:
                 assert response.status_code == 200
                 # To be sure there is no error at each step.
                 assertContains(response, f"Step {step + 1}")
+        return character
 
+    def test_character_creation(
+        self, client, character_form, skills_form, background_form, equipment_form
+    ):
+        form_list = [character_form, skills_form, background_form, equipment_form]
+        character = self._create_character(client, form_list)
         assert character.name, character_form.cleaned_data["name"]
         assert character.race, character_form.cleaned_data["race"]
         assert character.xp == 0
@@ -334,17 +336,11 @@ class TestCharacterCreateView:
         assert character.max_hp >= 100
         assert character.hp == character.max_hp
 
-    def test_character_creation_dwarf(self, client, dwarf_form):
-        form = CharacterCreateForm(dwarf_form)
-        assert form.is_valid()
-
-        response = client.post(
-            reverse(self.path_name),
-            data=form.cleaned_data,
-        )
-        assert response.status_code == 302
-        character = Character.objects.last()
-        assertRedirects(response, reverse("skills-select", args=(character.id,)))
+    def test_dwarf_creation(
+        self, client, dwarf_form, skills_form, background_form, equipment_form
+    ):
+        form_list = [dwarf_form, skills_form, background_form, equipment_form]
+        character = self._create_character(client, form_list)
 
         dexterity = character.abilities.get(ability_type=AbilityName.DEXTERITY).score
         assert dexterity == AbilityScore.SCORE_12

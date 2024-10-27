@@ -45,6 +45,7 @@ freezegun = "*"
 pre-commit = "*"
 pytest = "*"
 pytest-asyncio = "*"
+pytest-dependency = "*"
 pytest-django = "*"
 
 [tool.ruff]
