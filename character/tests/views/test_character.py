@@ -342,21 +342,10 @@ class TestCharacterCreateView:
         form_list = [dwarf_form, skills_form, background_form, equipment_form]
         character = self._create_character(client, form_list)
 
-        dexterity = character.abilities.get(ability_type=AbilityName.DEXTERITY).score
-        assert dexterity == AbilityScore.SCORE_12
-
-        constitution = character.abilities.get(
-            ability_type=AbilityName.CONSTITUTION
-        ).score
-        assert constitution == AbilityScore.SCORE_13 + 2
-
-        intelligence = character.abilities.get(
-            ability_type=AbilityName.INTELLIGENCE
-        ).score
-        assert intelligence == AbilityScore.SCORE_14
-
-        charisma = character.abilities.get(ability_type=AbilityName.CHARISMA).score
-        assert charisma == AbilityScore.SCORE_8
+        assert character.dexterity.score == AbilityScore.SCORE_12
+        assert character.constitution.score == AbilityScore.SCORE_13 + 2
+        assert character.intelligence.score == AbilityScore.SCORE_14
+        assert character.charisma.score == AbilityScore.SCORE_8
 
         assert character.speed == 25
 
