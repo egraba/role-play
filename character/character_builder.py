@@ -16,22 +16,26 @@ from .models.skills import Skill
 from .ability_modifiers import compute_ability_modifier
 
 
-class _BaseBuilder:
+class BaseBuilder:
     def __init__(self, character: Character, form: CharacterCreateForm) -> None:
         self.character = character
         self.form = form
 
-    def add_inventory(self) -> None:
+    def _add_inventory(self) -> None:
         self.character.inventory = Inventory.objects.create()
 
-    def initialize_ability_scores(self) -> None:
+    def _initialize_ability_scores(self) -> None:
         for ability_type in AbilityType.objects.all():
             ability = Ability.objects.create(
                 ability_type=ability_type,
                 score=self.form.cleaned_data[ability_type.get_name_display().lower()],
             )
-            self.character.save()
             self.character.abilities.add(ability)
+
+    def build(self) -> None:
+        self._add_inventory()
+        self._initialize_ability_scores()
+        self.character.save()
 
 
 class _RaceBuilder:
@@ -171,13 +175,9 @@ def build_character(character: Character, form: CharacterCreateForm) -> None:
     """
     Build character depending on its attributes (race, class, background, etc.).
     """
-    base_builder = _BaseBuilder(character, form)
     race_builder = _RaceBuilder(character)
     klass_builder = _KlassBuilder(character)
     background_builder = _BackgroundBuilder(character)
-
-    base_builder.add_inventory()
-    base_builder.initialize_ability_scores()
 
     race_builder.apply_racial_traits()
     race_builder.apply_ability_score_increases()

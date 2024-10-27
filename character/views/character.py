@@ -1,9 +1,11 @@
 from enum import StrEnum
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.views.generic import DetailView, ListView
 from formtools.wizard.views import SessionWizardView
 
+from ..character_builder import BaseBuilder
 from ..forms.backgrounds import BackgroundForm
 from ..forms.character import CharacterCreateForm
 from ..forms.equipment import EquipmentSelectForm
@@ -65,7 +67,7 @@ class CharacterCreateView(LoginRequiredMixin, SessionWizardView):
             if isinstance(form, CharacterCreateForm):
                 character = form.save(commit=False)
                 character.user = self.request.user
-                character.save()
+                BaseBuilder(character, form).build()
             elif isinstance(form, SkillsSelectForm):
                 for field in form.cleaned_data.keys():
                     character.skills.add(form.cleaned_data[field])
