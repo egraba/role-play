@@ -154,59 +154,53 @@ class KlassBuilder(CharacterAttributesBuilder):
         self.character.save()
 
 
-class _BackgroundBuilder:
+class BackgroundBuilder:
     def __init__(self, character: Character) -> None:
         self.character = character
         self.background = character.background
 
-    def add_skill_proficiencies(self) -> None:
+    def _add_skill_proficiencies(self) -> None:
         skill_proficiencies = BACKGROUNDS[self.background]["skill_proficiencies"]
         for skill in skill_proficiencies:
             SkillProficiency.objects.create(
                 character=self.character, skill=Skill.objects.get(name=skill)
             )
 
-    def add_tool_proficiencies(self) -> None:
+    def _add_tool_proficiencies(self) -> None:
         pass
 
-    def add_languages(self) -> None:
+    def _add_languages(self) -> None:
         pass
 
-    def add_equipment(self) -> None:
+    def _add_equipment(self) -> None:
         pass
 
-    def select_personality_trait(self) -> None:
+    def _select_personality_trait(self) -> None:
         self.character.personality_trait = random.choice(
             list(BACKGROUNDS[self.background]["personality_traits"].values())
         )
 
-    def select_ideal(self) -> None:
+    def _select_ideal(self) -> None:
         self.character.ideal = random.choice(
             list(BACKGROUNDS[self.background]["ideals"].values())
         )
 
-    def select_bond(self) -> None:
+    def _select_bond(self) -> None:
         self.character.bond = random.choice(
             list(BACKGROUNDS[self.background]["bonds"].values())
         )
 
-    def select_flaw(self) -> None:
+    def _select_flaw(self) -> None:
         self.character.flaw = random.choice(
             list(BACKGROUNDS[self.background]["flaws"].values())
         )
 
-
-def build_character(character: Character, form: CharacterCreateForm) -> None:
-    """
-    Build character depending on its attributes (race, class, background, etc.).
-    """
-    background_builder = _BackgroundBuilder(character)
-
-    background_builder.add_skill_proficiencies()
-    background_builder.add_tool_proficiencies()
-    background_builder.add_languages()
-    background_builder.add_equipment()
-    background_builder.select_personality_trait()
-    background_builder.select_ideal()
-    background_builder.select_bond()
-    background_builder.select_flaw()
+    def build(self) -> None:
+        self._add_skill_proficiencies()
+        self._add_tool_proficiencies()
+        self._add_languages()
+        self._add_equipment()
+        self._select_personality_trait()
+        self._select_ideal()
+        self._select_bond()
+        self._select_flaw()
