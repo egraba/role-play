@@ -184,6 +184,27 @@ class TestCharacterCreateView:
         return character_form
 
     @pytest.fixture
+    def elf_form(self, character_form):
+        fake = Faker()
+        current_step = character_form["character_create_view-current_step"]
+        character_form[f"{current_step}-race"] = (
+            f"{fake.random_element(elements=(Race.HIGH_ELF, Race.WOOD_ELF))}"
+        )
+        return character_form
+
+    @pytest.fixture
+    def high_elf_form(self, character_form):
+        current_step = character_form["character_create_view-current_step"]
+        character_form[f"{current_step}-race"] = Race.HIGH_ELF
+        return character_form
+
+    @pytest.fixture
+    def wood_elf_form(self, character_form):
+        current_step = character_form["character_create_view-current_step"]
+        character_form[f"{current_step}-race"] = Race.WOOD_ELF
+        return character_form
+
+    @pytest.fixture
     def skills_form(self, character_form):
         fake = Faker()
         klass_key = f"{CharacterCreateView.Step.BASE_ATTRIBUTES_SELECTION}-klass"
@@ -390,56 +411,20 @@ class TestCharacterCreateView:
         assert character.strength.score == AbilityScore.SCORE_10 + 2
         assert character.senses.get(name=SenseName.DWARVEN_ARMOR_TRAINING)
 
-    @pytest.fixture
-    def elf_form(self):
-        fake = Faker()
-        return {
-            "name": f"{fake.name()}",
-            "race": f"{fake.random_element(elements=(Race.HIGH_ELF, Race.WOOD_ELF))}",
-            "klass": f"{fake.enum(enum_cls=Klass)}",
-            "background": f"{fake.enum(enum_cls=Background)}",
-            "strength": AbilityScore.SCORE_10,
-            "dexterity": AbilityScore.SCORE_12,
-            "constitution": AbilityScore.SCORE_13,
-            "intelligence": AbilityScore.SCORE_14,
-            "wisdom": AbilityScore.SCORE_15,
-            "charisma": AbilityScore.SCORE_8,
-            "gender": f"{fake.enum(enum_cls=Gender)}",
-        }
-
-    def test_character_creation_elf(self, client, elf_form):
-        form = CharacterCreateForm(elf_form)
-        assert form.is_valid()
-
-        response = client.post(
-            reverse(self.path_name),
-            data=form.cleaned_data,
-        )
-        assert response.status_code, 302
-        character = Character.objects.last()
-        assertRedirects(response, reverse("skills-select", args=(character.id,)))
-
-        strength = character.abilities.get(ability_type=AbilityName.STRENGTH).score
-        assert strength == AbilityScore.SCORE_10
-
-        dexterity = character.abilities.get(ability_type=AbilityName.DEXTERITY).score
-        assert dexterity == AbilityScore.SCORE_12 + 2
-
-        constitution = character.abilities.get(
-            ability_type=AbilityName.CONSTITUTION
-        ).score
-        assert constitution == AbilityScore.SCORE_13
-
-        charisma = character.abilities.get(ability_type=AbilityName.CHARISMA).score
-        assert charisma == AbilityScore.SCORE_8
-
+    def test_elf_creation(
+        self, client, elf_form, skills_form, background_form, equipment_form
+    ):
+        form_list = [elf_form, skills_form, background_form, equipment_form]
+        character = self._create_character(client, form_list)
+        assert character.strength.score == AbilityScore.SCORE_10
+        assert character.dexterity.score == AbilityScore.SCORE_12 + 2
+        assert character.constitution.score == AbilityScore.SCORE_13
+        assert character.charisma.score == AbilityScore.SCORE_8
         assert character.speed == 30
-
         languages = set()
         languages.add(Language.objects.get(name=LanguageName.COMMON))
         languages.add(Language.objects.get(name=LanguageName.ELVISH))
         assert set(character.languages.all()) == languages
-
         senses = set()
         senses.add(Sense.objects.get(name=SenseName.DARKVISION))
         senses.add(Sense.objects.get(name=SenseName.KEEN_SENSES))
@@ -447,82 +432,26 @@ class TestCharacterCreateView:
         senses.add(Sense.objects.get(name=SenseName.TRANCE))
         assert senses.issubset(set(character.senses.all()))
 
-    @pytest.fixture
-    def high_elf_form(self):
-        fake = Faker()
-        return {
-            "name": f"{fake.name()}",
-            "race": f"{Race.HIGH_ELF}",
-            "klass": f"{fake.enum(enum_cls=Klass)}",
-            "background": f"{fake.enum(enum_cls=Background)}",
-            "strength": AbilityScore.SCORE_10,
-            "dexterity": AbilityScore.SCORE_12,
-            "constitution": AbilityScore.SCORE_13,
-            "intelligence": AbilityScore.SCORE_14,
-            "wisdom": AbilityScore.SCORE_15,
-            "charisma": AbilityScore.SCORE_8,
-            "gender": f"{fake.enum(enum_cls=Gender)}",
-        }
-
-    def test_character_creation_high_elf(self, client, high_elf_form):
-        form = CharacterCreateForm(high_elf_form)
-        assert form.is_valid()
-
-        response = client.post(
-            reverse(self.path_name),
-            data=form.cleaned_data,
-        )
-        assert response.status_code, 302
-        character = Character.objects.last()
-        assertRedirects(response, reverse("skills-select", args=(character.id,)))
-
+    def test_high_elf_creation(
+        self, client, high_elf_form, skills_form, background_form, equipment_form
+    ):
+        form_list = [high_elf_form, skills_form, background_form, equipment_form]
+        character = self._create_character(client, form_list)
         assert 4.6 < character.height <= 4.6 + 2 * 10 / 12
         assert 90 < character.weight <= 90 + 1 * 4 * 12
-
-        intelligence = character.abilities.get(
-            ability_type=AbilityName.INTELLIGENCE
-        ).score
-        assert intelligence == AbilityScore.SCORE_14 + 1
-
+        assert character.intelligence.score == AbilityScore.SCORE_14 + 1
         assert character.senses.get(name=SenseName.ELF_WEAPON_TRAINING)
         assert character.senses.get(name=SenseName.CANTRIP)
         assert character.senses.get(name=SenseName.EXTRA_LANGUAGE)
 
-    @pytest.fixture
-    def wood_elf_form(self):
-        fake = Faker()
-        return {
-            "name": f"{fake.name()}",
-            "race": f"{Race.WOOD_ELF}",
-            "klass": f"{fake.enum(enum_cls=Klass)}",
-            "background": f"{fake.enum(enum_cls=Background)}",
-            "strength": AbilityScore.SCORE_10,
-            "dexterity": AbilityScore.SCORE_12,
-            "constitution": AbilityScore.SCORE_13,
-            "intelligence": AbilityScore.SCORE_14,
-            "wisdom": AbilityScore.SCORE_15,
-            "charisma": AbilityScore.SCORE_8,
-            "gender": f"{fake.enum(enum_cls=Gender)}",
-        }
-
-    def test_character_creation_wood_elf(self, client, wood_elf_form):
-        form = CharacterCreateForm(wood_elf_form)
-        assert form.is_valid()
-
-        response = client.post(
-            reverse(self.path_name),
-            data=form.cleaned_data,
-        )
-        assert response.status_code, 302
-        character = Character.objects.last()
-        assertRedirects(response, reverse("skills-select", args=(character.id,)))
-
+    def test_wood_elf_creation(
+        self, client, wood_elf_form, skills_form, background_form, equipment_form
+    ):
+        form_list = [wood_elf_form, skills_form, background_form, equipment_form]
+        character = self._create_character(client, form_list)
         assert 4.6 < character.height <= 4.6 + 2 * 10 / 12
         assert 100 < character.weight <= 100 + 1 * 4 * 12
-
-        wisdom = character.abilities.get(ability_type=AbilityName.WISDOM).score
-        assert wisdom == AbilityScore.SCORE_15 + 1
-
+        assert character.wisdom.score == AbilityScore.SCORE_15 + 1
         assert character.senses.get(name=SenseName.ELF_WEAPON_TRAINING)
         assert character.senses.get(name=SenseName.FLEET_OF_FOOT)
         assert character.senses.get(name=SenseName.MASK_OF_THE_WILD)
