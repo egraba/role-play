@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.views.generic import DetailView, ListView
 from formtools.wizard.views import SessionWizardView
 
-from ..character_builder import BaseBuilder, RaceBuilder, KlassBuilder
+from ..character_attributes_builders import BaseBuilder, RaceBuilder, KlassBuilder
 from ..forms.backgrounds import BackgroundForm
 from ..forms.character import CharacterCreateForm
 from ..forms.equipment import EquipmentSelectForm
