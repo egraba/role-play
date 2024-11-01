@@ -5,7 +5,12 @@ from django.http import HttpResponseRedirect
 from django.views.generic import DetailView, ListView
 from formtools.wizard.views import SessionWizardView
 
-from ..character_attributes_builders import BaseBuilder, RaceBuilder, KlassBuilder
+from ..character_attributes_builders import (
+    BaseBuilder,
+    RaceBuilder,
+    KlassBuilder,
+    BackgroundBuilder,
+)
 from ..forms.backgrounds import BackgroundForm
 from ..forms.character import CharacterCreateForm
 from ..forms.equipment import EquipmentSelectForm
@@ -74,7 +79,7 @@ class CharacterCreateView(LoginRequiredMixin, SessionWizardView):
                 for field in form.cleaned_data.keys():
                     character.skills.add(form.cleaned_data[field])
             elif isinstance(form, BackgroundForm):
-                pass
+                BackgroundBuilder(character).build()
             elif isinstance(form, EquipmentSelectForm):
                 pass
             else:

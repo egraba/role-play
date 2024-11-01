@@ -15,7 +15,6 @@ from character.forms.backgrounds import (
     _get_holy_symbols,
     _get_non_spoken_languages,
 )
-from character.forms.character import CharacterCreateForm
 from character.forms.equipment_choices_providers import (
     ClericEquipmentChoicesProvider,
     FighterEquipmentChoicesProvider,
@@ -609,37 +608,21 @@ class TestCharacterCreateView:
         )
         assert 40 <= character.inventory.gp <= 160
 
-    def test_character_creation_acolyte(self, client):
-        fake = Faker()
-        data = {
-            "name": f"{fake.name()}",
-            "race": f"{fake.enum(enum_cls=Race)}",
-            "klass": f"{fake.enum(enum_cls=Klass)}",
-            "background": f"{Background.ACOLYTE}",
-            "strength": AbilityScore.SCORE_10,
-            "dexterity": AbilityScore.SCORE_12,
-            "constitution": AbilityScore.SCORE_13,
-            "intelligence": AbilityScore.SCORE_14,
-            "wisdom": AbilityScore.SCORE_15,
-            "charisma": AbilityScore.SCORE_8,
-            "gender": f"{fake.enum(enum_cls=Gender)}",
-        }
-        form = CharacterCreateForm(data)
-        assert form.is_valid()
+    @pytest.fixture
+    def acolyte_form(self, character_form):
+        current_step = character_form["character_create_view-current_step"]
+        character_form[f"{current_step}-background"] = Background.ACOLYTE
+        return character_form
 
-        response = client.post(
-            reverse(self.path_name),
-            data=form.cleaned_data,
-        )
-        assert response.status_code == 302
-        character = Character.objects.last()
-        assertRedirects(response, reverse("skills-select", args=(character.id,)))
-
+    def test_acolyte_creation(
+        self, client, acolyte_form, skills_form, background_form, equipment_form
+    ):
+        form_list = [acolyte_form, skills_form, background_form, equipment_form]
+        character = self._create_character(client, form_list)
         SkillProficiency.objects.filter(
             Q(character=character, skill=Skill.objects.get(name=SkillName.INSIGHT))
             | Q(character=character, skill=Skill.objects.get(name=SkillName.RELIGION))
         )
-
         assert (
             character.personality_trait
             in BACKGROUNDS[Background.ACOLYTE]["personality_traits"].values()
@@ -648,37 +631,21 @@ class TestCharacterCreateView:
         assert character.bond in BACKGROUNDS[Background.ACOLYTE]["bonds"].values()
         assert character.flaw in BACKGROUNDS[Background.ACOLYTE]["flaws"].values()
 
-    def test_character_creation_criminal(self, client):
-        fake = Faker()
-        data = {
-            "name": f"{fake.name()}",
-            "race": f"{fake.enum(enum_cls=Race)}",
-            "klass": f"{fake.enum(enum_cls=Klass)}",
-            "background": f"{Background.CRIMINAL}",
-            "strength": AbilityScore.SCORE_10,
-            "dexterity": AbilityScore.SCORE_12,
-            "constitution": AbilityScore.SCORE_13,
-            "intelligence": AbilityScore.SCORE_14,
-            "wisdom": AbilityScore.SCORE_15,
-            "charisma": AbilityScore.SCORE_8,
-            "gender": f"{fake.enum(enum_cls=Gender)}",
-        }
-        form = CharacterCreateForm(data)
-        assert form.is_valid()
+    @pytest.fixture
+    def criminal_form(self, character_form):
+        current_step = character_form["character_create_view-current_step"]
+        character_form[f"{current_step}-background"] = Background.CRIMINAL
+        return character_form
 
-        response = client.post(
-            reverse(self.path_name),
-            data=form.cleaned_data,
-        )
-        assert response.status_code == 302
-        character = Character.objects.last()
-        assertRedirects(response, reverse("skills-select", args=(character.id,)))
-
+    def test_criminal_creation(
+        self, client, acolyte_form, skills_form, background_form, equipment_form
+    ):
+        form_list = [acolyte_form, skills_form, background_form, equipment_form]
+        character = self._create_character(client, form_list)
         SkillProficiency.objects.filter(
             Q(character=character, skill=Skill.objects.get(name=SkillName.DECEPTION))
             | Q(character=character, skill=Skill.objects.get(name=SkillName.STEALTH))
         )
-
         assert (
             character.personality_trait
             in BACKGROUNDS[Background.CRIMINAL]["personality_traits"].values()
@@ -687,32 +654,17 @@ class TestCharacterCreateView:
         assert character.bond in BACKGROUNDS[Background.CRIMINAL]["bonds"].values()
         assert character.flaw in BACKGROUNDS[Background.CRIMINAL]["flaws"].values()
 
-    def test_character_creation_folk_hero(self, client):
-        fake = Faker()
-        data = {
-            "name": f"{fake.name()}",
-            "race": f"{fake.enum(enum_cls=Race)}",
-            "klass": f"{fake.enum(enum_cls=Klass)}",
-            "background": f"{Background.FOLK_HERO}",
-            "strength": AbilityScore.SCORE_10,
-            "dexterity": AbilityScore.SCORE_12,
-            "constitution": AbilityScore.SCORE_13,
-            "intelligence": AbilityScore.SCORE_14,
-            "wisdom": AbilityScore.SCORE_15,
-            "charisma": AbilityScore.SCORE_8,
-            "gender": f"{fake.enum(enum_cls=Gender)}",
-        }
-        form = CharacterCreateForm(data)
-        assert form.is_valid()
+    @pytest.fixture
+    def folk_hero_form(self, character_form):
+        current_step = character_form["character_create_view-current_step"]
+        character_form[f"{current_step}-background"] = Background.FOLK_HERO
+        return character_form
 
-        response = client.post(
-            reverse(self.path_name),
-            data=form.cleaned_data,
-        )
-        assert response.status_code == 302
-        character = Character.objects.last()
-        assertRedirects(response, reverse("skills-select", args=(character.id,)))
-
+    def test_folk_hero_creation(
+        self, client, folk_hero_form, skills_form, background_form, equipment_form
+    ):
+        form_list = [folk_hero_form, skills_form, background_form, equipment_form]
+        character = self._create_character(client, form_list)
         SkillProficiency.objects.filter(
             Q(
                 character=character,
@@ -720,7 +672,6 @@ class TestCharacterCreateView:
             )
             | Q(character=character, skill=Skill.objects.get(name=SkillName.SURVIVAL))
         )
-
         assert (
             character.personality_trait
             in BACKGROUNDS[Background.FOLK_HERO]["personality_traits"].values()
@@ -729,37 +680,21 @@ class TestCharacterCreateView:
         assert character.bond in BACKGROUNDS[Background.FOLK_HERO]["bonds"].values()
         assert character.flaw in BACKGROUNDS[Background.FOLK_HERO]["flaws"].values()
 
-    def test_character_creation_noble(self, client):
-        fake = Faker()
-        data = {
-            "name": f"{fake.name()}",
-            "race": f"{fake.enum(enum_cls=Race)}",
-            "klass": f"{fake.enum(enum_cls=Klass)}",
-            "background": f"{Background.NOBLE}",
-            "strength": AbilityScore.SCORE_10,
-            "dexterity": AbilityScore.SCORE_12,
-            "constitution": AbilityScore.SCORE_13,
-            "intelligence": AbilityScore.SCORE_14,
-            "wisdom": AbilityScore.SCORE_15,
-            "charisma": AbilityScore.SCORE_8,
-            "gender": f"{fake.enum(enum_cls=Gender)}",
-        }
-        form = CharacterCreateForm(data)
-        assert form.is_valid()
+    @pytest.fixture
+    def noble_form(self, character_form):
+        current_step = character_form["character_create_view-current_step"]
+        character_form[f"{current_step}-background"] = Background.NOBLE
+        return character_form
 
-        response = client.post(
-            reverse(self.path_name),
-            data=form.cleaned_data,
-        )
-        assert response.status_code == 302
-        character = Character.objects.last()
-        assertRedirects(response, reverse("skills-select", args=(character.id,)))
-
+    def test_noble_creation(
+        self, client, folk_hero_form, skills_form, background_form, equipment_form
+    ):
+        form_list = [folk_hero_form, skills_form, background_form, equipment_form]
+        character = self._create_character(client, form_list)
         SkillProficiency.objects.filter(
             Q(character=character, skill=Skill.objects.get(name=SkillName.HISTORY))
             | Q(character=character, skill=Skill.objects.get(name=SkillName.PERSUASION))
         )
-
         assert (
             character.personality_trait
             in BACKGROUNDS[Background.NOBLE]["personality_traits"].values()
@@ -768,37 +703,21 @@ class TestCharacterCreateView:
         assert character.bond in BACKGROUNDS[Background.NOBLE]["bonds"].values()
         assert character.flaw in BACKGROUNDS[Background.NOBLE]["flaws"].values()
 
-    def test_character_creation_sage(self, client):
-        fake = Faker()
-        data = {
-            "name": f"{fake.name()}",
-            "race": f"{fake.enum(enum_cls=Race)}",
-            "klass": f"{fake.enum(enum_cls=Klass)}",
-            "background": f"{Background.SAGE}",
-            "strength": AbilityScore.SCORE_10,
-            "dexterity": AbilityScore.SCORE_12,
-            "constitution": AbilityScore.SCORE_13,
-            "intelligence": AbilityScore.SCORE_14,
-            "wisdom": AbilityScore.SCORE_15,
-            "charisma": AbilityScore.SCORE_8,
-            "gender": f"{fake.enum(enum_cls=Gender)}",
-        }
-        form = CharacterCreateForm(data)
-        assert form.is_valid()
+    @pytest.fixture
+    def sage_form(self, character_form):
+        current_step = character_form["character_create_view-current_step"]
+        character_form[f"{current_step}-background"] = Background.SAGE
+        return character_form
 
-        response = client.post(
-            reverse(self.path_name),
-            data=form.cleaned_data,
-        )
-        assert response.status_code == 302
-        character = Character.objects.last()
-        assertRedirects(response, reverse("skills-select", args=(character.id,)))
-
+    def test_sage_creation(
+        self, client, sage_form, skills_form, background_form, equipment_form
+    ):
+        form_list = [sage_form, skills_form, background_form, equipment_form]
+        character = self._create_character(client, form_list)
         SkillProficiency.objects.filter(
             Q(character=character, skill=Skill.objects.get(name=SkillName.ARCANA))
             | Q(character=character, skill=Skill.objects.get(name=SkillName.HISTORY))
         )
-
         assert (
             character.personality_trait
             in BACKGROUNDS[Background.SAGE]["personality_traits"].values()
@@ -807,32 +726,17 @@ class TestCharacterCreateView:
         assert character.bond in BACKGROUNDS[Background.SAGE]["bonds"].values()
         assert character.flaw in BACKGROUNDS[Background.SAGE]["flaws"].values()
 
-    def test_character_creation_soldier(self, client):
-        fake = Faker()
-        data = {
-            "name": f"{fake.name()}",
-            "race": f"{fake.enum(enum_cls=Race)}",
-            "klass": f"{fake.enum(enum_cls=Klass)}",
-            "background": f"{Background.SOLDIER}",
-            "strength": AbilityScore.SCORE_10,
-            "dexterity": AbilityScore.SCORE_12,
-            "constitution": AbilityScore.SCORE_13,
-            "intelligence": AbilityScore.SCORE_14,
-            "wisdom": AbilityScore.SCORE_15,
-            "charisma": AbilityScore.SCORE_8,
-            "gender": f"{fake.enum(enum_cls=Gender)}",
-        }
-        form = CharacterCreateForm(data)
-        assert form.is_valid()
+    @pytest.fixture
+    def soldier_form(self, character_form):
+        current_step = character_form["character_create_view-current_step"]
+        character_form[f"{current_step}-background"] = Background.SOLDIER
+        return character_form
 
-        response = client.post(
-            reverse(self.path_name),
-            data=form.cleaned_data,
-        )
-        assert response.status_code == 302
-        character = Character.objects.last()
-        assertRedirects(response, reverse("skills-select", args=(character.id,)))
-
+    def test_soldier_creation(
+        self, client, soldier_form, skills_form, background_form, equipment_form
+    ):
+        form_list = [soldier_form, skills_form, background_form, equipment_form]
+        character = self._create_character(client, form_list)
         SkillProficiency.objects.filter(
             Q(character=character, skill=Skill.objects.get(name=SkillName.ATHLETICS))
             | Q(
@@ -840,7 +744,6 @@ class TestCharacterCreateView:
                 skill=Skill.objects.get(name=SkillName.INTIMIDATION),
             )
         )
-
         assert (
             character.personality_trait
             in BACKGROUNDS[Background.SOLDIER]["personality_traits"].values()

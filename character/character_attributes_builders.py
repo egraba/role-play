@@ -204,3 +204,4 @@ class BackgroundBuilder:
         self._select_ideal()
         self._select_bond()
         self._select_flaw()
+        self.character.save()
