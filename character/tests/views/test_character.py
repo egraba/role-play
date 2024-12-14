@@ -6,6 +6,7 @@ from pytest_django.asserts import assertContains, assertRedirects, assertTemplat
 
 from character.constants.abilities import AbilityName, AbilityScore
 from character.constants.backgrounds import BACKGROUNDS, Background
+from character.constants.equipment import ArmorName, GearName, ToolName, WeaponName
 from character.constants.character import Gender
 from character.constants.races import LanguageName, Race, SenseName
 from character.constants.skills import SkillName
@@ -532,6 +533,13 @@ class TestCharacterCreateView:
             )
         )
         assert 50 <= character.inventory.gp <= 200
+        inventory = character.inventory
+        assert inventory.contains(equipment_form["3-first_weapon"])
+        assert inventory.contains(equipment_form["3-second_weapon"])
+        assert inventory.contains(equipment_form["3-armor"])
+        assert inventory.contains(equipment_form["3-gear"])
+        assert inventory.contains(equipment_form["3-pack"])
+        assert inventory.contains(ArmorName.SHIELD)
 
     @pytest.fixture
     def fighter_form(self, character_form):
@@ -557,6 +565,16 @@ class TestCharacterCreateView:
             )
         )
         assert 50 <= character.inventory.gp <= 200
+        inventory = character.inventory
+        # First weapon
+        assert (
+            inventory.contains(ArmorName.CHAIN_MAIL)
+            or inventory.contains(ArmorName.LEATHER)
+            and inventory.contains(WeaponName.LONGBOW)
+        )
+        assert inventory.contains(equipment_form["3-second_weapon"])
+        assert inventory.contains(equipment_form["3-third_weapon"])
+        assert inventory.contains(equipment_form["3-pack"])
 
     @pytest.fixture
     def rogue_form(self, character_form):
@@ -582,6 +600,13 @@ class TestCharacterCreateView:
             )
         )
         assert 40 <= character.inventory.gp <= 160
+        inventory = character.inventory
+        assert inventory.contains(equipment_form["3-first_weapon"])
+        assert inventory.contains(equipment_form["3-second_weapon"])
+        assert inventory.contains(equipment_form["3-pack"])
+        assert inventory.contains(ArmorName.LEATHER)
+        assert inventory.contains(WeaponName.DAGGER, 2)
+        assert inventory.contains(ToolName.THIEVES_TOOLS)
 
     @pytest.fixture
     def wizard_form(self, character_form):
@@ -607,6 +632,11 @@ class TestCharacterCreateView:
             )
         )
         assert 40 <= character.inventory.gp <= 160
+        inventory = character.inventory
+        assert inventory.contains(equipment_form["3-first_weapon"])
+        assert inventory.contains(equipment_form["3-gear"])
+        assert inventory.contains(equipment_form["3-pack"])
+        assert inventory.contains(GearName.SPELLBOOK)
 
     @pytest.fixture
     def acolyte_form(self, character_form):

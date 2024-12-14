@@ -1,3 +1,4 @@
+import re
 from enum import StrEnum
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -6,16 +7,20 @@ from django.views.generic import DetailView, ListView
 from formtools.wizard.views import SessionWizardView
 
 from ..character_attributes_builders import (
-    BaseBuilder,
-    RaceBuilder,
-    KlassBuilder,
     BackgroundBuilder,
+    BaseBuilder,
+    KlassBuilder,
+    RaceBuilder,
 )
+from ..constants.equipment import ArmorName, GearName, ToolName, WeaponName
 from ..forms.backgrounds import BackgroundForm
 from ..forms.character import CharacterCreateForm
 from ..forms.equipment import EquipmentSelectForm
 from ..forms.skills import SkillsSelectForm
 from ..models.character import Character
+from ..models.klasses import Klass
+
+MULTI_EQUIPMENT_REGEX = r"\S+\s&\s\S+"
 
 
 class CharacterDetailView(LoginRequiredMixin, DetailView):
@@ -81,7 +86,36 @@ class CharacterCreateView(LoginRequiredMixin, SessionWizardView):
             elif isinstance(form, BackgroundForm):
                 BackgroundBuilder(character).build()
             elif isinstance(form, EquipmentSelectForm):
-                pass
+                inventory = character.inventory
+                for field in form.cleaned_data.keys():
+                    # KeyError exception is caught because the form is different per class.
+                    try:
+                        equipment_name = form.cleaned_data[field]
+                        # If the field is under the form "equipment_name1 & equipment_name2",
+                        # each equipment must be added separately.
+                        if re.match(MULTI_EQUIPMENT_REGEX, equipment_name):
+                            names = equipment_name.split(" & ")
+                            for name in names:
+                                inventory.add(name)
+                        else:
+                            inventory.add(equipment_name)
+                    except KeyError:
+                        pass
+                # Some equipment is added without selection, depending on character's class.
+                match character.klass:
+                    case Klass.CLERIC:
+                        inventory.add(WeaponName.CROSSBOW_LIGHT)
+                        inventory.add(GearName.CROSSBOW_BOLTS)
+                        inventory.add(ArmorName.SHIELD)
+                    case Klass.ROGUE:
+                        inventory.add(WeaponName.SHORTBOW)
+                        inventory.add(GearName.QUIVER)
+                        inventory.add(ArmorName.LEATHER)
+                        inventory.add(WeaponName.DAGGER)
+                        inventory.add(WeaponName.DAGGER)
+                        inventory.add(ToolName.THIEVES_TOOLS)
+                    case Klass.WIZARD:
+                        inventory.add(GearName.SPELLBOOK)
             else:
                 raise NotImplementedError(f"{form=} is not implemented")
         return HttpResponseRedirect(character.get_absolute_url())
