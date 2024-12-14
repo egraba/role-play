@@ -413,9 +413,9 @@ class TestCharacterCreateView:
         assert character.senses.get(name=SenseName.DWARVEN_TOUGHNESS)
 
     def test_mountain_dwarf_creation(
-        self, client, moutain_dwarf_form, skills_form, background_form, equipment_form
+        self, client, mountain_dwarf_form, skills_form, background_form, equipment_form
     ):
-        form_list = [moutain_dwarf_form, skills_form, background_form, equipment_form]
+        form_list = [mountain_dwarf_form, skills_form, background_form, equipment_form]
         character = self._create_character(client, form_list)
         assert 4 < character.height <= 4 + 2 * 4 / 12
         assert 130 < character.weight <= 130 + 2 * 6 * 12
