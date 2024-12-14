@@ -9,8 +9,9 @@ from character.forms.equipment_choices_providers import (
 )
 from utils.converters import duplicate_choice
 
+pytestmark = pytest.mark.django_db
 
-@pytest.mark.django_db
+
 class TestClericEquipmentChoicesProvider:
     def test_get_first_weapon_choices(self):
         equipment_provider = ClericEquipmentChoicesProvider()
@@ -42,8 +43,7 @@ class TestClericEquipmentChoicesProvider:
 
     def test_get_third_weapon_choices(self):
         equipment_provider = ClericEquipmentChoicesProvider()
-        with pytest.raises(NotImplementedError):
-            equipment_provider.get_third_weapon_choices()
+        assert equipment_provider.get_third_weapon_choices() is None
 
     def test_get_armor_choices(self):
         equipment_provider = ClericEquipmentChoicesProvider()
@@ -72,7 +72,6 @@ class TestClericEquipmentChoicesProvider:
         }
 
 
-@pytest.mark.django_db
 class TestFighterEquipmentChoicesProvider:
     def test_get_first_weapon_choices(self):
         equipment_provider = FighterEquipmentChoicesProvider()
@@ -121,13 +120,11 @@ class TestFighterEquipmentChoicesProvider:
 
     def test_get_armor_choices(self):
         equipment_provider = FighterEquipmentChoicesProvider()
-        with pytest.raises(NotImplementedError):
-            equipment_provider.get_armor_choices()
+        assert equipment_provider.get_armor_choices() is None
 
     def test_get_gear_choices(self):
         equipment_provider = FighterEquipmentChoicesProvider()
-        with pytest.raises(NotImplementedError):
-            equipment_provider.get_gear_choices()
+        assert equipment_provider.get_gear_choices() is None
 
     def test_get_pack_choices(self):
         equipment_provider = FighterEquipmentChoicesProvider()
@@ -138,7 +135,6 @@ class TestFighterEquipmentChoicesProvider:
         }
 
 
-@pytest.mark.django_db
 class TestRogueEquipmentChoicesProvider:
     def test_get_first_weapon_choices(self):
         equipment_provider = RogueEquipmentChoicesProvider()
@@ -158,18 +154,15 @@ class TestRogueEquipmentChoicesProvider:
 
     def test_get_third_weapon_choices(self):
         equipment_provider = RogueEquipmentChoicesProvider()
-        with pytest.raises(NotImplementedError):
-            equipment_provider.get_third_weapon_choices()
+        assert equipment_provider.get_third_weapon_choices() is None
 
     def test_get_armor_choices(self):
         equipment_provider = RogueEquipmentChoicesProvider()
-        with pytest.raises(NotImplementedError):
-            equipment_provider.get_armor_choices()
+        assert equipment_provider.get_armor_choices() is None
 
     def test_get_gear_choices(self):
         equipment_provider = RogueEquipmentChoicesProvider()
-        with pytest.raises(NotImplementedError):
-            equipment_provider.get_gear_choices()
+        assert equipment_provider.get_gear_choices() is None
 
     def test_get_pack_choices(self):
         equipment_provider = RogueEquipmentChoicesProvider()
@@ -181,7 +174,6 @@ class TestRogueEquipmentChoicesProvider:
         }
 
 
-@pytest.mark.django_db
 class TestWizardEquipmentChoicesProvider:
     def test_get_first_weapon_choices(self):
         equipment_provider = WizardEquipmentChoicesProvider()
@@ -193,18 +185,15 @@ class TestWizardEquipmentChoicesProvider:
 
     def test_get_second_weapon_choices(self):
         equipment_provider = WizardEquipmentChoicesProvider()
-        with pytest.raises(NotImplementedError):
-            equipment_provider.get_second_weapon_choices()
+        assert equipment_provider.get_second_weapon_choices() is None
 
     def test_get_third_weapon_choices(self):
         equipment_provider = WizardEquipmentChoicesProvider()
-        with pytest.raises(NotImplementedError):
-            equipment_provider.get_third_weapon_choices()
+        assert equipment_provider.get_third_weapon_choices() is None
 
     def test_get_armor_choices(self):
         equipment_provider = WizardEquipmentChoicesProvider()
-        with pytest.raises(NotImplementedError):
-            equipment_provider.get_armor_choices()
+        assert equipment_provider.get_armor_choices() is None
 
     def test_get_gear_choices(self):
         equipment_provider = WizardEquipmentChoicesProvider()
