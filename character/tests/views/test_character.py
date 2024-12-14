@@ -316,6 +316,7 @@ class TestCharacterCreateView:
                         )
                     }
                 )
+        print(data)
         return data
 
     @pytest.fixture
@@ -353,6 +354,7 @@ class TestCharacterCreateView:
         for field in fields:
             if field in field_list:
                 data[f"{current_step}-{field}"] = fields[field]
+        print(data)
         return data
 
     def _create_character(self, client, form_list):
@@ -638,9 +640,9 @@ class TestCharacterCreateView:
         return character_form
 
     def test_criminal_creation(
-        self, client, acolyte_form, skills_form, background_form, equipment_form
+        self, client, criminal_form, skills_form, background_form, equipment_form
     ):
-        form_list = [acolyte_form, skills_form, background_form, equipment_form]
+        form_list = [criminal_form, skills_form, background_form, equipment_form]
         character = self._create_character(client, form_list)
         SkillProficiency.objects.filter(
             Q(character=character, skill=Skill.objects.get(name=SkillName.DECEPTION))
@@ -687,9 +689,9 @@ class TestCharacterCreateView:
         return character_form
 
     def test_noble_creation(
-        self, client, folk_hero_form, skills_form, background_form, equipment_form
+        self, client, noble_form, skills_form, background_form, equipment_form
     ):
-        form_list = [folk_hero_form, skills_form, background_form, equipment_form]
+        form_list = [noble_form, skills_form, background_form, equipment_form]
         character = self._create_character(client, form_list)
         SkillProficiency.objects.filter(
             Q(character=character, skill=Skill.objects.get(name=SkillName.HISTORY))
