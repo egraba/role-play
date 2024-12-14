@@ -316,7 +316,6 @@ class TestCharacterCreateView:
                         )
                     }
                 )
-        print(data)
         return data
 
     @pytest.fixture
@@ -354,7 +353,6 @@ class TestCharacterCreateView:
         for field in fields:
             if field in field_list:
                 data[f"{current_step}-{field}"] = fields[field]
-        print(data)
         return data
 
     def _create_character(self, client, form_list):

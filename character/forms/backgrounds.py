@@ -70,26 +70,32 @@ class BackgroundForm(forms.Form):
             choices=_get_non_spoken_languages(race),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
-        all_fields["equipment"] = forms.ChoiceField(
+        all_fields["equipment_holy_symbols"] = forms.ChoiceField(
             choices=_get_holy_symbols(),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
-        all_fields["tool_proficiency_artisans"] = forms.ChoiceField(
+        all_fields["equipment_artisans_tools"] = forms.ChoiceField(
             choices=_get_artisans_tools(),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
-        all_fields["tool_proficiency_gaming_set"] = forms.ChoiceField(
+        all_fields["tool_proficiency_artisans_tools"] = forms.ChoiceField(
+            choices=_get_artisans_tools(),
+            widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
+        )
+        all_fields["tool_proficiency_gaming_set_tools"] = forms.ChoiceField(
             choices=_get_gaming_set_tools(),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
         match background:
             case Background.ACOLYTE:
                 fields = ["first_language", "second_language", "equipment"]
+                equipment_type = GearType.HOLY_SYMBOL
             case Background.CRIMINAL:
                 fields = ["tool_proficiency"]
                 tool_type = ToolType.GAMING_SET
             case Background.FOLK_HERO:
                 fields = ["tool_proficiency", "equipment"]
+                equipment_type = ToolType.ARTISANS_TOOLS
                 tool_type = ToolType.ARTISANS_TOOLS
             case Background.NOBLE:
                 fields = ["language", "tool_proficiency"]
@@ -100,11 +106,21 @@ class BackgroundForm(forms.Form):
                 fields = ["tool_proficiency"]
                 tool_type = ToolType.GAMING_SET
         for field in fields:
-            if field == "tool_proficiency":
+            if field == "equipment":
+                match equipment_type:
+                    case GearType.HOLY_SYMBOL:
+                        self.fields[field] = all_fields["equipment_holy_symbols"]
+                    case ToolType.ARTISANS_TOOLS:
+                        self.fields[field] = all_fields["equipment_artisans_tools"]
+            elif field == "tool_proficiency":
                 match tool_type:
                     case ToolType.ARTISANS_TOOLS:
-                        self.fields[field] = all_fields["tool_proficiency_artisans"]
+                        self.fields[field] = all_fields[
+                            "tool_proficiency_artisans_tools"
+                        ]
                     case ToolType.GAMING_SET:
-                        self.fields[field] = all_fields["tool_proficiency_gaming_set"]
+                        self.fields[field] = all_fields[
+                            "tool_proficiency_gaming_set_tools"
+                        ]
             else:
                 self.fields[field] = all_fields[field]
