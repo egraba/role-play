@@ -8,14 +8,17 @@ from ..models.equipment import GearSettings, ToolSettings
 
 def _get_non_spoken_languages(race: Race) -> set[tuple[str, str]]:
     """
-    Return the set of language names a character does not speak.
+    Return the set of language names without the languages spoken by the race given as parameter.
     """
-    languages = LanguageName.choices
-    character_languages = RACIAL_TRAITS[race]
+    all_languages = LanguageName.choices
+    race_languages = {
+        (language.value, language.label)
+        for language in RACIAL_TRAITS[race]["languages"]
+    }
     return {
         (language[0], language[1])
-        for language in languages
-        if language not in character_languages
+        for language in all_languages
+        if language not in race_languages
     }
 
 

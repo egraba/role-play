@@ -1,8 +1,7 @@
 import pytest
-from faker import Faker
 
 from character.constants.equipment import GearType, ToolType
-from character.constants.races import LanguageName
+from character.constants.races import RACIAL_TRAITS
 from character.forms.backgrounds import (
     _get_artisans_tools,
     _get_gaming_set_tools,
@@ -19,20 +18,17 @@ pytestmark = pytest.mark.django_db
 
 def test_get_non_spoken_languages():
     character = CharacterFactory()
-    fake = Faker()
-    character.languages.add(Language.objects.get(name=fake.enum(enum_cls=LanguageName)))
-    character.languages.add(Language.objects.get(name=fake.enum(enum_cls=LanguageName)))
-    character_languages = {
-        (language.name, language.get_name_display())
-        for language in character.languages.all()
+    race_languages = {
+        (language.value, language.label)
+        for language in RACIAL_TRAITS[character.race]["languages"]
     }
-    language_choices = _get_non_spoken_languages(character)
-    assert character_languages & language_choices == set()
-    languages = {
+    language_choices = _get_non_spoken_languages(character.race)
+    assert race_languages & language_choices == set()
+    all_languages = {
         (language.name, language.get_name_display())
         for language in Language.objects.all()
     }
-    assert language_choices < languages
+    assert language_choices < all_languages
 
 
 def test_get_holy_symbols():
