@@ -325,29 +325,29 @@ class TestCharacterCreateView:
         current_step = CharacterCreateView.Step.EQUIPMENT_SELECTION
         match character_form[klass_key]:
             case Klass.CLERIC:
-                equipment_manager = ClericEquipmentChoicesProvider()
+                choices_provider = ClericEquipmentChoicesProvider()
                 field_list = ["first_weapon", "second_weapon", "armor", "gear", "pack"]
             case Klass.FIGHTER:
-                equipment_manager = FighterEquipmentChoicesProvider()
+                choices_provider = FighterEquipmentChoicesProvider()
                 field_list = ["first_weapon", "second_weapon", "third_weapon", "pack"]
             case Klass.ROGUE:
-                equipment_manager = RogueEquipmentChoicesProvider()
+                choices_provider = RogueEquipmentChoicesProvider()
                 field_list = ["first_weapon", "second_weapon", "pack"]
             case Klass.WIZARD:
-                equipment_manager = WizardEquipmentChoicesProvider()
+                choices_provider = WizardEquipmentChoicesProvider()
                 field_list = ["first_weapon", "gear", "pack"]
         fields = {}
-        if first_weapon_choices := equipment_manager.get_first_weapon_choices():
+        if first_weapon_choices := choices_provider.get_first_weapon_choices():
             fields["first_weapon"] = fake.random_element(first_weapon_choices)[1]
-        if second_weapon_choices := equipment_manager.get_second_weapon_choices():
+        if second_weapon_choices := choices_provider.get_second_weapon_choices():
             fields["second_weapon"] = fake.random_element(second_weapon_choices)[1]
-        if third_weapon_choices := equipment_manager.get_third_weapon_choices():
+        if third_weapon_choices := choices_provider.get_third_weapon_choices():
             fields["third_weapon"] = fake.random_element(third_weapon_choices)[1]
-        if armor_choices := equipment_manager.get_armor_choices():
+        if armor_choices := choices_provider.get_armor_choices():
             fields["armor"] = fake.random_element(armor_choices)[1]
-        if gear_choices := equipment_manager.get_gear_choices():
+        if gear_choices := choices_provider.get_gear_choices():
             fields["gear"] = fake.random_element(gear_choices)[1]
-        if pack_choices := equipment_manager.get_pack_choices():
+        if pack_choices := choices_provider.get_pack_choices():
             fields["pack"] = fake.random_element(pack_choices)[1]
         data = {"character_create_view-current_step": current_step}
         for field in fields:

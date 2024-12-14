@@ -15,40 +15,40 @@ class EquipmentSelectForm(forms.Form):
         klass = self.initial["klass"]
         match klass:
             case Klass.CLERIC:
-                provider = ClericEquipmentChoicesProvider()
+                choices_provider = ClericEquipmentChoicesProvider()
                 fields = ["first_weapon", "second_weapon", "armor", "gear", "pack"]
             case Klass.FIGHTER:
-                provider = FighterEquipmentChoicesProvider()
+                choices_provider = FighterEquipmentChoicesProvider()
                 fields = ["first_weapon", "second_weapon", "third_weapon", "pack"]
             case Klass.ROGUE:
-                provider = RogueEquipmentChoicesProvider()
+                choices_provider = RogueEquipmentChoicesProvider()
                 fields = ["first_weapon", "second_weapon", "pack"]
             case Klass.WIZARD:
-                provider = WizardEquipmentChoicesProvider()
+                choices_provider = WizardEquipmentChoicesProvider()
                 fields = ["first_weapon", "gear", "pack"]
         all_fields = {}
         all_fields["first_weapon"] = forms.ChoiceField(
-            choices=provider.get_first_weapon_choices(),
+            choices=choices_provider.get_first_weapon_choices(),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
         all_fields["second_weapon"] = forms.ChoiceField(
-            choices=provider.get_second_weapon_choices(),
+            choices=choices_provider.get_second_weapon_choices(),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
         all_fields["third_weapon"] = forms.ChoiceField(
-            choices=provider.get_third_weapon_choices(),
+            choices=choices_provider.get_third_weapon_choices(),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
         all_fields["armor"] = forms.ChoiceField(
-            choices=provider.get_armor_choices(),
+            choices=choices_provider.get_armor_choices(),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
         all_fields["gear"] = forms.ChoiceField(
-            choices=provider.get_gear_choices(),
+            choices=choices_provider.get_gear_choices(),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
         all_fields["pack"] = forms.ChoiceField(
-            choices=provider.get_pack_choices(),
+            choices=choices_provider.get_pack_choices(),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
         for field in fields:
