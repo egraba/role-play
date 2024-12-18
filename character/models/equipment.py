@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import TextChoices
 
 from ..constants.abilities import AbilityName
 from ..constants.equipment import (
@@ -78,64 +79,64 @@ class Inventory(models.Model):
                 character=self.character, ability_type__name=AbilityName.DEXTERITY
             )
 
-    def _add_armor(self, name: str) -> None:
+    def _add_armor(self, equipment_name: TextChoices) -> None:
         armor = Armor.objects.create(
-            settings=ArmorSettings.objects.get(name=name), inventory=self
+            settings=ArmorSettings.objects.get(name=equipment_name), inventory=self
         )
         self._compute_ac(armor)
         self._reduce_speed(armor)
 
-    def _add_weapon(self, name: str) -> None:
+    def _add_weapon(self, equipment_name: TextChoices) -> None:
         Weapon.objects.create(
-            settings=WeaponSettings.objects.get(name=name), inventory=self
+            settings=WeaponSettings.objects.get(name=equipment_name), inventory=self
         )
 
-    def _add_pack(self, name: str) -> None:
+    def _add_pack(self, equipment_name: TextChoices) -> None:
         Pack.objects.create(
-            settings=PackSettings.objects.get(name=name), inventory=self
+            settings=PackSettings.objects.get(name=equipment_name), inventory=self
         )
 
-    def _add_gear(self, name: str) -> None:
+    def _add_gear(self, equipment_name: TextChoices) -> None:
         Gear.objects.create(
-            settings=GearSettings.objects.get(name=name), inventory=self
+            settings=GearSettings.objects.get(name=equipment_name), inventory=self
         )
 
-    def _add_tool(self, name: str) -> None:
+    def _add_tool(self, equipment_name: TextChoices) -> None:
         Tool.objects.create(
-            settings=ToolSettings.objects.get(name=name), inventory=self
+            settings=ToolSettings.objects.get(name=equipment_name), inventory=self
         )
 
-    def add(self, name: str) -> None:
+    def add(self, equipment_name: TextChoices) -> None:
         """
         Add an equipment to the inventory.
         """
-        if name in ArmorName.values:
-            self._add_armor(name)
-        elif name in WeaponName.values:
-            self._add_weapon(name)
-        elif name in PackName.values:
-            self._add_pack(name)
-        elif name in GearName.values:
-            self._add_gear(name)
-        elif name in ToolName.values:
-            self._add_tool(name)
+        if equipment_name in ArmorName.values:
+            self._add_armor(equipment_name)
+        elif equipment_name in WeaponName.values:
+            self._add_weapon(equipment_name)
+        elif equipment_name in PackName.values:
+            self._add_pack(equipment_name)
+        elif equipment_name in GearName.values:
+            self._add_gear(equipment_name)
+        elif equipment_name in ToolName.values:
+            self._add_tool(equipment_name)
         else:
             raise EquipmentDoesNotExist
 
-    def contains(self, name: str, quantity: int = 1) -> bool:
+    def contains(self, equipment_name: TextChoices, quantity: int = 1) -> bool:
         """
         Check if the inventory contains an equipment, with at least
         the specified quantity.
         """
-        if self.armor_set.filter(settings__name=name).count() >= quantity:
+        if self.armor_set.filter(settings__name=equipment_name).count() >= quantity:
             return True
-        if self.weapon_set.filter(settings__name=name).count() >= quantity:
+        if self.weapon_set.filter(settings__name=equipment_name).count() >= quantity:
             return True
-        if self.pack_set.filter(settings__name=name).count() >= quantity:
+        if self.pack_set.filter(settings__name=equipment_name).count() >= quantity:
             return True
-        if self.gear_set.filter(settings__name=name).count() >= quantity:
+        if self.gear_set.filter(settings__name=equipment_name).count() >= quantity:
             return True
-        if self.tool_set.filter(settings__name=name).count() >= quantity:
+        if self.tool_set.filter(settings__name=equipment_name).count() >= quantity:
             return True
         return False
 
