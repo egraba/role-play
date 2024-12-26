@@ -2,7 +2,7 @@
 
 Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<patch>`).
 
-## Unreleased
+## v0.11.0 - 2024-08-16
 
 ## Added
 * Characters' attributes are now accessible by properties
