@@ -2,6 +2,11 @@
 
 Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<patch>`).
 
+## Unreleased
+
+### Changed
+* Replace `poetry` by `uv` as package manager
+
 ## v0.11.0 - 2024-08-16
 
 ### Added
