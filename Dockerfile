@@ -17,7 +17,7 @@ WORKDIR /code
 
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 COPY pyproject.toml uv.lock /code/
-RUN uv sync
+RUN uv sync --frozen --no-install-project --no-dev
 COPY . /code
 
 EXPOSE 8000
