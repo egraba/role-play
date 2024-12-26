@@ -1,6 +1,4 @@
-ARG PYTHON_VERSION=3.11-slim
-
-FROM python:${PYTHON_VERSION}
+FROM ghcr.io/astral-sh/uv:python3.11-bookworm-slim
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
