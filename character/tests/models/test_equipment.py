@@ -1,8 +1,9 @@
+from django.db.models import TextChoices
 import pytest
 from faker import Faker
 
 from character.constants.abilities import AbilityName
-from character.constants.equipment import ArmorName
+from character.constants.equipment import ArmorName, ToolName
 from character.models.equipment import (
     ArmorSettings,
     GearSettings,
@@ -19,7 +20,6 @@ from ..factories import (
     GearFactory,
     InventoryFactory,
     PackFactory,
-    ToolFactory,
     WeaponFactory,
 )
 
@@ -163,13 +163,16 @@ class TestInventoryModel:
         assert self.inventory.contains(gear.settings.name)
 
     def test_contains_tool(self):
-        tool = ToolFactory()
-        self.inventory.tool_set.add(tool)
-        assert self.inventory.contains(tool.settings.name)
+        fake = Faker()
+        tool_name = fake.enum(enum_cls=ToolName)
+        self.inventory.add(tool_name)
+        assert self.inventory.contains(tool_name)
 
     def test_contains_unkown_equipment(self):
-        fake = Faker()
-        assert not self.inventory.contains(fake.pystr())
+        class UnknownEquipment(TextChoices):
+            UNKNOWN_EQUIPMENT = "unknown_equipment", "Unknown equipment"
+
+        assert not self.inventory.contains(UnknownEquipment.UNKNOWN_EQUIPMENT)
 
     def test_contains_below_quantity(self):
         weapon = WeaponFactory()
