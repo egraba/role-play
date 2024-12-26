@@ -9,6 +9,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * App is now deployable on Fly.io
 
 ### Changed
+* `scrypt` is now the default password hasher
 * Characters are now created via a wizard form
 * Improve combat inittiative task management
 * Simplify settings per environment
