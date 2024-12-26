@@ -15,10 +15,9 @@ RUN mkdir -p /code
 
 WORKDIR /code
 
-RUN pip install poetry
-COPY pyproject.toml poetry.lock /code/
-RUN poetry config virtualenvs.create false
-RUN poetry install --only main --no-root --no-interaction
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+COPY pyproject.toml uv.lock /code/
+RUN uv sync
 COPY . /code
 
 EXPOSE 8000
