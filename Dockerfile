@@ -1,6 +1,4 @@
-ARG PYTHON_VERSION=3.11-slim
-
-FROM python:${PYTHON_VERSION}
+FROM ghcr.io/astral-sh/uv:python3.11-bookworm-slim
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
@@ -15,10 +13,9 @@ RUN mkdir -p /code
 
 WORKDIR /code
 
-RUN pip install poetry
-COPY pyproject.toml poetry.lock /code/
-RUN poetry config virtualenvs.create false
-RUN poetry install --only main --no-root --no-interaction
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+COPY pyproject.toml uv.lock /code/
+RUN uv sync --frozen --no-install-project --no-dev
 COPY . /code
 
 EXPOSE 8000

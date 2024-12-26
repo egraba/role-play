@@ -2,58 +2,57 @@
 plugins = ['django_coverage_plugin']
 omit = ["manage.py", "tasks/*"]
 
-[tool.poetry]
-name = "role-play"
-version = "0.11.0"
-description = "Role playing game."
-authors = ["Eric Grabarczyk <eric.grabarczyk@gmail.com>"]
-license = "GNU Affero General Public License v3.0"
-readme = "README.md"
-packages = [{ include = "role_play" }]
-
-[tool.poetry.dependencies]
-python = "^3.11"
-async-timeout = "*"
-celery = "*"
-channels = "*"
-channels-redis = "*"
-daphne = "*"
-dice = "*"
-dj-database-url = "*"
-django = "~=5.1"
-django-celery-beat = "*"
-django-extensions = "*"
-django-formtools = "*"
-django-model-utils = "*"
-django-viewflow = "*"
-email-validator = "*"
-gunicorn = "*"
-invoke = "*"
-psycopg = { extras = ["binary"], version = "*" }
-pydantic = "*"
-pyyaml = "*"
-redis = "*"
-whitenoise = "*"
-
-[tool.poetry.group.dev.dependencies]
-coverage = "*"
-django-coverage-plugin = "*"
-django-debug-toolbar = "*"
-factory_boy = "*"
-faker = "*"
-freezegun = "*"
-pre-commit = "*"
-pytest = "*"
-pytest-asyncio = "*"
-pytest-dependency = "*"
-pytest-django = "*"
-
 [tool.ruff]
 exclude = ["role_play/asgi.py", "role_play/urls.py", "role_play/settings/*"]
 
 [tool.pytest.ini_options]
 python_files = ["test_*.py", "*_test.py", "testing/python/*.py"]
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[project]
+authors = [
+    {name = "Eric Grabarczyk", email = "eric.grabarczyk@gmail.com"},
+]
+license = {text = "GNU Affero General Public License v3.0"}
+requires-python = "<4.0,>=3.11"
+dependencies = [
+    "async-timeout",
+    "celery",
+    "channels",
+    "channels-redis",
+    "daphne",
+    "dice",
+    "dj-database-url",
+    "django~=5.1",
+    "django-celery-beat",
+    "django-extensions",
+    "django-formtools",
+    "django-model-utils",
+    "django-viewflow",
+    "email-validator",
+    "gunicorn",
+    "invoke",
+    "psycopg[binary]",
+    "pydantic",
+    "pyyaml",
+    "redis",
+    "whitenoise",
+]
+name = "role-play"
+version = "0.11.0"
+description = "Role playing game."
+readme = "README.md"
+
+[dependency-groups]
+dev = [
+    "coverage",
+    "django-coverage-plugin",
+    "django-debug-toolbar",
+    "factory-boy",
+    "faker",
+    "freezegun",
+    "pre-commit",
+    "pytest",
+    "pytest-asyncio",
+    "pytest-dependency",
+    "pytest-django",
+]
