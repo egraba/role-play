@@ -128,19 +128,33 @@ class Inventory(models.Model):
         Check if the inventory contains an equipment, with at least
         the specified quantity.
         """
-        if self.armor_set.filter(settings__name=equipment_name).count() >= quantity:
-            return True
-        if self.weapon_set.filter(settings__name=equipment_name).count() >= quantity:
-            return True
-        if self.pack_set.filter(settings__name=equipment_name).count() >= quantity:
-            return True
-        if self.gear_set.filter(settings__name=equipment_name).count() >= quantity:
-            return True
-        if (
-            self.tool_set.filter(settings__name=equipment_name.label).count()
-            >= quantity
-        ):
-            return True
+        # The number of equipment must be superior to 0, before checking the quantity.
+        # It avoids to loop through all equipment types.
+        nb_equipment = self.armor_set.filter(settings__name=equipment_name).count()
+        if nb_equipment:
+            if nb_equipment >= quantity:
+                return True
+            return False
+        nb_equipment = self.weapon_set.filter(settings__name=equipment_name).count()
+        if nb_equipment:
+            if nb_equipment >= quantity:
+                return True
+            return False
+        nb_equipment = self.pack_set.filter(settings__name=equipment_name).count()
+        if nb_equipment:
+            if nb_equipment >= quantity:
+                return True
+            return False
+        nb_equipment = self.gear_set.filter(settings__name=equipment_name).count()
+        if nb_equipment:
+            if nb_equipment >= quantity:
+                return True
+            return False
+        nb_equipment = self.tool_set.filter(settings__name=equipment_name.label).count()
+        if nb_equipment:
+            if nb_equipment >= quantity:
+                return True
+            return False
         return False
 
 
