@@ -2,10 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.views.generic import FormView
 
-from ..forms.skills import ExtendedSkillsSelectForm, SkillsSelectForm
-from ..models.klasses import Klass
 from .mixins import CharacterContextMixin
-from ..flows import CreationFlow
 
 
 class SkillsSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
@@ -13,18 +10,6 @@ class SkillsSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
 
     def get_success_url(self):
         return reverse("background-complete", args=(self.character.id,))
-
-    def get_form_class(self):
-        match self.character.klass:
-            case Klass.CLERIC:
-                form_class = SkillsSelectForm
-            case Klass.FIGHTER:
-                form_class = SkillsSelectForm
-            case Klass.ROGUE:
-                form_class = ExtendedSkillsSelectForm
-            case Klass.WIZARD:
-                form_class = SkillsSelectForm
-        return form_class
 
     def get_initial(self):
         return {"klass": self.character.klass}
@@ -44,5 +29,4 @@ class SkillsSelectView(LoginRequiredMixin, CharacterContextMixin, FormView):
             self.character.skills.add(fourth_skill)
         except KeyError:
             pass
-        CreationFlow(self.character).complete_background()
         return super().form_valid(form)

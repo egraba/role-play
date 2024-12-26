@@ -2,16 +2,24 @@ import pytest
 from django import forms
 
 from character.constants.klasses import Klass
-from character.forms.skills import SkillsSelectForm
+from character.forms.equipment import EquipmentSelectForm
+
+pytestmark = pytest.mark.django_db
 
 
 @pytest.fixture
 def cleric_form():
-    return SkillsSelectForm(initial={"klass": Klass.CLERIC})
+    return EquipmentSelectForm(initial={"klass": Klass.CLERIC})
 
 
 def test_cleric_fields_presence(cleric_form):
-    assert list(cleric_form.fields) == ["first_skill", "second_skill"]
+    assert list(cleric_form.fields) == [
+        "first_weapon",
+        "second_weapon",
+        "armor",
+        "gear",
+        "pack",
+    ]
 
 
 def test_cleric_fields_type(cleric_form):
@@ -21,11 +29,16 @@ def test_cleric_fields_type(cleric_form):
 
 @pytest.fixture
 def fighter_form():
-    return SkillsSelectForm(initial={"klass": Klass.FIGHTER})
+    return EquipmentSelectForm(initial={"klass": Klass.FIGHTER})
 
 
 def test_fighter_fields_presence(fighter_form):
-    assert list(fighter_form.fields) == ["first_skill", "second_skill"]
+    assert list(fighter_form.fields) == [
+        "first_weapon",
+        "second_weapon",
+        "third_weapon",
+        "pack",
+    ]
 
 
 def test_fighter_fields_type(fighter_form):
@@ -35,16 +48,11 @@ def test_fighter_fields_type(fighter_form):
 
 @pytest.fixture
 def rogue_form():
-    return SkillsSelectForm(initial={"klass": Klass.ROGUE})
+    return EquipmentSelectForm(initial={"klass": Klass.ROGUE})
 
 
 def test_rogue_fields_presence(rogue_form):
-    assert list(rogue_form.fields) == [
-        "first_skill",
-        "second_skill",
-        "third_skill",
-        "fourth_skill",
-    ]
+    assert list(rogue_form.fields) == ["first_weapon", "second_weapon", "pack"]
 
 
 def test_rogue_fields_type(rogue_form):
@@ -54,11 +62,11 @@ def test_rogue_fields_type(rogue_form):
 
 @pytest.fixture
 def wizard_form():
-    return SkillsSelectForm(initial={"klass": Klass.WIZARD})
+    return EquipmentSelectForm(initial={"klass": Klass.WIZARD})
 
 
 def test_wizard_fields_presence(wizard_form):
-    assert list(wizard_form.fields) == ["first_skill", "second_skill"]
+    assert list(wizard_form.fields) == ["first_weapon", "gear", "pack"]
 
 
 def test_wizard_fields_type(wizard_form):
