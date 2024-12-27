@@ -1,6 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Exists
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views.generic import CreateView, ListView, TemplateView
@@ -38,12 +37,8 @@ class GameListView(LoginRequiredMixin, ListView):
     template_name = "game/game_list.html"
 
     def get_queryset(self):
-        # The list of games contains those where the user is the master
-        # and those where the user is a player.
-        qs = super().get_queryset()
-        return qs.filter(master__user=self.request.user) | qs.filter(
-            Exists(Player.objects.filter(character__user=self.request.user))
-        )
+        # The list of games contains those where the user is the master.
+        return super().get_queryset().filter(master__user=self.request.user)
 
 
 class GameView(LoginRequiredMixin, ListView, GameContextMixin):

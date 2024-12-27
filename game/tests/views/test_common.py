@@ -131,25 +131,25 @@ class TestIndexView:
         assert response.context["user_character_game"] == game
 
 
-@pytest.fixture(scope="class")
-def create_games(django_db_blocker):
-    with django_db_blocker.unblock():
+class TestGameListView:
+    path_name = "game-list"
+
+    @pytest.fixture
+    def user(self):
+        return UserFactory()
+
+    @pytest.fixture(autouse=True)
+    def login(self, client, user):
+        client.force_login(user)
+
+    @pytest.fixture
+    def create_games(self, user):
         number_of_games = 12
         for _ in range(number_of_games):
             GameFactory(
                 start_date=datetime.now(tz=timezone.utc),
-                master__user__username="master-game-list",
+                master__user=user,
             )
-
-
-class TestGameListView:
-    path_name = "game-list"
-
-    @pytest.fixture(autouse=True)
-    def setup(self, client):
-        # Only games created by their own master are displayed to them.
-        user = UserFactory(username="master-game-list")
-        client.force_login(user)
 
     def test_view_mapping(self, client):
         response = client.get(reverse(self.path_name))
@@ -189,6 +189,13 @@ class TestGameListView:
         Game.objects.all().delete()
         response = client.get(reverse(self.path_name))
         assertContains(response, "There is no game available...")
+
+    def test_content_user_created_games(self, client, user, create_games):
+        response = client.get(reverse(self.path_name))
+        assert response.status_code == 200
+        assert set(response.context["game_list"]).issubset(
+            set(Game.objects.filter(master__user=user))
+        )
 
 
 @pytest.fixture(scope="class")
