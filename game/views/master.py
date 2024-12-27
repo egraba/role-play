@@ -39,7 +39,10 @@ class UserInviteView(UserPassesTestMixin, ListView, GameContextMixin):
 
     def get_queryset(self):
         return (
-            super().get_queryset().filter(character__isnull=False, player__isnull=True)
+            super()
+            .get_queryset()
+            .filter(character__isnull=False, player__isnull=True)
+            .order_by("username")
         )
 
 

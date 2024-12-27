@@ -88,13 +88,8 @@ class TestUserInviteView:
     def test_ordering(self, client, game, create_characters):
         response = client.get(reverse(self.path_name, args=(game.id,)))
         assert response.status_code == 200
-        last_xp = 0
-        for character in response.context["user_list"]:
-            if last_xp == 0:
-                last_xp = character.xp
-            else:
-                assert last_xp >= character.xp
-                last_xp = character.xp
+        user_list = [user.username for user in response.context["user_list"]]
+        assert user_list == sorted(user_list)
 
     def test_game_not_exists(self, client, game):
         game_id = random.randint(10000, 99999)
