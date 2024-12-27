@@ -17,21 +17,22 @@ from pytest_django.asserts import (
 from character.models.character import Character
 from character.tests.factories import CharacterFactory
 from game.constants.combat import FighterAttributeChoices
+from game.exceptions import UserHasNoCharacter
 from game.flows import GameFlow
 from game.forms import CombatCreateForm, QuestCreateForm
 from game.models.combat import Combat, Fighter
 from game.models.events import Event, Quest, UserInvitation
 from game.models.game import Game
 from game.views.master import (
-    UserInviteConfirmView,
-    UserInviteView,
     CombatCreateView,
     GameStartView,
     QuestCreateView,
+    UserInviteConfirmView,
+    UserInviteView,
 )
 from user.models import User
-from utils.constants import FREEZED_TIME
 from user.tests.factories import UserFactory
+from utils.constants import FREEZED_TIME
 
 from ..factories import GameFactory, PlayerFactory
 
@@ -197,21 +198,16 @@ class TestUserInviteConfirmView:
     def test_user_without_character_raises_exception(
         self, client, game, user_without_character
     ):
-        response = client.post(
-            reverse(
-                self.path_name,
-                args=(
-                    game.id,
-                    user_without_character.id,
-                ),
+        with pytest.raises(UserHasNoCharacter):
+            client.post(
+                reverse(
+                    self.path_name,
+                    args=(
+                        game.id,
+                        user_without_character.id,
+                    ),
+                )
             )
-        )
-        assert response.status_code == 302
-        assertRedirects(response, reverse("game", args=(game.id,)))
-        assert user_without_character.player.game == game
-        event = Event.objects.last()
-        assert event.date == timezone.now()
-        assert event.game == game
 
 
 class TestGameStartView:

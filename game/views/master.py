@@ -11,15 +11,16 @@ from user.models import User
 
 from ..constants.combat import FighterAttributeChoices
 from ..constants.events import RollType
+from ..exceptions import UserHasNoCharacter
 from ..flows import GameFlow
 from ..forms import AbilityCheckRequestForm, CombatCreateForm, QuestCreateForm
 from ..models.combat import Combat, Fighter
 from ..models.events import (
-    UserInvitation,
     CombatInitialization,
     CombatInitiativeRequest,
     GameStart,
     QuestUpdate,
+    UserInvitation,
 )
 from ..models.game import Player, Quest
 from ..tasks import send_mail
@@ -56,8 +57,10 @@ class UserInviteConfirmView(UserPassesTestMixin, UpdateView, GameContextMixin):
 
     def post(self, request, *args, **kwargs):
         user = self.get_object()
-        UserInvitation.objects.create(user=user, game=self.game)
+        if not hasattr(user, "character"):
+            raise UserHasNoCharacter(f"{user=} has no character")
         Player.objects.create(user=user, game=self.game, character=user.character)
+        UserInvitation.objects.create(user=user, game=self.game)
         send_mail.delay(
             subject=f"The Master invited you to join [{self.game}].",
             message=f"{user}, the Master invited you to join [{self.game}].",
