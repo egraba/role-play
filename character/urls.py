@@ -1,7 +1,7 @@
 from django.urls import path
 
 from .views.backgrounds import BackgroundCompleteView
-from .views.character import CharacterCreateView, CharacterDetailView, CharacterListView
+from .views.character import CharacterCreateView, CharacterDetailView
 from .views.equipment import EquipmentSelectView
 from .views.glossary import GlossaryView
 from .views.skills import SkillsSelectView
@@ -11,11 +11,6 @@ urlpatterns = [
         "<int:pk>",
         CharacterDetailView.as_view(),
         name="character-detail",
-    ),
-    path(
-        "characters",
-        CharacterListView.as_view(),
-        name="character-list",
     ),
     path(
         "create_character",

@@ -3,7 +3,7 @@ from enum import StrEnum
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
-from django.views.generic import DetailView, ListView
+from django.views.generic import DetailView
 from formtools.wizard.views import SessionWizardView
 
 from ..character_attributes_builders import (
@@ -32,13 +32,6 @@ class CharacterDetailView(LoginRequiredMixin, DetailView):
         context["inventory"] = self.object.inventory
         context["abilities"] = self.object.abilities.all()
         return context
-
-
-class CharacterListView(LoginRequiredMixin, ListView):
-    model = Character
-    paginate_by = 20
-    ordering = ["-xp"]
-    template_name = "character/character_list.html"
 
 
 class CharacterCreateView(LoginRequiredMixin, SessionWizardView):
