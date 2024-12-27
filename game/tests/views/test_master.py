@@ -98,9 +98,9 @@ class TestUserInviteView:
         assert pytest.raises(Http404)
 
     def test_context_data(self, client, game, create_characters):
-        character_list = Character.objects.filter(player__game=None)
+        user_list = User.objects.filter(character__isnull=False, player__isnull=True)
         response = client.get(reverse(self.path_name, args=(game.id,)))
-        assert set(response.context["user_list"]).issubset(character_list)
+        assert set(response.context["user_list"]).issubset(user_list)
 
     def test_context_data_all_characters_already_assigned(self, client, game):
         Character.objects.filter(player=None).delete()
