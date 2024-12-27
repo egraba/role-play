@@ -22,9 +22,6 @@ class IndexView(TemplateView):
         context = super().get_context_data(**kwargs)
         if self.request.user.is_authenticated:
             try:
-                context["user_has_character"] = Character.objects.filter(
-                    user=self.request.user
-                ).exists()
                 character = Character.objects.get(user=self.request.user)
                 context["user_character"] = character
                 if hasattr(character, "player"):

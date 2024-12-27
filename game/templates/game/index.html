@@ -38,7 +38,7 @@
                 <a href="{% url 'game-list' %}">
                     <button class="rpgui-button"><p>View all games created by you</p></button>
                 </a>
-                {% if user_has_character %}
+                {% if user_character %}
                     {% if user_character_game %}
                         <a href={{ user_character_game.get_absolute_url }}>
                             <button class="rpgui-button"><p>Continue your character's game</p></button>

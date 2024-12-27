@@ -72,6 +72,8 @@ class TestIndexView:
         assertNotContains(response, "View your character")
         assertNotContains(response, "Create your character")
         with pytest.raises(KeyError):
+            assert response.context["user_character"]
+        with pytest.raises(KeyError):
             assert response.context["user_character_game"]
 
     def test_content_user_without_character(self, client, user_without_character):
@@ -86,7 +88,8 @@ class TestIndexView:
         assertNotContains(response, "Continue your character's game")
         assertNotContains(response, "View your character")
         assertContains(response, "Create your character")
-        assert not response.context["user_has_character"]
+        with pytest.raises(KeyError):
+            assert response.context["user_character"]
         with pytest.raises(KeyError):
             assert response.context["user_character_game"]
 
@@ -102,7 +105,6 @@ class TestIndexView:
         assertNotContains(response, "Continue your character's game")
         assertContains(response, "View your character")
         assertNotContains(response, "Create your character")
-        assert response.context["user_has_character"]
         assert response.context["user_character"] == user_with_character.character
         with pytest.raises(KeyError):
             assert response.context["user_character_game"]
@@ -125,7 +127,6 @@ class TestIndexView:
         assertContains(response, "Continue your character's game")
         assertContains(response, "View your character")
         assertNotContains(response, "Create your character")
-        assert response.context["user_has_character"]
         assert response.context["user_character"] == user_with_character.character
         assert response.context["user_character_game"] == game
 
