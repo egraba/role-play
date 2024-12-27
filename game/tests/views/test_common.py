@@ -64,38 +64,57 @@ class TestIndexView:
         response = client.get(reverse(self.path_name))
         assert response.status_code == 200
         assertContains(response, "Log in")
+        assertNotContains(response, "Log out")
         assertContains(response, "Register")
-        assertNotContains(response, "View all games")
-        assertNotContains(response, "View all characters")
-        assertNotContains(response, "Create a new game")
-        assertNotContains(response, "Create a new character")
+        assertNotContains(response, "Create a game")
+        assertNotContains(response, "View all games created by you")
+        assertNotContains(response, "Continue your character's game")
         assertNotContains(response, "View your character")
+        assertNotContains(response, "Create your character")
 
-    def test_content_logged_user_without_character(
-        self, client, user_without_character
-    ):
+    def test_content_user_without_character(self, client, user_without_character):
         client.force_login(user_without_character)
         response = client.get(reverse(self.path_name))
         assert response.status_code == 200
+        assertNotContains(response, "Log in")
         assertContains(response, "Log out")
-        assertContains(response, "View all games")
-        assertContains(response, "View all characters")
-        assertContains(response, "Create a new game")
-        assertContains(response, "Create a new character")
+        assertNotContains(response, "Register")
+        assertContains(response, "Create a game")
+        assertContains(response, "View all games created by you")
+        assertNotContains(response, "Continue your character's game")
         assertNotContains(response, "View your character")
+        assertContains(response, "Create your character")
         with pytest.raises(KeyError):
             response.context["user_character"]
 
-    def test_content_logged_user_with_character(self, client, user):
+    def test_content_user_with_character_no_game(self, client, user):
         client.force_login(user)
         response = client.get(reverse(self.path_name))
         assert response.status_code == 200
+        assertNotContains(response, "Log in")
         assertContains(response, "Log out")
-        assertContains(response, "View all games")
-        assertContains(response, "View all characters")
-        assertContains(response, "Create a new game")
-        assertNotContains(response, "Create a new character")
+        assertNotContains(response, "Register")
+        assertContains(response, "Create a game")
+        assertContains(response, "View all games created by you")
+        assertNotContains(response, "Continue your character's game")
         assertContains(response, "View your character")
+        assertNotContains(response, "Create your character")
+        assert response.context["user_character"] == user.character
+
+    def test_content_user_with_character_existing_game(self, client, user):
+        client.force_login(user)
+        response = client.get(reverse(self.path_name))
+        assert response.status_code == 200
+        game = GameFactory()
+        PlayerFactory(user=user, game=game, character=user.character)
+        assertNotContains(response, "Log in")
+        assertContains(response, "Log out")
+        assertNotContains(response, "Register")
+        assertContains(response, "Create a game")
+        assertContains(response, "View all games created by you")
+        assertContains(response, "Continue your character's game")
+        assertContains(response, "View your character")
+        assertNotContains(response, "Create your character")
         assert response.context["user_character"] == user.character
 
 
