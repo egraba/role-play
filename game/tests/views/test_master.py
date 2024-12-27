@@ -20,7 +20,7 @@ from game.constants.combat import FighterAttributeChoices
 from game.flows import GameFlow
 from game.forms import CombatCreateForm, QuestCreateForm
 from game.models.combat import Combat, Fighter
-from game.models.events import Event, Quest
+from game.models.events import Event, Quest, UserInvitation
 from game.models.game import Game
 from game.views.master import (
     UserInviteConfirmView,
@@ -125,43 +125,49 @@ class TestUserInviteConfirmView:
         return GameFactory(master__user__username="master")
 
     @pytest.fixture
-    def character(self):
-        return CharacterFactory()
+    def user(self):
+        # Users must have characters when accessing this view.
+        character = CharacterFactory()
+        return character.user
 
-    def test_view_mapping(self, client, game, character):
+    @pytest.fixture
+    def user_without_character(self):
+        return UserFactory()
+
+    def test_view_mapping(self, client, game, user):
         response = client.get(
             reverse(
                 self.path_name,
                 args=(
                     game.id,
-                    character.id,
+                    user.id,
                 ),
             )
         )
         assert response.status_code == 200
         assert response.resolver_match.func.view_class == UserInviteConfirmView
 
-    def test_template_mapping(self, client, game, character):
+    def test_template_mapping(self, client, game, user):
         response = client.get(
             reverse(
                 self.path_name,
                 args=(
                     game.id,
-                    character.id,
+                    user.id,
                 ),
             )
         )
         assert response.status_code == 200
-        assertTemplateUsed(response, "game/character_invite_confirm.html")
+        assertTemplateUsed(response, "game/user_invite_confirm.html")
 
-    def test_game_not_exists(self, client, game, character):
+    def test_game_not_exists(self, client, game, user):
         game_id = random.randint(10000, 99999)
         response = client.get(
             reverse(
                 self.path_name,
                 args=(
                     game_id,
-                    character.id,
+                    user.id,
                 ),
             )
         )
@@ -169,20 +175,40 @@ class TestUserInviteConfirmView:
         assert pytest.raises(Http404)
 
     @freeze_time(FREEZED_TIME)
-    def test_character_added_to_game(self, client, game, character):
-        character = CharacterFactory()
+    def test_user_with_character_added_to_game(self, client, game, user):
         response = client.post(
             reverse(
                 self.path_name,
                 args=(
                     game.id,
-                    character.id,
+                    user.id,
                 ),
             )
         )
         assert response.status_code == 302
         assertRedirects(response, reverse("game", args=(game.id,)))
-        assert character.player.game == game
+        assert user.player.game == game
+        user_invitation = UserInvitation.objects.last()
+        assert user_invitation.date == timezone.now()
+        assert user_invitation.game == game
+        assert user_invitation.user == user
+
+    @freeze_time(FREEZED_TIME)
+    def test_user_without_character_raises_exception(
+        self, client, game, user_without_character
+    ):
+        response = client.post(
+            reverse(
+                self.path_name,
+                args=(
+                    game.id,
+                    user_without_character.id,
+                ),
+            )
+        )
+        assert response.status_code == 302
+        assertRedirects(response, reverse("game", args=(game.id,)))
+        assert user_without_character.player.game == game
         event = Event.objects.last()
         assert event.date == timezone.now()
         assert event.game == game
