@@ -9,30 +9,30 @@
 
         <hr class="golden"/>
 
-        <h1>Available characters</h1>
+        <h1>Available users</h1>
         <table class="rpgui-container framed-grey">
             {% if page_obj %}
                 <tr>
-                    <th><p>Name</p></th>
                     <th><p>User</p></th>
+                    <th><p>Character's name</p></th>
                     <th><p>Race</p></th>
                     <th><p>XP</p></th>
                 </tr>
             {% endif %}
-            {% for character in page_obj %}
+            {% for user in page_obj %}
                 <tr>
-                    <td><a href={{ character.get_absolute_url }}>{{ character }}</a></td>
-                    <td><p>{{ character.user }}</p></td>
-                    <td><p>{{ character.get_race_display }}</p></td>
-                    <td><p>{{ character.xp }}</p></td>
+                    <td><p>{{ user }}</p></td>
+                    <td><a href={{ user.character.get_absolute_url }}>{{ character }}</a></td>
+                    <td><p>{{ user.character.get_race_display }}</p></td>
+                    <td><p>{{ user.character.xp }}</p></td>
                     <td>
-                        <a href={% url 'game-invite-character-confirm' game.id character.id %}>
+                        <a href={% url 'game-invite-character-confirm' game.id user.character.id %}>
                             <button class="rpgui-button" method="post"><p>Invite</p></button>
                         </a>
                     </td>
                 </tr>
             {% empty %}
-                <tr><td><p>There is no character available...</p></td></tr>
+                <tr><td><p>There is no user available...</p></td></tr>
             {% endfor %}
         </table>
 
