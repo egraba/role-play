@@ -7,6 +7,7 @@ from django_celery_beat.models import IntervalSchedule, PeriodicTask
 from viewflow.fsm import TransitionNotAllowed
 
 from character.models.character import Character
+from user.models import User
 
 from ..constants.combat import FighterAttributeChoices
 from ..constants.events import RollType
@@ -28,17 +29,19 @@ from ..utils.emails import get_players_emails
 from ..views.mixins import EventContextMixin, GameContextMixin, GameStatusControlMixin
 
 
-class CharacterInviteView(UserPassesTestMixin, ListView, GameContextMixin):
-    model = Character
+class UserInviteView(UserPassesTestMixin, ListView, GameContextMixin):
+    model = User
     paginate_by = 10
     ordering = ["-xp"]
-    template_name = "game/character_invite.html"
+    template_name = "game/user_invite.html"
 
     def test_func(self):
         return self.is_user_master()
 
     def get_queryset(self):
-        return super().get_queryset().filter(player__game=None)
+        return (
+            super().get_queryset().filter(character__isnull=False, player__isnull=True)
+        )
 
 
 class CharacterInviteConfirmView(UserPassesTestMixin, UpdateView, GameContextMixin):

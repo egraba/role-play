@@ -24,7 +24,7 @@ from game.models.events import Event, Quest
 from game.models.game import Game
 from game.views.master import (
     CharacterInviteConfirmView,
-    CharacterInviteView,
+    UserInviteView,
     CombatCreateView,
     GameStartView,
     QuestCreateView,
@@ -52,8 +52,8 @@ def create_characters(django_db_blocker):
             CharacterFactory()
 
 
-class TestCharacterInviteView:
-    path_name = "game-invite-character"
+class TestUserInviteView:
+    path_name = "game-invite-user"
 
     @pytest.fixture
     def game(self, client):
@@ -64,32 +64,32 @@ class TestCharacterInviteView:
     def test_view_mapping(self, client, game):
         response = client.get(reverse(self.path_name, args=(game.id,)))
         assert response.status_code == 200
-        assert response.resolver_match.func.view_class == CharacterInviteView
+        assert response.resolver_match.func.view_class == UserInviteView
 
     def test_template_mapping(self, client, game):
         response = client.get(reverse(self.path_name, args=(game.id,)))
         assert response.status_code == 200
-        assertTemplateUsed(response, "game/character_invite.html")
+        assertTemplateUsed(response, "game/user_invite.html")
 
     def test_pagination_size(self, client, game, create_characters):
         response = client.get(reverse(self.path_name, args=(game.id,)))
         assert response.status_code == 200
         assert "is_paginated" in response.context
         assert response.context["is_paginated"]
-        assert len(response.context["character_list"]) == 10
+        assert len(response.context["user_list"]) == 10
 
     def test_pagination_size_next_page(self, client, game, create_characters):
         response = client.get(reverse(self.path_name, args=(game.id,)) + "?page=2")
         assert response.status_code, 200
         assert "is_paginated" in response.context
         assert response.context["is_paginated"]
-        assert len(response.context["character_list"]) == 2
+        assert len(response.context["user_list"]) == 2
 
     def test_ordering(self, client, game, create_characters):
         response = client.get(reverse(self.path_name, args=(game.id,)))
         assert response.status_code == 200
         last_xp = 0
-        for character in response.context["character_list"]:
+        for character in response.context["user_list"]:
             if last_xp == 0:
                 last_xp = character.xp
             else:
