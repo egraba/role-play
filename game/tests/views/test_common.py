@@ -32,8 +32,8 @@ from ..factories import (
     EventFactory,
     GameFactory,
     PlayerFactory,
-    QuestUpdateFactory,
     QuestFactory,
+    QuestUpdateFactory,
 )
 
 pytestmark = pytest.mark.django_db
@@ -41,6 +41,15 @@ pytestmark = pytest.mark.django_db
 
 class TestIndexView:
     path_name = "index"
+
+    @pytest.fixture
+    def user_with_character(self):
+        character = CharacterFactory()
+        return character.user
+
+    @pytest.fixture
+    def user_without_character(self):
+        return UserFactory()
 
     def test_view_mapping(self, client):
         response = client.get(reverse(self.path_name))
@@ -55,62 +64,117 @@ class TestIndexView:
         response = client.get(reverse(self.path_name))
         assert response.status_code == 200
         assertContains(response, "Log in")
+        assertNotContains(response, "Log out")
         assertContains(response, "Register")
-        assertNotContains(response, "View all games")
-        assertNotContains(response, "View all characters")
-        assertNotContains(response, "Create a new game")
-        assertNotContains(response, "Create a new character")
+        assertNotContains(response, "Create a game")
+        assertNotContains(response, "View all games created by you")
+        assertNotContains(response, "Continue your character's game")
         assertNotContains(response, "View your character")
-
-    def test_content_logged_user_no_character(self, client):
-        user = UserFactory()
-        client.force_login(user)
-
-        response = client.get(reverse(self.path_name))
-        assert response.status_code == 200
-        assertContains(response, "Log out")
-        assertContains(response, "View all games")
-        assertContains(response, "View all characters")
-        assertContains(response, "Create a new game")
-        assertContains(response, "Create a new character")
-        assertNotContains(response, "View your character")
+        assertNotContains(response, "Create your character")
         with pytest.raises(KeyError):
-            response.context["user_character"]
+            assert response.context["user_has_created_games"]
+        with pytest.raises(KeyError):
+            assert response.context["user_character"]
+        with pytest.raises(KeyError):
+            assert response.context["user_character_game"]
 
-    def test_content_logged_user_existing_character(self, client):
-        character = CharacterFactory()
-        client.force_login(character.user)
-
+    def test_content_user_without_character(self, client, user_without_character):
+        client.force_login(user_without_character)
         response = client.get(reverse(self.path_name))
         assert response.status_code == 200
+        assertNotContains(response, "Log in")
         assertContains(response, "Log out")
-        assertContains(response, "View all games")
-        assertContains(response, "View all characters")
-        assertContains(response, "Create a new game")
-        assertNotContains(response, "Create a new character")
+        assertNotContains(response, "Register")
+        assertContains(response, "Create a game")
+        assertNotContains(response, "View all games created by you")
+        assertNotContains(response, "Continue your character's game")
+        assertNotContains(response, "View your character")
+        assertContains(response, "Create your character")
+        assert not response.context["user_has_created_games"]
+        with pytest.raises(KeyError):
+            assert response.context["user_character"]
+        with pytest.raises(KeyError):
+            assert response.context["user_character_game"]
+
+    def test_content_user_with_character_no_game(self, client, user_with_character):
+        client.force_login(user_with_character)
+        response = client.get(reverse(self.path_name))
+        assert response.status_code == 200
+        assertNotContains(response, "Log in")
+        assertContains(response, "Log out")
+        assertNotContains(response, "Register")
+        assertContains(response, "Create a game")
+        assertNotContains(response, "View all games created by you")
+        assertNotContains(response, "Continue your character's game")
         assertContains(response, "View your character")
-        assert response.context["user_character"] == character
+        assertNotContains(response, "Create your character")
+        assert not response.context["user_has_created_games"]
+        assert response.context["user_character"] == user_with_character.character
+        with pytest.raises(KeyError):
+            assert response.context["user_character_game"]
 
+    def test_content_user_with_character_existing_game(
+        self, client, user_with_character
+    ):
+        client.force_login(user_with_character)
+        game = GameFactory()
+        PlayerFactory(
+            user=user_with_character, game=game, character=user_with_character.character
+        )
+        response = client.get(reverse(self.path_name))
+        assert response.status_code == 200
+        assertNotContains(response, "Log in")
+        assertContains(response, "Log out")
+        assertNotContains(response, "Register")
+        assertContains(response, "Create a game")
+        assertNotContains(response, "View all games created by you")
+        assertContains(response, "Continue your character's game")
+        assertContains(response, "View your character")
+        assertNotContains(response, "Create your character")
+        assert not response.context["user_has_created_games"]
+        assert response.context["user_character"] == user_with_character.character
+        assert response.context["user_character_game"] == game
 
-@pytest.fixture(scope="class")
-def create_games(django_db_blocker):
-    with django_db_blocker.unblock():
-        number_of_games = 22
-        for _ in range(number_of_games):
-            GameFactory(
-                start_date=datetime.now(tz=timezone.utc),
-                master__user__username="master-game-list",
-            )
+    def test_content_user_created_game(self, client):
+        game = GameFactory()
+        user = game.master.user
+        client.force_login(user)
+        response = client.get(reverse(self.path_name))
+        assert response.status_code == 200
+        assertNotContains(response, "Log in")
+        assertContains(response, "Log out")
+        assertNotContains(response, "Register")
+        assertContains(response, "Create a game")
+        assertContains(response, "View all games created by you")
+        assertNotContains(response, "Continue your character's game")
+        assertNotContains(response, "View your character")
+        assertContains(response, "Create your character")
+        assert response.context["user_has_created_games"]
+        with pytest.raises(KeyError):
+            assert response.context["user_character"]
+        with pytest.raises(KeyError):
+            assert response.context["user_character_game"]
 
 
 class TestGameListView:
     path_name = "game-list"
 
+    @pytest.fixture
+    def user(self):
+        return UserFactory()
+
     @pytest.fixture(autouse=True)
-    def setup(self, client):
-        # Only games created by their own master are displayed to them.
-        user = UserFactory(username="master-game-list")
+    def login(self, client, user):
         client.force_login(user)
+
+    @pytest.fixture
+    def create_games(self, user):
+        number_of_games = 12
+        for _ in range(number_of_games):
+            GameFactory(
+                start_date=datetime.now(tz=timezone.utc),
+                master__user=user,
+            )
 
     def test_view_mapping(self, client):
         response = client.get(reverse(self.path_name))
@@ -126,7 +190,7 @@ class TestGameListView:
         assert response.status_code == 200
         assert "is_paginated" in response.context
         assert response.context["is_paginated"]
-        assert len(response.context["game_list"]) == 20
+        assert len(response.context["game_list"]) == 10
 
     def test_pagination_size_next_page(self, client, create_games):
         response = client.get(reverse(self.path_name) + "?page=2")
@@ -150,6 +214,13 @@ class TestGameListView:
         Game.objects.all().delete()
         response = client.get(reverse(self.path_name))
         assertContains(response, "There is no game available...")
+
+    def test_content_user_created_games(self, client, user, create_games):
+        response = client.get(reverse(self.path_name))
+        assert response.status_code == 200
+        assert set(response.context["game_list"]).issubset(
+            set(Game.objects.filter(master__user=user))
+        )
 
 
 @pytest.fixture(scope="class")

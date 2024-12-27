@@ -31,7 +31,6 @@ from character.models.skills import Skill
 from character.views.character import (
     CharacterCreateView,
     CharacterDetailView,
-    CharacterListView,
 )
 from game.tests.factories import GameFactory, PlayerFactory
 from user.tests.factories import UserFactory
@@ -65,63 +64,6 @@ def create_characters(django_db_blocker):
         number_of_characters = 22
         for _ in range(number_of_characters):
             CharacterFactory()
-
-
-@pytest.mark.django_db
-class TestCharacterListView:
-    path_name = "character-list"
-
-    def test_view_mapping(self, client, character):
-        response = client.get(reverse(self.path_name))
-        assert response.status_code == 200
-        assert response.resolver_match.func.view_class == CharacterListView
-
-    def test_template_mapping(self, client, character):
-        response = client.get(reverse(self.path_name))
-        assertTemplateUsed(response, "character/character_list.html")
-
-    def test_pagination_size(self, client, character, create_characters):
-        response = client.get(reverse(self.path_name))
-        assert response.status_code == 200
-        assert "is_paginated" in response.context
-        assert response.context["is_paginated"]
-        assert len(response.context["character_list"]) == 20
-
-    def test_pagination_size_next_page(self, client, character, create_characters):
-        response = client.get(reverse(self.path_name) + "?page=2")
-        assert response.status_code == 200
-        assert "is_paginated" in response.context
-        assert response.context["is_paginated"]
-        assert len(response.context["character_list"]) == 3
-
-    def test_ordering(self, client, character, create_characters):
-        response = client.get(reverse(self.path_name))
-        assert response.status_code == 200
-        xp = 0
-        for c in response.context["character_list"]:
-            if xp == 0:
-                xp = c.xp
-            else:
-                assert xp >= c.xp
-                xp = c.xp
-
-    @pytest.fixture
-    def delete_characters(self):
-        Character.objects.all().delete()
-
-    def test_content_no_existing_character(self, client, character, delete_characters):
-        response = client.get(reverse(self.path_name))
-        assert response.status_code == 200
-        assertContains(response, "There is no character available...")
-
-    def test_content_character_is_in_game(self, client, character, delete_characters):
-        # The idea is to have only one character. Assign them to a game, and check that
-        # game name is part of the page content.
-        game = GameFactory()
-        PlayerFactory(game=game)
-        response = client.get(reverse(self.path_name))
-        assert response.status_code == 200
-        assertContains(response, game.name)
 
 
 @pytest.mark.django_db
