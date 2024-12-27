@@ -1,5 +1,6 @@
 from abc import abstractmethod
 
+from django.conf import settings
 from django.db import models
 from model_utils.managers import InheritanceManager
 
@@ -49,11 +50,11 @@ class GameStart(Event):
         return "The game started."
 
 
-class CharacterInvitation(Event):
-    character = models.ForeignKey(Character, on_delete=models.CASCADE)
+class UserInvitation(Event):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def get_message(self):
-        return f"{self.character} was added to the game."
+        return f"{self.user} was added to the game."
 
 
 class Message(Event):

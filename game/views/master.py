@@ -15,7 +15,7 @@ from ..flows import GameFlow
 from ..forms import AbilityCheckRequestForm, CombatCreateForm, QuestCreateForm
 from ..models.combat import Combat, Fighter
 from ..models.events import (
-    CharacterInvitation,
+    UserInvitation,
     CombatInitialization,
     CombatInitiativeRequest,
     GameStart,
@@ -46,23 +46,23 @@ class UserInviteView(UserPassesTestMixin, ListView, GameContextMixin):
         )
 
 
-class CharacterInviteConfirmView(UserPassesTestMixin, UpdateView, GameContextMixin):
-    model = Character
+class UserInviteConfirmView(UserPassesTestMixin, UpdateView, GameContextMixin):
+    model = User
     fields = []  # type: list[str]
-    template_name = "game/character_invite_confirm.html"
+    template_name = "game/user_invite_confirm.html"
 
     def test_func(self):
         return self.is_user_master()
 
     def post(self, request, *args, **kwargs):
-        character = self.get_object()
-        CharacterInvitation.objects.create(game=self.game, character=character)
-        Player.objects.create(user=character.user, game=self.game, character=character)
+        user = self.get_object()
+        UserInvitation.objects.create(user=user, game=self.game)
+        Player.objects.create(user=user, game=self.game, character=user.character)
         send_mail.delay(
             subject=f"The Master invited you to join [{self.game}].",
-            message=f"{character}, the Master invited you to join [{self.game}].",
+            message=f"{user}, the Master invited you to join [{self.game}].",
             from_email=self.game.master.user.email,
-            recipient_list=[character.user.email],
+            recipient_list=[user.email],
         )
         return HttpResponseRedirect(reverse("game", args=(self.game.id,)))
 

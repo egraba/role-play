@@ -23,7 +23,7 @@ from game.models.combat import Combat, Fighter
 from game.models.events import Event, Quest
 from game.models.game import Game
 from game.views.master import (
-    CharacterInviteConfirmView,
+    UserInviteConfirmView,
     UserInviteView,
     CombatCreateView,
     GameStartView,
@@ -115,8 +115,8 @@ def create_player(django_db_blocker):
         PlayerFactory(game=game)
 
 
-class TestCharacterInviteConfirmView:
-    path_name = "game-invite-character-confirm"
+class TestUserInviteConfirmView:
+    path_name = "game-invite-user-confirm"
 
     @pytest.fixture
     def game(self, client, create_player):
@@ -139,7 +139,7 @@ class TestCharacterInviteConfirmView:
             )
         )
         assert response.status_code == 200
-        assert response.resolver_match.func.view_class == CharacterInviteConfirmView
+        assert response.resolver_match.func.view_class == UserInviteConfirmView
 
     def test_template_mapping(self, client, game, character):
         response = client.get(

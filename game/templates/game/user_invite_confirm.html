@@ -3,12 +3,12 @@
 {% block content %}
     <div class="form rpgui-container framed-golden">
         <h1>{{ game }}</h1>
-        <p>Are you sure to add the following character?</p>
+        <p>Are you sure to add the following user?</p>
         <div class="rpgui-container framed-grey">
-            <p>Name: {{ character }}</p>
-            <p>User: {{ character.user }}</p>
-            <p>Race: {{ character.get_race_display }}</p>
-            <p>XP: {{ character.xp }}</p>
+            <p>User: {{ user }}</p>
+            <p>Name: {{ user.character }}</p>
+            <p>Race: {{ user.character.get_race_display }}</p>
+            <p>XP: {{ user.character.xp }}</p>
         </div>
         <div class="rpgui-center inline">
             <form method="post">
