@@ -26,7 +26,7 @@
                     <td><p>{{ user.character.get_race_display }}</p></td>
                     <td><p>{{ user.character.xp }}</p></td>
                     <td>
-                        <a href={% url 'game-invite-character-confirm' game.id user.character.id %}>
+                        <a href={% url 'game-invite-user-confirm' game.id user.id %}>
                             <button class="rpgui-button" method="post"><p>Invite</p></button>
                         </a>
                     </td>
