@@ -52,7 +52,7 @@ class CharacterInviteConfirmView(UserPassesTestMixin, UpdateView, GameContextMix
     def post(self, request, *args, **kwargs):
         character = self.get_object()
         CharacterInvitation.objects.create(game=self.game, character=character)
-        Player.objects.create(character=character, game=self.game)
+        Player.objects.create(user=character.user, game=self.game, character=character)
         send_mail.delay(
             subject=f"The Master invited you to join [{self.game}].",
             message=f"{character}, the Master invited you to join [{self.game}].",
