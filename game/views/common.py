@@ -33,7 +33,7 @@ class IndexView(TemplateView):
 
 class GameListView(LoginRequiredMixin, ListView):
     model = Game
-    paginate_by = 20
+    paginate_by = 10
     ordering = ["-start_date"]
     template_name = "game/game_list.html"
 

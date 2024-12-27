@@ -134,7 +134,7 @@ class TestIndexView:
 @pytest.fixture(scope="class")
 def create_games(django_db_blocker):
     with django_db_blocker.unblock():
-        number_of_games = 22
+        number_of_games = 12
         for _ in range(number_of_games):
             GameFactory(
                 start_date=datetime.now(tz=timezone.utc),
@@ -165,7 +165,7 @@ class TestGameListView:
         assert response.status_code == 200
         assert "is_paginated" in response.context
         assert response.context["is_paginated"]
-        assert len(response.context["game_list"]) == 20
+        assert len(response.context["game_list"]) == 10
 
     def test_pagination_size_next_page(self, client, create_games):
         response = client.get(reverse(self.path_name) + "?page=2")
