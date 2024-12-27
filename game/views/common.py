@@ -19,9 +19,13 @@ class IndexView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if self.request.user.is_authenticated:
+        user = self.request.user
+        if user.is_authenticated:
+            context["user_has_created_games"] = Game.objects.filter(
+                master__user=user
+            ).exists()
             try:
-                character = Character.objects.get(user=self.request.user)
+                character = Character.objects.get(user=user)
                 context["user_character"] = character
                 if hasattr(character, "player"):
                     context["user_character_game"] = character.player.game

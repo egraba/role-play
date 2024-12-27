@@ -32,8 +32,8 @@ from ..factories import (
     EventFactory,
     GameFactory,
     PlayerFactory,
-    QuestUpdateFactory,
     QuestFactory,
+    QuestUpdateFactory,
 )
 
 pytestmark = pytest.mark.django_db
@@ -72,6 +72,8 @@ class TestIndexView:
         assertNotContains(response, "View your character")
         assertNotContains(response, "Create your character")
         with pytest.raises(KeyError):
+            assert response.context["user_has_created_games"]
+        with pytest.raises(KeyError):
             assert response.context["user_character"]
         with pytest.raises(KeyError):
             assert response.context["user_character_game"]
@@ -84,10 +86,11 @@ class TestIndexView:
         assertContains(response, "Log out")
         assertNotContains(response, "Register")
         assertContains(response, "Create a game")
-        assertContains(response, "View all games created by you")
+        assertNotContains(response, "View all games created by you")
         assertNotContains(response, "Continue your character's game")
         assertNotContains(response, "View your character")
         assertContains(response, "Create your character")
+        assert not response.context["user_has_created_games"]
         with pytest.raises(KeyError):
             assert response.context["user_character"]
         with pytest.raises(KeyError):
@@ -101,10 +104,11 @@ class TestIndexView:
         assertContains(response, "Log out")
         assertNotContains(response, "Register")
         assertContains(response, "Create a game")
-        assertContains(response, "View all games created by you")
+        assertNotContains(response, "View all games created by you")
         assertNotContains(response, "Continue your character's game")
         assertContains(response, "View your character")
         assertNotContains(response, "Create your character")
+        assert not response.context["user_has_created_games"]
         assert response.context["user_character"] == user_with_character.character
         with pytest.raises(KeyError):
             assert response.context["user_character_game"]
@@ -123,12 +127,33 @@ class TestIndexView:
         assertContains(response, "Log out")
         assertNotContains(response, "Register")
         assertContains(response, "Create a game")
-        assertContains(response, "View all games created by you")
+        assertNotContains(response, "View all games created by you")
         assertContains(response, "Continue your character's game")
         assertContains(response, "View your character")
         assertNotContains(response, "Create your character")
+        assert not response.context["user_has_created_games"]
         assert response.context["user_character"] == user_with_character.character
         assert response.context["user_character_game"] == game
+
+    def test_content_user_created_game(self, client):
+        game = GameFactory()
+        user = game.master.user
+        client.force_login(user)
+        response = client.get(reverse(self.path_name))
+        assert response.status_code == 200
+        assertNotContains(response, "Log in")
+        assertContains(response, "Log out")
+        assertNotContains(response, "Register")
+        assertContains(response, "Create a game")
+        assertContains(response, "View all games created by you")
+        assertNotContains(response, "Continue your character's game")
+        assertNotContains(response, "View your character")
+        assertContains(response, "Create your character")
+        assert response.context["user_has_created_games"]
+        with pytest.raises(KeyError):
+            assert response.context["user_character"]
+        with pytest.raises(KeyError):
+            assert response.context["user_character_game"]
 
 
 class TestGameListView:
