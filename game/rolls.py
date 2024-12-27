@@ -17,7 +17,7 @@ def _roll(character: Character, ability_type: AbilityType) -> int:
     try:
         ability = character.abilities.get(ability_type=ability_type)
     except Ability.DoesNotExist:
-        raise InvalidRoll(f"[{character}] does not have the ability: {ability_type}")
+        raise InvalidRoll(f"{character=} does not have the ability: {ability_type=}")
     score = DiceString("d20").roll(ability.modifier)
     if character.is_proficient(ability):
         score += character.proficiency_bonus

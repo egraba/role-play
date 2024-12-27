@@ -38,7 +38,7 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                 game_key(game_id), Game.objects.get(id=game_id)
             )
         except Game.DoesNotExist:
-            self.close(reason=f"Game [{game_id}] not found")
+            self.close(reason=f"Game of {game_id=} not found")
         self.game_group_name = f"game_{self.game.id}_events"
         async_to_sync(self.channel_layer.group_add)(
             self.game_group_name, self.channel_name

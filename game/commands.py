@@ -48,7 +48,7 @@ class CharacterCommandMixin(Command):
         try:
             self.character = Character.objects.get(user=user)
         except Character.DoesNotExist as exc:
-            exc.add_note(f"Character of user [{user}] not found")
+            exc.add_note(f"Character of user {user=} not found")
             raise
 
 
