@@ -5,6 +5,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Changed
+* Python 3.13 is now the only supported version
 * Replace `poetry` by `uv` as package manager
 
 ## v0.11.0 - 2024-08-16
