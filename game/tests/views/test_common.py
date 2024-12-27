@@ -42,6 +42,15 @@ pytestmark = pytest.mark.django_db
 class TestIndexView:
     path_name = "index"
 
+    @pytest.fixture
+    def user(self):
+        character = CharacterFactory()
+        return character.user
+
+    @pytest.fixture
+    def user_without_character(self):
+        return UserFactory()
+
     def test_view_mapping(self, client):
         response = client.get(reverse(self.path_name))
         assert response.status_code == 200
@@ -62,10 +71,10 @@ class TestIndexView:
         assertNotContains(response, "Create a new character")
         assertNotContains(response, "View your character")
 
-    def test_content_logged_user_no_character(self, client):
-        user = UserFactory()
-        client.force_login(user)
-
+    def test_content_logged_user_without_character(
+        self, client, user_without_character
+    ):
+        client.force_login(user_without_character)
         response = client.get(reverse(self.path_name))
         assert response.status_code == 200
         assertContains(response, "Log out")
@@ -77,10 +86,8 @@ class TestIndexView:
         with pytest.raises(KeyError):
             response.context["user_character"]
 
-    def test_content_logged_user_existing_character(self, client):
-        character = CharacterFactory()
-        client.force_login(character.user)
-
+    def test_content_logged_user_with_character(self, client, user):
+        client.force_login(user)
         response = client.get(reverse(self.path_name))
         assert response.status_code == 200
         assertContains(response, "Log out")
@@ -89,7 +96,7 @@ class TestIndexView:
         assertContains(response, "Create a new game")
         assertNotContains(response, "Create a new character")
         assertContains(response, "View your character")
-        assert response.context["user_character"] == character
+        assert response.context["user_character"] == user.character
 
 
 @pytest.fixture(scope="class")
