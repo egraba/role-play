@@ -32,14 +32,11 @@
 
         {% if user.is_authenticated %}
             <div class="rpgui-center">
-                <a href="{% url 'game-list' %}">
-                    <button class="rpgui-button"><p>View all games</p></button>
-                </a>
                 <a href="{% url 'campaign-list' %}">
-                    <button class="rpgui-button"><p>Create a new game</p></button>
+                    <button class="rpgui-button"><p>Create a game</p></button>
                 </a>
-                <a href="{% url 'character-list' %}">
-                    <button class="rpgui-button"><p>View all characters</p></button>
+                <a href="{% url 'game-list' %}">
+                    <button class="rpgui-button"><p>View all games created by you</p></button>
                 </a>
                 {% if user_character %}
                     <a href={{ user_character.get_absolute_url }}>
@@ -47,7 +44,7 @@
                     </a>
                 {% else %}
                     <a href="{% url 'character-create' %}">
-                        <button class="rpgui-button"><p>Create a new character</p></button>
+                        <button class="rpgui-button"><p>Create your character</p></button>
                     </a>
                 {% endif %}
             </div>
