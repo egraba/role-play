@@ -22,7 +22,7 @@
             {% for user in page_obj %}
                 <tr>
                     <td><p>{{ user }}</p></td>
-                    <td><a href={{ user.character.get_absolute_url }}>{{ character }}</a></td>
+                    <td><a href={{ user.character.get_absolute_url }}>{{ user.character }}</a></td>
                     <td><p>{{ user.character.get_race_display }}</p></td>
                     <td><p>{{ user.character.xp }}</p></td>
                     <td>
