@@ -105,12 +105,12 @@ class TestUserInviteView:
     def test_context_data(self, client, game, create_characters):
         character_list = Character.objects.filter(player__game=None)
         response = client.get(reverse(self.path_name, args=(game.id,)))
-        assert set(response.context["character_list"]).issubset(character_list)
+        assert set(response.context["user_list"]).issubset(character_list)
 
     def test_context_data_all_characters_already_assigned(self, client, game):
         Character.objects.filter(player=None).delete()
         response = client.get(reverse(self.path_name, args=(game.id,)))
-        assertQuerySetEqual(response.context["character_list"], [])
+        assertQuerySetEqual(response.context["user_list"], [])
 
 
 @pytest.fixture(scope="class")
