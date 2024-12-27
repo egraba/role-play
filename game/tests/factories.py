@@ -51,8 +51,11 @@ class PlayerFactory(factory.django.DjangoModelFactory):
             "character",
         )
 
+    user = factory.SubFactory(UserFactory)
     game = factory.SubFactory(GameFactory)
-    character = factory.SubFactory("character.tests.factories.CharacterFactory")
+    character = factory.SubFactory(
+        "character.tests.factories.CharacterFactory", user=user
+    )
 
 
 class QuestFactory(factory.django.DjangoModelFactory):

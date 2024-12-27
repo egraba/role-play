@@ -52,4 +52,4 @@ class TestPlayerModel:
         assert isinstance(player, Player)
 
     def test_str(self, player):
-        assert str(player) == player.character.user.username
+        assert str(player) == player.user.username

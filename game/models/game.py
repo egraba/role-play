@@ -48,8 +48,9 @@ class Master(models.Model):
 
 
 class Player(models.Model):
-    character = models.OneToOneField(Character, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    character = models.OneToOneField(Character, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.character.user.username
+        return self.user.username
