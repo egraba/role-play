@@ -25,9 +25,10 @@ class IndexView(TemplateView):
                 context["user_has_character"] = Character.objects.filter(
                     user=self.request.user
                 ).exists()
-                context["user_character"] = Character.objects.get(
-                    user=self.request.user
-                )
+                character = Character.objects.get(user=self.request.user)
+                context["user_character"] = character
+                if hasattr(character, "player"):
+                    context["user_character_game"] = character.player.game
             except Character.DoesNotExist:
                 pass
         return context

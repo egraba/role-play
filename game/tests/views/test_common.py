@@ -43,7 +43,7 @@ class TestIndexView:
     path_name = "index"
 
     @pytest.fixture
-    def user(self):
+    def user_with_character(self):
         character = CharacterFactory()
         return character.user
 
@@ -71,6 +71,8 @@ class TestIndexView:
         assertNotContains(response, "Continue your character's game")
         assertNotContains(response, "View your character")
         assertNotContains(response, "Create your character")
+        with pytest.raises(KeyError):
+            assert response.context["user_character_game"]
 
     def test_content_user_without_character(self, client, user_without_character):
         client.force_login(user_without_character)
@@ -85,9 +87,11 @@ class TestIndexView:
         assertNotContains(response, "View your character")
         assertContains(response, "Create your character")
         assert not response.context["user_has_character"]
+        with pytest.raises(KeyError):
+            assert response.context["user_character_game"]
 
-    def test_content_user_with_character_no_game(self, client, user):
-        client.force_login(user)
+    def test_content_user_with_character_no_game(self, client, user_with_character):
+        client.force_login(user_with_character)
         response = client.get(reverse(self.path_name))
         assert response.status_code == 200
         assertNotContains(response, "Log in")
@@ -99,14 +103,20 @@ class TestIndexView:
         assertContains(response, "View your character")
         assertNotContains(response, "Create your character")
         assert response.context["user_has_character"]
-        assert response.context["user_character"] == user.character
+        assert response.context["user_character"] == user_with_character.character
+        with pytest.raises(KeyError):
+            assert response.context["user_character_game"]
 
-    def test_content_user_with_character_existing_game(self, client, user):
-        client.force_login(user)
+    def test_content_user_with_character_existing_game(
+        self, client, user_with_character
+    ):
+        client.force_login(user_with_character)
+        game = GameFactory()
+        PlayerFactory(
+            user=user_with_character, game=game, character=user_with_character.character
+        )
         response = client.get(reverse(self.path_name))
         assert response.status_code == 200
-        game = GameFactory()
-        PlayerFactory(user=user, game=game, character=user.character)
         assertNotContains(response, "Log in")
         assertContains(response, "Log out")
         assertNotContains(response, "Register")
@@ -116,7 +126,8 @@ class TestIndexView:
         assertContains(response, "View your character")
         assertNotContains(response, "Create your character")
         assert response.context["user_has_character"]
-        assert response.context["user_character"] == user.character
+        assert response.context["user_character"] == user_with_character.character
+        assert response.context["user_character_game"] == game
 
 
 @pytest.fixture(scope="class")
