@@ -80,8 +80,8 @@
                     {% endfor %}
                     {% if game.master.user == user %}
                         <div class="rpgui-center">
-                            <a href={% url 'game-invite-character' game.id %}>
-                                <button class="rpgui-button"><p>Invite a character</p></button>
+                            <a href={% url 'game-invite-user' game.id %}>
+                                <button class="rpgui-button"><p>Invite a user</p></button>
                             </a>
                         </div>
                     {% endif %}

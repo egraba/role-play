@@ -5,6 +5,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Changed
+* Users are now invited, instead of characters
 * `Player` model have now one-to-one relation with `User`
 * Python 3.13 is now the only supported version
 * Replace `poetry` by `uv` as package manager

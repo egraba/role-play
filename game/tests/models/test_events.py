@@ -3,7 +3,7 @@ from django.utils import timezone
 from freezegun import freeze_time
 
 from game.models.events import (
-    CharacterInvitation,
+    UserInvitation,
     CombatInitialization,
     Event,
     GameStart,
@@ -16,7 +16,7 @@ from game.models.events import (
 from utils.constants import FREEZED_TIME
 
 from ..factories import (
-    CharacterInvitationFactory,
+    UserInvitationFactory,
     CombatInitalizationFactory,
     EventFactory,
     GameStartFactory,
@@ -51,18 +51,18 @@ class TestGameStartModel:
         assert game_start.get_message() == "The game started."
 
 
-class TestCharacterInvitationModel:
+class TestUserInvitationModel:
     @pytest.fixture
-    def character_invitation(self):
-        return CharacterInvitationFactory()
+    def user_invitation(self):
+        return UserInvitationFactory()
 
-    def test_creation(self, character_invitation):
-        assert isinstance(character_invitation, CharacterInvitation)
+    def test_creation(self, user_invitation):
+        assert isinstance(user_invitation, UserInvitation)
 
-    def test_get_message(self, character_invitation):
+    def test_get_message(self, user_invitation):
         assert (
-            character_invitation.get_message()
-            == f"{character_invitation.character} was added to the game."
+            user_invitation.get_message()
+            == f"{user_invitation.user} was added to the game."
         )
 
 

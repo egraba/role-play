@@ -6,7 +6,7 @@ from character.constants.abilities import AbilityName
 from game.constants.events import DifficultyClass, RollResultType, RollType
 from game.models.combat import Combat, Fighter
 from game.models.events import (
-    CharacterInvitation,
+    UserInvitation,
     CombatInitialization,
     Event,
     GameStart,
@@ -80,12 +80,12 @@ class GameStartFactory(factory.django.DjangoModelFactory):
     game = factory.SubFactory(GameFactory)
 
 
-class CharacterInvitationFactory(factory.django.DjangoModelFactory):
+class UserInvitationFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = CharacterInvitation
+        model = UserInvitation
 
     game = factory.SubFactory(GameFactory)
-    character = factory.SubFactory("character.tests.factories.CharacterFactory")
+    user = factory.SubFactory(UserFactory)
 
 
 class MessageFactory(factory.django.DjangoModelFactory):

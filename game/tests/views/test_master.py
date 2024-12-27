@@ -17,21 +17,22 @@ from pytest_django.asserts import (
 from character.models.character import Character
 from character.tests.factories import CharacterFactory
 from game.constants.combat import FighterAttributeChoices
+from game.exceptions import UserHasNoCharacter
 from game.flows import GameFlow
 from game.forms import CombatCreateForm, QuestCreateForm
 from game.models.combat import Combat, Fighter
-from game.models.events import Event, Quest
+from game.models.events import Event, Quest, UserInvitation
 from game.models.game import Game
 from game.views.master import (
-    CharacterInviteConfirmView,
-    CharacterInviteView,
     CombatCreateView,
     GameStartView,
     QuestCreateView,
+    UserInviteConfirmView,
+    UserInviteView,
 )
 from user.models import User
-from utils.constants import FREEZED_TIME
 from user.tests.factories import UserFactory
+from utils.constants import FREEZED_TIME
 
 from ..factories import GameFactory, PlayerFactory
 
@@ -52,8 +53,8 @@ def create_characters(django_db_blocker):
             CharacterFactory()
 
 
-class TestCharacterInviteView:
-    path_name = "game-invite-character"
+class TestUserInviteView:
+    path_name = "game-invite-user"
 
     @pytest.fixture
     def game(self, client):
@@ -64,37 +65,32 @@ class TestCharacterInviteView:
     def test_view_mapping(self, client, game):
         response = client.get(reverse(self.path_name, args=(game.id,)))
         assert response.status_code == 200
-        assert response.resolver_match.func.view_class == CharacterInviteView
+        assert response.resolver_match.func.view_class == UserInviteView
 
     def test_template_mapping(self, client, game):
         response = client.get(reverse(self.path_name, args=(game.id,)))
         assert response.status_code == 200
-        assertTemplateUsed(response, "game/character_invite.html")
+        assertTemplateUsed(response, "game/user_invite.html")
 
     def test_pagination_size(self, client, game, create_characters):
         response = client.get(reverse(self.path_name, args=(game.id,)))
         assert response.status_code == 200
         assert "is_paginated" in response.context
         assert response.context["is_paginated"]
-        assert len(response.context["character_list"]) == 10
+        assert len(response.context["user_list"]) == 10
 
     def test_pagination_size_next_page(self, client, game, create_characters):
         response = client.get(reverse(self.path_name, args=(game.id,)) + "?page=2")
         assert response.status_code, 200
         assert "is_paginated" in response.context
         assert response.context["is_paginated"]
-        assert len(response.context["character_list"]) == 2
+        assert len(response.context["user_list"]) == 2
 
     def test_ordering(self, client, game, create_characters):
         response = client.get(reverse(self.path_name, args=(game.id,)))
         assert response.status_code == 200
-        last_xp = 0
-        for character in response.context["character_list"]:
-            if last_xp == 0:
-                last_xp = character.xp
-            else:
-                assert last_xp >= character.xp
-                last_xp = character.xp
+        user_list = [user.username for user in response.context["user_list"]]
+        assert user_list == sorted(user_list)
 
     def test_game_not_exists(self, client, game):
         game_id = random.randint(10000, 99999)
@@ -103,14 +99,14 @@ class TestCharacterInviteView:
         assert pytest.raises(Http404)
 
     def test_context_data(self, client, game, create_characters):
-        character_list = Character.objects.filter(player__game=None)
+        user_list = User.objects.filter(character__isnull=False, player__isnull=True)
         response = client.get(reverse(self.path_name, args=(game.id,)))
-        assert set(response.context["character_list"]).issubset(character_list)
+        assert set(response.context["user_list"]).issubset(user_list)
 
     def test_context_data_all_characters_already_assigned(self, client, game):
         Character.objects.filter(player=None).delete()
         response = client.get(reverse(self.path_name, args=(game.id,)))
-        assertQuerySetEqual(response.context["character_list"], [])
+        assertQuerySetEqual(response.context["user_list"], [])
 
 
 @pytest.fixture(scope="class")
@@ -120,8 +116,8 @@ def create_player(django_db_blocker):
         PlayerFactory(game=game)
 
 
-class TestCharacterInviteConfirmView:
-    path_name = "game-invite-character-confirm"
+class TestUserInviteConfirmView:
+    path_name = "game-invite-user-confirm"
 
     @pytest.fixture
     def game(self, client, create_player):
@@ -130,43 +126,49 @@ class TestCharacterInviteConfirmView:
         return GameFactory(master__user__username="master")
 
     @pytest.fixture
-    def character(self):
-        return CharacterFactory()
+    def user(self):
+        # Users must have characters when accessing this view.
+        character = CharacterFactory()
+        return character.user
 
-    def test_view_mapping(self, client, game, character):
+    @pytest.fixture
+    def user_without_character(self):
+        return UserFactory()
+
+    def test_view_mapping(self, client, game, user):
         response = client.get(
             reverse(
                 self.path_name,
                 args=(
                     game.id,
-                    character.id,
+                    user.id,
                 ),
             )
         )
         assert response.status_code == 200
-        assert response.resolver_match.func.view_class == CharacterInviteConfirmView
+        assert response.resolver_match.func.view_class == UserInviteConfirmView
 
-    def test_template_mapping(self, client, game, character):
+    def test_template_mapping(self, client, game, user):
         response = client.get(
             reverse(
                 self.path_name,
                 args=(
                     game.id,
-                    character.id,
+                    user.id,
                 ),
             )
         )
         assert response.status_code == 200
-        assertTemplateUsed(response, "game/character_invite_confirm.html")
+        assertTemplateUsed(response, "game/user_invite_confirm.html")
 
-    def test_game_not_exists(self, client, game, character):
+    def test_game_not_exists(self, client, game, user):
         game_id = random.randint(10000, 99999)
         response = client.get(
             reverse(
                 self.path_name,
                 args=(
                     game_id,
-                    character.id,
+                    user.id,
                 ),
             )
         )
@@ -174,23 +176,38 @@ class TestCharacterInviteConfirmView:
         assert pytest.raises(Http404)
 
     @freeze_time(FREEZED_TIME)
-    def test_character_added_to_game(self, client, game, character):
-        character = CharacterFactory()
+    def test_user_with_character_added_to_game(self, client, game, user):
         response = client.post(
             reverse(
                 self.path_name,
                 args=(
                     game.id,
-                    character.id,
+                    user.id,
                 ),
             )
         )
         assert response.status_code == 302
         assertRedirects(response, reverse("game", args=(game.id,)))
-        assert character.player.game == game
-        event = Event.objects.last()
-        assert event.date == timezone.now()
-        assert event.game == game
+        assert user.player.game == game
+        user_invitation = UserInvitation.objects.last()
+        assert user_invitation.date == timezone.now()
+        assert user_invitation.game == game
+        assert user_invitation.user == user
+
+    @freeze_time(FREEZED_TIME)
+    def test_user_without_character_raises_exception(
+        self, client, game, user_without_character
+    ):
+        with pytest.raises(UserHasNoCharacter):
+            client.post(
+                reverse(
+                    self.path_name,
+                    args=(
+                        game.id,
+                        user_without_character.id,
+                    ),
+                )
+            )
 
 
 class TestGameStartView:

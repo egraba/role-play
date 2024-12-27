@@ -7,18 +7,20 @@ from django_celery_beat.models import IntervalSchedule, PeriodicTask
 from viewflow.fsm import TransitionNotAllowed
 
 from character.models.character import Character
+from user.models import User
 
 from ..constants.combat import FighterAttributeChoices
 from ..constants.events import RollType
+from ..exceptions import UserHasNoCharacter
 from ..flows import GameFlow
 from ..forms import AbilityCheckRequestForm, CombatCreateForm, QuestCreateForm
 from ..models.combat import Combat, Fighter
 from ..models.events import (
-    CharacterInvitation,
     CombatInitialization,
     CombatInitiativeRequest,
     GameStart,
     QuestUpdate,
+    UserInvitation,
 )
 from ..models.game import Player, Quest
 from ..tasks import send_mail
@@ -28,36 +30,42 @@ from ..utils.emails import get_players_emails
 from ..views.mixins import EventContextMixin, GameContextMixin, GameStatusControlMixin
 
 
-class CharacterInviteView(UserPassesTestMixin, ListView, GameContextMixin):
-    model = Character
+class UserInviteView(UserPassesTestMixin, ListView, GameContextMixin):
+    model = User
     paginate_by = 10
-    ordering = ["-xp"]
-    template_name = "game/character_invite.html"
+    template_name = "game/user_invite.html"
 
     def test_func(self):
         return self.is_user_master()
 
     def get_queryset(self):
-        return super().get_queryset().filter(player__game=None)
+        return (
+            super()
+            .get_queryset()
+            .filter(character__isnull=False, player__isnull=True)
+            .order_by("username")
+        )
 
 
-class CharacterInviteConfirmView(UserPassesTestMixin, UpdateView, GameContextMixin):
-    model = Character
+class UserInviteConfirmView(UserPassesTestMixin, UpdateView, GameContextMixin):
+    model = User
     fields = []  # type: list[str]
-    template_name = "game/character_invite_confirm.html"
+    template_name = "game/user_invite_confirm.html"
 
     def test_func(self):
         return self.is_user_master()
 
     def post(self, request, *args, **kwargs):
-        character = self.get_object()
-        CharacterInvitation.objects.create(game=self.game, character=character)
-        Player.objects.create(user=character.user, game=self.game, character=character)
+        user = self.get_object()
+        if not hasattr(user, "character"):
+            raise UserHasNoCharacter(f"{user=} has no character")
+        Player.objects.create(user=user, game=self.game, character=user.character)
+        UserInvitation.objects.create(user=user, game=self.game)
         send_mail.delay(
             subject=f"The Master invited you to join [{self.game}].",
-            message=f"{character}, the Master invited you to join [{self.game}].",
+            message=f"{user}, the Master invited you to join [{self.game}].",
             from_email=self.game.master.user.email,
-            recipient_list=[character.user.email],
+            recipient_list=[user.email],
         )
         return HttpResponseRedirect(reverse("game", args=(self.game.id,)))
 

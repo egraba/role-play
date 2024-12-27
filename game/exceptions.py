@@ -6,5 +6,9 @@ class InvalidRoll(Exception):
     pass
 
 
+class UserHasNoCharacter(Exception):
+    pass
+
+
 class EventSchemaValidationError(TypeError):
     pass

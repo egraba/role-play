@@ -22,7 +22,7 @@ from .skills import Skill
 
 class Character(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     race = models.CharField(max_length=14, choices=Race.choices)
     height = models.FloatField(default=0)
     weight = models.SmallIntegerField(default=0)

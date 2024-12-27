@@ -17,14 +17,14 @@ urlpatterns = [
         name="game-create-error",
     ),
     path(
-        "<int:game_id>/invite_character",
-        master.CharacterInviteView.as_view(),
-        name="game-invite-character",
+        "<int:game_id>/invite_user",
+        master.UserInviteView.as_view(),
+        name="game-invite-user",
     ),
     path(
-        "<int:game_id>/invite_character/<int:pk>/confirm",
-        master.CharacterInviteConfirmView.as_view(),
-        name="game-invite-character-confirm",
+        "<int:game_id>/invite_user/<int:pk>/confirm",
+        master.UserInviteConfirmView.as_view(),
+        name="game-invite-user-confirm",
     ),
     path(
         "<int:pk>/start_game",
