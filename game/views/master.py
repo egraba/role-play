@@ -32,7 +32,6 @@ from ..views.mixins import EventContextMixin, GameContextMixin, GameStatusContro
 class UserInviteView(UserPassesTestMixin, ListView, GameContextMixin):
     model = User
     paginate_by = 10
-    ordering = ["-xp"]
     template_name = "game/user_invite.html"
 
     def test_func(self):
