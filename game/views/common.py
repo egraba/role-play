@@ -25,7 +25,7 @@ class IndexView(TemplateView):
                 context["user_character"] = Character.objects.get(
                     user=self.request.user
                 )
-            except ObjectDoesNotExist:
+            except Character.DoesNotExist:
                 pass
         return context
 
