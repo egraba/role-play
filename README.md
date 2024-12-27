@@ -29,4 +29,4 @@ Player view.
 ![Index](docs/screenshot-game-02.png)
 
 ## Requirements
-`role-play` has been developed and tested with Python 3.11.
+`role-play` has been developed and tested with Python 3.13.

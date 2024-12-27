@@ -13,7 +13,7 @@ authors = [
     {name = "Eric Grabarczyk", email = "eric.grabarczyk@gmail.com"},
 ]
 license = {text = "GNU Affero General Public License v3.0"}
-requires-python = "<4.0,>=3.11"
+requires-python = "<4.0,>=3.13"
 dependencies = [
     "async-timeout",
     "celery",
