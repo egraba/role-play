@@ -38,7 +38,7 @@ class GameContextMixin(ContextMixin, View):
                 game_key(game_id), Game.objects.get(id=game_id)
             )
         except ObjectDoesNotExist as e:
-            raise Http404(f"Game [{game_id}] does not exist...") from e
+            raise Http404(f"Game of {game_id=} not found") from e
         if not self.is_user_master() and not self.is_user_player():
             raise PermissionDenied
 

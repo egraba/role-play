@@ -15,7 +15,7 @@ class Command(BaseCommand):
             try:
                 game = Game.objects.get(id=game_id)
             except Game.DoesNotExist:
-                self.stderr.write(self.style.ERROR(f"Game [{game_id}] not found"))
+                self.stderr.write(self.style.ERROR(f"Game of {game_id=} not found"))
                 raise
             Combat.objects.filter(game=game).delete()
         self.stdout.write(self.style.SUCCESS("Successfully deleted all combats"))

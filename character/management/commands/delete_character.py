@@ -16,6 +16,6 @@ class Command(BaseCommand):
         try:
             user = User.objects.get(username=username)
         except User.DoesNotExist as exc:
-            raise CommandError(f"[{username}] doesn't exist") from exc
+            raise CommandError(f"{username=} doesn't exist") from exc
         Character.objects.filter(user=user).delete()
         self.stdout.write(self.style.SUCCESS("Successfully deleted the character"))

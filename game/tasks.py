@@ -52,14 +52,14 @@ def store_message(
     try:
         game = cache.get_or_set(game_key(game_id), Game.objects.get(id=game_id))
     except Game.DoesNotExist as exc:
-        raise InvalidTaskError(f"Game [{game_id}] not found") from exc
+        raise InvalidTaskError(f"Game of {game_id=} not found") from exc
     if author_name is None:
         author = None
     else:
         try:
             author = Player.objects.get(character__user__username=author_name)
         except Player.DoesNotExist as exc:
-            raise InvalidTaskError(f"Player [{author_name}] not found") from exc
+            raise InvalidTaskError(f"{author_name=} not found") from exc
     Message.objects.create(
         game=game,
         date=date,
@@ -84,11 +84,11 @@ def process_roll(
     try:
         game = Game.objects.get(id=game_id)
     except Game.DoesNotExist as exc:
-        raise InvalidTaskError(f"Game [{game_id}] not found") from exc
+        raise InvalidTaskError(f"Game of {game_id=} not found") from exc
     try:
         character = Character.objects.get(id=character_id, player__game=game)
     except Character.DoesNotExist as exc:
-        raise InvalidTaskError(f"Character [{character_id}] not found") from exc
+        raise InvalidTaskError(f"Character of {character_id=} not found") from exc
 
     # Retrieve the corresponding roll request.
     roll_request = RollRequest.objects.filter(
@@ -138,11 +138,11 @@ def process_combat_initiative_roll(
     try:
         game = Game.objects.get(id=game_id)
     except Game.DoesNotExist as exc:
-        raise InvalidTaskError(f"Game [{game_id}] not found") from exc
+        raise InvalidTaskError(f"Game of {game_id=} not found") from exc
     try:
         character = Character.objects.get(id=character_id, player__game=game)
     except Character.DoesNotExist as exc:
-        raise InvalidTaskError(f"Character [{character_id}] not found") from exc
+        raise InvalidTaskError(f"Character of {character_id=} not found") from exc
 
     # Retrieve the corresponding roll request.
     roll_request = CombatInitiativeRequest.objects.filter(
