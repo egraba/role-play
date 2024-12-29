@@ -1,9 +1,8 @@
 import pytest
 
 from character.constants.abilities import AbilityName
-from character.tests.factories import CharacterFactory
 from game.constants.events import Against, DifficultyClass, RollResultType, RollType
-from game.tests.factories import RollRequestFactory
+from game.tests.factories import RollRequestFactory, PlayerFactory
 from game.rolls import perform_roll
 
 pytestmark = pytest.mark.django_db
@@ -14,14 +13,13 @@ def test_perform_roll_success(monkeypatch):
         return 10
 
     monkeypatch.setattr("utils.dice.DiceString.roll", patched_roll)
-
-    character = CharacterFactory()
+    player = PlayerFactory()
     request = RollRequestFactory(
-        character=character,
+        player=player,
         roll_type=RollType.ABILITY_CHECK,
         difficulty_class=DifficultyClass.EASY,
     )
-    _, result = perform_roll(character, request)
+    _, result = perform_roll(player, request)
     assert result == RollResultType.SUCCESS
 
 
@@ -30,14 +28,13 @@ def test_perform_roll_failure(monkeypatch):
         return 10
 
     monkeypatch.setattr("utils.dice.DiceString.roll", patched_roll)
-
-    character = CharacterFactory()
+    player = PlayerFactory()
     request = RollRequestFactory(
-        character=character,
+        player=player,
         roll_type=RollType.ABILITY_CHECK,
         difficulty_class=DifficultyClass.HARD,
     )
-    _, result = perform_roll(character, request)
+    _, result = perform_roll(player, request)
     assert result == RollResultType.FAILURE
 
 
@@ -52,15 +49,14 @@ def test_perform_roll_with_proficiency(monkeypatch):
     monkeypatch.setattr(
         "character.models.character.Character.is_proficient", patched_is_proficient
     )
-
-    character = CharacterFactory()
+    player = PlayerFactory()
     request = RollRequestFactory(
-        character=character,
+        player=player,
         ability_type=AbilityName.CHARISMA,
         roll_type=RollType.ABILITY_CHECK,
         difficulty_class=DifficultyClass.HARD,
     )
-    score, _ = perform_roll(character, request)
+    score, _ = perform_roll(player, request)
     assert score == 12
 
 
@@ -77,13 +73,12 @@ def test_perform_roll_with_advantage(monkeypatch):
     monkeypatch.setattr(
         "character.models.character.Character.has_advantage", patched_advantage
     )
-
-    character = CharacterFactory()
+    player = PlayerFactory()
     request = RollRequestFactory(
-        character=character,
+        player=player,
         roll_type=RollType.SAVING_THROW,
         difficulty_class=DifficultyClass.EASY,
         against=Against.POISON,
     )
-    score, _ = perform_roll(character, request)
+    score, _ = perform_roll(player, request)
     assert score == 15
