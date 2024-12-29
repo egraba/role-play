@@ -21,10 +21,11 @@ from .models.events import (
     RollResponse,
     RollResult,
 )
-from .models.game import Game, Player
+from .models.game import Game, Player, Master
 from .rolls import perform_combat_initiative_roll, perform_roll
 from .utils.cache import game_key
 from .utils.channels import send_to_channel
+from .schemas import PlayerType
 
 logger = get_task_logger(__name__)
 
@@ -42,8 +43,7 @@ def store_message(
     game_id: int,
     date: datetime,
     message: str,
-    is_from_master: bool,
-    author_name: str | None = None,
+    author_str: str | None = None,
 ) -> None:
     """
     Store the message received in the channel.
@@ -53,18 +53,22 @@ def store_message(
         game = cache.get_or_set(game_key(game_id), Game.objects.get(id=game_id))
     except Game.DoesNotExist as exc:
         raise InvalidTaskError(f"Game of {game_id=} not found") from exc
-    if author_name is None:
-        author = None
-    else:
+    if author_str == PlayerType.MASTER:
         try:
-            author = Player.objects.get(character__user__username=author_name)
+            author = Master.objects.get(game=game)
+        except Master.DoesNotExist as exc:
+            raise InvalidTaskError(f"{author_str} not found") from exc
+    elif author_str == PlayerType.PLAYER:
+        try:
+            author = Player.objects.get(character__user__username=author_str)
         except Player.DoesNotExist as exc:
-            raise InvalidTaskError(f"{author_name=} not found") from exc
+            raise InvalidTaskError(f"{author_str=} not found") from exc
+    else:
+        raise InvalidTaskError(f"{author_str} is not supported")
     Message.objects.create(
         game=game,
         date=date,
         content=message,
-        is_from_master=is_from_master,
         author=author,
     )
 

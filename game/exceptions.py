@@ -10,5 +10,9 @@ class InvalidRoll(Exception):
     pass
 
 
+class UnsupportedActor(Exception):
+    pass
+
+
 class UserHasNoCharacter(Exception):
     pass

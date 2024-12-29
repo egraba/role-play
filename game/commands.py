@@ -5,7 +5,7 @@ from game.models.game import Game
 from user.models import User
 
 from .constants.events import RollType
-from .schemas import EventSchema, PlayerType
+from .schemas import EventSchema
 from .tasks import process_combat_initiative_roll, process_roll, store_message
 
 
@@ -24,18 +24,11 @@ class Command(ABC):
 
 class ProcessMessageCommand(Command):
     def execute(self, content: EventSchema, user: User, game: Game) -> None:
-        if content["player_type"] == PlayerType.MASTER:
-            is_from_master = True
-            author_name = None
-        else:
-            is_from_master = False
-            author_name = Character.objects.get(user=user).user.username
         store_message.delay(
             game_id=game.id,
             date=content["date"],
             message=content["message"],
-            is_from_master=is_from_master,
-            author_name=author_name,
+            author_str=content["player_type"],
         )
 
 
