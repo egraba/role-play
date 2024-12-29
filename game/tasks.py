@@ -74,25 +74,25 @@ def process_roll(
     game_id: int,
     roll_type: RollType,
     date: datetime,
-    character_id: int,
+    player_id: int,
 ) -> None:
     """
     Process a dice roll.
     """
-    logger.info(f"{game_id=}, {roll_type=}, {date=}, {character_id=}")
+    logger.info(f"{game_id=}, {roll_type=}, {date=}, {player_id=}")
 
     try:
         game = Game.objects.get(id=game_id)
     except Game.DoesNotExist as exc:
         raise InvalidTaskError(f"Game of {game_id=} not found") from exc
     try:
-        character = Character.objects.get(id=character_id, player__game=game)
-    except Character.DoesNotExist as exc:
-        raise InvalidTaskError(f"Character of {character_id=} not found") from exc
+        player = Player.objects.get(id=player_id, game=game)
+    except Player.DoesNotExist as exc:
+        raise InvalidTaskError(f"Player of {player_id=} not found") from exc
 
     # Retrieve the corresponding roll request.
     roll_request = RollRequest.objects.filter(
-        roll_type=roll_type, character=character, status=RollStatus.PENDING
+        roll_type=roll_type, player=player, status=RollStatus.PENDING
     ).first()
     if roll_request is None:
         raise InvalidTaskError("Roll request not found")
@@ -100,15 +100,15 @@ def process_roll(
 
     # Store the roll response.
     roll_response = RollResponse.objects.create(
-        game=game, date=date, character=character, request=roll_request
+        game=game, date=date, player=player, request=roll_request
     )
     logger.info(f"{roll_response.request=}")
 
-    score, result = perform_roll(character, roll_request)
+    score, result = perform_roll(player, roll_request)
     roll_result = RollResult.objects.create(
         game=game,
         date=date,
-        character=character,
+        player=player,
         request=roll_request,
         response=roll_response,
         score=score,

@@ -3,10 +3,9 @@ from celery.exceptions import InvalidTaskError
 from django.utils import timezone
 from faker import Faker
 
-from character.models.character import Character
 from game.constants.events import RollStatus, RollType
 from game.models.events import Message, RollRequest, RollResponse, RollResult
-from game.models.game import Game
+from game.models.game import Game, Player
 from game.tasks import process_roll, store_message
 
 from .factories import GameFactory, MessageFactory, RollRequestFactory
@@ -63,26 +62,26 @@ class TestProcessRoll:
         return Game.objects.last()
 
     @pytest.fixture
-    def character(self):
+    def player(self):
         # Retrieved from RollRequestFactory.
-        return Character.objects.last()
+        return Player.objects.last()
 
     @pytest.fixture
     def ability_check_request(self):
         return RollRequestFactory(roll_type=RollType.ABILITY_CHECK)
 
     def test_process_roll_ability_check_success(
-        self, celery_worker, ability_check_request, game, character
+        self, celery_worker, ability_check_request, game, player
     ):
         date = timezone.now()
         process_roll.delay(
             game_id=game.id,
             roll_type=RollType.ABILITY_CHECK,
             date=date,
-            character_id=character.id,
+            player_id=player.id,
         ).get()
 
-        assert character.player.game == game
+        assert player.game == game
 
         roll_response = RollResponse.objects.last()
         assert roll_response.game == game
@@ -94,7 +93,7 @@ class TestProcessRoll:
         assert ability_check_request.status == RollStatus.DONE
 
     def test_process_roll_failure_game_not_found(
-        self, celery_worker, ability_check_request, character
+        self, celery_worker, ability_check_request, player
     ):
         fake = Faker()
         date = timezone.now()
@@ -103,7 +102,7 @@ class TestProcessRoll:
                 game_id=fake.random_int(min=1000),
                 roll_type=RollType.ABILITY_CHECK,
                 date=date.isoformat(),
-                character_id=character.id,
+                player_id=player.id,
             ).get()
 
         ability_check_request = RollRequest.objects.last()
@@ -119,14 +118,14 @@ class TestProcessRoll:
                 game_id=game.id,
                 roll_type=RollType.ABILITY_CHECK,
                 date=date.isoformat(),
-                character_id=fake.random_int(min=1000),
+                player_id=fake.random_int(min=1000),
             ).get()
 
         ability_check_request = RollRequest.objects.last()
         assert ability_check_request.status == RollStatus.PENDING
 
     def test_process_roll_failure_request_not_found(
-        self, celery_worker, ability_check_request, game, character
+        self, celery_worker, ability_check_request, game, player
     ):
         date = timezone.now()
         RollRequest.objects.last().delete()
@@ -135,7 +134,7 @@ class TestProcessRoll:
                 game_id=game.id,
                 roll_type=RollType.ABILITY_CHECK,
                 date=date.isoformat(),
-                character_id=character.id,
+                player_id=player.id,
             ).get()
 
     @pytest.fixture
@@ -143,17 +142,17 @@ class TestProcessRoll:
         return RollRequestFactory(roll_type=RollType.SAVING_THROW)
 
     def test_process_roll_saving_throw_success(
-        self, celery_worker, saving_throw_request, game, character
+        self, celery_worker, saving_throw_request, game, player
     ):
         date = timezone.now()
         process_roll.delay(
             game_id=game.id,
             roll_type=RollType.SAVING_THROW,
             date=date.isoformat(),
-            character_id=character.id,
+            player_id=player.id,
         ).get()
 
-        assert character.player.game == game
+        assert player.game == game
 
         roll_result = RollResult.objects.last()
         assert roll_result.game == game
