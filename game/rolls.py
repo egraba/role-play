@@ -1,19 +1,20 @@
 from character.constants.abilities import AbilityName
 from character.models.abilities import Ability, AbilityType
-from character.models.character import Character
 from utils.dice import DiceString
 
 from .constants.events import RollResultType
 from .exceptions import InvalidRoll
 from .models.combat import Fighter
 from .models.events import RollRequest
+from .models.game import Player
 
 
-def _roll(character: Character, ability_type: AbilityType) -> int:
+def _roll(player: Player, ability_type: AbilityType) -> int:
     """
-    Perform a roll and add proficiency bonus to the score,
-    if the character is proficient in the ability passed as argument.
+    Perform a roll and add proficiency bonus to the score, if the player's character
+    is proficient in the ability passed as argument.
     """
+    character = player.character
     try:
         ability = character.abilities.get(ability_type=ability_type)
     except Ability.DoesNotExist:
@@ -24,30 +25,29 @@ def _roll(character: Character, ability_type: AbilityType) -> int:
     return score
 
 
-def perform_roll(
-    character: Character, request: RollRequest
-) -> tuple[int, tuple[str, str]]:
+def perform_roll(player: Player, request: RollRequest) -> tuple[int, tuple[str, str]]:
     """
     Perform dice roll, according to DnD rules:
-    - It adds proficiency bonus in case the character has the ability given in the roll request.
-    - It adds or remove points in case the character has advantages or disadvantages.
+    - It adds proficiency bonus in case the player's character has the ability given in the roll request.
+    - It adds or remove points in case the player's character has advantages or disadvantages.
 
     Args:
-        character (Character): The character who performs the roll.
+        player (Player): The player who performs the roll.
         request (RollRequest): The corresponding roll request from the master.
 
     Returns:
         tuple[int, tuple[str, str]]: Dice roll score and roll type result.
     """
 
-    score = _roll(character, request.ability_type)
+    character = player.character
+    score = _roll(player, request.ability_type)
     has_advantage = character.has_advantage(request.roll_type, request.against)
     has_disadvantage = character.has_disadvantage(request.roll_type, request.against)
     if has_advantage and has_disadvantage:
         # If the character has both advantage and disadantage, there is no more roll.
         pass
     else:
-        new_score = _roll(character, request.ability_type)
+        new_score = _roll(player, request.ability_type)
         if has_advantage:
             score = max(score, new_score)
         if has_disadvantage:
