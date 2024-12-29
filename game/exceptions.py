@@ -1,3 +1,7 @@
+class EventSchemaValidationError(Exception):
+    pass
+
+
 class InvalidRoll(Exception):
     """
     Raised when roll parameters are not valid.
@@ -7,8 +11,4 @@ class InvalidRoll(Exception):
 
 
 class UserHasNoCharacter(Exception):
-    pass
-
-
-class EventSchemaValidationError(TypeError):
     pass
