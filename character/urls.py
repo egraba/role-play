@@ -2,9 +2,7 @@ from django.urls import path
 
 from .views.backgrounds import BackgroundCompleteView
 from .views.character import CharacterCreateView, CharacterDetailView
-from .views.equipment import EquipmentSelectView
 from .views.glossary import GlossaryView
-from .views.skills import SkillsSelectView
 
 urlpatterns = [
     path(
@@ -16,16 +14,6 @@ urlpatterns = [
         "create_character",
         CharacterCreateView.as_view(),
         name="character-create",
-    ),
-    path(
-        "<int:character_id>/select_equipment",
-        EquipmentSelectView.as_view(),
-        name="equipment-select",
-    ),
-    path(
-        "<int:character_id>/select_skills",
-        SkillsSelectView.as_view(),
-        name="skills-select",
     ),
     path(
         "<int:character_id>/complete_background",
