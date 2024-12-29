@@ -62,7 +62,7 @@ class GameView(LoginRequiredMixin, ListView, GameContextMixin):
             current_player = Player.objects.get(character__user=self.request.user)
             context["player"] = current_player
             context["ability_check_request"] = RollRequest.objects.filter(
-                character__player=current_player,
+                player=current_player,
                 roll_type=RollType.ABILITY_CHECK,
                 status=RollStatus.PENDING,
                 is_combat=False,
@@ -74,7 +74,7 @@ class GameView(LoginRequiredMixin, ListView, GameContextMixin):
                 ).first()
             )
             context["saving_throw_request"] = RollRequest.objects.filter(
-                character__player=current_player,
+                player=current_player,
                 roll_type=RollType.SAVING_THROW,
                 status=RollStatus.PENDING,
             ).first()

@@ -111,19 +111,10 @@ class RollRequestFactory(factory.django.DjangoModelFactory):
         skip_postgeneration_save = True
 
     game = factory.SubFactory(GameFactory)
-    character = factory.SubFactory("character.tests.factories.CharacterFactory")
+    player = factory.SubFactory(PlayerFactory)
     ability_type = factory.Faker("enum", enum_cls=AbilityName)
     difficulty_class = factory.Faker("enum", enum_cls=DifficultyClass)
     roll_type = factory.Faker("enum", enum_cls=RollType)
-
-    @factory.post_generation
-    def add_character_to_game(obj, create, extracted, **kwargs):
-        if not create:
-            return
-        character = obj.character
-        game = obj.game
-        PlayerFactory(character=character, game=game)
-        character.save()
 
 
 class RollResponseFactory(factory.django.DjangoModelFactory):
@@ -131,7 +122,7 @@ class RollResponseFactory(factory.django.DjangoModelFactory):
         model = RollResponse
 
     game = factory.SubFactory(GameFactory)
-    character = factory.SubFactory("character.tests.factories.CharacterFactory")
+    player = factory.SubFactory(PlayerFactory)
     request = factory.SubFactory(RollRequest)
 
 
@@ -140,7 +131,7 @@ class RollResultFactory(factory.django.DjangoModelFactory):
         model = RollResult
 
     game = factory.SubFactory(GameFactory)
-    character = factory.SubFactory("character.tests.factories.CharacterFactory")
+    player = factory.SubFactory(PlayerFactory)
     request = factory.SubFactory(RollRequest)
     response = factory.SubFactory(RollResponse)
     score = factory.Faker("random_int", min=1, max=20)
