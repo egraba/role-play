@@ -5,6 +5,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Changed
+* Actions are now done by players and not characters
 * Index page displays more relevant buttons
 * Users are now invited, instead of characters
 * `Player` model have now one-to-one relation with `User`
