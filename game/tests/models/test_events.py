@@ -121,7 +121,7 @@ class TestRollRequestModel:
     def test_get_message(self, roll_request):
         assert (
             roll_request.get_message()
-            == f"{roll_request.character} needs to perform a {roll_request.ability_type} check! \
+            == f"{roll_request.player} needs to perform a {roll_request.ability_type} check! \
             Difficulty: {roll_request.get_difficulty_class_display()}."
         )
 
@@ -137,7 +137,7 @@ class TestRollResponseModel:
     def test_get_message(self, roll_response):
         assert (
             roll_response.get_message()
-            == f"{roll_response.character} performed an ability check!"
+            == f"{roll_response.player} performed an ability check!"
         )
 
 
@@ -154,7 +154,7 @@ class TestRollResultModel:
     def test_get_message(self, roll_result):
         assert (
             roll_result.get_message()
-            == f"[{roll_result.character.user}]'s score: {roll_result.score}, \
+            == f"[{roll_result.player}]'s score: {roll_result.score}, \
             {roll_result.request.roll_type} result: {roll_result.get_result_display()}"
         )
 
