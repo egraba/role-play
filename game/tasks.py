@@ -96,7 +96,7 @@ def process_roll(
     ).first()
     if roll_request is None:
         raise InvalidTaskError("Roll request not found")
-    logger.info(f"{roll_request=}, {roll_request.character=}")
+    logger.info(f"{roll_request=}, {roll_request.player=}")
 
     # Store the roll response.
     roll_response = RollResponse.objects.create(
