@@ -42,9 +42,9 @@ class Quest(models.Model):
 class Actor(models.Model):
     @property
     def user(self):
-        if self.master:
+        if hasattr(self, "master"):
             return self.master.user
-        elif self.player:
+        elif hasattr(self, "player"):
             return self.player.user
         else:
             return None

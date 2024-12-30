@@ -75,8 +75,9 @@ def store_message(
 @shared_task
 def process_roll(
     game_id: int,
-    roll_type: RollType,
+    author_id: int,
     date: datetime,
+    roll_type: RollType,
     player_id: int,
 ) -> None:
     """
@@ -89,7 +90,7 @@ def process_roll(
     except Game.DoesNotExist as exc:
         raise InvalidTaskError(f"Game of {game_id=} not found") from exc
     try:
-        player = Player.objects.get(id=player_id, game=game)
+        player = Player.objects.get(id=player_id, actor_ptr__id=author_id, game=game)
     except Player.DoesNotExist as exc:
         raise InvalidTaskError(f"Player of {player_id=} not found") from exc
 
@@ -103,13 +104,14 @@ def process_roll(
 
     # Store the roll response.
     roll_response = RollResponse.objects.create(
-        game=game, date=date, player=player, request=roll_request
+        game=game, author=player, date=date, player=player, request=roll_request
     )
     logger.info(f"{roll_response.request=}")
 
     score, result = perform_roll(player, roll_request)
     roll_result = RollResult.objects.create(
         game=game,
+        author=player.actor_ptr,
         date=date,
         player=player,
         request=roll_request,

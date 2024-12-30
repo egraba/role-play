@@ -117,11 +117,10 @@ class QuestUpdateFactory(factory.django.DjangoModelFactory):
 class RollRequestFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = RollRequest
-        skip_postgeneration_save = True
 
     game = factory.SubFactory(GameFactory)
     author = factory.SubFactory(ActorFactory)
-    player = factory.SubFactory(PlayerFactory)
+    player = factory.SubFactory(PlayerFactory, game=factory.SelfAttribute("..game"))
     ability_type = factory.Faker("enum", enum_cls=AbilityName)
     difficulty_class = factory.Faker("enum", enum_cls=DifficultyClass)
     roll_type = factory.Faker("enum", enum_cls=RollType)

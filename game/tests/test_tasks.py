@@ -5,7 +5,6 @@ from faker import Faker
 
 from game.constants.events import RollStatus, RollType
 from game.models.events import Message, RollRequest, RollResponse, RollResult
-from game.models.game import Game, Player
 from game.tasks import process_roll, store_message
 
 from .factories import GameFactory, MessageFactory, RollRequestFactory
@@ -55,27 +54,20 @@ class TestStoreMessage:
 
 class TestProcessRoll:
     @pytest.fixture
-    def game(self):
-        # Retrieved from RollRequestFactory.
-        return Game.objects.last()
-
-    @pytest.fixture
-    def player(self):
-        # Retrieved from RollRequestFactory.
-        return Player.objects.last()
-
-    @pytest.fixture
     def ability_check_request(self):
         return RollRequestFactory(roll_type=RollType.ABILITY_CHECK)
 
     def test_process_roll_ability_check_success(
-        self, celery_worker, ability_check_request, game, player
+        self, celery_worker, ability_check_request
     ):
+        game = ability_check_request.game
+        player = ability_check_request.player
         date = timezone.now()
         process_roll.delay(
             game_id=game.id,
-            roll_type=RollType.ABILITY_CHECK,
+            author_id=player.actor_ptr.id,
             date=date,
+            roll_type=RollType.ABILITY_CHECK,
             player_id=player.id,
         ).get()
 
@@ -91,13 +83,15 @@ class TestProcessRoll:
         assert ability_check_request.status == RollStatus.DONE
 
     def test_process_roll_failure_game_not_found(
-        self, celery_worker, ability_check_request, player
+        self, celery_worker, ability_check_request
     ):
         fake = Faker()
+        player = ability_check_request.player
         date = timezone.now()
         with pytest.raises(InvalidTaskError):
             process_roll.delay(
                 game_id=fake.random_int(min=1000),
+                author_id=player.actor_ptr.id,
                 roll_type=RollType.ABILITY_CHECK,
                 date=date.isoformat(),
                 player_id=player.id,
@@ -107,13 +101,15 @@ class TestProcessRoll:
         assert ability_check_request.status == RollStatus.PENDING
 
     def test_process_roll_failure_character_not_found(
-        self, celery_worker, ability_check_request, game
+        self, celery_worker, ability_check_request
     ):
         fake = Faker()
+        game = ability_check_request.game
         date = timezone.now()
         with pytest.raises(InvalidTaskError):
             process_roll.delay(
                 game_id=game.id,
+                author_id=fake.random_int(min=1000),
                 roll_type=RollType.ABILITY_CHECK,
                 date=date.isoformat(),
                 player_id=fake.random_int(min=1000),
@@ -123,13 +119,16 @@ class TestProcessRoll:
         assert ability_check_request.status == RollStatus.PENDING
 
     def test_process_roll_failure_request_not_found(
-        self, celery_worker, ability_check_request, game, player
+        self, celery_worker, ability_check_request
     ):
+        game = ability_check_request.game
+        player = ability_check_request.player
         date = timezone.now()
         RollRequest.objects.last().delete()
         with pytest.raises(InvalidTaskError):
             process_roll.delay(
                 game_id=game.id,
+                author_id=player.actor_ptr.id,
                 roll_type=RollType.ABILITY_CHECK,
                 date=date.isoformat(),
                 player_id=player.id,
@@ -140,11 +139,14 @@ class TestProcessRoll:
         return RollRequestFactory(roll_type=RollType.SAVING_THROW)
 
     def test_process_roll_saving_throw_success(
-        self, celery_worker, saving_throw_request, game, player
+        self, celery_worker, saving_throw_request
     ):
+        game = saving_throw_request.game
+        player = saving_throw_request.player
         date = timezone.now()
         process_roll.delay(
             game_id=game.id,
+            author_id=player.actor_ptr.id,
             roll_type=RollType.SAVING_THROW,
             date=date.isoformat(),
             player_id=player.id,
