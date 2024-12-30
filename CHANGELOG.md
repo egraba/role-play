@@ -4,6 +4,9 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 
 ## Unreleased
 
+### Added
+* Increase test coverage
+
 ### Changed
 * Created `Actor` model to encapsulate `Master` and `Player` models
 * Actions are now done by players and not characters
