@@ -34,10 +34,9 @@ class TestStoreMessage:
         message = fake.text(100)
         store_message.delay(
             game_id=game.id,
+            author_str=game.master.user.username,
             date=date,
             message=message,
-            is_from_master=fake.boolean(),
-            author_name=None,
         ).get()
         message = Message.objects.last()
         assert message.game == game
@@ -50,8 +49,7 @@ class TestStoreMessage:
                 game_id=fake.random_int(min=9999),
                 date=timezone.now(),
                 message=fake.text(100),
-                is_from_master=fake.boolean(),
-                author_name=None,
+                author_str=fake.user_name(),
             ).get()
 
 
