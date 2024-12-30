@@ -108,22 +108,20 @@ class RollRequest(Event):
 
 
 class RollResponse(Event):
-    player = models.ForeignKey(Player, on_delete=models.CASCADE)
     request = models.ForeignKey(RollRequest, on_delete=models.CASCADE)
 
     def get_message(self):
-        return f"{self.player} performed an ability check!"
+        return f"{self.request.player} performed an ability check!"
 
 
 class RollResult(Event):
-    player = models.ForeignKey(Player, on_delete=models.CASCADE)
     request = models.ForeignKey(RollRequest, on_delete=models.CASCADE)
     response = models.ForeignKey(RollResponse, on_delete=models.CASCADE)
     score = models.SmallIntegerField()
     result = models.CharField(max_length=1, choices=RollResultType)
 
     def get_message(self):
-        return f"[{self.player.user}]'s score: {self.score}, \
+        return f"[{self.request.player}]'s score: {self.score}, \
             {self.request.roll_type} result: {self.get_result_display()}"
 
 

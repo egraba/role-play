@@ -132,7 +132,6 @@ class RollResponseFactory(factory.django.DjangoModelFactory):
 
     game = factory.SubFactory(GameFactory)
     author = factory.SubFactory(ActorFactory)
-    player = factory.SubFactory(PlayerFactory)
     request = factory.SubFactory(RollRequest)
 
 
@@ -142,7 +141,6 @@ class RollResultFactory(factory.django.DjangoModelFactory):
 
     game = factory.SubFactory(GameFactory)
     author = factory.SubFactory(ActorFactory)
-    player = factory.SubFactory(PlayerFactory)
     request = factory.SubFactory(RollRequest)
     response = factory.SubFactory(RollResponse)
     score = factory.Faker("random_int", min=1, max=20)

@@ -103,7 +103,7 @@ def process_roll(
 
     # Store the roll response.
     roll_response = RollResponse.objects.create(
-        game=game, author=player, date=date, player=player, request=roll_request
+        game=game, author=player, date=date, request=roll_request
     )
     logger.info(f"{roll_response.request=}")
 
@@ -112,7 +112,6 @@ def process_roll(
         game=game,
         author=player.actor_ptr,
         date=date,
-        player=player,
         request=roll_request,
         response=roll_response,
         score=score,
