@@ -30,6 +30,7 @@ class TestStoreMessage:
         ).get()
         message = Message.objects.last()
         assert message.game == game
+        assert message.author == game.master.actor_ptr
         assert message.message == message
 
     def test_message_message_stored_from_player(self, celery_worker):
@@ -44,6 +45,7 @@ class TestStoreMessage:
         ).get()
         message = Message.objects.last()
         assert message.game == game
+        assert message.author == player.actor_ptr
         assert message.message == message
 
     def test_message_message_stored_from_unfound_author(self, celery_worker):
