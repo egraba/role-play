@@ -7,7 +7,7 @@ from faker import Faker
 from character.tests.factories import CharacterFactory
 from game.consumers import GameEventsConsumer
 from game.exceptions import EventSchemaValidationError
-from game.schemas import EventSchema, EventType, PlayerType
+from game.schemas import EventSchema, EventType
 from user.tests.factories import UserFactory
 
 from .factories import GameFactory, PlayerFactory
@@ -88,7 +88,6 @@ async def test_communication_message_from_master(application, game, user):
     message = fake.text(100)
     game_event = {
         "type": EventType.MESSAGE,
-        "player_type": PlayerType.MASTER,
         "date": date,
         "message": message,
     }
@@ -113,7 +112,6 @@ async def test_communication_message_from_player(application, game, user):
     message = fake.text(100)
     game_event = {
         "type": EventType.MESSAGE,
-        "player_type": PlayerType.PLAYER,
         "username": "player",
         "date": date,
         "message": message,

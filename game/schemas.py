@@ -26,13 +26,6 @@ class EventType(StrEnum):
     COMBAT_INITIALIZATION_COMPLETE = "combat.initialization.complete"
 
 
-class PlayerType(StrEnum):
-    """Type of player in a game."""
-
-    MASTER = "master"
-    PLAYER = "player"
-
-
 class EventOrigin(IntFlag):
     """
     Game events can be initiated from the client side (e.g. via a browser),
@@ -47,8 +40,7 @@ class EventSchema(BaseModel):
     """Schema used for communication within channels."""
 
     type: EventType  # "type" field is necessary for Django channels.
+    username: str
     date: datetime
-    player_type: PlayerType
-    username: Optional[str] = None
     message: Optional[str] = None
     origin: Optional[EventOrigin] = None

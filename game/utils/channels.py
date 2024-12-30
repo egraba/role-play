@@ -23,7 +23,6 @@ from ..schemas import (
     EventOrigin,
     EventSchema,
     EventType,
-    PlayerType,
 )
 
 
@@ -70,7 +69,6 @@ def send_to_channel(event: Event) -> None:
     game_event = {
         "type": _get_event_type(event),
         "date": event.date.isoformat(),
-        "player_type": PlayerType.MASTER,
         "message": event.get_message(),
         "origin": EventOrigin.SERVER_SIDE,
     }

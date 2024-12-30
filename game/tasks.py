@@ -25,7 +25,6 @@ from .models.game import Game, Player, Master
 from .rolls import perform_combat_initiative_roll, perform_roll
 from .utils.cache import game_key
 from .utils.channels import send_to_channel
-from .schemas import PlayerType
 
 logger = get_task_logger(__name__)
 
@@ -43,7 +42,7 @@ def store_message(
     game_id: int,
     date: datetime,
     message: str,
-    author_str: str | None = None,
+    author_str: str,
 ) -> None:
     """
     Store the message received in the channel.
@@ -53,18 +52,18 @@ def store_message(
         game = cache.get_or_set(game_key(game_id), Game.objects.get(id=game_id))
     except Game.DoesNotExist as exc:
         raise InvalidTaskError(f"Game of {game_id=} not found") from exc
-    if author_str == PlayerType.MASTER:
+    if Master.objects.filter(game=game, user__username=author_str).exists():
         try:
-            author = Master.objects.get(game=game)
+            author = Master.objects.get(game=game, user__username=author_str)
         except Master.DoesNotExist as exc:
             raise InvalidTaskError(f"{author_str} not found") from exc
-    elif author_str == PlayerType.PLAYER:
+    elif Player.objects.filter(game=game, user__username=author_str).exists():
         try:
-            author = Player.objects.get(character__user__username=author_str)
+            author = Player.objects.get(game=game, user__username=author_str)
         except Player.DoesNotExist as exc:
             raise InvalidTaskError(f"{author_str=} not found") from exc
     else:
-        raise InvalidTaskError(f"{author_str} is not supported")
+        raise InvalidTaskError(f"{author_str} is not a supported actor")
     Message.objects.create(
         game=game,
         date=date,
