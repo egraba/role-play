@@ -68,7 +68,6 @@ class TestProcessRoll:
             author_id=player.actor_ptr.id,
             date=date,
             roll_type=RollType.ABILITY_CHECK,
-            player_id=player.id,
         ).get()
 
         assert player.game == game
@@ -94,13 +93,12 @@ class TestProcessRoll:
                 author_id=player.actor_ptr.id,
                 roll_type=RollType.ABILITY_CHECK,
                 date=date.isoformat(),
-                player_id=player.id,
             ).get()
 
         ability_check_request = RollRequest.objects.last()
         assert ability_check_request.status == RollStatus.PENDING
 
-    def test_process_roll_failure_character_not_found(
+    def test_process_roll_failure_author_not_found(
         self, celery_worker, ability_check_request
     ):
         fake = Faker()
@@ -112,7 +110,6 @@ class TestProcessRoll:
                 author_id=fake.random_int(min=1000),
                 roll_type=RollType.ABILITY_CHECK,
                 date=date.isoformat(),
-                player_id=fake.random_int(min=1000),
             ).get()
 
         ability_check_request = RollRequest.objects.last()
@@ -131,7 +128,6 @@ class TestProcessRoll:
                 author_id=player.actor_ptr.id,
                 roll_type=RollType.ABILITY_CHECK,
                 date=date.isoformat(),
-                player_id=player.id,
             ).get()
 
     @pytest.fixture
@@ -149,7 +145,6 @@ class TestProcessRoll:
             author_id=player.actor_ptr.id,
             roll_type=RollType.SAVING_THROW,
             date=date.isoformat(),
-            player_id=player.id,
         ).get()
 
         assert player.game == game

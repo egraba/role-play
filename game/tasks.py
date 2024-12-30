@@ -78,21 +78,20 @@ def process_roll(
     author_id: int,
     date: datetime,
     roll_type: RollType,
-    player_id: int,
 ) -> None:
     """
     Process a dice roll.
     """
-    logger.info(f"{game_id=}, {roll_type=}, {date=}, {player_id=}")
+    logger.info(f"{game_id=}, {author_id=}, {roll_type=}, {date=}")
 
     try:
         game = Game.objects.get(id=game_id)
     except Game.DoesNotExist as exc:
         raise InvalidTaskError(f"Game of {game_id=} not found") from exc
     try:
-        player = Player.objects.get(id=player_id, actor_ptr__id=author_id, game=game)
+        player = Player.objects.get(actor_ptr__id=author_id, game=game)
     except Player.DoesNotExist as exc:
-        raise InvalidTaskError(f"Player of {player_id=} not found") from exc
+        raise InvalidTaskError(f"Player of {author_id=} not found") from exc
 
     # Retrieve the corresponding roll request.
     roll_request = RollRequest.objects.filter(
