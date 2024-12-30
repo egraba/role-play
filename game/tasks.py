@@ -52,18 +52,17 @@ def store_message(
         game = cache.get_or_set(game_key(game_id), Game.objects.get(id=game_id))
     except Game.DoesNotExist as exc:
         raise InvalidTaskError(f"Game of {game_id=} not found") from exc
-    if Master.objects.filter(game=game, user__username=author_str).exists():
-        try:
-            author = Master.objects.get(game=game, user__username=author_str)
-        except Master.DoesNotExist as exc:
-            raise InvalidTaskError(f"{author_str} not found") from exc
-    elif Player.objects.filter(game=game, user__username=author_str).exists():
-        try:
-            author = Player.objects.get(game=game, user__username=author_str)
-        except Player.DoesNotExist as exc:
-            raise InvalidTaskError(f"{author_str=} not found") from exc
-    else:
-        raise InvalidTaskError(f"{author_str} is not a supported actor")
+    author = None
+    try:
+        author = Master.objects.get(game=game, user__username=author_str)
+    except Master.DoesNotExist:
+        pass
+    try:
+        author = Player.objects.get(game=game, user__username=author_str)
+    except Player.DoesNotExist:
+        pass
+    if author is None:
+        raise InvalidTaskError(f"{author_str} not found")
     Message.objects.create(
         game=game,
         date=date,
