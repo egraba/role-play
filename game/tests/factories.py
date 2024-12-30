@@ -16,8 +16,13 @@ from game.models.events import (
     RollResponse,
     RollResult,
 )
-from game.models.game import Game, Master, Player, Quest
+from game.models.game import Game, Master, Player, Quest, Actor
 from user.tests.factories import UserFactory
+
+
+class ActorFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Actor
 
 
 class MasterFactory(factory.django.DjangoModelFactory):
@@ -71,6 +76,7 @@ class EventFactory(factory.django.DjangoModelFactory):
         model = Event
 
     game = factory.SubFactory(GameFactory)
+    author = factory.SubFactory(ActorFactory)
 
 
 class GameStartFactory(factory.django.DjangoModelFactory):
@@ -78,6 +84,7 @@ class GameStartFactory(factory.django.DjangoModelFactory):
         model = GameStart
 
     game = factory.SubFactory(GameFactory)
+    author = factory.SubFactory(ActorFactory)
 
 
 class UserInvitationFactory(factory.django.DjangoModelFactory):
@@ -85,6 +92,7 @@ class UserInvitationFactory(factory.django.DjangoModelFactory):
         model = UserInvitation
 
     game = factory.SubFactory(GameFactory)
+    author = factory.SubFactory(ActorFactory)
     user = factory.SubFactory(UserFactory)
 
 
@@ -93,16 +101,17 @@ class MessageFactory(factory.django.DjangoModelFactory):
         model = Message
 
     game = factory.SubFactory(GameFactory)
+    author = factory.SubFactory(ActorFactory)
     content = factory.Faker("text", max_nb_chars=100)
-    is_from_master = factory.Faker("boolean")
 
 
 class QuestUpdateFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = QuestUpdate
 
-    quest = factory.SubFactory(QuestFactory)
     game = factory.SubFactory(GameFactory)
+    author = factory.SubFactory(ActorFactory)
+    quest = factory.SubFactory(QuestFactory)
 
 
 class RollRequestFactory(factory.django.DjangoModelFactory):
@@ -111,6 +120,7 @@ class RollRequestFactory(factory.django.DjangoModelFactory):
         skip_postgeneration_save = True
 
     game = factory.SubFactory(GameFactory)
+    author = factory.SubFactory(ActorFactory)
     player = factory.SubFactory(PlayerFactory)
     ability_type = factory.Faker("enum", enum_cls=AbilityName)
     difficulty_class = factory.Faker("enum", enum_cls=DifficultyClass)
@@ -122,6 +132,7 @@ class RollResponseFactory(factory.django.DjangoModelFactory):
         model = RollResponse
 
     game = factory.SubFactory(GameFactory)
+    author = factory.SubFactory(ActorFactory)
     player = factory.SubFactory(PlayerFactory)
     request = factory.SubFactory(RollRequest)
 
@@ -131,6 +142,7 @@ class RollResultFactory(factory.django.DjangoModelFactory):
         model = RollResult
 
     game = factory.SubFactory(GameFactory)
+    author = factory.SubFactory(ActorFactory)
     player = factory.SubFactory(PlayerFactory)
     request = factory.SubFactory(RollRequest)
     response = factory.SubFactory(RollResponse)
@@ -143,6 +155,7 @@ class CombatInitalizationFactory(factory.django.DjangoModelFactory):
         model = CombatInitialization
 
     game = factory.SubFactory(GameFactory)
+    author = factory.SubFactory(ActorFactory)
     combat = factory.SubFactory("game.tests.factories.CombatFactory")
 
 
