@@ -21,7 +21,7 @@ from .models.events import (
     RollResponse,
     RollResult,
 )
-from .models.game import Game, Player
+from .models.game import Game, Player, Master
 from .rolls import perform_combat_initiative_roll, perform_roll
 from .utils.cache import game_key
 from .utils.channels import send_to_channel
@@ -42,8 +42,7 @@ def store_message(
     game_id: int,
     date: datetime,
     message: str,
-    is_from_master: bool,
-    author_name: str | None = None,
+    author_str: str,
 ) -> None:
     """
     Store the message received in the channel.
@@ -53,18 +52,22 @@ def store_message(
         game = cache.get_or_set(game_key(game_id), Game.objects.get(id=game_id))
     except Game.DoesNotExist as exc:
         raise InvalidTaskError(f"Game of {game_id=} not found") from exc
-    if author_name is None:
-        author = None
-    else:
+    if Master.objects.filter(game=game, user__username=author_str).exists():
         try:
-            author = Player.objects.get(character__user__username=author_name)
+            author = Master.objects.get(game=game, user__username=author_str)
+        except Master.DoesNotExist as exc:
+            raise InvalidTaskError(f"{author_str} not found") from exc
+    elif Player.objects.filter(game=game, user__username=author_str).exists():
+        try:
+            author = Player.objects.get(game=game, user__username=author_str)
         except Player.DoesNotExist as exc:
-            raise InvalidTaskError(f"{author_name=} not found") from exc
+            raise InvalidTaskError(f"{author_str=} not found") from exc
+    else:
+        raise InvalidTaskError(f"{author_str} is not a supported actor")
     Message.objects.create(
         game=game,
         date=date,
         content=message,
-        is_from_master=is_from_master,
         author=author,
     )
 
@@ -72,23 +75,23 @@ def store_message(
 @shared_task
 def process_roll(
     game_id: int,
-    roll_type: RollType,
+    author_id: int,
     date: datetime,
-    player_id: int,
+    roll_type: RollType,
 ) -> None:
     """
     Process a dice roll.
     """
-    logger.info(f"{game_id=}, {roll_type=}, {date=}, {player_id=}")
+    logger.info(f"{game_id=}, {author_id=}, {roll_type=}, {date=}")
 
     try:
         game = Game.objects.get(id=game_id)
     except Game.DoesNotExist as exc:
         raise InvalidTaskError(f"Game of {game_id=} not found") from exc
     try:
-        player = Player.objects.get(id=player_id, game=game)
+        player = Player.objects.get(actor_ptr_id=author_id, game=game)
     except Player.DoesNotExist as exc:
-        raise InvalidTaskError(f"Player of {player_id=} not found") from exc
+        raise InvalidTaskError(f"Player of {author_id=} not found") from exc
 
     # Retrieve the corresponding roll request.
     roll_request = RollRequest.objects.filter(
@@ -100,15 +103,15 @@ def process_roll(
 
     # Store the roll response.
     roll_response = RollResponse.objects.create(
-        game=game, date=date, player=player, request=roll_request
+        game=game, author=player, date=date, request=roll_request
     )
     logger.info(f"{roll_response.request=}")
 
     score, result = perform_roll(player, roll_request)
     roll_result = RollResult.objects.create(
         game=game,
+        author=player,
         date=date,
-        player=player,
         request=roll_request,
         response=roll_response,
         score=score,

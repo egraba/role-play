@@ -39,7 +39,18 @@ class Quest(models.Model):
         return self.environment[:10]
 
 
-class Master(models.Model):
+class Actor(models.Model):
+    @property
+    def user(self):
+        if hasattr(self, "master"):
+            return self.master.user
+        elif hasattr(self, "player"):
+            return self.player.user
+        else:
+            return None
+
+
+class Master(Actor):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     game = models.OneToOneField(Game, on_delete=models.CASCADE)
 
@@ -47,7 +58,7 @@ class Master(models.Model):
         return self.user.username
 
 
-class Player(models.Model):
+class Player(Actor):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     character = models.OneToOneField(Character, on_delete=models.CASCADE)

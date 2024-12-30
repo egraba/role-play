@@ -1,8 +1,10 @@
 from abc import abstractmethod
 
-from .models.events import Message, RollResponse, CombatInitiativeResponse
-from .models.game import Game, Player, Character
-from .schemas import EventSchema, PlayerType
+from django.db.models import Q
+
+from .models.events import CombatInitiativeResponse, Message, RollResponse
+from .models.game import Character, Game, Actor
+from .schemas import EventSchema
 
 
 class Enricher:
@@ -29,20 +31,15 @@ class Enricher:
 
 class MessageEnricher(Enricher):
     def enrich(self):
-        if self.content["player_type"] == PlayerType.MASTER:
-            is_from_master = True
-            author = None
-        else:
-            is_from_master = False
-            author = Player.objects.get(
-                character__user__username=self.content["username"]
-            )
+        author = Actor.objects.get(
+            Q(master__game=self.game, master__user__username=self.content["username"])
+            | Q(player__user__username=self.content["username"])
+        )
         self.content["message"] = Message(
             game=self.game,
+            author=author,
             date=self.content["date"],
             content=self.content["message"],
-            is_from_master=is_from_master,
-            author=author,
         ).get_message()
 
 

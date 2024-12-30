@@ -3,7 +3,6 @@ from django.utils import timezone
 from freezegun import freeze_time
 
 from game.models.events import (
-    UserInvitation,
     CombatInitialization,
     Event,
     GameStart,
@@ -12,13 +11,15 @@ from game.models.events import (
     RollRequest,
     RollResponse,
     RollResult,
+    UserInvitation,
 )
 from utils.constants import FREEZED_TIME
 
 from ..factories import (
-    UserInvitationFactory,
+    ActorFactory,
     CombatInitalizationFactory,
     EventFactory,
+    GameFactory,
     GameStartFactory,
     MessageFactory,
     PlayerFactory,
@@ -26,6 +27,7 @@ from ..factories import (
     RollRequestFactory,
     RollResponseFactory,
     RollResultFactory,
+    UserInvitationFactory,
 )
 
 pytestmark = pytest.mark.django_db
@@ -76,7 +78,10 @@ class TestMessageModel:
 
     @pytest.fixture
     def message_from_master(self):
-        return MessageFactory(is_from_master=True)
+        game = GameFactory()
+        author = ActorFactory()
+        author.master = game.master
+        return MessageFactory(game=game, author=author)
 
     def test_get_message_from_master(self, message_from_master):
         assert (
@@ -86,7 +91,11 @@ class TestMessageModel:
 
     @pytest.fixture
     def message_from_player(self):
-        return MessageFactory(is_from_master=False, author=PlayerFactory())
+        game = GameFactory()
+        author = ActorFactory()
+        player = PlayerFactory(game=game)
+        author.player = player
+        return MessageFactory(game=game, author=author)
 
     def test_get_message_from_player(self, message_from_player):
         assert (
@@ -137,7 +146,7 @@ class TestRollResponseModel:
     def test_get_message(self, roll_response):
         assert (
             roll_response.get_message()
-            == f"{roll_response.player} performed an ability check!"
+            == f"{roll_response.request.player} performed an ability check!"
         )
 
 
@@ -154,7 +163,7 @@ class TestRollResultModel:
     def test_get_message(self, roll_result):
         assert (
             roll_result.get_message()
-            == f"[{roll_result.player}]'s score: {roll_result.score}, \
+            == f"[{roll_result.request.player}]'s score: {roll_result.score}, \
             {roll_result.request.roll_type} result: {roll_result.get_result_display()}"
         )
 

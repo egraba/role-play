@@ -173,15 +173,6 @@
             console.error('Events socket closed unexpectedly...');
         };
 
-        var player_type;
-        const MASTER = "master";
-        const PLAYER = "player";
-        if ("{{ game.master.user }}" == "{{ user }}") {
-            player_type = MASTER;
-        } else {
-            player_type = PLAYER;
-        }
-
         if (sendButton !== null) {
             sendButton.addEventListener('click', function(event) {
                 const userInput = input.value;
@@ -189,7 +180,6 @@
                     eventsSocket.send(JSON.stringify({
                         'type': MESSAGE,
                         'date': Date.now(),
-                        'player_type': player_type,
                         'username': '{{ user }}',
                         'message': userInput,
                     }));
@@ -211,7 +201,6 @@
                 eventsSocket.send(JSON.stringify({
                     'type': ABILITY_CHECK_RESPONSE,
                     'date': Date.now(),
-                    'player_type': PLAYER,
                     'username': '{{ user }}',
                 }));
             });
@@ -222,7 +211,6 @@
                 eventsSocket.send(JSON.stringify({
                     'type': SAVING_THROW_RESPONSE,
                     'date': Date.now(),
-                    'player_type': PLAYER,
                     'username': '{{ user }}',
                 }));
             });
@@ -233,7 +221,6 @@
                 eventsSocket.send(JSON.stringify({
                     'type': COMBAT_INITIATIVE_RESPONSE,
                     'date': Date.now(),
-                    'player_type': PLAYER,
                     'username': '{{ user }}',
                 }));
             });
