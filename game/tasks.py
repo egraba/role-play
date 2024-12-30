@@ -89,7 +89,7 @@ def process_roll(
     except Game.DoesNotExist as exc:
         raise InvalidTaskError(f"Game of {game_id=} not found") from exc
     try:
-        player = Player.objects.get(actor_ptr__id=author_id, game=game)
+        player = Player.objects.get(actor_ptr_id=author_id, game=game)
     except Player.DoesNotExist as exc:
         raise InvalidTaskError(f"Player of {author_id=} not found") from exc
 
