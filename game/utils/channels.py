@@ -68,6 +68,7 @@ def send_to_channel(event: Event) -> None:
         event.date = datetime.datetime.fromtimestamp(event.date / 1e3)
     game_event = {
         "type": _get_event_type(event),
+        "username": event.author.user.username,
         "date": event.date.isoformat(),
         "message": event.get_message(),
         "origin": EventOrigin.SERVER_SIDE,

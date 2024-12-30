@@ -86,7 +86,10 @@ class GameStartView(UserPassesTestMixin, GameStatusControlMixin):
         try:
             flow.start()
             cache.set(game_key(game.id), game)
-            game_start = GameStart.objects.create(game=game)
+            author = Actor.objects.get(
+                master__game=game, master__user=self.request.user
+            )
+            game_start = GameStart.objects.create(game=game, author=author)
             send_to_channel(game_start)
         except TransitionNotAllowed:
             return HttpResponseRedirect(reverse("game-start-error", args=(game.id,)))
@@ -117,7 +120,12 @@ class QuestCreateView(UserPassesTestMixin, FormView, EventContextMixin):
         quest = Quest.objects.create(
             environment=form.cleaned_data["environment"], game=self.game
         )
-        quest_update = QuestUpdate.objects.create(game=self.game, quest=quest)
+        author = Actor.objects.get(
+            master__game=self.game, master__user=self.request.user
+        )
+        quest_update = QuestUpdate.objects.create(
+            game=self.game, author=author, quest=quest
+        )
         send_to_channel(quest_update)
         send_mail.delay(
             subject=f"[{self.game}] The Master updated the quest.",
@@ -190,11 +198,16 @@ class CombatCreateView(
                     is_surprised=is_surprised,
                     combat=combat,
                 )
-        combat_init = CombatInitialization.objects.create(game=self.game, combat=combat)
+        author = Actor.objects.get(
+            master__game=self.game, master__user=self.request.user
+        )
+        combat_init = CombatInitialization.objects.create(
+            game=self.game, author=author, combat=combat
+        )
         send_to_channel(combat_init)
         for fighter in combat.fighter_set.all():
             initiative_request = CombatInitiativeRequest.objects.create(
-                game=self.game, fighter=fighter
+                game=self.game, author=author, fighter=fighter
             )
             send_to_channel(initiative_request)
             schedule, _ = IntervalSchedule.objects.get_or_create(

@@ -40,7 +40,14 @@ class Quest(models.Model):
 
 
 class Actor(models.Model):
-    pass
+    @property
+    def user(self):
+        if self.master:
+            return self.master.user
+        elif self.player:
+            return self.player.user
+        else:
+            return None
 
 
 class Master(Actor):
