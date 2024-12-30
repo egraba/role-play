@@ -22,13 +22,11 @@ class TestStoreMessage:
     def test_message_message_stored_from_master(self, celery_worker):
         fake = Faker()
         game = GameFactory()
-        date = timezone.now()
-        message = fake.text(100)
         store_message.delay(
             game_id=game.id,
             author_str=game.master.user.username,
-            date=date,
-            message=message,
+            date=timezone.now(),
+            message=fake.text(100),
         ).get()
         message = Message.objects.last()
         assert message.game == game
@@ -38,13 +36,11 @@ class TestStoreMessage:
         fake = Faker()
         game = GameFactory()
         player = PlayerFactory(game=game)
-        date = timezone.now()
-        message = fake.text(100)
         store_message.delay(
             game_id=game.id,
             author_str=player.user.username,
-            date=date,
-            message=message,
+            date=timezone.now(),
+            message=fake.text(100),
         ).get()
         message = Message.objects.last()
         assert message.game == game
@@ -53,14 +49,12 @@ class TestStoreMessage:
     def test_message_message_stored_from_unfound_author(self, celery_worker):
         fake = Faker()
         game = GameFactory()
-        date = timezone.now()
-        message = fake.text(100)
         with pytest.raises(InvalidTaskError):
             store_message.delay(
                 game_id=game.id,
                 author_str=fake.user_name(),
-                date=date,
-                message=message,
+                date=timezone.now(),
+                message=fake.text(100),
             ).get()
 
     def test_message_game_not_found(self, celery_worker):
