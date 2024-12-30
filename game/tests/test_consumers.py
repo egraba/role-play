@@ -8,7 +8,6 @@ from character.tests.factories import CharacterFactory
 from game.consumers import GameEventsConsumer
 from game.exceptions import EventSchemaValidationError
 from game.schemas import EventSchema, EventType
-from user.tests.factories import UserFactory
 
 from .factories import GameFactory, PlayerFactory
 
@@ -26,41 +25,45 @@ def application():
 
 @pytest.fixture
 def game():
-    return GameFactory(master__user__username="master")
+    return GameFactory()
 
 
 @pytest.fixture
-def user(game):
-    user = UserFactory(username="player")
-    character = CharacterFactory(user=user)
-    PlayerFactory(game=game, character=character)
-    return user
+def player_user(game):
+    character = CharacterFactory()
+    player = PlayerFactory(game=game, character=character)
+    return player.user
+
+
+@pytest.fixture
+def master_user(game):
+    return game.master.user
 
 
 @pytest.mark.asyncio
-async def test_connect_ok(application, game, user):
+async def test_connect_ok(application, game, player_user):
     communicator = WebsocketCommunicator(application, f"/events/{game.id}/")
-    communicator.scope["user"] = user
+    communicator.scope["user"] = player_user
     communicator.scope["game_id"] = game.id
     connected, _ = await communicator.connect()
     assert connected
 
 
 @pytest.mark.asyncio
-async def test_connect_game_not_found(application, user):
+async def test_connect_game_not_found(application, player_user):
     fake = Faker()
     game_id = fake.random_int(min=9999)
     communicator = WebsocketCommunicator(application, f"/events/{game_id}/")
-    communicator.scope["user"] = user
+    communicator.scope["user"] = player_user
     communicator.scope["game_id"] = game_id
     connected, _ = await communicator.connect()
     assert not connected
 
 
 @pytest.mark.asyncio
-async def test_communication_schema_not_valid(application, game, user):
+async def test_communication_schema_not_valid(application, game, player_user):
     communicator = WebsocketCommunicator(application, f"/events/{game.id}/")
-    communicator.scope["user"] = user
+    communicator.scope["user"] = player_user
     communicator.scope["game_id"] = game.id
     connected, _ = await communicator.connect()
     assert connected
@@ -76,9 +79,9 @@ async def test_communication_schema_not_valid(application, game, user):
 
 
 @pytest.mark.asyncio
-async def test_communication_message_from_master(application, game, user):
+async def test_communication_message_from_master(application, game, master_user):
     communicator = WebsocketCommunicator(application, f"/events/{game.id}/")
-    communicator.scope["user"] = user
+    communicator.scope["user"] = master_user
     communicator.scope["game_id"] = game.id
     connected, _ = await communicator.connect()
     assert connected
@@ -88,6 +91,7 @@ async def test_communication_message_from_master(application, game, user):
     message = fake.text(100)
     game_event = {
         "type": EventType.MESSAGE,
+        "username": master_user.username,
         "date": date,
         "message": message,
     }
@@ -100,9 +104,9 @@ async def test_communication_message_from_master(application, game, user):
 
 
 @pytest.mark.asyncio
-async def test_communication_message_from_player(application, game, user):
+async def test_communication_message_from_player(application, game, player_user):
     communicator = WebsocketCommunicator(application, f"/events/{game.id}/")
-    communicator.scope["user"] = user
+    communicator.scope["user"] = player_user
     communicator.scope["game_id"] = game.id
     connected, _ = await communicator.connect()
     assert connected
@@ -112,7 +116,7 @@ async def test_communication_message_from_player(application, game, user):
     message = fake.text(100)
     game_event = {
         "type": EventType.MESSAGE,
-        "username": "player",
+        "username": player_user.username,
         "date": date,
         "message": message,
     }
