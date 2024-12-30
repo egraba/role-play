@@ -7,7 +7,7 @@ from game.constants.events import RollStatus, RollType
 from game.models.events import Message, RollRequest, RollResponse, RollResult
 from game.tasks import process_roll, store_message
 
-from .factories import GameFactory, MessageFactory, RollRequestFactory
+from .factories import GameFactory, RollRequestFactory
 
 pytestmark = pytest.mark.django_db(transaction=True)
 
@@ -19,16 +19,9 @@ def celery_parameters():
 
 
 class TestStoreMessage:
-    @pytest.fixture
-    def game(self):
-        return GameFactory()
-
-    @pytest.fixture
-    def message(self):
-        return MessageFactory()
-
-    def test_message_message_stored(self, celery_worker, game):
+    def test_message_message_stored(self, celery_worker):
         fake = Faker()
+        game = GameFactory()
         date = timezone.now()
         message = fake.text(100)
         store_message.delay(
