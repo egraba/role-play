@@ -27,6 +27,7 @@ class Event(models.Model):
 
     objects = InheritanceManager()
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    author = models.ForeignKey(Actor, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -59,7 +60,6 @@ class UserInvitation(Event):
 
 class Message(Event):
     content = models.CharField(max_length=100)
-    author = models.ForeignKey(Actor, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.content
