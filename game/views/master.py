@@ -22,7 +22,7 @@ from ..models.events import (
     QuestUpdate,
     UserInvitation,
 )
-from ..models.game import Player, Quest
+from ..models.game import Player, Quest, Actor
 from ..tasks import send_mail
 from ..utils.cache import game_key
 from ..utils.channels import send_to_channel
@@ -60,7 +60,10 @@ class UserInviteConfirmView(UserPassesTestMixin, UpdateView, GameContextMixin):
         if not hasattr(user, "character"):
             raise UserHasNoCharacter(f"{user=} has no character")
         Player.objects.create(user=user, game=self.game, character=user.character)
-        UserInvitation.objects.create(user=user, game=self.game)
+        author = Actor.objects.get(
+            master__game=self.game, master__user=self.request.user
+        )
+        UserInvitation.objects.create(game=self.game, author=author, user=user)
         send_mail.delay(
             subject=f"The Master invited you to join [{self.game}].",
             message=f"{user}, the Master invited you to join [{self.game}].",
