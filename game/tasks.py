@@ -110,7 +110,7 @@ def process_roll(
     score, result = perform_roll(player, roll_request)
     roll_result = RollResult.objects.create(
         game=game,
-        author=player.actor_ptr,
+        author=player,
         date=date,
         request=roll_request,
         response=roll_response,
