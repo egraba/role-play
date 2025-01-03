@@ -36,6 +36,7 @@ dependencies = [
     "pydantic",
     "pyyaml",
     "redis",
+    "sentry-sdk[django]",
     "whitenoise",
 ]
 name = "role-play"
