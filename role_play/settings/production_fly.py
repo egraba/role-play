@@ -1,3 +1,4 @@
+import sentry_sdk
 import secrets
 
 import dj_database_url
@@ -89,3 +90,8 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 # Update database configuration from $DATABASE_URL.
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES["default"].update(db_from_env)
+
+# Sentry
+sentry_sdk.init(
+    dsn="https://145d637239f03869e4cbe260a0fc0f72@o4507867128201216.ingest.us.sentry.io/4508561651204096",
+)
