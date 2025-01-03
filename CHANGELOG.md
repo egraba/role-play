@@ -5,6 +5,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Added
+* App errors are now monitored by Sentry in production
 * Increase test coverage
 
 ### Changed
