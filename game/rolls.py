@@ -57,9 +57,10 @@ def perform_roll(player: Player, request: RollRequest) -> tuple[int, tuple[str, 
     return score, RollResultType.FAILURE
 
 
-def perform_combat_initiative_roll(fighter: Fighter) -> int:
+def perform_combat_initiative_roll(player: Player) -> int:
     dexterity = AbilityType.objects.get(name=AbilityName.DEXTERITY)
-    score = _roll(fighter.character, dexterity)
+    score = _roll(player, dexterity)
+    fighter = Fighter.objects.get(player=player)
     fighter.dexterity_check = score
     fighter.save()
     return score
