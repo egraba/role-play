@@ -4,10 +4,23 @@ from django.utils import timezone
 from faker import Faker
 
 from game.constants.events import RollStatus, RollType
-from game.models.events import Message, RollRequest, RollResponse, RollResult
-from game.tasks import process_roll, store_message
+from game.models.events import (
+    CombatInitiativeRequest,
+    CombatInitiativeResponse,
+    CombatInitiativeResult,
+    Message,
+    RollRequest,
+    RollResponse,
+    RollResult,
+)
+from game.tasks import process_combat_initiative_roll, process_roll, store_message
 
-from .factories import GameFactory, RollRequestFactory, PlayerFactory
+from .factories import (
+    CombatInitiativeRequestFactory,
+    GameFactory,
+    PlayerFactory,
+    RollRequestFactory,
+)
 
 pytestmark = pytest.mark.django_db(transaction=True)
 
@@ -172,3 +185,80 @@ class TestProcessRoll:
 
         saving_throw_request = RollRequest.objects.last()
         assert saving_throw_request.status == RollStatus.DONE
+
+
+class TestProcessCombatInitiativeRoll:
+    @pytest.fixture
+    def combat_initiative_request(self):
+        return CombatInitiativeRequestFactory()
+
+    def test_process_combat_initiative_roll_success(
+        self, celery_worker, combat_initiative_request
+    ):
+        game = combat_initiative_request.fighter.character.player.game
+        character = combat_initiative_request.fighter.character
+        date = timezone.now()
+        process_combat_initiative_roll.delay(
+            game_id=game.id,
+            roll_type=RollType.COMBAT_INITIATIVE,
+            date=date,
+            character_id=character.id,
+        ).get()
+
+        roll_response = CombatInitiativeResponse.objects.last()
+        assert roll_response.game == game
+
+        roll_result = CombatInitiativeResult.objects.last()
+        assert roll_result.game == game
+
+        combat_initiative_request = CombatInitiativeRequest.objects.last()
+        assert combat_initiative_request.status == RollStatus.DONE
+
+    def test_process_combat_initiative_roll_failure_game_not_found(
+        self, celery_worker, combat_initiative_request
+    ):
+        fake = Faker()
+        character = combat_initiative_request.fighter.character
+        date = timezone.now()
+        with pytest.raises(InvalidTaskError):
+            process_combat_initiative_roll.delay(
+                game_id=fake.random_int(min=1000),
+                roll_type=RollType.COMBAT_INITIATIVE,
+                date=date.isoformat(),
+                character_id=character.id,
+            ).get()
+
+        combat_initiative_request = CombatInitiativeRequest.objects.last()
+        assert combat_initiative_request.status == RollStatus.PENDING
+
+    def test_process_combat_initiative_roll_failure_character_not_found(
+        self, celery_worker, combat_initiative_request
+    ):
+        fake = Faker()
+        game = combat_initiative_request.fighter.character.player.game
+        date = timezone.now()
+        with pytest.raises(InvalidTaskError):
+            process_combat_initiative_roll.delay(
+                game_id=game.id,
+                roll_type=RollType.COMBAT_INITIATIVE,
+                date=date.isoformat(),
+                character_id=fake.random_int(min=1000),
+            ).get()
+
+        combat_initiative_request = CombatInitiativeRequest.objects.last()
+        assert combat_initiative_request.status == RollStatus.PENDING
+
+    def test_process_combat_initiative_roll_failure_request_not_found(
+        self, celery_worker, combat_initiative_request
+    ):
+        game = combat_initiative_request.fighter.character.player.game
+        character = combat_initiative_request.fighter.character
+        date = timezone.now()
+        CombatInitiativeRequest.objects.last().delete()
+        with pytest.raises(InvalidTaskError):
+            process_combat_initiative_roll.delay(
+                game_id=game.id,
+                roll_type=RollType.COMBAT_INITIATIVE,
+                date=date.isoformat(),
+                character_id=character.id,
+            ).get()
