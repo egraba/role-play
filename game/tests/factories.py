@@ -161,7 +161,11 @@ class FighterFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Fighter
 
-    character = factory.SubFactory("character.tests.factories.CharacterFactory")
+    player = factory.SubFactory(PlayerFactory)
+    character = factory.SubFactory(
+        "character.tests.factories.CharacterFactory",
+        player=factory.SelfAttribute("..player"),
+    )
     combat = factory.SubFactory("game.tests.factories.CombatFactory")
 
 

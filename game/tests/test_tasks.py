@@ -195,13 +195,13 @@ class TestProcessCombatInitiativeRoll:
     def test_process_combat_initiative_roll_success(
         self, celery_worker, combat_initiative_request
     ):
-        game = combat_initiative_request.fighter.character.player.game
-        character = combat_initiative_request.fighter.character
+        game = combat_initiative_request.game
+        player = combat_initiative_request.fighter.player
         date = timezone.now()
         process_combat_initiative_roll.delay(
             game_id=game.id,
+            player_id=player.id,
             date=date,
-            character_id=character.id,
         ).get()
 
         roll_response = CombatInitiativeResponse.objects.last()
@@ -217,29 +217,29 @@ class TestProcessCombatInitiativeRoll:
         self, celery_worker, combat_initiative_request
     ):
         fake = Faker()
-        character = combat_initiative_request.fighter.character
+        player = combat_initiative_request.fighter.player
         date = timezone.now()
         with pytest.raises(InvalidTaskError):
             process_combat_initiative_roll.delay(
                 game_id=fake.random_int(min=1000),
+                player_id=player.id,
                 date=date.isoformat(),
-                character_id=character.id,
             ).get()
 
         combat_initiative_request = CombatInitiativeRequest.objects.last()
         assert combat_initiative_request.status == RollStatus.PENDING
 
-    def test_process_combat_initiative_roll_failure_character_not_found(
+    def test_process_combat_initiative_roll_failure_player_not_found(
         self, celery_worker, combat_initiative_request
     ):
         fake = Faker()
-        game = combat_initiative_request.fighter.character.player.game
+        game = combat_initiative_request.game
         date = timezone.now()
         with pytest.raises(InvalidTaskError):
             process_combat_initiative_roll.delay(
                 game_id=game.id,
+                player_id=fake.random_int(min=1000),
                 date=date.isoformat(),
-                character_id=fake.random_int(min=1000),
             ).get()
 
         combat_initiative_request = CombatInitiativeRequest.objects.last()
@@ -249,12 +249,12 @@ class TestProcessCombatInitiativeRoll:
         self, celery_worker, combat_initiative_request
     ):
         game = combat_initiative_request.fighter.character.player.game
-        character = combat_initiative_request.fighter.character
+        player = combat_initiative_request.fighter.player
         date = timezone.now()
         CombatInitiativeRequest.objects.last().delete()
         with pytest.raises(InvalidTaskError):
             process_combat_initiative_roll.delay(
                 game_id=game.id,
+                player_id=player.id,
                 date=date.isoformat(),
-                character_id=character.id,
             ).get()

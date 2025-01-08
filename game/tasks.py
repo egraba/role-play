@@ -7,7 +7,6 @@ from django.core.cache import cache
 from django.core.mail import send_mail as django_send_mail
 from django_celery_beat.models import PeriodicTask
 
-from character.models.character import Character
 
 from .constants.events import RollStatus, RollType
 from .models.combat import Combat
@@ -128,26 +127,26 @@ def process_roll(
 @shared_task
 def process_combat_initiative_roll(
     game_id: int,
+    player_id: int,
     date: datetime,
-    character_id: int,
 ) -> None:
     """
     Process a dice roll for combat initiative.
     """
-    logger.info(f"{game_id=}, {date=}, {character_id=}")
+    logger.info(f"{game_id=}, {player_id=}, {date=}")
 
     try:
         game = Game.objects.get(id=game_id)
     except Game.DoesNotExist as exc:
         raise InvalidTaskError(f"Game of {game_id=} not found") from exc
     try:
-        character = Character.objects.get(id=character_id, player__game=game)
-    except Character.DoesNotExist as exc:
-        raise InvalidTaskError(f"Character of {character_id=} not found") from exc
+        player = Player.objects.get(id=player_id)
+    except Player.DoesNotExist as exc:
+        raise InvalidTaskError(f"Player of {player_id=} not found") from exc
 
     # Retrieve the corresponding roll request.
     roll_request = CombatInitiativeRequest.objects.filter(
-        fighter__character=character, status=RollStatus.PENDING
+        fighter__player=player, status=RollStatus.PENDING
     ).first()
     if roll_request is None:
         raise InvalidTaskError("Roll request not found")
@@ -155,13 +154,14 @@ def process_combat_initiative_roll(
 
     # Store the roll response.
     roll_response = CombatInitiativeResponse.objects.create(
-        game=game, date=date, request=roll_request
+        game=game, author=player, date=date, request=roll_request
     )
     logger.info(f"{roll_response.request=}")
 
     score = perform_combat_initiative_roll(roll_request.fighter)
     roll_result = CombatInitiativeResult.objects.create(
         game=game,
+        author=player,
         date=date,
         fighter=roll_request.fighter,
         request=roll_request,
