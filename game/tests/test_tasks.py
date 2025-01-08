@@ -200,7 +200,6 @@ class TestProcessCombatInitiativeRoll:
         date = timezone.now()
         process_combat_initiative_roll.delay(
             game_id=game.id,
-            roll_type=RollType.COMBAT_INITIATIVE,
             date=date,
             character_id=character.id,
         ).get()
@@ -223,7 +222,6 @@ class TestProcessCombatInitiativeRoll:
         with pytest.raises(InvalidTaskError):
             process_combat_initiative_roll.delay(
                 game_id=fake.random_int(min=1000),
-                roll_type=RollType.COMBAT_INITIATIVE,
                 date=date.isoformat(),
                 character_id=character.id,
             ).get()
@@ -240,7 +238,6 @@ class TestProcessCombatInitiativeRoll:
         with pytest.raises(InvalidTaskError):
             process_combat_initiative_roll.delay(
                 game_id=game.id,
-                roll_type=RollType.COMBAT_INITIATIVE,
                 date=date.isoformat(),
                 character_id=fake.random_int(min=1000),
             ).get()
@@ -258,7 +255,6 @@ class TestProcessCombatInitiativeRoll:
         with pytest.raises(InvalidTaskError):
             process_combat_initiative_roll.delay(
                 game_id=game.id,
-                roll_type=RollType.COMBAT_INITIATIVE,
                 date=date.isoformat(),
                 character_id=character.id,
             ).get()

@@ -128,14 +128,13 @@ def process_roll(
 @shared_task
 def process_combat_initiative_roll(
     game_id: int,
-    roll_type: RollType,
     date: datetime,
     character_id: int,
 ) -> None:
     """
     Process a dice roll for combat initiative.
     """
-    logger.info(f"{game_id=}, {roll_type=}, {date=}, {character_id=}")
+    logger.info(f"{game_id=}, {date=}, {character_id=}")
 
     try:
         game = Game.objects.get(id=game_id)
