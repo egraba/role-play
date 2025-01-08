@@ -5,6 +5,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Added
+* Tests can now be launched from VS Code
 * App errors are now monitored by Sentry in production
 * Increase test coverage
 
