@@ -6,8 +6,8 @@ from character.constants.abilities import AbilityName
 from game.constants.events import DifficultyClass, RollResultType, RollType
 from game.models.combat import Combat, Fighter
 from game.models.events import (
-    UserInvitation,
     CombatInitialization,
+    CombatInitiativeRequest,
     Event,
     GameStart,
     Message,
@@ -15,8 +15,9 @@ from game.models.events import (
     RollRequest,
     RollResponse,
     RollResult,
+    UserInvitation,
 )
-from game.models.game import Game, Master, Player, Quest, Actor
+from game.models.game import Actor, Game, Master, Player, Quest
 from user.tests.factories import UserFactory
 
 
@@ -160,7 +161,11 @@ class FighterFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Fighter
 
-    character = factory.SubFactory("character.tests.factories.CharacterFactory")
+    player = factory.SubFactory(PlayerFactory)
+    character = factory.SubFactory(
+        "character.tests.factories.CharacterFactory",
+        player=factory.SelfAttribute("..player"),
+    )
     combat = factory.SubFactory("game.tests.factories.CombatFactory")
 
 
@@ -177,3 +182,12 @@ class CombatFactory(factory.django.DjangoModelFactory):
             return
         for _ in range(random.randint(2, 8)):
             FighterFactory(combat=obj, dexterity_check=random.randint(1, 20))
+
+
+class CombatInitiativeRequestFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = CombatInitiativeRequest
+
+    game = factory.SubFactory(GameFactory)
+    author = factory.SubFactory(ActorFactory)
+    fighter = factory.SubFactory(FighterFactory)
