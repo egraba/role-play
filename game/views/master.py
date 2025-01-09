@@ -193,8 +193,10 @@ class CombatCreateView(
                     in form.cleaned_data[fighter_field]
                 ):
                     is_surprised = True
+                character = Character.objects.get(name=fighter_field)
                 Fighter.objects.create(
-                    character=Character.objects.get(name=fighter_field),
+                    player=character.player,
+                    character=character,
                     is_surprised=is_surprised,
                     combat=combat,
                 )
