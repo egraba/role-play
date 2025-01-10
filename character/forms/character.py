@@ -1,10 +1,11 @@
 from django import forms
 
-from ..models.character import Character
 from ..constants.abilities import AbilityScore
+from ..models.character import Character
+from .mixins import NoDuplicateValuesFormMixin
 
 
-class CharacterCreateForm(forms.ModelForm):
+class CharacterCreateForm(NoDuplicateValuesFormMixin, forms.ModelForm):
     class Meta:
         model = Character
         fields = [
@@ -49,9 +50,3 @@ class CharacterCreateForm(forms.ModelForm):
         coerce=int,
         widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
     )
-
-    def clean(self):
-        self.cleaned_data = super().clean()
-        # The ability scores must be unique per ability.
-        if len(self.cleaned_data) != len(set(self.cleaned_data.values())):
-            raise forms.ValidationError("Each ability must have a different score...")
