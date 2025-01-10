@@ -1,5 +1,4 @@
 from django.core.cache import cache
-from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 from django.views.generic import View
 from django.views.generic.list import ContextMixin
@@ -24,7 +23,7 @@ class CharacterContextMixin(ContextMixin, View):
             self.character = cache.get_or_set(
                 character_key(character_id), Character.objects.get(id=character_id)
             )
-        except ObjectDoesNotExist as e:
+        except Character.DoesNotExist as e:
             raise Http404(f"Character [{character_id}] does not exist...") from e
 
     def get_context_data(self, **kwargs):
