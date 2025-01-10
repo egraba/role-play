@@ -9,4 +9,4 @@ class NoDuplicateValuesMixin(Form):
     def clean(self):
         self.cleaned_data = super().clean()
         if len(self.cleaned_data) != len(set(self.cleaned_data.values())):
-            raise ValidationError("The entered values must be different...")
+            raise ValidationError("the entered values must be different")
