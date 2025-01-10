@@ -1,8 +1,8 @@
 from django import forms
-from character.forms.mixins import NoDuplicateValuesMixin
+from character.forms.mixins import NoDuplicateValuesFormMixin
 
 
-class MyForm(NoDuplicateValuesMixin):
+class MyForm(NoDuplicateValuesFormMixin):
     field1 = forms.CharField()
     field2 = forms.CharField()
 

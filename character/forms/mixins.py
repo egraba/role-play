@@ -1,7 +1,7 @@
 from django.forms import Form, ValidationError
 
 
-class NoDuplicateValuesMixin(Form):
+class NoDuplicateValuesFormMixin(Form):
     """
     Mixin to forbid duplicate values in a form.
     """
