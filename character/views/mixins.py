@@ -23,8 +23,8 @@ class CharacterContextMixin(ContextMixin, View):
             self.character = cache.get_or_set(
                 character_key(character_id), Character.objects.get(id=character_id)
             )
-        except Character.DoesNotExist as e:
-            raise Http404(f"Character [{character_id}] does not exist...") from e
+        except Character.DoesNotExist as exc:
+            raise Http404(f"Character of {character_id=} not found") from exc
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
