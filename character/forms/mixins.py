@@ -3,7 +3,7 @@ from django.forms import Form, ValidationError
 
 class NoDuplicateValuesMixin(Form):
     """
-    Mixin that can be used to validate that a form contains no duplicates.
+    Mixin to forbid duplicate values in a form.
     """
 
     def clean(self):
