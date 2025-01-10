@@ -10,7 +10,8 @@ from ..utils.cache import character_key
 
 class CharacterContextMixin(ContextMixin, View):
     """
-    Mixin class that provides character object and context.
+    Mixin class that provides the character object and contextof the associated
+    character's ID given in the view's URL.
 
     Attributes:
         character (Character): Character instance.
