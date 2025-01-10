@@ -1,5 +1,4 @@
 from django.core.cache import cache
-from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 from django.views.generic import View
 from django.views.generic.list import ContextMixin
@@ -10,7 +9,8 @@ from ..utils.cache import character_key
 
 class CharacterContextMixin(ContextMixin, View):
     """
-    Mixin class that provides character object and context.
+    Mixin class that provides the character object and contextof the associated
+    character's ID given in the view's URL.
 
     Attributes:
         character (Character): Character instance.
@@ -23,8 +23,8 @@ class CharacterContextMixin(ContextMixin, View):
             self.character = cache.get_or_set(
                 character_key(character_id), Character.objects.get(id=character_id)
             )
-        except ObjectDoesNotExist as e:
-            raise Http404(f"Character [{character_id}] does not exist...") from e
+        except Character.DoesNotExist as exc:
+            raise Http404(f"Character of {character_id=} not found") from exc
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
