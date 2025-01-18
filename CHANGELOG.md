@@ -10,6 +10,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * Increase test coverage
 
 ### Changed
+* Use `celery_session_worker` to speed up celery tasks tests
 * Created `Actor` model to encapsulate `Master` and `Player` models
 * Actions are now done by players and not characters
 * Index page displays more relevant buttons
