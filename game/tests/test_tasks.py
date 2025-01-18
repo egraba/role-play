@@ -13,7 +13,12 @@ from game.models.events import (
     RollResponse,
     RollResult,
 )
-from game.tasks import process_combat_initiative_roll, process_roll, store_message
+from game.tasks import (
+    process_combat_initiative_roll,
+    process_roll,
+    send_mail,
+    store_message,
+)
 
 from .factories import (
     CombatInitiativeRequestFactory,
@@ -29,6 +34,25 @@ pytestmark = pytest.mark.django_db(transaction=True)
 def celery_parameters():
     # Used to suppress warnings during test sessions.
     return {"broker_connection_retry_on_startup": True}
+
+
+class TestSendMail:
+    def test_send_mail(self, mocker):
+        fake = Faker()
+        subject = fake.sentence()
+        message = fake.text()
+        from_email = fake.email()
+        recipient_list = [fake.email() for _ in range(3)]
+        mocked_send_mail = mocker.patch("game.tasks.django_send_mail")
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=from_email,
+            recipient_list=recipient_list,
+        )
+        mocked_send_mail.assert_called_once_with(
+            subject, message, from_email, recipient_list
+        )
 
 
 class TestStoreMessage:
