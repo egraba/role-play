@@ -2,7 +2,7 @@
 
 Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<patch>`).
 
-## Unreleased
+## v0.12.0 - 2025-01-18
 
 ### Added
 * Tests can now be launched from VS Code
