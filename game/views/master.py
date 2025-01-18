@@ -1,3 +1,4 @@
+import anthropic
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.cache import cache
 from django.http import HttpResponseRedirect
@@ -117,8 +118,21 @@ class QuestCreateView(UserPassesTestMixin, FormView, EventContextMixin):
         return reverse_lazy("game", args=(self.game.id,))
 
     def form_valid(self, form):
+        client = anthropic.Anthropic()
+        environment = form.cleaned_data["environment"]
+        response = client.messages.create(
+            model="claude-3-5-sonnet-20241022",
+            max_tokens=2048,
+            system="You are a role play dungeon master.",
+            messages=[
+                {
+                    "role": "user",
+                    "content": f"{environment}",
+                }
+            ],
+        )
         quest = Quest.objects.create(
-            environment=form.cleaned_data["environment"], game=self.game
+            environment=response.content[0].text, game=self.game
         )
         author = Actor.objects.get(
             master__game=self.game, master__user=self.request.user
