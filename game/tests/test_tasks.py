@@ -56,7 +56,7 @@ class TestSendMail:
 
 
 class TestStoreMessage:
-    def test_message_message_stored_from_master(self, celery_worker):
+    def test_message_message_stored_from_master(self, celery_session_worker):
         fake = Faker()
         game = GameFactory()
         store_message.delay(
@@ -70,7 +70,7 @@ class TestStoreMessage:
         assert message.author == game.master.actor_ptr
         assert message.message == message
 
-    def test_message_message_stored_from_player(self, celery_worker):
+    def test_message_message_stored_from_player(self, celery_session_worker):
         fake = Faker()
         game = GameFactory()
         player = PlayerFactory(game=game)
@@ -85,7 +85,7 @@ class TestStoreMessage:
         assert message.author == player.actor_ptr
         assert message.message == message
 
-    def test_message_message_stored_from_unfound_author(self, celery_worker):
+    def test_message_message_stored_from_unfound_author(self, celery_session_worker):
         fake = Faker()
         game = GameFactory()
         with pytest.raises(InvalidTaskError):
@@ -96,7 +96,7 @@ class TestStoreMessage:
                 message=fake.text(100),
             ).get()
 
-    def test_message_game_not_found(self, celery_worker):
+    def test_message_game_not_found(self, celery_session_worker):
         fake = Faker()
         with pytest.raises(InvalidTaskError):
             store_message.delay(
@@ -113,7 +113,7 @@ class TestProcessRoll:
         return RollRequestFactory(roll_type=RollType.ABILITY_CHECK)
 
     def test_process_roll_ability_check_success(
-        self, celery_worker, ability_check_request
+        self, celery_session_worker, ability_check_request
     ):
         game = ability_check_request.game
         player = ability_check_request.player
@@ -137,7 +137,7 @@ class TestProcessRoll:
         assert ability_check_request.status == RollStatus.DONE
 
     def test_process_roll_failure_game_not_found(
-        self, celery_worker, ability_check_request
+        self, celery_session_worker, ability_check_request
     ):
         fake = Faker()
         player = ability_check_request.player
@@ -154,7 +154,7 @@ class TestProcessRoll:
         assert ability_check_request.status == RollStatus.PENDING
 
     def test_process_roll_failure_author_not_found(
-        self, celery_worker, ability_check_request
+        self, celery_session_worker, ability_check_request
     ):
         fake = Faker()
         game = ability_check_request.game
@@ -171,7 +171,7 @@ class TestProcessRoll:
         assert ability_check_request.status == RollStatus.PENDING
 
     def test_process_roll_failure_request_not_found(
-        self, celery_worker, ability_check_request
+        self, celery_session_worker, ability_check_request
     ):
         game = ability_check_request.game
         player = ability_check_request.player
@@ -190,7 +190,7 @@ class TestProcessRoll:
         return RollRequestFactory(roll_type=RollType.SAVING_THROW)
 
     def test_process_roll_saving_throw_success(
-        self, celery_worker, saving_throw_request
+        self, celery_session_worker, saving_throw_request
     ):
         game = saving_throw_request.game
         player = saving_throw_request.player
@@ -217,7 +217,7 @@ class TestProcessCombatInitiativeRoll:
         return CombatInitiativeRequestFactory()
 
     def test_process_combat_initiative_roll_success(
-        self, celery_worker, combat_initiative_request
+        self, celery_session_worker, combat_initiative_request
     ):
         game = combat_initiative_request.game
         player = combat_initiative_request.fighter.player
@@ -238,7 +238,7 @@ class TestProcessCombatInitiativeRoll:
         assert combat_initiative_request.status == RollStatus.DONE
 
     def test_process_combat_initiative_roll_failure_game_not_found(
-        self, celery_worker, combat_initiative_request
+        self, celery_session_worker, combat_initiative_request
     ):
         fake = Faker()
         player = combat_initiative_request.fighter.player
@@ -254,7 +254,7 @@ class TestProcessCombatInitiativeRoll:
         assert combat_initiative_request.status == RollStatus.PENDING
 
     def test_process_combat_initiative_roll_failure_player_not_found(
-        self, celery_worker, combat_initiative_request
+        self, celery_session_worker, combat_initiative_request
     ):
         fake = Faker()
         game = combat_initiative_request.game
@@ -270,7 +270,7 @@ class TestProcessCombatInitiativeRoll:
         assert combat_initiative_request.status == RollStatus.PENDING
 
     def test_process_combat_initiative_roll_failure_request_not_found(
-        self, celery_worker, combat_initiative_request
+        self, celery_session_worker, combat_initiative_request
     ):
         game = combat_initiative_request.fighter.character.player.game
         player = combat_initiative_request.fighter.player
