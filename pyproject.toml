@@ -57,4 +57,5 @@ dev = [
     "pytest-asyncio",
     "pytest-dependency",
     "pytest-django",
+    "pytest-mock",
 ]
