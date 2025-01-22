@@ -77,3 +77,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # User model
 AUTH_USER_MODEL = "user.User"
+
+# AI
+ANTHROPIC_API_KEY = os.environ["ANTHROPIC_API_KEY"]
