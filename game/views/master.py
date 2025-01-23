@@ -6,6 +6,7 @@ from django.views.generic import FormView, ListView, UpdateView
 from django_celery_beat.models import IntervalSchedule, PeriodicTask
 from viewflow.fsm import TransitionNotAllowed
 
+from ai.generators import TextGenerator
 from character.models.character import Character
 from user.models import User
 
@@ -22,7 +23,7 @@ from ..models.events import (
     QuestUpdate,
     UserInvitation,
 )
-from ..models.game import Player, Quest, Actor
+from ..models.game import Actor, Player, Quest
 from ..tasks import send_mail
 from ..utils.cache import game_key
 from ..utils.channels import send_to_channel
@@ -117,9 +118,9 @@ class QuestCreateView(UserPassesTestMixin, FormView, EventContextMixin):
         return reverse_lazy("game", args=(self.game.id,))
 
     def form_valid(self, form):
-        quest = Quest.objects.create(
-            environment=form.cleaned_data["environment"], game=self.game
-        )
+        generator = TextGenerator()
+        environment = generator.enrich_quest(form.cleaned_data["environment"])
+        quest = Quest.objects.create(environment=environment, game=self.game)
         author = Actor.objects.get(
             master__game=self.game, master__user=self.request.user
         )

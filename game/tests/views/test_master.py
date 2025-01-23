@@ -317,7 +317,13 @@ class TestQuestCreateView:
         assert response.status_code == 403
         assert pytest.raises(PermissionDenied)
 
-    def test_quest_creation(self, client, login, started_game):
+    def test_quest_creation(self, client, login, started_game, monkeypatch):
+        def patched_enrich_quest(self, prompt: str) -> str:
+            return "some enriched quest"
+
+        monkeypatch.setattr(
+            "ai.generators.TextGenerator.enrich_quest", patched_enrich_quest
+        )
         fake = Faker()
         environment = fake.text(100)
         data = {"environment": f"{environment}"}
@@ -329,7 +335,7 @@ class TestQuestCreateView:
         assert response.status_code == 302
         quest = Quest.objects.filter(game=started_game).last()
         assert quest.game == started_game
-        assert quest.environment == form.cleaned_data["environment"]
+        assert quest.environment == "some enriched quest"
         assertRedirects(response, started_game.get_absolute_url())
 
 

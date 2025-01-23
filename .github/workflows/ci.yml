@@ -11,6 +11,7 @@ env:
   PGPASSWORD: ${{secrets.PGPASSWORD}}
   DJANGO_SECRET_KEY: ${{secrets.DJANGO_SECRET_KEY}}
   PYTEST_PLUGINS: celery.contrib.pytest
+  ANTHROPIC_API_KEY: cikey # Not used in CI
 
 jobs:
   build:
