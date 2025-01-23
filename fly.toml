@@ -12,7 +12,7 @@ console_command = '/code/manage.py shell'
 [deploy]
 release_command = 'uv run invoke prod.deploy'
 
-[processes] # <-- Updated!
+[processes]
 app = "uv run invoke prod.run"
 worker = "uv run invoke prod.run-worker"
 
@@ -29,9 +29,13 @@ min_machines_running = 0
 processes = ['app']
 
 [[vm]]
-memory = '1gb'
+size = "shared-cpu-2x"
 cpu_kind = 'shared'
 cpus = 1
+
+[[vm]]
+size = "shared-cpu-2x"
+processes = ["worker"]
 
 [[statics]]
 guest_path = '/code/staticfiles'
