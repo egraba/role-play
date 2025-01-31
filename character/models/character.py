@@ -55,6 +55,7 @@ class Character(models.Model):
     inventory = models.OneToOneField(
         Inventory, on_delete=models.CASCADE, blank=True, null=True
     )
+    portrait = models.ImageField(upload_to="portraits/", blank=True, null=True)
 
     class Meta:
         indexes = [
