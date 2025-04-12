@@ -45,7 +45,7 @@ class ImageGenerator:
         if cls._instance is None:
             cls._instance = super().__new__(cls)
             cls.client = OpenAI()
-            cls.model = ("dall-e-3",)
+            cls.model = "dall-e-3"
         return cls._instance
 
     def generate(self, prompt: str) -> str:
