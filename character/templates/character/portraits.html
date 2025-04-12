@@ -3,73 +3,21 @@
 {% block title %}Select Character Portrait{% endblock %}
 
 {% block content %}
-  <div class="container">
-    <div class="row">
-      <div class="col-12">
-        <h1 class="mb-4">Select a Portrait for Your Character</h1>
-        <p class="mb-4">Choose one of the generated portraits below that best represents your character.</p>
+    <div class="form rpgui-container framed-golden">
+        <h1>Select a Portrait for Your Character</h1>
+        <p>Choose one of the generated portraits below that best represents your character.</p>
 
         <form method="post" class="portrait-selection-form">
-          {% csrf_token %}
-          {{ form.non_field_errors }}
+            {% csrf_token %}
+            {{ form.non_field_errors }}
 
-          <div class="portrait-options">
-            {{ form.portrait }}
-          </div>
+            <div class="portrait-options">
+                {{ form.portrait }}
+            </div>
 
-          <div class="mt-4">
-            <button type="submit" class="btn btn-primary">Select Portrait</button>
-          </div>
+            <div class="rpgui-center">
+                <button class="rpgui-button" type="submit"><p>Select Portrait</p></button>
+            </div>
         </form>
-      </div>
     </div>
-  </div>
-
-  <style>
-    .portrait-options {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      justify-content: center;
-    }
-
-    .portrait-option-container {
-      border: 2px solid transparent;
-      border-radius: 8px;
-      overflow: hidden;
-      transition: all 0.3s ease;
-      cursor: pointer;
-    }
-
-    .portrait-option-container:hover {
-      border-color: #6c757d;
-    }
-
-    .portrait-label {
-      cursor: pointer;
-      display: block;
-      margin: 0;
-    }
-
-    .portrait-radio-input {
-      display: none;
-    }
-
-    .portrait-radio-input:checked + .portrait-image-container {
-      outline: 4px solid #007bff;
-    }
-
-    .portrait-image-container {
-      width: 300px;
-      height: 300px;
-      overflow: hidden;
-      border-radius: 6px;
-    }
-
-    .portrait-option {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-  </style>
 {% endblock %}
