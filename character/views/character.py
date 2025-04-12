@@ -3,8 +3,11 @@ from enum import StrEnum
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
-from django.views.generic import DetailView
+from django.urls import reverse
+from django.views.generic import DetailView, FormView
 from formtools.wizard.views import SessionWizardView
+
+# ImageGenerator is now used in PortraitSelectForm
 
 from ..character_attributes_builders import (
     BackgroundBuilder,
@@ -16,6 +19,7 @@ from ..constants.equipment import ArmorName, GearName, ToolName, WeaponName
 from ..forms.backgrounds import BackgroundForm
 from ..forms.character import CharacterCreateForm
 from ..forms.equipment import EquipmentSelectForm
+from ..forms.portraits import PortraitSelectForm
 from ..forms.skills import SkillsSelectForm
 from ..models.character import Character
 from ..models.klasses import Klass
@@ -31,6 +35,11 @@ class CharacterDetailView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context["inventory"] = self.object.inventory
         context["abilities"] = self.object.abilities.all()
+
+        # Add portrait URL from session if available
+        if "portrait_url" in self.request.session:
+            context["portrait_url"] = self.request.session["portrait_url"]
+
         return context
 
 
@@ -111,4 +120,25 @@ class CharacterCreateView(LoginRequiredMixin, SessionWizardView):
                         inventory.add(GearName.SPELLBOOK)
             else:
                 raise NotImplementedError(f"{form=} is not implemented")
+
+        return HttpResponseRedirect(
+            reverse("character-select-portrait", args=(character.pk,))
+        )
+
+
+class CharacterSelectPortraitView(LoginRequiredMixin, FormView):
+    template_name = "character/portraits.html"
+    form_class = PortraitSelectForm
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        character = Character.objects.get(pk=self.kwargs["pk"])
+        kwargs["initial"] = {"character": character}
+        return kwargs
+
+    def form_valid(self, form):
+        character = Character.objects.get(pk=self.kwargs["pk"])
+        # Store the portrait URL in the session for now, as the model uses ImageField
+        # In a production app, you would download the image and save it to the model
+        self.request.session["portrait_url"] = form.cleaned_data["portrait"]
         return HttpResponseRedirect(character.get_absolute_url())

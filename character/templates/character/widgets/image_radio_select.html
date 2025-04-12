@@ -1,0 +1,17 @@
+{% for group, options, index in widget.optgroups %}
+    {% for option in options %}
+        <div class="portrait-option-container">
+            <label for="{{ option.attrs.id }}" class="portrait-label">
+                <input type="{{ option.type }}"
+                       name="{{ option.name }}"
+                       id="{{ option.attrs.id }}"
+                       value="{{ option.value }}"
+                       {% if option.selected %}checked{% endif %}
+                       class="portrait-radio-input">
+                <div class="portrait-image-container">
+                    {{ option.label }}
+                </div>
+            </label>
+        </div>
+    {% endfor %}
+{% endfor %}
