@@ -5,7 +5,7 @@
 {% block content %}
     <div class="form rpgui-container framed-golden">
         <h1>Select a Portrait for Your Character</h1>
-        <p>Choose one of the generated portraits below that best represents your character.</p>
+        <p>Click on a portrait to select it for your character.</p>
 
         <form method="post" class="portrait-selection-form">
             {% csrf_token %}
@@ -14,10 +14,16 @@
             <div class="portrait-options">
                 {{ form.portrait }}
             </div>
-
-            <div class="rpgui-center">
-                <button class="rpgui-button" type="submit"><p>Select Portrait</p></button>
-            </div>
         </form>
     </div>
+
+    <script>
+        document.querySelectorAll('.portrait-radio-input').forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.checked) {
+                    this.form.submit();
+                }
+            });
+        });
+    </script>
 {% endblock %}
