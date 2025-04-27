@@ -6,9 +6,11 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 
 ### Added
 * Quest environments are now enriched using Claude 3.5 Sonnet model
+* Added CLAUDE.md with development workflow instructions
 
 ### Changed
 * Reduce machines size on Fly.io
+* Upgraded Django from 5.1 to 5.2
 
 ## v0.12.0 - 2025-01-18
 
