@@ -162,3 +162,9 @@ th.description {
     height: 100%;
     object-fit: cover;
 }
+
+.character-portrait {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+}

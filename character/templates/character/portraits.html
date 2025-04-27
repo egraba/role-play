@@ -7,22 +7,29 @@
         <h1>Select a Portrait for Your Character</h1>
         <p>Click on a portrait to select it for your character.</p>
 
-        <form method="post" class="portrait-selection-form">
+        <form method="post" class="portrait-selection-form" id="portrait-form">
             {% csrf_token %}
             {{ form.non_field_errors }}
 
             <div class="portrait-options">
                 {{ form.portrait }}
             </div>
+
+            <!-- Add a hidden submit button -->
+            <button type="submit" style="display: none;" id="form-submit-button">Submit</button>
         </form>
     </div>
 
     <script>
-        document.querySelectorAll('.portrait-radio-input').forEach(radio => {
-            radio.addEventListener('change', function() {
-                if (this.checked) {
-                    this.form.submit();
-                }
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click event listeners to all radio inputs
+            document.querySelectorAll('.portrait-radio-input').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    if (this.checked) {
+                        // Submit the form programmatically
+                        document.getElementById('form-submit-button').click();
+                    }
+                });
             });
         });
     </script>

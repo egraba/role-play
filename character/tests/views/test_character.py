@@ -304,7 +304,9 @@ class TestCharacterCreateView:
             response = client.post((reverse(self.path_name)), data_step)
             if step == len(form_list):
                 character = Character.objects.last()
-                assertRedirects(response, character.get_absolute_url())
+                assertRedirects(
+                    response, reverse("character-select-portrait", args=(character.pk,))
+                )
             else:
                 assert response.status_code == 200
                 # To be sure there is no error at each step.

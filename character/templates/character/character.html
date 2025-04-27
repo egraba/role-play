@@ -7,24 +7,6 @@
             <a href={% url 'index' %}>- Return to main menu -</a>
         </div>
 
-        {% if portrait_url %}
-            <div class="character-portrait-container rpgui-container framed-golden">
-                <img src="{{ portrait_url }}" alt="Character Portrait" class="character-portrait">
-            </div>
-            <style>
-                .character-portrait-container {
-                    width: 300px;
-                    margin: 20px auto;
-                    padding: 10px;
-                }
-                .character-portrait {
-                    width: 100%;
-                    height: auto;
-                    border-radius: 5px;
-                }
-            </style>
-        {% endif %}
-
         <table id="characteristics" class="rpgui-container framed-golden">
             <tr>
                 <th><p>User</p></th>
@@ -46,7 +28,16 @@
 
         <table id="main">
             <tr>
-                <td id="hp">
+                <td id="characteristics">
+                    <table class="rpgui-container framed-golden">
+                        <tr>
+                            {% if character.portrait %}
+                                <td><img src="{{ character.portrait.url }}" alt="Character Portrait" class="character-portrait"></td>
+                            {% else %}
+                                <td><img src="{{ portrait_url }}" alt="Character Portrait" class="character-portrait"></td>
+                            {% endif %}
+                        </tr>
+                    </table>
                     <table class="rpgui-container framed-golden">
                         <tr>
                             <td><p>HP: {{ character.hp }} / {{ character.max_hp }}</p></td>

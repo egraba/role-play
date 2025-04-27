@@ -37,6 +37,7 @@ dependencies = [
     "pydantic",
     "pyyaml",
     "redis",
+    "requests",
     "sentry-sdk[django]",
     "whitenoise",
 ]

@@ -6,6 +6,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = []  # type: list
 
+# Media files (Uploaded files)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 INSTALLED_APPS += [
     "debug_toolbar",
 ]

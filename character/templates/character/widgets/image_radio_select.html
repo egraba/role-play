@@ -8,7 +8,7 @@
                        value="{{ option.value }}"
                        {% if option.selected %}checked{% endif %}
                        class="portrait-radio-input">
-                <div class="portrait-image-container">
+                <div class="portrait-image-container" onclick="document.getElementById('{{ option.attrs.id }}').click();">
                     {{ option.label }}
                 </div>
             </label>

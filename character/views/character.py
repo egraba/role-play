@@ -1,4 +1,7 @@
 import re
+import uuid
+import requests
+from django.core.files.base import ContentFile
 from enum import StrEnum
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -138,7 +141,10 @@ class CharacterSelectPortraitView(LoginRequiredMixin, FormView):
 
     def form_valid(self, form):
         character = Character.objects.get(pk=self.kwargs["pk"])
-        # Store the portrait URL in the session for now, as the model uses ImageField
-        # In a production app, you would download the image and save it to the model
-        self.request.session["portrait_url"] = form.cleaned_data["portrait"]
-        return HttpResponseRedirect(character.get_absolute_url())
+        portrait_url = form.cleaned_data["portrait"]
+        response = requests.get(portrait_url)
+        if response.status_code == 200:
+            file_name = f"portrait_{character.pk}_{uuid.uuid4().hex}.png"
+            character.portrait.save(file_name, ContentFile(response.content), save=True)
+            self.request.session["portrait_url"] = character.portrait.url
+        return HttpResponseRedirect(reverse("character-detail", args=[character.pk]))
