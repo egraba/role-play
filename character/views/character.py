@@ -1,5 +1,6 @@
 import re
 import uuid
+import logging
 import requests
 from django.core.files.base import ContentFile
 from enum import StrEnum
@@ -9,8 +10,6 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views.generic import DetailView, FormView
 from formtools.wizard.views import SessionWizardView
-
-# ImageGenerator is now used in PortraitSelectForm
 
 from ..character_attributes_builders import (
     BackgroundBuilder,
@@ -26,6 +25,10 @@ from ..forms.portraits import PortraitSelectForm
 from ..forms.skills import SkillsSelectForm
 from ..models.character import Character
 from ..models.klasses import Klass
+
+logger = logging.getLogger(__name__)
+
+# ImageGenerator is now used in PortraitSelectForm
 
 MULTI_EQUIPMENT_REGEX = r"\S+\s&\s\S+"
 
@@ -135,16 +138,76 @@ class CharacterSelectPortraitView(LoginRequiredMixin, FormView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        character = Character.objects.get(pk=self.kwargs["pk"])
-        kwargs["initial"] = {"character": character}
+        try:
+            character = Character.objects.get(pk=self.kwargs["pk"])
+            # Ensure the user is the owner of the character
+            if character.user != self.request.user:
+                raise PermissionError(
+                    "You don't have permission to modify this character"
+                )
+            kwargs["initial"] = {"character": character}
+        except Character.DoesNotExist:
+            kwargs["initial"] = {"character": None}
         return kwargs
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        try:
+            character = Character.objects.get(pk=self.kwargs["pk"])
+            context["character"] = character
+        except Character.DoesNotExist:
+            pass
+        return context
+
     def form_valid(self, form):
-        character = Character.objects.get(pk=self.kwargs["pk"])
-        portrait_url = form.cleaned_data["portrait"]
-        response = requests.get(portrait_url)
-        if response.status_code == 200:
-            file_name = f"portrait_{character.pk}_{uuid.uuid4().hex}.png"
-            character.portrait.save(file_name, ContentFile(response.content), save=True)
-            self.request.session["portrait_url"] = character.portrait.url
-        return HttpResponseRedirect(reverse("character-detail", args=[character.pk]))
+        # Check for regenerate or first generation request
+        if form.cleaned_data.get("regenerate", False) or form.cleaned_data.get(
+            "generate_portraits", False
+        ):
+            # Redirect back to the same page to show the generated images
+            return self.form_invalid(form)
+
+        try:
+            character = Character.objects.get(pk=self.kwargs["pk"])
+
+            # Ensure the user is the owner of the character
+            if character.user != self.request.user:
+                return HttpResponseRedirect(reverse("character-list"))
+
+            portrait_url = form.cleaned_data.get("portrait")
+            if not portrait_url:
+                # If no portrait was selected, redirect to character detail
+                return HttpResponseRedirect(
+                    reverse("character-detail", args=[character.pk])
+                )
+
+            try:
+                # Download the image
+                response = requests.get(portrait_url, timeout=10)
+                if response.status_code == 200:
+                    file_name = f"portrait_{character.pk}_{uuid.uuid4().hex}.png"
+                    character.portrait.save(
+                        file_name, ContentFile(response.content), save=True
+                    )
+                    self.request.session["portrait_url"] = character.portrait.url
+                else:
+                    logger.error(
+                        f"Failed to download portrait: HTTP {response.status_code}"
+                    )
+            except requests.RequestException as e:
+                logger.error(f"Error downloading portrait: {str(e)}")
+
+            return HttpResponseRedirect(
+                reverse("character-detail", args=[character.pk])
+            )
+
+        except Character.DoesNotExist:
+            return HttpResponseRedirect(reverse("character-list"))
+
+    def form_invalid(self, form):
+        """
+        If the form is invalid, render it again with the supplied data.
+        For portrait generation, we want to render the same page again with
+        the newly generated portraits.
+        """
+        return self.render_to_response(self.get_context_data(form=form))
