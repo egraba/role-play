@@ -6,13 +6,6 @@ on:
   pull_request:
     branches: [ "main" ]
 
-env:
-  DJANGO_SETTINGS_MODULE: role_play.settings.ci
-  PGPASSWORD: ${{secrets.PGPASSWORD}}
-  DJANGO_SECRET_KEY: ${{secrets.DJANGO_SECRET_KEY}}
-  PYTEST_PLUGINS: celery.contrib.pytest
-  ANTHROPIC_API_KEY: cikey # Not used in CI
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -30,7 +23,7 @@ jobs:
         image: postgres:latest
         env:
           POSTGRES_USER: ciuser
-          POSTGRES_PASSWORD: ${{secrets.PGPASSWORD}}
+          POSTGRES_PASSWORD: ${{secrets.POSTGRES_PASSWORD}}
           POSTGRES_DB: role-play
         ports:
           - 5432:5432
@@ -45,14 +38,18 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: '3.13'
+    - name: Install Doppler CLI
+      uses: dopplerhq/cli-action@v3
     - name: Install Dependencies
       run: |
         curl -LsSf https://astral.sh/uv/install.sh | sh
         uv sync
     - name: Run Tests
       run: |
-        uv run invoke test.run --verbose --coverage
-        uv run invoke test.coverage-report --output-format xml
+        doppler run -- uv run invoke test.run --verbose --coverage
+        doppler run -- uv run invoke test.coverage-report --output-format xml
+      env:
+        DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v5
       env:
