@@ -6,10 +6,6 @@ on:
   pull_request:
     branches: [ "main" ]
 
-env:
-  DJANGO_SETTINGS_MODULE: role_play.settings.ci
-  PYTEST_PLUGINS: celery.contrib.pytest
-
 jobs:
   build:
     runs-on: ubuntu-latest
