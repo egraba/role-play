@@ -23,7 +23,7 @@ jobs:
         image: postgres:latest
         env:
           POSTGRES_USER: ciuser
-          POSTGRES_PASSWORD: ${{secrets.PGPASSWORD}}
+          POSTGRES_PASSWORD: ${{secrets.POSTGRES_PASSWORD}}
           POSTGRES_DB: role-play
         ports:
           - 5432:5432

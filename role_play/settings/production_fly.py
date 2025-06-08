@@ -54,7 +54,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "role-play",
         "USER": "postgres",
-        "PASSWORD": os.environ["PGPASSWORD"],
+        "PASSWORD": os.environ["POSTGRES_PASSWORD"],
         "HOST": "role-play-db.internal",
         "PORT": "5433",
     }
