@@ -33,21 +33,29 @@ def create(context):
 
 
 @task
-def deploy(context, build=True):
+def deploy(context, build=True, setup_token=True):
     """
     Deploy the application to ephemeral environment.
 
-    Creates the Fly.io application if it doesn't exist and deploys
-    the current version to the ephemeral environment.
+    Creates the Fly.io application if it doesn't exist, sets up Doppler token,
+    and deploys the current version to the ephemeral environment.
 
     Args:
         context: The invoke context object for running commands.
         build: Whether to rebuild the Docker image (default: True).
+        setup_token: Whether to setup Doppler token (default: True).
     """
     print(f"Deploying to ephemeral environment: {APP_NAME}")
 
     # Ensure app exists
     create(context)
+
+    # Setup Doppler token as prerequisite for deployment
+    if setup_token:
+        print("🔑 Setting up Doppler token as prerequisite for deployment...")
+        setup_doppler_token(context)
+    else:
+        print("⚠️  Skipping Doppler token setup (--no-setup-token flag used)")
 
     # Deploy the application using ephemeral config
     deploy_cmd = "flyctl deploy --config fly.ephemeral.toml"
@@ -80,17 +88,16 @@ def status(context):
 
 
 @task
-def logs(context, lines=50):
+def logs(context):
     """
     View logs from the ephemeral application.
 
     Args:
         context: The invoke context object for running commands.
-        lines: Number of log lines to display (default: 50).
     """
-    print(f"Fetching {lines} lines of logs from {APP_NAME}")
+    print(f"Fetching logs from {APP_NAME}")
     try:
-        context.run(f"flyctl logs --app {APP_NAME} --lines {lines}")
+        context.run(f"flyctl logs --app {APP_NAME}")
     except Exception as e:
         print(f"❌ Failed to fetch logs: {e}")
         raise Exit(1)
@@ -218,11 +225,14 @@ def quick_deploy(context):
     """
     Quick deploy without rebuild for faster ephemeral testing.
 
+    Note: This still sets up Doppler token by default.
+    Use deploy flags to skip this step for even faster deployments.
+
     Args:
         context: The invoke context object for running commands.
     """
-    print(f"Quick deploying to {APP_NAME} (no rebuild)")
-    deploy(context, build=False)
+    print(f"Quick deploying to {APP_NAME} (no rebuild, with token setup)")
+    deploy(context, build=False, setup_token=True)
 
 
 @task
@@ -264,8 +274,52 @@ def deploy_release(context):
         context: The invoke context object for running commands.
     """
     print("Running ephemeral deployment release commands...")
-    context.run("python manage.py migrate")
+    context.run("doppler run -- python manage.py migrate")
     context.run("python manage.py collectstatic --noinput")
+
+
+@task
+def setup_doppler_token(context):
+    """
+    Generate a Doppler service token for dev config and set it in Fly secrets.
+
+    Creates a service token named "fly-ephemeral" for the dev config and
+    sets it as DOPPLER_TOKEN secret in the ephemeral Fly.io app.
+
+    Args:
+        context: The invoke context object for running commands.
+    """
+    print(f"Setting up Doppler token for {APP_NAME}")
+
+    try:
+        # Generate a service token for the dev config
+        print("🔑 Generating Doppler service token for dev config...")
+        result = context.run(
+            "doppler configs tokens create fly-ephemeral --config dev --plain",
+            hide=True,
+        )
+
+        # Extract the token from the output
+        token = result.stdout.strip()
+
+        if not token:
+            print("❌ Failed to generate Doppler token - empty response")
+            raise Exit(1)
+
+        print("✅ Successfully generated Doppler service token")
+
+        # Set the token as a secret in the Fly.io app
+        print(f"🔄 Setting DOPPLER_TOKEN secret in {APP_NAME}...")
+        context.run(
+            f'flyctl secrets set DOPPLER_TOKEN="{token}" --app {APP_NAME}', hide=True
+        )
+
+        print(f"✅ Successfully set DOPPLER_TOKEN secret in {APP_NAME}")
+        print("🎉 Doppler integration is now configured for the ephemeral environment")
+
+    except Exception as e:
+        print(f"❌ Failed to setup Doppler token: {e}")
+        raise Exit(1)
 
 
 namespace = Collection(
@@ -283,4 +337,5 @@ namespace = Collection(
     run,
     run_worker,
     deploy_release,
+    setup_doppler_token,
 )

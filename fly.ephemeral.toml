@@ -10,11 +10,11 @@ console_command = '/code/manage.py shell'
 [build]
 
 [deploy]
-release_command = 'uv run invoke eph.deploy-release'
+release_command = 'doppler run -- uv run invoke eph.deploy-release'
 
 [processes]
-app = "uv run invoke ephemeral.run"
-worker = "uv run invoke ephemeral.run-worker"
+app = "doppler run -- uv run invoke eph.run"
+worker = "doppler run -- uv run invoke eph.run-worker"
 
 [env]
 PORT = '8000'
