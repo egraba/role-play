@@ -1,5 +1,5 @@
 from invoke import Collection
 
-from tasks import db, dev, prod, stg, test
+from tasks import db, dev, prod, stg, test, eph
 
-namespace = Collection(dev, db, test, stg, prod)
+namespace = Collection(dev, db, test, eph, stg, prod)
