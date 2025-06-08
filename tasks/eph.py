@@ -225,6 +225,49 @@ def quick_deploy(context):
     deploy(context, build=False)
 
 
+@task
+def run(context):
+    """
+    Run the ephemeral application server.
+
+    Starts the Django development server for the ephemeral environment.
+
+    Args:
+        context: The invoke context object for running commands.
+    """
+    print("Starting ephemeral application server...")
+    context.run("python manage.py runserver 0.0.0.0:8000")
+
+
+@task
+def run_worker(context):
+    """
+    Run the Celery worker for ephemeral environment.
+
+    Starts the Celery worker process to handle background tasks.
+
+    Args:
+        context: The invoke context object for running commands.
+    """
+    print("Starting ephemeral Celery worker...")
+    context.run("celery -A role_play worker --loglevel=info")
+
+
+@task
+def deploy_release(context):
+    """
+    Run deployment release commands for ephemeral environment.
+
+    Executes database migrations and other deployment setup tasks.
+
+    Args:
+        context: The invoke context object for running commands.
+    """
+    print("Running ephemeral deployment release commands...")
+    context.run("python manage.py migrate")
+    context.run("python manage.py collectstatic --noinput")
+
+
 namespace = Collection(
     create,
     deploy,
@@ -237,4 +280,7 @@ namespace = Collection(
     secrets_set,
     info,
     quick_deploy,
+    run,
+    run_worker,
+    deploy_release,
 )
