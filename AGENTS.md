@@ -204,7 +204,6 @@ The project is organized by domain (character, game, master, user) with each hav
 
 ## Related Documentation
 - `README.md` - Project overview and screenshots
-- `CLAUDE.md` - Quick reference for Claude Code
 - `CHANGELOG.md` - Version history and changes
 - `LICENSE.md` - Full license text
 
