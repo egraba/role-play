@@ -9,9 +9,9 @@ services:
     image: "postgres:alpine"
     restart: always
     environment:
-      - POSTGRES_USER=devuser
-      - POSTGRES_PASSWORD=devpwd
-      - POSTGRES_DB=role-play
+      POSTGRES_USER: devuser
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: role-play
     ports:
       - "5432:5432"
     volumes:
