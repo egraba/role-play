@@ -55,22 +55,24 @@ Core game mechanics and flow:
 
 ## Build & Run Commands
 
+**Important**: This project uses [Doppler](https://www.doppler.com/) for secrets management. All commands that require environment variables (like API keys) should be prefixed with `doppler run --` to inject the necessary secrets.
+
 ### Development
 ```bash
-uv run invoke dev.run          # Start development server
+doppler run -- uv run invoke dev.run          # Start development server
 ```
 
 ### Testing
 ```bash
-uv run invoke test.run         # Run all tests
-uv run invoke test.run --test-label=path/to/test_file.py::TestClass::test_method  # Run single test
-uv run invoke test.run --coverage && uv run invoke test.coverage-report  # Coverage report
+doppler run -- uv run invoke test.run         # Run all tests
+doppler run -- uv run invoke test.run --test-label=path/to/test_file.py::TestClass::test_method  # Run single test
+doppler run -- uv run invoke test.run --coverage && uv run invoke test.coverage-report  # Coverage report
 ```
 
 ### Database
 ```bash
-uv run invoke db.migrate       # Run migrations
-uv run invoke db.reset         # Reset database
+doppler run -- uv run invoke db.migrate       # Run migrations
+doppler run -- uv run invoke db.reset         # Reset database
 ```
 
 ### Code Quality
@@ -138,6 +140,7 @@ mypy                          # Type checking
 - **ruff**: Linting and formatting
 - **mypy**: Static type checking
 - **pre-commit**: Git hooks for code quality
+- **Doppler**: Secrets management (required for running commands)
 
 ## Key Patterns & Conventions
 
@@ -179,20 +182,21 @@ The project is organized by domain (character, game, master, user) with each hav
 
 ### When Fixing Bugs
 1. Check existing tests in the relevant `tests/` directory
-2. Run specific test: `uv run invoke test.run --test-label=path/to/test`
+2. Run specific test: `doppler run -- uv run invoke test.run --test-label=path/to/test`
 3. Check for related issues in error handling (`exceptions.py`)
 4. Verify Django model validation rules
 
 ### When Refactoring
 1. Ensure type hints are present
 2. Run full test suite before and after
-3. Check coverage: `uv run invoke test.run --coverage`
+3. Check coverage: `doppler run -- uv run invoke test.run --coverage`
 4. Format with ruff: `ruff format`
 5. Run pre-commit hooks: `pre-commit run --all-files`
 
 ## Important Notes
 
 - **Python Version**: Project requires Python 3.14
+- **Secrets Management**: Uses Doppler for environment variables and API keys
 - **Under Development**: This is an active project; UI and features are evolving
 - **Real-time Features**: Uses WebSockets for real-time game interactions
 - **AI-Enhanced**: Quest descriptions and game content can be enriched using Claude AI
