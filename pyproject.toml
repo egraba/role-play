@@ -12,7 +12,7 @@ python_files = ["test_*.py", "*_test.py", "testing/python/*.py"]
 [project]
 authors = [{ name = "Eric Grabarczyk", email = "eric.grabarczyk@gmail.com" }]
 license = { text = "GNU Affero General Public License v3.0" }
-requires-python = "<4.0,>=3.13"
+requires-python = "<4.0,>=3.14"
 dependencies = [
     "anthropic",
     "async-timeout",
