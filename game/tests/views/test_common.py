@@ -127,8 +127,8 @@ class TestIndexView:
         assertContains(response, "Log out")
         assertNotContains(response, "Register")
         assertContains(response, "Create a game")
-        assertNotContains(response, "View all games created by you")
-        assertContains(response, "Continue your character's game")
+        assertNotContains(response, "View all your games")
+        assertContains(response, "Continue your game")
         assertContains(response, "View your character")
         assertNotContains(response, "Create your character")
         assert not response.context["user_has_created_games"]
@@ -145,8 +145,8 @@ class TestIndexView:
         assertContains(response, "Log out")
         assertNotContains(response, "Register")
         assertContains(response, "Create a game")
-        assertContains(response, "View all games created by you")
-        assertNotContains(response, "Continue your character's game")
+        assertContains(response, "View all your games")
+        assertNotContains(response, "Continue your game")
         assertNotContains(response, "View your character")
         assertContains(response, "Create your character")
         assert response.context["user_has_created_games"]
@@ -213,7 +213,7 @@ class TestGameListView:
     def test_content_no_game(self, client):
         Game.objects.all().delete()
         response = client.get(reverse(self.path_name))
-        assertContains(response, "There is no game available...")
+        assertContains(response, "There are no games available...")
 
     def test_content_user_created_games(self, client, user, create_games):
         response = client.get(reverse(self.path_name))
