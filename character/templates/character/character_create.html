@@ -5,28 +5,30 @@
 {% endblock %}
 
 {% block content %}
-  <div class="form rpgui-container framed-golden">
-    <h1>New character</h1>
-    <p>Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</p>
-    <form action="" method="post">
-      {% csrf_token %}
-      <table>
-        {{ wizard.management_form }}
-        {% if wizard.form.forms %}
-          {{ wizard.form.management_form }}
-          {% for form in wizard.form.forms %}
-            {{ form.as_table }}
-          {% endfor %}
-        {% else %}
-          {{ wizard.form }}
-        {% endif %}
-      </table>
-      <div class="rpgui-center">
-        {% if wizard.steps.prev %}
-          <button name="wizard_goto_step" class="rpgui-button" type="submit" value="{{ wizard.steps.prev }}"><p>Previous step</p></button>
-        {% endif %}
-        <button class="rpgui-button" type="submit"><p>Submit</p></button>
-      </div>
-    </form>
+  <div class="rpg-container">
+    <div class="rpg-panel" style="max-width: 800px; margin: 50px auto;">
+      <h1 class="panel-title">✨ New Character</h1>
+      <p class="text-center text-muted mb-2">Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</p>
+      <form action="" method="post">
+        {% csrf_token %}
+        <div class="rpg-form-group">
+          {{ wizard.management_form }}
+          {% if wizard.form.forms %}
+            {{ wizard.form.management_form }}
+            {% for form in wizard.form.forms %}
+              {{ form.as_table }}
+            {% endfor %}
+          {% else %}
+            {{ wizard.form }}
+          {% endif %}
+        </div>
+        <div class="action-buttons mt-2">
+          {% if wizard.steps.prev %}
+            <button name="wizard_goto_step" class="rpg-btn btn-defend" type="submit" value="{{ wizard.steps.prev }}">Previous step</button>
+          {% endif %}
+          <button class="rpg-btn btn-primary" type="submit">Submit</button>
+        </div>
+      </form>
+    </div>
   </div>
 {% endblock %}

@@ -1,18 +1,22 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="form rpgui-container framed-golden">
-        <h1>Equipment</h1>
-        <p>
-            {{ character.name }}, as a {{ character.get_klass_display }},
-            please choose your equipment.
-        </p>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <div class="rpgui-center">
-                <button class="rpgui-button" type="submit"><p>Submit</p></button>
-            </div>
-        </form>
+    <div class="rpg-container">
+        <div class="rpg-panel" style="max-width: 800px; margin: 50px auto;">
+            <h1 class="panel-title">⚔️ Equipment</h1>
+            <p class="text-center text-muted mb-2">
+                {{ character.name }}, as a {{ character.get_klass_display }},
+                please choose your equipment.
+            </p>
+            <form method="post">
+                {% csrf_token %}
+                <div class="rpg-form-group">
+                    {{ form.as_p }}
+                </div>
+                <div class="action-buttons mt-2">
+                    <button class="rpg-btn btn-primary" type="submit">Submit</button>
+                </div>
+            </form>
+        </div>
     </div>
 {% endblock%}
