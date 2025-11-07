@@ -1,35 +1,41 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="rpgui-container framed">
-        <h1 id="title" class="title">Role play</h1>
-        <div class="rpgui-center">
-            <a href={% url 'index' %}>- Return to main menu -</a>
-        </div>
+    <div class="rpg-container">
+        <div class="rpg-panel">
+            <h1 id="title" class="panel-title" style="font-size: 2rem;">📚 Campaigns</h1>
+            <div class="text-center mb-2">
+                <a href="{% url 'index' %}" style="color: var(--color-primary); text-decoration: underline;">Return to main menu</a>
+            </div>
 
-        <hr class="golden"/>
+            <div class="rpg-section">
+                <h2 class="panel-title" style="font-size: 1.3rem;">List of Stories</h2>
+                <table class="rpg-table">
+                    {% if page_obj %}
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                            </tr>
+                        </thead>
+                    {% endif %}
+                    <tbody>
+                        {% for campaign in page_obj %}
+                            <tr>
+                                <td><a href="{{ campaign.get_absolute_url }}" style="color: var(--color-primary); text-decoration: underline;">{{ campaign }}</a></td>
+                            </tr>
+                        {% empty %}
+                            <tr><td class="text-center text-muted">There are no campaigns available...</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
 
-        <h2>List of stories</h2>
-        <table class="rpgui-container framed-grey">
-            {% if page_obj %}
-                <tr>
-                    <th><p>Title</p></th>
-                </tr>
-            {% endif %}
-            {% for campaign in page_obj %}
-                <tr>
-                    <td><a href={{ campaign.get_absolute_url }}>{{ campaign }}</a></td>
-                </tr>
-            {% empty %}
-                <tr><td><p>There is no campaign available...</p></td></tr>
-            {% endfor %}
-        </table>
-
-        <div class="rpgui-center">
-            {% include 'pagination.html' %}
-            <a href={% url 'campaign-create' %}>
-                <button class="rpgui-button"><p>Create a new campaign</p></button>
-            </a>
+                <div class="text-center mt-2">
+                    {% include 'pagination.html' %}
+                    <div class="action-buttons mt-2">
+                        <a href="{% url 'campaign-create' %}" class="rpg-btn btn-primary">Create a new campaign</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}
