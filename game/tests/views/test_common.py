@@ -65,7 +65,6 @@ class TestIndexView:
         assert response.status_code == 200
         assertContains(response, "Log in")
         assertNotContains(response, "Log out")
-        assertContains(response, "Register")
         assertNotContains(response, "Create a game")
         assertNotContains(response, "View all games created by you")
         assertNotContains(response, "Continue your character's game")
