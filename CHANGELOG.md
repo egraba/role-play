@@ -14,15 +14,6 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * Upgraded Django from 5.1 to 5.2
 * Enhanced CI workflow to use Doppler for environment variable management
 * Migrated to Python 3.14
-* Replaced rpgui CSS library with custom rpg-styles.css design system
-* Replaced image assets with emoji icons throughout the application
-* Updated all templates with modern RPG-themed design (dark backgrounds, golden accents)
-* Improved UI consistency with standardized button styles and form layouts
-
-### Removed
-* rpgui CSS library and all related dependencies
-* jQuery library (no longer needed)
-* static/images folder (replaced with emoji icons)
 
 ## v0.12.0 - 2025-01-18
 
