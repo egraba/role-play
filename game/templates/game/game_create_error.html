@@ -1,12 +1,18 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="info rpgui-container framed-golden">
-        <h1>Role play</h1>
-        <p>The game cannot be created:</p>
-        <ul><li>The campaign {{ campaign_slug }} does not exist...</li></ul>
-        <div class="rpgui-center">
-            <a href={% url 'index' %}><button class="rpgui-button"><p>Return to main menu</p></button></a>
+    <div class="rpg-container">
+        <div class="rpg-panel" style="max-width: 600px; margin: 50px auto;">
+            <h1 class="panel-title">❌ Cannot Create Game</h1>
+            <div class="game-message error">
+                <p><strong>The game cannot be created:</strong></p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>The campaign "{{ campaign_slug }}" does not exist...</li>
+                </ul>
+            </div>
+            <div class="action-buttons mt-2">
+                <a href="{% url 'index' %}" class="rpg-btn btn-primary">Return to main menu</a>
+            </div>
         </div>
     </div>
 {% endblock %}
