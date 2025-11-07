@@ -1,43 +1,49 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="rpgui-container framed">
-        <h1 class="title">{{ game }}</h1>
-        <div class="rpgui-center">
-            <a href={{ game.get_absolute_url }}>- Return to game -</a>
-        </div>
+    <div class="rpg-container">
+        <div class="rpg-panel">
+            <h1 class="panel-title" style="font-size: 2rem;">👥 Invite Users</h1>
+            <h2 class="text-center text-primary mb-2" style="font-size: 1.2rem;">{{ game }}</h2>
+            <div class="text-center mb-2">
+                <a href="{{ game.get_absolute_url }}" style="color: var(--color-primary); text-decoration: underline;">Return to game</a>
+            </div>
 
-        <hr class="golden"/>
+            <div class="rpg-section">
+                <h2 class="panel-title" style="font-size: 1.3rem;">Available Users</h2>
+                <table class="rpg-table">
+                    {% if page_obj %}
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Character's Name</th>
+                                <th>Race</th>
+                                <th>XP</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                    {% endif %}
+                    <tbody>
+                        {% for user in page_obj %}
+                            <tr>
+                                <td>{{ user }}</td>
+                                <td><a href="{{ user.character.get_absolute_url }}" style="color: var(--color-primary); text-decoration: underline;">{{ user.character }}</a></td>
+                                <td>{{ user.character.get_race_display }}</td>
+                                <td>{{ user.character.xp }}</td>
+                                <td>
+                                    <a href="{% url 'game-invite-user-confirm' game.id user.id %}" class="rpg-btn btn-primary" style="padding: 8px 16px; font-size: 0.9rem;">Invite</a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr><td colspan="5" class="text-center text-muted">There are no users available...</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
 
-        <h1>Available users</h1>
-        <table class="rpgui-container framed-grey">
-            {% if page_obj %}
-                <tr>
-                    <th><p>User</p></th>
-                    <th><p>Character's name</p></th>
-                    <th><p>Race</p></th>
-                    <th><p>XP</p></th>
-                </tr>
-            {% endif %}
-            {% for user in page_obj %}
-                <tr>
-                    <td><p>{{ user }}</p></td>
-                    <td><a href={{ user.character.get_absolute_url }}>{{ user.character }}</a></td>
-                    <td><p>{{ user.character.get_race_display }}</p></td>
-                    <td><p>{{ user.character.xp }}</p></td>
-                    <td>
-                        <a href={% url 'game-invite-user-confirm' game.id user.id %}>
-                            <button class="rpgui-button" method="post"><p>Invite</p></button>
-                        </a>
-                    </td>
-                </tr>
-            {% empty %}
-                <tr><td><p>There is no user available...</p></td></tr>
-            {% endfor %}
-        </table>
-
-        <div class="rpgui-center">
-            {% include 'pagination.html' %}
+                <div class="text-center mt-2">
+                    {% include 'pagination.html' %}
+                </div>
+            </div>
         </div>
     </div>
 {% endblock%}
