@@ -2,70 +2,79 @@
 {% load static %}
 
 {% block content %}
-    <div class="rpgui-container framed">
-        <h1 id="title" class="title">Role play</h1>
-        <div class="rpgui-center">
-            {% if user.is_authenticated %}
-                <p>Welcome {{ user.username }}.</p>
-                <form method="post" action="{% url 'logout' %}">
-                    {% csrf_token %}
-                    <button button class="rpgui-button" type="submit"><p>Log out</p></button>
-                </form>
-            {% else %}
-                <p>Please log in or register, if you want to play.</p>
-                <a href="{% url 'login' %}"><button class="rpgui-button"><p>Log in</p></button></a>
-                <button disabled class="rpgui-button"><p>Register</p></button>
-            {% endif %}
-        </div>
+    <div class="rpg-container">
+        <div class="rpg-panel">
+            <h1 id="title" class="panel-title" style="font-size: 2.5rem; margin-bottom: 20px;">⚔️ Role Play ⚔️</h1>
 
-        <hr class="golden"/>
-
-        <img class="rpgui-icon skull" src={% static 'images/red-skull.png' %}>
-        <p>Role play is an open-source virtual role playing game.</p>
-        <p>It is an online version of "paper" role play games.</p>
-        <p>
-            If you want to know more about the role play universe, please have a look at the
-            <a href="{% url 'glossary' %}">glossary</a>.
-        </p>
-
-        <hr style="clear:both"/>
-
-        {% if user.is_authenticated %}
-            <div class="rpgui-center">
-                <a href="{% url 'campaign-list' %}">
-                    <button class="rpgui-button"><p>Create a game</p></button>
-                </a>
-                {% if user_has_created_games %}
-                    <a href="{% url 'game-list' %}">
-                        <button class="rpgui-button"><p>View all games created by you</p></button>
-                    </a>
-                {% endif%}
-                {% if user_character %}
-                    {% if user_character_game %}
-                        <a href={{ user_character_game.get_absolute_url }}>
-                            <button class="rpgui-button"><p>Continue your character's game</p></button>
-                        </a>
-                    {% endif %}
-                    <a href={{ user_character.get_absolute_url }}>
-                        <button class="rpgui-button"><p>View your character</p></button>
-                    </a>
+            <div class="rpg-section text-center">
+                {% if user.is_authenticated %}
+                    <div class="game-message info">
+                        <strong>Welcome, {{ user.username }}!</strong>
+                    </div>
+                    <form method="post" action="{% url 'logout' %}" style="margin-top: 15px;">
+                        {% csrf_token %}
+                        <button class="rpg-btn btn-primary" type="submit">Log out</button>
+                    </form>
                 {% else %}
-                    <a href="{% url 'character-create' %}">
-                        <button class="rpgui-button"><p>Create your character</p></button>
-                    </a>
+                    <p class="text-muted mb-2">Please log in or register to begin your adventure.</p>
+                    <div class="action-buttons">
+                        <a href="{% url 'login' %}" class="rpg-btn btn-primary">Log in</a>
+                        <button disabled class="rpg-btn">Register</button>
+                    </div>
                 {% endif %}
             </div>
-            <hr/>
-        {% endif %}
 
-        <h1>Release notes</h1>
-        <p>This game is under development and expecting to change a lot!</p>
-        <p>Don't hesitate to provide your feedback or suggestions, by visiting our
-            project on <a href="https://github.com/egraba/role-play">GitHub</a>.</p>
-        <div class="rpgui-center inline">
-            <img class="rpgui-icon" style="transform: scaleX(-1)" src={% static 'images/mini-skull.png' %}>
-            <a href="#title">- Back to top -</a>
-            <img class="rpgui-icon" src={% static 'images/mini-skull.png' %}>
+            <div class="rpg-section">
+                <div style="text-align: center; font-size: 4rem; margin-bottom: 20px;">
+                    💀
+                </div>
+                <p class="mb-1">Role play is an open-source virtual role playing game.</p>
+                <p class="mb-1">It is an online version of "paper" role play games.</p>
+                <p>
+                    If you want to know more about the role play universe, please have a look at the
+                    <a href="{% url 'glossary' %}" style="color: var(--color-primary); text-decoration: underline;">glossary</a>.
+                </p>
+            </div>
+
+            {% if user.is_authenticated %}
+                <div class="rpg-section">
+                    <h2 class="panel-title" style="font-size: 1.5rem;">Quick Actions</h2>
+                    <div class="action-buttons">
+                        <a href="{% url 'campaign-list' %}" class="rpg-btn btn-primary">Create a game</a>
+                        {% if user_has_created_games %}
+                            <a href="{% url 'game-list' %}" class="rpg-btn btn-primary">View all your games</a>
+                        {% endif%}
+                        {% if user_character %}
+                            {% if user_character_game %}
+                                <a href="{{ user_character_game.get_absolute_url }}" class="rpg-btn btn-attack">Continue your game</a>
+                            {% endif %}
+                            <a href="{{ user_character.get_absolute_url }}" class="rpg-btn btn-defend">View your character</a>
+                        {% else %}
+                            <a href="{% url 'character-create' %}" class="rpg-btn btn-skill">Create your character</a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="rpg-section">
+                <h2 class="panel-title" style="font-size: 1.5rem;">📜 Release Notes</h2>
+                <div class="game-message warning">
+                    <p class="mb-1"><strong>⚠️ Under Development</strong></p>
+                    <p>This game is actively being developed and expecting to change a lot!</p>
+                </div>
+                <p class="text-center mt-2">
+                    Don't hesitate to provide your feedback or suggestions by visiting our
+                    project on <a href="https://github.com/egraba/role-play" style="color: var(--color-primary); text-decoration: underline;">GitHub</a>.
+                </p>
+            </div>
+
+            <div class="text-center mt-2">
+                <a href="#title" style="color: var(--color-primary); text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                    <span style="transform: scaleX(-1); display: inline-block;">💀</span>
+                    <span>Back to top</span>
+                    <span>💀</span>
+                </a>
+            </div>
         </div>
     </div>
 {% endblock %}

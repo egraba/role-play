@@ -1,48 +1,54 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="rpgui-container framed">
-        <h1 id="title" class="title">Role play</h1>
-        <div class="rpgui-center">
-            <a href={% url 'index' %}>- Return to main menu -</a>
-        </div>
+    <div class="rpg-container">
+        <div class="rpg-panel">
+            <h1 id="title" class="panel-title" style="font-size: 2rem;">👥 Characters</h1>
+            <div class="text-center mb-2">
+                <a href="{% url 'index' %}" style="color: var(--color-primary); text-decoration: underline;">Return to main menu</a>
+            </div>
 
-        <hr class="golden"/>
+            <div class="rpg-section">
+                <h2 class="panel-title" style="font-size: 1.3rem;">List of Characters</h2>
+                <table class="rpg-table">
+                    {% if page_obj %}
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>User</th>
+                                <th>Race</th>
+                                <th>XP</th>
+                                <th>Game</th>
+                            </tr>
+                        </thead>
+                    {% endif %}
+                    <tbody>
+                        {% for character in page_obj %}
+                            <tr>
+                                <td><a href="{{ character.get_absolute_url }}" style="color: var(--color-primary); text-decoration: underline;">{{ character }}</a></td>
+                                <td>{{ character.user }}</td>
+                                <td>{{ character.get_race_display }}</td>
+                                <td>{{ character.xp }}</td>
+                                <td>
+                                    {% with game=character.player.game %}
+                                        {% if game %}
+                                            <a href="{{ game.get_absolute_url }}" style="color: var(--color-primary); text-decoration: underline;">{{ game }}</a>
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    {% endwith %}
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr><td colspan="5" class="text-center text-muted">There are no characters available...</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
 
-        <h2>List of characters</h2>
-        <table class="rpgui-container framed-grey">
-            {% if page_obj %}
-                <tr>
-                    <th><p>Name</p></th>
-                    <th><p>User</p></th>
-                    <th><p>Race</p></th>
-                    <th><p>XP</p></th>
-                    <th><p>Game</p></th>
-                </tr>
-            {% endif %}
-            {% for character in page_obj %}
-                <tr>
-                    <td><a href={{ character.get_absolute_url }}>{{ character }}</a></td>
-                    <td><p>{{ character.user }}</p></td>
-                    <td><p>{{ character.get_race_display }}</p></td>
-                    <td><p>{{ character.xp }}</p></td>
-                    <td>
-                        {% with game=character.player.game %}
-                            {% if game %}
-                                <a href={{ game.get_absolute_url }}>{{ game }}</a>
-                            {% else %}
-                                <p>-</p>
-                            {% endif %}
-                        {% endwith %}
-                    </td>
-                </tr>
-            {% empty %}
-                <tr><td><p>There is no character available...</p></td></tr>
-            {% endfor %}
-        </table>
-
-        <div class="rpgui-center">
-            {% include 'pagination.html' %}
+                <div class="text-center mt-2">
+                    {% include 'pagination.html' %}
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

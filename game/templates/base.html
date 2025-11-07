@@ -3,14 +3,10 @@
 <html lang="en">
     <head>
         <title>{% block title %}egraba's role-play{% endblock %}</title>
-        <link rel="icon" type="image/x-icon" href={% static 'images/mini-skull.png' %} >
-        <link href={% static 'rpgui/rpgui.min.css' %} rel="stylesheet" type="text/css" >
-        <script src={% static "rpgui/rpgui.min.js" %}></script>
-        <script src={% static "js/jquery-3.7.0.min.js" %}></script>
-        <link href={% static 'roleplay.css' %} rel="stylesheet" type="text/css" >
+        <link rel="stylesheet" href="{% static 'css/rpg-styles.css' %}">
     </head>
 
-    <body class="rpgui-content">
+    <body>
         {% block content %}{% endblock%}
     </body>
 </html>

@@ -1,15 +1,21 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="form rpgui-container framed-golden">
-        <h1>Log in</h1>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <div class="rpgui-center">
-                <button class="rpgui-button" type="submit"><p>Log in</p></button>
-            </div>
-        </form>
-        <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
+    <div class="rpg-container">
+        <div class="rpg-panel" style="max-width: 500px; margin: 50px auto;">
+            <h1 class="panel-title">🔐 Log in</h1>
+            <form method="post">
+                {% csrf_token %}
+                <div class="rpg-form-group">
+                    {{ form.as_p }}
+                </div>
+                <div class="action-buttons">
+                    <button class="rpg-btn btn-primary" type="submit">Log in</button>
+                </div>
+            </form>
+            <p class="text-center mt-2">
+                <a href="{% url 'password_reset' %}" style="color: var(--color-primary); text-decoration: underline;">Lost password?</a>
+            </p>
+        </div>
     </div>
 {% endblock %}

@@ -90,7 +90,7 @@ class TestCampaignListView:
     def test_content_no_campaign(self, client):
         Campaign.objects.all().delete()
         response = client.get(reverse(self.path_name))
-        assertContains(response, "There is no campaign available...")
+        assertContains(response, "There are no campaigns available...")
 
 
 @pytest.mark.django_db

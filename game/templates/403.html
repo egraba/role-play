@@ -1,10 +1,15 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="info rpgui-container framed-golden">
-        <h1>Forbidden (403)</h1>
-        <div class="rpgui-center">
-            <button class="rpgui-button" onclick="history.back()"><p>Go back</p></button>
+    <div class="rpg-container">
+        <div class="rpg-panel" style="max-width: 600px; margin: 50px auto;">
+            <h1 class="panel-title">🚫 Forbidden (403)</h1>
+            <div class="game-message error">
+                <p>You don't have permission to access this resource.</p>
+            </div>
+            <div class="action-buttons mt-2">
+                <button class="rpg-btn btn-primary" onclick="history.back()">Go back</button>
+            </div>
         </div>
     </div>
 {% endblock %}

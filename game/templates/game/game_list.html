@@ -1,45 +1,51 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="rpgui-container framed">
-        <h1 id="title" class="title">Role play</h1>
-        <div class="rpgui-center">
-            <a href={% url 'index' %}>- Return to main menu -</a>
-        </div>
+    <div class="rpg-container">
+        <div class="rpg-panel">
+            <h1 id="title" class="panel-title" style="font-size: 2rem;">🎲 Games</h1>
+            <div class="text-center mb-2">
+                <a href="{% url 'index' %}" style="color: var(--color-primary); text-decoration: underline;">Return to main menu</a>
+            </div>
 
-        <hr class="golden"/>
+            <div class="rpg-section">
+                <h2 class="panel-title" style="font-size: 1.3rem;">List of Games</h2>
+                <table class="rpg-table">
+                    {% if page_obj %}
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Master</th>
+                                <th>Status</th>
+                                <th>Players</th>
+                                <th>Start Date</th>
+                            </tr>
+                        </thead>
+                    {% endif %}
+                    <tbody>
+                        {% for game in page_obj %}
+                            <tr>
+                                <td><a href="{{ game.get_absolute_url }}" style="color: var(--color-primary); text-decoration: underline;">{{ game }}</a></td>
+                                <td>{{ game.master }}</td>
+                                <td>{{ game.get_state_display }}</td>
+                                <td>{{ game.character_set.all|length }}</td>
+                                <td>{{ game.start_date }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr><td colspan="5" class="text-center text-muted">There are no games available...</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
 
-        <h2>List of games</h2>
-        <table class="rpgui-container framed-grey">
-            {% if page_obj %}
-                <tr>
-                    <th><p>Name</p></th>
-                    <th><p>Master</p></th>
-                    <th><p>Status</p></th>
-                    <th><p>Number of players</p></th>
-                    <th><p>Start date</p></th>
-                </tr>
-            {% endif %}
-            {% for game in page_obj %}
-                <tr>
-                    <td><a href={{ game.get_absolute_url }}>{{ game }}</a></td>
-                    <td><p>{{ game.master }}</p></td>
-                    <td><p>{{ game.get_state_display }}</p></td>
-                    <td><p>{{ game.character_set.all|length }}</p></td>
-                    <td><p>{{ game.start_date }}</p></td>
-                </tr>
-            {% empty %}
-                <tr><td><p>There is no game available...</p></td></tr>
-            {% endfor %}
-        </table>
-
-        <div class="rpgui-center">
-            {% include 'pagination.html' %}
-            {% if user.is_authenticated %}
-                <a href="{% url 'campaign-create' %}">
-                    <button class="rpgui-button"><p>Create a new game</p></button>
-                </a>
-            {% endif %}
+                <div class="text-center mt-2">
+                    {% include 'pagination.html' %}
+                    {% if user.is_authenticated %}
+                        <div class="action-buttons mt-2">
+                            <a href="{% url 'campaign-create' %}" class="rpg-btn btn-primary">Create a new game</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

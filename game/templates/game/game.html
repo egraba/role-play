@@ -4,127 +4,106 @@
 
 {% block content %}
 
-    <div class="rpgui-container framed">
-        <h1 id="title" class="title">{{ game }}</h1>
-        <div class="rpgui-center">
-            <a href="{% url 'game-list' %}">- Return to games list -</a>
-        </div>
-
-        <hr class="golden"/>
-        <br />
-
-        <h2>Quest</h2>
-        <div id="quest" class="rpgui-container framed-golden-2"><p >{{ quest.environment|linebreaks }}</p></div>
-
-        <div id="game">
-            <div id="events" class="rpgui-container framed-grey">
-                <h3>Game events</h3>
-                <div id="event-list">
-                    {% for event in event_list reversed %}
-                        <p>[{{ event.date|date:"G:i" }}] {{ event.get_message }}</p>
-                    {% empty %}
-                        <p>The campaign did not start yet...</p>
-                    {% endfor %}
-                </div>
+    <div class="rpg-container">
+        <div class="rpg-panel">
+            <h1 id="title" class="panel-title" style="font-size: 2.5rem;">⚔️ {{ game }}</h1>
+            <div class="text-center mb-2">
+                <a href="{% url 'game-list' %}" style="color: var(--color-primary); text-decoration: underline;">Return to games list</a>
             </div>
 
-            {% if flow.is_ongoing %}
-                <div id="messaging">
-                    <p>
-                        <label>Message:</label>
-                        <input id="message-input" type="text">
-                    </p>
-                    <div id="player-actions" class="rpgui-center">
-                        <button id="message-submit" class="rpgui-button" type="submit">
-                            <p>Send</p>
-                        </button>
-                        {% if player %}
-                            {% if ability_check_request %}
-                                <button id="ability-check-submit" class="rpgui-button" type="submit">
-                                    <p>Perform ability check</p>
-                                </button>
-                            {% endif %}
-                            {% if saving_throw_request %}
-                                <button id="saving-throw-submit" class="rpgui-button" type="submit">
-                                    <p>Perform saving throw</p>
-                                </button>
-                            {% endif %}
-                            {% if combat_initiative_request %}
-                                <button id="dexterity-check-submit" class="rpgui-button" type="submit">
-                                    <p>Perform dexterity check</p>
-                                </button>
-                            {% endif %}
-                        {% endif%}
+            <div class="rpg-section">
+                <h2 class="panel-title" style="font-size: 1.5rem;">📜 Quest</h2>
+                <div id="quest" class="game-message info" style="white-space: pre-line;">{{ quest.environment }}</div>
+            </div>
+
+            <div id="game">
+                <div class="rpg-section">
+                    <div id="events" class="rpg-panel" style="background: rgba(0, 0, 0, 0.3);">
+                        <h3 class="panel-title" style="font-size: 1.2rem;">🎲 Game Events</h3>
+                        <div id="event-list" style="max-height: 300px; overflow-y: auto;">
+                            {% for event in event_list reversed %}
+                                <p style="margin: 5px 0; color: var(--color-text);">[{{ event.date|date:"G:i" }}] {{ event.get_message }}</p>
+                            {% empty %}
+                                <p class="text-muted">The campaign did not start yet...</p>
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
-            {% endif %}
 
-            <div id="panel">
-                <div id="characters" class="rpgui-container framed-grey">
-                    <h3>Characters</h3>
-                    {% for character in character_list %}
-                        {% with character_user=character.user %}
-                            <p>
-                                <a href={{ character.get_absolute_url }}>{{ character }}</a>
-                                {% if character_user == user %}
-                                    (played by you)
-                                {% else %}
-                                    (played by {{ character_user }})
-                                {% endif %}
-                            </p>
-                        {% endwith %}
-                    {% empty %}
-                        <div class="rpgui-center">
-                            <p>There is no character for this game...</p>
+                {% if flow.is_ongoing %}
+                    <div id="messaging" class="rpg-section">
+                        <div class="rpg-form-group">
+                            <label for="message-input">Message:</label>
+                            <input id="message-input" type="text" style="width: 100%; padding: 10px; background: rgba(0, 0, 0, 0.5); border: 2px solid var(--color-border); color: var(--color-text); font-family: var(--font-text); border-radius: 4px;">
                         </div>
-                    {% endfor %}
+                        <div id="player-actions" class="action-buttons">
+                            <button id="message-submit" class="rpg-btn btn-primary" type="submit">Send</button>
+                            {% if player %}
+                                {% if ability_check_request %}
+                                    <button id="ability-check-submit" class="rpg-btn btn-skill" type="submit">Perform ability check</button>
+                                {% endif %}
+                                {% if saving_throw_request %}
+                                    <button id="saving-throw-submit" class="rpg-btn btn-defend" type="submit">Perform saving throw</button>
+                                {% endif %}
+                                {% if combat_initiative_request %}
+                                    <button id="dexterity-check-submit" class="rpg-btn btn-attack" type="submit">Perform dexterity check</button>
+                                {% endif %}
+                            {% endif%}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div id="panel" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+                    <div class="rpg-section">
+                        <div id="characters" class="rpg-panel" style="background: rgba(0, 0, 0, 0.3);">
+                            <h3 class="panel-title" style="font-size: 1.2rem;">👥 Characters</h3>
+                            {% for character in character_list %}
+                                {% with character_user=character.user %}
+                                    <p style="margin: 8px 0;">
+                                        <a href="{{ character.get_absolute_url }}" style="color: var(--color-primary); text-decoration: underline;">{{ character }}</a>
+                                        {% if character_user == user %}
+                                            <span class="text-muted">(played by you)</span>
+                                        {% else %}
+                                            <span class="text-muted">(played by {{ character_user }})</span>
+                                        {% endif %}
+                                    </p>
+                                {% endwith %}
+                            {% empty %}
+                                <p class="text-center text-muted">There are no characters for this game...</p>
+                            {% endfor %}
+                            {% if game.master.user == user %}
+                                <div class="text-center mt-2">
+                                    <a href="{% url 'game-invite-user' game.id %}" class="rpg-btn btn-primary" style="padding: 8px 16px; font-size: 0.9rem;">Invite a user</a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
                     {% if game.master.user == user %}
-                        <div class="rpgui-center">
-                            <a href={% url 'game-invite-user' game.id %}>
-                                <button class="rpgui-button"><p>Invite a user</p></button>
-                            </a>
+                        <div class="rpg-section">
+                            <div id="master" class="rpg-panel" style="background: rgba(139, 69, 19, 0.2);">
+                                <h3 class="panel-title" style="font-size: 1.2rem;">🎭 Master's Panel</h3>
+                                <div class="action-buttons" style="flex-direction: column;">
+                                    {% if flow.is_under_preparation %}
+                                        <a href="{% url 'game-start' game.id %}" class="rpg-btn btn-primary">Start the game</a>
+                                    {% elif flow.is_ongoing %}
+                                        <a href="{% url 'quest-create' game.id %}" class="rpg-btn btn-primary">Update the quest</a>
+                                        <a href="{% url 'ability-check-request-create' game.id %}" class="rpg-btn btn-skill">Ask for ability check</a>
+                                        <a href="{% url 'combat-create' game.id %}" class="rpg-btn btn-attack">Initiate combat</a>
+                                    {% endif %}
+                                </div>
+                            </div>
                         </div>
                     {% endif %}
                 </div>
 
-                {% if game.master.user == user %}
-                    <div id="master" class="rpgui-container framed-grey">
-                        <h3>Master's panel</h3>
-                        <div class="rpgui-center">
-                            {% if flow.is_under_preparation %}
-                                <p>
-                                    <a href={% url 'game-start' game.id %}>
-                                        <button class="rpgui-button"><p>Start the game</p></button>
-                                    </a>
-                                </p>
-                            {% elif flow.is_ongoing %}
-                                <p>
-                                    <a href={% url 'quest-create' game.id %}>
-                                        <button class="rpgui-button"><p>Update the quest</p></button>
-                                    </a>
-                                </p>
-                                <p>
-                                    <a href={% url 'ability-check-request-create' game.id %}>
-                                        <button class="rpgui-button"><p>Ask for ability check</p></button>
-                                    </a>
-                                </p>
-                                <p>
-                                    <a href={% url 'combat-create' game.id %}>
-                                        <button class="rpgui-button"><p>Initiate combat</p></button>
-                                    </a>
-                                </p>
-                            {% endif %}
-                        </div>
-                    </div>
-                {% endif %}
             </div>
 
-        </div>
-
-        <div class="rpgui-center inline">
-            <img class="rpgui-icon" style="transform: scaleX(-1)" src={% static 'images/mini-skull.png' %}>
-            <a href="#title">- Back to top -</a>
-            <img class="rpgui-icon" src={% static 'images/mini-skull.png' %}>
+            <div class="text-center mt-2">
+                <span style="transform: scaleX(-1); display: inline-block;">💀</span>
+                <a href="#title" style="color: var(--color-primary); text-decoration: underline; margin: 0 10px;">Back to top</a>
+                <span>💀</span>
+            </div>
         </div>
     </div>
 

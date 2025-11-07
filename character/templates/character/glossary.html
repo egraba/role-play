@@ -1,39 +1,40 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="rpgui-container framed">
-        <h1 class="title">Glossary</h1>
-        <div class="rpgui-center">
-            <a href={% url 'index' %}>- Return to main menu -</a>
+    <div class="rpg-container">
+        <div class="rpg-panel">
+            <h1 class="panel-title" style="font-size: 2rem;">📖 Glossary</h1>
+            <div class="text-center mb-2">
+                <a href="{% url 'index' %}" style="color: var(--color-primary); text-decoration: underline;">Return to main menu</a>
+            </div>
+
+            <div class="rpg-section">
+                <h2 class="panel-title" style="font-size: 1.5rem;">💪 Abilities</h2>
+                <table class="rpg-table">
+                    <tbody>
+                        {% for ability_type in ability_types %}
+                            <tr>
+                                <th class="description">{{ ability_type.get_name_display }}</th>
+                                <td>{{ ability_type.description }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="rpg-section">
+                <h2 class="panel-title" style="font-size: 1.5rem;">🎯 Skills</h2>
+                <table class="rpg-table">
+                    <tbody>
+                        {% for skill in skills %}
+                            <tr>
+                                <th class="description">{{ skill.get_name_display }}</th>
+                                <td>{{ skill.description }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
-
-        <hr class="golden"/>
-        <br />
-
-        <div class="rpgui-container framed-golden">
-            <h1>Abilities</h1>
-            <table>
-                {% for ability_type in ability_types %}
-                    <tr>
-                        <th class="description"><p>{{ ability_type.get_name_display }}</p></th>
-                        <td><p>{{ ability_type.description }}</p></td>
-                    </tr>
-                {% endfor %}
-            </table>
-
-            <hr />
-
-            <h1>Skills</h1>
-            <table>
-                {% for skill in skills %}
-                    <tr>
-                        <th class="description"><p>{{ skill.get_name_display }}</p></th>
-                        <td><p>{{ skill.description }}</p></td>
-                    </tr>
-                {% endfor %}
-            </table>
-
-        </div>
-
     </div>
 {% endblock %}

@@ -1,15 +1,20 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="form rpgui-container framed-golden">
-        <h1>{{ game }}</h1>
-        <p>Are you sure to start the game?</p>
-        <div class="rpgui-center inline">
-            <form method="post">
-                {% csrf_token %}
-                <button class="rpgui-button" type="submit"><p>Yes</p></button>
-            </form>
-            <a href={{ game.get_absolute_url }}><button class="rpgui-button"><p>No</p></button></a>
+    <div class="rpg-container">
+        <div class="rpg-panel" style="max-width: 600px; margin: 50px auto;">
+            <h1 class="panel-title">🎮 Start Game</h1>
+            <h2 class="text-center text-primary mb-2" style="font-size: 1.2rem;">{{ game }}</h2>
+            <div class="game-message warning">
+                <p><strong>Are you sure you want to start the game?</strong></p>
+            </div>
+            <div class="action-buttons mt-2">
+                <form method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button class="rpg-btn btn-primary" type="submit">Yes, start it</button>
+                </form>
+                <a href="{{ game.get_absolute_url }}" class="rpg-btn btn-defend">No, go back</a>
+            </div>
         </div>
     </div>
 {% endblock%}

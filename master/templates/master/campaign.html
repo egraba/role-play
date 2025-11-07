@@ -1,34 +1,38 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="rpgui-container framed">
-        <h1>{{ campaign }}</h1>
-        <div class="rpgui-center">
-            <a href={% url 'campaign-list' %}>- Return to campaign list -</a>
-        </div>
+    <div class="rpg-container">
+        <div class="rpg-panel">
+            <h1 class="panel-title" style="font-size: 2rem;">📖 {{ campaign }}</h1>
+            <div class="text-center mb-2">
+                <a href="{% url 'campaign-list' %}" style="color: var(--color-primary); text-decoration: underline;">Return to campaign list</a>
+            </div>
 
-        <hr class="golden" />
+            <div class="rpg-section">
+                <h2 class="panel-title" style="font-size: 1.3rem;">Synopsis</h2>
+                <div class="text-muted">
+                    {{ campaign.synopsis|linebreaks }}
+                </div>
+            </div>
 
-        <h2>Synopsis</h2>
-        {{ campaign.synopsis|linebreaks }}
+            <div class="rpg-section">
+                <h2 class="panel-title" style="font-size: 1.3rem;">Main Conflict</h2>
+                <div class="text-muted">
+                    {{ campaign.main_conflict|linebreaks }}
+                </div>
+            </div>
 
-        <hr />
+            <div class="rpg-section">
+                <h2 class="panel-title" style="font-size: 1.3rem;">Objective</h2>
+                <div class="text-muted">
+                    {{ campaign.objective|linebreaks }}
+                </div>
+            </div>
 
-        <h2>Main conflict</h2>
-        {{ campaign.main_conflict|linebreaks }}
-
-        <hr />
-
-        <h2>Objective</h2>
-        {{ campaign.objective|linebreaks }}
-
-        <div class="rpgui-center">
-            <a href={% url 'campaign-update' campaign.slug %}>
-                <button class="rpgui-button"><p>Edit your campaign</p></button>
-            </a>
-            <a href={% url 'game-create' campaign.slug %}>
-                <button class="rpgui-button"><p>Create a game from this campaign</p></button>
-            </a>
+            <div class="action-buttons mt-2">
+                <a href="{% url 'campaign-update' campaign.slug %}" class="rpg-btn btn-primary">Edit campaign</a>
+                <a href="{% url 'game-create' campaign.slug %}" class="rpg-btn btn-attack">Create game from campaign</a>
+            </div>
         </div>
     </div>
 {% endblock content %}
