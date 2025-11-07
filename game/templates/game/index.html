@@ -16,10 +16,9 @@
                         <button class="rpg-btn btn-primary" type="submit">Log out</button>
                     </form>
                 {% else %}
-                    <p class="text-muted mb-2">Please log in or register to begin your adventure.</p>
+                    <p class="text-muted mb-2">Please log in to begin your adventure.</p>
                     <div class="action-buttons">
                         <a href="{% url 'login' %}" class="rpg-btn btn-primary">Log in</a>
-                        <button disabled class="rpg-btn">Register</button>
                     </div>
                 {% endif %}
             </div>
