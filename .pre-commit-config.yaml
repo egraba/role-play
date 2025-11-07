@@ -1,23 +1,23 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: check-yaml
       - id: end-of-file-fixer
       - id: trailing-whitespace
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.8.2
+    rev: v0.14.4
     hooks:
       - id: ruff
         args: [--fix]
       - id: ruff-format
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: "v1.13.0"
+    rev: "v1.18.2"
     hooks:
       - id: mypy
         exclude: "/migrations/.*\\.py"
   - repo: https://github.com/rtts/djhtml
-    rev: 3.0.7
+    rev: 3.0.10
     hooks:
       - id: djhtml
         exclude: .*/rpgui/.*
@@ -26,7 +26,7 @@ repos:
       - id: djjs
         exclude: .*/rpgui/.*|.*/js/.*
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.3.0
+    rev: v2.4.1
     hooks:
       - id: codespell
         args:
