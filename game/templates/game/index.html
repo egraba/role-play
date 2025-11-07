@@ -16,7 +16,8 @@
                         <button class="rpg-btn btn-primary" type="submit">Log out</button>
                     </form>
                 {% else %}
-                    <p class="text-muted mb-2">Please log in to begin your adventure.</p>
+                    <p style="font-size: 1.1rem; margin-bottom: 10px;">🗝️ <strong>Your adventure awaits!</strong></p>
+                    <p class="text-muted mb-2">Log in to create your character and begin your epic journey.</p>
                     <div class="action-buttons">
                         <a href="{% url 'login' %}" class="rpg-btn btn-primary">Log in</a>
                     </div>
@@ -25,14 +26,18 @@
 
             <div class="rpg-section">
                 <div style="text-align: center; font-size: 4rem; margin-bottom: 20px;">
-                    💀
+                    ⚔️ 🏰 🎲
                 </div>
-                <p class="mb-1">Role play is an open-source virtual role playing game.</p>
-                <p class="mb-1">It is an online version of "paper" role play games.</p>
-                <p>
-                    If you want to know more about the role play universe, please have a look at the
-                    <a href="{% url 'glossary' %}" style="color: var(--color-primary); text-decoration: underline;">glossary</a>.
-                </p>
+                <h2 class="panel-title" style="font-size: 1.5rem; margin-bottom: 15px;">Embark on Epic Adventures</h2>
+                <p class="mb-1">Welcome to <strong>Role Play</strong> – an open-source virtual tabletop implementation of Dungeons & Dragons! Experience the magic of the world's greatest roleplaying game online, powered by the D&D Basic Rules.</p>
+                <p class="mb-2"><strong>What awaits you:</strong></p>
+                <ul style="text-align: left; margin: 0 auto 15px; max-width: 600px; line-height: 1.8;">
+                    <li>🎭 <strong>Create unique characters</strong> with diverse races, classes, and abilities</li>
+                    <li>🎲 <strong>Roll dice and make choices</strong> that shape your destiny</li>
+                    <li>⚔️ <strong>Engage in tactical combat</strong> and overcome challenging encounters</li>
+                    <li>📖 <strong>Follow rich storylines</strong> filled with mystery and adventure</li>
+                    <li>🌍 <strong>Explore a living world</strong> where your decisions matter</li>
+                </ul>
             </div>
 
             {% if user.is_authenticated %}
@@ -56,14 +61,16 @@
             {% endif %}
 
             <div class="rpg-section">
-                <h2 class="panel-title" style="font-size: 1.5rem;">📜 Release Notes</h2>
-                <div class="game-message warning">
-                    <p class="mb-1"><strong>⚠️ Under Development</strong></p>
-                    <p>This game is actively being developed and expecting to change a lot!</p>
+                <h2 class="panel-title" style="font-size: 1.5rem;">🌟 Join Our Growing Community</h2>
+                <div class="game-message info">
+                    <p class="mb-1"><strong>✨ Actively Evolving</strong></p>
+                    <p>We're continuously adding new features, quests, and improvements! Your adventure gets better with every update.</p>
                 </div>
-                <p class="text-center mt-2">
-                    Don't hesitate to provide your feedback or suggestions by visiting our
-                    project on <a href="https://github.com/egraba/role-play" style="color: var(--color-primary); text-decoration: underline;">GitHub</a>.
+                <p class="text-center mt-2" style="line-height: 1.6;">
+                    <strong>Help shape the future of Role Play!</strong><br>
+                    Share your ideas, report bugs, or contribute to the project on
+                    <a href="https://github.com/egraba/role-play" style="color: var(--color-primary); text-decoration: underline; font-weight: bold;">GitHub</a>.
+                    Every hero's voice matters!
                 </p>
             </div>
         </div>
