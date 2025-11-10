@@ -15,7 +15,7 @@
                     <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
                     {{ form.username }}
                     {% if form.username.errors %}
-                        <div class="game-message error" style="margin-top: 5px; padding: 8px;">
+                        <div class="game-message error field-error">
                             {{ form.username.errors }}
                         </div>
                     {% endif %}
@@ -24,7 +24,7 @@
                     <label for="{{ form.password.id_for_label }}">{{ form.password.label }}</label>
                     {{ form.password }}
                     {% if form.password.errors %}
-                        <div class="game-message error" style="margin-top: 5px; padding: 8px;">
+                        <div class="game-message error field-error">
                             {{ form.password.errors }}
                         </div>
                     {% endif %}
