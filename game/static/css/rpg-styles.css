@@ -698,7 +698,6 @@ body {
     width: 100%;
     padding: 10px 15px;
     background: rgba(0, 0, 0, 0.5);
-    background-color: rgba(0, 0, 0, 0.5);
     border: 2px solid #444;
     border-radius: 5px;
     color: var(--color-text);
