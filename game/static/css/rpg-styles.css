@@ -246,6 +246,17 @@ body {
     border-left: 4px solid;
 }
 
+.game-message ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.game-message li {
+    margin: 0;
+    padding: 0;
+}
+
 .game-message.success {
     background: rgba(46, 204, 113, 0.1);
     border-color: var(--color-stamina);
@@ -262,6 +273,11 @@ body {
     background: rgba(231, 76, 60, 0.1);
     border-color: var(--color-health);
     color: var(--color-health);
+}
+
+.game-message.field-error {
+    margin-top: 5px;
+    padding: 8px;
 }
 
 .game-message.info {
@@ -656,6 +672,13 @@ body {
     margin-bottom: 20px;
 }
 
+.rpg-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--color-text);
+    font-weight: 500;
+}
+
 .rpg-label {
     display: block;
     margin-bottom: 8px;
@@ -665,7 +688,18 @@ body {
 
 .rpg-input,
 .rpg-select,
-.rpg-textarea {
+.rpg-textarea,
+.rpg-form-group input[type="text"],
+.rpg-form-group input[type="password"],
+.rpg-form-group input[type="email"],
+.rpg-form-group input[type="number"],
+.rpg-form-group input[type="url"],
+.rpg-form-group input[type="date"],
+.rpg-form-group select,
+.rpg-form-group textarea {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
     width: 100%;
     padding: 10px 15px;
     background: rgba(0, 0, 0, 0.5);
@@ -674,14 +708,21 @@ body {
     color: var(--color-text);
     font-family: inherit;
     font-size: 1rem;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
     transition: border-color 0.3s ease;
 }
 
 .rpg-input:focus,
 .rpg-select:focus,
-.rpg-textarea:focus {
+.rpg-textarea:focus,
+.rpg-form-group input:focus,
+.rpg-form-group select:focus,
+.rpg-form-group textarea:focus {
     outline: none;
     border-color: var(--color-primary);
+    box-shadow: 0 0 0 1px var(--color-primary);
 }
 
 .rpg-textarea {

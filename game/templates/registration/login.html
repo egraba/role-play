@@ -6,8 +6,28 @@
             <h1 class="panel-title">🔐 Log in</h1>
             <form method="post">
                 {% csrf_token %}
+                {% if form.non_field_errors %}
+                    <div class="game-message error" style="margin-bottom: 15px;">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
                 <div class="rpg-form-group">
-                    {{ form.as_p }}
+                    <label class="rpg-label" for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                        <div class="game-message error field-error">
+                            {{ form.username.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="rpg-form-group">
+                    <label class="rpg-label" for="{{ form.password.id_for_label }}">{{ form.password.label }}</label>
+                    {{ form.password }}
+                    {% if form.password.errors %}
+                        <div class="game-message error field-error">
+                            {{ form.password.errors }}
+                        </div>
+                    {% endif %}
                 </div>
                 <div class="action-buttons">
                     <button class="rpg-btn btn-primary" type="submit">Log in</button>

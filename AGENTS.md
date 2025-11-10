@@ -123,6 +123,21 @@ mypy                          # Type checking
 - **Pattern**: Use factory pattern for test data (see `conftest.py` and `factories.py` files)
 - **Location**: Tests in `tests/` subdirectories within each app
 
+### Frontend & CSS Guidelines
+
+- **Browser Compatibility**: All CSS and HTML changes must be compatible with both **Chrome** and **Safari**
+  - Use vendor prefixes for CSS properties: `-webkit-`, `-moz-`, `standard`
+  - Include `box-sizing`, `-webkit-box-sizing`, `-moz-box-sizing`
+  - Use `-webkit-appearance: none` for form elements to ensure consistent styling
+  - Test visual changes in both browsers before committing
+- **CSS Design System**: Uses custom `rpg-styles.css` for RPG-themed interface
+  - Dark backgrounds with golden accents (`var(--color-primary)`)
+  - Consistent component classes: `rpg-panel`, `rpg-btn`, `rpg-table`, `rpg-form-group`
+  - Form inputs must be styled within `.rpg-form-group` containers
+- **Templates**: Django templates in `templates/` subdirectories within each app
+  - All extend `base.html`
+  - Use emoji icons instead of images where possible
+
 ## Dependencies & Tools
 
 ### Core Dependencies
