@@ -275,6 +275,11 @@ body {
     color: var(--color-health);
 }
 
+.game-message.field-error {
+    margin-top: 5px;
+    padding: 8px;
+}
+
 .game-message.info {
     background: rgba(52, 152, 219, 0.1);
     border-color: var(--color-mana);
