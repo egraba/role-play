@@ -9,58 +9,62 @@
   "packageRules": [
     {
       "description": "Group Django and Django-related packages",
-      "matchPackagePatterns": ["^[Dd]jango"],
-      "groupName": "Django packages",
-      "schedule": ["before 3am on Monday"]
+      "matchPackagePatterns": [
+        "^[Dd]jango"
+      ],
+      "groupName": "Django packages"
     },
     {
       "description": "Group Python development dependencies",
-      "matchDepTypes": ["dev-dependencies"],
-      "groupName": "Python dev dependencies",
-      "schedule": ["before 3am on Monday"]
+      "matchDepTypes": [
+        "dev-dependencies"
+      ],
+      "groupName": "Python dev dependencies"
     },
     {
       "description": "Automerge minor and patch updates for dev dependencies",
-      "matchDepTypes": ["dev-dependencies"],
-      "matchUpdateTypes": ["minor", "patch"],
+      "matchDepTypes": [
+        "dev-dependencies"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
       "automerge": true
     },
     {
       "description": "Group Docker base images",
-      "matchDatasources": ["docker"],
-      "groupName": "Docker images",
-      "schedule": ["before 3am on Monday"]
+      "matchDatasources": [
+        "docker"
+      ],
+      "groupName": "Docker images"
     },
     {
       "description": "Pin GitHub Actions to commits for security",
-      "matchManagers": ["github-actions"],
+      "matchManagers": [
+        "github-actions"
+      ],
       "pinDigests": true
     }
   ],
-  "python": {
-    "enabled": true
-  },
-  "pip_requirements": {
-    "fileMatch": ["^requirements\\.txt$"]
-  },
-  "pep621": {
-    "fileMatch": ["^pyproject\\.toml$"]
-  },
-  "docker": {
-    "enabled": true
-  },
-  "dockerfile": {
-    "fileMatch": ["^Dockerfile$"]
-  },
-  "docker-compose": {
-    "fileMatch": ["^docker-compose\\.yml$"]
-  },
+  "enabledManagers": [
+    "pep621",
+    "pip_requirements",
+    "dockerfile",
+    "docker-compose",
+    "github-actions"
+  ],
   "vulnerabilityAlerts": {
-    "labels": ["security"],
-    "assignees": ["@egraba"]
+    "labels": [
+      "security"
+    ],
+    "assignees": [
+      "@egraba"
+    ]
   },
-  "labels": ["dependencies"],
-  "schedule": ["before 3am on Monday"],
+  "labels": [
+    "dependencies"
+  ],
   "timezone": "America/New_York",
   "prConcurrentLimit": 5,
   "prHourlyLimit": 2,
@@ -70,7 +74,9 @@
   "commitMessageExtra": "to {{newVersion}}",
   "lockFileMaintenance": {
     "enabled": true,
-    "schedule": ["before 3am on the first day of the month"]
+    "schedule": [
+      "before 3am on the first day of the month"
+    ]
   },
   "ignoreDeps": [],
   "ignorePaths": [
