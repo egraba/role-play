@@ -6,6 +6,9 @@
     ":semanticCommits",
     ":gitSignOff"
   ],
+  "schedule": [
+    "every weekend"
+  ],
   "packageRules": [
     {
       "description": "Group Django and Django-related packages",
@@ -54,6 +57,7 @@
     "docker-compose",
     "github-actions"
   ],
+  "rangeStrategy": "bump",
   "vulnerabilityAlerts": {
     "labels": [
       "security"
