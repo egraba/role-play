@@ -8,7 +8,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * Quest environments are now enriched using Claude 3.5 Sonnet model
 * Added AGENTS.md with comprehensive guidance for AI coding assistants
 * Complete CSS redesign with new rpg-styles.css design system
-* Configured Renovate for automated dependency updates
+* Configured Renovate for automated dependency updates (including pre-commit hooks)
 
 ### Changed
 * Reduce machines size on Fly.io

@@ -55,7 +55,8 @@
     "pip_requirements",
     "dockerfile",
     "docker-compose",
-    "github-actions"
+    "github-actions",
+    "pre-commit"
   ],
   "rangeStrategy": "bump",
   "vulnerabilityAlerts": {
