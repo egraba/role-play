@@ -98,6 +98,27 @@ help = "Full database setup (migrate + load fixtures)"
 sequence = ["db-migrate", "db-load-settings"]
 
 # ----------------------------------------------------------------------------
+# Management Commands
+# ----------------------------------------------------------------------------
+[tool.poe.tasks.delete-character]
+help = "Delete a user's character"
+args = [{ name = "user", positional = true, required = true, help = "Username of the character owner" }]
+cmd = "manage.py delete_character ${user}"
+
+[tool.poe.tasks.delete-combats]
+help = "Delete all combats of a game"
+args = [{ name = "game_ids", positional = true, required = true, multiple = true, help = "Game ID(s)" }]
+cmd = "manage.py delete_combats ${game_ids}"
+
+[tool.poe.tasks.request-saving-throw]
+help = "Request a saving throw from a player"
+args = [
+    { name = "game", positional = true, required = true, help = "Game ID" },
+    { name = "character", positional = true, required = true, help = "Character ID" },
+]
+cmd = "manage.py request_saving_throw ${game} ${character}"
+
+# ----------------------------------------------------------------------------
 # Development Tasks
 # ----------------------------------------------------------------------------
 [tool.poe.tasks.clean]
