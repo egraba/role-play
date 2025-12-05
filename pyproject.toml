@@ -8,6 +8,8 @@ exclude = ["role_play/asgi.py", "role_play/urls.py", "role_play/settings/*"]
 [tool.pytest.ini_options]
 asyncio_default_fixture_loop_scope = "session"
 python_files = ["test_*.py", "*_test.py", "testing/python/*.py"]
+addopts = "-n auto --dist loadfile"
+DJANGO_SETTINGS_MODULE = "role_play.settings.test"
 
 [project]
 authors = [{ name = "Eric Grabarczyk", email = "eric.grabarczyk@gmail.com" }]
@@ -57,6 +59,7 @@ dev = [
     "pytest-dependency",
     "pytest-django",
     "pytest-mock",
+    "pytest-xdist",
 ]
 
 # ============================================================================
