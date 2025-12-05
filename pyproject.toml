@@ -81,21 +81,21 @@ cmd = "manage.py makemigrations"
 help = "Apply database migrations"
 cmd = "manage.py migrate"
 
+[tool.poe.tasks.migrate]
+help = "Apply database migrations (alias for db-migrate)"
+ref = "db-migrate"
+
 [tool.poe.tasks.db-load-settings]
 help = "Load app settings (fixtures)"
-sequence = [
-    { cmd = "manage.py loaddata senses" },
-    { cmd = "manage.py loaddata advancement" },
-    { cmd = "manage.py loaddata abilities" },
-    { cmd = "manage.py loaddata languages" },
-    { cmd = "manage.py loaddata klasses" },
-    { cmd = "manage.py loaddata skills" },
-    { cmd = "manage.py loaddata equipment" },
-]
+cmd = "manage.py loaddata senses advancement abilities languages klasses skills equipment"
 
 [tool.poe.tasks.db-populate]
 help = "Populate the DB with realistic data"
 sequence = ["db-reset", "db-migrate", "db-load-settings", { cmd = "manage.py populate_db" }]
+
+[tool.poe.tasks.db-setup]
+help = "Full database setup (migrate + load fixtures)"
+sequence = ["db-migrate", "db-load-settings"]
 
 # ----------------------------------------------------------------------------
 # Development Tasks
@@ -108,7 +108,11 @@ cmd = "rm -rf htmlcov staticfiles .coverage"
 help = "Run the development server"
 sequence = ["db-migrate", { cmd = "manage.py runserver" }]
 
-[tool.poe.tasks.dev-worker]
+[tool.poe.tasks.run]
+help = "Run the development server (alias for dev-run)"
+ref = "dev-run"
+
+[tool.poe.tasks.worker]
 help = "Run Celery worker"
 cmd = "celery -A role_play worker --beat --scheduler django --loglevel=info"
 
@@ -117,10 +121,45 @@ help = "Launch Django shell"
 cmd = "manage.py shell"
 
 # ----------------------------------------------------------------------------
+# Code Quality Tasks
+# ----------------------------------------------------------------------------
+[tool.poe.tasks.lint]
+help = "Run ruff linter"
+cmd = "ruff check ."
+
+[tool.poe.tasks.lint-fix]
+help = "Run ruff linter with auto-fix"
+cmd = "ruff check . --fix"
+
+[tool.poe.tasks.format]
+help = "Format code with ruff"
+cmd = "ruff format ."
+
+[tool.poe.tasks.format-check]
+help = "Check code formatting with ruff"
+cmd = "ruff format . --check"
+
+[tool.poe.tasks.typecheck]
+help = "Run mypy type checker"
+cmd = "mypy ."
+
+[tool.poe.tasks.check]
+help = "Run all code quality checks (lint, format, typecheck)"
+sequence = [
+    { ref = "lint" },
+    { ref = "format-check" },
+    { ref = "typecheck" },
+]
+
+[tool.poe.tasks.pre-commit]
+help = "Run pre-commit hooks on all files"
+cmd = "pre-commit run --all-files"
+
+# ----------------------------------------------------------------------------
 # Test Tasks
 # ----------------------------------------------------------------------------
 [tool.poe.tasks.test]
-help = "Run tests"
+help = "Run tests (optionally pass test path)"
 cmd = "pytest --color=yes"
 
 [tool.poe.tasks.test-verbose]
@@ -139,6 +178,13 @@ cmd = "coverage html"
 help = "Generate test coverage report (xml)"
 cmd = "coverage xml"
 
+[tool.poe.tasks.ci]
+help = "Run CI checks locally (test with coverage + code quality)"
+sequence = [
+    { ref = "test-cov" },
+    { ref = "check" },
+]
+
 # ----------------------------------------------------------------------------
 # Production Tasks
 # ----------------------------------------------------------------------------
@@ -155,7 +201,7 @@ sequence = [
 
 [tool.poe.tasks.prod-worker]
 help = "Run Celery worker for production"
-cmd = "celery -A role_play worker --beat --scheduler django --loglevel=info"
+ref = "worker"
 
 # ----------------------------------------------------------------------------
 # Ephemeral Environment Tasks (Fly.io)
@@ -184,7 +230,8 @@ cmd = "flyctl status --app role-play-ephemeral"
 
 [tool.poe.tasks.eph-logs]
 help = "View logs from the ephemeral application"
-cmd = "flyctl logs --app role-play-ephemeral"
+args = [{ name = "lines", default = "50", positional = true }]
+cmd = "flyctl logs --app role-play-ephemeral --lines ${lines}"
 
 [tool.poe.tasks.eph-ssh]
 help = "SSH into the ephemeral application"
