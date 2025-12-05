@@ -1,6 +1,6 @@
 [tool.coverage.run]
 plugins = ['django_coverage_plugin']
-omit = ["manage.py", "tasks/*"]
+omit = ["manage.py"]
 
 [tool.ruff]
 exclude = ["role_play/asgi.py", "role_play/urls.py", "role_play/settings/*"]
@@ -30,7 +30,6 @@ dependencies = [
     "django-viewflow",
     "email-validator",
     "gunicorn",
-    "invoke",
     "psycopg[binary]",
     "pydantic",
     "pyyaml",
@@ -51,6 +50,7 @@ dev = [
     "factory-boy",
     "faker",
     "freezegun",
+    "poethepoet",
     "pre-commit",
     "pytest",
     "pytest-asyncio",
@@ -58,3 +58,234 @@ dev = [
     "pytest-django",
     "pytest-mock",
 ]
+
+# ============================================================================
+# Poe the Poet Task Configuration
+# ============================================================================
+
+[tool.poe]
+verbosity = 1
+
+# ----------------------------------------------------------------------------
+# Database Tasks
+# ----------------------------------------------------------------------------
+[tool.poe.tasks.db-reset]
+help = "Reset the database"
+cmd = "manage.py reset_db"
+
+[tool.poe.tasks.db-make-migrations]
+help = "Make Django migrations"
+cmd = "manage.py makemigrations"
+
+[tool.poe.tasks.db-migrate]
+help = "Apply database migrations"
+cmd = "manage.py migrate"
+
+[tool.poe.tasks.db-load-settings]
+help = "Load app settings (fixtures)"
+sequence = [
+    { cmd = "manage.py loaddata senses" },
+    { cmd = "manage.py loaddata advancement" },
+    { cmd = "manage.py loaddata abilities" },
+    { cmd = "manage.py loaddata languages" },
+    { cmd = "manage.py loaddata klasses" },
+    { cmd = "manage.py loaddata skills" },
+    { cmd = "manage.py loaddata equipment" },
+]
+
+[tool.poe.tasks.db-populate]
+help = "Populate the DB with realistic data"
+sequence = ["db-reset", "db-migrate", "db-load-settings", { cmd = "manage.py populate_db" }]
+
+# ----------------------------------------------------------------------------
+# Development Tasks
+# ----------------------------------------------------------------------------
+[tool.poe.tasks.clean]
+help = "Clean generated files"
+cmd = "rm -rf htmlcov staticfiles .coverage"
+
+[tool.poe.tasks.dev-run]
+help = "Run the development server"
+sequence = ["db-migrate", { cmd = "manage.py runserver" }]
+
+[tool.poe.tasks.dev-worker]
+help = "Run Celery worker"
+cmd = "celery -A role_play worker --beat --scheduler django --loglevel=info"
+
+[tool.poe.tasks.shell]
+help = "Launch Django shell"
+cmd = "manage.py shell"
+
+# ----------------------------------------------------------------------------
+# Test Tasks
+# ----------------------------------------------------------------------------
+[tool.poe.tasks.test]
+help = "Run tests"
+cmd = "pytest --color=yes"
+
+[tool.poe.tasks.test-verbose]
+help = "Run tests with verbose output"
+cmd = "pytest --color=yes --verbose"
+
+[tool.poe.tasks.test-cov]
+help = "Run tests with coverage"
+cmd = "coverage run -m pytest --color=yes"
+
+[tool.poe.tasks.test-cov-report]
+help = "Generate test coverage report (html)"
+cmd = "coverage html"
+
+[tool.poe.tasks.test-cov-report-xml]
+help = "Generate test coverage report (xml)"
+cmd = "coverage xml"
+
+# ----------------------------------------------------------------------------
+# Production Tasks
+# ----------------------------------------------------------------------------
+[tool.poe.tasks.prod-deploy]
+help = "Run production deployment tasks"
+sequence = ["db-migrate", "db-load-settings"]
+
+[tool.poe.tasks.prod-run]
+help = "Run the production server"
+sequence = [
+    { cmd = "manage.py collectstatic --noinput" },
+    { shell = "daphne role_play.asgi:application -b 0.0.0.0 -p $PORT --access-log -" },
+]
+
+[tool.poe.tasks.prod-worker]
+help = "Run Celery worker for production"
+cmd = "celery -A role_play worker --beat --scheduler django --loglevel=info"
+
+# ----------------------------------------------------------------------------
+# Ephemeral Environment Tasks (Fly.io)
+# ----------------------------------------------------------------------------
+[tool.poe.tasks.eph-create]
+help = "Create the ephemeral application on Fly.io"
+cmd = "flyctl apps create role-play-ephemeral"
+
+[tool.poe.tasks.eph-deploy]
+help = "Deploy to ephemeral environment"
+sequence = [
+    { ref = "eph-setup-doppler-token" },
+    { cmd = "flyctl deploy --config fly.ephemeral.toml" },
+]
+
+[tool.poe.tasks.eph-deploy-quick]
+help = "Quick deploy without rebuild"
+sequence = [
+    { ref = "eph-setup-doppler-token" },
+    { cmd = "flyctl deploy --config fly.ephemeral.toml --no-build" },
+]
+
+[tool.poe.tasks.eph-status]
+help = "Check the status of the ephemeral application"
+cmd = "flyctl status --app role-play-ephemeral"
+
+[tool.poe.tasks.eph-logs]
+help = "View logs from the ephemeral application"
+cmd = "flyctl logs --app role-play-ephemeral"
+
+[tool.poe.tasks.eph-ssh]
+help = "SSH into the ephemeral application"
+cmd = "flyctl ssh console --app role-play-ephemeral"
+
+[tool.poe.tasks.eph-scale]
+help = "Scale the ephemeral application"
+args = [{ name = "count", default = "1", positional = true }]
+cmd = "flyctl scale count ${count} --app role-play-ephemeral"
+
+[tool.poe.tasks.eph-secrets-list]
+help = "List all secrets for the ephemeral application"
+cmd = "flyctl secrets list --app role-play-ephemeral"
+
+[tool.poe.tasks.eph-secrets-set]
+help = "Set a secret for the ephemeral application"
+args = [
+    { name = "key", positional = true, required = true },
+    { name = "value", positional = true, required = true },
+]
+cmd = "flyctl secrets set ${key}=${value} --app role-play-ephemeral"
+
+[tool.poe.tasks.eph-destroy]
+help = "Destroy the ephemeral application"
+cmd = "flyctl apps destroy role-play-ephemeral --yes"
+
+[tool.poe.tasks.eph-info]
+help = "Display information about the ephemeral application"
+cmd = "flyctl info --app role-play-ephemeral"
+
+[tool.poe.tasks.eph-run]
+help = "Run the ephemeral application server"
+cmd = "manage.py runserver 0.0.0.0:8000"
+
+[tool.poe.tasks.eph-worker]
+help = "Run the Celery worker for ephemeral environment"
+cmd = "celery -A role_play worker --loglevel=info"
+
+[tool.poe.tasks.eph-deploy-release]
+help = "Run deployment release commands for ephemeral environment"
+sequence = [
+    { shell = "doppler run -- manage.py migrate" },
+    { cmd = "manage.py collectstatic --noinput" },
+]
+
+[tool.poe.tasks.eph-setup-doppler-token]
+help = "Generate a Doppler service token and set it in Fly secrets"
+shell = """
+TOKEN=$(doppler configs tokens create fly-ephemeral --config dev --plain)
+flyctl secrets set DOPPLER_TOKEN="$TOKEN" --app role-play-ephemeral
+"""
+
+# ----------------------------------------------------------------------------
+# Staging Environment Tasks (Fly.io)
+# ----------------------------------------------------------------------------
+[tool.poe.tasks.stg-create]
+help = "Create the staging application on Fly.io"
+cmd = "flyctl apps create role-play-staging"
+
+[tool.poe.tasks.stg-deploy]
+help = "Deploy to staging environment"
+cmd = "flyctl deploy --app role-play-staging"
+
+[tool.poe.tasks.stg-deploy-quick]
+help = "Quick deploy without rebuild"
+cmd = "flyctl deploy --app role-play-staging --no-build"
+
+[tool.poe.tasks.stg-status]
+help = "Check the status of the staging application"
+cmd = "flyctl status --app role-play-staging"
+
+[tool.poe.tasks.stg-logs]
+help = "View logs from the staging application"
+args = [{ name = "lines", default = "50", positional = true }]
+cmd = "flyctl logs --app role-play-staging --lines ${lines}"
+
+[tool.poe.tasks.stg-ssh]
+help = "SSH into the staging application"
+cmd = "flyctl ssh console --app role-play-staging"
+
+[tool.poe.tasks.stg-scale]
+help = "Scale the staging application"
+args = [{ name = "count", default = "1", positional = true }]
+cmd = "flyctl scale count ${count} --app role-play-staging"
+
+[tool.poe.tasks.stg-secrets-list]
+help = "List all secrets for the staging application"
+cmd = "flyctl secrets list --app role-play-staging"
+
+[tool.poe.tasks.stg-secrets-set]
+help = "Set a secret for the staging application"
+args = [
+    { name = "key", positional = true, required = true },
+    { name = "value", positional = true, required = true },
+]
+cmd = "flyctl secrets set ${key}=${value} --app role-play-staging"
+
+[tool.poe.tasks.stg-destroy]
+help = "Destroy the staging application"
+cmd = "flyctl apps destroy role-play-staging --yes"
+
+[tool.poe.tasks.stg-info]
+help = "Display information about the staging application"
+cmd = "flyctl info --app role-play-staging"

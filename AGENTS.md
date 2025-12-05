@@ -24,7 +24,6 @@ role-play/
 ├── user/                   # User management and authentication
 ├── utils/                  # Shared utilities
 ├── role_play/              # Django project settings
-├── tasks/                  # Invoke task definitions
 ├── media/                  # User-uploaded media files
 └── docs/                   # Documentation and screenshots
 ```
@@ -57,22 +56,31 @@ Core game mechanics and flow:
 
 **Important**: This project uses [Doppler](https://www.doppler.com/) for secrets management. All commands that require environment variables (like API keys) should be prefixed with `doppler run --` to inject the necessary secrets.
 
+Tasks are managed with [Poe the Poet](https://poethepoet.natn.io/). Run `poe --help` to see all available tasks.
+
 ### Development
 ```bash
-doppler run -- uv run invoke dev.run          # Start development server
+doppler run -- uv run poe dev-run             # Start development server
+doppler run -- uv run poe dev-worker          # Start Celery worker
+uv run poe shell                              # Django shell
+uv run poe clean                              # Clean generated files
 ```
 
 ### Testing
 ```bash
-doppler run -- uv run invoke test.run         # Run all tests
-doppler run -- uv run invoke test.run --test-label=path/to/test_file.py::TestClass::test_method  # Run single test
-doppler run -- uv run invoke test.run --coverage && uv run invoke test.coverage-report  # Coverage report
+doppler run -- uv run poe test                # Run all tests
+doppler run -- uv run poe test-verbose        # Run tests with verbose output
+doppler run -- uv run poe test-cov            # Run tests with coverage
+uv run poe test-cov-report                    # Generate HTML coverage report
 ```
 
 ### Database
 ```bash
-doppler run -- uv run invoke db.migrate       # Run migrations
-doppler run -- uv run invoke db.reset         # Reset database
+doppler run -- uv run poe db-migrate          # Run migrations
+doppler run -- uv run poe db-reset            # Reset database
+doppler run -- uv run poe db-make-migrations  # Make migrations
+doppler run -- uv run poe db-load-settings    # Load fixtures
+doppler run -- uv run poe db-populate         # Populate with realistic data
 ```
 
 ### Code Quality
@@ -150,7 +158,7 @@ mypy                          # Type checking
 
 ### Development Tools
 - **uv**: Fast Python package installer and resolver
-- **invoke**: Task execution tool
+- **poethepoet**: Task runner (configured in pyproject.toml)
 - **pytest**: Testing framework
 - **ruff**: Linting and formatting
 - **mypy**: Static type checking
@@ -182,7 +190,7 @@ The project is organized by domain (character, game, master, user) with each hav
 
 ### Configuration
 - Excluded from linting: `role_play/asgi.py`, `role_play/urls.py`, `role_play/settings/*`
-- Coverage omits: `manage.py`, `tasks/*`
+- Coverage omits: `manage.py`
 
 ## Common Tasks for AI Agents
 
@@ -197,14 +205,14 @@ The project is organized by domain (character, game, master, user) with each hav
 
 ### When Fixing Bugs
 1. Check existing tests in the relevant `tests/` directory
-2. Run specific test: `doppler run -- uv run invoke test.run --test-label=path/to/test`
+2. Run specific test: `doppler run -- uv run poe test` (use pytest path syntax for single tests)
 3. Check for related issues in error handling (`exceptions.py`)
 4. Verify Django model validation rules
 
 ### When Refactoring
 1. Ensure type hints are present
 2. Run full test suite before and after
-3. Check coverage: `doppler run -- uv run invoke test.run --coverage`
+3. Check coverage: `doppler run -- uv run poe test-cov`
 4. Format with ruff: `ruff format`
 5. Run pre-commit hooks: `pre-commit run --all-files`
 

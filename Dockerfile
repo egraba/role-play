@@ -29,4 +29,4 @@ COPY . /code
 
 EXPOSE 8000
 
-CMD ["doppler", "run", "--", "invoke", "prod.run"]
+CMD ["doppler", "run", "--", "uv", "run", "poe", "prod-run"]

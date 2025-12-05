@@ -15,6 +15,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * Upgraded Django from 5.1 to 5.2
 * Enhanced CI workflow to use Doppler for environment variable management
 * Migrated to Python 3.14
+* Migrated task runner from invoke to poethepoet
 
 ## v0.12.0 - 2025-01-18
 

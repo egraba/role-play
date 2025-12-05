@@ -46,8 +46,8 @@ jobs:
         uv sync
     - name: Run Tests
       run: |
-        doppler run -- uv run invoke test.run --verbose --coverage
-        doppler run -- uv run invoke test.coverage-report --output-format xml
+        doppler run -- uv run poe test-cov
+        uv run poe test-cov-report-xml
       env:
         DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
     - name: Upload coverage reports to Codecov
