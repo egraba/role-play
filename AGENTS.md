@@ -58,6 +58,13 @@ Core game mechanics and flow:
 
 Tasks are managed with [Poe the Poet](https://poethepoet.natn.io/). Run `poe --help` to see all available tasks.
 
+### Environment Setup (Required Before Any Command)
+Before executing any command, ensure the virtual environment is created and activated:
+```bash
+uv sync                                       # Create/update virtualenv and install dependencies
+source .venv/bin/activate                     # Activate the virtualenv (macOS/Linux)
+```
+
 ### Development
 ```bash
 doppler run -- uv run poe dev-run             # Start development server
@@ -193,6 +200,12 @@ The project is organized by domain (character, game, master, user) with each hav
 - Coverage omits: `manage.py`
 
 ## Common Tasks for AI Agents
+
+### Before Starting Any Work
+1. Create a new branch for your changes: `git checkout -b <type>/<descriptive-name>`
+   - Use prefixes: `feat/`, `fix/`, `docs/`, `refactor/`, `test/`
+   - Example: `git checkout -b feat/add-character-inventory`
+2. Never commit directly to `main` branch
 
 ### When Adding New Features
 1. Identify the appropriate domain module (character, game, master, user)
