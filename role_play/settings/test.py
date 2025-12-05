@@ -7,7 +7,13 @@ Key optimizations:
 - Eager Celery execution: Tasks run synchronously without broker
 """
 
-from role_play.settings.local import *
+import os
+
+# Import from CI settings if running in CI, otherwise from local
+if os.environ.get("CI"):
+    from role_play.settings.ci import *
+else:
+    from role_play.settings.local import *
 
 # Use a faster password hasher for tests
 # MD5 is insecure for production but perfectly fine for testing
