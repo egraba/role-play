@@ -17,6 +17,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * Enhanced CI workflow to use Doppler for environment variable management
 * Migrated to Python 3.14
 * Migrated task runner from invoke to poethepoet
+* Speed up test execution with pytest-xdist parallel running and optimized test settings
 
 ## v0.12.0 - 2025-01-18
 
