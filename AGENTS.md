@@ -58,6 +58,13 @@ Core game mechanics and flow:
 
 Tasks are managed with [Poe the Poet](https://poethepoet.natn.io/). Run `poe --help` to see all available tasks.
 
+### Environment Setup (Required Before Any Command)
+Before executing any command, ensure the virtual environment is created and activated:
+```bash
+uv sync                                       # Create/update virtualenv and install dependencies
+source .venv/bin/activate                     # Activate the virtualenv (macOS/Linux)
+```
+
 ### Development
 ```bash
 doppler run -- uv run poe dev-run             # Start development server
