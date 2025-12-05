@@ -10,11 +10,11 @@ console_command = '/code/manage.py shell'
 [build]
 
 [deploy]
-release_command = 'uv run invoke prod.deploy'
+release_command = 'uv run poe prod-deploy'
 
 [processes]
-app = "uv run invoke prod.run"
-worker = "uv run invoke prod.run-worker"
+app = "uv run poe prod-run"
+worker = "uv run poe prod-worker"
 
 [env]
 PORT = '8000'
