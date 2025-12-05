@@ -201,6 +201,12 @@ The project is organized by domain (character, game, master, user) with each hav
 
 ## Common Tasks for AI Agents
 
+### Before Starting Any Work
+1. Create a new branch for your changes: `git checkout -b <type>/<descriptive-name>`
+   - Use prefixes: `feat/`, `fix/`, `docs/`, `refactor/`, `test/`
+   - Example: `git checkout -b feat/add-character-inventory`
+2. Never commit directly to `main` branch
+
 ### When Adding New Features
 1. Identify the appropriate domain module (character, game, master, user)
 2. Add models in `models/` subdirectory
