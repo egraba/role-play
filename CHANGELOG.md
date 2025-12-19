@@ -7,6 +7,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ### Added
 * Quest environments are now enriched using Claude 3.5 Sonnet model
 * Added AGENTS.md with comprehensive guidance for AI coding assistants
+* Added Django and Celery startup integration tests
 * Complete CSS redesign with new rpg-styles.css design system
 * Configured Renovate for automated dependency updates (including pre-commit hooks)
 * Added poe tasks: code quality (lint, format, typecheck, check), aliases (run, migrate, worker), management commands (delete-character, delete-combats, request-saving-throw), and convenience tasks (ci, db-setup, pre-commit)
