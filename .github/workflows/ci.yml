@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       redis:
-        image: redis:latest
+        image: redis:8
         ports:
           - 6379:6379
         options: >-
@@ -20,7 +20,7 @@ jobs:
           --health-timeout 5s
           --health-retries 5
       postgres:
-        image: postgres:latest
+        image: postgres:18
         env:
           POSTGRES_USER: ciuser
           POSTGRES_PASSWORD: ${{secrets.POSTGRES_PASSWORD}}
