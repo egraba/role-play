@@ -1,13 +1,21 @@
 services:
   redis:
-    image: "redis:alpine"
-    restart: always
+    image: "redis:8-alpine"
+    restart: unless-stopped
     ports:
       - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   postgres:
-    image: "postgres:alpine"
-    restart: always
+    image: "postgres:18-alpine"
+    restart: unless-stopped
     environment:
       POSTGRES_USER: devuser
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -16,6 +24,12 @@ services:
       - "5432:5432"
     volumes:
       - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U devuser -d role-play"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   db-data:
+  redis-data:
