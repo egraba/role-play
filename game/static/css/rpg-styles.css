@@ -668,6 +668,27 @@ body {
 
 /* ==================== FORMS & INPUTS ==================== */
 
+/* Django form error styling */
+.errorlist {
+    list-style: none;
+    -webkit-padding-start: 0;
+    padding-inline-start: 0;
+    margin: 0 0 15px 0;
+    padding: 0;
+}
+
+.errorlist li {
+    display: block;
+    margin: 5px 0;
+    padding: 10px 15px;
+    background: rgba(231, 76, 60, 0.15);
+    border: 1px solid var(--color-health);
+    border-left: 4px solid var(--color-health);
+    border-radius: 5px;
+    color: #ff6b6b;
+    font-size: 0.95rem;
+}
+
 .rpg-form-group {
     margin-bottom: 20px;
 }
