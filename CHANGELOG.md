@@ -19,6 +19,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * Migrated to Python 3.14
 * Migrated task runner from invoke to poethepoet
 * Speed up test execution with pytest-xdist parallel running and optimized test settings
+* Form validation errors for duplicate values now show specific field names instead of a generic message
 
 ## v0.12.0 - 2025-01-18
 

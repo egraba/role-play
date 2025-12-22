@@ -8,5 +8,28 @@ class NoDuplicateValuesFormMixin(Form):
 
     def clean(self):
         self.cleaned_data = super().clean()
-        if len(self.cleaned_data) != len(set(self.cleaned_data.values())):
-            raise ValidationError("the entered values must be different")
+        values = list(self.cleaned_data.values())
+        if len(values) != len(set(values)):
+            # Find which fields have duplicate values
+            seen = {}
+            duplicates = {}
+            for field_name, value in self.cleaned_data.items():
+                if value in seen:
+                    if value not in duplicates:
+                        duplicates[value] = [seen[value]]
+                    duplicates[value].append(field_name)
+                else:
+                    seen[value] = field_name
+
+            # Build list of field names with duplicates
+            duplicate_fields = []
+            for fields in duplicates.values():
+                duplicate_fields.extend(fields)
+
+            # Get field labels for display
+            field_labels = [
+                str(self.fields[f].label or f.replace("_", " ").title())
+                for f in duplicate_fields
+            ]
+            field_list = ", ".join(field_labels)
+            raise ValidationError(f"{field_list} must have different values")
