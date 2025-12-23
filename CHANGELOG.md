@@ -11,6 +11,8 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * Complete CSS redesign with new rpg-styles.css design system
 * Configured Renovate for automated dependency updates (including pre-commit hooks)
 * Added poe tasks: code quality (lint, format, typecheck, check), aliases (run, migrate, worker), management commands (delete-character, delete-combats, request-saving-throw), and convenience tasks (ci, db-setup, pre-commit)
+* Added `/health/` endpoint for Fly.io health checks
+* Added post-deployment health check verification in CI
 
 ### Changed
 * Reduce machines size on Fly.io
@@ -20,6 +22,11 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * Migrated task runner from invoke to poethepoet
 * Speed up test execution with pytest-xdist parallel running and optimized test settings
 * Form validation errors for duplicate values now show specific field names instead of a generic message
+* Updated Dockerfile with modern Doppler CLI installation method
+* Improved fly.toml with proper VM configuration and Doppler integration
+* Split CI workflow into separate lint and test jobs for faster feedback
+* Deploy workflow now runs tests before deploying to production
+* Added manual deployment trigger via workflow_dispatch
 
 ## v0.12.0 - 2025-01-18
 

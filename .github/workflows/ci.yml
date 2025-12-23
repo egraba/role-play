@@ -2,12 +2,29 @@ name: CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
-  build:
+  lint:
+    name: Lint & Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+      - name: Install uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      - name: Install Dependencies
+        run: uv sync
+      - name: Run pre-commit checks
+        uses: pre-commit/action@v3.0.1
+
+  test:
+    name: Test
     runs-on: ubuntu-latest
     services:
       redis:
@@ -23,7 +40,7 @@ jobs:
         image: postgres:18
         env:
           POSTGRES_USER: ciuser
-          POSTGRES_PASSWORD: ${{secrets.POSTGRES_PASSWORD}}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_DB: role-play
         ports:
           - 5432:5432
@@ -33,24 +50,24 @@ jobs:
           --health-timeout 5s
           --health-retries 5
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.14'
-    - name: Install Doppler CLI
-      uses: dopplerhq/cli-action@v3
-    - name: Install Dependencies
-      run: |
-        curl -LsSf https://astral.sh/uv/install.sh | sh
-        uv sync
-    - name: Run Tests
-      run: |
-        doppler run -- uv run poe test-cov
-        uv run poe test-cov-report-xml
-      env:
-        DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
-    - name: Upload coverage reports to Codecov
-      uses: codecov/codecov-action@v5
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+      - name: Install Doppler CLI
+        uses: dopplerhq/cli-action@v3
+      - name: Install uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      - name: Install Dependencies
+        run: uv sync
+      - name: Run Tests with Coverage
+        run: |
+          doppler run -- uv run poe test-cov
+          uv run poe test-cov-report-xml
+        env:
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
