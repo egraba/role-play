@@ -95,5 +95,8 @@ DATABASES["default"].update(db_from_env)
 
 # Sentry
 sentry_sdk.init(
-    dsn="https://145d637239f03869e4cbe260a0fc0f72@o4507867128201216.ingest.us.sentry.io/4508561651204096",
+    dsn="https://40c2965ccfcc77646efabdb60a8bcaf5@o4507867128201216.ingest.us.sentry.io/4510585279152128",
+    # Add data like request headers and IP for users,
+    # see https://docs.sentry.io/platforms/python/data-management/data-collected/ for more info
+    send_default_pii=True,
 )
