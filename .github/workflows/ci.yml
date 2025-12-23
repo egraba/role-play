@@ -20,12 +20,8 @@ jobs:
         run: curl -LsSf https://astral.sh/uv/install.sh | sh
       - name: Install Dependencies
         run: uv sync
-      - name: Run linting
-        run: uvx ruff check .
-      - name: Check formatting
-        run: uvx ruff format . --check
-      - name: Run type checking
-        run: uvx mypy .
+      - name: Run pre-commit checks
+        uses: pre-commit/action@v3.0.1
 
   test:
     name: Test
