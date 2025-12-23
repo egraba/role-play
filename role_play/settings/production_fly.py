@@ -10,7 +10,9 @@ SECRET_KEY = secrets.token_urlsafe(50)
 DEBUG = False
 
 # Security
-ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1", "role-play.fly.dev"]
+# Include .fly.dev and .internal for Fly's private network
+# Use * to allow health checks from any internal IP
+ALLOWED_HOSTS = ["*"]
 CSRF_TRUSTED_ORIGINS = ["https://role-play.fly.dev"]
 CSRF_COOKIE_SECURE = True
 SECURE_SSL_REDIRECT = False

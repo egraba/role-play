@@ -19,7 +19,6 @@ worker = "doppler run -- uv run poe eph-worker"
 [env]
 PORT = '8000'
 DJANGO_SETTINGS_MODULE = "role_play.settings.ephemeral"
-DOPPLER_TOKEN = ""  # This will be set via fly secrets
 DEBUG = "true"
 
 [http_service]
@@ -30,32 +29,6 @@ auto_start_machines = true
 min_machines_running = 0
 processes = ['app']
 
-# App VM configuration
-[[vm]]
-size = "shared-cpu-1x"
-cpu_kind = 'shared'
-cpus = 1
-memory = '256mb'
-processes = ["app"]
-
-# Worker VM configuration
-[[vm]]
-size = "shared-cpu-1x"
-cpu_kind = 'shared'
-cpus = 1
-memory = '256mb'
-processes = ["worker"]
-
-[[statics]]
-guest_path = '/code/staticfiles'
-url_prefix = '/static/'
-
-# Ephemeral-specific configurations
-[experimental]
-auto_rollback = false  # Skip rollback for faster deployments
-auto_stop = true
-
-# Minimal monitoring for ephemeral
 [checks]
   [checks.health]
     grace_period = "5s"
@@ -65,3 +38,19 @@ auto_stop = true
     port = 8000
     timeout = "10s"
     type = "http"
+
+# App VM configuration
+[[vm]]
+size = "shared-cpu-1x"
+memory = "256mb"
+processes = ["app"]
+
+# Worker VM configuration
+[[vm]]
+size = "shared-cpu-1x"
+memory = "256mb"
+processes = ["worker"]
+
+[[statics]]
+guest_path = '/code/staticfiles'
+url_prefix = '/static/'

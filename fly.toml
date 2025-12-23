@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for role-play on 2024-08-30T18:01:39+02:00
+# fly.toml app configuration file for role-play production
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -10,11 +10,11 @@ console_command = '/code/manage.py shell'
 [build]
 
 [deploy]
-release_command = 'uv run poe prod-deploy'
+release_command = 'doppler run -- uv run poe prod-deploy'
 
 [processes]
-app = "uv run poe prod-run"
-worker = "uv run poe prod-worker"
+app = "doppler run -- uv run poe prod-run"
+worker = "doppler run -- uv run poe prod-worker"
 
 [env]
 PORT = '8000'
@@ -28,13 +28,24 @@ auto_start_machines = true
 min_machines_running = 0
 processes = ['app']
 
-[[vm]]
-size = "shared-cpu-2x"
-cpu_kind = 'shared'
-cpus = 1
+[checks]
+  [checks.health]
+    grace_period = "10s"
+    interval = "30s"
+    method = "GET"
+    path = "/health/"
+    port = 8000
+    timeout = "5s"
+    type = "http"
 
 [[vm]]
 size = "shared-cpu-2x"
+memory = "512mb"
+processes = ["app"]
+
+[[vm]]
+size = "shared-cpu-2x"
+memory = "512mb"
 processes = ["worker"]
 
 [[statics]]
