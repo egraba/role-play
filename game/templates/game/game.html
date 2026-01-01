@@ -108,13 +108,11 @@
     </div>
 
     <script>
-        if (window.location.protocol === 'https:') {
-            wsProtocol = 'wss://'
-        } else {
-            wsProtocol = 'ws://'
-        }
-        var url = wsProtocol + window.location.host + '/events/' + {{ game.id }} + '/';
-        const eventsSocket = new WebSocket(url);
+        // WebSocket connection configuration
+        const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+        const url = wsProtocol + window.location.host + '/events/' + {{ game.id }} + '/';
+
+        // DOM elements
         const eventList = document.getElementById('event-list');
         const input = document.getElementById('message-input');
         const sendButton = document.getElementById('message-submit');
@@ -122,48 +120,147 @@
         const dexterityCheckButton = document.getElementById('dexterity-check-submit');
         const savingThrowButton = document.getElementById('saving-throw-submit');
 
+        // Event types
         const MESSAGE = "message";
         const QUEST_UPDATE = "quest.update";
         const ABILITY_CHECK_RESPONSE = "ability.check.response";
         const SAVING_THROW_RESPONSE = "saving.throw.response";
         const COMBAT_INITIATIVE_RESPONSE = "combat.initiative.response";
 
-        eventsSocket.onmessage = function(event) {
-            message = JSON.parse(event.data)
-            date = new Date(message["date"]);
-            eventList.innerHTML += '<p>[' + date.getUTCHours() + ':' + date.getUTCMinutes() + '] ' + message["message"] + '</p>'
-            lines = eventList.innerHTML.split('</p>');
-            if (lines.length > 10) {
-                lines.splice(0, 1);
-                eventList.innerHTML = lines.join('\n');
+        // WebSocket reconnection state
+        let eventsSocket = null;
+        let reconnectAttempts = 0;
+        const maxReconnectAttempts = 10;
+        const baseReconnectDelay = 1000; // 1 second
+        const maxReconnectDelay = 30000; // 30 seconds
+        let reconnectTimeout = null;
+
+        // Create connection status indicator
+        function createConnectionStatus() {
+            const statusDiv = document.createElement('div');
+            statusDiv.id = 'connection-status';
+            statusDiv.style.cssText = 'position: fixed; bottom: 20px; right: 20px; padding: 10px 15px; border-radius: 5px; font-size: 0.9rem; z-index: 1000; display: none;';
+            document.body.appendChild(statusDiv);
+            return statusDiv;
+        }
+        const connectionStatus = createConnectionStatus();
+
+        function showConnectionStatus(message, isError) {
+            connectionStatus.textContent = message;
+            connectionStatus.style.display = 'block';
+            connectionStatus.style.background = isError ? 'rgba(139, 0, 0, 0.9)' : 'rgba(0, 100, 0, 0.9)';
+            connectionStatus.style.color = 'white';
+            connectionStatus.style.border = isError ? '2px solid #ff6666' : '2px solid #66ff66';
+        }
+
+        function hideConnectionStatus() {
+            connectionStatus.style.display = 'none';
+        }
+
+        function connectWebSocket() {
+            if (eventsSocket && eventsSocket.readyState === WebSocket.OPEN) {
+                return; // Already connected
             }
-            if (message["type"] === QUEST_UPDATE) {
-                $("#quest").load(" #quest > *");
-            } else if (message["type"] === MESSAGE) {
-                // Do nothing.
+
+            eventsSocket = new WebSocket(url);
+
+            eventsSocket.onopen = function(event) {
+                console.log('WebSocket connected');
+                reconnectAttempts = 0;
+                hideConnectionStatus();
+                // Enable input if it was disabled
+                if (input) input.disabled = false;
+                if (sendButton) sendButton.disabled = false;
+            };
+
+            eventsSocket.onmessage = function(event) {
+                const message = JSON.parse(event.data);
+                const date = new Date(message["date"]);
+                eventList.innerHTML += '<p>[' + date.getUTCHours() + ':' + date.getUTCMinutes() + '] ' + message["message"] + '</p>';
+                const lines = eventList.innerHTML.split('</p>');
+                if (lines.length > 10) {
+                    lines.splice(0, 1);
+                    eventList.innerHTML = lines.join('\n');
+                }
+                if (message["type"] === QUEST_UPDATE) {
+                    $("#quest").load(" #quest > *");
+                } else if (message["type"] === MESSAGE) {
+                    // Do nothing.
+                } else {
+                    // The full page has to be reloaded, otherwise clicking on the button
+                    // triggers no action.
+                    location.reload();
+                }
+            };
+
+            eventsSocket.onclose = function(event) {
+                console.warn('WebSocket closed:', event.code, event.reason);
+                scheduleReconnect();
+            };
+
+            eventsSocket.onerror = function(error) {
+                console.error('WebSocket error:', error);
+                // onclose will be called after onerror
+            };
+        }
+
+        function scheduleReconnect() {
+            if (reconnectTimeout) {
+                clearTimeout(reconnectTimeout);
+            }
+
+            if (reconnectAttempts >= maxReconnectAttempts) {
+                showConnectionStatus('⚠️ Connection lost. Please refresh the page.', true);
+                return;
+            }
+
+            // Disable input while disconnected
+            if (input) input.disabled = true;
+            if (sendButton) sendButton.disabled = true;
+
+            // Calculate delay with exponential backoff and jitter
+            const delay = Math.min(
+                baseReconnectDelay * Math.pow(2, reconnectAttempts) + Math.random() * 1000,
+                maxReconnectDelay
+            );
+            reconnectAttempts++;
+
+            showConnectionStatus(`🔄 Reconnecting... (attempt ${reconnectAttempts}/${maxReconnectAttempts})`, true);
+
+            reconnectTimeout = setTimeout(function() {
+                console.log(`Reconnecting... attempt ${reconnectAttempts}`);
+                connectWebSocket();
+            }, delay);
+        }
+
+        function sendMessage(data) {
+            if (eventsSocket && eventsSocket.readyState === WebSocket.OPEN) {
+                eventsSocket.send(JSON.stringify(data));
+                return true;
             } else {
-                // The full page has to be reloaded, otherwise clicking on the button
-                // triggers no action.
-                location.reload();
+                showConnectionStatus('⚠️ Not connected. Reconnecting...', true);
+                scheduleReconnect();
+                return false;
             }
-        };
+        }
 
-        eventsSocket.onclose = function(event) {
-            console.error('Events socket closed unexpectedly...');
-        };
+        // Initialize WebSocket connection
+        connectWebSocket();
 
+        // Event listeners
         if (sendButton !== null) {
             sendButton.addEventListener('click', function(event) {
                 const userInput = input.value;
                 if (userInput) {
-                    eventsSocket.send(JSON.stringify({
+                    if (sendMessage({
                         'type': MESSAGE,
                         'date': Date.now(),
                         'username': '{{ user.username }}',
                         'message': userInput,
-                    }));
-                    input.value = '';
-                    input.focus();
+                    })) {
+                        input.value = '';
+                        input.focus();
+                    }
                 }
             });
 
@@ -177,35 +274,35 @@
 
         if (abilityCheckButton !== null) {
             abilityCheckButton.addEventListener('click', function(event) {
-                eventsSocket.send(JSON.stringify({
+                sendMessage({
                     'type': ABILITY_CHECK_RESPONSE,
                     'date': Date.now(),
                     'username': '{{ user.username }}',
-                }));
+                });
             });
         }
 
         if (savingThrowButton !== null) {
             savingThrowButton.addEventListener('click', function(event) {
-                eventsSocket.send(JSON.stringify({
+                sendMessage({
                     'type': SAVING_THROW_RESPONSE,
                     'date': Date.now(),
                     'username': '{{ user.username }}',
-                }));
+                });
             });
         }
 
         if (dexterityCheckButton !== null) {
             dexterityCheckButton.addEventListener('click', function(event) {
-                eventsSocket.send(JSON.stringify({
+                sendMessage({
                     'type': COMBAT_INITIATIVE_RESPONSE,
                     'date': Date.now(),
                     'username': '{{ user.username }}',
-                }));
+                });
             });
         }
 
-        input.focus();
+        if (input) input.focus();
 
     </script>
 

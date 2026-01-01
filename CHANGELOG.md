@@ -6,6 +6,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 
 ### Added
 * Quest environments are now enriched using Claude 3.5 Sonnet model
+* WebSocket auto-reconnect with exponential backoff when server restarts
 * Added AGENTS.md with comprehensive guidance for AI coding assistants
 * Added Django and Celery startup integration tests
 * Complete CSS redesign with new rpg-styles.css design system
