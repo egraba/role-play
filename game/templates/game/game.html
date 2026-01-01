@@ -159,7 +159,7 @@
                     eventsSocket.send(JSON.stringify({
                         'type': MESSAGE,
                         'date': Date.now(),
-                        'username': '{{ user }}',
+                        'username': '{{ user.username }}',
                         'message': userInput,
                     }));
                     input.value = '';
@@ -180,7 +180,7 @@
                 eventsSocket.send(JSON.stringify({
                     'type': ABILITY_CHECK_RESPONSE,
                     'date': Date.now(),
-                    'username': '{{ user }}',
+                    'username': '{{ user.username }}',
                 }));
             });
         }
@@ -190,7 +190,7 @@
                 eventsSocket.send(JSON.stringify({
                     'type': SAVING_THROW_RESPONSE,
                     'date': Date.now(),
-                    'username': '{{ user }}',
+                    'username': '{{ user.username }}',
                 }));
             });
         }
@@ -200,7 +200,7 @@
                 eventsSocket.send(JSON.stringify({
                     'type': COMBAT_INITIATIVE_RESPONSE,
                     'date': Date.now(),
-                    'username': '{{ user }}',
+                    'username': '{{ user.username }}',
                 }));
             });
         }
