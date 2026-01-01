@@ -121,8 +121,8 @@ class RollResult(Event):
     result = models.CharField(max_length=1, choices=RollResultType)
 
     def get_message(self):
-        return f"[{self.request.player}]'s score: {self.score}, \
-            {self.request.roll_type} result: {self.get_result_display()}"
+        return f"{self.request.player}'s score: {self.score}, \
+            {self.request.get_roll_type_display()} result: {self.get_result_display()}"
 
 
 class CombatInitialization(Event):
@@ -170,7 +170,7 @@ class CombatInitiativeResult(Event):
     score = models.SmallIntegerField()
 
     def get_message(self):
-        return f"[{self.fighter.character.user}]'s score: {self.score}"
+        return f"{self.fighter.character.user}'s score: {self.score}"
 
 
 class CombatInitativeOrderSet(Event):
