@@ -56,23 +56,26 @@ def _get_skills(klass: Klass) -> set[tuple[str, str]] | None:
 
 
 class SkillsSelectForm(NoDuplicateValuesFormMixin, forms.Form):
+    EMPTY_CHOICE = ("", "---------")
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         klass = self.initial["klass"]
+        choices = [self.EMPTY_CHOICE, *_get_skills(klass)]
         self.fields["first_skill"] = forms.ChoiceField(
-            choices=_get_skills(klass),
+            choices=choices,
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
         self.fields["second_skill"] = forms.ChoiceField(
-            choices=_get_skills(klass),
+            choices=choices,
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
         if klass == Klass.ROGUE:
             self.fields["third_skill"] = forms.ChoiceField(
-                choices=_get_skills(klass),
+                choices=choices,
                 widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
             )
             self.fields["fourth_skill"] = forms.ChoiceField(
-                choices=_get_skills(klass),
+                choices=choices,
                 widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
             )

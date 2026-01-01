@@ -27,6 +27,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * Split CI workflow into separate lint and test jobs for faster feedback
 * Deploy workflow now runs tests before deploying to production
 * Added manual deployment trigger via workflow_dispatch
+* Character creation dropdowns now show empty "---------" placeholder by default instead of pre-selecting the first option
 
 ## v0.12.0 - 2025-01-18
 
