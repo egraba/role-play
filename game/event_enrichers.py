@@ -2,7 +2,7 @@ from abc import abstractmethod
 
 from django.db.models import Q
 
-from .models.events import CombatInitiativeResponse, Message, RollResponse
+from .models.events import Message
 from .models.game import Character, Game, Actor
 from .schemas import EventSchema
 
@@ -46,18 +46,10 @@ class MessageEnricher(Enricher):
 class RollResponseEnricher(Enricher):
     def enrich(self):
         character = Character.objects.get(user__username=self.content["username"])
-        self.content["message"] = RollResponse(
-            game=self.game,
-            date=self.content["date"],
-            character=character,
-        ).get_message()
+        self.content["message"] = f"{character.player} performed an ability check!"
 
 
 class CombatInitiativeResponseEnricher(Enricher):
     def enrich(self):
         character = Character.objects.get(user__username=self.content["username"])
-        self.content["message"] = CombatInitiativeResponse(
-            game=self.game,
-            date=self.content["date"],
-            character=character,
-        ).get_message()
+        self.content["message"] = f"{character} performed a dexterity check!"

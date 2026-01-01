@@ -163,8 +163,8 @@ class TestRollResultModel:
     def test_get_message(self, roll_result):
         assert (
             roll_result.get_message()
-            == f"[{roll_result.request.player}]'s score: {roll_result.score}, \
-            {roll_result.request.roll_type} result: {roll_result.get_result_display()}"
+            == f"{roll_result.request.player}'s score: {roll_result.score}, \
+            {roll_result.request.get_roll_type_display()} result: {roll_result.get_result_display()}"
         )
 
 

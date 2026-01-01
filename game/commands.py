@@ -50,9 +50,9 @@ class AbilityCheckResponseCommand(CharacterCommandMixin):
         super().execute(content, user, game)
         process_roll.delay(
             game_id=game.id,
-            roll_type=RollType.ABILITY_CHECK,
+            author_id=self.character.player.id,
             date=content["date"],
-            character_id=self.character.id,
+            roll_type=RollType.ABILITY_CHECK,
         )
 
 
@@ -61,9 +61,9 @@ class SavingThrowResponseCommand(CharacterCommandMixin):
         super().execute(content, user, game)
         process_roll.delay(
             game_id=game.id,
-            roll_type=RollType.SAVING_THROW,
+            author_id=self.character.player.id,
             date=content["date"],
-            character_id=self.character.id,
+            roll_type=RollType.SAVING_THROW,
         )
 
 
@@ -72,7 +72,6 @@ class CombatInitiativeResponseCommand(CharacterCommandMixin):
         super().execute(content, user, game)
         process_combat_initiative_roll.delay(
             game_id=game.id,
-            roll_type=RollType.ABILITY_CHECK,
+            player_id=self.character.player.id,
             date=content["date"],
-            character_id=self.character.id,
         )
