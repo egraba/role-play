@@ -198,14 +198,14 @@ class CombatCreateView(
                 ):
                     is_surprised = True
                 character = Character.objects.get(name=fighter_field)
-                Fighter.objects.update_or_create(
+                # Create a new Fighter for each combat (don't reuse fighters across combats)
+                # This ensures each combat has its own set of initiative requests/responses/results
+                Fighter.objects.create(
                     player=character.player,
-                    defaults={
-                        "character": character,
-                        "is_surprised": is_surprised,
-                        "combat": combat,
-                        "dexterity_check": None,
-                    },
+                    character=character,
+                    is_surprised=is_surprised,
+                    combat=combat,
+                    dexterity_check=None,
                 )
         author = Actor.objects.get(
             master__game=self.game, master__user=self.request.user
@@ -215,13 +215,12 @@ class CombatCreateView(
         )
         send_to_channel(combat_init)
         for fighter in combat.fighter_set.all():
-            initiative_request, _ = CombatInitiativeRequest.objects.update_or_create(
+            # Create a new initiative request for each fighter in this combat
+            initiative_request = CombatInitiativeRequest.objects.create(
                 fighter=fighter,
-                defaults={
-                    "game": self.game,
-                    "author": author,
-                    "status": RollStatus.PENDING,
-                },
+                game=self.game,
+                author=author,
+                status=RollStatus.PENDING,
             )
             send_to_channel(initiative_request)
             schedule, _ = IntervalSchedule.objects.get_or_create(
