@@ -19,6 +19,7 @@ from ..factories import (
     ActorFactory,
     CombatInitalizationFactory,
     EventFactory,
+    FighterFactory,
     GameFactory,
     GameStartFactory,
     MessageFactory,
@@ -178,3 +179,21 @@ class TestCombatInitializationModel:
 
     def test_get_message(self, combat_init):
         assert combat_init.get_message().startswith("Combat!")
+
+    def test_get_message_single_fighter_no_initiative_order_prefix(self, combat_init):
+        # Remove all fighters and add just one
+        combat_init.combat.fighter_set.all().delete()
+        FighterFactory(combat=combat_init.combat, dexterity_check=10)
+        message = combat_init.get_message()
+        assert message.startswith("Combat!")
+        assert "Initiative order:" not in message
+
+    def test_get_message_multiple_fighters_has_initiative_order_prefix(
+        self, combat_init
+    ):
+        # Ensure there are at least 2 fighters
+        combat_init.combat.fighter_set.all().delete()
+        FighterFactory(combat=combat_init.combat, dexterity_check=10)
+        FighterFactory(combat=combat_init.combat, dexterity_check=15)
+        message = combat_init.get_message()
+        assert message.startswith("Combat! Initiative order:")

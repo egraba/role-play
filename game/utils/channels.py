@@ -54,7 +54,7 @@ def _get_event_type(event: Event) -> EventType:
     elif isinstance(event, CombatInitiativeResponse):
         event_type = EventType.COMBAT_INITIATIVE_RESPONSE
     elif isinstance(event, CombatInitiativeResult):
-        event_type = EventType.COMBAT_INITIATIVE_RESPONSE
+        event_type = EventType.COMBAT_INITIATIVE_RESULT
     elif isinstance(event, CombatInitativeOrderSet):
         event_type = EventType.COMBAT_INITIALIZATION_COMPLETE
     return event_type

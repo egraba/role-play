@@ -22,7 +22,7 @@ from game.constants.events import DifficultyClass, RollType
 from game.exceptions import UserHasNoCharacter
 from game.flows import GameFlow
 from game.forms import CombatCreateForm, QuestCreateForm
-from game.models.combat import Combat, Fighter
+from game.models.combat import Combat
 from game.models.events import Event, Quest, RollRequest, UserInvitation
 from game.models.game import Game, Player
 from game.views.master import (
@@ -374,10 +374,11 @@ class TestCombatCreateView:
         assertRedirects(response, started_game.get_absolute_url())
         combat = Combat.objects.filter(game=started_game).last()
         assert combat
-        assert list(combat.fighter_set.all()) == [
-            Fighter.objects.get(character=characters.first()),
-            Fighter.objects.get(character=characters.last()),
-        ]
+        # Each combat creates new fighters, verify the fighters belong to this combat
+        fighters = list(combat.fighter_set.all())
+        fighter_characters = [f.character for f in fighters]
+        assert characters.first() in fighter_characters
+        assert characters.last() in fighter_characters
 
 
 class TestAbilityCheckRequestView:

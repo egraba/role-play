@@ -6,8 +6,11 @@ from character.constants.abilities import AbilityName
 from game.constants.events import DifficultyClass, RollResultType, RollType
 from game.models.combat import Combat, Fighter
 from game.models.events import (
+    CombatInitativeOrderSet,
     CombatInitialization,
     CombatInitiativeRequest,
+    CombatInitiativeResponse,
+    CombatInitiativeResult,
     Event,
     GameStart,
     Message,
@@ -191,3 +194,33 @@ class CombatInitiativeRequestFactory(factory.django.DjangoModelFactory):
     game = factory.SubFactory(GameFactory)
     author = factory.SubFactory(ActorFactory)
     fighter = factory.SubFactory(FighterFactory)
+
+
+class CombatInitiativeResponseFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = CombatInitiativeResponse
+
+    game = factory.SubFactory(GameFactory)
+    author = factory.SubFactory(ActorFactory)
+    request = factory.SubFactory(CombatInitiativeRequestFactory)
+
+
+class CombatInitiativeResultFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = CombatInitiativeResult
+
+    game = factory.SubFactory(GameFactory)
+    author = factory.SubFactory(ActorFactory)
+    fighter = factory.SubFactory(FighterFactory)
+    request = factory.SubFactory(CombatInitiativeRequestFactory)
+    response = factory.SubFactory(CombatInitiativeResponseFactory)
+    score = factory.Faker("random_int", min=1, max=20)
+
+
+class CombatInitativeOrderSetFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = CombatInitativeOrderSet
+
+    game = factory.SubFactory(GameFactory)
+    author = factory.SubFactory(ActorFactory)
+    combat = factory.SubFactory(CombatFactory)

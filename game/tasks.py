@@ -154,22 +154,21 @@ def process_combat_initiative_roll(
     logger.info(f"{roll_request=}, {roll_request.fighter=}")
 
     # Store the roll response.
-    roll_response, _ = CombatInitiativeResponse.objects.update_or_create(
+    roll_response = CombatInitiativeResponse.objects.create(
         request=roll_request,
-        defaults={"game": game, "author": player},
+        game=game,
+        author=player,
     )
     logger.info(f"{roll_response.request=}")
 
     score = perform_combat_initiative_roll(roll_request.fighter)
-    roll_result, _ = CombatInitiativeResult.objects.update_or_create(
+    roll_result = CombatInitiativeResult.objects.create(
         fighter=roll_request.fighter,
-        defaults={
-            "game": game,
-            "author": player,
-            "request": roll_request,
-            "response": roll_response,
-            "score": score,
-        },
+        game=game,
+        author=player,
+        request=roll_request,
+        response=roll_response,
+        score=score,
     )
 
     # The corresponding roll request is considered now as done.

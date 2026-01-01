@@ -143,7 +143,10 @@ class CombatInitialization(Event):
     def get_message(self):
         fighters = self.combat.fighter_set.all()
         surprised_fighters = self.combat.fighter_set.filter(is_surprised=True)
-        return f"Combat! {self._get_fighters_display(fighters, surprised_fighters)}"
+        fighters_display = self._get_fighters_display(fighters, surprised_fighters)
+        if fighters.count() > 1:
+            return f"Combat! Initiative order: {fighters_display}"
+        return f"Combat! {fighters_display}"
 
 
 class CombatInitiativeRequest(Event):
@@ -170,11 +173,13 @@ class CombatInitiativeResult(Event):
     score = models.SmallIntegerField()
 
     def get_message(self):
-        return f"{self.fighter.character.user}'s score: {self.score}"
+        return f"{self.fighter.character.name}'s initiative roll: {self.score}"
 
 
 class CombatInitativeOrderSet(Event):
     combat = models.OneToOneField(Combat, on_delete=models.CASCADE)
 
     def get_message(self):
-        return f"Initiative order: {self.combat.get_initiative_order()}"
+        order = self.combat.get_initiative_order()
+        names = [f"{f.character.name} ({f.dexterity_check})" for f in order]
+        return f"Initiative order: {', '.join(names)}"
