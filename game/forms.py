@@ -12,6 +12,8 @@ class QuestCreateForm(forms.Form):
 
 
 class AbilityCheckRequestForm(forms.ModelForm):
+    EMPTY_CHOICE = ("", "---------")
+
     class Meta:
         model = RollRequest
         fields = ["player", "ability_type", "difficulty_class"]
@@ -28,7 +30,10 @@ class AbilityCheckRequestForm(forms.ModelForm):
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
         self.fields["ability_type"].label = "Ability"
-        self.fields["ability_type"].choices = AbilityName.choices
+        self.fields["ability_type"].choices = [
+            self.EMPTY_CHOICE,
+            *AbilityName.choices,
+        ]
 
 
 class CombatCreateForm(forms.Form):
