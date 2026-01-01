@@ -158,6 +158,9 @@ class AbilityCheckRequestView(
     def form_valid(self, form):
         ability_check_request = form.save(commit=False)
         ability_check_request.game = self.game
+        ability_check_request.author = Actor.objects.get(
+            master__game=self.game, master__user=self.request.user
+        )
         ability_check_request.roll_type = RollType.ABILITY_CHECK
         ability_check_request.save()
         send_to_channel(ability_check_request)

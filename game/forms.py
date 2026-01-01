@@ -4,6 +4,7 @@ from character.constants.abilities import AbilityName
 from character.models.character import Character
 
 from .models.events import RollRequest
+from .models.game import Player
 from .constants.combat import FighterAttributeChoices
 
 
@@ -26,7 +27,7 @@ class AbilityCheckRequestForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         game = self.initial["game"]
         self.fields["player"] = forms.ModelChoiceField(
-            queryset=Character.objects.filter(player__game=game),
+            queryset=Player.objects.filter(game=game),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
         self.fields["ability_type"].label = "Ability"
