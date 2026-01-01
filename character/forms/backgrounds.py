@@ -55,74 +55,43 @@ def _get_artisans_tools() -> set[tuple[str, str]]:
 class BackgroundForm(forms.Form):
     EMPTY_CHOICE = ("", "---------")
 
+    def _get_choices(self, choices):
+        """Return choices with empty choice prepended, or None if no choices."""
+        return [self.EMPTY_CHOICE, *choices] if choices else None
+
+    def _add_field_if_choices(self, field_name, choices):
+        """Add field only if there are choices available."""
+        if choices:
+            self.fields[field_name] = forms.ChoiceField(
+                choices=choices,
+                widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
+            )
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         race = self.initial["race"]
         background = self.initial["background"]
-        all_fields = {}
-        all_fields["language"] = forms.ChoiceField(
-            choices=[self.EMPTY_CHOICE, *_get_non_spoken_languages(race)],
-            widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
-        )
-        all_fields["first_language"] = forms.ChoiceField(
-            choices=[self.EMPTY_CHOICE, *_get_non_spoken_languages(race)],
-            widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
-        )
-        all_fields["second_language"] = forms.ChoiceField(
-            choices=[self.EMPTY_CHOICE, *_get_non_spoken_languages(race)],
-            widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
-        )
-        all_fields["equipment_holy_symbols"] = forms.ChoiceField(
-            choices=[self.EMPTY_CHOICE, *_get_holy_symbols()],
-            widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
-        )
-        all_fields["equipment_artisans_tools"] = forms.ChoiceField(
-            choices=[self.EMPTY_CHOICE, *_get_artisans_tools()],
-            widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
-        )
-        all_fields["tool_proficiency_artisans_tools"] = forms.ChoiceField(
-            choices=[self.EMPTY_CHOICE, *_get_artisans_tools()],
-            widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
-        )
-        all_fields["tool_proficiency_gaming_set_tools"] = forms.ChoiceField(
-            choices=[self.EMPTY_CHOICE, *_get_gaming_set_tools()],
-            widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
-        )
+
+        language_choices = self._get_choices(_get_non_spoken_languages(race))
+        holy_symbols_choices = self._get_choices(_get_holy_symbols())
+        artisans_tools_choices = self._get_choices(_get_artisans_tools())
+        gaming_set_choices = self._get_choices(_get_gaming_set_tools())
+
         match background:
             case Background.ACOLYTE:
-                fields = ["first_language", "second_language", "equipment"]
-                equipment_type = GearType.HOLY_SYMBOL
+                self._add_field_if_choices("first_language", language_choices)
+                self._add_field_if_choices("second_language", language_choices)
+                self._add_field_if_choices("equipment", holy_symbols_choices)
             case Background.CRIMINAL:
-                fields = ["tool_proficiency"]
-                tool_type = ToolType.GAMING_SET
+                self._add_field_if_choices("tool_proficiency", gaming_set_choices)
             case Background.FOLK_HERO:
-                fields = ["tool_proficiency", "equipment"]
-                equipment_type = ToolType.ARTISANS_TOOLS
-                tool_type = ToolType.ARTISANS_TOOLS
+                self._add_field_if_choices("tool_proficiency", artisans_tools_choices)
+                self._add_field_if_choices("equipment", artisans_tools_choices)
             case Background.NOBLE:
-                fields = ["language", "tool_proficiency"]
-                tool_type = ToolType.GAMING_SET
+                self._add_field_if_choices("language", language_choices)
+                self._add_field_if_choices("tool_proficiency", gaming_set_choices)
             case Background.SAGE:
-                fields = ["first_language", "second_language"]
+                self._add_field_if_choices("first_language", language_choices)
+                self._add_field_if_choices("second_language", language_choices)
             case Background.SOLDIER:
-                fields = ["tool_proficiency"]
-                tool_type = ToolType.GAMING_SET
-        for field in fields:
-            if field == "equipment":
-                match equipment_type:
-                    case GearType.HOLY_SYMBOL:
-                        self.fields[field] = all_fields["equipment_holy_symbols"]
-                    case ToolType.ARTISANS_TOOLS:
-                        self.fields[field] = all_fields["equipment_artisans_tools"]
-            elif field == "tool_proficiency":
-                match tool_type:
-                    case ToolType.ARTISANS_TOOLS:
-                        self.fields[field] = all_fields[
-                            "tool_proficiency_artisans_tools"
-                        ]
-                    case ToolType.GAMING_SET:
-                        self.fields[field] = all_fields[
-                            "tool_proficiency_gaming_set_tools"
-                        ]
-            else:
-                self.fields[field] = all_fields[field]
+                self._add_field_if_choices("tool_proficiency", gaming_set_choices)

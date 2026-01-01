@@ -13,8 +13,8 @@ class EquipmentSelectForm(forms.Form):
     EMPTY_CHOICE = ("", "---------")
 
     def _get_choices(self, choices):
-        """Return choices with empty choice prepended, or just empty choice if None."""
-        return [self.EMPTY_CHOICE, *choices] if choices else [self.EMPTY_CHOICE]
+        """Return choices with empty choice prepended, or None if no choices."""
+        return [self.EMPTY_CHOICE, *choices] if choices else None
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -32,30 +32,26 @@ class EquipmentSelectForm(forms.Form):
             case Klass.WIZARD:
                 choices_provider = WizardEquipmentChoicesProvider()
                 fields = ["first_weapon", "gear", "pack"]
-        all_fields = {}
-        all_fields["first_weapon"] = forms.ChoiceField(
-            choices=self._get_choices(choices_provider.get_first_weapon_choices()),
-            widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
-        )
-        all_fields["second_weapon"] = forms.ChoiceField(
-            choices=self._get_choices(choices_provider.get_second_weapon_choices()),
-            widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
-        )
-        all_fields["third_weapon"] = forms.ChoiceField(
-            choices=self._get_choices(choices_provider.get_third_weapon_choices()),
-            widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
-        )
-        all_fields["armor"] = forms.ChoiceField(
-            choices=self._get_choices(choices_provider.get_armor_choices()),
-            widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
-        )
-        all_fields["gear"] = forms.ChoiceField(
-            choices=self._get_choices(choices_provider.get_gear_choices()),
-            widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
-        )
-        all_fields["pack"] = forms.ChoiceField(
-            choices=self._get_choices(choices_provider.get_pack_choices()),
-            widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
-        )
+
+        field_choices = {
+            "first_weapon": self._get_choices(
+                choices_provider.get_first_weapon_choices()
+            ),
+            "second_weapon": self._get_choices(
+                choices_provider.get_second_weapon_choices()
+            ),
+            "third_weapon": self._get_choices(
+                choices_provider.get_third_weapon_choices()
+            ),
+            "armor": self._get_choices(choices_provider.get_armor_choices()),
+            "gear": self._get_choices(choices_provider.get_gear_choices()),
+            "pack": self._get_choices(choices_provider.get_pack_choices()),
+        }
+
         for field in fields:
-            self.fields[field] = all_fields[field]
+            choices = field_choices[field]
+            if choices:
+                self.fields[field] = forms.ChoiceField(
+                    choices=choices,
+                    widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
+                )

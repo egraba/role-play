@@ -58,24 +58,25 @@ def _get_skills(klass: Klass) -> set[tuple[str, str]] | None:
 class SkillsSelectForm(NoDuplicateValuesFormMixin, forms.Form):
     EMPTY_CHOICE = ("", "---------")
 
+    def _get_choices(self, choices):
+        """Return choices with empty choice prepended, or None if no choices."""
+        return [self.EMPTY_CHOICE, *choices] if choices else None
+
+    def _add_field_if_choices(self, field_name, choices):
+        """Add field only if there are choices available."""
+        if choices:
+            self.fields[field_name] = forms.ChoiceField(
+                choices=choices,
+                widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
+            )
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         klass = self.initial["klass"]
-        choices = [self.EMPTY_CHOICE, *_get_skills(klass)]
-        self.fields["first_skill"] = forms.ChoiceField(
-            choices=choices,
-            widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
-        )
-        self.fields["second_skill"] = forms.ChoiceField(
-            choices=choices,
-            widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
-        )
+        choices = self._get_choices(_get_skills(klass))
+
+        self._add_field_if_choices("first_skill", choices)
+        self._add_field_if_choices("second_skill", choices)
         if klass == Klass.ROGUE:
-            self.fields["third_skill"] = forms.ChoiceField(
-                choices=choices,
-                widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
-            )
-            self.fields["fourth_skill"] = forms.ChoiceField(
-                choices=choices,
-                widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
-            )
+            self._add_field_if_choices("third_skill", choices)
+            self._add_field_if_choices("fourth_skill", choices)
