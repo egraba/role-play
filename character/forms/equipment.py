@@ -10,6 +10,12 @@ from .equipment_choices_providers import (
 
 
 class EquipmentSelectForm(forms.Form):
+    EMPTY_CHOICE = ("", "---------")
+
+    def _get_choices(self, choices):
+        """Return choices with empty choice prepended, or just empty choice if None."""
+        return [self.EMPTY_CHOICE, *choices] if choices else [self.EMPTY_CHOICE]
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         klass = self.initial["klass"]
@@ -28,27 +34,27 @@ class EquipmentSelectForm(forms.Form):
                 fields = ["first_weapon", "gear", "pack"]
         all_fields = {}
         all_fields["first_weapon"] = forms.ChoiceField(
-            choices=choices_provider.get_first_weapon_choices(),
+            choices=self._get_choices(choices_provider.get_first_weapon_choices()),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
         all_fields["second_weapon"] = forms.ChoiceField(
-            choices=choices_provider.get_second_weapon_choices(),
+            choices=self._get_choices(choices_provider.get_second_weapon_choices()),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
         all_fields["third_weapon"] = forms.ChoiceField(
-            choices=choices_provider.get_third_weapon_choices(),
+            choices=self._get_choices(choices_provider.get_third_weapon_choices()),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
         all_fields["armor"] = forms.ChoiceField(
-            choices=choices_provider.get_armor_choices(),
+            choices=self._get_choices(choices_provider.get_armor_choices()),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
         all_fields["gear"] = forms.ChoiceField(
-            choices=choices_provider.get_gear_choices(),
+            choices=self._get_choices(choices_provider.get_gear_choices()),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
         all_fields["pack"] = forms.ChoiceField(
-            choices=choices_provider.get_pack_choices(),
+            choices=self._get_choices(choices_provider.get_pack_choices()),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
         for field in fields:

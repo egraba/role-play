@@ -53,37 +53,39 @@ def _get_artisans_tools() -> set[tuple[str, str]]:
 
 
 class BackgroundForm(forms.Form):
+    EMPTY_CHOICE = ("", "---------")
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         race = self.initial["race"]
         background = self.initial["background"]
         all_fields = {}
         all_fields["language"] = forms.ChoiceField(
-            choices=_get_non_spoken_languages(race),
+            choices=[self.EMPTY_CHOICE, *_get_non_spoken_languages(race)],
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
         all_fields["first_language"] = forms.ChoiceField(
-            choices=_get_non_spoken_languages(race),
+            choices=[self.EMPTY_CHOICE, *_get_non_spoken_languages(race)],
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
         all_fields["second_language"] = forms.ChoiceField(
-            choices=_get_non_spoken_languages(race),
+            choices=[self.EMPTY_CHOICE, *_get_non_spoken_languages(race)],
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
         all_fields["equipment_holy_symbols"] = forms.ChoiceField(
-            choices=_get_holy_symbols(),
+            choices=[self.EMPTY_CHOICE, *_get_holy_symbols()],
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
         all_fields["equipment_artisans_tools"] = forms.ChoiceField(
-            choices=_get_artisans_tools(),
+            choices=[self.EMPTY_CHOICE, *_get_artisans_tools()],
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
         all_fields["tool_proficiency_artisans_tools"] = forms.ChoiceField(
-            choices=_get_artisans_tools(),
+            choices=[self.EMPTY_CHOICE, *_get_artisans_tools()],
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
         all_fields["tool_proficiency_gaming_set_tools"] = forms.ChoiceField(
-            choices=_get_gaming_set_tools(),
+            choices=[self.EMPTY_CHOICE, *_get_gaming_set_tools()],
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
         match background:

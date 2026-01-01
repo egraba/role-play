@@ -6,6 +6,8 @@ from .mixins import NoDuplicateValuesFormMixin
 
 
 class CharacterCreateForm(NoDuplicateValuesFormMixin, forms.ModelForm):
+    EMPTY_CHOICE = ("", "---------")
+
     class Meta:
         model = Character
         fields = [
@@ -21,32 +23,32 @@ class CharacterCreateForm(NoDuplicateValuesFormMixin, forms.ModelForm):
         }
 
     strength = forms.TypedChoiceField(
-        choices=AbilityScore.choices,
+        choices=[EMPTY_CHOICE, *AbilityScore.choices],
         coerce=int,
         widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
     )
     dexterity = forms.TypedChoiceField(
-        choices=AbilityScore.choices,
+        choices=[EMPTY_CHOICE, *AbilityScore.choices],
         coerce=int,
         widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
     )
     constitution = forms.TypedChoiceField(
-        choices=AbilityScore.choices,
+        choices=[EMPTY_CHOICE, *AbilityScore.choices],
         coerce=int,
         widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
     )
     intelligence = forms.TypedChoiceField(
-        choices=AbilityScore.choices,
+        choices=[EMPTY_CHOICE, *AbilityScore.choices],
         coerce=int,
         widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
     )
     wisdom = forms.TypedChoiceField(
-        choices=AbilityScore.choices,
+        choices=[EMPTY_CHOICE, *AbilityScore.choices],
         coerce=int,
         widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
     )
     charisma = forms.TypedChoiceField(
-        choices=AbilityScore.choices,
+        choices=[EMPTY_CHOICE, *AbilityScore.choices],
         coerce=int,
         widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
     )
