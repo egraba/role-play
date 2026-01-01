@@ -4,6 +4,7 @@ from character.constants.abilities import AbilityName
 from character.models.character import Character
 
 from .models.events import RollRequest
+from .models.game import Player
 from .constants.combat import FighterAttributeChoices
 
 
@@ -12,6 +13,8 @@ class QuestCreateForm(forms.Form):
 
 
 class AbilityCheckRequestForm(forms.ModelForm):
+    EMPTY_CHOICE = ("", "---------")
+
     class Meta:
         model = RollRequest
         fields = ["player", "ability_type", "difficulty_class"]
@@ -24,11 +27,14 @@ class AbilityCheckRequestForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         game = self.initial["game"]
         self.fields["player"] = forms.ModelChoiceField(
-            queryset=Character.objects.filter(player__game=game),
+            queryset=Player.objects.filter(game=game),
             widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
         )
         self.fields["ability_type"].label = "Ability"
-        self.fields["ability_type"].choices = AbilityName.choices
+        self.fields["ability_type"].choices = [
+            self.EMPTY_CHOICE,
+            *AbilityName.choices,
+        ]
 
 
 class CombatCreateForm(forms.Form):

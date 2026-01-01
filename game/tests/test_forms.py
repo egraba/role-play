@@ -1,9 +1,14 @@
 import pytest
 from django import forms
 
+from character.constants.abilities import AbilityName
 from character.models.character import Character
 from game.constants.combat import FighterAttributeChoices
-from game.forms import CombatCreateForm, QuestCreateForm
+from game.flows import GameFlow
+from game.forms import AbilityCheckRequestForm, CombatCreateForm, QuestCreateForm
+from game.models.game import Player
+
+from .factories import GameFactory, PlayerFactory
 
 
 class TestQuestCreateForm:
@@ -17,6 +22,40 @@ class TestQuestCreateForm:
 
 
 pytestmark = pytest.mark.django_db
+
+
+class TestAbilityCheckRequestForm:
+    @pytest.fixture
+    def game_with_players(self):
+        game = GameFactory()
+        PlayerFactory(game=game)
+        PlayerFactory(game=game)
+        flow = GameFlow(game)
+        flow.start()
+        return game
+
+    def test_player_field_uses_player_queryset(self, game_with_players):
+        form = AbilityCheckRequestForm(initial={"game": game_with_players})
+        players = Player.objects.filter(game=game_with_players)
+        assert list(form.fields["player"].queryset) == list(players)
+
+    def test_player_field_displays_username(self, game_with_players):
+        form = AbilityCheckRequestForm(initial={"game": game_with_players})
+        player = form.fields["player"].queryset.first()
+        # The queryset uses Player model which has __str__ returning username
+        assert str(player) == player.user.username
+
+    def test_ability_type_has_empty_choice(self, game_with_players):
+        form = AbilityCheckRequestForm(initial={"game": game_with_players})
+        choices = form.fields["ability_type"].choices
+        assert choices[0] == ("", "---------")
+
+    def test_ability_type_has_all_abilities(self, game_with_players):
+        form = AbilityCheckRequestForm(initial={"game": game_with_players})
+        choices = form.fields["ability_type"].choices
+        # Skip empty choice
+        ability_choices = choices[1:]
+        assert ability_choices == list(AbilityName.choices)
 
 
 class TestCombatCreateForm:

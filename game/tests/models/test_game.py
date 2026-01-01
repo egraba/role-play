@@ -1,8 +1,14 @@
 import pytest
 
-from game.models.game import Game, Master, Player, Quest
+from game.models.game import Actor, Game, Master, Player, Quest
 
-from ..factories import GameFactory, MasterFactory, PlayerFactory, QuestFactory
+from ..factories import (
+    ActorFactory,
+    GameFactory,
+    MasterFactory,
+    PlayerFactory,
+    QuestFactory,
+)
 
 pytestmark = pytest.mark.django_db
 
@@ -29,6 +35,34 @@ class TestQuestModel:
 
     def test_str(self, quest):
         assert str(quest) == quest.environment[:10]
+
+
+class TestActorModel:
+    @pytest.fixture
+    def actor(self):
+        return ActorFactory()
+
+    @pytest.fixture
+    def player(self):
+        return PlayerFactory()
+
+    @pytest.fixture
+    def game(self):
+        return GameFactory()
+
+    def test_creation(self, actor):
+        assert isinstance(actor, Actor)
+
+    def test_str_returns_username_for_player(self, player):
+        actor = Actor.objects.get(pk=player.pk)
+        assert str(actor) == player.user.username
+
+    def test_str_returns_username_for_master(self, game):
+        actor = Actor.objects.get(pk=game.master.pk)
+        assert str(actor) == game.master.user.username
+
+    def test_str_returns_fallback_for_base_actor(self, actor):
+        assert str(actor) == f"Actor {actor.pk}"
 
 
 class MasterModelTest:

@@ -14,16 +14,19 @@ from pytest_django.asserts import (
     assertTemplateUsed,
 )
 
+from character.constants.abilities import AbilityName
 from character.models.character import Character
 from character.tests.factories import CharacterFactory
 from game.constants.combat import FighterAttributeChoices
+from game.constants.events import DifficultyClass, RollType
 from game.exceptions import UserHasNoCharacter
 from game.flows import GameFlow
 from game.forms import CombatCreateForm, QuestCreateForm
 from game.models.combat import Combat, Fighter
-from game.models.events import Event, Quest, UserInvitation
-from game.models.game import Game
+from game.models.events import Event, Quest, RollRequest, UserInvitation
+from game.models.game import Game, Player
 from game.views.master import (
+    AbilityCheckRequestView,
     CombatCreateView,
     GameStartView,
     QuestCreateView,
@@ -375,3 +378,64 @@ class TestCombatCreateView:
             Fighter.objects.get(character=characters.first()),
             Fighter.objects.get(character=characters.last()),
         ]
+
+
+class TestAbilityCheckRequestView:
+    path_name = "ability-check-request-create"
+
+    @pytest.fixture
+    def game_with_master(self):
+        game = GameFactory()
+        PlayerFactory(game=game)
+        PlayerFactory(game=game)
+        flow = GameFlow(game)
+        flow.start()
+        return game
+
+    @pytest.fixture
+    def logged_in_client(self, client, game_with_master):
+        user = game_with_master.master.user
+        client.force_login(user)
+        return client
+
+    def test_view_mapping(self, logged_in_client, game_with_master):
+        response = logged_in_client.get(
+            reverse(self.path_name, args=(game_with_master.id,))
+        )
+        assert response.status_code == 200
+        assert response.resolver_match.func.view_class == AbilityCheckRequestView
+
+    def test_template_mapping(self, logged_in_client, game_with_master):
+        response = logged_in_client.get(
+            reverse(self.path_name, args=(game_with_master.id,))
+        )
+        assert response.status_code == 200
+        assertTemplateUsed(response, "game/ability_check_request.html")
+
+    def test_game_not_exists(self, logged_in_client):
+        game_id = random.randint(10000, 99999)
+        response = logged_in_client.get(reverse(self.path_name, args=(game_id,)))
+        assert response.status_code == 404
+        assert pytest.raises(Http404)
+
+    def test_form_valid_creates_roll_request_with_author(
+        self, logged_in_client, game_with_master
+    ):
+        player = Player.objects.filter(game=game_with_master).first()
+        data = {
+            "player": player.id,
+            "ability_type": AbilityName.STRENGTH,
+            "difficulty_class": DifficultyClass.EASY,
+        }
+        response = logged_in_client.post(
+            reverse(self.path_name, args=(game_with_master.id,)), data=data
+        )
+        assert response.status_code == 302
+        assertRedirects(response, game_with_master.get_absolute_url())
+        roll_request = RollRequest.objects.filter(game=game_with_master).last()
+        assert roll_request is not None
+        assert roll_request.player == player
+        assert roll_request.ability_type == AbilityName.STRENGTH
+        assert roll_request.roll_type == RollType.ABILITY_CHECK
+        assert roll_request.author is not None
+        assert roll_request.author.user == game_with_master.master.user

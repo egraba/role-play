@@ -49,6 +49,10 @@ class Actor(models.Model):
         else:
             return None
 
+    def __str__(self):
+        user = self.user
+        return user.username if user else f"Actor {self.pk}"
+
 
 class Master(Actor):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

@@ -2,12 +2,12 @@ from django.db.models import IntegerChoices, TextChoices
 
 
 class AbilityName(TextChoices):
-    STRENGTH = "STR", "strength"
-    DEXTERITY = "DEX", "dexterity"
-    CONSTITUTION = "CON", "constitution"
-    INTELLIGENCE = "INT", "intelligence"
-    WISDOM = "WIS", "wisdom"
-    CHARISMA = "CHA", "charisma"
+    STRENGTH = "STR", "Strength"
+    DEXTERITY = "DEX", "Dexterity"
+    CONSTITUTION = "CON", "Constitution"
+    INTELLIGENCE = "INT", "Intelligence"
+    WISDOM = "WIS", "Wisdom"
+    CHARISMA = "CHA", "Charisma"
 
 
 class AbilityScore(IntegerChoices):
