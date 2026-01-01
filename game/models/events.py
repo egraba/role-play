@@ -143,7 +143,10 @@ class CombatInitialization(Event):
     def get_message(self):
         fighters = self.combat.fighter_set.all()
         surprised_fighters = self.combat.fighter_set.filter(is_surprised=True)
-        return f"Combat! {self._get_fighters_display(fighters, surprised_fighters)}"
+        fighters_display = self._get_fighters_display(fighters, surprised_fighters)
+        if fighters.count() > 1:
+            return f"Combat! Initiative order: {fighters_display}"
+        return f"Combat! {fighters_display}"
 
 
 class CombatInitiativeRequest(Event):
