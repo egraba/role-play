@@ -170,11 +170,13 @@ class CombatInitiativeResult(Event):
     score = models.SmallIntegerField()
 
     def get_message(self):
-        return f"{self.fighter.character.user}'s score: {self.score}"
+        return f"{self.fighter.character.name}'s initiative roll: {self.score}"
 
 
 class CombatInitativeOrderSet(Event):
     combat = models.OneToOneField(Combat, on_delete=models.CASCADE)
 
     def get_message(self):
-        return f"Initiative order: {self.combat.get_initiative_order()}"
+        order = self.combat.get_initiative_order()
+        names = [f"{f.character.name} ({f.dexterity_check})" for f in order]
+        return f"Initiative order: {', '.join(names)}"
