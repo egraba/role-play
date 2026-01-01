@@ -11,7 +11,7 @@ from character.models.character import Character
 from user.models import User
 
 from ..constants.combat import FighterAttributeChoices
-from ..constants.events import RollType
+from ..constants.events import RollStatus, RollType
 from ..exceptions import UserHasNoCharacter
 from ..flows import GameFlow
 from ..forms import AbilityCheckRequestForm, CombatCreateForm, QuestCreateForm
@@ -198,11 +198,14 @@ class CombatCreateView(
                 ):
                     is_surprised = True
                 character = Character.objects.get(name=fighter_field)
-                Fighter.objects.create(
+                Fighter.objects.update_or_create(
                     player=character.player,
-                    character=character,
-                    is_surprised=is_surprised,
-                    combat=combat,
+                    defaults={
+                        "character": character,
+                        "is_surprised": is_surprised,
+                        "combat": combat,
+                        "dexterity_check": None,
+                    },
                 )
         author = Actor.objects.get(
             master__game=self.game, master__user=self.request.user
@@ -212,8 +215,13 @@ class CombatCreateView(
         )
         send_to_channel(combat_init)
         for fighter in combat.fighter_set.all():
-            initiative_request = CombatInitiativeRequest.objects.create(
-                game=self.game, author=author, fighter=fighter
+            initiative_request, _ = CombatInitiativeRequest.objects.update_or_create(
+                fighter=fighter,
+                defaults={
+                    "game": self.game,
+                    "author": author,
+                    "status": RollStatus.PENDING,
+                },
             )
             send_to_channel(initiative_request)
             schedule, _ = IntervalSchedule.objects.get_or_create(

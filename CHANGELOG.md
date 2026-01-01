@@ -15,6 +15,10 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * Added `/health/` endpoint for Fly.io health checks
 * Added post-deployment health check verification in CI
 
+### Fixed
+* Combat initiation now works correctly when starting multiple combats (use `update_or_create` for Fighter, CombatInitiativeRequest, CombatInitiativeResponse, and CombatInitiativeResult)
+* Combat initiative completion task now properly sets the `author` field on CombatInitativeOrderSet
+
 ### Changed
 * Reduce machines size on Fly.io
 * Upgraded Django from 5.1 to 5.2

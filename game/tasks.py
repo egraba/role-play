@@ -12,6 +12,7 @@ from .constants.events import RollStatus, RollType
 from .models.combat import Combat
 from .models.events import (
     CombatInitativeOrderSet,
+    CombatInitialization,
     CombatInitiativeRequest,
     CombatInitiativeResponse,
     CombatInitiativeResult,
@@ -153,20 +154,22 @@ def process_combat_initiative_roll(
     logger.info(f"{roll_request=}, {roll_request.fighter=}")
 
     # Store the roll response.
-    roll_response = CombatInitiativeResponse.objects.create(
-        game=game, author=player, date=date, request=roll_request
+    roll_response, _ = CombatInitiativeResponse.objects.update_or_create(
+        request=roll_request,
+        defaults={"game": game, "author": player},
     )
     logger.info(f"{roll_response.request=}")
 
     score = perform_combat_initiative_roll(roll_request.fighter)
-    roll_result = CombatInitiativeResult.objects.create(
-        game=game,
-        author=player,
-        date=date,
+    roll_result, _ = CombatInitiativeResult.objects.update_or_create(
         fighter=roll_request.fighter,
-        request=roll_request,
-        response=roll_response,
-        score=score,
+        defaults={
+            "game": game,
+            "author": player,
+            "request": roll_request,
+            "response": roll_response,
+            "score": score,
+        },
     )
 
     # The corresponding roll request is considered now as done.
@@ -192,10 +195,13 @@ def check_combat_roll_initiative_complete():
         else:
             logger.info("Roll complete!")
             logger.info(f"Initiative order={latest_combat.get_initiative_order()}")
+            # Get the author from the CombatInitialization event for this combat
+            combat_init = CombatInitialization.objects.get(combat=latest_combat)
             initiative_order_set, created = (
                 CombatInitativeOrderSet.objects.get_or_create(
                     combat=latest_combat,
                     game=latest_combat.game,
+                    author=combat_init.author,
                 )
             )
             if created:
