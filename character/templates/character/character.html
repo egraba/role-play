@@ -2,138 +2,190 @@
 
 {% block content %}
     <div class="rpg-container">
-        <div class="rpg-panel">
-            <h1 class="panel-title" style="font-size: 2rem;">⚔️ {{ character }}</h1>
-            <div class="text-center mb-2">
-                <a href="{% url 'index' %}" style="color: var(--color-primary); text-decoration: underline;">Return to main menu</a>
+        <!-- Character Header -->
+        <div class="rpg-panel" style="margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                <div>
+                    <h1 class="panel-title" style="font-size: 2rem; margin-bottom: 5px;">⚔️ {{ character }}</h1>
+                    <div style="color: var(--color-text-muted);">
+                        {{ character.get_race_display }} {{ character.get_klass_display }} • {{ character.get_alignment_display }}
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="color: var(--color-primary); font-size: 1.2rem;">Level {{ character.level }}</div>
+                    <div style="color: var(--color-text-muted); font-size: 0.9rem;">{{ character.xp }} XP</div>
+                </div>
             </div>
+            <div style="margin-top: 15px;">
+                <a href="{% url 'index' %}" class="rpg-btn btn-secondary" style="font-size: 0.9rem; padding: 8px 16px;">← Return to main menu</a>
+            </div>
+        </div>
 
-            <table id="characteristics" class="rpg-table">
-                <thead>
-                    <tr>
-                        <th>User</th>
-                        <th>Race</th>
-                        <th>Class</th>
-                        <th>Alignment</th>
-                        <th>Level</th>
-                        <th>XP</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>{{ character.user.username }}</td>
-                        <td>{{ character.get_race_display }}</td>
-                        <td>{{ character.get_klass_display }}</td>
-                        <td>{{ character.get_alignment_display }}</td>
-                        <td>{{ character.level }}</td>
-                        <td>{{ character.xp }}</td>
-                    </tr>
-                </tbody>
-            </table>
+        <!-- Main Content Grid -->
+        <div class="character-layout">
+            <!-- Left Column: Vitals & Abilities -->
+            <div class="character-column">
+                <!-- HP Section -->
+                <div class="rpg-panel" style="margin-bottom: 20px;">
+                    <h3 class="panel-title" style="font-size: 1.2rem; margin-bottom: 15px;">❤️ Vitals</h3>
+                    <div class="stat-bar">
+                        <div class="stat-label">
+                            <span class="stat-label-name">HP</span>
+                            <span>{{ character.hp }} / {{ character.max_hp }}</span>
+                        </div>
+                        <div class="stat-progress">
+                            <div class="stat-fill health" style="width: {% widthratio character.hp character.max_hp 100 %}%"></div>
+                        </div>
+                    </div>
+                    <div class="attribute-item" style="margin-top: 15px;">
+                        <span class="attribute-name">Proficiency Bonus</span>
+                        <span class="attribute-value">+{{ character.proficiency_bonus }}</span>
+                    </div>
+                </div>
 
-            <div class="rpg-section">
-                <table id="main">
-                    <tr>
-                        <td id="hp">
-                            <div class="stat-bar">
-                                <div class="stat-label">
-                                    <span class="stat-label-name">HP</span>
-                                    <span>{{ character.hp }} / {{ character.max_hp }}</span>
-                                </div>
-                                <div class="stat-progress">
-                                    <div class="stat-fill health" style="width: {% widthratio character.hp character.max_hp 100 %}%"></div>
-                                </div>
+                <!-- Abilities Section -->
+                <div class="rpg-panel" style="margin-bottom: 20px;">
+                    <h3 class="panel-title" style="font-size: 1.2rem; margin-bottom: 15px;">💪 Abilities</h3>
+                    <div class="attributes-grid">
+                        {% for ability in abilities %}
+                            <div class="attribute-item">
+                                <span class="attribute-name">{{ ability }}</span>
+                                <span class="attribute-value">{{ ability.score }} <span style="color: var(--color-text-muted); font-size: 0.85rem;">({{ ability.modifier }})</span></span>
                             </div>
-                        </td>
-                        <td id="abilities">
-                            <table class="rpg-table">
-                                <tr><th colspan="3"><h3>Abilities</h3></th></tr>
-                                {% for ability in abilities %}
-                                    <tr>
-                                        <th>{{ ability }}:</th>
-                                        <td>{{ ability.score }}</td>
-                                        <td>({{ ability.modifier }})</td>
-                                    </tr>
-                                {% endfor %}
-                            </table>
-                        </td>
-                        <td id="other-abilities">
-                            <table id="proficiency-bonus" class="rpg-table">
-                                <tr>
-                                    <td>Proficiency bonus: {{ character.proficiency_bonus }}</td>
-                                </tr>
-                            </table>
-                            <table id="skills" class="rpg-table">
-                                <tr><th><h3>Skills</h3></th></tr>
-                                {% for skill in character.skills.all %}
-                                    <tr>
-                                        <td>{{ skill }}</td>
-                                    </tr>
-                                {% empty %}
-                                    <tr>
-                                        <td>-</td>
-                                    </tr>
-                                {% endfor %}
-                            </table>
-                            <table id="languages" class="rpg-table">
-                                <tr><th><h3>Languages</h3></th></tr>
-                                {% for language in character.languages.all %}
-                                    <tr>
-                                        <td>{{ language.get_name_display }}</td>
-                                    </tr>
-                                {% endfor %}
-                            </table>
-                        </td>
-                        <td id="inventory">
-                            <table class="rpg-table">
-                                <tr><th><h3>Inventory</h3></th></tr>
-                                <tr><th><h4>Armor</h4></th></tr>
-                                {% for armor in inventory.armor_set.all %}
-                                    <tr>
-                                        <td>{{ armor }}</td>
-                                    </tr>
-                                {% endfor %}
-                                <tr><th><h4>Weapons</h4></th></tr>
-                                {% for weapon in inventory.weapon_set.all %}
-                                    <tr>
-                                        <td>{{ weapon }}</td>
-                                    </tr>
-                                {% endfor %}
-                                <tr><th><h4>Pack</h4></th></tr>
-                                {% for pack in inventory.pack_set.all %}
-                                    <tr>
-                                        <td>{{ pack }}</td>
-                                    </tr>
-                                {% endfor %}
-                                <tr><th><h4>Gear</h4></th></tr>
-                                {% for gear in inventory.gear_set.all %}
-                                    <tr>
-                                        <td>{{ gear }}</td>
-                                    </tr>
-                                {% endfor %}
-                                <tr><th><h4>Tools</h4></th></tr>
-                                {% for tool in inventory.tool_set.all %}
-                                    <tr>
-                                        <td>{{ tool }}</td>
-                                    </tr>
-                                {% endfor %}
-                            </table>
-                        </td>
-                    </tr>
-                </table>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Game Section -->
+                <div class="rpg-panel">
+                    <h3 class="panel-title" style="font-size: 1.2rem; margin-bottom: 15px;">🎲 Game</h3>
+                    {% with game=character.player.game %}
+                        {% if game %}
+                            <p>Ongoing game: <a href="{% url 'game' game.id %}" style="color: var(--color-primary); text-decoration: underline;">{{ game }}</a></p>
+                        {% else %}
+                            <p style="color: var(--color-text-muted);">This character is not part of any game...</p>
+                        {% endif %}
+                    {% endwith%}
+                </div>
             </div>
 
-            <div class="rpg-section">
-                <h3 class="panel-title" style="font-size: 1.3rem;">🎲 Game</h3>
-                {% with game=character.player.game %}
-                    {% if game %}
-                        <p>Ongoing game: <a href="{% url 'game' game.id %}" style="color: var(--color-primary); text-decoration: underline;">{{ game }}</a></p>
-                    {% else %}
-                        <p class="text-muted">This character is not part of any game...</p>
+            <!-- Middle Column: Skills & Languages -->
+            <div class="character-column">
+                <!-- Skills Section -->
+                <div class="rpg-panel" style="margin-bottom: 20px;">
+                    <h3 class="panel-title" style="font-size: 1.2rem; margin-bottom: 15px;">🎯 Skills</h3>
+                    {% for skill in character.skills.all %}
+                        <div class="attribute-item" style="margin-bottom: 8px;">
+                            <span class="attribute-name">{{ skill }}</span>
+                        </div>
+                    {% empty %}
+                        <p style="color: var(--color-text-muted);">No skills</p>
+                    {% endfor %}
+                </div>
+
+                <!-- Languages Section -->
+                <div class="rpg-panel">
+                    <h3 class="panel-title" style="font-size: 1.2rem; margin-bottom: 15px;">💬 Languages</h3>
+                    {% for language in character.languages.all %}
+                        <div class="attribute-item" style="margin-bottom: 8px;">
+                            <span class="attribute-name">{{ language.get_name_display }}</span>
+                        </div>
+                    {% empty %}
+                        <p style="color: var(--color-text-muted);">No languages</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Right Column: Inventory -->
+            <div class="character-column">
+                <div class="rpg-panel">
+                    <h3 class="panel-title" style="font-size: 1.2rem; margin-bottom: 15px;">🎒 Inventory</h3>
+
+                    {% if inventory.armor_set.all %}
+                        <div style="margin-bottom: 15px;">
+                            <h4 style="color: var(--color-primary); font-size: 1rem; margin-bottom: 8px;">🛡️ Armor</h4>
+                            {% for armor in inventory.armor_set.all %}
+                                <div class="attribute-item" style="margin-bottom: 5px;">
+                                    <span class="attribute-name">{{ armor }}</span>
+                                </div>
+                            {% endfor %}
+                        </div>
                     {% endif %}
-                {% endwith%}
-            </div>
 
+                    {% if inventory.weapon_set.all %}
+                        <div style="margin-bottom: 15px;">
+                            <h4 style="color: var(--color-primary); font-size: 1rem; margin-bottom: 8px;">⚔️ Weapons</h4>
+                            {% for weapon in inventory.weapon_set.all %}
+                                <div class="attribute-item" style="margin-bottom: 5px;">
+                                    <span class="attribute-name">{{ weapon }}</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    {% if inventory.pack_set.all %}
+                        <div style="margin-bottom: 15px;">
+                            <h4 style="color: var(--color-primary); font-size: 1rem; margin-bottom: 8px;">🎒 Pack</h4>
+                            {% for pack in inventory.pack_set.all %}
+                                <div class="attribute-item" style="margin-bottom: 5px;">
+                                    <span class="attribute-name">{{ pack }}</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    {% if inventory.gear_set.all %}
+                        <div style="margin-bottom: 15px;">
+                            <h4 style="color: var(--color-primary); font-size: 1rem; margin-bottom: 8px;">⚙️ Gear</h4>
+                            {% for gear in inventory.gear_set.all %}
+                                <div class="attribute-item" style="margin-bottom: 5px;">
+                                    <span class="attribute-name">{{ gear }}</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    {% if inventory.tool_set.all %}
+                        <div style="margin-bottom: 15px;">
+                            <h4 style="color: var(--color-primary); font-size: 1rem; margin-bottom: 8px;">🔧 Tools</h4>
+                            {% for tool in inventory.tool_set.all %}
+                                <div class="attribute-item" style="margin-bottom: 5px;">
+                                    <span class="attribute-name">{{ tool }}</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    {% if not inventory.armor_set.all and not inventory.weapon_set.all and not inventory.pack_set.all and not inventory.gear_set.all and not inventory.tool_set.all %}
+                        <p style="color: var(--color-text-muted);">Empty inventory</p>
+                    {% endif %}
+                </div>
+            </div>
         </div>
     </div>
+
+    <style>
+        .character-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+
+        .character-column {
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (max-width: 1024px) {
+            .character-layout {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .character-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 {% endblock%}
