@@ -26,11 +26,7 @@ from game.tasks import (
 )
 
 from .factories import (
-    ActorFactory,
-    CombatFactory,
-    CombatInitalizationFactory,
     CombatInitiativeRequestFactory,
-    FighterFactory,
     GameFactory,
     PlayerFactory,
     RollRequestFactory,

@@ -9,7 +9,7 @@ from game.consumers import GameEventsConsumer
 from game.exceptions import EventSchemaValidationError
 from game.schemas import EventOrigin, EventSchema, EventType
 
-from .factories import GameFactory, PlayerFactory, RollRequestFactory
+from .factories import GameFactory, PlayerFactory
 
 pytestmark = pytest.mark.django_db(transaction=True)
 

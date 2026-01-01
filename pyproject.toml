@@ -1,6 +1,23 @@
 [tool.coverage.run]
-plugins = ['django_coverage_plugin']
 omit = ["manage.py"]
+parallel = true
+branch = true
+source = [
+    "ai",
+    "character",
+    "game",
+    "master",
+    "user",
+    "utils",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+]
 
 [tool.ruff]
 exclude = ["role_play/asgi.py", "role_play/urls.py", "role_play/settings/*"]
@@ -48,6 +65,7 @@ readme = "README.md"
 dev = [
     "coverage",
     "django-coverage-plugin",
+    "pytest-cov",
     "django-debug-toolbar",
     "factory-boy",
     "faker",
@@ -191,7 +209,10 @@ cmd = "pytest --color=yes --verbose"
 
 [tool.poe.tasks.test-cov]
 help = "Run tests with coverage"
-cmd = "coverage run -m pytest --color=yes"
+sequence = [
+    { cmd = "coverage erase" },
+    { cmd = "pytest --cov --cov-report= --color=yes" },
+]
 
 [tool.poe.tasks.test-cov-report]
 help = "Generate test coverage report (html)"

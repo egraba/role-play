@@ -79,6 +79,7 @@ class TestAbilityCheckRequestForm:
         form = AbilityCheckRequestForm(initial={"game": game_with_players})
         assert form.fields["ability_type"].label == "Ability"
 
+
 class TestCombatCreateForm:
     def test_character_fields(self, started_game):
         form = CombatCreateForm(initial={"game": f"{started_game.id}"})
