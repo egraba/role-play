@@ -359,6 +359,21 @@ class TestGameView:
         assert response.status_code == 200
         assertContains(response, "The campaign did not start yet...")
 
+    def test_websocket_auto_reconnect_script(self, client, populated_game):
+        """Test that WebSocket auto-reconnect logic is present in the template."""
+        response = client.get(populated_game.get_absolute_url())
+        assert response.status_code == 200
+        # Check reconnection configuration
+        assertContains(response, "connectWebSocket")
+        assertContains(response, "scheduleReconnect")
+        assertContains(response, "baseReconnectDelay")
+        # Check reconnection handler
+        assertContains(response, "eventsSocket.onclose")
+        assertContains(response, "eventsSocket.onopen")
+        # Check connection status indicator
+        assertContains(response, "connection-status")
+        assertContains(response, "showConnectionStatus")
+
 
 class TestGameCreateView:
     path_name = "game-create"
