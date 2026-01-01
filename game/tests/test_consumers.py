@@ -7,9 +7,9 @@ from faker import Faker
 from character.tests.factories import CharacterFactory
 from game.consumers import GameEventsConsumer
 from game.exceptions import EventSchemaValidationError
-from game.schemas import EventSchema, EventType
+from game.schemas import EventOrigin, EventSchema, EventType
 
-from .factories import GameFactory, PlayerFactory
+from .factories import GameFactory, PlayerFactory, RollRequestFactory
 
 pytestmark = pytest.mark.django_db(transaction=True)
 
@@ -119,6 +119,33 @@ async def test_communication_message_from_player(application, game, player_user)
         "username": player_user.username,
         "date": date,
         "message": message,
+    }
+
+    await communicator.send_json_to(game_event)
+    response = await communicator.receive_json_from()
+    assert EventSchema(**response)
+
+    await communicator.disconnect()
+
+
+@pytest.mark.asyncio
+async def test_communication_server_side_event(application, game, master_user):
+    """Test that server-side events are passed through without storing."""
+    communicator = WebsocketCommunicator(application, f"/events/{game.id}/")
+    communicator.scope["user"] = master_user
+    communicator.scope["game_id"] = game.id
+    connected, _ = await communicator.connect()
+    assert connected
+
+    fake = Faker()
+    date = fake.date_time().isoformat()
+    message = fake.text(100)
+    game_event = {
+        "type": EventType.MESSAGE,
+        "username": master_user.username,
+        "date": date,
+        "message": message,
+        "origin": EventOrigin.SERVER_SIDE,
     }
 
     await communicator.send_json_to(game_event)
