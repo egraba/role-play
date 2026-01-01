@@ -14,10 +14,15 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * Added poe tasks: code quality (lint, format, typecheck, check), aliases (run, migrate, worker), management commands (delete-character, delete-combats, request-saving-throw), and convenience tasks (ci, db-setup, pre-commit)
 * Added `/health/` endpoint for Fly.io health checks
 * Added post-deployment health check verification in CI
+* Added tests for `check_combat_roll_initiative_complete` task
+* Added tests for `AbilityCheckRequestForm` widget initialization
+* Added test for server-side event handling in WebSocket consumers
+* Configured pytest-cov for parallel coverage collection
 
 ### Fixed
 * Combat initiation now works correctly when starting multiple combats (use `update_or_create` for Fighter, CombatInitiativeRequest, CombatInitiativeResponse, and CombatInitiativeResult)
 * Combat initiative completion task now properly sets the `author` field on CombatInitativeOrderSet
+* WebSocket consumer now properly handles disconnect when game not found
 
 ### Changed
 * Reduce machines size on Fly.io

@@ -57,6 +57,28 @@ class TestAbilityCheckRequestForm:
         ability_choices = choices[1:]
         assert ability_choices == list(AbilityName.choices)
 
+    def test_player_field_widget_has_rpgui_dropdown_class(self, game_with_players):
+        form = AbilityCheckRequestForm(initial={"game": game_with_players})
+        widget = form.fields["player"].widget
+        assert isinstance(widget, forms.Select)
+        assert widget.attrs.get("class") == "rpgui-dropdown"
+
+    def test_ability_type_widget_has_rpgui_dropdown_class(self, game_with_players):
+        form = AbilityCheckRequestForm(initial={"game": game_with_players})
+        widget = form.fields["ability_type"].widget
+        assert isinstance(widget, forms.Select)
+        assert widget.attrs.get("class") == "rpgui-dropdown"
+
+    def test_difficulty_class_widget_has_rpgui_dropdown_class(self, game_with_players):
+        form = AbilityCheckRequestForm(initial={"game": game_with_players})
+        widget = form.fields["difficulty_class"].widget
+        assert isinstance(widget, forms.Select)
+        assert widget.attrs.get("class") == "rpgui-dropdown"
+
+    def test_ability_type_label_is_ability(self, game_with_players):
+        form = AbilityCheckRequestForm(initial={"game": game_with_players})
+        assert form.fields["ability_type"].label == "Ability"
+
 
 class TestCombatCreateForm:
     def test_character_fields(self, started_game):

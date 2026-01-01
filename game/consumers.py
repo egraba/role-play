@@ -39,6 +39,7 @@ class GameEventsConsumer(JsonWebsocketConsumer):
             )
         except Game.DoesNotExist:
             self.close(reason=f"Game of {game_id=} not found")
+            return
         self.game_group_name = f"game_{self.game.id}_events"
         async_to_sync(self.channel_layer.group_add)(
             self.game_group_name, self.channel_name
@@ -46,9 +47,10 @@ class GameEventsConsumer(JsonWebsocketConsumer):
         self.accept()
 
     def disconnect(self, code=None):
-        async_to_sync(self.channel_layer.group_discard)(
-            self.game_group_name, self.channel_name
-        )
+        if hasattr(self, "game_group_name"):
+            async_to_sync(self.channel_layer.group_discard)(
+                self.game_group_name, self.channel_name
+            )
 
     def receive_json(self, content, **kwargs):
         try:
