@@ -130,7 +130,6 @@
         // WebSocket reconnection state
         let eventsSocket = null;
         let reconnectAttempts = 0;
-        const maxReconnectAttempts = 10;
         const baseReconnectDelay = 1000; // 1 second
         const maxReconnectDelay = 30000; // 30 seconds
         let reconnectTimeout = null;
@@ -139,7 +138,16 @@
         function createConnectionStatus() {
             const statusDiv = document.createElement('div');
             statusDiv.id = 'connection-status';
-            statusDiv.style.cssText = 'position: fixed; bottom: 20px; right: 20px; padding: 10px 15px; border-radius: 5px; font-size: 0.9rem; z-index: 1000; display: none;';
+            statusDiv.style.cssText = 'position: fixed; bottom: 20px; right: 20px; padding: 10px 15px; border-radius: 5px; font-size: 0.9rem; z-index: 1000; display: none; cursor: pointer;';
+            statusDiv.title = 'Click to retry connection';
+            statusDiv.addEventListener('click', function() {
+                if (reconnectTimeout) {
+                    clearTimeout(reconnectTimeout);
+                }
+                reconnectAttempts = 0;
+                showConnectionStatus('🔄 Connecting...', true);
+                connectWebSocket();
+            });
             document.body.appendChild(statusDiv);
             return statusDiv;
         }
@@ -209,23 +217,23 @@
                 clearTimeout(reconnectTimeout);
             }
 
-            if (reconnectAttempts >= maxReconnectAttempts) {
-                showConnectionStatus('⚠️ Connection lost. Please refresh the page.', true);
-                return;
-            }
-
             // Disable input while disconnected
             if (input) input.disabled = true;
             if (sendButton) sendButton.disabled = true;
 
-            // Calculate delay with exponential backoff and jitter
+            // Calculate delay with exponential backoff and jitter (caps at maxReconnectDelay)
             const delay = Math.min(
                 baseReconnectDelay * Math.pow(2, reconnectAttempts) + Math.random() * 1000,
                 maxReconnectDelay
             );
             reconnectAttempts++;
 
-            showConnectionStatus(`🔄 Reconnecting... (attempt ${reconnectAttempts}/${maxReconnectAttempts})`, true);
+            // Show status - after many attempts, indicate click to retry immediately
+            if (reconnectAttempts > 10) {
+                showConnectionStatus(`🔄 Reconnecting in ${Math.round(delay/1000)}s... (click to retry now)`, true);
+            } else {
+                showConnectionStatus(`🔄 Reconnecting... (attempt ${reconnectAttempts})`, true);
+            }
 
             reconnectTimeout = setTimeout(function() {
                 console.log(`Reconnecting... attempt ${reconnectAttempts}`);

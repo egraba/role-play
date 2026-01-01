@@ -366,7 +366,6 @@ class TestGameView:
         # Check reconnection configuration
         assertContains(response, "connectWebSocket")
         assertContains(response, "scheduleReconnect")
-        assertContains(response, "maxReconnectAttempts")
         assertContains(response, "baseReconnectDelay")
         # Check reconnection handler
         assertContains(response, "eventsSocket.onclose")
