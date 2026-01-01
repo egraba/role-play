@@ -218,9 +218,12 @@ The project is organized by domain (character, game, master, user) with each hav
 
 ### When Fixing Bugs
 1. Check existing tests in the relevant `tests/` directory
-2. Run specific test: `doppler run -- uv run poe test` (use pytest path syntax for single tests)
-3. Check for related issues in error handling (`exceptions.py`)
-4. Verify Django model validation rules
+2. Write a test that reproduces the bug (test should fail before the fix)
+3. Implement the fix
+4. Run specific test: `doppler run -- uv run poe test` (use pytest path syntax for single tests)
+5. Verify the test passes after the fix
+6. Check for related issues in error handling (`exceptions.py`)
+7. Verify Django model validation rules
 
 ### When Refactoring
 1. Ensure type hints are present
