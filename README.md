@@ -68,6 +68,22 @@ doppler run -- uv run poe test          # Run all tests
 doppler run -- uv run poe test-cov      # Run tests with coverage
 ```
 
+## 📜 D&D Rules Reference
+
+This project implements tabletop RPG gameplay based on the **Dungeons & Dragons 5th Edition System Reference Document (SRD) version 5.2** (also known as SRD 5.2.1), which is made available under the Creative Commons Attribution 4.0 International License (CC-BY-4.0) by Wizards of the Coast.
+
+The SRD 5.2 includes updated content from the 2024 D&D core rulebooks, featuring:
+- Updated class rules and progression
+- New species (Goliaths and Orcs added to SRD)
+- Enhanced feats and backgrounds system
+- Weapon Mastery mechanics
+- Updated monster statistics
+- Expanded gameplay toolbox and rules glossary
+
+**Reference:** [D&D Systems Reference Document 5.2](https://media.dndbeyond.com/compendium-images/srd/5.2/SRD_CC_v5.2.1.pdf)
+
 ## 📄 License
 
 This project is licensed under the [GNU Affero General Public License v3.0](LICENSE.md).
+
+Game rules and mechanics are based on the D&D 5th Edition SRD 5.2, which is licensed under CC-BY-4.0 by Wizards of the Coast.
