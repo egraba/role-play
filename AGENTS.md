@@ -250,6 +250,6 @@ The project is organized by domain (character, game, master, user) with each hav
 
 ## Deployment
 - Docker support available (`Dockerfile`, `docker-compose.yml`)
-- Fly.io configuration (`fly.toml`, `fly.ephemeral.toml`)
+- Fly.io configuration (`fly.toml`)
 - Gunicorn for production WSGI
 - Daphne for ASGI/WebSocket support
