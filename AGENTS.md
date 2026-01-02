@@ -6,6 +6,8 @@ This file provides guidance to AI coding assistants (GitHub Copilot, Claude Code
 
 **role-play** is a virtual role-playing game application built with Django. It allows people to play role-playing games remotely by following a story and performing actions like throwing dice or making choices.
 
+The game implements Dungeons & Dragons 5th Edition rules based on the **SRD 5.2** (Systems Reference Document version 5.2.1), which includes content from the 2024 D&D core rulebooks under the Creative Commons Attribution 4.0 International License.
+
 - **Language**: Python 3.14
 - **Framework**: Django 5.2
 - **Architecture**: Async-capable with Channels, WebSockets, and Celery for background tasks
@@ -239,7 +241,7 @@ The project is organized by domain (character, game, master, user) with each hav
 - **Under Development**: This is an active project; UI and features are evolving
 - **Real-time Features**: Uses WebSockets for real-time game interactions
 - **AI-Enhanced**: Quest descriptions and game content can be enriched using Claude AI
-- **License**: GNU Affero General Public License v3.0
+- **License**: GNU Affero General Public License v3.0 (application code); CC-BY-4.0 for D&D SRD 5.2 game content
 
 ## Related Documentation
 - `README.md` - Project overview and screenshots

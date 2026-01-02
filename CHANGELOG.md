@@ -4,6 +4,9 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 
 ## Unreleased
 
+### Changed
+* Updated project to reference D&D 5th Edition SRD 5.2 specification with CC-BY-4.0 attribution
+
 ## v0.13.0 - 2026-01-02
 
 ### Added
