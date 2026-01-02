@@ -1,0 +1,8 @@
+# Ruff linter and formatter configuration
+# https://docs.astral.sh/ruff/configuration/
+
+exclude = [
+    "role_play/asgi.py",
+    "role_play/urls.py",
+    "role_play/settings/*",
+]

@@ -1,0 +1,223 @@
+# ============================================================================
+# Poe the Poet Task Configuration
+# ============================================================================
+# This file contains all task definitions for the project.
+# Run tasks with: poe <task-name>
+# List all tasks with: poe --help
+
+[executor]
+type = "uv"
+
+# ----------------------------------------------------------------------------
+# Database Tasks
+# ----------------------------------------------------------------------------
+[tasks.db-reset]
+help = "Reset the database"
+cmd = "manage.py reset_db"
+
+[tasks.db-make-migrations]
+help = "Make Django migrations"
+cmd = "manage.py makemigrations"
+
+[tasks.db-migrate]
+help = "Apply database migrations"
+cmd = "manage.py migrate"
+
+[tasks.migrate]
+help = "Apply database migrations (alias for db-migrate)"
+ref = "db-migrate"
+
+[tasks.db-load-settings]
+help = "Load app settings (fixtures)"
+cmd = "manage.py loaddata senses advancement abilities languages klasses skills equipment"
+
+[tasks.db-populate]
+help = "Populate the DB with realistic data"
+sequence = ["db-reset", "db-migrate", "db-load-settings", { cmd = "manage.py populate_db" }]
+
+[tasks.db-setup]
+help = "Full database setup (migrate + load fixtures)"
+sequence = ["db-migrate", "db-load-settings"]
+
+# ----------------------------------------------------------------------------
+# Management Commands
+# ----------------------------------------------------------------------------
+[tasks.delete-character]
+help = "Delete a user's character"
+args = [{ name = "user", positional = true, required = true, help = "Username of the character owner" }]
+cmd = "manage.py delete_character ${user}"
+
+[tasks.delete-combats]
+help = "Delete all combats of a game"
+args = [{ name = "game_ids", positional = true, required = true, multiple = true, help = "Game ID(s)" }]
+cmd = "manage.py delete_combats ${game_ids}"
+
+[tasks.request-saving-throw]
+help = "Request a saving throw from a player"
+args = [
+    { name = "game", positional = true, required = true, help = "Game ID" },
+    { name = "character", positional = true, required = true, help = "Character ID" },
+]
+cmd = "manage.py request_saving_throw ${game} ${character}"
+
+# ----------------------------------------------------------------------------
+# Development Tasks
+# ----------------------------------------------------------------------------
+[tasks.clean]
+help = "Clean generated files"
+cmd = "rm -rf htmlcov staticfiles .coverage"
+
+[tasks.dev-run]
+help = "Run the development server"
+sequence = ["db-migrate", { cmd = "manage.py runserver" }]
+
+[tasks.run]
+help = "Run the development server (alias for dev-run)"
+ref = "dev-run"
+
+[tasks.worker]
+help = "Run Celery worker"
+cmd = "celery -A role_play worker --beat --scheduler django --loglevel=info"
+
+[tasks.shell]
+help = "Launch Django shell"
+cmd = "manage.py shell"
+
+# ----------------------------------------------------------------------------
+# Code Quality Tasks
+# ----------------------------------------------------------------------------
+[tasks.lint]
+help = "Run ruff linter"
+cmd = "ruff check ."
+
+[tasks.lint-fix]
+help = "Run ruff linter with auto-fix"
+cmd = "ruff check . --fix"
+
+[tasks.format]
+help = "Format code with ruff"
+cmd = "ruff format ."
+
+[tasks.format-check]
+help = "Check code formatting with ruff"
+cmd = "ruff format . --check"
+
+[tasks.typecheck]
+help = "Run mypy type checker"
+cmd = "mypy ."
+
+[tasks.check]
+help = "Run all code quality checks (lint, format, typecheck)"
+sequence = [
+    { ref = "lint" },
+    { ref = "format-check" },
+    { ref = "typecheck" },
+]
+
+[tasks.pre-commit]
+help = "Run pre-commit hooks on all files"
+cmd = "pre-commit run --all-files"
+
+# ----------------------------------------------------------------------------
+# Test Tasks
+# ----------------------------------------------------------------------------
+[tasks.test]
+help = "Run tests (optionally pass test path)"
+cmd = "pytest --color=yes"
+
+[tasks.test-verbose]
+help = "Run tests with verbose output"
+cmd = "pytest --color=yes --verbose"
+
+[tasks.test-cov]
+help = "Run tests with coverage"
+sequence = [
+    { cmd = "coverage erase" },
+    { cmd = "pytest --cov --cov-report= --color=yes" },
+]
+
+[tasks.test-cov-report]
+help = "Generate test coverage report (html)"
+cmd = "coverage html"
+
+[tasks.test-cov-report-xml]
+help = "Generate test coverage report (xml)"
+cmd = "coverage xml"
+
+[tasks.ci]
+help = "Run CI checks locally (test with coverage + code quality)"
+sequence = [
+    { ref = "test-cov" },
+    { ref = "check" },
+]
+
+# ----------------------------------------------------------------------------
+# Production Tasks
+# ----------------------------------------------------------------------------
+[tasks.prod-deploy]
+help = "Run production deployment tasks"
+sequence = ["db-migrate", "db-load-settings"]
+
+[tasks.prod-run]
+help = "Run the production server"
+sequence = [
+    { cmd = "manage.py collectstatic --noinput" },
+    { shell = "daphne role_play.asgi:application -b 0.0.0.0 -p $PORT --access-log -" },
+]
+
+[tasks.prod-worker]
+help = "Run Celery worker for production"
+ref = "worker"
+
+# ----------------------------------------------------------------------------
+# Staging Environment Tasks (Fly.io)
+# ----------------------------------------------------------------------------
+[tasks.stg-create]
+help = "Create the staging application on Fly.io"
+cmd = "flyctl apps create role-play-staging"
+
+[tasks.stg-deploy]
+help = "Deploy to staging environment"
+cmd = "flyctl deploy --app role-play-staging"
+
+[tasks.stg-deploy-quick]
+help = "Quick deploy without rebuild"
+cmd = "flyctl deploy --app role-play-staging --no-build"
+
+[tasks.stg-status]
+help = "Check the status of the staging application"
+cmd = "flyctl status --app role-play-staging"
+
+[tasks.stg-logs]
+help = "View logs from the staging application"
+args = [{ name = "lines", default = "50", positional = true }]
+cmd = "flyctl logs --app role-play-staging --lines ${lines}"
+
+[tasks.stg-ssh]
+help = "SSH into the staging application"
+cmd = "flyctl ssh console --app role-play-staging"
+
+[tasks.stg-scale]
+help = "Scale the staging application"
+args = [{ name = "count", default = "1", positional = true }]
+cmd = "flyctl scale count ${count} --app role-play-staging"
+
+[tasks.stg-secrets-list]
+help = "List all secrets for the staging application"
+cmd = "flyctl secrets list --app role-play-staging"
+
+[tasks.stg-secrets-set]
+help = "Set a secret for the staging application"
+args = [
+    { name = "key", positional = true, required = true },
+    { name = "value", positional = true, required = true },
+]
+cmd = "flyctl secrets set ${key}=${value} --app role-play-staging"
+
+[tasks.stg-destroy]
+help = "Destroy the staging application"
+cmd = "flyctl apps destroy role-play-staging --yes"
+
+[tasks.stg-info]
+help = "Display information about the staging application"
+cmd = "flyctl info --app role-play-staging"

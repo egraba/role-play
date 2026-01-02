@@ -8,6 +8,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * Use authenticated user instead of client-provided username in message storage and event enrichers (security fix)
 
 ### Changed
+* Split tool configurations from pyproject.toml into separate files (poe_tasks.toml, ruff.toml, pytest.ini)
 * Updated project to reference D&D 5th Edition SRD 5.2 specification with CC-BY-4.0 attribution
 
 ## v0.13.0 - 2026-01-02
