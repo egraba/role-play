@@ -68,18 +68,18 @@ class GameEventsConsumer(JsonWebsocketConsumer):
             match content["type"]:
                 case EventType.MESSAGE:
                     command = ProcessMessageCommand()
-                    event_enricher = MessageEnricher(self.game, content)
+                    event_enricher = MessageEnricher(self.game, content, self.user)
                 case EventType.ABILITY_CHECK_RESPONSE:
                     command = AbilityCheckResponseCommand()
-                    event_enricher = RollResponseEnricher(self.game, content)
+                    event_enricher = RollResponseEnricher(self.game, content, self.user)
                 case EventType.SAVING_THROW_RESPONSE:
                     command = SavingThrowResponseCommand()
-                    event_enricher = RollResponseEnricher(self.game, content)
+                    event_enricher = RollResponseEnricher(self.game, content, self.user)
                 case EventType.COMBAT_INITIALIZATION:
                     command = ProcessMessageCommand()
                 case EventType.COMBAT_INITIATIVE_RESPONSE:
                     command = CombatInitiativeResponseCommand()
-                    event_enricher = RollResponseEnricher(self.game, content)
+                    event_enricher = RollResponseEnricher(self.game, content, self.user)
                 case _:
                     pass
             try:

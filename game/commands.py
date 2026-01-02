@@ -28,7 +28,7 @@ class ProcessMessageCommand(Command):
             game_id=game.id,
             date=content["date"],
             message=content["message"],
-            author_str=content["username"],
+            author_str=user.username,
         )
 
 

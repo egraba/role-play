@@ -2,6 +2,8 @@ from abc import abstractmethod
 
 from django.db.models import Q
 
+from user.models import User
+
 from .models.events import Message
 from .models.game import Character, Game, Actor
 from .schemas import EventSchema
@@ -17,11 +19,13 @@ class Enricher:
     Attributes:
         game (Game): Current game instance.
         content (EventSchema): content to enrich.
+        user (User): Authenticated user.
     """
 
-    def __init__(self, game: Game, content: EventSchema, *args, **kwargs):
+    def __init__(self, game: Game, content: EventSchema, user: User):
         self.game = game
         self.content = content
+        self.user = user
 
     @abstractmethod
     def enrich(self):
@@ -32,8 +36,8 @@ class Enricher:
 class MessageEnricher(Enricher):
     def enrich(self):
         author = Actor.objects.get(
-            Q(master__game=self.game, master__user__username=self.content["username"])
-            | Q(player__user__username=self.content["username"])
+            Q(master__game=self.game, master__user__username=self.user.username)
+            | Q(player__user__username=self.user.username)
         )
         self.content["message"] = Message(
             game=self.game,
@@ -45,11 +49,11 @@ class MessageEnricher(Enricher):
 
 class RollResponseEnricher(Enricher):
     def enrich(self):
-        character = Character.objects.get(user__username=self.content["username"])
+        character = Character.objects.get(user__username=self.user.username)
         self.content["message"] = f"{character.player} performed an ability check!"
 
 
 class CombatInitiativeResponseEnricher(Enricher):
     def enrich(self):
-        character = Character.objects.get(user__username=self.content["username"])
+        character = Character.objects.get(user__username=self.user.username)
         self.content["message"] = f"{character} performed a dexterity check!"

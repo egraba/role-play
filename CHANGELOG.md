@@ -4,6 +4,9 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 
 ## Unreleased
 
+### Fixed
+* Use authenticated user instead of client-provided username in message storage and event enrichers (security fix)
+
 ### Changed
 * Updated project to reference D&D 5th Edition SRD 5.2 specification with CC-BY-4.0 attribution
 

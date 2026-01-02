@@ -23,7 +23,6 @@ class TestProcessMessageCommand:
         content = {
             "date": timezone.now(),
             "message": "Hello, world!",
-            "username": user.username,
         }
 
         with patch("game.commands.store_message.delay") as mock_task:
@@ -34,7 +33,29 @@ class TestProcessMessageCommand:
                 game_id=game.id,
                 date=content["date"],
                 message=content["message"],
-                author_str=content["username"],
+                author_str=user.username,
+            )
+
+    def test_execute_uses_authenticated_user_not_content_username(self):
+        """Test that the authenticated user is used, not client-provided username."""
+        game = GameFactory()
+        authenticated_user = game.master.user
+        content = {
+            "date": timezone.now(),
+            "message": "Hello, world!",
+            "username": "malicious_username",  # Client-provided, should be ignored
+        }
+
+        with patch("game.commands.store_message.delay") as mock_task:
+            command = ProcessMessageCommand()
+            command.execute(content=content, user=authenticated_user, game=game)
+
+            # Should use authenticated user, not content["username"]
+            mock_task.assert_called_once_with(
+                game_id=game.id,
+                date=content["date"],
+                message=content["message"],
+                author_str=authenticated_user.username,
             )
 
 
