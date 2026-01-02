@@ -1,34 +1,14 @@
-[tool.coverage.run]
-omit = ["manage.py"]
-parallel = true
-branch = true
-source = [
-    "ai",
-    "character",
-    "game",
-    "master",
-    "user",
-    "utils",
-]
-
-[tool.coverage.report]
-exclude_lines = [
-    "pragma: no cover",
-    "def __repr__",
-    "raise NotImplementedError",
-    "if TYPE_CHECKING:",
-]
-
-[tool.ruff]
-exclude = ["role_play/asgi.py", "role_play/urls.py", "role_play/settings/*"]
-
-[tool.pytest.ini_options]
-asyncio_default_fixture_loop_scope = "session"
-python_files = ["test_*.py", "*_test.py", "testing/python/*.py"]
-addopts = "-n auto --dist loadfile"
-DJANGO_SETTINGS_MODULE = "role_play.settings.test"
+# Project metadata and dependencies
+# Tool configurations are in separate files:
+# - poe_tasks.toml: Task runner configuration
+# - ruff.toml: Linter and formatter configuration
+# - pytest.ini: Test configuration
 
 [project]
+name = "role-play"
+version = "0.12.0"
+description = "Role playing game."
+readme = "README.md"
 authors = [{ name = "Eric Grabarczyk", email = "eric.grabarczyk@gmail.com" }]
 license = { text = "GNU Affero General Public License v3.0" }
 requires-python = "<4.0,>=3.14"
@@ -56,10 +36,6 @@ dependencies = [
     "sentry-sdk[django]",
     "whitenoise",
 ]
-name = "role-play"
-version = "0.12.0"
-description = "Role playing game."
-readme = "README.md"
 
 [dependency-groups]
 dev = [
@@ -80,222 +56,24 @@ dev = [
     "pytest-xdist",
 ]
 
-# ============================================================================
-# Poe the Poet Task Configuration
-# ============================================================================
-
-[tool.poe]
-
-# ----------------------------------------------------------------------------
-# Database Tasks
-# ----------------------------------------------------------------------------
-[tool.poe.tasks.db-reset]
-help = "Reset the database"
-cmd = "manage.py reset_db"
-
-[tool.poe.tasks.db-make-migrations]
-help = "Make Django migrations"
-cmd = "manage.py makemigrations"
-
-[tool.poe.tasks.db-migrate]
-help = "Apply database migrations"
-cmd = "manage.py migrate"
-
-[tool.poe.tasks.migrate]
-help = "Apply database migrations (alias for db-migrate)"
-ref = "db-migrate"
-
-[tool.poe.tasks.db-load-settings]
-help = "Load app settings (fixtures)"
-cmd = "manage.py loaddata senses advancement abilities languages klasses skills equipment"
-
-[tool.poe.tasks.db-populate]
-help = "Populate the DB with realistic data"
-sequence = ["db-reset", "db-migrate", "db-load-settings", { cmd = "manage.py populate_db" }]
-
-[tool.poe.tasks.db-setup]
-help = "Full database setup (migrate + load fixtures)"
-sequence = ["db-migrate", "db-load-settings"]
-
-# ----------------------------------------------------------------------------
-# Management Commands
-# ----------------------------------------------------------------------------
-[tool.poe.tasks.delete-character]
-help = "Delete a user's character"
-args = [{ name = "user", positional = true, required = true, help = "Username of the character owner" }]
-cmd = "manage.py delete_character ${user}"
-
-[tool.poe.tasks.delete-combats]
-help = "Delete all combats of a game"
-args = [{ name = "game_ids", positional = true, required = true, multiple = true, help = "Game ID(s)" }]
-cmd = "manage.py delete_combats ${game_ids}"
-
-[tool.poe.tasks.request-saving-throw]
-help = "Request a saving throw from a player"
-args = [
-    { name = "game", positional = true, required = true, help = "Game ID" },
-    { name = "character", positional = true, required = true, help = "Character ID" },
-]
-cmd = "manage.py request_saving_throw ${game} ${character}"
-
-# ----------------------------------------------------------------------------
-# Development Tasks
-# ----------------------------------------------------------------------------
-[tool.poe.tasks.clean]
-help = "Clean generated files"
-cmd = "rm -rf htmlcov staticfiles .coverage"
-
-[tool.poe.tasks.dev-run]
-help = "Run the development server"
-sequence = ["db-migrate", { cmd = "manage.py runserver" }]
-
-[tool.poe.tasks.run]
-help = "Run the development server (alias for dev-run)"
-ref = "dev-run"
-
-[tool.poe.tasks.worker]
-help = "Run Celery worker"
-cmd = "celery -A role_play worker --beat --scheduler django --loglevel=info"
-
-[tool.poe.tasks.shell]
-help = "Launch Django shell"
-cmd = "manage.py shell"
-
-# ----------------------------------------------------------------------------
-# Code Quality Tasks
-# ----------------------------------------------------------------------------
-[tool.poe.tasks.lint]
-help = "Run ruff linter"
-cmd = "ruff check ."
-
-[tool.poe.tasks.lint-fix]
-help = "Run ruff linter with auto-fix"
-cmd = "ruff check . --fix"
-
-[tool.poe.tasks.format]
-help = "Format code with ruff"
-cmd = "ruff format ."
-
-[tool.poe.tasks.format-check]
-help = "Check code formatting with ruff"
-cmd = "ruff format . --check"
-
-[tool.poe.tasks.typecheck]
-help = "Run mypy type checker"
-cmd = "mypy ."
-
-[tool.poe.tasks.check]
-help = "Run all code quality checks (lint, format, typecheck)"
-sequence = [
-    { ref = "lint" },
-    { ref = "format-check" },
-    { ref = "typecheck" },
+# Coverage configuration (kept here as it's small and well-integrated)
+[tool.coverage.run]
+omit = ["manage.py"]
+parallel = true
+branch = true
+source = [
+    "ai",
+    "character",
+    "game",
+    "master",
+    "user",
+    "utils",
 ]
 
-[tool.poe.tasks.pre-commit]
-help = "Run pre-commit hooks on all files"
-cmd = "pre-commit run --all-files"
-
-# ----------------------------------------------------------------------------
-# Test Tasks
-# ----------------------------------------------------------------------------
-[tool.poe.tasks.test]
-help = "Run tests (optionally pass test path)"
-cmd = "pytest --color=yes"
-
-[tool.poe.tasks.test-verbose]
-help = "Run tests with verbose output"
-cmd = "pytest --color=yes --verbose"
-
-[tool.poe.tasks.test-cov]
-help = "Run tests with coverage"
-sequence = [
-    { cmd = "coverage erase" },
-    { cmd = "pytest --cov --cov-report= --color=yes" },
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
 ]
-
-[tool.poe.tasks.test-cov-report]
-help = "Generate test coverage report (html)"
-cmd = "coverage html"
-
-[tool.poe.tasks.test-cov-report-xml]
-help = "Generate test coverage report (xml)"
-cmd = "coverage xml"
-
-[tool.poe.tasks.ci]
-help = "Run CI checks locally (test with coverage + code quality)"
-sequence = [
-    { ref = "test-cov" },
-    { ref = "check" },
-]
-
-# ----------------------------------------------------------------------------
-# Production Tasks
-# ----------------------------------------------------------------------------
-[tool.poe.tasks.prod-deploy]
-help = "Run production deployment tasks"
-sequence = ["db-migrate", "db-load-settings"]
-
-[tool.poe.tasks.prod-run]
-help = "Run the production server"
-sequence = [
-    { cmd = "manage.py collectstatic --noinput" },
-    { shell = "daphne role_play.asgi:application -b 0.0.0.0 -p $PORT --access-log -" },
-]
-
-[tool.poe.tasks.prod-worker]
-help = "Run Celery worker for production"
-ref = "worker"
-
-# ----------------------------------------------------------------------------
-# Staging Environment Tasks (Fly.io)
-# ----------------------------------------------------------------------------
-[tool.poe.tasks.stg-create]
-help = "Create the staging application on Fly.io"
-cmd = "flyctl apps create role-play-staging"
-
-[tool.poe.tasks.stg-deploy]
-help = "Deploy to staging environment"
-cmd = "flyctl deploy --app role-play-staging"
-
-[tool.poe.tasks.stg-deploy-quick]
-help = "Quick deploy without rebuild"
-cmd = "flyctl deploy --app role-play-staging --no-build"
-
-[tool.poe.tasks.stg-status]
-help = "Check the status of the staging application"
-cmd = "flyctl status --app role-play-staging"
-
-[tool.poe.tasks.stg-logs]
-help = "View logs from the staging application"
-args = [{ name = "lines", default = "50", positional = true }]
-cmd = "flyctl logs --app role-play-staging --lines ${lines}"
-
-[tool.poe.tasks.stg-ssh]
-help = "SSH into the staging application"
-cmd = "flyctl ssh console --app role-play-staging"
-
-[tool.poe.tasks.stg-scale]
-help = "Scale the staging application"
-args = [{ name = "count", default = "1", positional = true }]
-cmd = "flyctl scale count ${count} --app role-play-staging"
-
-[tool.poe.tasks.stg-secrets-list]
-help = "List all secrets for the staging application"
-cmd = "flyctl secrets list --app role-play-staging"
-
-[tool.poe.tasks.stg-secrets-set]
-help = "Set a secret for the staging application"
-args = [
-    { name = "key", positional = true, required = true },
-    { name = "value", positional = true, required = true },
-]
-cmd = "flyctl secrets set ${key}=${value} --app role-play-staging"
-
-[tool.poe.tasks.stg-destroy]
-help = "Destroy the staging application"
-cmd = "flyctl apps destroy role-play-staging --yes"
-
-[tool.poe.tasks.stg-info]
-help = "Display information about the staging application"
-cmd = "flyctl info --app role-play-staging"
