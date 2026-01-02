@@ -4,6 +4,8 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 
 ## Unreleased
 
+## v0.13.0 - 2026-01-02
+
 ### Added
 * Quest environments are now enriched using Claude 3.5 Sonnet model
 * WebSocket auto-reconnect with exponential backoff when server restarts
