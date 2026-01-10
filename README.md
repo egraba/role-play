@@ -50,6 +50,19 @@ Tired of coordinating schedules, hauling books, and losing character sheets? **r
 4. **Gameplay** — Real-time quests, rolls, and combat via WebSocket
 5. **Combat** — Initiative-based turn system with D&D 5e mechanics
 
+## D&D Rules Reference
+
+This project implements tabletop RPG gameplay based on the **Dungeons & Dragons 5th Edition System Reference Document (SRD) version 5.2**, available under the Creative Commons Attribution 4.0 International License (CC-BY-4.0) by Wizards of the Coast.
+
+The SRD 5.2 includes content from the 2024 D&D core rulebooks:
+- Updated class rules and progression
+- New species (Goliaths and Orcs)
+- Enhanced feats and backgrounds
+- Weapon Mastery mechanics
+- Updated monster statistics
+
+**Reference:** [D&D Systems Reference Document 5.2](https://media.dndbeyond.com/compendium-images/srd/5.2/SRD_CC_v5.2.1.pdf)
+
 ## Tech Stack
 
 | Layer | Technology |
@@ -102,73 +115,22 @@ doppler run -- poe db-setup
 
 # Start the development server
 doppler run -- poe run
-```
 
-### Running Services
-
-```bash
-# Start Django development server
-doppler run -- poe run
-
-# Start Celery worker (for background tasks)
+# In a separate terminal, start Celery worker
 doppler run -- poe worker
-
-# Launch Django shell
-doppler run -- poe shell
 ```
 
-### Testing
+### Common Tasks
 
 ```bash
-doppler run -- poe test              # Run all tests
-doppler run -- poe test-verbose      # Run with verbose output
-doppler run -- poe test-cov          # Run with coverage
-doppler run -- poe test-cov-report   # Generate HTML coverage report
+poe run          # Start development server
+poe worker       # Start Celery worker
+poe test         # Run tests
+poe ci           # Run full CI locally (tests + lint + typecheck)
+poe db-setup     # Set up database (migrate + load fixtures)
 ```
 
-### Code Quality
-
-```bash
-doppler run -- poe lint          # Run ruff linter
-doppler run -- poe lint-fix      # Auto-fix lint issues
-doppler run -- poe format        # Format code with ruff
-doppler run -- poe typecheck     # Run mypy type checker
-doppler run -- poe check         # Run all checks (lint, format, typecheck)
-doppler run -- poe pre-commit    # Run pre-commit hooks
-doppler run -- poe ci            # Run full CI locally (tests + checks)
-```
-
-### Database Management
-
-```bash
-doppler run -- poe db-migrate         # Apply migrations
-doppler run -- poe db-make-migrations # Create new migrations
-doppler run -- poe db-load-settings   # Load D&D fixtures
-doppler run -- poe db-reset           # Reset database
-doppler run -- poe db-populate        # Populate with sample data
-```
-
-### Staging Deployment (Fly.io)
-
-```bash
-doppler run -- poe stg-deploy    # Deploy to staging
-doppler run -- poe stg-status    # Check status
-doppler run -- poe stg-logs      # View logs
-doppler run -- poe stg-ssh       # SSH into container
-```
-
-## D&D Rules Reference
-
-This project implements tabletop RPG gameplay based on the **Dungeons & Dragons 5th Edition System Reference Document (SRD) version 5.2**, available under the Creative Commons Attribution 4.0 International License (CC-BY-4.0) by Wizards of the Coast.
-
-The SRD 5.2 includes content from the 2024 D&D core rulebooks:
-- Updated class rules and progression
-- New species (Goliaths and Orcs)
-- Enhanced feats and backgrounds
-- Weapon Mastery mechanics
-- Updated monster statistics
-
-**Reference:** [D&D Systems Reference Document 5.2](https://media.dndbeyond.com/compendium-images/srd/5.2/SRD_CC_v5.2.1.pdf)
+Run `poe --help` to see all available tasks.
 
 ## Contributing
 
