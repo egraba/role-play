@@ -421,18 +421,6 @@ wheels = [
 ]
 
 [[package]]
-name = "dice"
-version = "4.0.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "pyparsing" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/72/3e/a07b66d345678cd277df76fdf51cb4ffc1054492efcd674a7b30f49a80bf/dice-4.0.0.tar.gz", hash = "sha256:7a1bfd68f21abf245f333de89721cd30379b5413c774a9d34a6b4123c526815c", size = 22252, upload-time = "2023-05-18T17:23:34.224Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/b5/75/bf7ef10ce7f9a8d17e127e77092505368999e6bd86deab8eb9a74b2103ec/dice-4.0.0-py3-none-any.whl", hash = "sha256:59aa1f7b23846b32a618697534429fec80be3a1087b4f934022dcdb99cf1417f", size = 22042, upload-time = "2023-05-18T17:22:59.548Z" },
-]
-
-[[package]]
 name = "distlib"
 version = "0.4.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1084,15 +1072,6 @@ wheels = [
 ]
 
 [[package]]
-name = "pyparsing"
-version = "3.3.1"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/33/c1/1d9de9aeaa1b89b0186e5fe23294ff6517fce1bc69149185577cd31016b2/pyparsing-3.3.1.tar.gz", hash = "sha256:47fad0f17ac1e2cad3de3b458570fbc9b03560aa029ed5e16ee5554da9a2251c", size = 1550512, upload-time = "2025-12-23T03:14:04.391Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/8b/40/2614036cdd416452f5bf98ec037f38a1afb17f327cb8e6b652d4729e0af8/pyparsing-3.3.1-py3-none-any.whl", hash = "sha256:023b5e7e5520ad96642e2c6db4cb683d3970bd640cdf7115049a6e9c3682df82", size = 121793, upload-time = "2025-12-23T03:14:02.103Z" },
-]
-
-[[package]]
 name = "pytest"
 version = "9.0.2"
 source = { registry = "https://pypi.org/simple" }
@@ -1248,7 +1227,6 @@ dependencies = [
     { name = "channels" },
     { name = "channels-redis" },
     { name = "daphne" },
-    { name = "dice" },
     { name = "dj-database-url" },
     { name = "django" },
     { name = "django-celery-beat" },
@@ -1293,7 +1271,6 @@ requires-dist = [
     { name = "channels" },
     { name = "channels-redis" },
     { name = "daphne" },
-    { name = "dice" },
     { name = "dj-database-url" },
     { name = "django", specifier = "~=5.2" },
     { name = "django-celery-beat" },
