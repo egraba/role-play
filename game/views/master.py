@@ -1,5 +1,4 @@
 from django.contrib.auth.mixins import UserPassesTestMixin
-from django.core.cache import cache
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import FormView, ListView, UpdateView
@@ -25,7 +24,6 @@ from ..models.events import (
 )
 from ..models.game import Actor, Player, Quest
 from ..tasks import send_mail
-from ..utils.cache import game_key
 from ..utils.channels import send_to_channel
 from ..utils.emails import get_players_emails
 from ..views.mixins import EventContextMixin, GameContextMixin, GameStatusControlMixin
@@ -86,7 +84,6 @@ class GameStartView(UserPassesTestMixin, GameStatusControlMixin):
         flow = GameFlow(game)
         try:
             flow.start()
-            cache.set(game_key(game.id), game)
             author = Actor.objects.get(
                 master__game=game, master__user=self.request.user
             )

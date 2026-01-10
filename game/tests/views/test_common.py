@@ -2,7 +2,6 @@ import random
 from datetime import datetime, timezone
 
 import pytest
-from django.core.cache import cache
 from django.http import Http404
 from django.urls import reverse
 from faker import Faker
@@ -245,10 +244,6 @@ class TestGameView:
         # Only games created by their own master are displayed to them.
         user = UserFactory(username="master")
         client.force_login(user)
-
-    @pytest.fixture(autouse=True)
-    def tear_down(self):
-        yield cache.clear()
 
     def test_view_mapping(self, client, populated_game):
         response = client.get(populated_game.get_absolute_url())

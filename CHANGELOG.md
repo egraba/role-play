@@ -15,6 +15,9 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * Updated project to reference D&D 5th Edition SRD 5.2 specification with CC-BY-4.0 attribution
 * Ability model now auto-calculates modifier on save and validates score range (1-30)
 
+### Removed
+* Redis cache usage removed from application code (Redis still required for Channels and Celery)
+
 ## v0.13.0 - 2026-01-02
 
 ### Added

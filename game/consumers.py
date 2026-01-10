@@ -1,6 +1,5 @@
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import JsonWebsocketConsumer
-from django.core.cache import cache
 from pydantic import ValidationError
 
 from character.models.character import Character
@@ -15,7 +14,6 @@ from .event_enrichers import MessageEnricher, RollResponseEnricher
 from .exceptions import EventSchemaValidationError
 from .models.game import Game
 from .schemas import EventOrigin, EventSchema, EventType
-from .utils.cache import game_key
 
 
 class GameEventsConsumer(JsonWebsocketConsumer):
@@ -34,9 +32,7 @@ class GameEventsConsumer(JsonWebsocketConsumer):
         # There is one room per game.
         game_id = self.scope["url_route"]["kwargs"]["game_id"]
         try:
-            self.game = cache.get_or_set(
-                game_key(game_id), Game.objects.get(id=game_id)
-            )
+            self.game = Game.objects.get(id=game_id)
         except Game.DoesNotExist:
             self.close(reason=f"Game of {game_id=} not found")
             return

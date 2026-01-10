@@ -1,7 +1,6 @@
 import random
 
 import pytest
-from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.urls import reverse
@@ -287,10 +286,6 @@ class TestQuestCreateView:
     def login(self, client):
         user = User.objects.get(username="master")
         client.force_login(user)
-
-    @pytest.fixture(autouse=True)
-    def tear_down(self):
-        yield cache.clear()
 
     def test_view_mapping(self, client, login, started_game):
         response = client.get(reverse(self.path_name, args=(started_game.id,)))

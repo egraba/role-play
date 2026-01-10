@@ -430,5 +430,5 @@ Transform events before broadcasting:
 
 ### Utilities
 - `utils/dice.py` - Dice rolling
-- `game/utils/` - Caching, channels, emails
-- `character/utils/` - Equipment, cache
+- `game/utils/` - Channels, emails
+- `character/utils/` - Equipment utilities

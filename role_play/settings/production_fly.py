@@ -62,14 +62,12 @@ DATABASES = {
     }
 }
 
-# Cache
+# Cache (using local memory - Redis still needed for Channels and Celery)
 CACHES = {
     "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": f"redis://default:{os.environ['REDIS_PASSWORD']}@fly-role-play-redis.upstash.io:6379",
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
     }
 }
-SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
 
 # Celery
 CELERY_BROKER_URL = f"redis://default:{os.environ['REDIS_PASSWORD']}@fly-role-play-redis.upstash.io:6379"

@@ -1,4 +1,3 @@
-from django.core.cache import cache
 from django.conf import settings
 from django.db import models
 from django.db.models.functions import Upper
@@ -11,7 +10,6 @@ from ..constants.abilities import AbilityName
 from ..constants.backgrounds import Background
 from ..constants.character import Gender
 from ..constants.races import Alignment, Race, SenseName, Size
-from ..utils.cache import advancement_key
 from .abilities import Ability
 from .advancement import Advancement
 from .equipment import Inventory
@@ -93,18 +91,14 @@ class Character(models.Model):
 
     def _check_level_increase(self):
         next_level = self.level + 1
-        advancement = cache.get_or_set(
-            advancement_key(next_level), Advancement.objects.get(level=next_level)
-        )
+        advancement = Advancement.objects.get(level=next_level)
         if self.xp >= advancement.xp:
             return True
         return False
 
     def _increase_level(self):
         self.level += 1
-        advancement = cache.get_or_set(
-            advancement_key(self.level), Advancement.objects.get(level=self.level)
-        )
+        advancement = Advancement.objects.get(level=self.level)
         self.proficiency_bonus += advancement.proficiency_bonus
 
         # Increase hit dice
