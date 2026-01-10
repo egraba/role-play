@@ -6,6 +6,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 
 ### Added
 * Comprehensive architecture documentation (ARCHITECTURE.md) covering Django app structure, models, game logic, and master/player distinction
+* Dice system enhancements: advantage/disadvantage rolls, damage rolls with critical hits, d20 tests with natural 1/20 detection
 
 ### Fixed
 * Use authenticated user instead of client-provided username in message storage and event enrichers (security fix)
@@ -18,6 +19,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 
 ### Removed
 * Redis cache usage removed from application code (Redis still required for Channels and Celery)
+* Removed `dice` library dependency (replaced with built-in `random` module)
 
 ## v0.13.0 - 2026-01-02
 

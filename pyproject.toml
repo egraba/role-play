@@ -19,7 +19,6 @@ dependencies = [
     "channels",
     "channels-redis",
     "daphne",
-    "dice",
     "dj-database-url",
     "django~=5.2",
     "django-celery-beat",
