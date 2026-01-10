@@ -3,10 +3,8 @@ from datetime import datetime
 from celery import shared_task
 from celery.exceptions import InvalidTaskError
 from celery.utils.log import get_task_logger
-from django.core.cache import cache
 from django.core.mail import send_mail as django_send_mail
 from django_celery_beat.models import PeriodicTask
-
 
 from .constants.events import RollStatus, RollType
 from .models.combat import Combat
@@ -21,9 +19,8 @@ from .models.events import (
     RollResponse,
     RollResult,
 )
-from .models.game import Game, Player, Master
+from .models.game import Game, Master, Player
 from .rolls import perform_combat_initiative_roll, perform_roll
-from .utils.cache import game_key
 from .utils.channels import send_to_channel
 
 logger = get_task_logger(__name__)
@@ -49,7 +46,7 @@ def store_message(
     """
     logger.info(f"{game_id=}, {date=}, {message=}")
     try:
-        game = cache.get_or_set(game_key(game_id), Game.objects.get(id=game_id))
+        game = Game.objects.get(id=game_id)
     except Game.DoesNotExist as exc:
         raise InvalidTaskError(f"Game of {game_id=} not found") from exc
     author = None

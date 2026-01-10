@@ -35,14 +35,12 @@ DATABASES = {
     }
 }
 
-# Cache
+# Cache (using dummy cache for CI)
 CACHES = {
     "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379",
+        "BACKEND": "django.core.cache.backends.dummy.DummyCache",
     }
 }
-SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
 
 # Channels
 ASGI_APPLICATION = "role_play.asgi.application"

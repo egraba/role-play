@@ -1,9 +1,7 @@
-from django.core.cache import cache
 from django.utils import timezone
 from viewflow import fsm
 
 from .constants.game import GameState
-from .utils.cache import game_key
 
 
 class GameFlow:
@@ -23,7 +21,6 @@ class GameFlow:
     @state.on_success()
     def _on_transition_success(self, descriptor, source, target):
         self.game.save()
-        cache.delete(game_key(self.game.id))
 
     def can_start(self):
         return self.game.player_set.count() >= 2

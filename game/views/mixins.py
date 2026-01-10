@@ -1,13 +1,11 @@
-from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.http import Http404
 from django.views.generic import UpdateView, View
 from django.views.generic.edit import FormMixin
 from django.views.generic.list import ContextMixin
 
-from ..models.game import Game
-from ..utils.cache import game_key
 from ..flows import GameFlow
+from ..models.game import Game
 
 
 class GameContextMixin(ContextMixin, View):
@@ -34,9 +32,7 @@ class GameContextMixin(ContextMixin, View):
         super().setup(request, *args, **kwargs)
         game_id = self.kwargs["game_id"]
         try:
-            self.game = cache.get_or_set(
-                game_key(game_id), Game.objects.get(id=game_id)
-            )
+            self.game = Game.objects.get(id=game_id)
         except ObjectDoesNotExist as e:
             raise Http404(f"Game of {game_id=} not found") from e
         if not self.is_user_master() and not self.is_user_player():
