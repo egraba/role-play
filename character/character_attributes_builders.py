@@ -11,7 +11,6 @@ from .forms.character import CharacterCreateForm
 from .models.abilities import Ability, AbilityType
 from .models.character import Character
 from .models.equipment import Inventory
-from .models.klasses import KlassAdvancement
 from .models.proficiencies import SavingThrowProficiency, SkillProficiency
 from .models.races import Language, Sense
 from .models.skills import Skill
@@ -103,12 +102,6 @@ class KlassBuilder(CharacterAttributesBuilder):
         self.character = character
         self.klass = character.klass
 
-    def _apply_advancement(self) -> None:
-        klass_advancement = KlassAdvancement.objects.get(
-            klass=self.character.klass, level=1
-        )
-        self.character.proficiency_bonus += klass_advancement.proficiency_bonus
-
     def _apply_hit_points(self) -> None:
         hit_points = KLASS_FEATURES[self.klass]["hit_points"]
         self.character.hit_dice = DiceString(hit_points["hit_dice"])
@@ -144,7 +137,6 @@ class KlassBuilder(CharacterAttributesBuilder):
         inventory.save()
 
     def build(self) -> None:
-        self._apply_advancement()
         self._apply_hit_points()
         self._apply_armor_proficiencies()
         self._apply_weapons_proficiencies()

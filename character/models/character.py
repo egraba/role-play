@@ -29,7 +29,6 @@ class Character(models.Model):
     xp = models.IntegerField(default=0)
     hp = models.SmallIntegerField(default=100)
     max_hp = models.SmallIntegerField(default=100)
-    proficiency_bonus = models.SmallIntegerField(default=2)
     skills = models.ManyToManyField(Skill)
     abilities = models.ManyToManyField(Ability)
     gender = models.CharField(max_length=1, choices=Gender.choices, default=Gender.MALE)
@@ -86,6 +85,14 @@ class Character(models.Model):
     def charisma(self):
         return self.abilities.get(ability_type__name=AbilityName.CHARISMA)
 
+    @property
+    def proficiency_bonus(self):
+        """Calculate proficiency bonus based on character level.
+
+        D&D 5e progression: levels 1-4 = +2, 5-8 = +3, 9-12 = +4, 13-16 = +5, 17-20 = +6.
+        """
+        return (self.level - 1) // 4 + 2
+
     def get_absolute_url(self):
         return reverse("character-detail", args=(self.id,))
 
@@ -98,8 +105,6 @@ class Character(models.Model):
 
     def _increase_level(self):
         self.level += 1
-        advancement = Advancement.objects.get(level=self.level)
-        self.proficiency_bonus += advancement.proficiency_bonus
 
         # Increase hit dice
         self.hit_dice = DiceString(self.hit_dice).add_throws(1)
