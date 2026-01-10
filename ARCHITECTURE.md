@@ -82,7 +82,7 @@ Located in `character/models/`
 | `xp` | Int | Experience points (default: 0) |
 | `hp` / `max_hp` | SmallInt | Hit points |
 | `ac` | SmallInt | Armor class |
-| `proficiency_bonus` | SmallInt | Level-based bonus |
+| `proficiency_bonus` | Property | Calculated from level: `(level-1)//4 + 2` |
 | `alignment` | ChoiceField | D&D alignment |
 | `size` | ChoiceField | Size category |
 | `speed` | SmallInt | Movement speed (feet) |

@@ -24,7 +24,6 @@ class TestCharacterModel:
         assert character.level == 1
         assert character.xp == 0
         assert character.hp == 100
-        assert character.proficiency_bonus == 2
         assert character.gender == Gender.MALE
         assert character.ac == 0
 
@@ -61,6 +60,35 @@ class TestCharacterModel:
             ability_type__name=AbilityName.CHARISMA
         )
 
+    @pytest.mark.parametrize(
+        "level,expected_bonus",
+        [
+            (1, 2),
+            (2, 2),
+            (3, 2),
+            (4, 2),
+            (5, 3),
+            (6, 3),
+            (7, 3),
+            (8, 3),
+            (9, 4),
+            (10, 4),
+            (11, 4),
+            (12, 4),
+            (13, 5),
+            (14, 5),
+            (15, 5),
+            (16, 5),
+            (17, 6),
+            (18, 6),
+            (19, 6),
+            (20, 6),
+        ],
+    )
+    def test_proficiency_bonus(self, level, expected_bonus):
+        character = CharacterFactory(level=level)
+        assert character.proficiency_bonus == expected_bonus
+
     def test_xp_increase_no_level_increase(self, character):
         fake = Faker()
         new_xp = fake.random_int(max=200)
@@ -73,13 +101,11 @@ class TestCharacterModel:
         new_xp = fake.random_int(min=300, max=500)
         old_xp = character.xp
         old_level = character.level
-        old_bonus = character.proficiency_bonus
         old_throws = DiceString(character.hit_dice).nb_throws
         old_max_hp = character.max_hp
         character.increase_xp(new_xp)
         assert character.xp == old_xp + new_xp
         assert character.level == old_level + 1
-        assert character.proficiency_bonus == old_bonus + 2
         assert DiceString(character.hit_dice).nb_throws == old_throws + 1
         assert character.max_hp == old_max_hp + character.hp_increase
 
@@ -91,7 +117,6 @@ class TestCharacterModel:
         character.increase_xp(new_xp)
         assert character.xp == old_xp + new_xp
         assert character.level == 9
-        assert character.proficiency_bonus == 24
         assert DiceString(character.hit_dice).nb_throws == old_throws + 8
         assert character.max_hp == old_max_hp + character.hp_increase * 8
 

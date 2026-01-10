@@ -14,6 +14,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * Split tool configurations from pyproject.toml into separate files (poe_tasks.toml, ruff.toml, pytest.ini)
 * Updated project to reference D&D 5th Edition SRD 5.2 specification with CC-BY-4.0 attribution
 * Ability model now auto-calculates modifier on save and validates score range (1-30)
+* Proficiency bonus is now calculated from character level using D&D 5e formula: levels 1-4 = +2, 5-8 = +3, 9-12 = +4, 13-16 = +5, 17-20 = +6
 
 ### Removed
 * Redis cache usage removed from application code (Redis still required for Channels and Celery)
