@@ -13,6 +13,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ### Changed
 * Split tool configurations from pyproject.toml into separate files (poe_tasks.toml, ruff.toml, pytest.ini)
 * Updated project to reference D&D 5th Edition SRD 5.2 specification with CC-BY-4.0 attribution
+* Ability model now auto-calculates modifier on save and validates score range (1-30)
 
 ## v0.13.0 - 2026-01-02
 
