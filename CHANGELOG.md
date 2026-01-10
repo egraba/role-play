@@ -7,6 +7,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ### Added
 * Comprehensive architecture documentation (ARCHITECTURE.md) covering Django app structure, models, game logic, and master/player distinction
 * Dice system enhancements: advantage/disadvantage rolls, damage rolls with critical hits, d20 tests with natural 1/20 detection
+* Condition model with all 15 SRD conditions (Blinded, Charmed, Deafened, Exhaustion, Frightened, Grappled, Incapacitated, Invisible, Paralyzed, Petrified, Poisoned, Prone, Restrained, Stunned, Unconscious)
 
 ### Fixed
 * Use authenticated user instead of client-provided username in message storage and event enrichers (security fix)

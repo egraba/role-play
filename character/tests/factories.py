@@ -2,6 +2,7 @@ import factory
 
 from character.constants.abilities import AbilityName
 from character.constants.backgrounds import Background
+from character.constants.conditions import ConditionName
 from character.constants.equipment import (
     ArmorName,
     GearName,
@@ -12,6 +13,7 @@ from character.constants.equipment import (
 from character.constants.races import Race
 from character.models.abilities import Ability, AbilityType
 from character.models.character import Character
+from character.models.conditions import CharacterCondition, Condition
 from character.models.equipment import (
     Armor,
     ArmorSettings,
@@ -149,3 +151,20 @@ class ToolFactory(factory.django.DjangoModelFactory):
         model = Tool
 
     settings = factory.SubFactory(ToolSettingsFactory)
+
+
+class ConditionFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Condition
+        django_get_or_create = ("name",)
+
+    name = factory.Faker("random_element", elements=ConditionName)
+    description = factory.Faker("text", max_nb_chars=200)
+
+
+class CharacterConditionFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = CharacterCondition
+
+    character = factory.SubFactory(CharacterFactory)
+    condition = factory.SubFactory(ConditionFactory)
