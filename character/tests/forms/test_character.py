@@ -12,8 +12,8 @@ def test_name_field_exists(form):
     assert "name" in form.fields
 
 
-def test_race_field_exists(form):
-    assert "race" in form.fields
+def test_species_field_exists(form):
+    assert "species" in form.fields
 
 
 def test_klass_field_exists(form):

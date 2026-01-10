@@ -72,8 +72,13 @@ class BackgroundForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        species = self.initial.get("species")
+        species_name = self.initial.get("species")
         background = self.initial["background"]
+
+        # Look up Species object by name if provided as string
+        species = None
+        if species_name:
+            species = Species.objects.filter(name=species_name).first()
 
         language_choices = self._get_choices(_get_non_spoken_languages(species))
         holy_symbols_choices = self._get_choices(_get_holy_symbols())

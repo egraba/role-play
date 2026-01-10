@@ -132,9 +132,9 @@ class TestCharacterModel:
         assert character.is_proficient(ability) is False
 
     def test_has_advantage_dwarven_resilience(self):
-        trait = SpeciesTrait.objects.create(
+        trait, _ = SpeciesTrait.objects.get_or_create(
             name=SpeciesTraitName.DWARVEN_RESILIENCE,
-            description="Resistance to poison",
+            defaults={"description": "Resistance to poison"},
         )
         species = SpeciesFactory(name="dwarf")
         species.traits.add(trait)
@@ -142,9 +142,9 @@ class TestCharacterModel:
         assert character.has_advantage(RollType.SAVING_THROW, Against.POISON)
 
     def test_has_advantage_fey_ancestry(self):
-        trait = SpeciesTrait.objects.create(
+        trait, _ = SpeciesTrait.objects.get_or_create(
             name=SpeciesTraitName.FEY_ANCESTRY,
-            description="Resistant to charm",
+            defaults={"description": "Resistant to charm"},
         )
         species = SpeciesFactory(name="elf")
         species.traits.add(trait)
@@ -152,16 +152,18 @@ class TestCharacterModel:
         assert character.has_advantage(RollType.SAVING_THROW, Against.CHARM)
 
     def test_has_advantage_brave(self):
-        trait = SpeciesTrait.objects.create(
+        trait, _ = SpeciesTrait.objects.get_or_create(
             name=SpeciesTraitName.BRAVE,
-            description="Resistant to fear",
+            defaults={"description": "Resistant to fear"},
         )
         species = SpeciesFactory(name="halfling")
         species.traits.add(trait)
         character = CharacterFactory(species=species)
         assert character.has_advantage(RollType.SAVING_THROW, Against.BEING_FRIGHTENED)
 
-    def test_has_advantage_not_valid(self, character):
+    def test_has_advantage_not_valid(self):
+        # Create character without species to ensure no traits grant advantage
+        character = CharacterFactory(species=None)
         fake = Faker()
         assert not character.has_advantage(fake.enum(RollType), fake.enum(Against))
 
