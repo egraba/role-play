@@ -1,7 +1,6 @@
 import pytest
 
 from character.constants.equipment import GearType, ToolType
-from character.constants.races import RACIAL_TRAITS
 from character.forms.backgrounds import (
     _get_artisans_tools,
     _get_gaming_set_tools,
@@ -18,17 +17,20 @@ pytestmark = pytest.mark.django_db
 
 def test_get_non_spoken_languages():
     character = CharacterFactory()
-    race_languages = {
-        (language.value, language.label)
-        for language in RACIAL_TRAITS[character.race]["languages"]
-    }
-    language_choices = _get_non_spoken_languages(character.race)
-    assert race_languages & language_choices == set()
+    if character.species:
+        species_languages = {
+            (language.name, language.get_name_display())
+            for language in character.species.languages.all()
+        }
+    else:
+        species_languages = set()
+    language_choices = _get_non_spoken_languages(character.species)
+    assert species_languages & language_choices == set()
     all_languages = {
         (language.name, language.get_name_display())
         for language in Language.objects.all()
     }
-    assert language_choices < all_languages
+    assert language_choices <= all_languages
 
 
 def test_get_holy_symbols():

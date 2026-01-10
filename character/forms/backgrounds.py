@@ -2,23 +2,26 @@ from django import forms
 
 from ..constants.backgrounds import Background
 from ..constants.equipment import GearType, ToolType
-from ..constants.races import RACIAL_TRAITS, LanguageName, Race
+from ..constants.races import LanguageName
 from ..models.equipment import GearSettings, ToolSettings
+from ..models.species import Species
 
 
-def _get_non_spoken_languages(race: Race) -> set[tuple[str, str]]:
+def _get_non_spoken_languages(species: Species | None) -> set[tuple[str, str]]:
     """
-    Return the set of language names without the languages spoken by the race given as parameter.
+    Return the set of language names without the languages spoken by the species.
     """
-    all_languages = LanguageName.choices
-    race_languages = {
-        (language.value, language.label)
-        for language in RACIAL_TRAITS[race]["languages"]
+    all_languages = set(LanguageName.choices)
+    if not species:
+        return all_languages
+    species_languages = {
+        (language.name, language.get_name_display())
+        for language in species.languages.all()
     }
     return {
         (language[0], language[1])
         for language in all_languages
-        if language not in race_languages
+        if language not in species_languages
     }
 
 
@@ -69,10 +72,10 @@ class BackgroundForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        race = self.initial["race"]
+        species = self.initial.get("species")
         background = self.initial["background"]
 
-        language_choices = self._get_choices(_get_non_spoken_languages(race))
+        language_choices = self._get_choices(_get_non_spoken_languages(species))
         holy_symbols_choices = self._get_choices(_get_holy_symbols())
         artisans_tools_choices = self._get_choices(_get_artisans_tools())
         gaming_set_choices = self._get_choices(_get_gaming_set_tools())

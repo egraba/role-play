@@ -10,7 +10,7 @@ from ..character_attributes_builders import (
     BackgroundBuilder,
     BaseBuilder,
     KlassBuilder,
-    RaceBuilder,
+    SpeciesBuilder,
 )
 from ..constants.equipment import ArmorName, GearName, ToolName, WeaponName
 from ..forms.backgrounds import BackgroundForm
@@ -58,10 +58,10 @@ class CharacterCreateView(LoginRequiredMixin, SessionWizardView):
         if step == self.Step.BACKGROUND_COMPLETION:
             data = self.storage.get_step_data(self.Step.BASE_ATTRIBUTES_SELECTION)
             if data:
-                race = data.get("0-race")
+                species = data.get("0-species")
                 background = data.get("0-background")
                 return self.initial_dict.get(
-                    step, {"race": race, "background": background}
+                    step, {"species": species, "background": background}
                 )
         return self.initial_dict.get(step, {})
 
@@ -71,7 +71,7 @@ class CharacterCreateView(LoginRequiredMixin, SessionWizardView):
                 character = form.save(commit=False)
                 character.user = self.request.user
                 BaseBuilder(character, form).build()
-                RaceBuilder(character).build()
+                SpeciesBuilder(character).build()
                 KlassBuilder(character).build()
             elif isinstance(form, SkillsSelectForm):
                 for field in form.cleaned_data.keys():

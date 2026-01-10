@@ -3,14 +3,14 @@ from faker import Faker
 
 from character.constants.abilities import AbilityName
 from character.constants.character import Gender
-from character.constants.races import SenseName
+from character.constants.species import SpeciesTraitName
 from character.models.character import Character
 from character.models.proficiencies import SavingThrowProficiency
-from character.models.races import Sense
+from character.models.species import SpeciesTrait
 from game.constants.events import Against, RollType
 from utils.dice import DiceString
 
-from ..factories import AbilityFactory, CharacterFactory
+from ..factories import AbilityFactory, CharacterFactory, SpeciesFactory
 
 
 @pytest.mark.django_db
@@ -131,16 +131,34 @@ class TestCharacterModel:
         ability = AbilityFactory(character=character)
         assert character.is_proficient(ability) is False
 
-    def test_has_advantage_dwarven_resilience(self, character):
-        character.senses.add(Sense.objects.get(name=SenseName.DWARVEN_RESILIENCE))
+    def test_has_advantage_dwarven_resilience(self):
+        trait = SpeciesTrait.objects.create(
+            name=SpeciesTraitName.DWARVEN_RESILIENCE,
+            description="Resistance to poison",
+        )
+        species = SpeciesFactory(name="dwarf")
+        species.traits.add(trait)
+        character = CharacterFactory(species=species)
         assert character.has_advantage(RollType.SAVING_THROW, Against.POISON)
 
-    def test_has_advantage_fey_ancestry(self, character):
-        character.senses.add(Sense.objects.get(name=SenseName.FEY_ANCESTRY))
+    def test_has_advantage_fey_ancestry(self):
+        trait = SpeciesTrait.objects.create(
+            name=SpeciesTraitName.FEY_ANCESTRY,
+            description="Resistant to charm",
+        )
+        species = SpeciesFactory(name="elf")
+        species.traits.add(trait)
+        character = CharacterFactory(species=species)
         assert character.has_advantage(RollType.SAVING_THROW, Against.CHARM)
 
-    def test_has_advantage_brave(self, character):
-        character.senses.add(Sense.objects.get(name=SenseName.BRAVE))
+    def test_has_advantage_brave(self):
+        trait = SpeciesTrait.objects.create(
+            name=SpeciesTraitName.BRAVE,
+            description="Resistant to fear",
+        )
+        species = SpeciesFactory(name="halfling")
+        species.traits.add(trait)
+        character = CharacterFactory(species=species)
         assert character.has_advantage(RollType.SAVING_THROW, Against.BEING_FRIGHTENED)
 
     def test_has_advantage_not_valid(self, character):

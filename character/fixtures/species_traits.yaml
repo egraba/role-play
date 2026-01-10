@@ -1,0 +1,100 @@
+# Dwarf traits
+- model: character.speciestrait
+  pk: dwarven_resilience
+  fields:
+    name: dwarven_resilience
+    description: |
+      You have Resistance to Poison damage. You also have Advantage on saving
+      throws you make to avoid or end the Poisoned condition.
+
+- model: character.speciestrait
+  pk: dwarven_toughness
+  fields:
+    name: dwarven_toughness
+    description: |
+      Your Hit Point maximum increases by 1, and it increases by 1 again
+      whenever you gain a level.
+
+- model: character.speciestrait
+  pk: stonecunning
+  fields:
+    name: stonecunning
+    description: |
+      As a Bonus Action, you gain Tremorsense with a range of 60 feet for
+      10 minutes. You must be on a stone surface or touching a stone surface
+      to use this Tremorsense. You can use this Bonus Action a number of times
+      equal to your Proficiency Bonus, regaining all uses when you finish a
+      Long Rest.
+
+# Elf traits
+- model: character.speciestrait
+  pk: fey_ancestry
+  fields:
+    name: fey_ancestry
+    description: |
+      You have Advantage on saving throws you make to avoid or end the Charmed
+      condition.
+
+- model: character.speciestrait
+  pk: keen_senses
+  fields:
+    name: keen_senses
+    description: |
+      You have proficiency in the Perception skill.
+
+- model: character.speciestrait
+  pk: trance
+  fields:
+    name: trance
+    description: |
+      You don't need to sleep, and magic can't put you to sleep. You can finish
+      a Long Rest in 4 hours if you spend those hours in a trancelike meditation,
+      during which you retain consciousness.
+
+# Halfling traits
+- model: character.speciestrait
+  pk: brave
+  fields:
+    name: brave
+    description: |
+      You have Advantage on saving throws you make to avoid or end the
+      Frightened condition.
+
+- model: character.speciestrait
+  pk: halfling_nimbleness
+  fields:
+    name: halfling_nimbleness
+    description: |
+      You can move through the space of any creature that is a size larger
+      than you, but you can't stop in the same space.
+
+- model: character.speciestrait
+  pk: lucky
+  fields:
+    name: lucky
+    description: |
+      When you roll a 1 on the d20 of a D20 Test, you can reroll the die,
+      and you must use the new roll.
+
+# Human traits
+- model: character.speciestrait
+  pk: resourceful
+  fields:
+    name: resourceful
+    description: |
+      You gain Heroic Inspiration whenever you finish a Long Rest.
+
+- model: character.speciestrait
+  pk: skillful
+  fields:
+    name: skillful
+    description: |
+      You gain proficiency in one skill of your choice.
+
+- model: character.speciestrait
+  pk: versatile
+  fields:
+    name: versatile
+    description: |
+      You gain an Origin feat of your choice. Skilled is recommended if you
+      don't have a feat in mind.

@@ -12,12 +12,12 @@ class CharacterCreateForm(NoDuplicateValuesFormMixin, forms.ModelForm):
         model = Character
         fields = [
             "name",
-            "race",
+            "species",
             "klass",
             "background",
         ]
         widgets = {
-            "race": forms.Select(attrs={"class": "rpgui-dropdown"}),
+            "species": forms.Select(attrs={"class": "rpgui-dropdown"}),
             "klass": forms.Select(attrs={"class": "rpgui-dropdown"}),
             "background": forms.Select(attrs={"class": "rpgui-dropdown"}),
         }

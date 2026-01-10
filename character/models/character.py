@@ -9,19 +9,21 @@ from utils.dice import DiceString
 from ..constants.abilities import AbilityName
 from ..constants.backgrounds import Background
 from ..constants.character import Gender
-from ..constants.races import Alignment, Race, SenseName, Size
+from ..constants.races import Size
 from .abilities import Ability
 from .advancement import Advancement
 from .equipment import Inventory
 from .klasses import Klass
-from .races import Language, Sense
+from .races import Language
 from .skills import Skill
 
 
 class Character(models.Model):
     name = models.CharField(max_length=100, unique=True)
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    race = models.CharField(max_length=14, choices=Race.choices)
+    species = models.ForeignKey(
+        "character.Species", on_delete=models.PROTECT, null=True
+    )
     height = models.FloatField(default=0)
     weight = models.SmallIntegerField(default=0)
     klass = models.CharField(max_length=1, choices=Klass.choices, verbose_name="class")
@@ -33,15 +35,9 @@ class Character(models.Model):
     abilities = models.ManyToManyField(Ability)
     gender = models.CharField(max_length=1, choices=Gender.choices, default=Gender.MALE)
     ac = models.SmallIntegerField(default=0)
-    adult_age = models.SmallIntegerField(null=True, blank=True)
-    life_expectancy = models.SmallIntegerField(null=True, blank=True)
-    alignment = models.CharField(
-        max_length=1, choices=Alignment.choices, null=True, blank=True
-    )
     size = models.CharField(max_length=1, choices=Size.choices, null=True, blank=True)
     speed = models.SmallIntegerField(null=True, blank=True)
     languages = models.ManyToManyField(Language)
-    senses = models.ManyToManyField(Sense)
     hit_dice = models.CharField(max_length=5, default="1d8")
     hp_increase = models.SmallIntegerField(default=0)
     background = models.CharField(max_length=10, choices=Background.choices)
@@ -125,22 +121,30 @@ class Character(models.Model):
             for proficiency in self.savingthrowproficiency_set.values()
         )
 
-    def has_advantage(self, roll_type: RollType, against: Against) -> bool:
-        has_dwarven_resilience = bool(
-            self.senses.filter(name=SenseName.DWARVEN_RESILIENCE)
-        )
-        has_fey_ancestry = bool(self.senses.filter(name=SenseName.FEY_ANCESTRY))
-        is_brave = bool(self.senses.filter(name=SenseName.BRAVE))
+    def _has_trait(self, trait_name: str) -> bool:
+        """Check if character's species has a specific trait."""
+        if not self.species:
+            return False
+        return self.species.traits.filter(name=trait_name).exists()
 
+    def has_advantage(self, roll_type: RollType, against: Against) -> bool:
         if (
-            has_dwarven_resilience
+            self._has_trait("dwarven_resilience")
             and roll_type == RollType.SAVING_THROW
             and against == Against.POISON
         ):
             return True
-        if has_fey_ancestry and RollType.SAVING_THROW and against == Against.CHARM:
+        if (
+            self._has_trait("fey_ancestry")
+            and roll_type == RollType.SAVING_THROW
+            and against == Against.CHARM
+        ):
             return True
-        if is_brave and RollType.SAVING_THROW and against == Against.BEING_FRIGHTENED:
+        if (
+            self._has_trait("brave")
+            and roll_type == RollType.SAVING_THROW
+            and against == Against.BEING_FRIGHTENED
+        ):
             return True
         return False
 

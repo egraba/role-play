@@ -2,13 +2,13 @@ from django.contrib import admin
 
 from .models.advancement import Advancement
 from .models.character import Character
-from .models.klasses import KlassAdvancement, HitPoints
-from .models.races import Sense
+from .models.klasses import HitPoints, KlassAdvancement
+from .models.species import Species, SpeciesTrait
 
 
 class CharacterAdmin(admin.ModelAdmin):
-    fields = ["name", "user", "race", "klass"]
-    list_display = ["name", "user", "race", "klass", "level", "xp"]
+    fields = ["name", "user", "species", "klass"]
+    list_display = ["name", "user", "species", "klass", "level", "xp"]
 
 
 class AdvancementAdmin(admin.ModelAdmin):
@@ -16,7 +16,21 @@ class AdvancementAdmin(admin.ModelAdmin):
     list_display = ["xp", "level", "proficiency_bonus"]
 
 
-class SenseAdmin(admin.ModelAdmin):
+class SpeciesAdmin(admin.ModelAdmin):
+    fields = [
+        "name",
+        "size",
+        "speed",
+        "darkvision",
+        "traits",
+        "languages",
+        "description",
+    ]
+    list_display = ["name", "size", "speed", "darkvision"]
+    filter_horizontal = ["traits", "languages"]
+
+
+class SpeciesTraitAdmin(admin.ModelAdmin):
     fields = ["name", "description"]
     list_display = ["name", "description"]
 
@@ -38,8 +52,9 @@ admin.site.register(Character, CharacterAdmin)
 # Advancement
 admin.site.register(Advancement, AdvancementAdmin)
 
-# Races
-admin.site.register(Sense, SenseAdmin)
+# Species
+admin.site.register(Species, SpeciesAdmin)
+admin.site.register(SpeciesTrait, SpeciesTraitAdmin)
 
 # Classes
 admin.site.register(HitPoints, HitPointsAdmin)
