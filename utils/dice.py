@@ -1,7 +1,6 @@
+import random
 import re
 from collections import UserString
-
-import dice
 
 DICE_REGEX = r"(\d+)?d(\d+)([\+\-]\d+)?"
 
@@ -39,6 +38,10 @@ class DiceString(UserString):
             raise DiceStringFormatError(f"{dice_type=} is not supported")
         self.dice_type = dice_type
 
+    def _roll_dice(self) -> list[int]:
+        """Roll the dice and return individual results."""
+        return [random.randint(1, self.dice_type) for _ in range(self.nb_throws)]
+
     def add_throws(self, nb_throws: int) -> str:
         """
         Add throws to a dice string.
@@ -71,4 +74,93 @@ class DiceString(UserString):
         Returns:
             int: Sum of dice rolls results.
         """
-        return sum(list(dice.roll(self.data))) + modifier
+        return sum(self._roll_dice()) + modifier
+
+    def roll_keeping_individual(self, modifier: int = 0) -> tuple[int, list[int]]:
+        """Roll and return individual die results for transparency.
+
+        Args:
+            modifier (int): Positive or negative integer to add to the total.
+
+        Returns:
+            tuple: (total_with_modifier, list_of_individual_rolls)
+        """
+        rolls = self._roll_dice()
+        return sum(rolls) + modifier, rolls
+
+    def roll_with_advantage(self, modifier: int = 0) -> tuple[int, int, int]:
+        """Roll twice and take the higher result (D&D 5e advantage).
+
+        Args:
+            modifier (int): Positive or negative integer to add to the result.
+
+        Returns:
+            tuple: (final_result_with_modifier, first_roll, second_roll)
+        """
+        roll1 = sum(self._roll_dice())
+        roll2 = sum(self._roll_dice())
+        return max(roll1, roll2) + modifier, roll1, roll2
+
+    def roll_with_disadvantage(self, modifier: int = 0) -> tuple[int, int, int]:
+        """Roll twice and take the lower result (D&D 5e disadvantage).
+
+        Args:
+            modifier (int): Positive or negative integer to add to the result.
+
+        Returns:
+            tuple: (final_result_with_modifier, first_roll, second_roll)
+        """
+        roll1 = sum(self._roll_dice())
+        roll2 = sum(self._roll_dice())
+        return min(roll1, roll2) + modifier, roll1, roll2
+
+    def roll_damage(self, critical: bool = False) -> int:
+        """Roll damage dice with optional critical hit (doubles dice).
+
+        Args:
+            critical: If True, roll twice as many dice (D&D 5e critical hit).
+
+        Returns:
+            int: Total damage rolled.
+        """
+        rolls = self._roll_dice()
+        if critical:
+            rolls += self._roll_dice()
+        return sum(rolls)
+
+
+def roll_d20_test(
+    modifier: int = 0,
+    advantage: bool = False,
+    disadvantage: bool = False,
+) -> tuple[int, bool, bool]:
+    """Perform a d20 ability check or saving throw.
+
+    Handles advantage/disadvantage and detects natural 1s and 20s.
+    If both advantage and disadvantage apply, they cancel out.
+
+    Args:
+        modifier: Bonus/penalty to add to the roll.
+        advantage: Roll twice, take higher.
+        disadvantage: Roll twice, take lower.
+
+    Returns:
+        tuple: (total, is_natural_20, is_natural_1)
+    """
+    d20 = DiceString("d20")
+
+    if advantage and disadvantage:
+        # Cancel out - single roll
+        _, rolls = d20.roll_keeping_individual()
+        natural = rolls[0]
+    elif advantage:
+        _, roll1, roll2 = d20.roll_with_advantage()
+        natural = max(roll1, roll2)
+    elif disadvantage:
+        _, roll1, roll2 = d20.roll_with_disadvantage()
+        natural = min(roll1, roll2)
+    else:
+        _, rolls = d20.roll_keeping_individual()
+        natural = rolls[0]
+
+    return natural + modifier, natural == 20, natural == 1
