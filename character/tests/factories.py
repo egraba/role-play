@@ -10,7 +10,7 @@ from character.constants.equipment import (
     ToolName,
     WeaponName,
 )
-from character.constants.races import Race
+from character.constants.species import SpeciesName, SpeciesTraitName
 from character.models.abilities import Ability, AbilityType
 from character.models.character import Character
 from character.models.conditions import CharacterCondition, Condition
@@ -28,6 +28,7 @@ from character.models.equipment import (
     WeaponSettings,
 )
 from character.models.klasses import Klass
+from character.models.species import Species, SpeciesTrait
 
 
 class AbilityTypeFactory(factory.django.DjangoModelFactory):
@@ -52,6 +53,26 @@ class InventoryFactory(factory.django.DjangoModelFactory):
         model = Inventory
 
 
+class SpeciesTraitFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = SpeciesTrait
+        django_get_or_create = ("name",)
+
+    name = factory.Faker("random_element", elements=SpeciesTraitName)
+    description = factory.Faker("text", max_nb_chars=200)
+
+
+class SpeciesFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Species
+        django_get_or_create = ("name",)
+
+    name = factory.Faker("random_element", elements=SpeciesName)
+    size = "M"
+    speed = 30
+    darkvision = 0
+
+
 class CharacterFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Character
@@ -59,7 +80,7 @@ class CharacterFactory(factory.django.DjangoModelFactory):
 
     name = factory.Sequence(lambda n: f"character{n}")
     user = factory.SubFactory("user.tests.factories.UserFactory")
-    race = factory.Faker("enum", enum_cls=Race)
+    species = factory.SubFactory(SpeciesFactory)
     klass = factory.Faker("enum", enum_cls=Klass)
     background = factory.Faker("enum", enum_cls=Background)
     xp = factory.Faker("random_int")

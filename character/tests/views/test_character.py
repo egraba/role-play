@@ -8,7 +8,7 @@ from character.constants.abilities import AbilityName, AbilityScore
 from character.constants.backgrounds import BACKGROUNDS, Background
 from character.constants.equipment import ArmorName, GearName, ToolName, WeaponName
 from character.constants.character import Gender
-from character.constants.races import LanguageName, Race, SenseName
+from character.constants.species import SpeciesName
 from character.constants.skills import SkillName
 from character.forms.backgrounds import (
     _get_artisans_tools,
@@ -26,7 +26,7 @@ from character.forms.skills import _get_skills
 from character.models.character import Character
 from character.models.klasses import Klass
 from character.models.proficiencies import SavingThrowProficiency, SkillProficiency
-from character.models.races import Language, Sense
+from character.models.species import Species
 from character.models.skills import Skill
 from character.views.character import (
     CharacterCreateView,
@@ -35,7 +35,7 @@ from character.views.character import (
 from game.tests.factories import GameFactory, PlayerFactory
 from user.tests.factories import UserFactory
 
-from ..factories import CharacterFactory
+from ..factories import CharacterFactory, SpeciesFactory
 
 
 @pytest.mark.django_db
@@ -88,11 +88,13 @@ class TestCharacterCreateView:
     @pytest.fixture
     def character_form(self):
         fake = Faker()
+        # Create species in database for form to reference
+        species = SpeciesFactory(name=fake.enum(enum_cls=SpeciesName))
         current_step = CharacterCreateView.Step.BASE_ATTRIBUTES_SELECTION
         return {
             "character_create_view-current_step": current_step,
             f"{current_step}-name": f"{fake.name()}",
-            f"{current_step}-race": f"{fake.enum(enum_cls=Race)}",
+            f"{current_step}-species": species.name,
             f"{current_step}-klass": f"{fake.enum(enum_cls=Klass)}",
             f"{current_step}-background": f"{fake.enum(enum_cls=Background)}",
             f"{current_step}-strength": AbilityScore.SCORE_10,
@@ -106,56 +108,30 @@ class TestCharacterCreateView:
 
     @pytest.fixture
     def dwarf_form(self, character_form):
-        fake = Faker()
         current_step = character_form["character_create_view-current_step"]
-        character_form[f"{current_step}-race"] = (
-            f"{fake.random_element(elements=(Race.HILL_DWARF, Race.MOUNTAIN_DWARF))}"
-        )
-        return character_form
-
-    @pytest.fixture
-    def hill_dwarf_form(self, character_form):
-        current_step = character_form["character_create_view-current_step"]
-        character_form[f"{current_step}-race"] = Race.HILL_DWARF
-        return character_form
-
-    @pytest.fixture
-    def mountain_dwarf_form(self, character_form):
-        current_step = character_form["character_create_view-current_step"]
-        character_form[f"{current_step}-race"] = Race.MOUNTAIN_DWARF
+        species = SpeciesFactory(name=SpeciesName.DWARF)
+        character_form[f"{current_step}-species"] = species.name
         return character_form
 
     @pytest.fixture
     def elf_form(self, character_form):
-        fake = Faker()
         current_step = character_form["character_create_view-current_step"]
-        character_form[f"{current_step}-race"] = (
-            f"{fake.random_element(elements=(Race.HIGH_ELF, Race.WOOD_ELF))}"
-        )
-        return character_form
-
-    @pytest.fixture
-    def high_elf_form(self, character_form):
-        current_step = character_form["character_create_view-current_step"]
-        character_form[f"{current_step}-race"] = Race.HIGH_ELF
-        return character_form
-
-    @pytest.fixture
-    def wood_elf_form(self, character_form):
-        current_step = character_form["character_create_view-current_step"]
-        character_form[f"{current_step}-race"] = Race.WOOD_ELF
+        species = SpeciesFactory(name=SpeciesName.ELF)
+        character_form[f"{current_step}-species"] = species.name
         return character_form
 
     @pytest.fixture
     def halfling_form(self, character_form):
         current_step = character_form["character_create_view-current_step"]
-        character_form[f"{current_step}-race"] = Race.HALFLING
+        species = SpeciesFactory(name=SpeciesName.HALFLING)
+        character_form[f"{current_step}-species"] = species.name
         return character_form
 
     @pytest.fixture
     def human_form(self, character_form):
         current_step = character_form["character_create_view-current_step"]
-        character_form[f"{current_step}-race"] = Race.HUMAN
+        species = SpeciesFactory(name=SpeciesName.HUMAN)
+        character_form[f"{current_step}-species"] = species.name
         return character_form
 
     @pytest.fixture
@@ -188,22 +164,23 @@ class TestCharacterCreateView:
             # This is necessary to send valid data to the form.
             return (choice[0], choice[0])
 
-        race_key = f"{CharacterCreateView.Step.BASE_ATTRIBUTES_SELECTION}-race"
+        species_key = f"{CharacterCreateView.Step.BASE_ATTRIBUTES_SELECTION}-species"
         background_key = (
             f"{CharacterCreateView.Step.BASE_ATTRIBUTES_SELECTION}-background"
         )
         current_step = CharacterCreateView.Step.BACKGROUND_COMPLETION
-        race = character_form[race_key]
+        species_name = character_form[species_key]
+        species = Species.objects.filter(name=species_name).first()
         data = {"character_create_view-current_step": current_step}
         match character_form[background_key]:
             case Background.ACOLYTE:
                 data.update(
                     {
                         f"{current_step}-first_language": _get_random_element(
-                            _get_non_spoken_languages(race)
+                            _get_non_spoken_languages(species)
                         ),
                         f"{current_step}-second_language": _get_random_element(
-                            _get_non_spoken_languages(race)
+                            _get_non_spoken_languages(species)
                         ),
                         f"{current_step}-equipment": _get_random_element(
                             _get_holy_symbols()
@@ -236,7 +213,7 @@ class TestCharacterCreateView:
                             _get_gaming_set_tools()
                         ),
                         f"{current_step}-language": _get_random_element(
-                            _get_non_spoken_languages(race)
+                            _get_non_spoken_languages(species)
                         ),
                     }
                 )
@@ -244,10 +221,10 @@ class TestCharacterCreateView:
                 data.update(
                     {
                         f"{current_step}-first_language": _get_random_element(
-                            _get_non_spoken_languages(race)
+                            _get_non_spoken_languages(species)
                         ),
                         f"{current_step}-second_language": _get_random_element(
-                            _get_non_spoken_languages(race)
+                            _get_non_spoken_languages(species)
                         ),
                     }
                 )
@@ -316,8 +293,8 @@ class TestCharacterCreateView:
     ):
         form_list = [character_form, skills_form, background_form, equipment_form]
         character = self._create_character(client, form_list)
-        assert character.name, character_form.cleaned_data["name"]
-        assert character.race, character_form.cleaned_data["race"]
+        assert character.name
+        assert character.species is not None
         assert character.xp == 0
         assert character.hp >= 100
         assert character.max_hp >= 100
@@ -326,133 +303,66 @@ class TestCharacterCreateView:
     def test_dwarf_creation(
         self, client, dwarf_form, skills_form, background_form, equipment_form
     ):
+        """Test dwarf character creation with D&D 2024 rules (no ability score increases)."""
         form_list = [dwarf_form, skills_form, background_form, equipment_form]
         character = self._create_character(client, form_list)
+        # Ability scores are player-chosen in 2024 rules, not species-determined
         assert character.dexterity.score == AbilityScore.SCORE_12
-        assert character.constitution.score == AbilityScore.SCORE_13 + 2
+        assert character.constitution.score == AbilityScore.SCORE_13
         assert character.intelligence.score == AbilityScore.SCORE_14
         assert character.charisma.score == AbilityScore.SCORE_8
-        assert character.speed == 25
-        languages = set()
-        languages.add(Language.objects.get(name=LanguageName.COMMON))
-        languages.add(Language.objects.get(name=LanguageName.DWARVISH))
-        assert set(character.languages.all()) == languages
-        senses = set()
-        senses.add(Sense.objects.get(name=SenseName.DARKVISION))
-        senses.add(Sense.objects.get(name=SenseName.DWARVEN_RESILIENCE))
-        senses.add(Sense.objects.get(name=SenseName.DWARVEN_COMBAT_TRAINING))
-        senses.add(Sense.objects.get(name=SenseName.TOOL_PROFICIENCY))
-        senses.add(Sense.objects.get(name=SenseName.STONECUNNING))
-        assert senses.issubset(set(character.senses.all()))
-
-    def test_hill_dwarf_creation(
-        self, client, hill_dwarf_form, skills_form, background_form, equipment_form
-    ):
-        form_list = [hill_dwarf_form, skills_form, background_form, equipment_form]
-        character = self._create_character(client, form_list)
-        assert 3.8 < character.height <= 3.8 + 2 * 4 / 12
-        assert 115 < character.weight <= 115 + 2 * 6 * 12
-        assert character.wisdom.score == AbilityScore.SCORE_15 + 1
-        assert character.senses.get(name=SenseName.DWARVEN_TOUGHNESS)
-
-    def test_mountain_dwarf_creation(
-        self, client, mountain_dwarf_form, skills_form, background_form, equipment_form
-    ):
-        form_list = [mountain_dwarf_form, skills_form, background_form, equipment_form]
-        character = self._create_character(client, form_list)
-        assert 4 < character.height <= 4 + 2 * 4 / 12
-        assert 130 < character.weight <= 130 + 2 * 6 * 12
-        assert character.strength.score == AbilityScore.SCORE_10 + 2
-        assert character.senses.get(name=SenseName.DWARVEN_ARMOR_TRAINING)
+        # Species-derived attributes
+        assert character.species.name == SpeciesName.DWARF
+        assert character.speed == 30  # 2024 rules: dwarves have 30 speed
 
     def test_elf_creation(
         self, client, elf_form, skills_form, background_form, equipment_form
     ):
+        """Test elf character creation with D&D 2024 rules (no ability score increases)."""
         form_list = [elf_form, skills_form, background_form, equipment_form]
         character = self._create_character(client, form_list)
+        # Ability scores are player-chosen in 2024 rules, not species-determined
         assert character.strength.score == AbilityScore.SCORE_10
-        assert character.dexterity.score == AbilityScore.SCORE_12 + 2
+        assert character.dexterity.score == AbilityScore.SCORE_12
         assert character.constitution.score == AbilityScore.SCORE_13
         assert character.charisma.score == AbilityScore.SCORE_8
+        # Species-derived attributes
+        assert character.species.name == SpeciesName.ELF
         assert character.speed == 30
-        languages = set()
-        languages.add(Language.objects.get(name=LanguageName.COMMON))
-        languages.add(Language.objects.get(name=LanguageName.ELVISH))
-        assert set(character.languages.all()) == languages
-        senses = set()
-        senses.add(Sense.objects.get(name=SenseName.DARKVISION))
-        senses.add(Sense.objects.get(name=SenseName.KEEN_SENSES))
-        senses.add(Sense.objects.get(name=SenseName.FEY_ANCESTRY))
-        senses.add(Sense.objects.get(name=SenseName.TRANCE))
-        assert senses.issubset(set(character.senses.all()))
-
-    def test_high_elf_creation(
-        self, client, high_elf_form, skills_form, background_form, equipment_form
-    ):
-        form_list = [high_elf_form, skills_form, background_form, equipment_form]
-        character = self._create_character(client, form_list)
-        assert 4.6 < character.height <= 4.6 + 2 * 10 / 12
-        assert 90 < character.weight <= 90 + 1 * 4 * 12
-        assert character.intelligence.score == AbilityScore.SCORE_14 + 1
-        assert character.senses.get(name=SenseName.ELF_WEAPON_TRAINING)
-        assert character.senses.get(name=SenseName.CANTRIP)
-        assert character.senses.get(name=SenseName.EXTRA_LANGUAGE)
-
-    def test_wood_elf_creation(
-        self, client, wood_elf_form, skills_form, background_form, equipment_form
-    ):
-        form_list = [wood_elf_form, skills_form, background_form, equipment_form]
-        character = self._create_character(client, form_list)
-        assert 4.6 < character.height <= 4.6 + 2 * 10 / 12
-        assert 100 < character.weight <= 100 + 1 * 4 * 12
-        assert character.wisdom.score == AbilityScore.SCORE_15 + 1
-        assert character.senses.get(name=SenseName.ELF_WEAPON_TRAINING)
-        assert character.senses.get(name=SenseName.FLEET_OF_FOOT)
-        assert character.senses.get(name=SenseName.MASK_OF_THE_WILD)
 
     def test_halfling_creation(
         self, client, halfling_form, skills_form, background_form, equipment_form
     ):
+        """Test halfling character creation with D&D 2024 rules (no ability score increases)."""
         form_list = [halfling_form, skills_form, background_form, equipment_form]
         character = self._create_character(client, form_list)
-        assert 2.7 < character.height <= 2.7 + 2 * 4 / 12
-        assert 35 == character.weight
+        # Ability scores are player-chosen in 2024 rules, not species-determined
         assert character.strength.score == AbilityScore.SCORE_10
-        assert character.dexterity.score == AbilityScore.SCORE_12 + 2
+        assert character.dexterity.score == AbilityScore.SCORE_12
         assert character.constitution.score == AbilityScore.SCORE_13
         assert character.intelligence.score == AbilityScore.SCORE_14
         assert character.wisdom.score == AbilityScore.SCORE_15
         assert character.charisma.score == AbilityScore.SCORE_8
-        assert character.speed == 25
-        languages = set()
-        languages.add(Language.objects.get(name=LanguageName.COMMON))
-        languages.add(Language.objects.get(name=LanguageName.HALFLING))
-        assert set(character.languages.all()) == languages
-        senses = set()
-        senses.add(Sense.objects.get(name=SenseName.LUCKY))
-        senses.add(Sense.objects.get(name=SenseName.BRAVE))
-        senses.add(Sense.objects.get(name=SenseName.HALFLING_NIMBLENESS))
-        assert set(character.senses.all()) == senses
+        # Species-derived attributes
+        assert character.species.name == SpeciesName.HALFLING
+        assert character.speed == 30
 
     def test_human_creation(
         self, client, human_form, skills_form, background_form, equipment_form
     ):
+        """Test human character creation with D&D 2024 rules (no ability score increases)."""
         form_list = [human_form, skills_form, background_form, equipment_form]
         character = self._create_character(client, form_list)
-        assert 4.8 < character.height <= 4.8 + 2 * 10 / 12
-        assert 110 < character.weight <= 110 + 2 * 4 * 12
-        assert character.strength.score == AbilityScore.SCORE_10 + 1
-        assert character.dexterity.score == AbilityScore.SCORE_12 + 1
-        assert character.constitution.score == AbilityScore.SCORE_13 + 1
-        assert character.intelligence.score == AbilityScore.SCORE_14 + 1
-        assert character.wisdom.score == AbilityScore.SCORE_15 + 1
-        assert character.charisma.score == AbilityScore.SCORE_8 + 1
+        # Ability scores are player-chosen in 2024 rules, not species-determined
+        assert character.strength.score == AbilityScore.SCORE_10
+        assert character.dexterity.score == AbilityScore.SCORE_12
+        assert character.constitution.score == AbilityScore.SCORE_13
+        assert character.intelligence.score == AbilityScore.SCORE_14
+        assert character.wisdom.score == AbilityScore.SCORE_15
+        assert character.charisma.score == AbilityScore.SCORE_8
+        # Species-derived attributes
+        assert character.species.name == SpeciesName.HUMAN
         assert character.speed == 30
-        languages = set()
-        languages.add(Language.objects.get(name=LanguageName.COMMON))
-        assert set(character.languages.all()) == languages
-        senses = set()
-        assert set(character.senses.all()) == senses
 
     @pytest.fixture
     def cleric_form(self, character_form):

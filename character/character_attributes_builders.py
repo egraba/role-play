@@ -3,16 +3,13 @@ from abc import ABC, abstractmethod
 
 from utils.dice import DiceString
 
-from .ability_modifiers import compute_ability_modifier
 from .constants.backgrounds import BACKGROUNDS
 from .constants.klasses import KLASS_FEATURES
-from .constants.races import RACIAL_TRAITS
 from .forms.character import CharacterCreateForm
 from .models.abilities import Ability, AbilityType
 from .models.character import Character
 from .models.equipment import Inventory
 from .models.proficiencies import SavingThrowProficiency, SkillProficiency
-from .models.races import Language, Sense
 from .models.skills import Skill
 
 
@@ -44,56 +41,26 @@ class BaseBuilder(CharacterAttributesBuilder):
         self._initialize_ability_scores()
 
 
-class RaceBuilder(CharacterAttributesBuilder):
+class SpeciesBuilder(CharacterAttributesBuilder):
+    """Apply species traits to a character (D&D 2024 rules)."""
+
     def __init__(self, character: Character) -> None:
         self.character = character
-        self.race = character.race
+        self.species = character.species
 
-    def _apply_racial_traits(self) -> None:
-        self.character.adult_age = RACIAL_TRAITS[self.race]["adult_age"]
-        self.character.life_expectancy = RACIAL_TRAITS[self.race]["life_expectancy"]
-        self.character.alignment = RACIAL_TRAITS[self.race]["alignment"]
-        self.character.size = RACIAL_TRAITS[self.race]["size"]
-        self.character.speed = RACIAL_TRAITS[self.race]["speed"]
+    def _apply_species_traits(self) -> None:
+        """Apply size, speed, and languages from species."""
+        if not self.species:
+            return
+        self.character.size = self.species.size
+        self.character.speed = self.species.speed
         # Need to save before setting many-to-many relationships
         self.character.save()
-        for language in RACIAL_TRAITS[self.race]["languages"]:
-            self.character.languages.add(Language.objects.get(name=language))
-        for sense in RACIAL_TRAITS[self.race]["senses"]:
-            self.character.senses.add(Sense.objects.get(name=sense))
-
-    def _apply_ability_score_increases(self) -> None:
-        increases = RACIAL_TRAITS[self.race]["ability_score_increases"]
-        for increase in increases:
-            ability = self.character.abilities.get(ability_type__name=increase)
-            ability.score += increases[increase]
-            ability.save()
-
-    def _compute_ability_modifiers(self) -> None:
-        for ability in self.character.abilities.all():
-            ability.modifier = compute_ability_modifier(ability.score)
-
-    def _set_height(self) -> None:
-        base_height = RACIAL_TRAITS[self.race]["height"]["base_height"]
-        height_modifier = RACIAL_TRAITS[self.race]["height"]["height_modifier"]
-        additional_height = DiceString(height_modifier).roll() / 12  # inches
-        self.character.height = base_height + additional_height
-
-    def _set_weight(self) -> None:
-        base_weight = RACIAL_TRAITS[self.race]["weight"]["base_weight"]
-        weight_modifier = RACIAL_TRAITS[self.race]["weight"]["weight_modifier"]
-        if weight_modifier is None:
-            self.character.weight = base_weight
-        else:
-            additional_weight = DiceString(weight_modifier).roll() * 12  # pounds
-            self.character.weight = base_weight + additional_weight
+        for language in self.species.languages.all():
+            self.character.languages.add(language)
 
     def build(self) -> None:
-        self._apply_racial_traits()
-        self._apply_ability_score_increases()
-        self._compute_ability_modifiers()
-        self._set_height()
-        self._set_weight()
+        self._apply_species_traits()
         self.character.save()
 
 

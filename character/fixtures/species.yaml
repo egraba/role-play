@@ -1,0 +1,70 @@
+- model: character.species
+  pk: dwarf
+  fields:
+    name: dwarf
+    size: M
+    speed: 30
+    darkvision: 120
+    traits:
+      - dwarven_resilience
+      - dwarven_toughness
+      - stonecunning
+    languages:
+      - 1  # Common
+      - 2  # Dwarvish
+    description: |
+      Dwarves are a storied people, medium in stature but hardy and versatile.
+      They have 120 feet of Darkvision and are resistant to poison.
+
+- model: character.species
+  pk: elf
+  fields:
+    name: elf
+    size: M
+    speed: 30
+    darkvision: 60
+    traits:
+      - fey_ancestry
+      - keen_senses
+      - trance
+    languages:
+      - 1  # Common
+      - 3  # Elvish
+    description: |
+      Elves are a magical people of otherworldly grace. They have 60 feet of
+      Darkvision and are resistant to being charmed.
+
+- model: character.species
+  pk: halfling
+  fields:
+    name: halfling
+    size: S
+    speed: 30
+    darkvision: 0
+    traits:
+      - brave
+      - halfling_nimbleness
+      - lucky
+    languages:
+      - 1  # Common
+      - 7  # Halfling
+    description: |
+      Halflings are a small people with big hearts. They are brave, nimble,
+      and remarkably lucky.
+
+- model: character.species
+  pk: human
+  fields:
+    name: human
+    size: M
+    speed: 30
+    darkvision: 0
+    traits:
+      - resourceful
+      - skillful
+      - versatile
+    languages:
+      - 1  # Common (plus one additional language of choice)
+    description: |
+      Humans are the most adaptable and versatile of the common peoples.
+      They are resourceful, skillful, and gain a feat at first level.
