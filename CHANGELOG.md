@@ -5,6 +5,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Added
+* HTMX 2.0 integration for real-time UI updates without full page reloads (includes django-htmx middleware for request.htmx detection)
 * Class model with hit die, primary ability, saving throw proficiencies, armor/weapon proficiencies, and starting wealth
 * ClassFeature model for class features gained at each level
 * CharacterClass junction model supporting multiclassing (character can have multiple classes with levels)
