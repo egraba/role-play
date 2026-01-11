@@ -201,12 +201,6 @@ The project is organized by domain (character, game, master, user) with each hav
 - Excluded from linting: `role_play/asgi.py`, `role_play/urls.py`, `role_play/settings/*`
 - Coverage omits: `manage.py`
 
-## Rules Implementation
-- Follow SRD 5.2.1 rules exactly
-- Use Django models for game entities
-- Write tests for all mechanics
-- Keep AI logic in the ai/ app
-
 ## Common Tasks for AI Agents
 
 ### Before Starting Any Work
