@@ -1,8 +1,13 @@
 # D&D 2024 SRD Class Features
 # Fighter class features as reference implementation
 
+# =============================================================================
+# FIGHTER
+# =============================================================================
+
 # Level 1
 - model: character.classfeature
+  pk: 1
   fields:
     name: "Fighting Style"
     klass: fighter
@@ -12,6 +17,7 @@
       Whenever you gain a Fighter level, you can replace this feat with another Fighting Style feat.
 
 - model: character.classfeature
+  pk: 2
   fields:
     name: "Second Wind"
     klass: fighter
@@ -27,6 +33,7 @@
 
 # Level 2
 - model: character.classfeature
+  pk: 3
   fields:
     name: "Action Surge"
     klass: fighter
@@ -40,6 +47,7 @@
 
 # Level 4
 - model: character.classfeature
+  pk: 4
   fields:
     name: "Ability Score Improvement (Level 4)"
     klass: fighter
@@ -50,6 +58,7 @@
 
 # Level 5
 - model: character.classfeature
+  pk: 5
   fields:
     name: "Extra Attack"
     klass: fighter
@@ -58,6 +67,7 @@
       You can attack twice instead of once whenever you take the Attack action on your turn.
 
 - model: character.classfeature
+  pk: 6
   fields:
     name: "Tactical Mind"
     klass: fighter
@@ -70,6 +80,7 @@
 
 # Level 6
 - model: character.classfeature
+  pk: 7
   fields:
     name: "Ability Score Improvement (Level 6)"
     klass: fighter
@@ -80,6 +91,7 @@
 
 # Level 8
 - model: character.classfeature
+  pk: 8
   fields:
     name: "Ability Score Improvement (Level 8)"
     klass: fighter
@@ -90,6 +102,7 @@
 
 # Level 9
 - model: character.classfeature
+  pk: 9
   fields:
     name: "Indomitable"
     klass: fighter
@@ -103,6 +116,7 @@
       times between Long Rests starting at level 17.
 
 - model: character.classfeature
+  pk: 10
   fields:
     name: "Tactical Shift"
     klass: fighter
@@ -113,6 +127,7 @@
 
 # Level 11
 - model: character.classfeature
+  pk: 11
   fields:
     name: "Two Extra Attacks"
     klass: fighter
@@ -123,6 +138,7 @@
 
 # Level 12
 - model: character.classfeature
+  pk: 12
   fields:
     name: "Ability Score Improvement (Level 12)"
     klass: fighter
@@ -133,6 +149,7 @@
 
 # Level 13
 - model: character.classfeature
+  pk: 13
   fields:
     name: "Studied Attacks"
     klass: fighter
@@ -144,6 +161,7 @@
 
 # Level 14
 - model: character.classfeature
+  pk: 14
   fields:
     name: "Ability Score Improvement (Level 14)"
     klass: fighter
@@ -154,6 +172,7 @@
 
 # Level 16
 - model: character.classfeature
+  pk: 15
   fields:
     name: "Ability Score Improvement (Level 16)"
     klass: fighter
@@ -164,6 +183,7 @@
 
 # Level 19
 - model: character.classfeature
+  pk: 16
   fields:
     name: "Epic Boon"
     klass: fighter
@@ -173,6 +193,7 @@
 
 # Level 20
 - model: character.classfeature
+  pk: 17
   fields:
     name: "Three Extra Attacks"
     klass: fighter
@@ -186,6 +207,7 @@
 # =============================================================================
 
 - model: character.classfeature
+  pk: 18
   fields:
     name: "Rage"
     klass: barbarian
@@ -199,6 +221,7 @@
       last turn.
 
 - model: character.classfeature
+  pk: 19
   fields:
     name: "Unarmored Defense"
     klass: barbarian
@@ -212,6 +235,7 @@
 # =============================================================================
 
 - model: character.classfeature
+  pk: 20
   fields:
     name: "Bardic Inspiration"
     klass: bard
@@ -223,6 +247,7 @@
       die and add the number rolled to one ability check, attack roll, or saving throw it makes.
 
 - model: character.classfeature
+  pk: 21
   fields:
     name: "Spellcasting"
     klass: bard
@@ -237,6 +262,7 @@
 # =============================================================================
 
 - model: character.classfeature
+  pk: 22
   fields:
     name: "Spellcasting"
     klass: cleric
@@ -247,6 +273,7 @@
       for you to cast, choosing from the cleric spell list.
 
 - model: character.classfeature
+  pk: 23
   fields:
     name: "Divine Order"
     klass: cleric
@@ -262,6 +289,7 @@
 # =============================================================================
 
 - model: character.classfeature
+  pk: 24
   fields:
     name: "Druidic"
     klass: druid
@@ -272,6 +300,7 @@
       such a message.
 
 - model: character.classfeature
+  pk: 25
   fields:
     name: "Spellcasting"
     klass: druid
@@ -285,6 +314,7 @@
 # =============================================================================
 
 - model: character.classfeature
+  pk: 26
   fields:
     name: "Martial Arts"
     klass: monk
@@ -297,6 +327,7 @@
       weapon, you can make one unarmed strike as a Bonus Action.
 
 - model: character.classfeature
+  pk: 27
   fields:
     name: "Unarmored Defense"
     klass: monk
@@ -310,6 +341,7 @@
 # =============================================================================
 
 - model: character.classfeature
+  pk: 28
   fields:
     name: "Lay on Hands"
     klass: paladin
@@ -321,6 +353,7 @@
       and draw power from the pool to restore Hit Points to that creature.
 
 - model: character.classfeature
+  pk: 29
   fields:
     name: "Spellcasting"
     klass: paladin
@@ -334,6 +367,7 @@
 # =============================================================================
 
 - model: character.classfeature
+  pk: 30
   fields:
     name: "Favored Enemy"
     klass: ranger
@@ -345,6 +379,7 @@
       its full duration.
 
 - model: character.classfeature
+  pk: 31
   fields:
     name: "Spellcasting"
     klass: ranger
@@ -358,6 +393,7 @@
 # =============================================================================
 
 - model: character.classfeature
+  pk: 32
   fields:
     name: "Expertise"
     klass: rogue
@@ -368,6 +404,7 @@
       check you make that uses either of the chosen proficiencies.
 
 - model: character.classfeature
+  pk: 33
   fields:
     name: "Sneak Attack"
     klass: rogue
@@ -383,6 +420,7 @@
 # =============================================================================
 
 - model: character.classfeature
+  pk: 34
   fields:
     name: "Spellcasting"
     klass: sorcerer
@@ -392,6 +430,7 @@
       of magic fuels your spells. Charisma is your spellcasting ability for your sorcerer spells.
 
 - model: character.classfeature
+  pk: 35
   fields:
     name: "Innate Sorcery"
     klass: sorcerer
@@ -407,6 +446,7 @@
 # =============================================================================
 
 - model: character.classfeature
+  pk: 36
   fields:
     name: "Pact Magic"
     klass: warlock
@@ -417,6 +457,7 @@
       Your spell slots are all the same level and recharge on a Short or Long Rest.
 
 - model: character.classfeature
+  pk: 37
   fields:
     name: "Eldritch Invocations"
     klass: warlock
@@ -431,6 +472,7 @@
 # =============================================================================
 
 - model: character.classfeature
+  pk: 38
   fields:
     name: "Spellcasting"
     klass: wizard
@@ -441,6 +483,7 @@
       your wizard spells.
 
 - model: character.classfeature
+  pk: 39
   fields:
     name: "Arcane Recovery"
     klass: wizard
