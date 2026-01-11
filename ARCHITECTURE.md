@@ -271,7 +271,7 @@ Builder pattern for character creation:
 
 1. **`BaseBuilder`** - Initialize abilities, inventory
 2. **`RaceBuilder`** - Apply racial traits
-3. **`KlassBuilder`** - Apply class features
+3. **`ClassBuilder`** - Apply class features
 4. **`BackgroundBuilder`** - Apply background
 
 ### Background Processing (`game/tasks.py`)

@@ -9,16 +9,16 @@ from formtools.wizard.views import SessionWizardView
 from ..character_attributes_builders import (
     BackgroundBuilder,
     BaseBuilder,
-    KlassBuilder,
+    ClassBuilder,
     SpeciesBuilder,
 )
 from ..constants.equipment import ArmorName, GearName, ToolName, WeaponName
+from ..constants.classes import ClassName
 from ..forms.backgrounds import BackgroundForm
 from ..forms.character import CharacterCreateForm
 from ..forms.equipment import EquipmentSelectForm
 from ..forms.skills import SkillsSelectForm
 from ..models.character import Character
-from ..models.klasses import Klass
 
 MULTI_EQUIPMENT_REGEX = r"\S+\s&\s\S+"
 
@@ -66,13 +66,15 @@ class CharacterCreateView(LoginRequiredMixin, SessionWizardView):
         return self.initial_dict.get(step, {})
 
     def done(self, form_list, **kwargs):
+        klass = None
         for form in form_list:
             if isinstance(form, CharacterCreateForm):
                 character = form.save(commit=False)
                 character.user = self.request.user
+                klass = form.cleaned_data["klass"]
                 BaseBuilder(character, form).build()
                 SpeciesBuilder(character).build()
-                KlassBuilder(character).build()
+                ClassBuilder(character, klass).build()
             elif isinstance(form, SkillsSelectForm):
                 for field in form.cleaned_data.keys():
                     character.skills.add(form.cleaned_data[field])
@@ -95,20 +97,21 @@ class CharacterCreateView(LoginRequiredMixin, SessionWizardView):
                     except KeyError:
                         pass
                 # Some equipment is added without selection, depending on character's class.
-                match character.klass:
-                    case Klass.CLERIC:
-                        inventory.add(WeaponName.CROSSBOW_LIGHT)
-                        inventory.add(GearName.CROSSBOW_BOLTS)
-                        inventory.add(ArmorName.SHIELD)
-                    case Klass.ROGUE:
-                        inventory.add(WeaponName.SHORTBOW)
-                        inventory.add(GearName.QUIVER)
-                        inventory.add(ArmorName.LEATHER)
-                        inventory.add(WeaponName.DAGGER)
-                        inventory.add(WeaponName.DAGGER)
-                        inventory.add(ToolName.THIEVES_TOOLS)
-                    case Klass.WIZARD:
-                        inventory.add(GearName.SPELLBOOK)
+                if klass:
+                    match klass.name:
+                        case ClassName.CLERIC:
+                            inventory.add(WeaponName.CROSSBOW_LIGHT)
+                            inventory.add(GearName.CROSSBOW_BOLTS)
+                            inventory.add(ArmorName.SHIELD)
+                        case ClassName.ROGUE:
+                            inventory.add(WeaponName.SHORTBOW)
+                            inventory.add(GearName.QUIVER)
+                            inventory.add(ArmorName.LEATHER)
+                            inventory.add(WeaponName.DAGGER)
+                            inventory.add(WeaponName.DAGGER)
+                            inventory.add(ToolName.THIEVES_TOOLS)
+                        case ClassName.WIZARD:
+                            inventory.add(GearName.SPELLBOOK)
             else:
                 raise NotImplementedError(f"{form=} is not implemented")
         return HttpResponseRedirect(character.get_absolute_url())

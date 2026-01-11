@@ -23,14 +23,10 @@ from .equipment import (
     WeaponSettings,
 )
 from .feats import CharacterFeat, Feat
-from .klasses import (
+from .classes import (
     CharacterClass,
     Class,
     ClassFeature,
-    HitPoints,
-    Klass,
-    KlassAdvancement,
-    KlassFeature,
 )
 from .proficiencies import SavingThrowProficiency, SkillProficiency
 from .races import Language
@@ -57,11 +53,7 @@ __all__ = [
     "Feat",
     "Gear",
     "GearSettings",
-    "HitPoints",
     "Inventory",
-    "Klass",
-    "KlassAdvancement",
-    "KlassFeature",
     "Language",
     "Pack",
     "PackSettings",

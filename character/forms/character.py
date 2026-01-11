@@ -2,23 +2,29 @@ from django import forms
 
 from ..constants.abilities import AbilityScore
 from ..models.character import Character
+from ..models.classes import Class
 from .mixins import NoDuplicateValuesFormMixin
 
 
 class CharacterCreateForm(NoDuplicateValuesFormMixin, forms.ModelForm):
     EMPTY_CHOICE = ("", "---------")
 
+    klass = forms.ModelChoiceField(
+        queryset=Class.objects.all(),
+        widget=forms.Select(attrs={"class": "rpgui-dropdown"}),
+        label="Class",
+        empty_label="---------",
+    )
+
     class Meta:
         model = Character
         fields = [
             "name",
             "species",
-            "klass",
             "background",
         ]
         widgets = {
             "species": forms.Select(attrs={"class": "rpgui-dropdown"}),
-            "klass": forms.Select(attrs={"class": "rpgui-dropdown"}),
             "background": forms.Select(attrs={"class": "rpgui-dropdown"}),
         }
 

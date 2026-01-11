@@ -4,13 +4,12 @@ from abc import ABC, abstractmethod
 from utils.dice import DiceString
 
 from .constants.backgrounds import BACKGROUNDS
-from .constants.klasses import KLASS_FEATURES
 from .forms.character import CharacterCreateForm
 from .models.abilities import Ability, AbilityType
 from .models.character import Character
 from .models.equipment import Inventory, ToolSettings
 from .models.feats import CharacterFeat, Feat
-from .models.klasses import CharacterClass, Class
+from .models.classes import CharacterClass, Class
 from .models.proficiencies import (
     SavingThrowProficiency,
     SkillProficiency,
@@ -67,55 +66,6 @@ class SpeciesBuilder(CharacterAttributesBuilder):
 
     def build(self) -> None:
         self._apply_species_traits()
-        self.character.save()
-
-
-class KlassBuilder(CharacterAttributesBuilder):
-    def __init__(self, character: Character) -> None:
-        self.character = character
-        self.klass = character.klass
-
-    def _apply_hit_points(self) -> None:
-        hit_points = KLASS_FEATURES[self.klass]["hit_points"]
-        self.character.hit_dice = DiceString(hit_points["hit_dice"])
-        self.character.hp += hit_points["hp_first_level"]
-        modifier = self.character.abilities.get(
-            ability_type=hit_points["hp_modifier_ability"]
-        ).modifier
-        self.character.hp += modifier
-        self.character.max_hp = self.character.hp
-        self.character.hp_increase = hit_points["hp_higher_levels"]
-
-    def _apply_armor_proficiencies(self) -> None:
-        pass
-
-    def _apply_weapons_proficiencies(self) -> None:
-        pass
-
-    def _apply_tools_proficiencies(self) -> None:
-        pass
-
-    def _apply_saving_throws_proficiencies(self) -> None:
-        saving_throws = KLASS_FEATURES[self.klass]["proficiencies"]["saving_throws"]
-        for ability in saving_throws:
-            SavingThrowProficiency.objects.create(
-                character=self.character,
-                ability_type=AbilityType.objects.get(name=ability),
-            )
-
-    def _add_wealth(self) -> None:
-        wealth_roll = DiceString(KLASS_FEATURES[self.klass]["wealth"]).roll()
-        inventory = self.character.inventory
-        inventory.gp = wealth_roll * 10
-        inventory.save()
-
-    def build(self) -> None:
-        self._apply_hit_points()
-        self._apply_armor_proficiencies()
-        self._apply_weapons_proficiencies()
-        self._apply_tools_proficiencies()
-        self._apply_saving_throws_proficiencies()
-        self._add_wealth()
         self.character.save()
 
 

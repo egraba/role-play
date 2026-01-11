@@ -1,7 +1,7 @@
 import pytest
 from django import forms
 
-from character.models.klasses import Klass
+from character.constants.classes import ClassName
 from character.forms.equipment import EquipmentSelectForm
 
 pytestmark = pytest.mark.django_db
@@ -9,7 +9,7 @@ pytestmark = pytest.mark.django_db
 
 @pytest.fixture
 def cleric_form():
-    return EquipmentSelectForm(initial={"klass": Klass.CLERIC})
+    return EquipmentSelectForm(initial={"klass": ClassName.CLERIC})
 
 
 def test_cleric_fields_presence(cleric_form):
@@ -29,7 +29,7 @@ def test_cleric_fields_type(cleric_form):
 
 @pytest.fixture
 def fighter_form():
-    return EquipmentSelectForm(initial={"klass": Klass.FIGHTER})
+    return EquipmentSelectForm(initial={"klass": ClassName.FIGHTER})
 
 
 def test_fighter_fields_presence(fighter_form):
@@ -48,7 +48,7 @@ def test_fighter_fields_type(fighter_form):
 
 @pytest.fixture
 def rogue_form():
-    return EquipmentSelectForm(initial={"klass": Klass.ROGUE})
+    return EquipmentSelectForm(initial={"klass": ClassName.ROGUE})
 
 
 def test_rogue_fields_presence(rogue_form):
@@ -62,7 +62,7 @@ def test_rogue_fields_type(rogue_form):
 
 @pytest.fixture
 def wizard_form():
-    return EquipmentSelectForm(initial={"klass": Klass.WIZARD})
+    return EquipmentSelectForm(initial={"klass": ClassName.WIZARD})
 
 
 def test_wizard_fields_presence(wizard_form):
