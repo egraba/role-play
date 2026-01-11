@@ -1,12 +1,13 @@
 from django.db.models import TextChoices
+
+from .equipment import ToolName
+from .feats import FeatName
 from .skills import SkillName
 
 
 class Background(TextChoices):
     ACOLYTE = "acolyte", "Acolyte"
     CRIMINAL = "criminal", "Criminal"
-    FOLK_HERO = "folk_hero", "Folk Hero"
-    NOBLE = "noble", "Noble"
     SAGE = "sage", "Sage"
     SOLDIER = "soldier", "Soldier"
 
@@ -14,9 +15,8 @@ class Background(TextChoices):
 BACKGROUNDS: dict = {
     Background.ACOLYTE: {
         "skill_proficiencies": {SkillName.INSIGHT, SkillName.RELIGION},
-        "tool_proficiencies": {},
-        "languages": {},
-        "equipment": {},
+        "tool_proficiency": ToolName.CALLIGRAPHERS_SUPPLIES,
+        "origin_feat": FeatName.MAGIC_INITIATE_CLERIC,
         "personality_traits": {
             1: "I idolize a particular hero of my faith, and constantly refer to that person's deeds and example.",
             2: "I can find common ground between the fiercest enemies, empathizing with them and always working toward peace.",
@@ -53,14 +53,13 @@ BACKGROUNDS: dict = {
         },
     },
     Background.CRIMINAL: {
-        "skill_proficiencies": {SkillName.DECEPTION, SkillName.STEALTH},
-        "tool_proficiencies": {},
-        "languages": {},
-        "equipment": {},
+        "skill_proficiencies": {SkillName.SLEIGHT_OF_HAND, SkillName.STEALTH},
+        "tool_proficiency": ToolName.THIEVES_TOOLS,
+        "origin_feat": FeatName.ALERT,
         "personality_traits": {
             1: "I always have a plan for what to do when things go wrong.",
             2: "I am always calm, no matter what the situation. I never raise my voice or let my emotions control me.",
-            3: "The first thing I do in a new place is note the locations of everything valuable — or where such things could be hidden.",
+            3: "The first thing I do in a new place is note the locations of everything valuable - or where such things could be hidden.",
             4: "I would rather make a new friend than a new enemy.",
             5: "I am incredibly slow to trust. Those who seem the fairest often have the most to hide.",
             6: "I don't pay attention to the risks in a situation. Never tell me the odds.",
@@ -73,7 +72,7 @@ BACKGROUNDS: dict = {
             3: "Charity. I steal from the wealthy so that I can help people in need. (Good)",
             4: "Greed. I will do whatever it takes to become wealthy. (Evil)",
             5: "People. I'm loyal to my friends, not to any ideals, and everyone else can take a trip down the Styx for all I care. (Neutral)",
-            6: "Redemption. There’s a spark of good in everyone. (Good)",
+            6: "Redemption. There's a spark of good in everyone. (Good)",
         },
         "bonds": {
             1: "I'm trying to pay off an old debt I owe to a generous benefactor.",
@@ -92,93 +91,13 @@ BACKGROUNDS: dict = {
             6: "An innocent person is in prison for a crime that I committed. I'm okay with that.",
         },
     },
-    Background.FOLK_HERO: {
-        "skill_proficiencies": {SkillName.ANIMAL_HANDLING, SkillName.SURVIVAL},
-        "tool_proficiencies": {},
-        "languages": {},
-        "equipment": {},
-        "personality_traits": {
-            1: "I judge people by their actions, not their words.",
-            2: "If someone is in trouble, I'm always ready to lend help.",
-            3: "When I set my mind to something, I follow through no matter what gets in my way.",
-            4: "I have a strong sense of fair play and always try to find the most equitable solution to arguments.",
-            6: "Thinking is for other people. I prefer action.",
-            7: "I misuse long words in an attempt to sound smarter.",
-            8: "I get bored easily. When am I going to get on with my destiny?",
-        },
-        "ideals": {
-            1: "Respect. People deserve to be treated with dignity and respect. (Good)",
-            2: "Fairness. No one should get preferential treatment before the law, and no one is above the law. (Lawful)",
-            3: "Freedom. Tyrants must not be allowed to oppress the people. (Chaotic)",
-            4: "Might. If I become strong, I can take what I want—what I deserve. (Evil)",
-            5: "Sincerity. There's no good in pretending to be something I'm not. (Neutral)",
-            6: "Destiny. Nothing and no one can steer me away from my higher calling. (Any)",
-        },
-        "bonds": {
-            1: "I have a family, but I have no idea where they are. One day, I hope to see them again.",
-            2: "I worked the land, I love the land, and I will protect the land.",
-            3: "A proud noble once gave me a horrible beating, and I will take my revenge on any bully I encounter.",
-            4: "My tools are symbols of my past life, and I carry them so that I will never forget my roots.",
-            5: "I protect those who cannot protect themselves.",
-            6: "I wish my childhood sweetheart had come with me to pursue my destiny.",
-        },
-        "flaws": {
-            1: "The tyrant who rules my land will stop at nothing to see me killed.",
-            2: "I'm convinced of the significance of my destiny, and blind to my shortcomings and the risk of failure.",
-            3: "The people who knew me when I was young know my shameful secret, so I can never go home again.",
-            4: "I have a weakness for the vices of the city, especially hard drink.",
-            5: "Secretly, I believe that things would be better if I were a tyrant lording over the land.",
-            6: "I have trouble trusting in my allies.",
-        },
-    },
-    Background.NOBLE: {
-        "skill_proficiencies": {SkillName.HISTORY, SkillName.PERSUASION},
-        "tool_proficiencies": {},
-        "languages": {},
-        "equipment": {},
-        "personality_traits": {
-            1: "My eloquent flattery makes everyone I talk to feel like the most wonderful and important person in the world.",
-            2: "The common folk love me for my kindness and generosity.",
-            3: "No one could doubt by looking at my regal bearing that I am a cut above the unwashed masses.",
-            4: "I take great pains to always look my best and follow the latest fashions.",
-            5: "I don't like to get my hands dirty, and I won't be caught dead in unsuitable accommodations.",
-            6: "Despite my noble birth, I do not place myself above other folk. We all have the same blood.",
-            7: "My favor, once lost, is lost forever.",
-            8: "If you do me an injury, I will crush you, ruin your name, and salt your fields.",
-        },
-        "ideals": {
-            1: "Respect. Respect is due to me because of my position, but all people regardless of station deserve to be treated with dignity. (Good)",
-            2: "Responsibility. It is my duty to respect the authority of those above me, just as those below me must respect mine. (Lawful)",
-            3: "Independence. I must prove that I can handle myself without the coddling of my family. (Chaotic)",
-            4: "Power. If I can attain more power, no one will tell me what to do. (Evil)",
-            5: "Family. Blood runs thicker than water. (Any)",
-            6: "Noble Obligation. It is my duty to protect and care for the people beneath me. (Good)",
-        },
-        "bonds": {
-            1: "I will face any challenge to win the approval of my family.",
-            2: "My house's alliance with another noble family must be sustained at all costs.",
-            3: "Nothing is more important than the other members of my family.",
-            4: "I am in love with the heir of a family that my family despises.",
-            5: "My loyalty to my sovereign is unwavering.",
-            6: "The common folk must see me as a hero of the people.",
-        },
-        "flaws": {
-            1: "I secretly believe that everyone is beneath me.",
-            2: "I hide a truly scandalous secret that could ruin my family forever.",
-            3: "I too often hear veiled insults and threats in every word addressed to me, and I'm quick to anger.",
-            4: "I have an insatiable desire for carnal pleasures.",
-            5: "In fact, the world does revolve around me.",
-            6: "By my words and actions, I often bring shame to my family.",
-        },
-    },
     Background.SAGE: {
         "skill_proficiencies": {SkillName.ARCANA, SkillName.HISTORY},
-        "tool_proficiencies": {},
-        "languages": {},
-        "equipment": {},
+        "tool_proficiency": ToolName.CALLIGRAPHERS_SUPPLIES,
+        "origin_feat": FeatName.MAGIC_INITIATE_WIZARD,
         "personality_traits": {
             1: "I use polysyllabic words that convey the impression of great erudition.",
-            2: "I've read every book in the world's greatest libraries—or I like to boast that I have.",
+            2: "I've read every book in the world's greatest libraries - or I like to boast that I have.",
             3: "I'm used to helping out those who aren't as smart as I am, and I patiently explain anything and everything to others.",
             4: "There's nothing I like more than a good mystery.",
             5: "I'm willing to listen to every side of an argument before I make my own judgment.",
@@ -213,9 +132,8 @@ BACKGROUNDS: dict = {
     },
     Background.SOLDIER: {
         "skill_proficiencies": {SkillName.ATHLETICS, SkillName.INTIMIDATION},
-        "tool_proficiencies": {},
-        "languages": {},
-        "equipment": {},
+        "tool_proficiency": None,  # Gaming set choice - handled in form
+        "origin_feat": FeatName.SAVAGE_ATTACKER,
         "personality_traits": {
             1: "I'm always polite and respectful.",
             2: "I'm haunted by memories of war. I can't get the images of violence out of my mind.",
@@ -245,7 +163,7 @@ BACKGROUNDS: dict = {
         "flaws": {
             1: "The monstrous enemy we faced in battle still leaves me quivering with fear.",
             2: "I have little respect for anyone who is not a proven warrior.",
-            3: "I made a terrible mistake in battle that cost many lives — and I would do anything to keep that mistake secret.",
+            3: "I made a terrible mistake in battle that cost many lives - and I would do anything to keep that mistake secret.",
             4: "My hatred of my enemies is blind and unreasoning.",
             5: "I obey the law, even if the law causes misery.",
             6: "I'd rather eat my armor than admit when I'm wrong.",

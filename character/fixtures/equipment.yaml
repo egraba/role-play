@@ -727,143 +727,143 @@
 # Tools
 - model: character.toolsettings
   fields:
-    name: Alchemist's supplies
+    name: alchemists_supplies
     tool_type: AT
 - model: character.toolsettings
   fields:
-    name: Brewer's supplies
+    name: brewers_supplies
     tool_type: AT
 - model: character.toolsettings
   fields:
-    name: Calligrapher's supplies
+    name: calligraphers_supplies
     tool_type: AT
 - model: character.toolsettings
   fields:
-    name: Carpenter's tools
+    name: carpenters_tools
     tool_type: AT
 - model: character.toolsettings
   fields:
-    name: Cartographer's tools
+    name: cartographers_tools
     tool_type: AT
 - model: character.toolsettings
   fields:
-    name: Cobbler's tools
+    name: cobblers_tools
     tool_type: AT
 - model: character.toolsettings
   fields:
-    name: Cook's utensils
+    name: cooks_utensils
     tool_type: AT
 - model: character.toolsettings
   fields:
-    name: Glassblower's tools
+    name: glassblowers_tools
     tool_type: AT
 - model: character.toolsettings
   fields:
-    name: Jeweler's tools
+    name: jewelers_tools
     tool_type: AT
 - model: character.toolsettings
   fields:
-    name: Leatherworker's tools
+    name: leatherworkers_tools
     tool_type: AT
 - model: character.toolsettings
   fields:
-    name: Mason's tools
+    name: masons_tools
     tool_type: AT
 - model: character.toolsettings
   fields:
-    name: Painter's supplies
+    name: painters_supplies
     tool_type: AT
 - model: character.toolsettings
   fields:
-    name: Potter's tools
+    name: potters_tools
     tool_type: AT
 - model: character.toolsettings
   fields:
-    name: Smith's tools
+    name: smiths_tools
     tool_type: AT
 - model: character.toolsettings
   fields:
-    name: Tinker's tools
+    name: tinkers_tools
     tool_type: AT
 - model: character.toolsettings
   fields:
-    name: Weaver's tools
+    name: weavers_tools
     tool_type: AT
 - model: character.toolsettings
   fields:
-    name: Woodcarver's tools
+    name: woodcarvers_tools
     tool_type: AT
 - model: character.toolsettings
   fields:
-    name: Disguise kit
+    name: disguise_kit
 - model: character.toolsettings
   fields:
-    name: Forgery kit
+    name: forgery_kit
 - model: character.toolsettings
   fields:
-    name: Dice set
+    name: dice_set
     tool_type: GS
 - model: character.toolsettings
   fields:
-    name: Dragonchess set
+    name: dragonchess_set
     tool_type: GS
 - model: character.toolsettings
   fields:
-    name: Playing card set
+    name: playing_card_set
     tool_type: GS
 - model: character.toolsettings
   fields:
-    name: Three-Dragon Ante set
+    name: three_dragon_ante_set
     tool_type: GS
 - model: character.toolsettings
   fields:
-    name: Herbalism kit
+    name: herbalism_kit
 - model: character.toolsettings
   fields:
-    name: Bagpipes
+    name: bagpipes
     tool_type: MU
 - model: character.toolsettings
   fields:
-    name: Drum
+    name: drum
     tool_type: MU
 - model: character.toolsettings
   fields:
-    name: Dulcimer
+    name: dulcimer
     tool_type: MU
 - model: character.toolsettings
   fields:
-    name: Flute
+    name: flute
     tool_type: MU
 - model: character.toolsettings
   fields:
-    name: Lute
+    name: lute
     tool_type: MU
 - model: character.toolsettings
   fields:
-    name: Lyre
+    name: lyre
     tool_type: MU
 - model: character.toolsettings
   fields:
-    name: Horn
+    name: horn
     tool_type: MU
 - model: character.toolsettings
   fields:
-    name: Pan flute
+    name: pan_flute
     tool_type: MU
 - model: character.toolsettings
   fields:
-    name: Shawm
+    name: shawm
     tool_type: MU
 - model: character.toolsettings
   fields:
-    name: Viol
+    name: viol
     tool_type: MU
 - model: character.toolsettings
   fields:
-    name: Navigator's tools
+    name: navigators_tools
 - model: character.toolsettings
   fields:
-    name: Poisoner's kit
+    name: poisoners_kit
 - model: character.toolsettings
   fields:
-    name: "Thieves' tools"
+    name: thieves_tools

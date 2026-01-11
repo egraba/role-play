@@ -10,6 +10,9 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * Condition model with all 15 SRD conditions (Blinded, Charmed, Deafened, Exhaustion, Frightened, Grappled, Incapacitated, Invisible, Paralyzed, Petrified, Poisoned, Prone, Restrained, Stunned, Unconscious)
 * Species model with 4 SRD species (Dwarf, Elf, Halfling, Human) following D&D 2024 rules
 * SpeciesTrait model with 12 species traits (Dwarven Resilience, Dwarven Toughness, Stonecunning, Fey Ancestry, Keen Senses, Trance, Brave, Halfling Nimbleness, Lucky, Resourceful, Skillful, Versatile)
+* Feat and CharacterFeat models for origin feats (D&D 2024 rules)
+* Origin feats: Alert, Magic Initiate (Cleric), Magic Initiate (Wizard), Savage Attacker
+* BackgroundBuilder now grants tool proficiency, origin feat, and 50 GP starting equipment
 
 ### Fixed
 * Use authenticated user instead of client-provided username in message storage and event enrichers (security fix)
@@ -20,12 +23,15 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * Ability model now auto-calculates modifier on save and validates score range (1-30)
 * Proficiency bonus is now calculated from character level using D&D 5e formula: levels 1-4 = +2, 5-8 = +3, 9-12 = +4, 13-16 = +5, 17-20 = +6
 * **BREAKING**: Race field replaced with Species foreign key (D&D 2024 rules - ability score increases are now player-chosen, not species-determined)
+* **BREAKING**: Background system updated to D&D 2024 SRD rules - each background now provides tool proficiency, origin feat, and 50 GP
+* Criminal background skill proficiencies changed from Deception/Stealth to Sleight of Hand/Stealth (D&D 2024 rules)
 
 ### Removed
 * Redis cache usage removed from application code (Redis still required for Channels and Celery)
 * Removed `dice` library dependency (replaced with built-in `random` module)
 * Removed Race enum, RACIAL_TRAITS dictionary, and Sense model (replaced by Species system)
 * Removed Character fields: adult_age, life_expectancy, alignment, senses (no longer in D&D 2024 rules)
+* **BREAKING**: Removed Folk Hero and Noble backgrounds (not in D&D 2024 SRD 5.2)
 
 ## v0.13.0 - 2026-01-02
 

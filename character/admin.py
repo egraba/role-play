@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from .models.advancement import Advancement
 from .models.character import Character
+from .models.feats import Feat
 from .models.klasses import HitPoints, KlassAdvancement
 from .models.species import Species, SpeciesTrait
 
@@ -46,6 +47,12 @@ class KlassAdvancementAdmin(admin.ModelAdmin):
     ordering = ["klass", "level"]
 
 
+class FeatAdmin(admin.ModelAdmin):
+    fields = ["name", "feat_type", "description", "prerequisite"]
+    list_display = ["name", "feat_type", "prerequisite"]
+    list_filter = ["feat_type"]
+
+
 # Character
 admin.site.register(Character, CharacterAdmin)
 
@@ -59,3 +66,6 @@ admin.site.register(SpeciesTrait, SpeciesTraitAdmin)
 # Classes
 admin.site.register(HitPoints, HitPointsAdmin)
 admin.site.register(KlassAdvancement, KlassAdvancementAdmin)
+
+# Feats
+admin.site.register(Feat, FeatAdmin)

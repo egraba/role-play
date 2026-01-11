@@ -15,6 +15,7 @@ def django_db_setup(django_db_setup, django_db_blocker):
         call_command(loaddata.Command(), "character/fixtures/equipment.yaml")
         call_command(loaddata.Command(), "character/fixtures/species_traits.yaml")
         call_command(loaddata.Command(), "character/fixtures/species.yaml")
+        call_command(loaddata.Command(), "character/fixtures/feats.yaml")
 
 
 @pytest.fixture(scope="function")

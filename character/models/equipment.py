@@ -103,7 +103,7 @@ class Inventory(models.Model):
 
     def _add_tool(self, equipment_name: TextChoices) -> None:
         Tool.objects.create(
-            settings=ToolSettings.objects.get(name=equipment_name.label), inventory=self
+            settings=ToolSettings.objects.get(name=equipment_name), inventory=self
         )
 
     def add(self, equipment_name: TextChoices) -> None:
@@ -150,7 +150,7 @@ class Inventory(models.Model):
             if nb_equipment >= quantity:
                 return True
             return False
-        nb_equipment = self.tool_set.filter(settings__name=equipment_name.label).count()
+        nb_equipment = self.tool_set.filter(settings__name=equipment_name).count()
         if nb_equipment:
             if nb_equipment >= quantity:
                 return True

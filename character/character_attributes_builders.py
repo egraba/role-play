@@ -8,8 +8,13 @@ from .constants.klasses import KLASS_FEATURES
 from .forms.character import CharacterCreateForm
 from .models.abilities import Ability, AbilityType
 from .models.character import Character
-from .models.equipment import Inventory
-from .models.proficiencies import SavingThrowProficiency, SkillProficiency
+from .models.equipment import Inventory, ToolSettings
+from .models.feats import CharacterFeat, Feat
+from .models.proficiencies import (
+    SavingThrowProficiency,
+    SkillProficiency,
+    ToolProficiency,
+)
 from .models.skills import Skill
 
 
@@ -125,14 +130,26 @@ class BackgroundBuilder:
                 character=self.character, skill=Skill.objects.get(name=skill)
             )
 
-    def _add_tool_proficiencies(self) -> None:
-        pass
+    def _add_tool_proficiency(self) -> None:
+        """Grant tool proficiency from background."""
+        tool_name = BACKGROUNDS[self.background].get("tool_proficiency")
+        if tool_name:
+            tool = ToolSettings.objects.get(name=tool_name)
+            ToolProficiency.objects.create(character=self.character, tool=tool)
 
-    def _add_languages(self) -> None:
-        pass
+    def _add_origin_feat(self) -> None:
+        """Grant origin feat from background."""
+        feat_name = BACKGROUNDS[self.background].get("origin_feat")
+        if feat_name:
+            feat = Feat.objects.get(name=feat_name)
+            CharacterFeat.objects.create(
+                character=self.character, feat=feat, granted_by="background"
+            )
 
-    def _add_equipment(self) -> None:
-        pass
+    def _add_starting_gold(self) -> None:
+        """Add 50 GP starting equipment (2024 rules)."""
+        self.character.inventory.gp += 50
+        self.character.inventory.save()
 
     def _select_personality_trait(self) -> None:
         self.character.personality_trait = random.choice(
@@ -156,9 +173,9 @@ class BackgroundBuilder:
 
     def build(self) -> None:
         self._add_skill_proficiencies()
-        self._add_tool_proficiencies()
-        self._add_languages()
-        self._add_equipment()
+        self._add_tool_proficiency()
+        self._add_origin_feat()
+        self._add_starting_gold()
         self._select_personality_trait()
         self._select_ideal()
         self._select_bond()

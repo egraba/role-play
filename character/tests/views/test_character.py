@@ -11,10 +11,8 @@ from character.constants.character import Gender
 from character.constants.species import SpeciesName
 from character.constants.skills import SkillName
 from character.forms.backgrounds import (
-    _get_artisans_tools,
     _get_gaming_set_tools,
     _get_holy_symbols,
-    _get_non_spoken_languages,
 )
 from character.forms.equipment_choices_providers import (
     ClericEquipmentChoicesProvider,
@@ -26,7 +24,6 @@ from character.forms.skills import _get_skills
 from character.models.character import Character
 from character.models.klasses import Klass
 from character.models.proficiencies import SavingThrowProficiency, SkillProficiency
-from character.models.species import Species
 from character.models.skills import Skill
 from character.views.character import (
     CharacterCreateView,
@@ -164,70 +161,24 @@ class TestCharacterCreateView:
             # This is necessary to send valid data to the form.
             return (choice[0], choice[0])
 
-        species_key = f"{CharacterCreateView.Step.BASE_ATTRIBUTES_SELECTION}-species"
         background_key = (
             f"{CharacterCreateView.Step.BASE_ATTRIBUTES_SELECTION}-background"
         )
         current_step = CharacterCreateView.Step.BACKGROUND_COMPLETION
-        species_name = character_form[species_key]
-        species = Species.objects.filter(name=species_name).first()
         data = {"character_create_view-current_step": current_step}
         match character_form[background_key]:
             case Background.ACOLYTE:
                 data.update(
                     {
-                        f"{current_step}-first_language": _get_random_element(
-                            _get_non_spoken_languages(species)
-                        ),
-                        f"{current_step}-second_language": _get_random_element(
-                            _get_non_spoken_languages(species)
-                        ),
                         f"{current_step}-equipment": _get_random_element(
                             _get_holy_symbols()
                         ),
                     }
                 )
             case Background.CRIMINAL:
-                data.update(
-                    {
-                        f"{current_step}-tool_proficiency": _get_random_element(
-                            _get_gaming_set_tools()
-                        )
-                    }
-                )
-            case Background.FOLK_HERO:
-                data.update(
-                    {
-                        f"{current_step}-tool_proficiency": _get_random_element(
-                            _get_artisans_tools()
-                        ),
-                        f"{current_step}-equipment": _get_random_element(
-                            _get_artisans_tools()
-                        ),
-                    }
-                )
-            case Background.NOBLE:
-                data.update(
-                    {
-                        f"{current_step}-tool_proficiency": _get_random_element(
-                            _get_gaming_set_tools()
-                        ),
-                        f"{current_step}-language": _get_random_element(
-                            _get_non_spoken_languages(species)
-                        ),
-                    }
-                )
+                pass  # Thieves' Tools granted automatically
             case Background.SAGE:
-                data.update(
-                    {
-                        f"{current_step}-first_language": _get_random_element(
-                            _get_non_spoken_languages(species)
-                        ),
-                        f"{current_step}-second_language": _get_random_element(
-                            _get_non_spoken_languages(species)
-                        ),
-                    }
-                )
+                pass  # Calligrapher's Supplies granted automatically
             case Background.SOLDIER:
                 data.update(
                     {
@@ -525,7 +476,10 @@ class TestCharacterCreateView:
         form_list = [criminal_form, skills_form, background_form, equipment_form]
         character = self._create_character(client, form_list)
         SkillProficiency.objects.filter(
-            Q(character=character, skill=Skill.objects.get(name=SkillName.DECEPTION))
+            Q(
+                character=character,
+                skill=Skill.objects.get(name=SkillName.SLEIGHT_OF_HAND),
+            )
             | Q(character=character, skill=Skill.objects.get(name=SkillName.STEALTH))
         )
         assert (
@@ -535,55 +489,6 @@ class TestCharacterCreateView:
         assert character.ideal in BACKGROUNDS[Background.CRIMINAL]["ideals"].values()
         assert character.bond in BACKGROUNDS[Background.CRIMINAL]["bonds"].values()
         assert character.flaw in BACKGROUNDS[Background.CRIMINAL]["flaws"].values()
-
-    @pytest.fixture
-    def folk_hero_form(self, character_form):
-        current_step = character_form["character_create_view-current_step"]
-        character_form[f"{current_step}-background"] = Background.FOLK_HERO
-        return character_form
-
-    def test_folk_hero_creation(
-        self, client, folk_hero_form, skills_form, background_form, equipment_form
-    ):
-        form_list = [folk_hero_form, skills_form, background_form, equipment_form]
-        character = self._create_character(client, form_list)
-        SkillProficiency.objects.filter(
-            Q(
-                character=character,
-                skill=Skill.objects.get(name=SkillName.ANIMAL_HANDLING),
-            )
-            | Q(character=character, skill=Skill.objects.get(name=SkillName.SURVIVAL))
-        )
-        assert (
-            character.personality_trait
-            in BACKGROUNDS[Background.FOLK_HERO]["personality_traits"].values()
-        )
-        assert character.ideal in BACKGROUNDS[Background.FOLK_HERO]["ideals"].values()
-        assert character.bond in BACKGROUNDS[Background.FOLK_HERO]["bonds"].values()
-        assert character.flaw in BACKGROUNDS[Background.FOLK_HERO]["flaws"].values()
-
-    @pytest.fixture
-    def noble_form(self, character_form):
-        current_step = character_form["character_create_view-current_step"]
-        character_form[f"{current_step}-background"] = Background.NOBLE
-        return character_form
-
-    def test_noble_creation(
-        self, client, noble_form, skills_form, background_form, equipment_form
-    ):
-        form_list = [noble_form, skills_form, background_form, equipment_form]
-        character = self._create_character(client, form_list)
-        SkillProficiency.objects.filter(
-            Q(character=character, skill=Skill.objects.get(name=SkillName.HISTORY))
-            | Q(character=character, skill=Skill.objects.get(name=SkillName.PERSUASION))
-        )
-        assert (
-            character.personality_trait
-            in BACKGROUNDS[Background.NOBLE]["personality_traits"].values()
-        )
-        assert character.ideal in BACKGROUNDS[Background.NOBLE]["ideals"].values()
-        assert character.bond in BACKGROUNDS[Background.NOBLE]["bonds"].values()
-        assert character.flaw in BACKGROUNDS[Background.NOBLE]["flaws"].values()
 
     @pytest.fixture
     def sage_form(self, character_form):
