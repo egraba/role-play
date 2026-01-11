@@ -3,7 +3,7 @@ from django.contrib import admin
 from .models.advancement import Advancement
 from .models.character import Character
 from .models.feats import Feat
-from .models.klasses import HitPoints, KlassAdvancement
+from .models.klasses import Class, ClassFeature, HitPoints, KlassAdvancement
 from .models.species import Species, SpeciesTrait
 
 
@@ -47,6 +47,36 @@ class KlassAdvancementAdmin(admin.ModelAdmin):
     ordering = ["klass", "level"]
 
 
+class ClassFeatureInline(admin.TabularInline):
+    model = ClassFeature
+    extra = 1
+
+
+class ClassAdmin(admin.ModelAdmin):
+    fields = [
+        "name",
+        "description",
+        "hit_die",
+        "hp_first_level",
+        "hp_higher_levels",
+        "primary_ability",
+        "saving_throws",
+        "armor_proficiencies",
+        "weapon_proficiencies",
+        "starting_wealth_dice",
+    ]
+    list_display = ["name", "hit_die", "primary_ability"]
+    filter_horizontal = ["saving_throws"]
+    inlines = [ClassFeatureInline]
+
+
+class ClassFeatureAdmin(admin.ModelAdmin):
+    fields = ["name", "klass", "level", "description"]
+    list_display = ["name", "klass", "level"]
+    list_filter = ["klass", "level"]
+    ordering = ["klass", "level", "name"]
+
+
 class FeatAdmin(admin.ModelAdmin):
     fields = ["name", "feat_type", "description", "prerequisite"]
     list_display = ["name", "feat_type", "prerequisite"]
@@ -64,6 +94,8 @@ admin.site.register(Species, SpeciesAdmin)
 admin.site.register(SpeciesTrait, SpeciesTraitAdmin)
 
 # Classes
+admin.site.register(Class, ClassAdmin)
+admin.site.register(ClassFeature, ClassFeatureAdmin)
 admin.site.register(HitPoints, HitPointsAdmin)
 admin.site.register(KlassAdvancement, KlassAdvancementAdmin)
 

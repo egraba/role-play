@@ -13,7 +13,7 @@ from ..constants.races import Size
 from .abilities import Ability
 from .advancement import Advancement
 from .equipment import Inventory
-from .klasses import Klass
+from .klasses import Class, Klass
 from .races import Language
 from .skills import Skill
 
@@ -35,6 +35,9 @@ class Character(models.Model):
     abilities = models.ManyToManyField(Ability)
     feats = models.ManyToManyField(
         "character.Feat", through="character.CharacterFeat", blank=True
+    )
+    classes = models.ManyToManyField(
+        Class, through="character.CharacterClass", related_name="characters"
     )
     gender = models.CharField(max_length=1, choices=Gender.choices, default=Gender.MALE)
     ac = models.SmallIntegerField(default=0)
@@ -91,6 +94,18 @@ class Character(models.Model):
         D&D 5e progression: levels 1-4 = +2, 5-8 = +3, 9-12 = +4, 13-16 = +5, 17-20 = +6.
         """
         return (self.level - 1) // 4 + 2
+
+    @property
+    def primary_class(self) -> Class | None:
+        """Return the character's primary class."""
+        char_class = self.character_classes.filter(is_primary=True).first()
+        return char_class.klass if char_class else None
+
+    @property
+    def class_level(self) -> int:
+        """Return level in primary class."""
+        char_class = self.character_classes.filter(is_primary=True).first()
+        return char_class.level if char_class else 0
 
     def get_absolute_url(self):
         return reverse("character-detail", args=(self.id,))

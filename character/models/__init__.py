@@ -23,7 +23,15 @@ from .equipment import (
     WeaponSettings,
 )
 from .feats import CharacterFeat, Feat
-from .klasses import HitPoints, Klass, KlassAdvancement, KlassFeature
+from .klasses import (
+    CharacterClass,
+    Class,
+    ClassFeature,
+    HitPoints,
+    Klass,
+    KlassAdvancement,
+    KlassFeature,
+)
 from .proficiencies import SavingThrowProficiency, SkillProficiency
 from .races import Language
 from .skills import Skill
@@ -36,8 +44,11 @@ __all__ = [
     "Armor",
     "ArmorSettings",
     "Character",
+    "CharacterClass",
     "CharacterCondition",
     "CharacterFeat",
+    "Class",
+    "ClassFeature",
     "Condition",
     "AbilityCheckDisadvantage",
     "AttackRollDisadvantage",

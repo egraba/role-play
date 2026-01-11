@@ -1,0 +1,182 @@
+# D&D 2024 SRD Class Features
+# Fighter class features as reference implementation
+
+# Level 1
+- model: character.classfeature
+  fields:
+    name: "Fighting Style"
+    klass: fighter
+    level: 1
+    description: |
+      You have honed your martial techniques. You gain a Fighting Style feat of your choice.
+      Whenever you gain a Fighter level, you can replace this feat with another Fighting Style feat.
+
+- model: character.classfeature
+  fields:
+    name: "Second Wind"
+    klass: fighter
+    level: 1
+    description: |
+      You have a limited well of physical stamina. As a Bonus Action, you can use it to
+      regain Hit Points equal to 1d10 plus your Fighter level. You can use this feature
+      twice. You regain one expended use when you finish a Short Rest and all expended
+      uses when you finish a Long Rest.
+
+      When you reach certain Fighter levels, you gain more uses of this feature:
+      4 uses at level 10 and 6 uses at level 20.
+
+# Level 2
+- model: character.classfeature
+  fields:
+    name: "Action Surge"
+    klass: fighter
+    level: 2
+    description: |
+      You can push yourself beyond your normal limits for a moment. On your turn, you can
+      take one additional action. Once you use this feature, you must finish a Short or
+      Long Rest before you can use it again.
+
+      Starting at level 17, you can use it twice before a rest but only once per turn.
+
+# Level 4
+- model: character.classfeature
+  fields:
+    name: "Ability Score Improvement (Level 4)"
+    klass: fighter
+    level: 4
+    description: |
+      You gain an Ability Score Improvement feat or another feat of your choice for
+      which you qualify.
+
+# Level 5
+- model: character.classfeature
+  fields:
+    name: "Extra Attack"
+    klass: fighter
+    level: 5
+    description: |
+      You can attack twice instead of once whenever you take the Attack action on your turn.
+
+- model: character.classfeature
+  fields:
+    name: "Tactical Mind"
+    klass: fighter
+    level: 5
+    description: |
+      You have a mind for tactics on and off the battlefield. When you fail an ability
+      check, you can expend a use of Second Wind, rolling 1d10 and adding the number
+      rolled to the ability check, potentially turning it into a success. If the check
+      still fails, the Second Wind use isn't expended.
+
+# Level 6
+- model: character.classfeature
+  fields:
+    name: "Ability Score Improvement (Level 6)"
+    klass: fighter
+    level: 6
+    description: |
+      You gain an Ability Score Improvement feat or another feat of your choice for
+      which you qualify.
+
+# Level 8
+- model: character.classfeature
+  fields:
+    name: "Ability Score Improvement (Level 8)"
+    klass: fighter
+    level: 8
+    description: |
+      You gain an Ability Score Improvement feat or another feat of your choice for
+      which you qualify.
+
+# Level 9
+- model: character.classfeature
+  fields:
+    name: "Indomitable"
+    klass: fighter
+    level: 9
+    description: |
+      If you fail a saving throw, you can reroll it with a bonus equal to your Fighter
+      level. If you do so, you must use the new roll, and you can't use this feature
+      again until you finish a Long Rest.
+
+      You can use this feature twice between Long Rests starting at level 13, and three
+      times between Long Rests starting at level 17.
+
+- model: character.classfeature
+  fields:
+    name: "Tactical Shift"
+    klass: fighter
+    level: 9
+    description: |
+      When you activate Second Wind, you can move up to half your Speed without
+      provoking Opportunity Attacks.
+
+# Level 11
+- model: character.classfeature
+  fields:
+    name: "Two Extra Attacks"
+    klass: fighter
+    level: 11
+    description: |
+      You can attack three times instead of once whenever you take the Attack action
+      on your turn.
+
+# Level 12
+- model: character.classfeature
+  fields:
+    name: "Ability Score Improvement (Level 12)"
+    klass: fighter
+    level: 12
+    description: |
+      You gain an Ability Score Improvement feat or another feat of your choice for
+      which you qualify.
+
+# Level 13
+- model: character.classfeature
+  fields:
+    name: "Studied Attacks"
+    klass: fighter
+    level: 13
+    description: |
+      You study your opponents and learn from each attack you make. If you make an
+      attack roll against a creature and miss, you have Advantage on your next attack
+      roll against that creature before the end of your next turn.
+
+# Level 14
+- model: character.classfeature
+  fields:
+    name: "Ability Score Improvement (Level 14)"
+    klass: fighter
+    level: 14
+    description: |
+      You gain an Ability Score Improvement feat or another feat of your choice for
+      which you qualify.
+
+# Level 16
+- model: character.classfeature
+  fields:
+    name: "Ability Score Improvement (Level 16)"
+    klass: fighter
+    level: 16
+    description: |
+      You gain an Ability Score Improvement feat or another feat of your choice for
+      which you qualify.
+
+# Level 19
+- model: character.classfeature
+  fields:
+    name: "Epic Boon"
+    klass: fighter
+    level: 19
+    description: |
+      You gain an Epic Boon feat or another feat of your choice for which you qualify.
+
+# Level 20
+- model: character.classfeature
+  fields:
+    name: "Three Extra Attacks"
+    klass: fighter
+    level: 20
+    description: |
+      You can attack four times instead of once whenever you take the Attack action
+      on your turn.

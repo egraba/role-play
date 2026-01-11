@@ -1,7 +1,7 @@
 import pytest
 from django import forms
 
-from character.constants.klasses import Klass
+from character.models.klasses import Klass
 from character.forms.equipment import EquipmentSelectForm
 
 pytestmark = pytest.mark.django_db

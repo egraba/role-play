@@ -2,7 +2,7 @@ from django import forms
 
 from utils.converters import duplicate_choice
 
-from ..constants.klasses import Klass
+from ..models.klasses import Klass
 from ..constants.skills import SkillName
 from .mixins import NoDuplicateValuesFormMixin
 

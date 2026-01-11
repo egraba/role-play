@@ -10,6 +10,7 @@ from .models.abilities import Ability, AbilityType
 from .models.character import Character
 from .models.equipment import Inventory, ToolSettings
 from .models.feats import CharacterFeat, Feat
+from .models.klasses import CharacterClass, Class
 from .models.proficiencies import (
     SavingThrowProficiency,
     SkillProficiency,
@@ -115,6 +116,64 @@ class KlassBuilder(CharacterAttributesBuilder):
         self._apply_tools_proficiencies()
         self._apply_saving_throws_proficiencies()
         self._add_wealth()
+        self.character.save()
+
+
+class ClassBuilder(CharacterAttributesBuilder):
+    """Apply class features to a character using the new Class model."""
+
+    def __init__(self, character: Character, klass: Class) -> None:
+        self.character = character
+        self.klass = klass
+
+    def _create_character_class(self) -> None:
+        """Create the CharacterClass junction record."""
+        CharacterClass.objects.create(
+            character=self.character,
+            klass=self.klass,
+            level=1,
+            is_primary=True,
+        )
+
+    def _apply_hit_points(self) -> None:
+        """Set hit dice, HP, and HP increase from class."""
+        self.character.hit_dice = f"1d{self.klass.hit_die}"
+        base_hp = self.klass.hp_first_level
+        con_mod = self.character.constitution.modifier
+        self.character.hp = 100 + base_hp + con_mod
+        self.character.max_hp = self.character.hp
+        self.character.hp_increase = self.klass.hp_higher_levels
+
+    def _apply_saving_throw_proficiencies(self) -> None:
+        """Grant saving throw proficiencies from class."""
+        for ability_type in self.klass.saving_throws.all():
+            SavingThrowProficiency.objects.create(
+                character=self.character, ability_type=ability_type
+            )
+
+    def _apply_armor_proficiencies(self) -> None:
+        """Grant armor proficiencies based on class categories."""
+        # Implementation based on ArmorSettings will be added later
+        pass
+
+    def _apply_weapon_proficiencies(self) -> None:
+        """Grant weapon proficiencies based on class categories."""
+        # Implementation based on WeaponSettings will be added later
+        pass
+
+    def _add_starting_wealth(self) -> None:
+        """Roll and add starting wealth from class."""
+        wealth_roll = DiceString(self.klass.starting_wealth_dice).roll()
+        self.character.inventory.gp += wealth_roll * 10
+        self.character.inventory.save()
+
+    def build(self) -> None:
+        self._create_character_class()
+        self._apply_hit_points()
+        self._apply_saving_throw_proficiencies()
+        self._apply_armor_proficiencies()
+        self._apply_weapon_proficiencies()
+        self._add_starting_wealth()
         self.character.save()
 
 

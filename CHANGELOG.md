@@ -5,6 +5,13 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Added
+* Class model with hit die, primary ability, saving throw proficiencies, armor/weapon proficiencies, and starting wealth
+* ClassFeature model for class features gained at each level
+* CharacterClass junction model supporting multiclassing (character can have multiple classes with levels)
+* Fighter class with all 17 features from D&D 2024 SRD (levels 1-20)
+* All 4 SRD classes: Cleric, Fighter, Rogue, Wizard with complete data
+* ClassBuilder for applying class features to characters using the new Class model
+* Character.primary_class and Character.class_level properties
 * Comprehensive architecture documentation (ARCHITECTURE.md) covering Django app structure, models, game logic, and master/player distinction
 * Dice system enhancements: advantage/disadvantage rolls, damage rolls with critical hits, d20 tests with natural 1/20 detection
 * Condition model with all 15 SRD conditions (Blinded, Charmed, Deafened, Exhaustion, Frightened, Grappled, Incapacitated, Invisible, Paralyzed, Petrified, Poisoned, Prone, Restrained, Stunned, Unconscious)
