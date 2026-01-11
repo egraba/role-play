@@ -2,14 +2,14 @@ from django import forms
 
 from utils.converters import duplicate_choice
 
-from ..models.klasses import Klass
+from ..constants.classes import ClassName
 from ..constants.skills import SkillName
 from .mixins import NoDuplicateValuesFormMixin
 
 
-def _get_skills(klass: Klass) -> set[tuple[str, str]] | None:
-    match klass:
-        case Klass.CLERIC:
+def _get_skills(class_name: str) -> set[tuple[str, str]] | None:
+    match class_name:
+        case ClassName.CLERIC:
             return {
                 duplicate_choice(SkillName.HISTORY),
                 duplicate_choice(SkillName.INSIGHT),
@@ -17,7 +17,7 @@ def _get_skills(klass: Klass) -> set[tuple[str, str]] | None:
                 duplicate_choice(SkillName.PERSUASION),
                 duplicate_choice(SkillName.RELIGION),
             }
-        case Klass.FIGHTER:
+        case ClassName.FIGHTER:
             return {
                 duplicate_choice(SkillName.ACROBATICS),
                 duplicate_choice(SkillName.ANIMAL_HANDLING),
@@ -28,7 +28,7 @@ def _get_skills(klass: Klass) -> set[tuple[str, str]] | None:
                 duplicate_choice(SkillName.PERCEPTION),
                 duplicate_choice(SkillName.SURVIVAL),
             }
-        case Klass.ROGUE:
+        case ClassName.ROGUE:
             return {
                 duplicate_choice(SkillName.ACROBATICS),
                 duplicate_choice(SkillName.ATHLETICS),
@@ -42,7 +42,7 @@ def _get_skills(klass: Klass) -> set[tuple[str, str]] | None:
                 duplicate_choice(SkillName.SLEIGHT_OF_HAND),
                 duplicate_choice(SkillName.STEALTH),
             }
-        case Klass.WIZARD:
+        case ClassName.WIZARD:
             return {
                 duplicate_choice(SkillName.ARCANA),
                 duplicate_choice(SkillName.HISTORY),
@@ -72,11 +72,14 @@ class SkillsSelectForm(NoDuplicateValuesFormMixin, forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        klass = self.initial["klass"]
-        choices = self._get_choices(_get_skills(klass))
+        klass = self.initial.get("klass")
+        # klass can be a Class model instance or a ClassName enum/string value
+        # Use hasattr for _meta to detect Django model instances
+        class_name = klass.name if hasattr(klass, "_meta") else klass
+        choices = self._get_choices(_get_skills(class_name))
 
         self._add_field_if_choices("first_skill", choices)
         self._add_field_if_choices("second_skill", choices)
-        if klass == Klass.ROGUE:
+        if class_name == ClassName.ROGUE:
             self._add_field_if_choices("third_skill", choices)
             self._add_field_if_choices("fourth_skill", choices)

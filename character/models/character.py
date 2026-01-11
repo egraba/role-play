@@ -13,7 +13,7 @@ from ..constants.races import Size
 from .abilities import Ability
 from .advancement import Advancement
 from .equipment import Inventory
-from .klasses import Class, Klass
+from .classes import Class
 from .races import Language
 from .skills import Skill
 
@@ -26,7 +26,6 @@ class Character(models.Model):
     )
     height = models.FloatField(default=0)
     weight = models.SmallIntegerField(default=0)
-    klass = models.CharField(max_length=1, choices=Klass.choices, verbose_name="class")
     level = models.SmallIntegerField(default=1)
     xp = models.IntegerField(default=0)
     hp = models.SmallIntegerField(default=100)

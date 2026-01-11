@@ -1,8 +1,8 @@
 import pytest
 
 from character.character_attributes_builders import ClassBuilder
-from character.constants.klasses import ClassName
-from character.models.klasses import CharacterClass
+from character.constants.classes import ClassName
+from character.models.classes import CharacterClass
 from character.models.proficiencies import SavingThrowProficiency
 
 from .factories import AbilityTypeFactory, CharacterFactory, ClassFactory

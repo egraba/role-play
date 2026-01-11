@@ -1,6 +1,7 @@
 import pytest
 
-from character.models.klasses import Klass
+from character.constants.classes import ClassName
+from character.models.classes import CharacterClass, Class
 
 from ..factories import CharacterFactory
 
@@ -12,29 +13,30 @@ def character(client):
     return c
 
 
-@pytest.fixture
-def cleric(client):
-    c = CharacterFactory(name="cleric", klass=Klass.CLERIC)
+def _create_character_with_class(client, name: str, class_name: str):
+    """Helper to create a character with a class association."""
+    c = CharacterFactory(name=name)
+    klass = Class.objects.get(name=class_name)
+    CharacterClass.objects.create(character=c, klass=klass, level=1, is_primary=True)
     client.force_login(c.user)
     return c
+
+
+@pytest.fixture
+def cleric(client):
+    return _create_character_with_class(client, "cleric", ClassName.CLERIC)
 
 
 @pytest.fixture
 def fighter(client):
-    c = CharacterFactory(name="fighter", klass=Klass.FIGHTER)
-    client.force_login(c.user)
-    return c
+    return _create_character_with_class(client, "fighter", ClassName.FIGHTER)
 
 
 @pytest.fixture
 def rogue(client):
-    c = CharacterFactory(name="rogue", klass=Klass.ROGUE)
-    client.force_login(c.user)
-    return c
+    return _create_character_with_class(client, "rogue", ClassName.ROGUE)
 
 
 @pytest.fixture
 def wizard(client):
-    c = CharacterFactory(name="wizard", klass=Klass.WIZARD)
-    client.force_login(c.user)
-    return c
+    return _create_character_with_class(client, "wizard", ClassName.WIZARD)

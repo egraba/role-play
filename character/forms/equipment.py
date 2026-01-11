@@ -1,6 +1,6 @@
 from django import forms
 
-from ..models.klasses import Klass
+from ..constants.classes import ClassName
 from .equipment_choices_providers import (
     ClericEquipmentChoicesProvider,
     FighterEquipmentChoicesProvider,
@@ -18,20 +18,26 @@ class EquipmentSelectForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        klass = self.initial["klass"]
-        match klass:
-            case Klass.CLERIC:
+        klass = self.initial.get("klass")
+        # klass can be a Class model instance or a ClassName enum/string value
+        # Use hasattr for _meta to detect Django model instances
+        class_name = klass.name if hasattr(klass, "_meta") else klass
+        match class_name:
+            case ClassName.CLERIC:
                 choices_provider = ClericEquipmentChoicesProvider()
                 fields = ["first_weapon", "second_weapon", "armor", "gear", "pack"]
-            case Klass.FIGHTER:
+            case ClassName.FIGHTER:
                 choices_provider = FighterEquipmentChoicesProvider()
                 fields = ["first_weapon", "second_weapon", "third_weapon", "pack"]
-            case Klass.ROGUE:
+            case ClassName.ROGUE:
                 choices_provider = RogueEquipmentChoicesProvider()
                 fields = ["first_weapon", "second_weapon", "pack"]
-            case Klass.WIZARD:
+            case ClassName.WIZARD:
                 choices_provider = WizardEquipmentChoicesProvider()
                 fields = ["first_weapon", "gear", "pack"]
+            case _:
+                # For classes without specific equipment choices, no fields are added
+                return
 
         field_choices = {
             "first_weapon": self._get_choices(

@@ -11,7 +11,7 @@ from character.constants.equipment import (
     ToolName,
     WeaponName,
 )
-from character.constants.klasses import ClassName
+from character.constants.classes import ClassName
 from character.constants.species import SpeciesName, SpeciesTraitName
 from character.models.abilities import Ability, AbilityType
 from character.models.character import Character
@@ -30,7 +30,7 @@ from character.models.equipment import (
     Weapon,
     WeaponSettings,
 )
-from character.models.klasses import CharacterClass, Class, ClassFeature, Klass
+from character.models.classes import CharacterClass, Class, ClassFeature
 from character.models.species import Species, SpeciesTrait
 
 
@@ -84,7 +84,6 @@ class CharacterFactory(factory.django.DjangoModelFactory):
     name = factory.Sequence(lambda n: f"character{n}")
     user = factory.SubFactory("user.tests.factories.UserFactory")
     species = factory.SubFactory(SpeciesFactory)
-    klass = factory.Faker("enum", enum_cls=Klass)
     background = factory.Faker("enum", enum_cls=Background)
     xp = factory.Faker("random_int")
     inventory = factory.SubFactory(InventoryFactory)

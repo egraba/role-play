@@ -22,7 +22,7 @@ from character.forms.equipment_choices_providers import (
 )
 from character.forms.skills import _get_skills
 from character.models.character import Character
-from character.models.klasses import Klass
+from character.constants.classes import ClassName
 from character.models.proficiencies import SavingThrowProficiency, SkillProficiency
 from character.models.skills import Skill
 from character.views.character import (
@@ -87,12 +87,19 @@ class TestCharacterCreateView:
         fake = Faker()
         # Create species in database for form to reference
         species = SpeciesFactory(name=fake.enum(enum_cls=SpeciesName))
+        # Only use classes that have equipment/skills choices implemented
+        supported_classes = [
+            ClassName.CLERIC,
+            ClassName.FIGHTER,
+            ClassName.ROGUE,
+            ClassName.WIZARD,
+        ]
         current_step = CharacterCreateView.Step.BASE_ATTRIBUTES_SELECTION
         return {
             "character_create_view-current_step": current_step,
             f"{current_step}-name": f"{fake.name()}",
             f"{current_step}-species": species.name,
-            f"{current_step}-klass": f"{fake.enum(enum_cls=Klass)}",
+            f"{current_step}-klass": fake.random_element(supported_classes),
             f"{current_step}-background": f"{fake.enum(enum_cls=Background)}",
             f"{current_step}-strength": AbilityScore.SCORE_10,
             f"{current_step}-dexterity": AbilityScore.SCORE_12,
@@ -144,7 +151,7 @@ class TestCharacterCreateView:
             f"{current_step}-first_skill": skills[0],
             f"{current_step}-second_skill": skills[1],
         }
-        if character_form[klass_key] == Klass.ROGUE:
+        if character_form[klass_key] == ClassName.ROGUE:
             data.update(
                 {
                     f"{current_step}-third_skill": skills[2],
@@ -195,16 +202,16 @@ class TestCharacterCreateView:
         klass_key = f"{CharacterCreateView.Step.BASE_ATTRIBUTES_SELECTION}-klass"
         current_step = CharacterCreateView.Step.EQUIPMENT_SELECTION
         match character_form[klass_key]:
-            case Klass.CLERIC:
+            case ClassName.CLERIC:
                 choices_provider = ClericEquipmentChoicesProvider()
                 field_list = ["first_weapon", "second_weapon", "armor", "gear", "pack"]
-            case Klass.FIGHTER:
+            case ClassName.FIGHTER:
                 choices_provider = FighterEquipmentChoicesProvider()
                 field_list = ["first_weapon", "second_weapon", "third_weapon", "pack"]
-            case Klass.ROGUE:
+            case ClassName.ROGUE:
                 choices_provider = RogueEquipmentChoicesProvider()
                 field_list = ["first_weapon", "second_weapon", "pack"]
-            case Klass.WIZARD:
+            case ClassName.WIZARD:
                 choices_provider = WizardEquipmentChoicesProvider()
                 field_list = ["first_weapon", "gear", "pack"]
         fields = {}
@@ -318,7 +325,7 @@ class TestCharacterCreateView:
     @pytest.fixture
     def cleric_form(self, character_form):
         current_step = character_form["character_create_view-current_step"]
-        character_form[f"{current_step}-klass"] = Klass.CLERIC
+        character_form[f"{current_step}-klass"] = ClassName.CLERIC
         return character_form
 
     def test_cleric_creation(
@@ -347,7 +354,7 @@ class TestCharacterCreateView:
     @pytest.fixture
     def fighter_form(self, character_form):
         current_step = character_form["character_create_view-current_step"]
-        character_form[f"{current_step}-klass"] = Klass.FIGHTER
+        character_form[f"{current_step}-klass"] = ClassName.FIGHTER
         return character_form
 
     def test_fighter_creation(
@@ -382,7 +389,7 @@ class TestCharacterCreateView:
     @pytest.fixture
     def rogue_form(self, character_form):
         current_step = character_form["character_create_view-current_step"]
-        character_form[f"{current_step}-klass"] = Klass.ROGUE
+        character_form[f"{current_step}-klass"] = ClassName.ROGUE
         return character_form
 
     def test_rogue_creation(
@@ -414,7 +421,7 @@ class TestCharacterCreateView:
     @pytest.fixture
     def wizard_form(self, character_form):
         current_step = character_form["character_create_view-current_step"]
-        character_form[f"{current_step}-klass"] = Klass.WIZARD
+        character_form[f"{current_step}-klass"] = ClassName.WIZARD
         return character_form
 
     def test_wizard_creation(

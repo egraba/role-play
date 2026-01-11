@@ -26,6 +26,8 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * Use authenticated user instead of client-provided username in message storage and event enrichers (security fix)
 
 ### Changed
+* Renamed `klasses.py` files to `classes.py` (models and constants) for consistency with model names
+* CharacterCreateForm now uses ModelChoiceField for Class selection
 * Split tool configurations from pyproject.toml into separate files (poe_tasks.toml, ruff.toml, pytest.ini)
 * Updated project to reference D&D 5th Edition SRD 5.2 specification with CC-BY-4.0 attribution
 * Ability model now auto-calculates modifier on save and validates score range (1-30)
@@ -35,6 +37,8 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * Criminal background skill proficiencies changed from Deception/Stealth to Sleight of Hand/Stealth (D&D 2024 rules)
 
 ### Removed
+* **BREAKING**: Removed legacy class system: `Klass` enum, `KLASS_FEATURES` dictionary, `KlassBuilder`, and `Character.klass` field (replaced by Class model and ClassBuilder)
+* Removed legacy models: `KlassFeature`, `HitPoints`, `KlassAdvancement` (class data now in Class/ClassFeature models)
 * Redis cache usage removed from application code (Redis still required for Channels and Celery)
 * Removed `dice` library dependency (replaced with built-in `random` module)
 * Removed Race enum, RACIAL_TRAITS dictionary, and Sense model (replaced by Species system)

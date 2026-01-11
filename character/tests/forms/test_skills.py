@@ -1,13 +1,13 @@
 import pytest
 from django import forms
 
-from character.models.klasses import Klass
+from character.constants.classes import ClassName
 from character.forms.skills import SkillsSelectForm
 
 
 @pytest.fixture
 def cleric_form():
-    return SkillsSelectForm(initial={"klass": Klass.CLERIC})
+    return SkillsSelectForm(initial={"klass": ClassName.CLERIC})
 
 
 def test_cleric_fields_presence(cleric_form):
@@ -21,7 +21,7 @@ def test_cleric_fields_type(cleric_form):
 
 @pytest.fixture
 def fighter_form():
-    return SkillsSelectForm(initial={"klass": Klass.FIGHTER})
+    return SkillsSelectForm(initial={"klass": ClassName.FIGHTER})
 
 
 def test_fighter_fields_presence(fighter_form):
@@ -35,7 +35,7 @@ def test_fighter_fields_type(fighter_form):
 
 @pytest.fixture
 def rogue_form():
-    return SkillsSelectForm(initial={"klass": Klass.ROGUE})
+    return SkillsSelectForm(initial={"klass": ClassName.ROGUE})
 
 
 def test_rogue_fields_presence(rogue_form):
@@ -54,7 +54,7 @@ def test_rogue_fields_type(rogue_form):
 
 @pytest.fixture
 def wizard_form():
-    return SkillsSelectForm(initial={"klass": Klass.WIZARD})
+    return SkillsSelectForm(initial={"klass": ClassName.WIZARD})
 
 
 def test_wizard_fields_presence(wizard_form):
