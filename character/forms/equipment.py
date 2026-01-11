@@ -1,6 +1,6 @@
 from django import forms
 
-from ..constants.klasses import Klass
+from ..models.klasses import Klass
 from .equipment_choices_providers import (
     ClericEquipmentChoicesProvider,
     FighterEquipmentChoicesProvider,

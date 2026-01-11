@@ -11,6 +11,7 @@ from character.constants.equipment import (
     ToolName,
     WeaponName,
 )
+from character.constants.klasses import ClassName
 from character.constants.species import SpeciesName, SpeciesTraitName
 from character.models.abilities import Ability, AbilityType
 from character.models.character import Character
@@ -29,7 +30,7 @@ from character.models.equipment import (
     Weapon,
     WeaponSettings,
 )
-from character.models.klasses import Klass
+from character.models.klasses import CharacterClass, Class, ClassFeature, Klass
 from character.models.species import Species, SpeciesTrait
 
 
@@ -210,3 +211,39 @@ class CharacterFeatFactory(factory.django.DjangoModelFactory):
     character = factory.SubFactory(CharacterFactory)
     feat = factory.SubFactory(FeatFactory)
     granted_by = "background"
+
+
+class ClassFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Class
+        django_get_or_create = ("name",)
+
+    name = factory.Faker("random_element", elements=ClassName)
+    description = factory.Faker("text", max_nb_chars=200)
+    hit_die = 10
+    hp_first_level = 10
+    hp_higher_levels = 6
+    primary_ability = factory.SubFactory(AbilityTypeFactory, name="STR")
+    armor_proficiencies = factory.LazyFunction(list)
+    weapon_proficiencies = factory.LazyFunction(list)
+    starting_wealth_dice = "5d4"
+
+
+class ClassFeatureFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ClassFeature
+
+    name = factory.Faker("word")
+    klass = factory.SubFactory(ClassFactory)
+    level = 1
+    description = factory.Faker("text", max_nb_chars=500)
+
+
+class CharacterClassFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = CharacterClass
+
+    character = factory.SubFactory(CharacterFactory)
+    klass = factory.SubFactory(ClassFactory)
+    level = 1
+    is_primary = True

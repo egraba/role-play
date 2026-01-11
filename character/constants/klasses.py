@@ -1,9 +1,28 @@
-from ..constants.abilities import AbilityName
-from ..constants.equipment import ArmorType
-from ..models.klasses import Klass
+from django.db.models import TextChoices
 
+from .abilities import AbilityName
+from .equipment import ArmorType
+
+
+class ClassName(TextChoices):
+    """D&D 2024 SRD character class names."""
+
+    CLERIC = "cleric", "Cleric"
+    FIGHTER = "fighter", "Fighter"
+    ROGUE = "rogue", "Rogue"
+    WIZARD = "wizard", "Wizard"
+
+
+class WeaponCategory(TextChoices):
+    """Weapon proficiency categories."""
+
+    SIMPLE = "simple", "Simple Weapons"
+    MARTIAL = "martial", "Martial Weapons"
+
+
+# Legacy mapping for backwards compatibility during migration
 KLASS_FEATURES: dict = {
-    Klass.CLERIC: {
+    "C": {
         "hit_points": {
             "hit_dice": "1d8",
             "hp_first_level": 8,
@@ -20,7 +39,7 @@ KLASS_FEATURES: dict = {
         },
         "wealth": "5d4",
     },
-    Klass.FIGHTER: {
+    "F": {
         "hit_points": {
             "hit_dice": "1d10",
             "hp_first_level": 10,
@@ -38,7 +57,7 @@ KLASS_FEATURES: dict = {
         },
         "wealth": "5d4",
     },
-    Klass.ROGUE: {
+    "R": {
         "hit_points": {
             "hit_dice": "1d8",
             "hp_first_level": 8,
@@ -54,7 +73,7 @@ KLASS_FEATURES: dict = {
         },
         "wealth": "4d4",
     },
-    Klass.WIZARD: {
+    "W": {
         "hit_points": {
             "hit_dice": "1d6",
             "hp_first_level": 6,
@@ -62,7 +81,7 @@ KLASS_FEATURES: dict = {
             "hp_higher_levels": 4,
         },
         "proficiencies": {
-            "armor": {},
+            "armor": set(),
             "saving_throws": {AbilityName.INTELLIGENCE, AbilityName.WISDOM},
         },
         "wealth": "4d4",

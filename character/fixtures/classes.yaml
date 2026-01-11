@@ -1,0 +1,70 @@
+# D&D 2024 SRD Character Classes
+# Primary ability and saving throws reference AbilityType primary keys
+
+- model: character.class
+  pk: cleric
+  fields:
+    description: |
+      Clerics are intermediaries between the mortal world and the distant planes of the gods.
+      They channel divine magic to heal, protect, and smite enemies.
+    hit_die: 8
+    hp_first_level: 8
+    hp_higher_levels: 5
+    primary_ability: WIS
+    saving_throws:
+      - WIS
+      - CHA
+    armor_proficiencies: ["LA", "MA", "SH"]
+    weapon_proficiencies: ["simple"]
+    starting_wealth_dice: "5d4"
+
+- model: character.class
+  pk: fighter
+  fields:
+    description: |
+      A master of martial combat, skilled with a variety of weapons and armor.
+      Fighters excel at dealing damage and surviving in battle.
+    hit_die: 10
+    hp_first_level: 10
+    hp_higher_levels: 6
+    primary_ability: STR
+    saving_throws:
+      - STR
+      - CON
+    armor_proficiencies: ["LA", "MA", "HA", "SH"]
+    weapon_proficiencies: ["simple", "martial"]
+    starting_wealth_dice: "5d4"
+
+- model: character.class
+  pk: rogue
+  fields:
+    description: |
+      Rogues rely on skill, stealth, and exploiting vulnerabilities to defeat foes.
+      They are masters of deception and precision strikes.
+    hit_die: 8
+    hp_first_level: 8
+    hp_higher_levels: 5
+    primary_ability: DEX
+    saving_throws:
+      - DEX
+      - INT
+    armor_proficiencies: ["LA"]
+    weapon_proficiencies: ["simple"]
+    starting_wealth_dice: "4d4"
+
+- model: character.class
+  pk: wizard
+  fields:
+    description: |
+      Wizards are supreme magic-users who learn their craft through years of study.
+      They command arcane power through spellbooks and careful preparation.
+    hit_die: 6
+    hp_first_level: 6
+    hp_higher_levels: 4
+    primary_ability: INT
+    saving_throws:
+      - INT
+      - WIS
+    armor_proficiencies: []
+    weapon_proficiencies: ["simple"]
+    starting_wealth_dice: "4d4"
