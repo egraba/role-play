@@ -335,7 +335,7 @@ class TestCharacterCreateView:
                 | Q(ability_type_id=AbilityName.CHARISMA)
             )
         )
-        assert 50 <= character.inventory.gp <= 200
+        assert 100 <= character.inventory.gp <= 250  # Class wealth + 50 GP background
         inventory = character.inventory
         assert inventory.contains(equipment_form["3-first_weapon"])
         assert inventory.contains(equipment_form["3-second_weapon"])
@@ -367,7 +367,7 @@ class TestCharacterCreateView:
                 | Q(ability_type_id=AbilityName.CONSTITUTION)
             )
         )
-        assert 50 <= character.inventory.gp <= 200
+        assert 100 <= character.inventory.gp <= 250  # Class wealth + 50 GP background
         inventory = character.inventory
         # First weapon
         assert (
@@ -402,7 +402,7 @@ class TestCharacterCreateView:
                 | Q(ability_type_id=AbilityName.INTELLIGENCE)
             )
         )
-        assert 40 <= character.inventory.gp <= 160
+        assert 90 <= character.inventory.gp <= 210  # Class wealth + 50 GP background
         inventory = character.inventory
         assert inventory.contains(equipment_form["3-first_weapon"])
         assert inventory.contains(equipment_form["3-second_weapon"])
@@ -434,7 +434,7 @@ class TestCharacterCreateView:
                 | Q(ability_type_id=AbilityName.WISDOM)
             )
         )
-        assert 40 <= character.inventory.gp <= 160
+        assert 90 <= character.inventory.gp <= 210  # Class wealth + 50 GP background
         inventory = character.inventory
         assert inventory.contains(equipment_form["3-first_weapon"])
         assert inventory.contains(equipment_form["3-gear"])

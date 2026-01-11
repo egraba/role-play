@@ -29,7 +29,7 @@ ref = "db-migrate"
 
 [tasks.db-load-settings]
 help = "Load app settings (fixtures)"
-cmd = "manage.py loaddata senses advancement abilities languages klasses skills equipment"
+cmd = "manage.py loaddata advancement abilities languages klasses skills equipment conditions species_traits species feats"
 
 [tasks.db-populate]
 help = "Populate the DB with realistic data"
