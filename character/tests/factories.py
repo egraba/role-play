@@ -3,6 +3,7 @@ import factory
 from character.constants.abilities import AbilityName
 from character.constants.backgrounds import Background
 from character.constants.conditions import ConditionName
+from character.constants.feats import FeatName, FeatType
 from character.constants.equipment import (
     ArmorName,
     GearName,
@@ -14,6 +15,7 @@ from character.constants.species import SpeciesName, SpeciesTraitName
 from character.models.abilities import Ability, AbilityType
 from character.models.character import Character
 from character.models.conditions import CharacterCondition, Condition
+from character.models.feats import CharacterFeat, Feat
 from character.models.equipment import (
     Armor,
     ArmorSettings,
@@ -189,3 +191,22 @@ class CharacterConditionFactory(factory.django.DjangoModelFactory):
 
     character = factory.SubFactory(CharacterFactory)
     condition = factory.SubFactory(ConditionFactory)
+
+
+class FeatFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Feat
+        django_get_or_create = ("name",)
+
+    name = factory.Faker("random_element", elements=FeatName)
+    feat_type = FeatType.ORIGIN
+    description = factory.Faker("text", max_nb_chars=200)
+
+
+class CharacterFeatFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = CharacterFeat
+
+    character = factory.SubFactory(CharacterFactory)
+    feat = factory.SubFactory(FeatFactory)
+    granted_by = "background"
