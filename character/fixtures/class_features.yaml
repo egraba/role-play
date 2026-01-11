@@ -180,3 +180,273 @@
     description: |
       You can attack four times instead of once whenever you take the Attack action
       on your turn.
+
+# =============================================================================
+# BARBARIAN
+# =============================================================================
+
+- model: character.classfeature
+  fields:
+    name: "Rage"
+    klass: barbarian
+    level: 1
+    description: |
+      You can enter a rage as a Bonus Action. While raging, you gain the following benefits
+      if you aren't wearing heavy armor: advantage on Strength checks and saving throws,
+      bonus damage on melee attacks using Strength, and resistance to bludgeoning, piercing,
+      and slashing damage. Your rage lasts for 1 minute and ends early if you are knocked
+      unconscious or if your turn ends and you haven't attacked or taken damage since your
+      last turn.
+
+- model: character.classfeature
+  fields:
+    name: "Unarmored Defense"
+    klass: barbarian
+    level: 1
+    description: |
+      While you are not wearing any armor, your Armor Class equals 10 + your Dexterity
+      modifier + your Constitution modifier. You can use a shield and still gain this benefit.
+
+# =============================================================================
+# BARD
+# =============================================================================
+
+- model: character.classfeature
+  fields:
+    name: "Bardic Inspiration"
+    klass: bard
+    level: 1
+    description: |
+      You can inspire others through stirring words or music. As a Bonus Action, choose one
+      creature other than yourself within 60 feet who can hear you. That creature gains one
+      Bardic Inspiration die (d6). Once within the next 10 minutes, the creature can roll the
+      die and add the number rolled to one ability check, attack roll, or saving throw it makes.
+
+- model: character.classfeature
+  fields:
+    name: "Spellcasting"
+    klass: bard
+    level: 1
+    description: |
+      You have learned to untangle and reshape the fabric of reality in harmony with your
+      wishes and music. Your spells are part of your vast repertoire. Charisma is your
+      spellcasting ability for your bard spells.
+
+# =============================================================================
+# CLERIC
+# =============================================================================
+
+- model: character.classfeature
+  fields:
+    name: "Spellcasting"
+    klass: cleric
+    level: 1
+    description: |
+      As a conduit for divine power, you can cast cleric spells. Wisdom is your spellcasting
+      ability for your cleric spells. You prepare the list of cleric spells that are available
+      for you to cast, choosing from the cleric spell list.
+
+- model: character.classfeature
+  fields:
+    name: "Divine Order"
+    klass: cleric
+    level: 1
+    description: |
+      You have dedicated yourself to one of the following sacred roles: Protector (gain
+      proficiency with martial weapons and heavy armor) or Thaumaturge (gain one cantrip
+      of your choice from the cleric spell list and add your Wisdom modifier to the damage
+      you deal with cleric cantrips).
+
+# =============================================================================
+# DRUID
+# =============================================================================
+
+- model: character.classfeature
+  fields:
+    name: "Druidic"
+    klass: druid
+    level: 1
+    description: |
+      You know Druidic, the secret language of druids. You can speak the language and use
+      it to leave hidden messages. You and others who know this language automatically spot
+      such a message.
+
+- model: character.classfeature
+  fields:
+    name: "Spellcasting"
+    klass: druid
+    level: 1
+    description: |
+      Drawing on the divine essence of nature itself, you can cast spells to shape that
+      essence to your will. Wisdom is your spellcasting ability for your druid spells.
+
+# =============================================================================
+# MONK
+# =============================================================================
+
+- model: character.classfeature
+  fields:
+    name: "Martial Arts"
+    klass: monk
+    level: 1
+    description: |
+      Your practice of martial arts gives you mastery of combat styles that use unarmed
+      strikes and monk weapons. You gain the following benefits: you can use Dexterity
+      instead of Strength for attack and damage rolls, you can roll a d6 in place of
+      normal damage, and when you use the Attack action with an unarmed strike or monk
+      weapon, you can make one unarmed strike as a Bonus Action.
+
+- model: character.classfeature
+  fields:
+    name: "Unarmored Defense"
+    klass: monk
+    level: 1
+    description: |
+      While you are wearing no armor and not wielding a shield, your AC equals 10 + your
+      Dexterity modifier + your Wisdom modifier.
+
+# =============================================================================
+# PALADIN
+# =============================================================================
+
+- model: character.classfeature
+  fields:
+    name: "Lay on Hands"
+    klass: paladin
+    level: 1
+    description: |
+      Your blessed touch can heal wounds. You have a pool of healing power that replenishes
+      when you take a Long Rest. With that pool, you can restore a total number of Hit Points
+      equal to five times your Paladin level. As a Bonus Action, you can touch a creature
+      and draw power from the pool to restore Hit Points to that creature.
+
+- model: character.classfeature
+  fields:
+    name: "Spellcasting"
+    klass: paladin
+    level: 1
+    description: |
+      You have learned to draw on divine magic through meditation and prayer to cast spells.
+      Charisma is your spellcasting ability for your paladin spells.
+
+# =============================================================================
+# RANGER
+# =============================================================================
+
+- model: character.classfeature
+  fields:
+    name: "Favored Enemy"
+    klass: ranger
+    level: 1
+    description: |
+      You are adept at focusing your ire on a single enemy. You always have the Hunter's Mark
+      spell prepared, and it doesn't count against the number of spells you can prepare.
+      Moreover, you don't have to concentrate on the spell once you cast it; it lasts until
+      its full duration.
+
+- model: character.classfeature
+  fields:
+    name: "Spellcasting"
+    klass: ranger
+    level: 1
+    description: |
+      You have learned to use the magical essence of nature to cast spells. Wisdom is your
+      spellcasting ability for your ranger spells.
+
+# =============================================================================
+# ROGUE
+# =============================================================================
+
+- model: character.classfeature
+  fields:
+    name: "Expertise"
+    klass: rogue
+    level: 1
+    description: |
+      Choose two of your skill proficiencies or one of your skill proficiencies and your
+      proficiency with Thieves' Tools. Your proficiency bonus is doubled for any ability
+      check you make that uses either of the chosen proficiencies.
+
+- model: character.classfeature
+  fields:
+    name: "Sneak Attack"
+    klass: rogue
+    level: 1
+    description: |
+      You know how to strike subtly and exploit a foe's distraction. Once per turn, you can
+      deal an extra 1d6 damage to one creature you hit with an attack if you have Advantage
+      on the attack roll. The attack must use a Finesse or a Ranged weapon. You don't need
+      Advantage if an ally is within 5 feet of the target and the ally isn't Incapacitated.
+
+# =============================================================================
+# SORCERER
+# =============================================================================
+
+- model: character.classfeature
+  fields:
+    name: "Spellcasting"
+    klass: sorcerer
+    level: 1
+    description: |
+      An event in your past left an indelible mark on you, infusing you with magic. This font
+      of magic fuels your spells. Charisma is your spellcasting ability for your sorcerer spells.
+
+- model: character.classfeature
+  fields:
+    name: "Innate Sorcery"
+    klass: sorcerer
+    level: 1
+    description: |
+      An event in your past left an indelible mark on you, infusing you with sorcerous magic.
+      As a Bonus Action, you can unleash this magic for 1 minute, during which you gain
+      Advantage on the attack rolls of spells you cast and the spell save DC of your sorcerer
+      spells increases by 1.
+
+# =============================================================================
+# WARLOCK
+# =============================================================================
+
+- model: character.classfeature
+  fields:
+    name: "Pact Magic"
+    klass: warlock
+    level: 1
+    description: |
+      Through your patron, you have made a pact that allows you to channel powerful magic.
+      You know two cantrips and two 1st-level spells. Charisma is your spellcasting ability.
+      Your spell slots are all the same level and recharge on a Short or Long Rest.
+
+- model: character.classfeature
+  fields:
+    name: "Eldritch Invocations"
+    klass: warlock
+    level: 1
+    description: |
+      In your study of occult lore, you have unearthed Eldritch Invocations, fragments of
+      forbidden knowledge that imbue you with magical abilities. You gain one invocation
+      of your choice at 1st level.
+
+# =============================================================================
+# WIZARD
+# =============================================================================
+
+- model: character.classfeature
+  fields:
+    name: "Spellcasting"
+    klass: wizard
+    level: 1
+    description: |
+      As a student of arcane magic, you have a spellbook containing spells that show the
+      first glimmerings of your true power. Intelligence is your spellcasting ability for
+      your wizard spells.
+
+- model: character.classfeature
+  fields:
+    name: "Arcane Recovery"
+    klass: wizard
+    level: 1
+    description: |
+      You have learned to regain some of your magical energy by studying your spellbook.
+      Once per day when you finish a Short Rest, you can choose expended spell slots to
+      recover. The spell slots can have a combined level equal to no more than half your
+      wizard level (rounded up).

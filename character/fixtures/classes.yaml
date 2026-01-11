@@ -1,5 +1,40 @@
 # D&D 2024 SRD Character Classes
 # Primary ability and saving throws reference AbilityType primary keys
+# Armor proficiencies: LA=Light, MA=Medium, HA=Heavy, SH=Shield
+
+- model: character.class
+  pk: barbarian
+  fields:
+    description: |
+      Barbarians are fierce warriors who channel primal rage to fuel their combat prowess.
+      They excel at dealing and absorbing damage in melee combat.
+    hit_die: 12
+    hp_first_level: 12
+    hp_higher_levels: 7
+    primary_ability: STR
+    saving_throws:
+      - STR
+      - CON
+    armor_proficiencies: ["LA", "MA", "SH"]
+    weapon_proficiencies: ["simple", "martial"]
+    starting_wealth_dice: "2d4"
+
+- model: character.class
+  pk: bard
+  fields:
+    description: |
+      Bards are inspiring magicians whose power echoes the music of creation.
+      They weave magic through words and music to heal, harm, and manipulate.
+    hit_die: 8
+    hp_first_level: 8
+    hp_higher_levels: 5
+    primary_ability: CHA
+    saving_throws:
+      - DEX
+      - CHA
+    armor_proficiencies: ["LA"]
+    weapon_proficiencies: ["simple"]
+    starting_wealth_dice: "5d4"
 
 - model: character.class
   pk: cleric
@@ -19,6 +54,23 @@
     starting_wealth_dice: "5d4"
 
 - model: character.class
+  pk: druid
+  fields:
+    description: |
+      Druids are priests of the Old Faith, wielding the powers of nature and adopting animal forms.
+      They serve as guardians of the natural world.
+    hit_die: 8
+    hp_first_level: 8
+    hp_higher_levels: 5
+    primary_ability: WIS
+    saving_throws:
+      - INT
+      - WIS
+    armor_proficiencies: ["LA", "MA", "SH"]
+    weapon_proficiencies: ["simple"]
+    starting_wealth_dice: "2d4"
+
+- model: character.class
   pk: fighter
   fields:
     description: |
@@ -36,6 +88,57 @@
     starting_wealth_dice: "5d4"
 
 - model: character.class
+  pk: monk
+  fields:
+    description: |
+      Monks are masters of martial arts, harnessing the power of body and soul.
+      They channel mystical energy called ki to perform extraordinary feats.
+    hit_die: 8
+    hp_first_level: 8
+    hp_higher_levels: 5
+    primary_ability: DEX
+    saving_throws:
+      - STR
+      - DEX
+    armor_proficiencies: []
+    weapon_proficiencies: ["simple"]
+    starting_wealth_dice: "5d4"
+
+- model: character.class
+  pk: paladin
+  fields:
+    description: |
+      Paladins are holy warriors bound to a sacred oath that empowers their divine magic.
+      They combine martial prowess with divine spellcasting.
+    hit_die: 10
+    hp_first_level: 10
+    hp_higher_levels: 6
+    primary_ability: STR
+    saving_throws:
+      - WIS
+      - CHA
+    armor_proficiencies: ["LA", "MA", "HA", "SH"]
+    weapon_proficiencies: ["simple", "martial"]
+    starting_wealth_dice: "5d4"
+
+- model: character.class
+  pk: ranger
+  fields:
+    description: |
+      Rangers are warriors who use martial prowess and nature magic to combat threats.
+      They are skilled hunters and trackers who protect civilization's edge.
+    hit_die: 10
+    hp_first_level: 10
+    hp_higher_levels: 6
+    primary_ability: DEX
+    saving_throws:
+      - STR
+      - DEX
+    armor_proficiencies: ["LA", "MA", "SH"]
+    weapon_proficiencies: ["simple", "martial"]
+    starting_wealth_dice: "5d4"
+
+- model: character.class
   pk: rogue
   fields:
     description: |
@@ -48,6 +151,40 @@
     saving_throws:
       - DEX
       - INT
+    armor_proficiencies: ["LA"]
+    weapon_proficiencies: ["simple"]
+    starting_wealth_dice: "4d4"
+
+- model: character.class
+  pk: sorcerer
+  fields:
+    description: |
+      Sorcerers carry a magical birthright conferred by an exotic bloodline or cosmic influence.
+      Their innate magic manifests through sheer force of will.
+    hit_die: 6
+    hp_first_level: 6
+    hp_higher_levels: 4
+    primary_ability: CHA
+    saving_throws:
+      - CON
+      - CHA
+    armor_proficiencies: []
+    weapon_proficiencies: ["simple"]
+    starting_wealth_dice: "3d4"
+
+- model: character.class
+  pk: warlock
+  fields:
+    description: |
+      Warlocks are seekers of knowledge who forge pacts with mysterious beings of power.
+      They unlock magical effects both subtle and spectacular.
+    hit_die: 8
+    hp_first_level: 8
+    hp_higher_levels: 5
+    primary_ability: CHA
+    saving_throws:
+      - WIS
+      - CHA
     armor_proficiencies: ["LA"]
     weapon_proficiencies: ["simple"]
     starting_wealth_dice: "4d4"

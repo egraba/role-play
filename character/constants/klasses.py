@@ -7,9 +7,17 @@ from .equipment import ArmorType
 class ClassName(TextChoices):
     """D&D 2024 SRD character class names."""
 
+    BARBARIAN = "barbarian", "Barbarian"
+    BARD = "bard", "Bard"
     CLERIC = "cleric", "Cleric"
+    DRUID = "druid", "Druid"
     FIGHTER = "fighter", "Fighter"
+    MONK = "monk", "Monk"
+    PALADIN = "paladin", "Paladin"
+    RANGER = "ranger", "Ranger"
     ROGUE = "rogue", "Rogue"
+    SORCERER = "sorcerer", "Sorcerer"
+    WARLOCK = "warlock", "Warlock"
     WIZARD = "wizard", "Wizard"
 
 
