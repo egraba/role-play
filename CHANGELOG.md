@@ -9,7 +9,8 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * ClassFeature model for class features gained at each level
 * CharacterClass junction model supporting multiclassing (character can have multiple classes with levels)
 * Fighter class with all 17 features from D&D 2024 SRD (levels 1-20)
-* All 4 SRD classes: Cleric, Fighter, Rogue, Wizard with complete data
+* All 12 SRD classes with complete data: Barbarian, Bard, Cleric, Druid, Fighter, Monk, Paladin, Ranger, Rogue, Sorcerer, Warlock, Wizard
+* Level 1 class features for all 12 classes (Rage, Bardic Inspiration, Spellcasting, Sneak Attack, etc.)
 * ClassBuilder for applying class features to characters using the new Class model
 * Character.primary_class and Character.class_level properties
 * Comprehensive architecture documentation (ARCHITECTURE.md) covering Django app structure, models, game logic, and master/player distinction
