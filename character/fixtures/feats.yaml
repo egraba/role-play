@@ -1,0 +1,37 @@
+- model: character.feat
+  pk: alert
+  fields:
+    feat_type: O
+    description: |
+      When you roll Initiative, you can add your Proficiency Bonus to the roll.
+      Immediately after you roll Initiative, you can swap your Initiative with
+      the Initiative of one willing ally in the same combat. You can't make this
+      swap if you or the ally has the Incapacitated condition.
+
+- model: character.feat
+  pk: magic_initiate_cleric
+  fields:
+    feat_type: O
+    description: |
+      You learn two Cleric cantrips of your choice. You also learn one 1st-level
+      Cleric spell of your choice. You can cast this spell without a spell slot
+      once per Long Rest. You can also cast it using any spell slots you have.
+      Wisdom is your spellcasting ability for these spells.
+
+- model: character.feat
+  pk: magic_initiate_wizard
+  fields:
+    feat_type: O
+    description: |
+      You learn two Wizard cantrips of your choice. You also learn one 1st-level
+      Wizard spell of your choice. You can cast this spell without a spell slot
+      once per Long Rest. You can also cast it using any spell slots you have.
+      Intelligence is your spellcasting ability for these spells.
+
+- model: character.feat
+  pk: savage_attacker
+  fields:
+    feat_type: O
+    description: |
+      Once per turn when you hit a target with a weapon, you can roll the
+      weapon's damage dice twice and use either roll against the target.

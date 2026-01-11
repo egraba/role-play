@@ -3,14 +3,16 @@ from faker import Faker
 
 from character.constants.abilities import AbilityName
 from character.constants.character import Gender
+from character.constants.feats import FeatName
 from character.constants.species import SpeciesTraitName
 from character.models.character import Character
+from character.models.feats import CharacterFeat
 from character.models.proficiencies import SavingThrowProficiency
 from character.models.species import SpeciesTrait
 from game.constants.events import Against, RollType
 from utils.dice import DiceString
 
-from ..factories import AbilityFactory, CharacterFactory, SpeciesFactory
+from ..factories import AbilityFactory, CharacterFactory, FeatFactory, SpeciesFactory
 
 
 @pytest.mark.django_db
@@ -170,3 +172,27 @@ class TestCharacterModel:
     def test_has_disadvantage(self, character):
         fake = Faker()
         assert not character.has_disadvantage(fake.enum(RollType), fake.enum(Against))
+
+    def test_has_feat_true(self, character):
+        feat = FeatFactory(name=FeatName.ALERT)
+        CharacterFeat.objects.create(
+            character=character, feat=feat, granted_by="background"
+        )
+        assert character.has_feat(FeatName.ALERT)
+
+    def test_has_feat_false(self, character):
+        assert not character.has_feat(FeatName.ALERT)
+
+    def test_has_feat_multiple_feats(self, character):
+        alert = FeatFactory(name=FeatName.ALERT)
+        savage = FeatFactory(name=FeatName.SAVAGE_ATTACKER)
+        CharacterFeat.objects.create(
+            character=character, feat=alert, granted_by="background"
+        )
+        CharacterFeat.objects.create(
+            character=character, feat=savage, granted_by="class"
+        )
+
+        assert character.has_feat(FeatName.ALERT)
+        assert character.has_feat(FeatName.SAVAGE_ATTACKER)
+        assert not character.has_feat(FeatName.MAGIC_INITIATE_CLERIC)

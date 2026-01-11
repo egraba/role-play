@@ -33,6 +33,9 @@ class Character(models.Model):
     max_hp = models.SmallIntegerField(default=100)
     skills = models.ManyToManyField(Skill)
     abilities = models.ManyToManyField(Ability)
+    feats = models.ManyToManyField(
+        "character.Feat", through="character.CharacterFeat", blank=True
+    )
     gender = models.CharField(max_length=1, choices=Gender.choices, default=Gender.MALE)
     ac = models.SmallIntegerField(default=0)
     size = models.CharField(max_length=1, choices=Size.choices, null=True, blank=True)
@@ -126,6 +129,10 @@ class Character(models.Model):
         if not self.species:
             return False
         return self.species.traits.filter(name=trait_name).exists()
+
+    def has_feat(self, feat_name: str) -> bool:
+        """Check if character has a specific feat."""
+        return self.feats.filter(name=feat_name).exists()
 
     def has_advantage(self, roll_type: RollType, against: Against) -> bool:
         if (
