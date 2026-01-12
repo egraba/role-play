@@ -4,9 +4,10 @@
     <head>
         <title>{% block title %}egraba's role-play{% endblock %}</title>
         <link rel="stylesheet" href="{% static 'css/rpg-styles.css' %}">
+        <script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
     </head>
 
-    <body>
+    <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
         {% block content %}{% endblock%}
 
         <footer style="text-align: center; padding: 20px; margin-top: 40px; border-top: 1px solid var(--color-border, #4a4a4a); font-size: 0.85rem; color: var(--color-text-muted, #999);">

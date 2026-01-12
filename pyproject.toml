@@ -24,6 +24,7 @@ dependencies = [
     "django-celery-beat",
     "django-extensions",
     "django-formtools",
+    "django-htmx>=1.27.0",
     "django-model-utils",
     "django-viewflow",
     "email-validator",
