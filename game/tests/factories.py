@@ -6,11 +6,13 @@ from character.constants.abilities import AbilityName
 from game.constants.events import DifficultyClass, RollResultType, RollType
 from game.models.combat import Combat, Fighter
 from game.models.events import (
+    CombatEnded,
     CombatInitativeOrderSet,
     CombatInitialization,
     CombatInitiativeRequest,
     CombatInitiativeResponse,
     CombatInitiativeResult,
+    CombatStarted,
     Event,
     GameStart,
     Message,
@@ -18,6 +20,9 @@ from game.models.events import (
     RollRequest,
     RollResponse,
     RollResult,
+    RoundEnded,
+    TurnEnded,
+    TurnStarted,
     UserInvitation,
 )
 from game.models.game import Actor, Game, Master, Player, Quest
@@ -220,6 +225,56 @@ class CombatInitiativeResultFactory(factory.django.DjangoModelFactory):
 class CombatInitativeOrderSetFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = CombatInitativeOrderSet
+
+    game = factory.SubFactory(GameFactory)
+    author = factory.SubFactory(ActorFactory)
+    combat = factory.SubFactory(CombatFactory)
+
+
+class CombatStartedFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = CombatStarted
+
+    game = factory.SubFactory(GameFactory)
+    author = factory.SubFactory(ActorFactory)
+    combat = factory.SubFactory(CombatFactory)
+
+
+class TurnStartedFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = TurnStarted
+
+    game = factory.SubFactory(GameFactory)
+    author = factory.SubFactory(ActorFactory)
+    combat = factory.SubFactory(CombatFactory)
+    fighter = factory.SubFactory(FighterFactory)
+    round_number = 1
+
+
+class TurnEndedFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = TurnEnded
+
+    game = factory.SubFactory(GameFactory)
+    author = factory.SubFactory(ActorFactory)
+    combat = factory.SubFactory(CombatFactory)
+    fighter = factory.SubFactory(FighterFactory)
+    round_number = 1
+
+
+class RoundEndedFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = RoundEnded
+
+    game = factory.SubFactory(GameFactory)
+    author = factory.SubFactory(ActorFactory)
+    combat = factory.SubFactory(CombatFactory)
+    round_number = 1
+
+
+class CombatEndedFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = CombatEnded
 
     game = factory.SubFactory(GameFactory)
     author = factory.SubFactory(ActorFactory)

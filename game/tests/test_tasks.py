@@ -1,14 +1,10 @@
 import pytest
 from celery.exceptions import InvalidTaskError
 from django.utils import timezone
-from django_celery_beat.models import IntervalSchedule, PeriodicTask
 from faker import Faker
 
 from game.constants.events import RollStatus, RollType
-from game.models.combat import Combat, Fighter
 from game.models.events import (
-    CombatInitativeOrderSet,
-    CombatInitialization,
     CombatInitiativeRequest,
     CombatInitiativeResponse,
     CombatInitiativeResult,
@@ -18,7 +14,6 @@ from game.models.events import (
     RollResult,
 )
 from game.tasks import (
-    check_combat_roll_initiative_complete,
     process_combat_initiative_roll,
     process_roll,
     send_mail,
@@ -26,6 +21,7 @@ from game.tasks import (
 )
 
 from .factories import (
+    CombatInitalizationFactory,
     CombatInitiativeRequestFactory,
     GameFactory,
     PlayerFactory,
@@ -219,7 +215,14 @@ class TestProcessRoll:
 class TestProcessCombatInitiativeRoll:
     @pytest.fixture
     def combat_initiative_request(self):
-        return CombatInitiativeRequestFactory()
+        request = CombatInitiativeRequestFactory()
+        # Create the CombatInitialization event required by _check_and_start_combat
+        CombatInitalizationFactory(
+            game=request.game,
+            combat=request.fighter.combat,
+            author=request.game.master.actor_ptr,
+        )
+        return request
 
     def test_process_combat_initiative_roll_success(
         self, celery_session_worker, combat_initiative_request
@@ -287,151 +290,3 @@ class TestProcessCombatInitiativeRoll:
                 player_id=player.id,
                 date=date.isoformat(),
             ).get()
-
-
-class TestCheckCombatRollInitiativeComplete:
-    """Tests for the check_combat_roll_initiative_complete task."""
-
-    def test_no_combat_exists(self, mocker):
-        """Test that task handles case when no combat exists."""
-        # Ensure no combats exist
-        Combat.objects.all().delete()
-        mock_send = mocker.patch("game.tasks.send_to_channel")
-
-        # Should execute without error when no combat exists
-        check_combat_roll_initiative_complete()
-
-        # No channel message should be sent
-        mock_send.assert_not_called()
-
-    def test_combat_with_pending_initiative_roll(self, mocker):
-        """Test that task waits when some fighters haven't rolled yet."""
-        game = GameFactory()
-        combat = Combat.objects.create(game=game)
-
-        # Create player and character
-        player1 = PlayerFactory(game=game)
-        player2 = PlayerFactory(game=game)
-
-        # Create fighters - one has rolled, one hasn't
-        Fighter.objects.create(
-            player=player1,
-            character=player1.character,
-            combat=combat,
-            dexterity_check=15,  # Has rolled
-        )
-        Fighter.objects.create(
-            player=player2,
-            character=player2.character,
-            combat=combat,
-            dexterity_check=None,  # Hasn't rolled yet
-        )
-
-        # Create the CombatInitialization event
-        author = game.master.actor_ptr
-        CombatInitialization.objects.create(game=game, author=author, combat=combat)
-
-        mock_send = mocker.patch("game.tasks.send_to_channel")
-
-        check_combat_roll_initiative_complete()
-
-        # No channel message should be sent since we're still waiting
-        mock_send.assert_not_called()
-
-    def test_combat_all_initiative_rolls_complete(self, mocker, db):
-        """Test that task sends initiative order when all fighters have rolled."""
-        game = GameFactory()
-        combat = Combat.objects.create(game=game)
-
-        # Create players and fighters - all have rolled
-        player1 = PlayerFactory(game=game)
-        player2 = PlayerFactory(game=game)
-
-        Fighter.objects.create(
-            player=player1,
-            character=player1.character,
-            combat=combat,
-            dexterity_check=18,
-        )
-        Fighter.objects.create(
-            player=player2,
-            character=player2.character,
-            combat=combat,
-            dexterity_check=12,
-        )
-
-        # Create the CombatInitialization event
-        author = game.master.actor_ptr
-        CombatInitialization.objects.create(game=game, author=author, combat=combat)
-
-        # Create a periodic task for this game
-        schedule, _ = IntervalSchedule.objects.get_or_create(
-            every=2,
-            period=IntervalSchedule.SECONDS,
-        )
-        periodic_task = PeriodicTask.objects.create(
-            interval=schedule,
-            name=f"game{game.id}: Check if combat roll initiative is complete",
-            task="game.tasks.check_combat_roll_initiative_complete",
-            enabled=True,
-        )
-
-        mock_send = mocker.patch("game.tasks.send_to_channel")
-
-        check_combat_roll_initiative_complete()
-
-        # Verify CombatInitativeOrderSet was created
-        assert CombatInitativeOrderSet.objects.filter(combat=combat).exists()
-        order_set = CombatInitativeOrderSet.objects.get(combat=combat)
-        assert order_set.game == game
-        assert order_set.author == author
-
-        # Verify channel message was sent
-        mock_send.assert_called_once()
-
-        # Verify periodic task was disabled
-        periodic_task.refresh_from_db()
-        assert periodic_task.enabled is False
-
-    def test_combat_initiative_order_set_already_exists(self, mocker, db):
-        """Test that task doesn't create duplicate order set."""
-        game = GameFactory()
-        combat = Combat.objects.create(game=game)
-
-        # Create player and fighter
-        player = PlayerFactory(game=game)
-        Fighter.objects.create(
-            player=player,
-            character=player.character,
-            combat=combat,
-            dexterity_check=15,
-        )
-
-        # Create the CombatInitialization event
-        author = game.master.actor_ptr
-        CombatInitialization.objects.create(game=game, author=author, combat=combat)
-
-        # Create existing order set
-        CombatInitativeOrderSet.objects.create(game=game, author=author, combat=combat)
-
-        # Create periodic task
-        schedule, _ = IntervalSchedule.objects.get_or_create(
-            every=2,
-            period=IntervalSchedule.SECONDS,
-        )
-        PeriodicTask.objects.create(
-            interval=schedule,
-            name=f"game{game.id}: Check if combat roll initiative is complete",
-            task="game.tasks.check_combat_roll_initiative_complete",
-            enabled=True,
-        )
-
-        mock_send = mocker.patch("game.tasks.send_to_channel")
-
-        check_combat_roll_initiative_complete()
-
-        # No new order set should be created (still just 1)
-        assert CombatInitativeOrderSet.objects.filter(combat=combat).count() == 1
-
-        # No channel message should be sent since order set already existed
-        mock_send.assert_not_called()

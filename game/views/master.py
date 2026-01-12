@@ -2,7 +2,6 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import FormView, ListView, UpdateView
-from django_celery_beat.models import IntervalSchedule, PeriodicTask
 from viewflow.fsm import TransitionNotAllowed
 
 from ai.generators import TextGenerator
@@ -15,11 +14,16 @@ from ..exceptions import UserHasNoCharacter
 from ..flows import GameFlow
 from ..forms import AbilityCheckRequestForm, CombatCreateForm, QuestCreateForm
 from ..models.combat import Combat, Fighter
+from ..constants.combat import CombatState
 from ..models.events import (
+    CombatEnded,
     CombatInitialization,
     CombatInitiativeRequest,
     GameStart,
     QuestUpdate,
+    RoundEnded,
+    TurnEnded,
+    TurnStarted,
     UserInvitation,
 )
 from ..models.game import Actor, Player, Quest
@@ -220,13 +224,92 @@ class CombatCreateView(
                 status=RollStatus.PENDING,
             )
             send_to_channel(initiative_request)
-            schedule, _ = IntervalSchedule.objects.get_or_create(
-                every=2,
-                period=IntervalSchedule.SECONDS,
-            )
-            PeriodicTask.objects.get_or_create(
-                interval=schedule,
-                name=f"game{self.game.id}: Check if combat roll initiative is complete",
-                task="game.tasks.check_combat_roll_initiative_complete",
-            )
+        # Initiative completion is now checked after each roll in process_combat_initiative_roll
+        # No periodic task needed
         return super().form_valid(form)
+
+
+class CombatAdvanceTurnView(UserPassesTestMixin, GameContextMixin):
+    """View for advancing to the next fighter's turn in combat."""
+
+    def test_func(self):
+        return self.is_user_master()
+
+    def post(self, request, *args, **kwargs):
+        combat_id = kwargs.get("combat_id")
+        combat = Combat.objects.get(id=combat_id, game=self.game)
+
+        if combat.state != CombatState.ACTIVE:
+            return HttpResponseRedirect(reverse("game", args=(self.game.id,)))
+
+        author = Actor.objects.get(
+            master__game=self.game, master__user=self.request.user
+        )
+        current_fighter = combat.current_fighter
+        current_round = combat.current_round
+
+        # End the current turn
+        turn_ended = TurnEnded.objects.create(
+            combat=combat,
+            fighter=current_fighter,
+            round_number=current_round,
+            game=self.game,
+            author=author,
+        )
+        send_to_channel(turn_ended)
+
+        # Advance to next turn
+        next_fighter, is_new_round = combat.advance_turn()
+
+        if is_new_round:
+            # End the previous round
+            round_ended = RoundEnded.objects.create(
+                combat=combat,
+                round_number=current_round,
+                game=self.game,
+                author=author,
+            )
+            send_to_channel(round_ended)
+
+        if next_fighter:
+            # Start the next turn
+            turn_started = TurnStarted.objects.create(
+                combat=combat,
+                fighter=next_fighter,
+                round_number=combat.current_round,
+                game=self.game,
+                author=author,
+            )
+            send_to_channel(turn_started)
+
+        return HttpResponseRedirect(reverse("game", args=(self.game.id,)))
+
+
+class CombatEndView(UserPassesTestMixin, GameContextMixin):
+    """View for ending a combat encounter."""
+
+    def test_func(self):
+        return self.is_user_master()
+
+    def post(self, request, *args, **kwargs):
+        combat_id = kwargs.get("combat_id")
+        combat = Combat.objects.get(id=combat_id, game=self.game)
+
+        if combat.state == CombatState.ENDED:
+            return HttpResponseRedirect(reverse("game", args=(self.game.id,)))
+
+        author = Actor.objects.get(
+            master__game=self.game, master__user=self.request.user
+        )
+
+        # End combat
+        combat.end_combat()
+
+        combat_ended = CombatEnded.objects.create(
+            combat=combat,
+            game=self.game,
+            author=author,
+        )
+        send_to_channel(combat_ended)
+
+        return HttpResponseRedirect(reverse("game", args=(self.game.id,)))

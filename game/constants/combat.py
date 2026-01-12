@@ -1,6 +1,14 @@
 from django.db.models import TextChoices
 
 
+class CombatState(TextChoices):
+    """State of a combat encounter."""
+
+    ROLLING_INITIATIVE = "RI", "Rolling Initiative"
+    ACTIVE = "A", "Active"
+    ENDED = "E", "Ended"
+
+
 class FighterAttributeChoices(TextChoices):
     IS_FIGHTING = "is_fighting", "Is fighting?"
     IS_SURPRISED = "is_suprised", "Is surprised?"

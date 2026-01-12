@@ -51,4 +51,14 @@ urlpatterns = [
         master.CombatCreateView.as_view(),
         name="combat-create",
     ),
+    path(
+        "<int:game_id>/combat/<int:combat_id>/advance_turn",
+        master.CombatAdvanceTurnView.as_view(),
+        name="combat-advance-turn",
+    ),
+    path(
+        "<int:game_id>/combat/<int:combat_id>/end",
+        master.CombatEndView.as_view(),
+        name="combat-end",
+    ),
 ]

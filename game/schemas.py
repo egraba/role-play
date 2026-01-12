@@ -24,6 +24,11 @@ class EventType(StrEnum):
     COMBAT_INITIATIVE_RESPONSE = "combat.initiative.response"
     COMBAT_INITIATIVE_RESULT = "combat.initiative.result"
     COMBAT_INITIALIZATION_COMPLETE = "combat.initialization.complete"
+    COMBAT_STARTED = "combat.started"
+    TURN_STARTED = "turn.started"
+    TURN_ENDED = "turn.ended"
+    ROUND_ENDED = "round.ended"
+    COMBAT_ENDED = "combat.ended"
 
 
 class EventOrigin(IntFlag):

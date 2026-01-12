@@ -3,12 +3,17 @@ import pytest
 from game.flows import GameFlow
 
 from .factories import (
+    CombatEndedFactory,
     CombatInitativeOrderSetFactory,
     CombatInitiativeRequestFactory,
     CombatInitiativeResponseFactory,
     CombatInitiativeResultFactory,
+    CombatStartedFactory,
     GameFactory,
     PlayerFactory,
+    RoundEndedFactory,
+    TurnEndedFactory,
+    TurnStartedFactory,
 )
 
 
@@ -46,3 +51,28 @@ def combat_initiative_result(db):
 @pytest.fixture
 def combat_initiative_order_set(db):
     return CombatInitativeOrderSetFactory()
+
+
+@pytest.fixture
+def combat_started(db):
+    return CombatStartedFactory()
+
+
+@pytest.fixture
+def turn_started(db):
+    return TurnStartedFactory()
+
+
+@pytest.fixture
+def turn_ended(db):
+    return TurnEndedFactory()
+
+
+@pytest.fixture
+def round_ended(db):
+    return RoundEndedFactory()
+
+
+@pytest.fixture
+def combat_ended(db):
+    return CombatEndedFactory()

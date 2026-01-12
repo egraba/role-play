@@ -4,7 +4,6 @@ from celery import shared_task
 from celery.exceptions import InvalidTaskError
 from celery.utils.log import get_task_logger
 from django.core.mail import send_mail as django_send_mail
-from django_celery_beat.models import PeriodicTask
 
 from .constants.events import RollStatus, RollType
 from .models.combat import Combat
@@ -14,10 +13,12 @@ from .models.events import (
     CombatInitiativeRequest,
     CombatInitiativeResponse,
     CombatInitiativeResult,
+    CombatStarted,
     Message,
     RollRequest,
     RollResponse,
     RollResult,
+    TurnStarted,
 )
 from .models.game import Game, Master, Player
 from .rolls import perform_combat_initiative_roll, perform_roll
@@ -130,6 +131,7 @@ def process_combat_initiative_roll(
 ) -> None:
     """
     Process a dice roll for combat initiative.
+    After each roll, checks if all fighters have rolled and starts combat if so.
     """
     logger.info(f"{game_id=}, {player_id=}, {date=}")
 
@@ -175,35 +177,52 @@ def process_combat_initiative_roll(
     logger.info(f"{roll_result.request=}, {roll_result.score=}")
     send_to_channel(roll_result)
 
+    # Check if all fighters have rolled initiative
+    combat = roll_request.fighter.combat
+    _check_and_start_combat(combat, game)
 
-@shared_task
-def check_combat_roll_initiative_complete():
-    latest_combat = Combat.objects.all().last()
-    if latest_combat is None:
-        logger.info("No combat to check")
-        pass
-    else:
-        for fighter in latest_combat.fighter_set.all():
-            logger.info(f"{fighter.character.name=} {fighter.dexterity_check}")
-            if fighter.dexterity_check is None:
-                logger.info(f"Waiting for {fighter.character.name=}")
-                break
-        else:
-            logger.info("Roll complete!")
-            logger.info(f"Initiative order={latest_combat.get_initiative_order()}")
-            # Get the author from the CombatInitialization event for this combat
-            combat_init = CombatInitialization.objects.get(combat=latest_combat)
-            initiative_order_set, created = (
-                CombatInitativeOrderSet.objects.get_or_create(
-                    combat=latest_combat,
-                    game=latest_combat.game,
-                    author=combat_init.author,
-                )
+
+def _check_and_start_combat(combat: Combat, game: Game) -> None:
+    """
+    Check if all fighters have rolled initiative and start combat if so.
+    This replaces the celery-beat periodic task with immediate checking.
+    """
+    if not combat.all_initiative_rolled():
+        logger.info("Still waiting for initiative rolls")
+        return
+
+    logger.info("All initiative rolled!")
+    logger.info(f"Initiative order={combat.get_initiative_order()}")
+
+    # Get the author from the CombatInitialization event
+    combat_init = CombatInitialization.objects.get(combat=combat)
+
+    # Create initiative order set event (only if not already created)
+    initiative_order_set, created = CombatInitativeOrderSet.objects.get_or_create(
+        combat=combat,
+        game=game,
+        author=combat_init.author,
+    )
+
+    if created:
+        send_to_channel(initiative_order_set)
+
+        # Start combat and create turn started event
+        first_fighter = combat.start_combat()
+        if first_fighter:
+            combat_started = CombatStarted.objects.create(
+                combat=combat,
+                game=game,
+                author=combat_init.author,
             )
-            if created:
-                periodic_task = PeriodicTask.objects.get(
-                    name__startswith=f"game{latest_combat.game.id}"
-                )
-                periodic_task.enabled = False
-                periodic_task.save()
-                send_to_channel(initiative_order_set)
+            send_to_channel(combat_started)
+
+            turn_started = TurnStarted.objects.create(
+                combat=combat,
+                fighter=first_fighter,
+                round_number=combat.current_round,
+                game=game,
+                author=combat_init.author,
+            )
+            send_to_channel(turn_started)
+            logger.info(f"Combat started! First turn: {first_fighter}")

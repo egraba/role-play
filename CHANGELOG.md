@@ -22,6 +22,14 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * Feat and CharacterFeat models for origin feats (D&D 2024 rules)
 * Origin feats: Alert, Magic Initiate (Cleric), Magic Initiate (Wizard), Savage Attacker
 * BackgroundBuilder now grants tool proficiency, origin feat, and 50 GP starting equipment
+* Combat initiative tracking system with turn order management (state machine: ROLLING_INITIATIVE → ACTIVE → ENDED)
+* Combat round and turn tracking (current_round, current_turn_index, current_fighter)
+* Combat model methods: `start_combat()`, `advance_turn()`, `end_combat()`, `get_turn_order_display()`
+* New combat events: CombatStarted, TurnStarted, TurnEnded, RoundEnded, CombatEnded
+* Master views for turn advancement (CombatAdvanceTurnView) and ending combat (CombatEndView)
+* EventType constants for new combat events (COMBAT_STARTED, TURN_STARTED, TURN_ENDED, ROUND_ENDED, COMBAT_ENDED)
+* HTMX 2.0.4 integration for real-time UI updates without full page reloads
+* django-htmx middleware for HTMX request detection (`request.htmx`)
 
 ### Fixed
 * Use authenticated user instead of client-provided username in message storage and event enrichers (security fix)
@@ -36,6 +44,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * **BREAKING**: Race field replaced with Species foreign key (D&D 2024 rules - ability score increases are now player-chosen, not species-determined)
 * **BREAKING**: Background system updated to D&D 2024 SRD rules - each background now provides tool proficiency, origin feat, and 50 GP
 * Criminal background skill proficiencies changed from Deception/Stealth to Sleight of Hand/Stealth (D&D 2024 rules)
+* Combat initiative completion check now runs immediately after each roll instead of using celery-beat periodic task (more efficient, eliminates 2-second polling delay)
 
 ### Removed
 * **BREAKING**: Removed legacy class system: `Klass` enum, `KLASS_FEATURES` dictionary, `KlassBuilder`, and `Character.klass` field (replaced by Class model and ClassBuilder)
@@ -45,6 +54,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * Removed Race enum, RACIAL_TRAITS dictionary, and Sense model (replaced by Species system)
 * Removed Character fields: adult_age, life_expectancy, alignment, senses (no longer in D&D 2024 rules)
 * **BREAKING**: Removed Folk Hero and Noble backgrounds (not in D&D 2024 SRD 5.2)
+* Removed `check_combat_roll_initiative_complete` celery-beat periodic task (replaced with immediate checking after each initiative roll)
 
 ## v0.13.0 - 2026-01-02
 
