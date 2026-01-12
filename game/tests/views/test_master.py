@@ -24,9 +24,19 @@ from game.forms import CombatCreateForm, QuestCreateForm
 from game.models.combat import Combat
 from game.models.events import Event, Quest, RollRequest, UserInvitation
 from game.models.game import Game, Player
+from game.constants.combat import CombatState
+from game.models.events import (
+    CombatEnded,
+    CombatInitialization,
+    RoundEnded,
+    TurnEnded,
+    TurnStarted,
+)
 from game.views.master import (
     AbilityCheckRequestView,
+    CombatAdvanceTurnView,
     CombatCreateView,
+    CombatEndView,
     GameStartView,
     QuestCreateView,
     UserInviteConfirmView,
@@ -439,3 +449,219 @@ class TestAbilityCheckRequestView:
         assert roll_request.roll_type == RollType.ABILITY_CHECK
         assert roll_request.author is not None
         assert roll_request.author.user == game_with_master.master.user
+
+
+class TestCombatAdvanceTurnView:
+    path_name = "combat-advance-turn"
+
+    @pytest.fixture
+    def active_combat(self, started_game):
+        """Create a combat that has started with initiative rolled."""
+        combat = Combat.objects.create(game=started_game)
+        players = list(Player.objects.filter(game=started_game))
+        from game.models.combat import Fighter
+
+        # Create fighters with initiative already rolled
+        for i, player in enumerate(players[:2]):
+            Fighter.objects.create(
+                player=player,
+                character=player.character,
+                combat=combat,
+                dexterity_check=15 - i,  # First fighter has higher initiative
+            )
+
+        # Create the CombatInitialization event (required by the system)
+        CombatInitialization.objects.create(
+            game=started_game,
+            author=started_game.master.actor_ptr,
+            combat=combat,
+        )
+
+        # Start the combat
+        combat.start_combat()
+        return combat
+
+    @pytest.fixture
+    def logged_in_master(self, client, started_game):
+        user = started_game.master.user
+        client.force_login(user)
+        return client
+
+    def test_view_mapping(self, logged_in_master, started_game, active_combat):
+        response = logged_in_master.post(
+            reverse(self.path_name, args=(started_game.id, active_combat.id))
+        )
+        assert response.status_code == 302
+        assert response.resolver_match.func.view_class == CombatAdvanceTurnView
+
+    def test_advance_turn_creates_turn_ended_event(
+        self, logged_in_master, started_game, active_combat
+    ):
+        first_fighter = active_combat.current_fighter
+        first_round = active_combat.current_round
+
+        response = logged_in_master.post(
+            reverse(self.path_name, args=(started_game.id, active_combat.id))
+        )
+
+        assert response.status_code == 302
+        assertRedirects(response, started_game.get_absolute_url())
+
+        # Check TurnEnded event was created
+        turn_ended = TurnEnded.objects.filter(
+            combat=active_combat, fighter=first_fighter
+        ).last()
+        assert turn_ended is not None
+        assert turn_ended.round_number == first_round
+        assert turn_ended.game == started_game
+
+    def test_advance_turn_creates_turn_started_event(
+        self, logged_in_master, started_game, active_combat
+    ):
+        first_fighter = active_combat.current_fighter
+
+        logged_in_master.post(
+            reverse(self.path_name, args=(started_game.id, active_combat.id))
+        )
+
+        active_combat.refresh_from_db()
+
+        # Check TurnStarted event was created for next fighter
+        turn_started = TurnStarted.objects.filter(combat=active_combat).last()
+        assert turn_started is not None
+        assert turn_started.fighter != first_fighter
+        assert turn_started.game == started_game
+
+    def test_advance_turn_updates_combat_state(
+        self, logged_in_master, started_game, active_combat
+    ):
+        first_fighter = active_combat.current_fighter
+
+        logged_in_master.post(
+            reverse(self.path_name, args=(started_game.id, active_combat.id))
+        )
+
+        active_combat.refresh_from_db()
+        assert active_combat.current_fighter != first_fighter
+        assert active_combat.current_turn_index == 1
+
+    def test_advance_turn_new_round(
+        self, logged_in_master, started_game, active_combat
+    ):
+        """Test that advancing past all fighters creates a new round."""
+        num_fighters = active_combat.fighter_set.count()
+
+        # Advance through all fighters
+        for _ in range(num_fighters):
+            logged_in_master.post(
+                reverse(self.path_name, args=(started_game.id, active_combat.id))
+            )
+
+        active_combat.refresh_from_db()
+        assert active_combat.current_round == 2
+        assert active_combat.current_turn_index == 0
+
+        # Check RoundEnded event was created
+        round_ended = RoundEnded.objects.filter(combat=active_combat).last()
+        assert round_ended is not None
+        assert round_ended.round_number == 1
+
+    def test_advance_turn_combat_not_active(
+        self, logged_in_master, started_game, active_combat
+    ):
+        """Test that advancing turn on non-active combat redirects without changes."""
+        active_combat.state = CombatState.ENDED
+        active_combat.save()
+
+        response = logged_in_master.post(
+            reverse(self.path_name, args=(started_game.id, active_combat.id))
+        )
+
+        assert response.status_code == 302
+        # No new events should be created
+        assert TurnEnded.objects.filter(combat=active_combat).count() == 0
+
+
+class TestCombatEndView:
+    path_name = "combat-end"
+
+    @pytest.fixture
+    def active_combat(self, started_game):
+        """Create a combat that has started with initiative rolled."""
+        combat = Combat.objects.create(game=started_game)
+        players = list(Player.objects.filter(game=started_game))
+        from game.models.combat import Fighter
+
+        # Create fighters with initiative already rolled
+        for i, player in enumerate(players[:2]):
+            Fighter.objects.create(
+                player=player,
+                character=player.character,
+                combat=combat,
+                dexterity_check=15 - i,
+            )
+
+        # Create the CombatInitialization event
+        CombatInitialization.objects.create(
+            game=started_game,
+            author=started_game.master.actor_ptr,
+            combat=combat,
+        )
+
+        # Start the combat
+        combat.start_combat()
+        return combat
+
+    @pytest.fixture
+    def logged_in_master(self, client, started_game):
+        user = started_game.master.user
+        client.force_login(user)
+        return client
+
+    def test_view_mapping(self, logged_in_master, started_game, active_combat):
+        response = logged_in_master.post(
+            reverse(self.path_name, args=(started_game.id, active_combat.id))
+        )
+        assert response.status_code == 302
+        assert response.resolver_match.func.view_class == CombatEndView
+
+    def test_end_combat_creates_event(
+        self, logged_in_master, started_game, active_combat
+    ):
+        response = logged_in_master.post(
+            reverse(self.path_name, args=(started_game.id, active_combat.id))
+        )
+
+        assert response.status_code == 302
+        assertRedirects(response, started_game.get_absolute_url())
+
+        # Check CombatEnded event was created
+        combat_ended = CombatEnded.objects.filter(combat=active_combat).last()
+        assert combat_ended is not None
+        assert combat_ended.game == started_game
+
+    def test_end_combat_updates_state(
+        self, logged_in_master, started_game, active_combat
+    ):
+        logged_in_master.post(
+            reverse(self.path_name, args=(started_game.id, active_combat.id))
+        )
+
+        active_combat.refresh_from_db()
+        assert active_combat.state == CombatState.ENDED
+        assert active_combat.current_fighter is None
+
+    def test_end_combat_already_ended(
+        self, logged_in_master, started_game, active_combat
+    ):
+        """Test that ending an already ended combat redirects without new events."""
+        active_combat.state = CombatState.ENDED
+        active_combat.save()
+
+        response = logged_in_master.post(
+            reverse(self.path_name, args=(started_game.id, active_combat.id))
+        )
+
+        assert response.status_code == 302
+        # No new CombatEnded event should be created
+        assert CombatEnded.objects.filter(combat=active_combat).count() == 0

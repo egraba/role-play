@@ -28,3 +28,28 @@ class TestGetEventType:
         """Ensure CombatInitativeOrderSet returns COMBAT_INITIALIZATION_COMPLETE."""
         event_type = _get_event_type(combat_initiative_order_set)
         assert event_type == EventType.COMBAT_INITIALIZATION_COMPLETE
+
+    def test_combat_started_returns_correct_type(self, combat_started):
+        """Ensure CombatStarted returns COMBAT_STARTED."""
+        event_type = _get_event_type(combat_started)
+        assert event_type == EventType.COMBAT_STARTED
+
+    def test_turn_started_returns_correct_type(self, turn_started):
+        """Ensure TurnStarted returns TURN_STARTED."""
+        event_type = _get_event_type(turn_started)
+        assert event_type == EventType.TURN_STARTED
+
+    def test_turn_ended_returns_correct_type(self, turn_ended):
+        """Ensure TurnEnded returns TURN_ENDED."""
+        event_type = _get_event_type(turn_ended)
+        assert event_type == EventType.TURN_ENDED
+
+    def test_round_ended_returns_correct_type(self, round_ended):
+        """Ensure RoundEnded returns ROUND_ENDED."""
+        event_type = _get_event_type(round_ended)
+        assert event_type == EventType.ROUND_ENDED
+
+    def test_combat_ended_returns_correct_type(self, combat_ended):
+        """Ensure CombatEnded returns COMBAT_ENDED."""
+        event_type = _get_event_type(combat_ended)
+        assert event_type == EventType.COMBAT_ENDED

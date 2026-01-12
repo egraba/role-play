@@ -1,7 +1,7 @@
 import pytest
 
 from game.constants.combat import CombatState
-from game.models.combat import Combat, Fighter, Round
+from game.models.combat import Combat, Fighter, Round, Turn
 
 from ..factories import CombatFactory, FighterFactory, GameFactory, PlayerFactory
 
@@ -132,3 +132,67 @@ class TestCombatModel:
             assert "initiative" in item
             assert "is_current" in item
             assert "is_surprised" in item
+
+    def test_start_combat_no_fighters(self):
+        """Test that start_combat returns None when no fighters exist."""
+        game = GameFactory()
+        combat = Combat.objects.create(game=game)
+        # No fighters, so all_initiative_rolled returns True (no pending)
+
+        result = combat.start_combat()
+
+        assert result is None
+
+    def test_advance_turn_no_fighters(self):
+        """Test that advance_turn returns None when no fighters exist in active combat."""
+        game = GameFactory()
+        combat = Combat.objects.create(game=game, state=CombatState.ACTIVE)
+
+        next_fighter, is_new_round = combat.advance_turn()
+
+        assert next_fighter is None
+        assert is_new_round is False
+
+
+class TestRoundModel:
+    def test_str(self):
+        """Test Round string representation."""
+        game = GameFactory()
+        combat = Combat.objects.create(game=game)
+        round_obj = Round.objects.create(combat=combat, number=3)
+
+        assert str(round_obj) == "Round 3"
+
+
+class TestTurnModel:
+    def test_str(self):
+        """Test Turn string representation."""
+        game = GameFactory()
+        combat = Combat.objects.create(game=game)
+        round_obj = Round.objects.create(combat=combat, number=2)
+        player = PlayerFactory(game=game)
+        fighter = FighterFactory(
+            combat=combat,
+            player=player,
+            character=player.character,
+            dexterity_check=10,
+        )
+        turn = Turn.objects.create(fighter=fighter, round=round_obj)
+
+        assert str(turn) == f"{fighter} - Round 2"
+
+
+class TestFighterModel:
+    def test_str(self):
+        """Test Fighter string representation."""
+        game = GameFactory()
+        player = PlayerFactory(game=game)
+        combat = Combat.objects.create(game=game)
+        fighter = FighterFactory(
+            combat=combat,
+            player=player,
+            character=player.character,
+            dexterity_check=15,
+        )
+
+        assert str(fighter) == player.character.name
