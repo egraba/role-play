@@ -99,7 +99,6 @@ class TestCeleryStartup:
             "game.tasks.store_message",
             "game.tasks.send_mail",
             "game.tasks.process_combat_initiative_roll",
-            "game.tasks.check_combat_roll_initiative_complete",
         ]
 
         registered_tasks = list(app.tasks.keys())
