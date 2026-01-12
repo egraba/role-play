@@ -7,17 +7,22 @@ from pydantic import ValidationError
 from ..constants.events import RollType
 from ..exceptions import EventSchemaValidationError
 from ..models.events import (
+    CombatEnded,
+    CombatInitativeOrderSet,
     CombatInitialization,
     CombatInitiativeRequest,
     CombatInitiativeResponse,
     CombatInitiativeResult,
-    CombatInitativeOrderSet,
+    CombatStarted,
     Event,
     GameStart,
     QuestUpdate,
     RollRequest,
     RollResponse,
     RollResult,
+    RoundEnded,
+    TurnEnded,
+    TurnStarted,
 )
 from ..schemas import (
     EventOrigin,
@@ -57,6 +62,16 @@ def _get_event_type(event: Event) -> EventType:
         event_type = EventType.COMBAT_INITIATIVE_RESULT
     elif isinstance(event, CombatInitativeOrderSet):
         event_type = EventType.COMBAT_INITIALIZATION_COMPLETE
+    elif isinstance(event, CombatStarted):
+        event_type = EventType.COMBAT_STARTED
+    elif isinstance(event, TurnStarted):
+        event_type = EventType.TURN_STARTED
+    elif isinstance(event, TurnEnded):
+        event_type = EventType.TURN_ENDED
+    elif isinstance(event, RoundEnded):
+        event_type = EventType.ROUND_ENDED
+    elif isinstance(event, CombatEnded):
+        event_type = EventType.COMBAT_ENDED
     return event_type
 
 

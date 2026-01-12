@@ -183,3 +183,67 @@ class CombatInitativeOrderSet(Event):
         order = self.combat.get_initiative_order()
         names = [f"{f.character.name} ({f.dexterity_check})" for f in order]
         return f"Initiative order: {', '.join(names)}"
+
+
+class CombatStarted(Event):
+    """Event fired when combat officially starts after all initiative is rolled."""
+
+    combat = models.ForeignKey(
+        Combat, on_delete=models.CASCADE, related_name="combat_started_events"
+    )
+
+    def get_message(self):
+        return "Combat has begun! Roll for initiative order has been determined."
+
+
+class TurnStarted(Event):
+    """Event fired when a fighter's turn begins."""
+
+    combat = models.ForeignKey(
+        Combat, on_delete=models.CASCADE, related_name="turn_started_events"
+    )
+    fighter = models.ForeignKey(
+        Fighter, on_delete=models.CASCADE, related_name="turn_started_events"
+    )
+    round_number = models.PositiveSmallIntegerField()
+
+    def get_message(self):
+        return f"Round {self.round_number}: {self.fighter.character.name}'s turn!"
+
+
+class TurnEnded(Event):
+    """Event fired when a fighter's turn ends."""
+
+    combat = models.ForeignKey(
+        Combat, on_delete=models.CASCADE, related_name="turn_ended_events"
+    )
+    fighter = models.ForeignKey(
+        Fighter, on_delete=models.CASCADE, related_name="turn_ended_events"
+    )
+    round_number = models.PositiveSmallIntegerField()
+
+    def get_message(self):
+        return f"{self.fighter.character.name}'s turn has ended."
+
+
+class RoundEnded(Event):
+    """Event fired when a combat round ends."""
+
+    combat = models.ForeignKey(
+        Combat, on_delete=models.CASCADE, related_name="round_ended_events"
+    )
+    round_number = models.PositiveSmallIntegerField()
+
+    def get_message(self):
+        return f"Round {self.round_number} has ended."
+
+
+class CombatEnded(Event):
+    """Event fired when combat ends."""
+
+    combat = models.ForeignKey(
+        Combat, on_delete=models.CASCADE, related_name="combat_ended_events"
+    )
+
+    def get_message(self):
+        return "Combat has ended."

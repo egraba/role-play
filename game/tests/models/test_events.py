@@ -3,7 +3,9 @@ from django.utils import timezone
 from freezegun import freeze_time
 
 from game.models.events import (
+    CombatEnded,
     CombatInitialization,
+    CombatStarted,
     Event,
     GameStart,
     Message,
@@ -11,13 +13,18 @@ from game.models.events import (
     RollRequest,
     RollResponse,
     RollResult,
+    RoundEnded,
+    TurnEnded,
+    TurnStarted,
     UserInvitation,
 )
 from utils.constants import FREEZED_TIME
 
 from ..factories import (
     ActorFactory,
+    CombatEndedFactory,
     CombatInitalizationFactory,
+    CombatStartedFactory,
     EventFactory,
     FighterFactory,
     GameFactory,
@@ -28,6 +35,9 @@ from ..factories import (
     RollRequestFactory,
     RollResponseFactory,
     RollResultFactory,
+    RoundEndedFactory,
+    TurnEndedFactory,
+    TurnStartedFactory,
     UserInvitationFactory,
 )
 
@@ -197,3 +207,69 @@ class TestCombatInitializationModel:
         FighterFactory(combat=combat_init.combat, dexterity_check=15)
         message = combat_init.get_message()
         assert message.startswith("Combat! Initiative order:")
+
+
+class TestCombatStartedModel:
+    @pytest.fixture
+    def combat_started(self):
+        return CombatStartedFactory()
+
+    def test_creation(self, combat_started):
+        assert isinstance(combat_started, CombatStarted)
+
+    def test_get_message(self, combat_started):
+        assert (
+            combat_started.get_message()
+            == "Combat has begun! Roll for initiative order has been determined."
+        )
+
+
+class TestTurnStartedModel:
+    @pytest.fixture
+    def turn_started(self):
+        return TurnStartedFactory()
+
+    def test_creation(self, turn_started):
+        assert isinstance(turn_started, TurnStarted)
+
+    def test_get_message(self, turn_started):
+        expected = f"Round {turn_started.round_number}: {turn_started.fighter.character.name}'s turn!"
+        assert turn_started.get_message() == expected
+
+
+class TestTurnEndedModel:
+    @pytest.fixture
+    def turn_ended(self):
+        return TurnEndedFactory()
+
+    def test_creation(self, turn_ended):
+        assert isinstance(turn_ended, TurnEnded)
+
+    def test_get_message(self, turn_ended):
+        expected = f"{turn_ended.fighter.character.name}'s turn has ended."
+        assert turn_ended.get_message() == expected
+
+
+class TestRoundEndedModel:
+    @pytest.fixture
+    def round_ended(self):
+        return RoundEndedFactory()
+
+    def test_creation(self, round_ended):
+        assert isinstance(round_ended, RoundEnded)
+
+    def test_get_message(self, round_ended):
+        expected = f"Round {round_ended.round_number} has ended."
+        assert round_ended.get_message() == expected
+
+
+class TestCombatEndedModel:
+    @pytest.fixture
+    def combat_ended(self):
+        return CombatEndedFactory()
+
+    def test_creation(self, combat_ended):
+        assert isinstance(combat_ended, CombatEnded)
+
+    def test_get_message(self, combat_ended):
+        assert combat_ended.get_message() == "Combat has ended."
