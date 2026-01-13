@@ -3,6 +3,7 @@ import pytest
 from game.flows import GameFlow
 
 from .factories import (
+    ActionTakenFactory,
     CombatEndedFactory,
     CombatInitativeOrderSetFactory,
     CombatInitiativeRequestFactory,
@@ -76,3 +77,8 @@ def round_ended(db):
 @pytest.fixture
 def combat_ended(db):
     return CombatEndedFactory()
+
+
+@pytest.fixture
+def action_taken(db):
+    return ActionTakenFactory()

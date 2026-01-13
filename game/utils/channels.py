@@ -7,6 +7,7 @@ from pydantic import ValidationError
 from ..constants.events import RollType
 from ..exceptions import EventSchemaValidationError
 from ..models.events import (
+    ActionTaken,
     CombatEnded,
     CombatInitativeOrderSet,
     CombatInitialization,
@@ -72,6 +73,8 @@ def _get_event_type(event: Event) -> EventType:
         event_type = EventType.ROUND_ENDED
     elif isinstance(event, CombatEnded):
         event_type = EventType.COMBAT_ENDED
+    elif isinstance(event, ActionTaken):
+        event_type = EventType.ACTION_TAKEN
     return event_type
 
 

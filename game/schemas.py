@@ -29,6 +29,7 @@ class EventType(StrEnum):
     TURN_ENDED = "turn.ended"
     ROUND_ENDED = "round.ended"
     COMBAT_ENDED = "combat.ended"
+    ACTION_TAKEN = "action.taken"
 
 
 class EventOrigin(IntFlag):

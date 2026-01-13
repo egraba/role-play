@@ -5,6 +5,15 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Added
+* Combat action system supporting D&D 5e standard actions: Attack, Cast a Spell, Dash, Disengage, Dodge, Help, Hide, Ready, Search, Use an Object
+* Action economy tracking per turn: 1 action, 1 bonus action, 1 reaction, and movement
+* TurnAction model to record actions taken during combat turns
+* Turn model enhanced with action economy fields (action_used, bonus_action_used, reaction_used, movement_used, movement_total)
+* ActionType enum for classifying actions (Action, Bonus Action, Reaction)
+* ActionTaken event model and ACTION_TAKEN event type for broadcasting combat actions
+* Player views: TakeActionView for taking combat actions, TurnStateView for checking turn state, MoveView for using movement
+* ActionNotAvailable and NotYourTurn exceptions for combat action validation
+* Combat.start_combat() and advance_turn() now create Turn records for action tracking
 * HTMX 2.0 integration for real-time UI updates without full page reloads (includes django-htmx middleware for request.htmx detection)
 * Class model with hit die, primary ability, saving throw proficiencies, armor/weapon proficiencies, and starting wealth
 * ClassFeature model for class features gained at each level
@@ -33,6 +42,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 
 ### Fixed
 * Use authenticated user instead of client-provided username in message storage and event enrichers (security fix)
+* Fixed typo in CombatAction.DISENGAGE value ("disangage" → "disengage")
 
 ### Changed
 * Renamed `klasses.py` files to `classes.py` (models and constants) for consistency with model names
