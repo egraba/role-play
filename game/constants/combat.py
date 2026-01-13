@@ -15,13 +15,21 @@ class FighterAttributeChoices(TextChoices):
 
 
 class CombatAction(TextChoices):
-    ATTACK = "attack"
-    CAST_SPELL = "cast_spell"
-    DASH = "dash"
-    DISENGAGE = "disangage"
-    DODGE = "dodge"
-    HELP = "help"
-    HIDE = "hide"
-    READY = "ready"
-    SEARCH = "search"
-    USE_OBJECT = "use_object"
+    ATTACK = "attack", "Attack"
+    CAST_SPELL = "cast_spell", "Cast a Spell"
+    DASH = "dash", "Dash"
+    DISENGAGE = "disengage", "Disengage"
+    DODGE = "dodge", "Dodge"
+    HELP = "help", "Help"
+    HIDE = "hide", "Hide"
+    READY = "ready", "Ready"
+    SEARCH = "search", "Search"
+    USE_OBJECT = "use_object", "Use an Object"
+
+
+class ActionType(TextChoices):
+    """Type of action in the action economy."""
+
+    ACTION = "A", "Action"
+    BONUS_ACTION = "B", "Bonus Action"
+    REACTION = "R", "Reaction"

@@ -14,7 +14,7 @@ from ..constants.events import (
     RollType,
 )
 from ..exceptions import UnsupportedActor
-from .combat import Combat, Fighter
+from .combat import Combat, Fighter, TurnAction
 from .game import Actor, Game, Player, Quest
 
 
@@ -247,3 +247,25 @@ class CombatEnded(Event):
 
     def get_message(self):
         return "Combat has ended."
+
+
+class ActionTaken(Event):
+    """Event fired when a fighter takes an action during their turn."""
+
+    combat = models.ForeignKey(
+        Combat, on_delete=models.CASCADE, related_name="action_events"
+    )
+    fighter = models.ForeignKey(
+        Fighter, on_delete=models.CASCADE, related_name="action_events"
+    )
+    turn_action = models.OneToOneField(TurnAction, on_delete=models.CASCADE)
+
+    def get_message(self):
+        target = (
+            f" targeting {self.turn_action.target_fighter}"
+            if self.turn_action.target_fighter
+            else ""
+        )
+        action_type = self.turn_action.get_action_type_display()
+        action = self.turn_action.get_action_display()
+        return f"{self.fighter.character.name} used {action} ({action_type}){target}."

@@ -4,8 +4,10 @@ import factory
 
 from character.constants.abilities import AbilityName
 from game.constants.events import DifficultyClass, RollResultType, RollType
-from game.models.combat import Combat, Fighter
+from game.constants.combat import ActionType, CombatAction
+from game.models.combat import Combat, Fighter, Round, Turn, TurnAction
 from game.models.events import (
+    ActionTaken,
     CombatEnded,
     CombatInitativeOrderSet,
     CombatInitialization,
@@ -170,10 +172,7 @@ class FighterFactory(factory.django.DjangoModelFactory):
         model = Fighter
 
     player = factory.SubFactory(PlayerFactory)
-    character = factory.SubFactory(
-        "character.tests.factories.CharacterFactory",
-        player=factory.SelfAttribute("..player"),
-    )
+    character = factory.LazyAttribute(lambda obj: obj.player.character)
     combat = factory.SubFactory("game.tests.factories.CombatFactory")
 
 
@@ -279,3 +278,40 @@ class CombatEndedFactory(factory.django.DjangoModelFactory):
     game = factory.SubFactory(GameFactory)
     author = factory.SubFactory(ActorFactory)
     combat = factory.SubFactory(CombatFactory)
+
+
+class RoundFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Round
+
+    combat = factory.SubFactory(CombatFactory)
+    number = 1
+
+
+class TurnFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Turn
+
+    fighter = factory.SubFactory(FighterFactory)
+    round = factory.SubFactory(RoundFactory)
+    movement_total = 30
+
+
+class TurnActionFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = TurnAction
+
+    turn = factory.SubFactory(TurnFactory)
+    action_type = ActionType.ACTION
+    action = CombatAction.ATTACK
+
+
+class ActionTakenFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ActionTaken
+
+    game = factory.SubFactory(GameFactory)
+    author = factory.SubFactory(ActorFactory)
+    combat = factory.SubFactory(CombatFactory)
+    fighter = factory.SubFactory(FighterFactory)
+    turn_action = factory.SubFactory(TurnActionFactory)
