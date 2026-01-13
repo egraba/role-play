@@ -5,12 +5,11 @@ from character.models.advancement import Advancement
 
 @pytest.mark.django_db
 class TestAdvancementModel:
-    advancement = None
-
     @pytest.fixture(autouse=True)
     def setup(self):
-        # Fixtures are automatically loaded during the test session initialization.
-        self.advancement = Advancement.objects.last()
+        self.advancement, _ = Advancement.objects.get_or_create(
+            level=1, defaults={"xp": 0, "proficiency_bonus": 2}
+        )
 
     def test_creation(self):
         assert isinstance(self.advancement, Advancement)

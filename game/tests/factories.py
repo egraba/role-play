@@ -172,10 +172,7 @@ class FighterFactory(factory.django.DjangoModelFactory):
         model = Fighter
 
     player = factory.SubFactory(PlayerFactory)
-    character = factory.SubFactory(
-        "character.tests.factories.CharacterFactory",
-        player=factory.SelfAttribute("..player"),
-    )
+    character = factory.LazyAttribute(lambda obj: obj.player.character)
     combat = factory.SubFactory("game.tests.factories.CombatFactory")
 
 
