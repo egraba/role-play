@@ -1,0 +1,303 @@
+# SRD 5.2.1 Spells
+# Reference: D&D 2024 Systems Reference Document version 5.2.1
+
+# =============================================================================
+# CANTRIPS (Level 0)
+# =============================================================================
+
+- model: character.spellsettings
+  fields:
+    name: Fire Bolt
+    level: 0
+    school: evocation
+    casting_time: action
+    range: 120_feet
+    components: ["V", "S"]
+    duration: instantaneous
+    concentration: false
+    ritual: false
+    description: >
+      You hurl a mote of fire at a creature or object within range. Make a ranged spell attack against the target.
+      On a hit, the target takes 1d10 fire damage. A flammable object hit by this spell ignites if it isn't being
+      worn or carried. This spell's damage increases by 1d10 when you reach 5th level (2d10), 11th level (3d10),
+      and 17th level (4d10).
+    classes: ["sorcerer", "wizard"]
+
+- model: character.spellsettings
+  fields:
+    name: Light
+    level: 0
+    school: evocation
+    casting_time: action
+    range: touch
+    components: ["V", "M"]
+    material_components: a firefly or phosphorescent moss
+    duration: 1_hour
+    concentration: false
+    ritual: false
+    description: >
+      You touch one object that is no larger than 10 feet in any dimension. Until the spell ends, the object
+      sheds bright light in a 20-foot radius and dim light for an additional 20 feet. The light can be colored
+      as you like. Completely covering the object with something opaque blocks the light. The spell ends if you
+      cast it again or dismiss it as an action. If you target an object held or worn by a hostile creature, that
+      creature must succeed on a Dexterity saving throw to avoid the spell.
+    classes: ["bard", "cleric", "sorcerer", "wizard"]
+
+- model: character.spellsettings
+  fields:
+    name: Mage Hand
+    level: 0
+    school: conjuration
+    casting_time: action
+    range: 30_feet
+    components: ["V", "S"]
+    duration: 1_minute
+    concentration: false
+    ritual: false
+    description: >
+      A spectral, floating hand appears at a point you choose within range. The hand lasts for the duration or
+      until you dismiss it as an action. The hand vanishes if it is ever more than 30 feet away from you or if
+      you cast this spell again. You can use your action to control the hand. You can use the hand to manipulate
+      an object, open an unlocked door or container, stow or retrieve an item from an open container, or pour the
+      contents out of a vial. You can move the hand up to 30 feet each time you use it. The hand can't attack,
+      activate magic items, or carry more than 10 pounds.
+    classes: ["bard", "sorcerer", "warlock", "wizard"]
+
+- model: character.spellsettings
+  fields:
+    name: Prestidigitation
+    level: 0
+    school: transmutation
+    casting_time: action
+    range: 10_feet
+    components: ["V", "S"]
+    duration: 1_hour
+    concentration: false
+    ritual: false
+    description: >
+      This spell is a minor magical trick that novice spellcasters use for practice. You create one of the
+      following magical effects within range: You create an instantaneous, harmless sensory effect, such as a
+      shower of sparks, a puff of wind, faint musical notes, or an odd odor. You instantaneously light or snuff
+      out a candle, a torch, or a small campfire. You instantaneously clean or soil an object no larger than 1
+      cubic foot. You chill, warm, or flavor up to 1 cubic foot of nonliving material for 1 hour. You make a
+      color, a small mark, or a symbol appear on an object or a surface for 1 hour. You create a nonmagical
+      trinket or an illusory image that can fit in your hand and that lasts until the end of your next turn.
+      If you cast this spell multiple times, you can have up to three of its non-instantaneous effects active
+      at a time, and you can dismiss such an effect as an action.
+    classes: ["bard", "sorcerer", "warlock", "wizard"]
+
+# =============================================================================
+# LEVEL 1 SPELLS
+# =============================================================================
+
+- model: character.spellsettings
+  fields:
+    name: Cure Wounds
+    level: 1
+    school: evocation
+    casting_time: action
+    range: touch
+    components: ["V", "S"]
+    duration: instantaneous
+    concentration: false
+    ritual: false
+    description: >
+      A creature you touch regains a number of hit points equal to 1d8 + your spellcasting ability modifier.
+      This spell has no effect on undead or constructs.
+    higher_levels: >
+      When you cast this spell using a spell slot of 2nd level or higher, the healing increases by 1d8 for
+      each slot level above 1st.
+    classes: ["bard", "cleric", "druid", "paladin", "ranger"]
+
+- model: character.spellsettings
+  fields:
+    name: Magic Missile
+    level: 1
+    school: evocation
+    casting_time: action
+    range: 120_feet
+    components: ["V", "S"]
+    duration: instantaneous
+    concentration: false
+    ritual: false
+    description: >
+      You create three glowing darts of magical force. Each dart hits a creature of your choice that you can
+      see within range. A dart deals 1d4 + 1 force damage to its target. The darts all strike simultaneously,
+      and you can direct them to hit one creature or several.
+    higher_levels: >
+      When you cast this spell using a spell slot of 2nd level or higher, the spell creates one more dart for
+      each slot level above 1st.
+    classes: ["sorcerer", "wizard"]
+
+- model: character.spellsettings
+  fields:
+    name: Shield
+    level: 1
+    school: abjuration
+    casting_time: reaction
+    casting_time_detail: which you take when you are hit by an attack or targeted by the magic missile spell
+    range: self
+    components: ["V", "S"]
+    duration: 1_round
+    concentration: false
+    ritual: false
+    description: >
+      An invisible barrier of magical force appears and protects you. Until the start of your next turn, you
+      have a +5 bonus to AC, including against the triggering attack, and you take no damage from magic missile.
+    classes: ["sorcerer", "wizard"]
+
+- model: character.spellsettings
+  fields:
+    name: Sleep
+    level: 1
+    school: enchantment
+    casting_time: action
+    range: 90_feet
+    components: ["V", "S", "M"]
+    material_components: a pinch of fine sand, rose petals, or a cricket
+    duration: 1_minute
+    concentration: false
+    ritual: false
+    description: >
+      This spell sends creatures into a magical slumber. Roll 5d8; the total is how many hit points of creatures
+      this spell can affect. Creatures within 20 feet of a point you choose within range are affected in ascending
+      order of their current hit points (ignoring unconscious creatures). Starting with the creature that has the
+      lowest current hit points, each creature affected by this spell falls unconscious until the spell ends, the
+      sleeper takes damage, or someone uses an action to shake or slap the sleeper awake. Subtract each creature's
+      hit points from the total before moving on to the creature with the next lowest hit points. A creature's hit
+      points must be equal to or less than the remaining total for that creature to be affected. Undead and creatures
+      immune to being charmed aren't affected by this spell.
+    higher_levels: >
+      When you cast this spell using a spell slot of 2nd level or higher, roll an additional 2d8 for each slot
+      level above 1st.
+    classes: ["bard", "sorcerer", "wizard"]
+
+# =============================================================================
+# LEVEL 2 SPELLS
+# =============================================================================
+
+- model: character.spellsettings
+  fields:
+    name: Hold Person
+    level: 2
+    school: enchantment
+    casting_time: action
+    range: 60_feet
+    components: ["V", "S", "M"]
+    material_components: a small, straight piece of iron
+    duration: 1_minute
+    concentration: true
+    ritual: false
+    description: >
+      Choose a humanoid that you can see within range. The target must succeed on a Wisdom saving throw or be
+      paralyzed for the duration. At the end of each of its turns, the target can make another Wisdom saving
+      throw. On a success, the spell ends on the target.
+    higher_levels: >
+      When you cast this spell using a spell slot of 3rd level or higher, you can target one additional humanoid
+      for each slot level above 2nd. The humanoids must be within 30 feet of each other when you target them.
+    classes: ["bard", "cleric", "druid", "sorcerer", "warlock", "wizard"]
+
+- model: character.spellsettings
+  fields:
+    name: Invisibility
+    level: 2
+    school: illusion
+    casting_time: action
+    range: touch
+    components: ["V", "S", "M"]
+    material_components: an eyelash encased in gum arabic
+    duration: 1_hour
+    concentration: true
+    ritual: false
+    description: >
+      A creature you touch becomes invisible until the spell ends. Anything the target is wearing or carrying is
+      invisible as long as it is on the target's person. The spell ends for a target that attacks or casts a spell.
+    higher_levels: >
+      When you cast this spell using a spell slot of 3rd level or higher, you can target one additional creature
+      for each slot level above 2nd.
+    classes: ["bard", "sorcerer", "warlock", "wizard"]
+
+- model: character.spellsettings
+  fields:
+    name: Misty Step
+    level: 2
+    school: conjuration
+    casting_time: bonus_action
+    range: self
+    components: ["V"]
+    duration: instantaneous
+    concentration: false
+    ritual: false
+    description: >
+      Briefly surrounded by silvery mist, you teleport up to 30 feet to an unoccupied space that you can see.
+    classes: ["sorcerer", "warlock", "wizard"]
+
+# =============================================================================
+# LEVEL 3 SPELLS
+# =============================================================================
+
+- model: character.spellsettings
+  fields:
+    name: Counterspell
+    level: 3
+    school: abjuration
+    casting_time: reaction
+    casting_time_detail: which you take when you see a creature within 60 feet of you casting a spell
+    range: 60_feet
+    components: ["S"]
+    duration: instantaneous
+    concentration: false
+    ritual: false
+    description: >
+      You attempt to interrupt a creature in the process of casting a spell. If the creature is casting a spell
+      of 3rd level or lower, its spell fails and has no effect. If it is casting a spell of 4th level or higher,
+      make an ability check using your spellcasting ability. The DC equals 10 + the spell's level. On a success,
+      the creature's spell fails and has no effect.
+    higher_levels: >
+      When you cast this spell using a spell slot of 4th level or higher, the interrupted spell has no effect if
+      its level is less than or equal to the level of the spell slot you used.
+    classes: ["sorcerer", "warlock", "wizard"]
+
+- model: character.spellsettings
+  fields:
+    name: Fireball
+    level: 3
+    school: evocation
+    casting_time: action
+    range: 150_feet
+    range_detail: 20-foot-radius sphere
+    components: ["V", "S", "M"]
+    material_components: a tiny ball of bat guano and sulfur
+    duration: instantaneous
+    concentration: false
+    ritual: false
+    description: >
+      A bright streak flashes from your pointing finger to a point you choose within range and then blossoms with
+      a low roar into an explosion of flame. Each creature in a 20-foot-radius sphere centered on that point must
+      make a Dexterity saving throw. A target takes 8d6 fire damage on a failed save, or half as much damage on a
+      successful one. The fire spreads around corners. It ignites flammable objects in the area that aren't being
+      worn or carried.
+    higher_levels: >
+      When you cast this spell using a spell slot of 4th level or higher, the damage increases by 1d6 for each
+      slot level above 3rd.
+    classes: ["sorcerer", "wizard"]
+
+- model: character.spellsettings
+  fields:
+    name: Fly
+    level: 3
+    school: transmutation
+    casting_time: action
+    range: touch
+    components: ["V", "S", "M"]
+    material_components: a wing feather from any bird
+    duration: 10_minutes
+    concentration: true
+    ritual: false
+    description: >
+      You touch a willing creature. The target gains a flying speed of 60 feet for the duration. When the spell
+      ends, the target falls if it is still aloft, unless it can stop the fall.
+    higher_levels: >
+      When you cast this spell using a spell slot of 4th level or higher, you can target one additional creature
+      for each slot level above 3rd.
+    classes: ["sorcerer", "warlock", "wizard"]
