@@ -11,6 +11,7 @@ from ..constants.equipment import (
     PackName,
     ToolName,
     ToolType,
+    WeaponMastery,
     WeaponName,
     WeaponType,
 )
@@ -191,6 +192,9 @@ class WeaponSettings(models.Model):
     damage = models.CharField(max_length=15, null=True)
     weight = models.SmallIntegerField()
     properties = models.CharField(max_length=60, null=True)
+    mastery = models.CharField(
+        max_length=10, choices=WeaponMastery.choices, null=True, blank=True
+    )
 
     class Meta:
         verbose_name_plural = "weapon settings"

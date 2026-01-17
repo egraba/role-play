@@ -29,7 +29,7 @@ class Disadvantage(TextChoices):
 
 
 class WeaponProperty(TextChoices):
-    AMMUNITION = "ammunition", "Amnunition"
+    AMMUNITION = "ammunition", "Ammunition"
     FINESSE = "finesse", "Finesse"
     HEAVY = "heavy", "Heavy"
     LIGHT = "light", "Light"
@@ -39,6 +39,38 @@ class WeaponProperty(TextChoices):
     THROWN = "thrown", "Thrown"
     TWO_HANDED = "two_handed", "Two-handed"
     VERSATILE = "versatile", "Versatile"
+
+
+class WeaponMastery(TextChoices):
+    """Weapon mastery properties from D&D 5e SRD 5.2.1.
+
+    Each weapon can have one mastery property that provides a special
+    effect when used by a character who has mastered that weapon.
+    """
+
+    CLEAVE = "cleave", "Cleave"
+    # On kill, excess damage carries over to another enemy within 5 feet
+
+    GRAZE = "graze", "Graze"
+    # On miss, deal ability modifier damage (minimum 0)
+
+    NICK = "nick", "Nick"
+    # Can make extra attack with light weapon as part of Attack action
+
+    PUSH = "push", "Push"
+    # On hit, push target 10 feet away (if Large or smaller)
+
+    SAP = "sap", "Sap"
+    # On hit, target has disadvantage on next attack before your next turn
+
+    SLOW = "slow", "Slow"
+    # On hit, reduce target's speed by 10 feet until start of your next turn
+
+    TOPPLE = "topple", "Topple"
+    # On hit, target must make CON save or be knocked prone
+
+    VEX = "vex", "Vex"
+    # On hit, gain advantage on next attack against same target before end of turn
 
 
 class WeaponName(TextChoices):
