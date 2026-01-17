@@ -240,6 +240,47 @@ The project is organized by domain (character, game, master, user) with each hav
 4. Format with ruff: `ruff format`
 5. Run pre-commit hooks: `pre-commit run --all-files`
 
+### Before Submitting a Pull Request (MANDATORY)
+
+**All PRs must complete these steps before being submitted:**
+
+1. **Run the full test suite and ensure all tests pass:**
+   ```bash
+   doppler run -- uv run poe test
+   ```
+   - Do NOT submit a PR if any tests are failing
+   - Fix all test failures before proceeding
+
+2. **Check and improve test coverage:**
+   ```bash
+   doppler run -- uv run poe test-cov
+   ```
+   - Review coverage report to identify untested code paths
+   - Add tests for any new functionality introduced in the PR
+   - Aim to maintain or increase overall test coverage
+   - New features should have comprehensive test coverage
+
+3. **Update the CHANGELOG.md:**
+   - Add an entry under the `## Unreleased` section
+   - Place the entry in the appropriate subsection:
+     - `### Added` - for new features
+     - `### Changed` - for changes to existing functionality
+     - `### Fixed` - for bug fixes
+     - `### Removed` - for removed features
+   - Write clear, concise descriptions of changes
+   - Reference any relevant issue numbers if applicable
+
+4. **Run pre-commit hooks:**
+   ```bash
+   pre-commit run --all-files
+   ```
+   - Ensure all linting and formatting checks pass
+
+5. **Create a descriptive PR:**
+   - Use a clear title summarizing the change
+   - Include a description of what changed and why
+   - Reference any related issues
+
 ## Important Notes
 
 - **Python Version**: Project requires Python 3.14
