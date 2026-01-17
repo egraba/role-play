@@ -61,6 +61,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ### Fixed
 * Use authenticated user instead of client-provided username in message storage and event enrichers (security fix)
 * Fixed typo in CombatAction.DISENGAGE value ("disangage" → "disengage")
+* Renovate configuration now supports uv lock files and PEP 735 dependency groups
 
 ### Changed
 * Deploy workflow now waits for CI to pass instead of running duplicate tests (uses workflow_run trigger)
