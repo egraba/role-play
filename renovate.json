@@ -3,8 +3,7 @@
   "extends": [
     "config:recommended",
     ":dependencyDashboard",
-    ":semanticCommits",
-    ":gitSignOff"
+    ":semanticCommits"
   ],
   "schedule": [
     "every weekend"
@@ -20,14 +19,16 @@
     {
       "description": "Group Python development dependencies",
       "matchDepTypes": [
-        "dev-dependencies"
+        "dev-dependencies",
+        "dependency-groups"
       ],
       "groupName": "Python dev dependencies"
     },
     {
       "description": "Automerge minor and patch updates for dev dependencies",
       "matchDepTypes": [
-        "dev-dependencies"
+        "dev-dependencies",
+        "dependency-groups"
       ],
       "matchUpdateTypes": [
         "minor",
@@ -43,22 +44,36 @@
       "groupName": "Docker images"
     },
     {
-      "description": "Pin GitHub Actions to commits for security",
+      "description": "Update GitHub Actions",
       "matchManagers": [
         "github-actions"
       ],
-      "pinDigests": true
+      "groupName": "GitHub Actions"
+    },
+    {
+      "description": "Group pre-commit hooks",
+      "matchManagers": [
+        "pre-commit"
+      ],
+      "groupName": "pre-commit hooks"
     }
   ],
   "enabledManagers": [
     "pep621",
+    "uv",
     "pip_requirements",
     "dockerfile",
     "docker-compose",
     "github-actions",
     "pre-commit"
   ],
-  "rangeStrategy": "bump",
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": [
+      "before 3am on the first day of the month"
+    ]
+  },
+  "rangeStrategy": "update-lockfile",
   "vulnerabilityAlerts": {
     "labels": [
       "security"
@@ -77,12 +92,6 @@
   "commitMessageAction": "update",
   "commitMessageTopic": "{{depName}}",
   "commitMessageExtra": "to {{newVersion}}",
-  "lockFileMaintenance": {
-    "enabled": true,
-    "schedule": [
-      "before 3am on the first day of the month"
-    ]
-  },
   "ignoreDeps": [],
   "ignorePaths": [
     "**/node_modules/**",
