@@ -32,6 +32,16 @@ from .proficiencies import SavingThrowProficiency, SkillProficiency
 from .races import Language
 from .skills import Skill
 from .species import Species, SpeciesTrait
+from .spells import (
+    CharacterSpellSlot,
+    ClassSpellcasting,
+    Concentration,
+    Spell,
+    SpellPreparation,
+    SpellSettings,
+    SpellSlotTable,
+    WarlockSpellSlot,
+)
 
 __all__ = [
     "Ability",
@@ -66,4 +76,13 @@ __all__ = [
     "ToolSettings",
     "Weapon",
     "WeaponSettings",
+    # Spellcasting
+    "CharacterSpellSlot",
+    "ClassSpellcasting",
+    "Concentration",
+    "Spell",
+    "SpellPreparation",
+    "SpellSettings",
+    "SpellSlotTable",
+    "WarlockSpellSlot",
 ]
