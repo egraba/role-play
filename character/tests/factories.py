@@ -79,7 +79,7 @@ class SpeciesFactory(factory.django.DjangoModelFactory):
 class CharacterFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Character
-        django_get_or_create = ("name",)
+        django_get_or_create = ("user",)
 
     name = factory.Sequence(lambda n: f"character{n}")
     user = factory.SubFactory("user.tests.factories.UserFactory")

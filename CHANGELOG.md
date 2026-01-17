@@ -5,6 +5,15 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Added
+* Attack resolution system implementing D&D 5e combat mechanics:
+  - Attack roll = d20 + ability modifier + proficiency bonus (if proficient)
+  - Compare attack roll to target AC for hit/miss determination
+  - Damage roll = weapon damage dice + ability modifier on hit
+  - Critical hits on natural 20 (double damage dice)
+  - Critical misses on natural 1 (always miss)
+  - Automatic ability selection: STR for melee, DEX for ranged, choice for finesse weapons
+  - Weapon proficiency checking via WeaponProficiency model
+  - Damage application with HP floor at 0
 * Combat action system supporting D&D 5e standard actions: Attack, Cast a Spell, Dash, Disengage, Dodge, Help, Hide, Ready, Search, Use an Object
 * Action economy tracking per turn: 1 action, 1 bonus action, 1 reaction, and movement
 * TurnAction model to record actions taken during combat turns
