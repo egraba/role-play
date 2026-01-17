@@ -32,6 +32,25 @@ from character.models.equipment import (
 )
 from character.models.classes import CharacterClass, Class, ClassFeature
 from character.models.species import Species, SpeciesTrait
+from character.models.spells import (
+    CharacterSpellSlot,
+    ClassSpellcasting,
+    Concentration,
+    Spell,
+    SpellPreparation,
+    SpellSettings,
+    SpellSlotTable,
+    WarlockSpellSlot,
+)
+from character.constants.spells import (
+    CasterType,
+    CastingTime,
+    SpellDuration,
+    SpellLevel,
+    SpellRange,
+    SpellSchool,
+    SpellcastingAbility,
+)
 
 
 class AbilityTypeFactory(factory.django.DjangoModelFactory):
@@ -246,3 +265,90 @@ class CharacterClassFactory(factory.django.DjangoModelFactory):
     klass = factory.SubFactory(ClassFactory)
     level = 1
     is_primary = True
+
+
+class SpellSettingsFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = SpellSettings
+        django_get_or_create = ("name",)
+
+    name = factory.Sequence(lambda n: f"Test Spell {n}")
+    level = SpellLevel.FIRST
+    school = factory.Faker("random_element", elements=SpellSchool)
+    casting_time = CastingTime.ACTION
+    range = SpellRange.FEET_60
+    components = ["V", "S"]
+    duration = SpellDuration.INSTANTANEOUS
+    concentration = False
+    ritual = False
+    description = factory.Faker("text", max_nb_chars=500)
+    classes = ["wizard", "sorcerer"]
+
+
+class SpellFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Spell
+
+    character = factory.SubFactory(CharacterFactory)
+    settings = factory.SubFactory(SpellSettingsFactory)
+    source = "class"
+
+
+class SpellPreparationFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = SpellPreparation
+
+    character = factory.SubFactory(CharacterFactory)
+    settings = factory.SubFactory(SpellSettingsFactory)
+    always_prepared = False
+
+
+class SpellSlotTableFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = SpellSlotTable
+
+    class_name = ClassName.WIZARD
+    class_level = 1
+    slot_level = 1
+    slots = 2
+
+
+class CharacterSpellSlotFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = CharacterSpellSlot
+
+    character = factory.SubFactory(CharacterFactory)
+    slot_level = 1
+    total = 2
+    used = 0
+
+
+class WarlockSpellSlotFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = WarlockSpellSlot
+
+    character = factory.SubFactory(CharacterFactory)
+    slot_level = 1
+    total = 1
+    used = 0
+
+
+class ClassSpellcastingFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ClassSpellcasting
+
+    klass = factory.SubFactory(ClassFactory)
+    caster_type = CasterType.PREPARED
+    spellcasting_ability = SpellcastingAbility.INTELLIGENCE
+    learns_cantrips = True
+    spell_list_access = True
+    ritual_casting = True
+    spellcasting_focus = "arcane focus"
+
+
+class ConcentrationFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Concentration
+
+    character = factory.SubFactory(CharacterFactory)
+    spell = factory.SubFactory(SpellSettingsFactory, concentration=True)

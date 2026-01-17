@@ -5,6 +5,16 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Added
+* Spellcasting system with comprehensive D&D 5e magic support:
+  - SpellSettings model for spell definitions (level, school, casting time, range, components, duration, description)
+  - Spell model for spontaneous casters (Sorcerer, Bard, Warlock) tracking spells known
+  - SpellPreparation model for prepared casters (Cleric, Wizard, Druid, Paladin) with always_prepared flag for domain spells
+  - SpellSlotTable reference data for spell slots per class and level
+  - CharacterSpellSlot for tracking spell slot usage with use_slot(), restore_slot(), and restore_all() methods
+  - WarlockSpellSlot for Pact Magic (separate tracking, restores on short rest)
+  - ClassSpellcasting configuration per class (spellcasting ability, caster type, cantrips, ritual casting, focus)
+  - Concentration model for tracking active concentration spells with start_concentration() and break_concentration() methods
+  - Spell enums: SpellSchool, SpellLevel, CastingTime, SpellRange, SpellDuration, SpellComponent, CasterType, SpellcastingAbility
 * Attack resolution system implementing D&D 5e combat mechanics:
   - Attack roll = d20 + ability modifier + proficiency bonus (if proficient)
   - Compare attack roll to target AC for hit/miss determination
