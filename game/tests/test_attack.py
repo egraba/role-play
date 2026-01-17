@@ -117,6 +117,95 @@ class TestGetAttackAbility:
         assert ability == str(AbilityName.DEXTERITY)
 
 
+class TestGetAttackAbilityEdgeCases:
+    """Additional edge case tests for ability selection."""
+
+    @pytest.fixture
+    def character_equal_str_dex(self):
+        """Create a character with equal STR and DEX."""
+        character = CharacterFactory()
+        str_ability = character.abilities.get(ability_type__name=AbilityName.STRENGTH)
+        str_ability.score = 14
+        str_ability.modifier = 2
+        str_ability.save()
+
+        dex_ability = character.abilities.get(ability_type__name=AbilityName.DEXTERITY)
+        dex_ability.score = 14
+        dex_ability.modifier = 2
+        dex_ability.save()
+
+        return character
+
+    @pytest.fixture
+    def finesse_weapon(self):
+        """Create a finesse weapon."""
+        settings = WeaponSettings.objects.create(
+            name=WeaponName.SCIMITAR,
+            weapon_type=WeaponType.MARTIAL_MELEE,
+            cost=25,
+            damage="1d6",
+            weight=3,
+            properties="finesse,light",
+        )
+        return Weapon.objects.create(settings=settings)
+
+    @pytest.fixture
+    def melee_weapon(self):
+        """Create a non-finesse melee weapon."""
+        settings = WeaponSettings.objects.create(
+            name=WeaponName.GREATAXE,
+            weapon_type=WeaponType.MARTIAL_MELEE,
+            cost=30,
+            damage="1d12",
+            weight=7,
+            properties="heavy,two_handed",
+        )
+        return Weapon.objects.create(settings=settings)
+
+    @pytest.fixture
+    def character_high_dex(self):
+        """Create a character with high DEX."""
+        character = CharacterFactory()
+        str_ability = character.abilities.get(ability_type__name=AbilityName.STRENGTH)
+        str_ability.score = 10
+        str_ability.modifier = 0
+        str_ability.save()
+
+        dex_ability = character.abilities.get(ability_type__name=AbilityName.DEXTERITY)
+        dex_ability.score = 18
+        dex_ability.modifier = 4
+        dex_ability.save()
+
+        return character
+
+    def test_finesse_uses_dex_when_equal(self, finesse_weapon, character_equal_str_dex):
+        """Test that finesse weapons prefer DEX when STR and DEX are equal."""
+        ability = get_attack_ability(finesse_weapon, character_equal_str_dex)
+        assert ability == str(AbilityName.DEXTERITY)
+
+    def test_non_finesse_melee_uses_str_even_with_high_dex(
+        self, melee_weapon, character_high_dex
+    ):
+        """Test that non-finesse melee weapons always use STR."""
+        ability = get_attack_ability(melee_weapon, character_high_dex)
+        assert ability == str(AbilityName.STRENGTH)
+
+    def test_weapon_with_no_properties(self, character_high_dex):
+        """Test weapon with null properties field."""
+        settings = WeaponSettings.objects.create(
+            name=WeaponName.CLUB,
+            weapon_type=WeaponType.SIMPLE_MELEE,
+            cost=1,
+            damage="1d4",
+            weight=2,
+            properties=None,
+        )
+        weapon = Weapon.objects.create(settings=settings)
+
+        ability = get_attack_ability(weapon, character_high_dex)
+        assert ability == str(AbilityName.STRENGTH)
+
+
 class TestIsProficientWithWeapon:
     """Tests for weapon proficiency checks."""
 
@@ -369,6 +458,136 @@ class TestResolveAttack:
 
                 # 1 (dice) + (-2) (DEX mod) = -1, but minimum is 0
                 assert result.damage == 0
+
+
+class TestResolveAttackEdgeCases:
+    """Additional edge case tests for attack resolution."""
+
+    @pytest.fixture
+    def weapon_no_damage(self):
+        """Create a weapon with no damage field (should default to 1d4)."""
+        settings = WeaponSettings.objects.create(
+            name=WeaponName.NET,
+            weapon_type=WeaponType.MARTIAL_RANGED,
+            cost=1,
+            damage=None,
+            weight=3,
+            properties="special,thrown",
+        )
+        return Weapon.objects.create(settings=settings)
+
+    @pytest.fixture
+    def attacker(self):
+        """Create an attacker character."""
+        character = CharacterFactory()
+        character.level = 1
+
+        str_ability = character.abilities.get(ability_type__name=AbilityName.STRENGTH)
+        str_ability.score = 10
+        str_ability.modifier = 0
+        str_ability.save()
+
+        dex_ability = character.abilities.get(ability_type__name=AbilityName.DEXTERITY)
+        dex_ability.score = 10
+        dex_ability.modifier = 0
+        dex_ability.save()
+
+        character.save()
+        return character
+
+    @pytest.fixture
+    def target(self):
+        """Create a target character."""
+        character = CharacterFactory()
+        character.ac = 15
+        character.hp = 30
+        character.save()
+        return character
+
+    def test_attack_exactly_matches_ac(self, attacker, target, weapon_no_damage):
+        """Test that an attack roll exactly equal to AC is a hit."""
+        with patch("game.attack.roll_d20_test") as mock_roll:
+            mock_roll.return_value = (15, False, False)  # Exactly equals AC
+
+            with patch("game.attack.DiceString.roll_damage") as mock_damage:
+                mock_damage.return_value = 2
+
+                result = resolve_attack(attacker, target, weapon_no_damage)
+
+                assert result.is_hit is True
+                assert result.attack_roll == 15
+                assert result.target_ac == 15
+
+    def test_attack_one_below_ac_misses(self, attacker, target, weapon_no_damage):
+        """Test that an attack roll one below AC is a miss."""
+        with patch("game.attack.roll_d20_test") as mock_roll:
+            mock_roll.return_value = (14, False, False)  # One below AC
+
+            result = resolve_attack(attacker, target, weapon_no_damage)
+
+            assert result.is_hit is False
+            assert result.damage == 0
+
+    def test_weapon_with_no_damage_defaults_to_1d4(
+        self, attacker, target, weapon_no_damage
+    ):
+        """Test that weapons with no damage field default to 1d4."""
+        with patch("game.attack.roll_d20_test") as mock_roll:
+            mock_roll.return_value = (20, False, False)  # Hit
+
+            with patch("game.attack.DiceString.roll_damage") as mock_damage:
+                mock_damage.return_value = 3
+
+                result = resolve_attack(attacker, target, weapon_no_damage)
+
+                assert result.damage_dice == "1d4"
+
+    def test_natural_20_and_natural_1_flags_mutually_exclusive(
+        self, attacker, target, weapon_no_damage
+    ):
+        """Test that natural 20 and natural 1 cannot both be true."""
+        # Natural 20 case
+        with patch("game.attack.roll_d20_test") as mock_roll:
+            mock_roll.return_value = (20, True, False)
+
+            with patch("game.attack.DiceString.roll_damage") as mock_damage:
+                mock_damage.return_value = 2
+
+                result = resolve_attack(attacker, target, weapon_no_damage)
+
+                assert result.is_critical_hit is True
+                assert result.is_critical_miss is False
+
+        # Natural 1 case
+        with patch("game.attack.roll_d20_test") as mock_roll:
+            mock_roll.return_value = (1, False, True)
+
+            result = resolve_attack(attacker, target, weapon_no_damage)
+
+            assert result.is_critical_hit is False
+            assert result.is_critical_miss is True
+
+    def test_both_advantage_and_disadvantage_passed(
+        self, attacker, target, weapon_no_damage
+    ):
+        """Test that both advantage and disadvantage can be passed (they cancel)."""
+        with patch("game.attack.roll_d20_test") as mock_roll:
+            mock_roll.return_value = (15, False, False)
+
+            with patch("game.attack.DiceString.roll_damage") as mock_damage:
+                mock_damage.return_value = 2
+
+                resolve_attack(
+                    attacker,
+                    target,
+                    weapon_no_damage,
+                    advantage=True,
+                    disadvantage=True,
+                )
+
+                mock_roll.assert_called_once_with(
+                    modifier=0, advantage=True, disadvantage=True
+                )
 
 
 class TestApplyDamage:
