@@ -1,0 +1,201 @@
+"""Attack resolution system for D&D 5e combat.
+
+This module implements the core attack mechanics:
+- Attack roll = d20 + ability modifier + proficiency (if proficient)
+- Compare to target AC
+- On hit, roll damage dice + ability modifier
+- Critical hits on natural 20 (double damage dice)
+- Critical misses on natural 1 (always miss)
+"""
+
+from dataclasses import dataclass
+
+from character.constants.abilities import AbilityName
+from character.constants.equipment import WeaponProperty, WeaponType
+from character.models.character import Character
+from character.models.equipment import Weapon
+from character.models.proficiencies import WeaponProficiency
+from utils.dice import DiceString, roll_d20_test
+
+
+@dataclass
+class AttackResult:
+    """Result of an attack resolution."""
+
+    # Attack roll details
+    attack_roll: int
+    natural_roll: int
+    attack_modifier: int
+
+    # Hit determination
+    target_ac: int
+    is_hit: bool
+    is_critical_hit: bool
+    is_critical_miss: bool
+
+    # Damage (only populated on hit)
+    damage: int
+    damage_dice: str
+    damage_modifier: int
+
+    # Metadata
+    attacker_name: str
+    target_name: str
+    weapon_name: str
+    ability_used: str
+
+
+def get_attack_ability(weapon: Weapon, attacker: Character) -> str:
+    """Determine which ability to use for an attack roll.
+
+    Args:
+        weapon: The weapon being used.
+        attacker: The character making the attack.
+
+    Returns:
+        The ability name (STR or DEX) to use for the attack.
+
+    Rules:
+        - Melee weapons use Strength by default
+        - Ranged weapons use Dexterity
+        - Finesse weapons can use either (picks the higher modifier)
+        - Thrown weapons use Strength for melee range, Dexterity for thrown
+    """
+    properties = weapon.settings.properties or ""
+    weapon_type = weapon.settings.weapon_type
+
+    is_ranged = weapon_type in (WeaponType.SIMPLE_RANGED, WeaponType.MARTIAL_RANGED)
+    is_finesse = WeaponProperty.FINESSE in properties
+
+    if is_finesse:
+        # Finesse weapons can use either STR or DEX - pick the higher one
+        str_mod = attacker.strength.modifier
+        dex_mod = attacker.dexterity.modifier
+        if dex_mod >= str_mod:
+            return str(AbilityName.DEXTERITY)
+        return str(AbilityName.STRENGTH)
+
+    if is_ranged:
+        return str(AbilityName.DEXTERITY)
+
+    # Default to Strength for melee weapons
+    return str(AbilityName.STRENGTH)
+
+
+def is_proficient_with_weapon(character: Character, weapon: Weapon) -> bool:
+    """Check if a character is proficient with a weapon.
+
+    Args:
+        character: The character to check.
+        weapon: The weapon to check proficiency for.
+
+    Returns:
+        True if the character is proficient with the weapon.
+    """
+    return WeaponProficiency.objects.filter(
+        character=character, weapon=weapon.settings
+    ).exists()
+
+
+def resolve_attack(
+    attacker: Character,
+    target: Character,
+    weapon: Weapon,
+    advantage: bool = False,
+    disadvantage: bool = False,
+) -> AttackResult:
+    """Resolve a weapon attack against a target.
+
+    Implements D&D 5e attack resolution:
+    1. Roll d20 + ability modifier + proficiency bonus (if proficient)
+    2. Compare to target AC
+    3. On hit, roll damage dice + ability modifier
+    4. Critical hit on natural 20 doubles damage dice
+    5. Critical miss on natural 1 always misses
+
+    Args:
+        attacker: The character making the attack.
+        target: The character being attacked.
+        weapon: The weapon being used.
+        advantage: Whether the attacker has advantage on the roll.
+        disadvantage: Whether the attacker has disadvantage on the roll.
+
+    Returns:
+        AttackResult containing all details of the attack resolution.
+    """
+    # Determine which ability to use
+    ability_name = get_attack_ability(weapon, attacker)
+    ability = attacker.abilities.get(ability_type__name=ability_name)
+    ability_modifier = ability.modifier
+
+    # Calculate attack modifier
+    proficiency_bonus = 0
+    if is_proficient_with_weapon(attacker, weapon):
+        proficiency_bonus = attacker.proficiency_bonus
+
+    attack_modifier = ability_modifier + proficiency_bonus
+
+    # Roll the attack
+    attack_roll, is_nat_20, is_nat_1 = roll_d20_test(
+        modifier=attack_modifier,
+        advantage=advantage,
+        disadvantage=disadvantage,
+    )
+
+    # Determine natural roll (attack_roll - modifier)
+    natural_roll = attack_roll - attack_modifier
+
+    # Determine hit/miss
+    # Natural 1 always misses, natural 20 always hits
+    is_critical_miss = is_nat_1
+    is_critical_hit = is_nat_20
+
+    if is_critical_miss:
+        is_hit = False
+    elif is_critical_hit:
+        is_hit = True
+    else:
+        is_hit = attack_roll >= target.ac
+
+    # Roll damage if hit
+    damage = 0
+    damage_dice = weapon.settings.damage or "1d4"  # Default to 1d4 if no damage set
+    damage_modifier = ability_modifier
+
+    if is_hit:
+        dice = DiceString(damage_dice)
+        damage = dice.roll_damage(critical=is_critical_hit) + damage_modifier
+        # Ensure damage is at least 0 (negative modifiers can't reduce below 0)
+        damage = max(0, damage)
+
+    return AttackResult(
+        attack_roll=attack_roll,
+        natural_roll=natural_roll,
+        attack_modifier=attack_modifier,
+        target_ac=target.ac,
+        is_hit=is_hit,
+        is_critical_hit=is_critical_hit,
+        is_critical_miss=is_critical_miss,
+        damage=damage,
+        damage_dice=damage_dice,
+        damage_modifier=damage_modifier,
+        attacker_name=attacker.name,
+        target_name=target.name,
+        weapon_name=str(weapon.settings.name),
+        ability_used=ability_name,
+    )
+
+
+def apply_damage(target: Character, damage: int) -> int:
+    """Apply damage to a target character.
+
+    Args:
+        target: The character taking damage.
+        damage: The amount of damage to apply.
+
+    Returns:
+        The target's remaining HP after damage.
+    """
+    target.hp = max(0, target.hp - damage)
+    target.save()
+    return target.hp
