@@ -538,7 +538,9 @@ class TestMasteryIntegrationEdgeCases:
                 )
 
                 assert result.is_hit is True
-                assert result.mastery_effect.topple_save_dc == 13  # 8 + 2 + 3
+                assert (
+                    result.mastery_effect.topple_save_dc == 14
+                )  # 8 + 3 + 3 (level 5 = +3 prof)
 
     def test_sap_on_hit(self, attacker, target, sap_weapon):
         """Test that Sap gives target disadvantage on hit."""
