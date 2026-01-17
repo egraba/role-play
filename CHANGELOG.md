@@ -63,6 +63,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * Fixed typo in CombatAction.DISENGAGE value ("disangage" → "disengage")
 
 ### Changed
+* Deploy workflow now waits for CI to pass instead of running duplicate tests (uses workflow_run trigger)
 * Renamed `klasses.py` files to `classes.py` (models and constants) for consistency with model names
 * CharacterCreateForm now uses ModelChoiceField for Class selection
 * Split tool configurations from pyproject.toml into separate files (poe_tasks.toml, ruff.toml, pytest.ini)
