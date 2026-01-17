@@ -70,9 +70,15 @@ def test_perform_roll_with_advantage(monkeypatch):
     def patched_advantage(self, roll_type, against):
         return True
 
+    def patched_disadvantage(self, roll_type, against):
+        return False
+
     monkeypatch.setattr("utils.dice.DiceString.roll", patched_roll)
     monkeypatch.setattr(
         "character.models.character.Character.has_advantage", patched_advantage
+    )
+    monkeypatch.setattr(
+        "character.models.character.Character.has_disadvantage", patched_disadvantage
     )
     player = PlayerFactory()
     request = RollRequestFactory(
@@ -92,10 +98,16 @@ def test_perform_roll_with_disadvantage(monkeypatch):
     def patched_roll(self, modifier=0):
         return next(score_generator)
 
+    def patched_advantage(self, roll_type, against):
+        return False
+
     def patched_disadvantage(self, roll_type, against):
         return True
 
     monkeypatch.setattr("utils.dice.DiceString.roll", patched_roll)
+    monkeypatch.setattr(
+        "character.models.character.Character.has_advantage", patched_advantage
+    )
     monkeypatch.setattr(
         "character.models.character.Character.has_disadvantage", patched_disadvantage
     )
