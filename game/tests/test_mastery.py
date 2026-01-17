@@ -248,28 +248,32 @@ class TestMasteryIntegration:
     @pytest.fixture
     def graze_weapon(self):
         """Create a weapon with Graze mastery."""
-        settings = WeaponSettings.objects.create(
+        settings, _ = WeaponSettings.objects.update_or_create(
             name=WeaponName.GREATSWORD,
-            weapon_type=WeaponType.MARTIAL_MELEE,
-            cost=50,
-            damage="2d6",
-            weight=6,
-            properties="heavy,two_handed",
-            mastery=WeaponMastery.GRAZE,
+            defaults={
+                "weapon_type": WeaponType.MARTIAL_MELEE,
+                "cost": 50,
+                "damage": "2d6",
+                "weight": 6,
+                "properties": "heavy,two_handed",
+                "mastery": WeaponMastery.GRAZE,
+            },
         )
         return Weapon.objects.create(settings=settings)
 
     @pytest.fixture
     def vex_weapon(self):
         """Create a weapon with Vex mastery."""
-        settings = WeaponSettings.objects.create(
+        settings, _ = WeaponSettings.objects.update_or_create(
             name=WeaponName.LONGSWORD,
-            weapon_type=WeaponType.MARTIAL_MELEE,
-            cost=15,
-            damage="1d8",
-            weight=3,
-            properties="versatile",
-            mastery=WeaponMastery.VEX,
+            defaults={
+                "weapon_type": WeaponType.MARTIAL_MELEE,
+                "cost": 15,
+                "damage": "1d8",
+                "weight": 3,
+                "properties": "versatile",
+                "mastery": WeaponMastery.VEX,
+            },
         )
         return Weapon.objects.create(settings=settings)
 
@@ -333,14 +337,16 @@ class TestMasteryIntegration:
 
     def test_mastery_not_applied_without_mastery_property(self, attacker, target):
         """Test that no mastery effect when weapon has no mastery."""
-        settings = WeaponSettings.objects.create(
+        settings, _ = WeaponSettings.objects.update_or_create(
             name=WeaponName.HANDAXE,
-            weapon_type=WeaponType.SIMPLE_MELEE,
-            cost=5,
-            damage="1d6",
-            weight=2,
-            properties="light,thrown",
-            mastery=None,
+            defaults={
+                "weapon_type": WeaponType.SIMPLE_MELEE,
+                "cost": 5,
+                "damage": "1d6",
+                "weight": 2,
+                "properties": "light,thrown",
+                "mastery": None,
+            },
         )
         weapon = Weapon.objects.create(settings=settings)
 
@@ -438,42 +444,48 @@ class TestMasteryIntegrationEdgeCases:
     @pytest.fixture
     def push_weapon(self):
         """Create a weapon with Push mastery."""
-        settings = WeaponSettings.objects.create(
+        settings, _ = WeaponSettings.objects.update_or_create(
             name=WeaponName.WARHAMMER,
-            weapon_type=WeaponType.MARTIAL_MELEE,
-            cost=15,
-            damage="1d8",
-            weight=2,
-            properties="versatile",
-            mastery=WeaponMastery.PUSH,
+            defaults={
+                "weapon_type": WeaponType.MARTIAL_MELEE,
+                "cost": 15,
+                "damage": "1d8",
+                "weight": 2,
+                "properties": "versatile",
+                "mastery": WeaponMastery.PUSH,
+            },
         )
         return Weapon.objects.create(settings=settings)
 
     @pytest.fixture
     def topple_weapon(self):
         """Create a weapon with Topple mastery."""
-        settings = WeaponSettings.objects.create(
+        settings, _ = WeaponSettings.objects.update_or_create(
             name=WeaponName.BATTLEAXE,
-            weapon_type=WeaponType.MARTIAL_MELEE,
-            cost=10,
-            damage="1d8",
-            weight=4,
-            properties="versatile",
-            mastery=WeaponMastery.TOPPLE,
+            defaults={
+                "weapon_type": WeaponType.MARTIAL_MELEE,
+                "cost": 10,
+                "damage": "1d8",
+                "weight": 4,
+                "properties": "versatile",
+                "mastery": WeaponMastery.TOPPLE,
+            },
         )
         return Weapon.objects.create(settings=settings)
 
     @pytest.fixture
     def sap_weapon(self):
         """Create a weapon with Sap mastery."""
-        settings = WeaponSettings.objects.create(
+        settings, _ = WeaponSettings.objects.update_or_create(
             name=WeaponName.MACE,
-            weapon_type=WeaponType.SIMPLE_MELEE,
-            cost=5,
-            damage="1d6",
-            weight=4,
-            properties="",
-            mastery=WeaponMastery.SAP,
+            defaults={
+                "weapon_type": WeaponType.SIMPLE_MELEE,
+                "cost": 5,
+                "damage": "1d6",
+                "weight": 4,
+                "properties": "",
+                "mastery": WeaponMastery.SAP,
+            },
         )
         return Weapon.objects.create(settings=settings)
 
@@ -543,14 +555,16 @@ class TestMasteryIntegrationEdgeCases:
 
     def test_graze_no_damage_on_critical_miss(self, attacker, target):
         """Test that Graze still applies on critical miss."""
-        settings = WeaponSettings.objects.create(
+        settings, _ = WeaponSettings.objects.update_or_create(
             name=WeaponName.GLAIVE,
-            weapon_type=WeaponType.MARTIAL_MELEE,
-            cost=20,
-            damage="1d10",
-            weight=6,
-            properties="heavy,reach,two_handed",
-            mastery=WeaponMastery.GRAZE,
+            defaults={
+                "weapon_type": WeaponType.MARTIAL_MELEE,
+                "cost": 20,
+                "damage": "1d10",
+                "weight": 6,
+                "properties": "heavy,reach,two_handed",
+                "mastery": WeaponMastery.GRAZE,
+            },
         )
         weapon = Weapon.objects.create(settings=settings)
 
@@ -567,14 +581,16 @@ class TestMasteryIntegrationEdgeCases:
 
     def test_vex_on_critical_hit(self, attacker, target):
         """Test that Vex applies on critical hit."""
-        settings = WeaponSettings.objects.create(
+        settings, _ = WeaponSettings.objects.update_or_create(
             name=WeaponName.RAPIER,
-            weapon_type=WeaponType.MARTIAL_MELEE,
-            cost=25,
-            damage="1d8",
-            weight=2,
-            properties="finesse",
-            mastery=WeaponMastery.VEX,
+            defaults={
+                "weapon_type": WeaponType.MARTIAL_MELEE,
+                "cost": 25,
+                "damage": "1d8",
+                "weight": 2,
+                "properties": "finesse",
+                "mastery": WeaponMastery.VEX,
+            },
         )
         weapon = Weapon.objects.create(settings=settings)
 
@@ -598,14 +614,16 @@ class TestMasteryIntegrationEdgeCases:
         ]
 
         for weapon_name, mastery in non_graze_masteries:
-            settings = WeaponSettings.objects.create(
+            settings, _ = WeaponSettings.objects.update_or_create(
                 name=weapon_name,
-                weapon_type=WeaponType.MARTIAL_MELEE,
-                cost=15,
-                damage="1d8",
-                weight=2,
-                properties="",
-                mastery=mastery,
+                defaults={
+                    "weapon_type": WeaponType.MARTIAL_MELEE,
+                    "cost": 15,
+                    "damage": "1d8",
+                    "weight": 2,
+                    "properties": "",
+                    "mastery": mastery,
+                },
             )
             weapon = Weapon.objects.create(settings=settings)
 
