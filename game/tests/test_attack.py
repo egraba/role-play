@@ -26,39 +26,45 @@ class TestGetAttackAbility:
     @pytest.fixture
     def melee_weapon(self):
         """Create a simple melee weapon (uses STR)."""
-        settings = WeaponSettings.objects.create(
+        settings, _ = WeaponSettings.objects.update_or_create(
             name=WeaponName.LONGSWORD,
-            weapon_type=WeaponType.MARTIAL_MELEE,
-            cost=15,
-            damage="1d8",
-            weight=3,
-            properties="versatile",
+            defaults={
+                "weapon_type": WeaponType.MARTIAL_MELEE,
+                "cost": 15,
+                "damage": "1d8",
+                "weight": 3,
+                "properties": "versatile",
+            },
         )
         return Weapon.objects.create(settings=settings)
 
     @pytest.fixture
     def ranged_weapon(self):
         """Create a ranged weapon (uses DEX)."""
-        settings = WeaponSettings.objects.create(
+        settings, _ = WeaponSettings.objects.update_or_create(
             name=WeaponName.LONGBOW,
-            weapon_type=WeaponType.MARTIAL_RANGED,
-            cost=50,
-            damage="1d8",
-            weight=2,
-            properties="ammunition,heavy,two_handed",
+            defaults={
+                "weapon_type": WeaponType.MARTIAL_RANGED,
+                "cost": 50,
+                "damage": "1d8",
+                "weight": 2,
+                "properties": "ammunition,heavy,two_handed",
+            },
         )
         return Weapon.objects.create(settings=settings)
 
     @pytest.fixture
     def finesse_weapon(self):
         """Create a finesse weapon (uses STR or DEX, whichever is higher)."""
-        settings = WeaponSettings.objects.create(
+        settings, _ = WeaponSettings.objects.update_or_create(
             name=WeaponName.RAPIER,
-            weapon_type=WeaponType.MARTIAL_MELEE,
-            cost=25,
-            damage="1d8",
-            weight=2,
-            properties="finesse",
+            defaults={
+                "weapon_type": WeaponType.MARTIAL_MELEE,
+                "cost": 25,
+                "damage": "1d8",
+                "weight": 2,
+                "properties": "finesse",
+            },
         )
         return Weapon.objects.create(settings=settings)
 
@@ -139,26 +145,30 @@ class TestGetAttackAbilityEdgeCases:
     @pytest.fixture
     def finesse_weapon(self):
         """Create a finesse weapon."""
-        settings = WeaponSettings.objects.create(
+        settings, _ = WeaponSettings.objects.update_or_create(
             name=WeaponName.SCIMITAR,
-            weapon_type=WeaponType.MARTIAL_MELEE,
-            cost=25,
-            damage="1d6",
-            weight=3,
-            properties="finesse,light",
+            defaults={
+                "weapon_type": WeaponType.MARTIAL_MELEE,
+                "cost": 25,
+                "damage": "1d6",
+                "weight": 3,
+                "properties": "finesse,light",
+            },
         )
         return Weapon.objects.create(settings=settings)
 
     @pytest.fixture
     def melee_weapon(self):
         """Create a non-finesse melee weapon."""
-        settings = WeaponSettings.objects.create(
+        settings, _ = WeaponSettings.objects.update_or_create(
             name=WeaponName.GREATAXE,
-            weapon_type=WeaponType.MARTIAL_MELEE,
-            cost=30,
-            damage="1d12",
-            weight=7,
-            properties="heavy,two_handed",
+            defaults={
+                "weapon_type": WeaponType.MARTIAL_MELEE,
+                "cost": 30,
+                "damage": "1d12",
+                "weight": 7,
+                "properties": "heavy,two_handed",
+            },
         )
         return Weapon.objects.create(settings=settings)
 
@@ -192,13 +202,15 @@ class TestGetAttackAbilityEdgeCases:
 
     def test_weapon_with_no_properties(self, character_high_dex):
         """Test weapon with null properties field."""
-        settings = WeaponSettings.objects.create(
+        settings, _ = WeaponSettings.objects.update_or_create(
             name=WeaponName.CLUB,
-            weapon_type=WeaponType.SIMPLE_MELEE,
-            cost=1,
-            damage="1d4",
-            weight=2,
-            properties=None,
+            defaults={
+                "weapon_type": WeaponType.SIMPLE_MELEE,
+                "cost": 1,
+                "damage": "1d4",
+                "weight": 2,
+                "properties": None,
+            },
         )
         weapon = Weapon.objects.create(settings=settings)
 
@@ -212,13 +224,15 @@ class TestIsProficientWithWeapon:
     @pytest.fixture
     def weapon(self):
         """Create a weapon for testing."""
-        settings = WeaponSettings.objects.create(
+        settings, _ = WeaponSettings.objects.update_or_create(
             name=WeaponName.SHORTSWORD,
-            weapon_type=WeaponType.MARTIAL_MELEE,
-            cost=10,
-            damage="1d6",
-            weight=2,
-            properties="finesse,light",
+            defaults={
+                "weapon_type": WeaponType.MARTIAL_MELEE,
+                "cost": 10,
+                "damage": "1d6",
+                "weight": 2,
+                "properties": "finesse,light",
+            },
         )
         return Weapon.objects.create(settings=settings)
 
@@ -243,13 +257,15 @@ class TestResolveAttack:
     @pytest.fixture
     def weapon(self):
         """Create a weapon for testing."""
-        settings = WeaponSettings.objects.create(
+        settings, _ = WeaponSettings.objects.update_or_create(
             name=WeaponName.DAGGER,
-            weapon_type=WeaponType.SIMPLE_MELEE,
-            cost=2,
-            damage="1d4",
-            weight=1,
-            properties="finesse,light,thrown",
+            defaults={
+                "weapon_type": WeaponType.SIMPLE_MELEE,
+                "cost": 2,
+                "damage": "1d4",
+                "weight": 1,
+                "properties": "finesse,light,thrown",
+            },
         )
         return Weapon.objects.create(settings=settings)
 
@@ -466,13 +482,15 @@ class TestResolveAttackEdgeCases:
     @pytest.fixture
     def weapon_no_damage(self):
         """Create a weapon with no damage field (should default to 1d4)."""
-        settings = WeaponSettings.objects.create(
+        settings, _ = WeaponSettings.objects.update_or_create(
             name=WeaponName.NET,
-            weapon_type=WeaponType.MARTIAL_RANGED,
-            cost=1,
-            damage=None,
-            weight=3,
-            properties="special,thrown",
+            defaults={
+                "weapon_type": WeaponType.MARTIAL_RANGED,
+                "cost": 1,
+                "damage": None,
+                "weight": 3,
+                "properties": "special,thrown",
+            },
         )
         return Weapon.objects.create(settings=settings)
 

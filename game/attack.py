@@ -6,9 +6,10 @@ This module implements the core attack mechanics:
 - On hit, roll damage dice + ability modifier
 - Critical hits on natural 20 (double damage dice)
 - Critical misses on natural 1 (always miss)
+- Weapon mastery effects (SRD 5.2.1)
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from character.constants.abilities import AbilityName
 from character.constants.equipment import WeaponProperty, WeaponType
@@ -16,6 +17,8 @@ from character.models.character import Character
 from character.models.equipment import Weapon
 from character.models.proficiencies import WeaponProficiency
 from utils.dice import DiceString, roll_d20_test
+
+from .mastery import MasteryEffect, resolve_mastery
 
 
 @dataclass
@@ -33,7 +36,7 @@ class AttackResult:
     is_critical_hit: bool
     is_critical_miss: bool
 
-    # Damage (only populated on hit)
+    # Damage (only populated on hit, or graze damage on miss)
     damage: int
     damage_dice: str
     damage_modifier: int
@@ -43,6 +46,9 @@ class AttackResult:
     target_name: str
     weapon_name: str
     ability_used: str
+
+    # Weapon mastery effect
+    mastery_effect: MasteryEffect = field(default_factory=MasteryEffect)
 
 
 def get_attack_ability(weapon: Weapon, attacker: Character) -> str:
@@ -103,6 +109,7 @@ def resolve_attack(
     weapon: Weapon,
     advantage: bool = False,
     disadvantage: bool = False,
+    use_mastery: bool = False,
 ) -> AttackResult:
     """Resolve a weapon attack against a target.
 
@@ -112,6 +119,7 @@ def resolve_attack(
     3. On hit, roll damage dice + ability modifier
     4. Critical hit on natural 20 doubles damage dice
     5. Critical miss on natural 1 always misses
+    6. Apply weapon mastery effects if character has mastered the weapon
 
     Args:
         attacker: The character making the attack.
@@ -119,6 +127,7 @@ def resolve_attack(
         weapon: The weapon being used.
         advantage: Whether the attacker has advantage on the roll.
         disadvantage: Whether the attacker has disadvantage on the roll.
+        use_mastery: Whether to apply weapon mastery effects.
 
     Returns:
         AttackResult containing all details of the attack resolution.
@@ -168,6 +177,24 @@ def resolve_attack(
         # Ensure damage is at least 0 (negative modifiers can't reduce below 0)
         damage = max(0, damage)
 
+    # Calculate target HP after damage for mastery effects
+    target_hp_after = target.hp - damage if is_hit else target.hp
+
+    # Resolve mastery effects
+    mastery_effect = MasteryEffect()
+    if use_mastery and weapon.settings.mastery:
+        mastery_effect = resolve_mastery(
+            mastery=weapon.settings.mastery,
+            is_hit=is_hit,
+            ability_modifier=ability_modifier,
+            attacker_proficiency=attacker.proficiency_bonus,
+            damage_dealt=damage,
+            target_hp_remaining=target_hp_after,
+        )
+        # Apply graze damage on miss
+        if mastery_effect.graze_damage > 0 and not is_hit:
+            damage = mastery_effect.graze_damage
+
     return AttackResult(
         attack_roll=attack_roll,
         natural_roll=natural_roll,
@@ -183,6 +210,7 @@ def resolve_attack(
         target_name=target.name,
         weapon_name=str(weapon.settings.name),
         ability_used=ability_name,
+        mastery_effect=mastery_effect,
     )
 
 

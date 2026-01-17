@@ -14,6 +14,15 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
   - Automatic ability selection: STR for melee, DEX for ranged, choice for finesse weapons
   - Weapon proficiency checking via WeaponProficiency model
   - Damage application with HP floor at 0
+* Weapon mastery properties from D&D 5e SRD 5.2.1:
+  - Cleave: On kill, excess damage carries to another enemy within 5 feet
+  - Graze: On miss, deal ability modifier damage (minimum 0)
+  - Nick: Can make extra attack with light weapon as part of Attack action
+  - Push: On hit, push target 10 feet away (if Large or smaller)
+  - Sap: On hit, target has disadvantage on next attack before your next turn
+  - Slow: On hit, reduce target's speed by 10 feet until start of your next turn
+  - Topple: On hit, target must make CON save (DC 8 + prof + mod) or be knocked prone
+  - Vex: On hit, gain advantage on next attack against same target before end of turn
 * Combat action system supporting D&D 5e standard actions: Attack, Cast a Spell, Dash, Disengage, Dodge, Help, Hide, Ready, Search, Use an Object
 * Action economy tracking per turn: 1 action, 1 bonus action, 1 reaction, and movement
 * TurnAction model to record actions taken during combat turns
