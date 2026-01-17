@@ -353,3 +353,267 @@ class TestMasteryIntegration:
                 result = resolve_attack(attacker, target, weapon, use_mastery=True)
 
                 assert result.mastery_effect.triggered is False
+
+
+class TestMasteryEdgeCases:
+    """Edge case tests for weapon mastery system."""
+
+    def test_cleave_exact_kill_no_excess(self):
+        """Test Cleave with exact kill (0 HP remaining) has no excess damage."""
+        effect = resolve_mastery_on_hit(
+            mastery=str(WeaponMastery.CLEAVE),
+            ability_modifier=3,
+            attacker_proficiency=2,
+            damage_dealt=10,
+            target_hp_remaining=0,  # Exact kill, no overkill
+        )
+        assert effect.triggered is True
+        assert effect.cleave_damage_available == 0
+
+    def test_graze_with_zero_modifier(self):
+        """Test Graze with zero ability modifier deals 0 damage."""
+        effect = resolve_mastery_on_miss(
+            mastery=str(WeaponMastery.GRAZE),
+            ability_modifier=0,
+        )
+        assert effect.triggered is True
+        assert effect.graze_damage == 0
+        assert "0 or negative" in effect.description
+
+    def test_topple_save_dc_minimum(self):
+        """Test Topple DC with minimum proficiency and negative modifier."""
+        effect = resolve_mastery_on_hit(
+            mastery=str(WeaponMastery.TOPPLE),
+            ability_modifier=-1,
+            attacker_proficiency=2,
+            damage_dealt=5,
+            target_hp_remaining=10,
+        )
+        assert effect.triggered is True
+        assert effect.topple_save_dc == 9  # 8 + 2 + (-1)
+
+    def test_cleave_large_overkill(self):
+        """Test Cleave with large overkill damage."""
+        effect = resolve_mastery_on_hit(
+            mastery=str(WeaponMastery.CLEAVE),
+            ability_modifier=5,
+            attacker_proficiency=6,
+            damage_dealt=50,
+            target_hp_remaining=-30,  # Massive overkill
+        )
+        assert effect.triggered is True
+        assert effect.cleave_damage_available == 30
+
+    def test_all_masteries_with_high_stats(self):
+        """Test all on-hit masteries work with high ability scores."""
+        on_hit_masteries = [
+            WeaponMastery.CLEAVE,
+            WeaponMastery.PUSH,
+            WeaponMastery.SAP,
+            WeaponMastery.SLOW,
+            WeaponMastery.TOPPLE,
+            WeaponMastery.VEX,
+            WeaponMastery.NICK,
+        ]
+        for mastery in on_hit_masteries:
+            effect = resolve_mastery_on_hit(
+                mastery=str(mastery),
+                ability_modifier=5,
+                attacker_proficiency=6,
+                damage_dealt=20,
+                target_hp_remaining=10,
+            )
+            # All should trigger except Cleave (target survived)
+            if mastery == WeaponMastery.CLEAVE:
+                assert effect.triggered is True
+                assert effect.cleave_damage_available == 0
+            else:
+                assert effect.triggered is True
+                assert effect.description != ""
+
+
+class TestMasteryIntegrationEdgeCases:
+    """Integration edge case tests for mastery with attack resolution."""
+
+    @pytest.fixture
+    def push_weapon(self):
+        """Create a weapon with Push mastery."""
+        settings = WeaponSettings.objects.create(
+            name=WeaponName.WARHAMMER,
+            weapon_type=WeaponType.MARTIAL_MELEE,
+            cost=15,
+            damage="1d8",
+            weight=2,
+            properties="versatile",
+            mastery=WeaponMastery.PUSH,
+        )
+        return Weapon.objects.create(settings=settings)
+
+    @pytest.fixture
+    def topple_weapon(self):
+        """Create a weapon with Topple mastery."""
+        settings = WeaponSettings.objects.create(
+            name=WeaponName.BATTLEAXE,
+            weapon_type=WeaponType.MARTIAL_MELEE,
+            cost=10,
+            damage="1d8",
+            weight=4,
+            properties="versatile",
+            mastery=WeaponMastery.TOPPLE,
+        )
+        return Weapon.objects.create(settings=settings)
+
+    @pytest.fixture
+    def sap_weapon(self):
+        """Create a weapon with Sap mastery."""
+        settings = WeaponSettings.objects.create(
+            name=WeaponName.MACE,
+            weapon_type=WeaponType.SIMPLE_MELEE,
+            cost=5,
+            damage="1d6",
+            weight=4,
+            properties="",
+            mastery=WeaponMastery.SAP,
+        )
+        return Weapon.objects.create(settings=settings)
+
+    @pytest.fixture
+    def attacker(self):
+        """Create an attacker character."""
+        character = CharacterFactory()
+        character.level = 5
+
+        str_ability = character.abilities.get(ability_type__name=AbilityName.STRENGTH)
+        str_ability.score = 16
+        str_ability.modifier = 3
+        str_ability.save()
+
+        character.save()
+        return character
+
+    @pytest.fixture
+    def target(self):
+        """Create a target character."""
+        character = CharacterFactory()
+        character.ac = 15
+        character.hp = 30
+        character.save()
+        return character
+
+    def test_push_on_hit(self, attacker, target, push_weapon):
+        """Test that Push applies on hit."""
+        with patch("game.attack.roll_d20_test") as mock_roll:
+            mock_roll.return_value = (18, False, False)  # Hit
+
+            with patch("game.attack.DiceString.roll_damage") as mock_damage:
+                mock_damage.return_value = 6
+
+                result = resolve_attack(attacker, target, push_weapon, use_mastery=True)
+
+                assert result.is_hit is True
+                assert result.mastery_effect.push_distance == 10
+
+    def test_topple_on_hit(self, attacker, target, topple_weapon):
+        """Test that Topple sets save DC on hit."""
+        with patch("game.attack.roll_d20_test") as mock_roll:
+            mock_roll.return_value = (18, False, False)  # Hit
+
+            with patch("game.attack.DiceString.roll_damage") as mock_damage:
+                mock_damage.return_value = 6
+
+                result = resolve_attack(
+                    attacker, target, topple_weapon, use_mastery=True
+                )
+
+                assert result.is_hit is True
+                assert result.mastery_effect.topple_save_dc == 13  # 8 + 2 + 3
+
+    def test_sap_on_hit(self, attacker, target, sap_weapon):
+        """Test that Sap gives target disadvantage on hit."""
+        with patch("game.attack.roll_d20_test") as mock_roll:
+            mock_roll.return_value = (18, False, False)  # Hit
+
+            with patch("game.attack.DiceString.roll_damage") as mock_damage:
+                mock_damage.return_value = 4
+
+                result = resolve_attack(attacker, target, sap_weapon, use_mastery=True)
+
+                assert result.is_hit is True
+                assert result.mastery_effect.target_has_disadvantage is True
+
+    def test_graze_no_damage_on_critical_miss(self, attacker, target):
+        """Test that Graze still applies on critical miss."""
+        settings = WeaponSettings.objects.create(
+            name=WeaponName.GLAIVE,
+            weapon_type=WeaponType.MARTIAL_MELEE,
+            cost=20,
+            damage="1d10",
+            weight=6,
+            properties="heavy,reach,two_handed",
+            mastery=WeaponMastery.GRAZE,
+        )
+        weapon = Weapon.objects.create(settings=settings)
+
+        with patch("game.attack.roll_d20_test") as mock_roll:
+            mock_roll.return_value = (1, False, True)  # Critical miss (nat 1)
+
+            result = resolve_attack(attacker, target, weapon, use_mastery=True)
+
+            assert result.is_hit is False
+            assert result.is_critical_miss is True
+            # Graze still applies even on critical miss
+            assert result.damage == 3  # Ability modifier
+            assert result.mastery_effect.graze_damage == 3
+
+    def test_vex_on_critical_hit(self, attacker, target):
+        """Test that Vex applies on critical hit."""
+        settings = WeaponSettings.objects.create(
+            name=WeaponName.RAPIER,
+            weapon_type=WeaponType.MARTIAL_MELEE,
+            cost=25,
+            damage="1d8",
+            weight=2,
+            properties="finesse",
+            mastery=WeaponMastery.VEX,
+        )
+        weapon = Weapon.objects.create(settings=settings)
+
+        with patch("game.attack.roll_d20_test") as mock_roll:
+            mock_roll.return_value = (20, True, False)  # Critical hit (nat 20)
+
+            with patch("game.attack.DiceString.roll_damage") as mock_damage:
+                mock_damage.return_value = 12  # Doubled dice
+
+                result = resolve_attack(attacker, target, weapon, use_mastery=True)
+
+                assert result.is_hit is True
+                assert result.is_critical_hit is True
+                assert result.mastery_effect.attacker_has_advantage_on_next is True
+
+    def test_mastery_not_applied_on_miss_except_graze(self, attacker, target):
+        """Test that non-Graze masteries don't trigger on miss."""
+        non_graze_masteries = [
+            (WeaponName.FLAIL, WeaponMastery.SAP),
+            (WeaponName.MORNINGSTAR, WeaponMastery.SAP),
+        ]
+
+        for weapon_name, mastery in non_graze_masteries:
+            settings = WeaponSettings.objects.create(
+                name=weapon_name,
+                weapon_type=WeaponType.MARTIAL_MELEE,
+                cost=15,
+                damage="1d8",
+                weight=2,
+                properties="",
+                mastery=mastery,
+            )
+            weapon = Weapon.objects.create(settings=settings)
+
+            with patch("game.attack.roll_d20_test") as mock_roll:
+                mock_roll.return_value = (10, False, False)  # Miss
+
+                result = resolve_attack(attacker, target, weapon, use_mastery=True)
+
+                assert result.is_hit is False
+                assert result.mastery_effect.triggered is False
+                assert result.damage == 0
