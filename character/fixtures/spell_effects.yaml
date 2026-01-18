@@ -1,0 +1,148 @@
+# SRD 5.2.1 Spell Effect Templates
+# Reference: D&D 2024 Systems Reference Document version 5.2.1
+#
+# This file defines the mechanical effects for spells defined in spells.yaml
+# Each spell can have multiple effect templates (e.g., damage + condition)
+
+# =============================================================================
+# CANTRIP EFFECTS
+# =============================================================================
+
+# Fire Bolt - Ranged spell attack, 1d10 fire damage (scales with level)
+- model: character.spelleffecttemplate
+  fields:
+    spell: Fire Bolt
+    effect_type: damage
+    target_type: single
+    damage_type: fire
+    base_dice: 1d10
+    save_type: none
+    save_effect: none
+    duration_type: instantaneous
+
+# =============================================================================
+# LEVEL 1 SPELL EFFECTS
+# =============================================================================
+
+# Cure Wounds - Healing, 1d8 + modifier
+- model: character.spelleffecttemplate
+  fields:
+    spell: Cure Wounds
+    effect_type: healing
+    target_type: single
+    base_dice: 1d8
+    dice_per_level: 1d8
+    save_type: none
+    save_effect: none
+    duration_type: instantaneous
+
+# Magic Missile - Auto-hit damage, 3 darts of 1d4+1 each
+# Simplified as total damage for 3 darts
+- model: character.spelleffecttemplate
+  fields:
+    spell: Magic Missile
+    effect_type: damage
+    target_type: multiple
+    damage_type: force
+    base_dice: 3d4
+    save_type: none
+    save_effect: none
+    duration_type: instantaneous
+
+# Shield - +5 AC buff for 1 round
+- model: character.spelleffecttemplate
+  fields:
+    spell: Shield
+    effect_type: buff
+    target_type: self
+    buff_description: "+5 bonus to AC, immune to magic missile"
+    ac_modifier: 5
+    duration_type: rounds
+    duration_value: 1
+
+# Sleep - Special area effect (not standard damage/save pattern)
+- model: character.spelleffecttemplate
+  fields:
+    spell: Sleep
+    effect_type: condition
+    target_type: area
+    condition: unconscious
+    area_radius: 20
+    area_shape: sphere
+    duration_type: minutes
+    duration_value: 1
+
+# =============================================================================
+# LEVEL 2 SPELL EFFECTS
+# =============================================================================
+
+# Hold Person - WIS save or paralyzed
+- model: character.spelleffecttemplate
+  fields:
+    spell: Hold Person
+    effect_type: condition
+    target_type: single
+    condition: paralyzed
+    save_type: WIS
+    save_effect: negates
+    duration_type: concentration
+    duration_value: 1
+
+# Invisibility - Buff granting invisible condition
+- model: character.spelleffecttemplate
+  fields:
+    spell: Invisibility
+    effect_type: condition
+    target_type: single
+    condition: invisible
+    save_type: none
+    save_effect: none
+    duration_type: concentration
+    duration_value: 60
+
+# Misty Step - Utility teleport (no mechanical effect template needed for pure teleport)
+- model: character.spelleffecttemplate
+  fields:
+    spell: Misty Step
+    effect_type: utility
+    target_type: self
+    buff_description: "Teleport up to 30 feet to an unoccupied space you can see"
+    duration_type: instantaneous
+
+# =============================================================================
+# LEVEL 3 SPELL EFFECTS
+# =============================================================================
+
+# Counterspell - Utility (no standard effect template for reaction counter)
+- model: character.spelleffecttemplate
+  fields:
+    spell: Counterspell
+    effect_type: utility
+    target_type: single
+    buff_description: "Interrupt a spell of 3rd level or lower (ability check for higher)"
+    duration_type: instantaneous
+
+# Fireball - DEX save for half, 8d6 fire damage in 20-foot sphere
+- model: character.spelleffecttemplate
+  fields:
+    spell: Fireball
+    effect_type: damage
+    target_type: area
+    damage_type: fire
+    base_dice: 8d6
+    dice_per_level: 1d6
+    save_type: DEX
+    save_effect: half_damage
+    area_radius: 20
+    area_shape: sphere
+    duration_type: instantaneous
+
+# Fly - Buff granting 60 feet flying speed
+- model: character.spelleffecttemplate
+  fields:
+    spell: Fly
+    effect_type: buff
+    target_type: single
+    buff_description: "Gain a flying speed of 60 feet"
+    duration_type: concentration
+    duration_value: 10

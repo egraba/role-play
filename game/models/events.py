@@ -269,3 +269,122 @@ class ActionTaken(Event):
         action_type = self.turn_action.get_action_type_display()
         action = self.turn_action.get_action_display()
         return f"{self.fighter.character.name} used {action} ({action_type}){target}."
+
+
+class SpellCast(Event):
+    """Event when a spell is cast."""
+
+    caster = models.ForeignKey(
+        "character.Character",
+        on_delete=models.CASCADE,
+        related_name="spell_cast_events",
+    )
+    spell = models.ForeignKey(
+        "character.SpellSettings",
+        on_delete=models.CASCADE,
+        related_name="cast_events",
+    )
+    slot_level = models.PositiveSmallIntegerField()
+    targets = models.ManyToManyField(
+        "character.Character",
+        related_name="targeted_by_spell_events",
+    )
+
+    def get_message(self):
+        target_names = ", ".join(t.name for t in self.targets.all())
+        if target_names:
+            return f"{self.caster.name} cast {self.spell.name} on {target_names}."
+        return f"{self.caster.name} cast {self.spell.name}."
+
+
+class SpellDamageDealt(Event):
+    """Event when spell damage is dealt."""
+
+    spell = models.ForeignKey(
+        "character.SpellSettings",
+        on_delete=models.CASCADE,
+        related_name="damage_events",
+    )
+    target = models.ForeignKey(
+        "character.Character",
+        on_delete=models.CASCADE,
+        related_name="spell_damage_received_events",
+    )
+    damage = models.PositiveIntegerField()
+    damage_type = models.CharField(max_length=20)
+
+    def get_message(self):
+        return (
+            f"{self.target.name} took {self.damage} {self.damage_type} damage "
+            f"from {self.spell.name}."
+        )
+
+
+class SpellHealingReceived(Event):
+    """Event when spell healing is received."""
+
+    spell = models.ForeignKey(
+        "character.SpellSettings",
+        on_delete=models.CASCADE,
+        related_name="healing_events",
+    )
+    target = models.ForeignKey(
+        "character.Character",
+        on_delete=models.CASCADE,
+        related_name="spell_healing_received_events",
+    )
+    healing = models.PositiveIntegerField()
+
+    def get_message(self):
+        return (
+            f"{self.target.name} was healed for {self.healing} HP by {self.spell.name}."
+        )
+
+
+class SpellConditionApplied(Event):
+    """Event when a spell applies a condition."""
+
+    spell = models.ForeignKey(
+        "character.SpellSettings",
+        on_delete=models.CASCADE,
+        related_name="condition_events",
+    )
+    target = models.ForeignKey(
+        "character.Character",
+        on_delete=models.CASCADE,
+        related_name="spell_condition_events",
+    )
+    condition = models.ForeignKey(
+        "character.Condition",
+        on_delete=models.CASCADE,
+        related_name="spell_applied_events",
+    )
+
+    def get_message(self):
+        return f"{self.target.name} is now {self.condition} from {self.spell.name}."
+
+
+class SpellSavingThrow(Event):
+    """Event recording a spell saving throw."""
+
+    spell = models.ForeignKey(
+        "character.SpellSettings",
+        on_delete=models.CASCADE,
+        related_name="saving_throw_events",
+    )
+    target = models.ForeignKey(
+        "character.Character",
+        on_delete=models.CASCADE,
+        related_name="spell_save_events",
+    )
+    save_type = models.CharField(max_length=5)
+    dc = models.PositiveSmallIntegerField()
+    roll = models.PositiveSmallIntegerField()
+    success = models.BooleanField()
+
+    def get_message(self):
+        result = "succeeded" if self.success else "failed"
+        return (
+            f"{self.target.name} {result} a {self.save_type} save (DC {self.dc}) "
+            f"against {self.spell.name} with a {self.roll}."
+        )

@@ -5,6 +5,16 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Added
+* Spell effect system for D&D 5e magic mechanics:
+  - SpellEffectTemplate model linking spells to their mechanical effects (damage, healing, conditions, buffs/debuffs, summons)
+  - ActiveSpellEffect model for tracking ongoing spell effects on characters
+  - SummonedCreature model for tracking creatures summoned by spells
+  - Spell effect enums: SpellEffectType, SpellTargetType, SpellSaveType, SpellSaveEffect, SpellDamageType, EffectDurationType
+  - Resolution system (game/spell.py) with dataclasses: SpellSaveResult, SpellDamageResult, SpellHealingResult, SpellConditionResult, SpellBuffResult, SpellCastResult
+  - Core resolution functions: get_spell_save_dc(), resolve_saving_throw(), resolve_spell_damage(), resolve_spell_healing(), resolve_spell_condition(), resolve_spell_buff(), resolve_spell()
+  - Application functions: apply_spell_damage(), apply_spell_healing(), apply_spell_condition(), apply_spell_buff(), apply_spell_result()
+  - Spell event types: SPELL_CAST, SPELL_DAMAGE_DEALT, SPELL_HEALING_RECEIVED, SPELL_CONDITION_APPLIED, SPELL_SAVING_THROW
+  - Spell event models: SpellCast, SpellDamageDealt, SpellHealingReceived, SpellConditionApplied, SpellSavingThrow
 * Spellcasting system with comprehensive D&D 5e magic support:
   - SpellSettings model for spell definitions (level, school, casting time, range, components, duration, description)
   - Spell model for spontaneous casters (Sorcerer, Bard, Warlock) tracking spells known

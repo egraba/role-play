@@ -30,6 +30,12 @@ class EventType(StrEnum):
     ROUND_ENDED = "round.ended"
     COMBAT_ENDED = "combat.ended"
     ACTION_TAKEN = "action.taken"
+    # Spell events
+    SPELL_CAST = "spell.cast"
+    SPELL_DAMAGE_DEALT = "spell.damage.dealt"
+    SPELL_HEALING_RECEIVED = "spell.healing.received"
+    SPELL_CONDITION_APPLIED = "spell.condition.applied"
+    SPELL_SAVING_THROW = "spell.saving.throw"
 
 
 class EventOrigin(IntFlag):
