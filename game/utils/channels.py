@@ -22,6 +22,11 @@ from ..models.events import (
     RollResponse,
     RollResult,
     RoundEnded,
+    SpellCast,
+    SpellConditionApplied,
+    SpellDamageDealt,
+    SpellHealingReceived,
+    SpellSavingThrow,
     TurnEnded,
     TurnStarted,
 )
@@ -75,6 +80,16 @@ def _get_event_type(event: Event) -> EventType:
         event_type = EventType.COMBAT_ENDED
     elif isinstance(event, ActionTaken):
         event_type = EventType.ACTION_TAKEN
+    elif isinstance(event, SpellCast):
+        event_type = EventType.SPELL_CAST
+    elif isinstance(event, SpellDamageDealt):
+        event_type = EventType.SPELL_DAMAGE_DEALT
+    elif isinstance(event, SpellHealingReceived):
+        event_type = EventType.SPELL_HEALING_RECEIVED
+    elif isinstance(event, SpellConditionApplied):
+        event_type = EventType.SPELL_CONDITION_APPLIED
+    elif isinstance(event, SpellSavingThrow):
+        event_type = EventType.SPELL_SAVING_THROW
     return event_type
 
 

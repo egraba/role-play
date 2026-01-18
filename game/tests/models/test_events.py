@@ -14,11 +14,22 @@ from game.models.events import (
     RollResponse,
     RollResult,
     RoundEnded,
+    SpellCast,
+    SpellConditionApplied,
+    SpellDamageDealt,
+    SpellHealingReceived,
+    SpellSavingThrow,
     TurnEnded,
     TurnStarted,
     UserInvitation,
 )
 from utils.constants import FREEZED_TIME
+
+from character.tests.factories import (
+    CharacterFactory,
+    ConditionFactory,
+    SpellSettingsFactory,
+)
 
 from ..factories import (
     ActorFactory,
@@ -273,3 +284,179 @@ class TestCombatEndedModel:
 
     def test_get_message(self, combat_ended):
         assert combat_ended.get_message() == "Combat has ended."
+
+
+class TestSpellCastModel:
+    @pytest.fixture
+    def spell_cast(self):
+        game = GameFactory()
+        author = ActorFactory()
+        caster = CharacterFactory(name="Gandalf")
+        spell = SpellSettingsFactory(name="Fireball")
+        event = SpellCast.objects.create(
+            game=game,
+            author=author,
+            caster=caster,
+            spell=spell,
+            slot_level=3,
+        )
+        return event
+
+    def test_creation(self, spell_cast):
+        assert isinstance(spell_cast, SpellCast)
+        assert spell_cast.caster.name == "Gandalf"
+        assert spell_cast.spell.name == "Fireball"
+        assert spell_cast.slot_level == 3
+
+    def test_get_message_no_targets(self, spell_cast):
+        message = spell_cast.get_message()
+        assert "Gandalf cast Fireball" in message
+
+    def test_get_message_with_targets(self, spell_cast):
+        target1 = CharacterFactory(name="Goblin")
+        target2 = CharacterFactory(name="Orc")
+        spell_cast.targets.add(target1, target2)
+
+        message = spell_cast.get_message()
+        assert "Gandalf cast Fireball on" in message
+        assert "Goblin" in message
+        assert "Orc" in message
+
+
+class TestSpellDamageDealtModel:
+    @pytest.fixture
+    def spell_damage(self):
+        game = GameFactory()
+        author = ActorFactory()
+        spell = SpellSettingsFactory(name="Fireball")
+        target = CharacterFactory(name="Goblin")
+        return SpellDamageDealt.objects.create(
+            game=game,
+            author=author,
+            spell=spell,
+            target=target,
+            damage=28,
+            damage_type="fire",
+        )
+
+    def test_creation(self, spell_damage):
+        assert isinstance(spell_damage, SpellDamageDealt)
+        assert spell_damage.damage == 28
+        assert spell_damage.damage_type == "fire"
+
+    def test_get_message(self, spell_damage):
+        message = spell_damage.get_message()
+        assert "Goblin took 28 fire damage from Fireball" in message
+
+
+class TestSpellHealingReceivedModel:
+    @pytest.fixture
+    def spell_healing(self):
+        game = GameFactory()
+        author = ActorFactory()
+        spell = SpellSettingsFactory(name="Cure Wounds")
+        target = CharacterFactory(name="Fighter")
+        return SpellHealingReceived.objects.create(
+            game=game,
+            author=author,
+            spell=spell,
+            target=target,
+            healing=12,
+        )
+
+    def test_creation(self, spell_healing):
+        assert isinstance(spell_healing, SpellHealingReceived)
+        assert spell_healing.healing == 12
+
+    def test_get_message(self, spell_healing):
+        message = spell_healing.get_message()
+        assert "Fighter was healed for 12 HP by Cure Wounds" in message
+
+
+class TestSpellConditionAppliedModel:
+    @pytest.fixture
+    def spell_condition(self):
+        game = GameFactory()
+        author = ActorFactory()
+        spell = SpellSettingsFactory(name="Hold Person")
+        target = CharacterFactory(name="Bandit")
+        condition = ConditionFactory(name="paralyzed")
+        return SpellConditionApplied.objects.create(
+            game=game,
+            author=author,
+            spell=spell,
+            target=target,
+            condition=condition,
+        )
+
+    def test_creation(self, spell_condition):
+        assert isinstance(spell_condition, SpellConditionApplied)
+        assert spell_condition.condition.name == "paralyzed"
+
+    def test_get_message(self, spell_condition):
+        message = spell_condition.get_message()
+        assert "Bandit is now" in message
+        assert "Hold Person" in message
+
+
+class TestSpellSavingThrowModel:
+    @pytest.fixture
+    def spell_save_success(self):
+        game = GameFactory()
+        author = ActorFactory()
+        spell = SpellSettingsFactory(name="Fireball")
+        target = CharacterFactory(name="Rogue")
+        return SpellSavingThrow.objects.create(
+            game=game,
+            author=author,
+            spell=spell,
+            target=target,
+            save_type="DEX",
+            dc=15,
+            roll=18,
+            success=True,
+        )
+
+    @pytest.fixture
+    def spell_save_failure(self):
+        game = GameFactory()
+        author = ActorFactory()
+        spell = SpellSettingsFactory(name="Hold Person")
+        target = CharacterFactory(name="Warrior")
+        return SpellSavingThrow.objects.create(
+            game=game,
+            author=author,
+            spell=spell,
+            target=target,
+            save_type="WIS",
+            dc=14,
+            roll=10,
+            success=False,
+        )
+
+    def test_creation_success(self, spell_save_success):
+        assert isinstance(spell_save_success, SpellSavingThrow)
+        assert spell_save_success.success is True
+        assert spell_save_success.save_type == "DEX"
+        assert spell_save_success.dc == 15
+        assert spell_save_success.roll == 18
+
+    def test_creation_failure(self, spell_save_failure):
+        assert isinstance(spell_save_failure, SpellSavingThrow)
+        assert spell_save_failure.success is False
+
+    def test_get_message_success(self, spell_save_success):
+        message = spell_save_success.get_message()
+        assert "Rogue succeeded" in message
+        assert "DEX save" in message
+        assert "DC 15" in message
+        assert "Fireball" in message
+        assert "18" in message
+
+    def test_get_message_failure(self, spell_save_failure):
+        message = spell_save_failure.get_message()
+        assert "Warrior failed" in message
+        assert "WIS save" in message
+        assert "DC 14" in message
+        assert "Hold Person" in message
+        assert "10" in message

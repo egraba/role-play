@@ -101,3 +101,75 @@ class SpellcastingAbility(TextChoices):
     INTELLIGENCE = "intelligence", "Intelligence"  # Wizard
     WISDOM = "wisdom", "Wisdom"  # Cleric, Druid, Ranger
     CHARISMA = "charisma", "Charisma"  # Bard, Paladin, Sorcerer, Warlock
+
+
+class SpellEffectType(TextChoices):
+    """Types of effects a spell can have."""
+
+    DAMAGE = "damage", "Damage"
+    HEALING = "healing", "Healing"
+    CONDITION = "condition", "Condition"
+    BUFF = "buff", "Buff"
+    DEBUFF = "debuff", "Debuff"
+    SUMMON = "summon", "Summon"
+    UTILITY = "utility", "Utility"
+
+
+class SpellTargetType(TextChoices):
+    """How a spell targets creatures or areas."""
+
+    SELF = "self", "Self"
+    SINGLE = "single", "Single Target"
+    MULTIPLE = "multiple", "Multiple Targets"
+    AREA = "area", "Area"
+    LINE = "line", "Line"
+    CONE = "cone", "Cone"
+
+
+class SpellSaveType(TextChoices):
+    """Saving throw types for spells."""
+
+    NONE = "none", "None"
+    STRENGTH = "STR", "Strength"
+    DEXTERITY = "DEX", "Dexterity"
+    CONSTITUTION = "CON", "Constitution"
+    INTELLIGENCE = "INT", "Intelligence"
+    WISDOM = "WIS", "Wisdom"
+    CHARISMA = "CHA", "Charisma"
+
+
+class SpellSaveEffect(TextChoices):
+    """What happens on a successful save."""
+
+    NONE = "none", "None"
+    HALF_DAMAGE = "half_damage", "Half Damage"
+    NEGATES = "negates", "Negates"
+
+
+class SpellDamageType(TextChoices):
+    """Damage types for spells."""
+
+    ACID = "acid", "Acid"
+    BLUDGEONING = "bludgeoning", "Bludgeoning"
+    COLD = "cold", "Cold"
+    FIRE = "fire", "Fire"
+    FORCE = "force", "Force"
+    LIGHTNING = "lightning", "Lightning"
+    NECROTIC = "necrotic", "Necrotic"
+    PIERCING = "piercing", "Piercing"
+    POISON = "poison", "Poison"
+    PSYCHIC = "psychic", "Psychic"
+    RADIANT = "radiant", "Radiant"
+    SLASHING = "slashing", "Slashing"
+    THUNDER = "thunder", "Thunder"
+
+
+class EffectDurationType(TextChoices):
+    """Duration types for spell effects."""
+
+    INSTANTANEOUS = "instantaneous", "Instantaneous"
+    ROUNDS = "rounds", "Rounds"
+    MINUTES = "minutes", "Minutes"
+    HOURS = "hours", "Hours"
+    UNTIL_DISPELLED = "until_dispelled", "Until Dispelled"
+    CONCENTRATION = "concentration", "Concentration"

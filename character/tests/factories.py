@@ -42,13 +42,24 @@ from character.models.spells import (
     SpellSlotTable,
     WarlockSpellSlot,
 )
+from character.models.spell_effects import (
+    ActiveSpellEffect,
+    SpellEffectTemplate,
+    SummonedCreature,
+)
 from character.constants.spells import (
     CasterType,
     CastingTime,
+    EffectDurationType,
+    SpellDamageType,
     SpellDuration,
+    SpellEffectType,
     SpellLevel,
     SpellRange,
+    SpellSaveEffect,
+    SpellSaveType,
     SpellSchool,
+    SpellTargetType,
     SpellcastingAbility,
 )
 
@@ -352,3 +363,43 @@ class ConcentrationFactory(factory.django.DjangoModelFactory):
 
     character = factory.SubFactory(CharacterFactory)
     spell = factory.SubFactory(SpellSettingsFactory, concentration=True)
+
+
+class SpellEffectTemplateFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = SpellEffectTemplate
+
+    spell = factory.SubFactory(SpellSettingsFactory)
+    effect_type = SpellEffectType.DAMAGE
+    target_type = SpellTargetType.SINGLE
+    damage_type = SpellDamageType.FIRE
+    base_dice = "8d6"
+    dice_per_level = "1d6"
+    save_type = SpellSaveType.DEXTERITY
+    save_effect = SpellSaveEffect.HALF_DAMAGE
+    duration_type = EffectDurationType.INSTANTANEOUS
+
+
+class ActiveSpellEffectFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ActiveSpellEffect
+
+    character = factory.SubFactory(CharacterFactory)
+    template = factory.SubFactory(SpellEffectTemplateFactory)
+    caster = factory.SubFactory(CharacterFactory)
+    rounds_remaining = 10
+    is_concentration = False
+
+
+class SummonedCreatureFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = SummonedCreature
+
+    summoner = factory.SubFactory(CharacterFactory)
+    spell = factory.SubFactory(SpellSettingsFactory)
+    name = factory.Faker("first_name")
+    hp_current = 20
+    hp_max = 20
+    ac = 13
+    rounds_remaining = 10
+    is_concentration = True

@@ -42,6 +42,11 @@ from .spells import (
     SpellSlotTable,
     WarlockSpellSlot,
 )
+from .spell_effects import (
+    ActiveSpellEffect,
+    SpellEffectTemplate,
+    SummonedCreature,
+)
 
 __all__ = [
     "Ability",
@@ -85,4 +90,8 @@ __all__ = [
     "SpellSettings",
     "SpellSlotTable",
     "WarlockSpellSlot",
+    # Spell Effects
+    "ActiveSpellEffect",
+    "SpellEffectTemplate",
+    "SummonedCreature",
 ]

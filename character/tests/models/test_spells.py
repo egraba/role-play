@@ -354,8 +354,10 @@ class TestClassSpellcastingModel:
         assert "Non-caster" in str(spellcasting)
 
     def test_is_caster_property(self):
-        caster = ClassSpellcastingFactory(caster_type=CasterType.KNOWN)
-        non_caster = ClassSpellcastingFactory(caster_type="")
+        klass1 = ClassFactory()
+        klass2 = ClassFactory()
+        caster = ClassSpellcastingFactory(klass=klass1, caster_type=CasterType.KNOWN)
+        non_caster = ClassSpellcastingFactory(klass=klass2, caster_type="")
         assert caster.is_caster is True
         assert non_caster.is_caster is False
 
