@@ -334,9 +334,9 @@ class TestSummonedCreatureModel:
 
     def test_cascade_delete_on_spell(self):
         creature = SummonedCreatureFactory()
-        spell_id = creature.spell.id
+        spell_pk = creature.spell.pk
         creature.spell.delete()
-        assert not SummonedCreature.objects.filter(spell_id=spell_id).exists()
+        assert not SummonedCreature.objects.filter(spell=spell_pk).exists()
 
 
 @pytest.mark.django_db
