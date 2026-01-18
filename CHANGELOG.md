@@ -15,6 +15,11 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
   - ClassSpellcasting configuration per class (spellcasting ability, caster type, cantrips, ritual casting, focus)
   - Concentration model for tracking active concentration spells with start_concentration() and break_concentration() methods
   - Spell enums: SpellSchool, SpellLevel, CastingTime, SpellRange, SpellDuration, SpellComponent, CasterType, SpellcastingAbility
+  - SRD 5.2.1 spell fixtures with 14 commonly used spells:
+    - Cantrips: Fire Bolt, Light, Mage Hand, Prestidigitation
+    - Level 1: Cure Wounds, Magic Missile, Shield, Sleep
+    - Level 2: Hold Person, Invisibility, Misty Step
+    - Level 3: Counterspell, Fireball, Fly
 * Attack resolution system implementing D&D 5e combat mechanics:
   - Attack roll = d20 + ability modifier + proficiency bonus (if proficient)
   - Compare attack roll to target AC for hit/miss determination
