@@ -250,6 +250,32 @@ class TestResolveSavingThrow:
 
             assert result.success is True
 
+    def test_advantage_passed_to_roll(self, character):
+        """Test that advantage is passed to the roll function."""
+        with patch("game.spell.roll_d20_test") as mock_roll:
+            mock_roll.return_value = (18, True, False)
+
+            resolve_saving_throw(
+                character, SpellSaveType.DEXTERITY, dc=15, advantage=True
+            )
+
+            mock_roll.assert_called_once_with(
+                modifier=2, advantage=True, disadvantage=False
+            )
+
+    def test_disadvantage_passed_to_roll(self, character):
+        """Test that disadvantage is passed to the roll function."""
+        with patch("game.spell.roll_d20_test") as mock_roll:
+            mock_roll.return_value = (8, False, True)
+
+            resolve_saving_throw(
+                character, SpellSaveType.DEXTERITY, dc=15, disadvantage=True
+            )
+
+            mock_roll.assert_called_once_with(
+                modifier=2, advantage=False, disadvantage=True
+            )
+
 
 class TestCalculateSpellDice:
     """Tests for spell dice calculation with upcasting."""
@@ -591,6 +617,176 @@ class TestResolveSpell:
 
         assert result.concentration_started is True
 
+    def test_resolve_spell_multiple_targets(self, caster):
+        """Test resolving a spell against multiple targets."""
+        target1 = CharacterFactory()
+        target2 = CharacterFactory()
+        target3 = CharacterFactory()
+
+        spell = SpellSettingsFactory(level=SpellLevel.THIRD)
+        SpellEffectTemplateFactory(
+            spell=spell,
+            effect_type=SpellEffectType.DAMAGE,
+            damage_type=SpellDamageType.FIRE,
+            base_dice="8d6",
+            save_type=SpellSaveType.DEXTERITY,
+            save_effect=SpellSaveEffect.HALF_DAMAGE,
+        )
+
+        with patch("game.spell.roll_d20_test") as mock_save:
+            mock_save.return_value = (10, False, False)
+
+            with patch("game.spell.DiceString.roll_keeping_individual") as mock_damage:
+                mock_damage.return_value = (24, [4, 4, 4, 4, 4, 4])
+
+                result = resolve_spell(
+                    caster, spell, [target1, target2, target3], slot_level=3
+                )
+
+                assert len(result.damage_results) == 3
+                assert len(result.save_results) == 3
+
+    def test_resolve_spell_multiple_effect_templates(self, caster, target):
+        """Test resolving a spell with multiple effect templates."""
+        spell = SpellSettingsFactory(level=SpellLevel.SECOND)
+
+        # Damage effect
+        SpellEffectTemplateFactory(
+            spell=spell,
+            effect_type=SpellEffectType.DAMAGE,
+            damage_type=SpellDamageType.FIRE,
+            base_dice="2d6",
+            save_type=SpellSaveType.NONE,
+        )
+
+        # Condition effect
+        condition = ConditionFactory(name=ConditionName.FRIGHTENED)
+        SpellEffectTemplateFactory(
+            spell=spell,
+            effect_type=SpellEffectType.CONDITION,
+            condition=condition,
+            save_type=SpellSaveType.WISDOM,
+            save_effect=SpellSaveEffect.NEGATES,
+            duration_type=EffectDurationType.ROUNDS,
+            duration_value=1,
+        )
+
+        with patch("game.spell.roll_d20_test") as mock_save:
+            mock_save.return_value = (8, False, False)  # Failed save
+
+            with patch("game.spell.DiceString.roll_keeping_individual") as mock_damage:
+                mock_damage.return_value = (7, [3, 4])
+
+                result = resolve_spell(caster, spell, [target], slot_level=2)
+
+                assert len(result.damage_results) == 1
+                assert len(result.condition_results) == 1
+                assert result.condition_results[0][1].applied is True
+
+    def test_resolve_spell_save_negates_skips_effect(self, caster, target):
+        """Test that successful save with NEGATES skips the effect entirely."""
+        spell = SpellSettingsFactory(level=SpellLevel.SECOND)
+
+        condition = ConditionFactory(name=ConditionName.PARALYZED)
+        SpellEffectTemplateFactory(
+            spell=spell,
+            effect_type=SpellEffectType.CONDITION,
+            condition=condition,
+            save_type=SpellSaveType.WISDOM,
+            save_effect=SpellSaveEffect.NEGATES,
+        )
+
+        with patch("game.spell.roll_d20_test") as mock_save:
+            mock_save.return_value = (20, False, False)  # Successful save
+
+            result = resolve_spell(caster, spell, [target], slot_level=2)
+
+            # Save was recorded
+            assert len(result.save_results) == 1
+            assert result.save_results[0][1].success is True
+            # But condition was not applied (skipped entirely)
+            assert len(result.condition_results) == 0
+
+    def test_resolve_spell_no_save_required(self, caster, target):
+        """Test resolving a spell with no saving throw."""
+        spell = SpellSettingsFactory(level=SpellLevel.FIRST)
+        SpellEffectTemplateFactory(
+            spell=spell,
+            effect_type=SpellEffectType.HEALING,
+            base_dice="1d8",
+            save_type=SpellSaveType.NONE,
+        )
+
+        with patch("game.spell.DiceString.roll_keeping_individual") as mock_heal:
+            mock_heal.return_value = (6, [6])
+
+            result = resolve_spell(caster, spell, [target], slot_level=1)
+
+            assert len(result.save_results) == 0
+            assert len(result.healing_results) == 1
+
+    def test_resolve_spell_condition_effect(self, caster, target):
+        """Test resolving a spell with condition effect."""
+        spell = SpellSettingsFactory(level=SpellLevel.SECOND)
+        condition = ConditionFactory(name=ConditionName.CHARMED)
+        SpellEffectTemplateFactory(
+            spell=spell,
+            effect_type=SpellEffectType.CONDITION,
+            condition=condition,
+            save_type=SpellSaveType.WISDOM,
+            save_effect=SpellSaveEffect.NEGATES,
+            duration_type=EffectDurationType.ROUNDS,
+            duration_value=10,
+        )
+
+        with patch("game.spell.roll_d20_test") as mock_save:
+            mock_save.return_value = (5, False, False)  # Failed save
+
+            result = resolve_spell(caster, spell, [target], slot_level=2)
+
+            assert len(result.condition_results) == 1
+            assert result.condition_results[0][1].condition == condition
+            assert result.condition_results[0][1].applied is True
+            assert result.condition_results[0][1].duration_rounds == 10
+
+    def test_resolve_spell_debuff_effect(self, caster, target):
+        """Test resolving a spell with debuff effect."""
+        spell = SpellSettingsFactory(level=SpellLevel.FIRST)
+        SpellEffectTemplateFactory(
+            spell=spell,
+            effect_type=SpellEffectType.DEBUFF,
+            buff_description="-2 to attack rolls",
+            attack_modifier=-2,
+            save_type=SpellSaveType.CHARISMA,
+            save_effect=SpellSaveEffect.NEGATES,
+            duration_type=EffectDurationType.ROUNDS,
+            duration_value=10,
+        )
+
+        with patch("game.spell.roll_d20_test") as mock_save:
+            mock_save.return_value = (5, False, False)  # Failed save
+
+            result = resolve_spell(caster, spell, [target], slot_level=1)
+
+            assert len(result.buff_results) == 1
+            assert result.buff_results[0][1].attack_modifier == -2
+
+    def test_resolve_spell_non_concentration_does_not_mark(self, caster, target):
+        """Test that non-concentration spells don't mark concentration_started."""
+        spell = SpellSettingsFactory(level=SpellLevel.FIRST, concentration=False)
+        SpellEffectTemplateFactory(
+            spell=spell,
+            effect_type=SpellEffectType.DAMAGE,
+            base_dice="1d10",
+        )
+
+        with patch("game.spell.DiceString.roll_keeping_individual") as mock_damage:
+            mock_damage.return_value = (7, [7])
+
+            result = resolve_spell(caster, spell, [target], slot_level=1)
+
+            assert result.concentration_started is False
+
 
 class TestApplySpellDamage:
     """Tests for applying spell damage."""
@@ -772,8 +968,8 @@ class TestApplySpellResult:
         character.save()
         return character
 
-    def test_apply_spell_result_applies_all_effects(self, caster, target):
-        """Test that apply_spell_result applies all effects."""
+    def test_apply_spell_result_applies_damage(self, caster, target):
+        """Test that apply_spell_result applies damage effects."""
         spell = SpellSettingsFactory(concentration=True)
         damage_result = SpellDamageResult(
             total=15,
@@ -798,3 +994,148 @@ class TestApplySpellResult:
 
         # Check concentration started
         assert Concentration.objects.filter(character=caster, spell=spell).exists()
+
+    def test_apply_spell_result_applies_healing(self, caster):
+        """Test that apply_spell_result applies healing effects."""
+        target = CharacterFactory()
+        target.hp = 10
+        target.max_hp = 30
+        target.save()
+
+        spell = SpellSettingsFactory()
+        healing_result = SpellHealingResult(
+            total=12,
+            dice_rolled=[4, 5, 3],
+        )
+
+        result = SpellCastResult(
+            spell=spell,
+            caster=caster,
+            targets=[target],
+            slot_level=1,
+            success=True,
+            healing_results=[(target, healing_result)],
+        )
+
+        apply_spell_result(result)
+
+        target.refresh_from_db()
+        assert target.hp == 22  # 10 + 12
+
+    def test_apply_spell_result_applies_condition(self, caster, target):
+        """Test that apply_spell_result applies condition effects."""
+        spell = SpellSettingsFactory()
+        condition = ConditionFactory(name=ConditionName.STUNNED)
+        condition_result = SpellConditionResult(
+            condition=condition,
+            applied=True,
+            duration_rounds=1,
+        )
+
+        result = SpellCastResult(
+            spell=spell,
+            caster=caster,
+            targets=[target],
+            slot_level=2,
+            success=True,
+            condition_results=[(target, condition_result)],
+        )
+
+        apply_spell_result(result)
+
+        assert CharacterCondition.objects.filter(
+            character=target, condition=condition
+        ).exists()
+
+    def test_apply_spell_result_applies_buff(self, caster, target):
+        """Test that apply_spell_result applies buff effects."""
+        from character.models import ActiveSpellEffect
+
+        spell = SpellSettingsFactory()
+        template = SpellEffectTemplateFactory(
+            spell=spell,
+            effect_type=SpellEffectType.BUFF,
+            buff_description="+2 AC",
+            ac_modifier=2,
+            duration_type=EffectDurationType.ROUNDS,
+            duration_value=10,
+        )
+        buff_result = SpellBuffResult(
+            description="+2 AC",
+            ac_modifier=2,
+            attack_modifier=0,
+            damage_modifier=0,
+            duration_rounds=10,
+        )
+
+        result = SpellCastResult(
+            spell=spell,
+            caster=caster,
+            targets=[target],
+            slot_level=1,
+            success=True,
+            buff_results=[(target, buff_result)],
+        )
+
+        apply_spell_result(result)
+
+        assert ActiveSpellEffect.objects.filter(
+            character=target, template=template, caster=caster
+        ).exists()
+
+    def test_apply_spell_result_multiple_targets(self, caster):
+        """Test that apply_spell_result applies effects to multiple targets."""
+        target1 = CharacterFactory()
+        target1.hp = 20
+        target1.max_hp = 20
+        target1.save()
+
+        target2 = CharacterFactory()
+        target2.hp = 25
+        target2.max_hp = 25
+        target2.save()
+
+        spell = SpellSettingsFactory()
+        damage_result1 = SpellDamageResult(
+            total=10, dice_rolled=[5, 5], damage_type=SpellDamageType.FIRE
+        )
+        damage_result2 = SpellDamageResult(
+            total=10, dice_rolled=[5, 5], damage_type=SpellDamageType.FIRE
+        )
+
+        result = SpellCastResult(
+            spell=spell,
+            caster=caster,
+            targets=[target1, target2],
+            slot_level=3,
+            success=True,
+            damage_results=[(target1, damage_result1), (target2, damage_result2)],
+        )
+
+        apply_spell_result(result)
+
+        target1.refresh_from_db()
+        target2.refresh_from_db()
+        assert target1.hp == 10  # 20 - 10
+        assert target2.hp == 15  # 25 - 10
+
+    def test_apply_spell_result_without_concentration(self, caster, target):
+        """Test that apply_spell_result doesn't start concentration when not needed."""
+        spell = SpellSettingsFactory(concentration=False)
+        damage_result = SpellDamageResult(
+            total=5, dice_rolled=[5], damage_type=SpellDamageType.FIRE
+        )
+
+        result = SpellCastResult(
+            spell=spell,
+            caster=caster,
+            targets=[target],
+            slot_level=1,
+            success=True,
+            damage_results=[(target, damage_result)],
+            concentration_started=False,
+        )
+
+        apply_spell_result(result)
+
+        assert not Concentration.objects.filter(character=caster, spell=spell).exists()

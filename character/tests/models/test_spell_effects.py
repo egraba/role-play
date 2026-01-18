@@ -331,3 +331,143 @@ class TestSummonedCreatureModel:
     def test_combat_relation_optional(self):
         creature = SummonedCreatureFactory(combat=None)
         assert creature.combat is None
+
+    def test_cascade_delete_on_spell(self):
+        creature = SummonedCreatureFactory()
+        spell_id = creature.spell.id
+        creature.spell.delete()
+        assert not SummonedCreature.objects.filter(spell_id=spell_id).exists()
+
+
+@pytest.mark.django_db
+class TestSpellEffectTemplateDefaults:
+    """Tests for default values on SpellEffectTemplate."""
+
+    def test_default_save_type(self):
+        spell = SpellSettingsFactory()
+        template = SpellEffectTemplate.objects.create(
+            spell=spell,
+            effect_type=SpellEffectType.DAMAGE,
+            target_type=SpellTargetType.SINGLE,
+            duration_type=EffectDurationType.INSTANTANEOUS,
+        )
+        assert template.save_type == SpellSaveType.NONE
+
+    def test_default_save_effect(self):
+        spell = SpellSettingsFactory()
+        template = SpellEffectTemplate.objects.create(
+            spell=spell,
+            effect_type=SpellEffectType.DAMAGE,
+            target_type=SpellTargetType.SINGLE,
+            duration_type=EffectDurationType.INSTANTANEOUS,
+        )
+        assert template.save_effect == SpellSaveEffect.NONE
+
+    def test_default_modifiers_are_zero(self):
+        spell = SpellSettingsFactory()
+        template = SpellEffectTemplate.objects.create(
+            spell=spell,
+            effect_type=SpellEffectType.BUFF,
+            target_type=SpellTargetType.SINGLE,
+            duration_type=EffectDurationType.ROUNDS,
+            duration_value=10,
+        )
+        assert template.ac_modifier == 0
+        assert template.attack_modifier == 0
+        assert template.damage_modifier == 0
+
+    def test_default_area_radius_is_zero(self):
+        spell = SpellSettingsFactory()
+        template = SpellEffectTemplate.objects.create(
+            spell=spell,
+            effect_type=SpellEffectType.DAMAGE,
+            target_type=SpellTargetType.SINGLE,
+            duration_type=EffectDurationType.INSTANTANEOUS,
+        )
+        assert template.area_radius == 0
+
+    def test_default_duration_value_is_zero(self):
+        spell = SpellSettingsFactory()
+        template = SpellEffectTemplate.objects.create(
+            spell=spell,
+            effect_type=SpellEffectType.DAMAGE,
+            target_type=SpellTargetType.SINGLE,
+            duration_type=EffectDurationType.INSTANTANEOUS,
+        )
+        assert template.duration_value == 0
+
+    def test_blank_fields_allowed(self):
+        spell = SpellSettingsFactory()
+        template = SpellEffectTemplate.objects.create(
+            spell=spell,
+            effect_type=SpellEffectType.UTILITY,
+            target_type=SpellTargetType.SELF,
+            duration_type=EffectDurationType.INSTANTANEOUS,
+            # All optional fields left blank
+        )
+        assert template.damage_type == ""
+        assert template.base_dice == ""
+        assert template.dice_per_level == ""
+        assert template.buff_description == ""
+        assert template.area_shape == ""
+        assert template.condition is None
+
+
+@pytest.mark.django_db
+class TestActiveSpellEffectConcentration:
+    """Tests for concentration-related functionality."""
+
+    def test_concentration_effect_creation(self):
+        effect = ActiveSpellEffectFactory(is_concentration=True)
+        assert effect.is_concentration is True
+
+    def test_non_concentration_effect_creation(self):
+        effect = ActiveSpellEffectFactory(is_concentration=False)
+        assert effect.is_concentration is False
+
+    def test_multiple_concentration_effects_same_caster(self):
+        caster = CharacterFactory()
+        effect1 = ActiveSpellEffectFactory(caster=caster, is_concentration=True)
+        effect2 = ActiveSpellEffectFactory(caster=caster, is_concentration=True)
+
+        # Both effects can exist (game logic should handle concentration limits)
+        assert effect1.caster == caster
+        assert effect2.caster == caster
+        assert caster.cast_effects.count() == 2
+
+
+@pytest.mark.django_db
+class TestSummonedCreatureEdgeCases:
+    """Edge case tests for SummonedCreature model."""
+
+    def test_take_damage_exact_hp(self):
+        creature = SummonedCreatureFactory(hp_current=10, hp_max=20)
+        remaining = creature.take_damage(10)
+        assert remaining == 0
+        assert creature.hp_current == 0
+        assert creature.is_alive() is False
+
+    def test_heal_from_zero(self):
+        creature = SummonedCreatureFactory(hp_current=0, hp_max=20)
+        new_hp = creature.heal(5)
+        assert new_hp == 5
+        assert creature.hp_current == 5
+        assert creature.is_alive() is True
+
+    def test_heal_exact_to_max(self):
+        creature = SummonedCreatureFactory(hp_current=15, hp_max=20)
+        new_hp = creature.heal(5)
+        assert new_hp == 20
+        assert creature.hp_current == 20
+
+    def test_take_zero_damage(self):
+        creature = SummonedCreatureFactory(hp_current=15, hp_max=20)
+        remaining = creature.take_damage(0)
+        assert remaining == 15
+        assert creature.hp_current == 15
+
+    def test_heal_zero(self):
+        creature = SummonedCreatureFactory(hp_current=10, hp_max=20)
+        new_hp = creature.heal(0)
+        assert new_hp == 10
+        assert creature.hp_current == 10
