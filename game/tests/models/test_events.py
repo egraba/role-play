@@ -290,10 +290,12 @@ class TestSpellCastModel:
     @pytest.fixture
     def spell_cast(self):
         game = GameFactory()
+        author = ActorFactory()
         caster = CharacterFactory(name="Gandalf")
         spell = SpellSettingsFactory(name="Fireball")
         event = SpellCast.objects.create(
             game=game,
+            author=author,
             caster=caster,
             spell=spell,
             slot_level=3,
@@ -325,10 +327,12 @@ class TestSpellDamageDealtModel:
     @pytest.fixture
     def spell_damage(self):
         game = GameFactory()
+        author = ActorFactory()
         spell = SpellSettingsFactory(name="Fireball")
         target = CharacterFactory(name="Goblin")
         return SpellDamageDealt.objects.create(
             game=game,
+            author=author,
             spell=spell,
             target=target,
             damage=28,
@@ -349,10 +353,12 @@ class TestSpellHealingReceivedModel:
     @pytest.fixture
     def spell_healing(self):
         game = GameFactory()
+        author = ActorFactory()
         spell = SpellSettingsFactory(name="Cure Wounds")
         target = CharacterFactory(name="Fighter")
         return SpellHealingReceived.objects.create(
             game=game,
+            author=author,
             spell=spell,
             target=target,
             healing=12,
@@ -371,11 +377,13 @@ class TestSpellConditionAppliedModel:
     @pytest.fixture
     def spell_condition(self):
         game = GameFactory()
+        author = ActorFactory()
         spell = SpellSettingsFactory(name="Hold Person")
         target = CharacterFactory(name="Bandit")
         condition = ConditionFactory(name="paralyzed")
         return SpellConditionApplied.objects.create(
             game=game,
+            author=author,
             spell=spell,
             target=target,
             condition=condition,
@@ -395,10 +403,12 @@ class TestSpellSavingThrowModel:
     @pytest.fixture
     def spell_save_success(self):
         game = GameFactory()
+        author = ActorFactory()
         spell = SpellSettingsFactory(name="Fireball")
         target = CharacterFactory(name="Rogue")
         return SpellSavingThrow.objects.create(
             game=game,
+            author=author,
             spell=spell,
             target=target,
             save_type="DEX",
@@ -410,10 +420,12 @@ class TestSpellSavingThrowModel:
     @pytest.fixture
     def spell_save_failure(self):
         game = GameFactory()
+        author = ActorFactory()
         spell = SpellSettingsFactory(name="Hold Person")
         target = CharacterFactory(name="Warrior")
         return SpellSavingThrow.objects.create(
             game=game,
+            author=author,
             spell=spell,
             target=target,
             save_type="WIS",
