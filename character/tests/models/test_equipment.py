@@ -5,6 +5,8 @@ from faker import Faker
 from character.constants.abilities import AbilityName
 from character.constants.equipment import (
     ArmorName,
+    ArmorType,
+    Disadvantage,
     ToolName,
     WeaponMastery,
     WeaponName,
@@ -189,6 +191,167 @@ class TestArmorModel:
 
     def test_creation(self):
         assert isinstance(self.armor, ArmorSettings)
+
+    def test_str(self):
+        assert str(self.armor) == self.armor.name
+
+
+@pytest.mark.django_db
+class TestArmorSettingsFixture:
+    """Tests for the SRD armor database fixture."""
+
+    def test_total_armor_count(self):
+        """SRD has 13 armor types (12 armors + 1 shield)."""
+        assert ArmorSettings.objects.count() == 13
+
+    def test_light_armor_count(self):
+        """3 light armors in SRD."""
+        count = ArmorSettings.objects.filter(armor_type=ArmorType.LIGHT_ARMOR).count()
+        assert count == 3
+
+    def test_medium_armor_count(self):
+        """5 medium armors in SRD."""
+        count = ArmorSettings.objects.filter(armor_type=ArmorType.MEDIUM_ARMOR).count()
+        assert count == 5
+
+    def test_heavy_armor_count(self):
+        """4 heavy armors in SRD."""
+        count = ArmorSettings.objects.filter(armor_type=ArmorType.HEAVY_ARMOR).count()
+        assert count == 4
+
+    def test_shield_count(self):
+        """1 shield in SRD."""
+        count = ArmorSettings.objects.filter(armor_type=ArmorType.SHIELD).count()
+        assert count == 1
+
+    # Light Armor Tests - AC = base + full DEX modifier
+    @pytest.mark.parametrize(
+        "armor_name,expected_ac,expected_cost,expected_weight",
+        [
+            (ArmorName.PADDED, "11 + Dex modifier", 5, 8),
+            (ArmorName.LEATHER, "11 + Dex modifier", 10, 10),
+            (ArmorName.STUDDED_LEATHER, "12 + Dex modifier", 45, 13),
+        ],
+    )
+    def test_light_armor_stats(
+        self, armor_name, expected_ac, expected_cost, expected_weight
+    ):
+        """Light armor: AC = base + full DEX modifier."""
+        armor = ArmorSettings.objects.get(name=armor_name)
+        assert armor.armor_type == ArmorType.LIGHT_ARMOR
+        assert armor.ac == expected_ac
+        assert armor.cost == expected_cost
+        assert armor.weight == expected_weight
+
+    # Medium Armor Tests - AC = base + DEX modifier (max 2)
+    @pytest.mark.parametrize(
+        "armor_name,expected_ac,expected_cost,expected_weight",
+        [
+            (ArmorName.HIDE, "12 + Dex modifier (max 2)", 10, 12),
+            (ArmorName.CHAIN_SHIRT, "13 + Dex modifier (max 2)", 50, 20),
+            (ArmorName.SCALE_MAIL, "14 + Dex modifier (max 2)", 50, 45),
+            (ArmorName.BREASTPLATE, "14 + Dex modifier (max 2)", 400, 20),
+            (ArmorName.HALF_PLATE, "15 + Dex modifier (max 2)", 750, 40),
+        ],
+    )
+    def test_medium_armor_stats(
+        self, armor_name, expected_ac, expected_cost, expected_weight
+    ):
+        """Medium armor: AC = base + DEX modifier (max 2)."""
+        armor = ArmorSettings.objects.get(name=armor_name)
+        assert armor.armor_type == ArmorType.MEDIUM_ARMOR
+        assert armor.ac == expected_ac
+        assert armor.cost == expected_cost
+        assert armor.weight == expected_weight
+
+    # Heavy Armor Tests - AC = base (no DEX modifier)
+    @pytest.mark.parametrize(
+        "armor_name,expected_ac,expected_cost,expected_weight,expected_strength",
+        [
+            (ArmorName.RING_MAIL, "14", 30, 40, None),
+            (ArmorName.CHAIN_MAIL, "16", 75, 55, "Str 13"),
+            (ArmorName.SPLINT, "17", 200, 60, "Str 15"),
+            (ArmorName.PLATE, "18", 1500, 65, "Str 15"),
+        ],
+    )
+    def test_heavy_armor_stats(
+        self, armor_name, expected_ac, expected_cost, expected_weight, expected_strength
+    ):
+        """Heavy armor: AC = base (no DEX modifier), may have STR requirement."""
+        armor = ArmorSettings.objects.get(name=armor_name)
+        assert armor.armor_type == ArmorType.HEAVY_ARMOR
+        assert armor.ac == expected_ac
+        assert armor.cost == expected_cost
+        assert armor.weight == expected_weight
+        assert armor.strength == expected_strength
+
+    def test_shield_stats(self):
+        """Shield: +2 AC bonus."""
+        shield = ArmorSettings.objects.get(name=ArmorName.SHIELD)
+        assert shield.armor_type == ArmorType.SHIELD
+        assert shield.ac == "+2"
+        assert shield.cost == 10
+        assert shield.weight == 6
+
+    # Stealth Disadvantage Tests
+    @pytest.mark.parametrize(
+        "armor_name",
+        [
+            ArmorName.PADDED,
+            ArmorName.SCALE_MAIL,
+            ArmorName.HALF_PLATE,
+            ArmorName.RING_MAIL,
+            ArmorName.CHAIN_MAIL,
+            ArmorName.SPLINT,
+            ArmorName.PLATE,
+        ],
+    )
+    def test_armor_with_stealth_disadvantage(self, armor_name):
+        """Certain armors impose disadvantage on Stealth checks."""
+        armor = ArmorSettings.objects.get(name=armor_name)
+        assert armor.stealth == Disadvantage.DISADVANTAGE
+
+    @pytest.mark.parametrize(
+        "armor_name",
+        [
+            ArmorName.LEATHER,
+            ArmorName.STUDDED_LEATHER,
+            ArmorName.HIDE,
+            ArmorName.CHAIN_SHIRT,
+            ArmorName.BREASTPLATE,
+            ArmorName.SHIELD,
+        ],
+    )
+    def test_armor_without_stealth_disadvantage(self, armor_name):
+        """Certain armors do not impose disadvantage on Stealth checks."""
+        armor = ArmorSettings.objects.get(name=armor_name)
+        assert armor.stealth is None
+
+    # Strength Requirement Tests
+    @pytest.mark.parametrize(
+        "armor_name,expected_strength",
+        [
+            (ArmorName.CHAIN_MAIL, "Str 13"),
+            (ArmorName.SPLINT, "Str 15"),
+            (ArmorName.PLATE, "Str 15"),
+        ],
+    )
+    def test_armor_with_strength_requirement(self, armor_name, expected_strength):
+        """Heavy armors may require minimum strength."""
+        armor = ArmorSettings.objects.get(name=armor_name)
+        assert armor.strength == expected_strength
+
+    def test_light_armor_no_strength_requirement(self):
+        """Light armors have no strength requirement."""
+        light_armors = ArmorSettings.objects.filter(armor_type=ArmorType.LIGHT_ARMOR)
+        for armor in light_armors:
+            assert armor.strength is None or armor.strength == ""
+
+    def test_medium_armor_no_strength_requirement(self):
+        """Medium armors have no strength requirement."""
+        medium_armors = ArmorSettings.objects.filter(armor_type=ArmorType.MEDIUM_ARMOR)
+        for armor in medium_armors:
+            assert armor.strength is None or armor.strength == ""
 
 
 @pytest.mark.django_db

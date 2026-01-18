@@ -58,26 +58,31 @@ class Inventory(models.Model):
 
     def _set_disadvantage(self, armor) -> None:
         """
-        Set disadvantage on dexterity rolls depending on the selected armor.
+        Set disadvantage on rolls depending on the selected armor.
+
+        Per D&D 5e rules:
+        - If lacking armor proficiency: disadvantage on all ability checks,
+          saving throws, attack rolls, and spell casting.
+        - If armor has stealth disadvantage: disadvantage on Dexterity (Stealth) checks.
         """
-        if not ArmorProficiency.objects.get(
-            character=self.character, armor=armor
+        if not ArmorProficiency.objects.filter(
+            character=self.character, armor=armor.settings
         ).exists():
-            for ability_name in AbilityName.choices:
+            for ability_name, _ in AbilityName.choices:
                 AbilityCheckDisadvantage.objects.create(
-                    character=self.character, ability_type__name=ability_name
+                    character=self.character, ability_type_id=ability_name
                 )
             SavingThrowDisadvantage.objects.create(character=self.character)
             AttackRollDisadvantage.objects.create(
-                character=self.character, ability_type__name=AbilityName.STRENGTH
+                character=self.character, ability_type_id=AbilityName.STRENGTH
             )
             AttackRollDisadvantage.objects.create(
-                character=self.character, ability_type__name=AbilityName.DEXTERITY
+                character=self.character, ability_type_id=AbilityName.DEXTERITY
             )
             SpellCastDisadvantage.objects.create(character=self.character)
         if armor.settings.stealth == Disadvantage.DISADVANTAGE:
             AbilityCheckDisadvantage.objects.create(
-                character=self.character, ability_type__name=AbilityName.DEXTERITY
+                character=self.character, ability_type_id=AbilityName.DEXTERITY
             )
 
     def _add_armor(self, equipment_name: TextChoices) -> None:
@@ -86,6 +91,7 @@ class Inventory(models.Model):
         )
         self._compute_ac(armor)
         self._reduce_speed(armor)
+        self._set_disadvantage(armor)
 
     def _add_weapon(self, equipment_name: TextChoices) -> None:
         Weapon.objects.create(
