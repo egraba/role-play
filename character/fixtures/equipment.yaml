@@ -1,4 +1,5 @@
 # Weapons
+# Simple Melee Weapons
 - model: character.weaponsettings
   fields:
     name: Club
@@ -7,6 +8,7 @@
     damage: 1d4 bludgeoning
     weight: 2
     properties: Light
+    mastery: slow
 - model: character.weaponsettings
   fields:
     name: Dagger
@@ -15,6 +17,7 @@
     damage: 1d4 piercing
     weight: 1
     properties: Finesse, light, thrown (range 20/60)
+    mastery: nick
 - model: character.weaponsettings
   fields:
     name: Greatclub
@@ -23,6 +26,7 @@
     damage: 1d8 bludgeoning
     weight: 10
     properties: Two-handed
+    mastery: push
 - model: character.weaponsettings
   fields:
     name: Handaxe
@@ -31,6 +35,7 @@
     damage: 1d6 slashing
     weight: 2
     properties: Light, thrown (range 20/60)
+    mastery: vex
 - model: character.weaponsettings
   fields:
     name: Javelin
@@ -39,6 +44,7 @@
     damage: 1d6 piercing
     weight: 2
     properties: Thrown (range 30/120)
+    mastery: slow
 - model: character.weaponsettings
   fields:
     name: Light hammer
@@ -47,6 +53,7 @@
     damage: 1d4 bludgeoning
     weight: 2
     properties: Light, thrown (range 20/60)
+    mastery: nick
 - model: character.weaponsettings
   fields:
     name: Mace
@@ -54,14 +61,16 @@
     cost: 5
     damage: 1d6 bludgeoning
     weight: 4
+    mastery: sap
 - model: character.weaponsettings
   fields:
     name: Quarterstaff
     weapon_type: SM
-    cost: 2
+    cost: 0
     damage: 1d6 bludgeoning
     weight: 4
     properties: Versatile (1d8)
+    mastery: topple
 - model: character.weaponsettings
   fields:
     name: Sickle
@@ -70,6 +79,7 @@
     damage: 1d4 slashing
     weight: 2
     properties: Light
+    mastery: nick
 - model: character.weaponsettings
   fields:
     name: Spear
@@ -78,6 +88,9 @@
     damage: 1d6 piercing
     weight: 3
     properties: Thrown (range 20/60), versatile (1d8)
+    mastery: sap
+
+# Simple Ranged Weapons
 - model: character.weaponsettings
   fields:
     name: Crossbow, light
@@ -86,6 +99,7 @@
     damage: 1d8 piercing
     weight: 5
     properties: Ammunition (range 80/320), loading, two-handed
+    mastery: slow
 - model: character.weaponsettings
   fields:
     name: Dart
@@ -94,6 +108,7 @@
     damage: 1d4 piercing
     weight: 0
     properties: Finesse, thrown (range 20/60)
+    mastery: vex
 - model: character.weaponsettings
   fields:
     name: Shortbow
@@ -102,6 +117,7 @@
     damage: 1d6 piercing
     weight: 2
     properties: Ammunition (range 80/320), two-handed
+    mastery: vex
 - model: character.weaponsettings
   fields:
     name: Sling
@@ -110,6 +126,9 @@
     damage: 1d4 bludgeoning
     weight: 0
     properties: Ammunition (range 30/120)
+    mastery: slow
+
+# Martial Melee Weapons
 - model: character.weaponsettings
   fields:
     name: Battleaxe
@@ -118,6 +137,7 @@
     damage: 1d8 slashing
     weight: 4
     properties: Versatile (1d10)
+    mastery: topple
 - model: character.weaponsettings
   fields:
     name: Flail
@@ -125,6 +145,7 @@
     cost: 10
     damage: 1d8 bludgeoning
     weight: 2
+    mastery: sap
 - model: character.weaponsettings
   fields:
     name: Glaive
@@ -133,14 +154,16 @@
     damage: 1d10 slashing
     weight: 6
     properties: Heavy, reach, two-handed
+    mastery: graze
 - model: character.weaponsettings
   fields:
     name: Greataxe
     weapon_type: MM
     cost: 30
     damage: 1d12 slashing
-    weight: 6
+    weight: 7
     properties: Heavy, two-handed
+    mastery: cleave
 - model: character.weaponsettings
   fields:
     name: Greatsword
@@ -149,6 +172,7 @@
     damage: 2d6 slashing
     weight: 6
     properties: Heavy, two-handed
+    mastery: graze
 - model: character.weaponsettings
   fields:
     name: Halberd
@@ -157,14 +181,16 @@
     damage: 1d10 slashing
     weight: 6
     properties: Heavy, reach, two-handed
+    mastery: cleave
 - model: character.weaponsettings
   fields:
     name: Lance
     weapon_type: MM
     cost: 10
-    damage: 1d12 piercing
+    damage: 1d10 piercing
     weight: 6
     properties: Reach, special
+    mastery: topple
 - model: character.weaponsettings
   fields:
     name: Longsword
@@ -173,6 +199,7 @@
     damage: 1d8 slashing
     weight: 3
     properties: Versatile (1d10)
+    mastery: sap
 - model: character.weaponsettings
   fields:
     name: Maul
@@ -181,6 +208,7 @@
     damage: 2d6 bludgeoning
     weight: 10
     properties: Heavy, two-handed
+    mastery: topple
 - model: character.weaponsettings
   fields:
     name: Morningstar
@@ -188,6 +216,7 @@
     cost: 15
     damage: 1d8 piercing
     weight: 4
+    mastery: sap
 - model: character.weaponsettings
   fields:
     name: Pike
@@ -196,6 +225,7 @@
     damage: 1d10 piercing
     weight: 18
     properties: Heavy, reach, two-handed
+    mastery: push
 - model: character.weaponsettings
   fields:
     name: Rapier
@@ -204,6 +234,7 @@
     damage: 1d8 piercing
     weight: 2
     properties: Finesse
+    mastery: vex
 - model: character.weaponsettings
   fields:
     name: Scimitar
@@ -212,6 +243,7 @@
     damage: 1d6 slashing
     weight: 3
     properties: Finesse, light
+    mastery: nick
 - model: character.weaponsettings
   fields:
     name: Shortsword
@@ -220,14 +252,16 @@
     damage: 1d6 piercing
     weight: 2
     properties: Finesse, light
+    mastery: vex
 - model: character.weaponsettings
   fields:
     name: Trident
     weapon_type: MM
     cost: 5
-    damage: 1d6 piercing
+    damage: 1d8 piercing
     weight: 4
-    properties: Thrown (range 20/60), versatile (1d8)
+    properties: Thrown (range 20/60), versatile (1d10)
+    mastery: topple
 - model: character.weaponsettings
   fields:
     name: War pick
@@ -235,6 +269,7 @@
     cost: 5
     damage: 1d8 piercing
     weight: 2
+    mastery: sap
 - model: character.weaponsettings
   fields:
     name: Warhammer
@@ -243,6 +278,7 @@
     damage: 1d8 bludgeoning
     weight: 2
     properties: Versatile (1d10)
+    mastery: push
 - model: character.weaponsettings
   fields:
     name: Whip
@@ -251,6 +287,9 @@
     damage: 1d4 slashing
     weight: 3
     properties: Finesse, reach
+    mastery: slow
+
+# Martial Ranged Weapons
 - model: character.weaponsettings
   fields:
     name: Blowgun
@@ -259,6 +298,7 @@
     damage: 1 piercing
     weight: 1
     properties: Ammunition (range 25/100), loading
+    mastery: vex
 - model: character.weaponsettings
   fields:
     name: Crossbow, hand
@@ -267,6 +307,7 @@
     damage: 1d6 piercing
     weight: 3
     properties: Ammunition (range 30/120), light, loading
+    mastery: vex
 - model: character.weaponsettings
   fields:
     name: Crossbow, heavy
@@ -275,6 +316,7 @@
     damage: 1d10 piercing
     weight: 18
     properties: Ammunition (range 100/400), heavy, loading, two-handed
+    mastery: push
 - model: character.weaponsettings
   fields:
     name: Longbow
@@ -283,6 +325,7 @@
     damage: 1d8 piercing
     weight: 2
     properties: Ammunition (range 150/600), heavy, two-handed
+    mastery: slow
 - model: character.weaponsettings
   fields:
     name: Net

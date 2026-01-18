@@ -5,6 +5,14 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Added
+* Complete SRD 5.2.1 weapon database with mastery properties:
+  - All 37 SRD weapons now have mastery property assigned
+  - Simple Melee (10): Club, Dagger, Greatclub, Handaxe, Javelin, Light hammer, Mace, Quarterstaff, Sickle, Spear
+  - Simple Ranged (4): Light crossbow, Dart, Shortbow, Sling
+  - Martial Melee (18): Battleaxe, Flail, Glaive, Greataxe, Greatsword, Halberd, Lance, Longsword, Maul, Morningstar, Pike, Rapier, Scimitar, Shortsword, Trident, War pick, Warhammer, Whip
+  - Martial Ranged (5): Blowgun, Hand crossbow, Heavy crossbow, Longbow, Net
+  - Corrected weapon stats per SRD 5.2.1: Lance damage (1d10), Trident damage (1d8/1d10), Greataxe weight (7 lb), Quarterstaff cost (0 gp)
+  - Comprehensive test coverage for weapon fixture data
 * Spell effect system for D&D 5e magic mechanics:
   - SpellEffectTemplate model linking spells to their mechanical effects (damage, healing, conditions, buffs/debuffs, summons)
   - ActiveSpellEffect model for tracking ongoing spell effects on characters

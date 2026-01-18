@@ -3,7 +3,13 @@ import pytest
 from faker import Faker
 
 from character.constants.abilities import AbilityName
-from character.constants.equipment import ArmorName, ToolName
+from character.constants.equipment import (
+    ArmorName,
+    ToolName,
+    WeaponMastery,
+    WeaponName,
+    WeaponType,
+)
 from character.models.equipment import (
     ArmorSettings,
     GearSettings,
@@ -38,6 +44,138 @@ class TestWeaponModel:
 
     def test_str(self):
         assert str(self.weapon) == self.weapon.name
+
+
+@pytest.mark.django_db
+class TestWeaponSettingsFixture:
+    """Tests for the SRD weapon database fixture."""
+
+    def test_total_weapon_count(self):
+        """SRD 5.2.1 has 37 weapons."""
+        assert WeaponSettings.objects.count() == 37
+
+    def test_simple_melee_count(self):
+        """10 simple melee weapons in SRD."""
+        count = WeaponSettings.objects.filter(
+            weapon_type=WeaponType.SIMPLE_MELEE
+        ).count()
+        assert count == 10
+
+    def test_simple_ranged_count(self):
+        """4 simple ranged weapons in SRD."""
+        count = WeaponSettings.objects.filter(
+            weapon_type=WeaponType.SIMPLE_RANGED
+        ).count()
+        assert count == 4
+
+    def test_martial_melee_count(self):
+        """18 martial melee weapons in SRD."""
+        count = WeaponSettings.objects.filter(
+            weapon_type=WeaponType.MARTIAL_MELEE
+        ).count()
+        assert count == 18
+
+    def test_martial_ranged_count(self):
+        """5 martial ranged weapons in SRD."""
+        count = WeaponSettings.objects.filter(
+            weapon_type=WeaponType.MARTIAL_RANGED
+        ).count()
+        assert count == 5
+
+    def test_all_weapons_have_mastery_except_net(self):
+        """All weapons should have a mastery property except Net."""
+        weapons_without_mastery = WeaponSettings.objects.filter(mastery__isnull=True)
+        assert weapons_without_mastery.count() == 1
+        assert weapons_without_mastery.first().name == WeaponName.NET
+
+    def test_mastery_values_are_valid(self):
+        """All mastery values should be valid WeaponMastery choices."""
+        valid_masteries = [choice[0] for choice in WeaponMastery.choices]
+        weapons_with_mastery = WeaponSettings.objects.exclude(mastery__isnull=True)
+        for weapon in weapons_with_mastery:
+            assert weapon.mastery in valid_masteries, (
+                f"{weapon.name} has invalid mastery: {weapon.mastery}"
+            )
+
+    @pytest.mark.parametrize(
+        "weapon_name,expected_damage,expected_mastery",
+        [
+            # Simple Melee
+            (WeaponName.CLUB, "1d4 bludgeoning", WeaponMastery.SLOW),
+            (WeaponName.DAGGER, "1d4 piercing", WeaponMastery.NICK),
+            (WeaponName.GREATCLUB, "1d8 bludgeoning", WeaponMastery.PUSH),
+            (WeaponName.HANDAXE, "1d6 slashing", WeaponMastery.VEX),
+            (WeaponName.MACE, "1d6 bludgeoning", WeaponMastery.SAP),
+            (WeaponName.QUARTERSTAFF, "1d6 bludgeoning", WeaponMastery.TOPPLE),
+            (WeaponName.SPEAR, "1d6 piercing", WeaponMastery.SAP),
+            # Simple Ranged
+            (WeaponName.CROSSBOW_LIGHT, "1d8 piercing", WeaponMastery.SLOW),
+            (WeaponName.SHORTBOW, "1d6 piercing", WeaponMastery.VEX),
+            # Martial Melee
+            (WeaponName.LONGSWORD, "1d8 slashing", WeaponMastery.SAP),
+            (WeaponName.GREATSWORD, "2d6 slashing", WeaponMastery.GRAZE),
+            (WeaponName.GREATAXE, "1d12 slashing", WeaponMastery.CLEAVE),
+            (WeaponName.RAPIER, "1d8 piercing", WeaponMastery.VEX),
+            (WeaponName.SCIMITAR, "1d6 slashing", WeaponMastery.NICK),
+            (WeaponName.MAUL, "2d6 bludgeoning", WeaponMastery.TOPPLE),
+            (WeaponName.HALBERD, "1d10 slashing", WeaponMastery.CLEAVE),
+            (WeaponName.PIKE, "1d10 piercing", WeaponMastery.PUSH),
+            (WeaponName.WHIP, "1d4 slashing", WeaponMastery.SLOW),
+            # Martial Ranged
+            (WeaponName.LONGBOW, "1d8 piercing", WeaponMastery.SLOW),
+            (WeaponName.CROSSBOW_HEAVY, "1d10 piercing", WeaponMastery.PUSH),
+            (WeaponName.CROSSBOW_HAND, "1d6 piercing", WeaponMastery.VEX),
+        ],
+    )
+    def test_weapon_damage_and_mastery(
+        self, weapon_name, expected_damage, expected_mastery
+    ):
+        """Verify specific weapon damage and mastery values per SRD 5.2.1."""
+        weapon = WeaponSettings.objects.get(name=weapon_name)
+        assert weapon.damage == expected_damage
+        assert weapon.mastery == expected_mastery
+
+    @pytest.mark.parametrize(
+        "weapon_name,expected_properties",
+        [
+            (WeaponName.DAGGER, "Finesse, light, thrown (range 20/60)"),
+            (WeaponName.LONGSWORD, "Versatile (1d10)"),
+            (WeaponName.GREATSWORD, "Heavy, two-handed"),
+            (WeaponName.RAPIER, "Finesse"),
+            (WeaponName.LONGBOW, "Ammunition (range 150/600), heavy, two-handed"),
+            (WeaponName.GLAIVE, "Heavy, reach, two-handed"),
+            (WeaponName.WHIP, "Finesse, reach"),
+        ],
+    )
+    def test_weapon_properties(self, weapon_name, expected_properties):
+        """Verify weapon properties match SRD 5.2.1."""
+        weapon = WeaponSettings.objects.get(name=weapon_name)
+        assert weapon.properties == expected_properties
+
+    @pytest.mark.parametrize(
+        "weapon_name,expected_cost,expected_weight",
+        [
+            (WeaponName.DAGGER, 2, 1),
+            (WeaponName.LONGSWORD, 15, 3),
+            (WeaponName.GREATSWORD, 50, 6),
+            (WeaponName.GREATAXE, 30, 7),
+            (WeaponName.LONGBOW, 50, 2),
+            (WeaponName.CROSSBOW_HAND, 75, 3),
+            (WeaponName.PIKE, 5, 18),
+        ],
+    )
+    def test_weapon_cost_and_weight(self, weapon_name, expected_cost, expected_weight):
+        """Verify weapon cost (in gp) and weight (in lb) match SRD 5.2.1."""
+        weapon = WeaponSettings.objects.get(name=weapon_name)
+        assert weapon.cost == expected_cost
+        assert weapon.weight == expected_weight
+
+    def test_net_has_no_damage(self):
+        """Net is a special weapon with no damage."""
+        net = WeaponSettings.objects.get(name=WeaponName.NET)
+        assert net.damage is None
+        assert net.mastery is None
+        assert "Special" in net.properties
 
 
 @pytest.mark.django_db
