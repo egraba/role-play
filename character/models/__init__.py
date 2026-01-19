@@ -53,8 +53,15 @@ from .magic_items import (
     MagicItemSettings,
 )
 from .monsters import (
+    LairActionTemplate,
+    LegendaryActionTemplate,
     Monster,
+    MonsterActionTemplate,
+    MonsterMultiattack,
+    MonsterReaction,
     MonsterSettings,
+    MonsterTrait,
+    MultiattackAction,
 )
 
 __all__ = [
@@ -108,6 +115,13 @@ __all__ = [
     "MagicItem",
     "MagicItemSettings",
     # Monsters
+    "LairActionTemplate",
+    "LegendaryActionTemplate",
     "Monster",
+    "MonsterActionTemplate",
+    "MonsterMultiattack",
+    "MonsterReaction",
     "MonsterSettings",
+    "MonsterTrait",
+    "MultiattackAction",
 ]
