@@ -57,6 +57,17 @@ from character.constants.magic_items import (
     MagicItemType,
     Rarity,
 )
+from character.models.monsters import (
+    Monster,
+    MonsterSettings,
+)
+from character.constants.monsters import (
+    Alignment,
+    ChallengeRating,
+    CreatureSize,
+    CreatureType,
+    MonsterName,
+)
 from character.constants.spells import (
     CasterType,
     CastingTime,
@@ -441,3 +452,36 @@ class AttunementFactory(factory.django.DjangoModelFactory):
 
     character = factory.SubFactory(CharacterFactory)
     magic_item = factory.SubFactory(MagicItemFactory)
+
+
+class MonsterSettingsFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = MonsterSettings
+        django_get_or_create = ("name",)
+
+    name = factory.Faker("random_element", elements=MonsterName)
+    size = CreatureSize.MEDIUM
+    creature_type = CreatureType.HUMANOID
+    alignment = Alignment.TRUE_NEUTRAL
+    ac = 10
+    hit_dice = "1d8"
+    hp_average = 4
+    speed = factory.LazyFunction(lambda: {"walk": 30})
+    strength = 10
+    dexterity = 10
+    constitution = 10
+    intelligence = 10
+    wisdom = 10
+    charisma = 10
+    challenge_rating = ChallengeRating.CR_0
+    proficiency_bonus = 2
+    senses = factory.LazyFunction(lambda: {"passive_perception": 10})
+
+
+class MonsterFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Monster
+
+    settings = factory.SubFactory(MonsterSettingsFactory)
+    hp_current = factory.LazyAttribute(lambda o: o.settings.hp_average)
+    hp_max = factory.LazyAttribute(lambda o: o.settings.hp_average)
