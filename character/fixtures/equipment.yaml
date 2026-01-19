@@ -435,7 +435,7 @@
     name: Shield
     armor_type: SH
     cost: 10
-    ac: +2
+    ac: "+2"
     weight: 6
 
 # Packs

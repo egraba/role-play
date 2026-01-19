@@ -5,6 +5,12 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Added
+* Comprehensive armor fixture tests validating D&D 5e AC calculation rules:
+  - Light armor (3): AC = base + full DEX modifier (Padded, Leather, Studded leather)
+  - Medium armor (5): AC = base + DEX modifier (max 2) (Hide, Chain shirt, Scale mail, Breastplate, Half plate)
+  - Heavy armor (4): AC = base with no DEX (Ring mail, Chain mail, Splint, Plate)
+  - Shield: +2 AC bonus
+  - Stealth disadvantage and strength requirement validation
 * Complete SRD 5.2.1 weapon database with mastery properties:
   - All 37 SRD weapons now have mastery property assigned
   - Simple Melee (10): Club, Dagger, Greatclub, Handaxe, Javelin, Light hammer, Mace, Quarterstaff, Sickle, Spear
@@ -92,6 +98,10 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * django-htmx middleware for HTMX request detection (`request.htmx`)
 
 ### Fixed
+* Armor disadvantage system now correctly applies penalties:
+  - Fixed `_set_disadvantage()` to use `.filter().exists()` instead of `.get().exists()` (was throwing DoesNotExist)
+  - Fixed ability type references to use `ability_type_id` since name is the primary key
+  - Now calls `_set_disadvantage()` when adding armor (was missing)
 * Use authenticated user instead of client-provided username in message storage and event enrichers (security fix)
 * Fixed typo in CombatAction.DISENGAGE value ("disangage" → "disengage")
 * Renovate configuration now supports uv lock files and PEP 735 dependency groups
