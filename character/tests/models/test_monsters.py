@@ -1220,3 +1220,300 @@ class TestActionConstants:
         assert AreaShape.CONE
         assert AreaShape.LINE
         assert AreaShape.CYLINDER
+
+
+@pytest.mark.django_db
+class TestMonsterActionTemplateEdgeCases:
+    """Edge case tests for MonsterActionTemplate."""
+
+    def test_negative_attack_bonus(self):
+        """Action can have negative attack bonus."""
+        settings = MonsterSettings.objects.get(name=MonsterName.COMMONER)
+        action = MonsterActionTemplate.objects.create(
+            monster=settings,
+            name="Club",
+            action_type=ActionType.MELEE_WEAPON,
+            attack_bonus=-1,
+            reach=5,
+            targets="one target",
+        )
+        desc = action.get_attack_description()
+        assert "-1 to hit" in desc
+
+    def test_get_attack_description_non_attack(self):
+        """get_attack_description returns empty for non-attacks."""
+        settings = MonsterSettings.objects.get(name=MonsterName.WOLF)
+        action = MonsterActionTemplate.objects.create(
+            monster=settings,
+            name="Howl",
+            action_type=ActionType.SPECIAL,
+        )
+        assert action.get_attack_description() == ""
+
+    def test_get_damage_description_no_damage(self):
+        """get_damage_description returns empty when no damage dice."""
+        settings = MonsterSettings.objects.get(name=MonsterName.WOLF)
+        action = MonsterActionTemplate.objects.create(
+            monster=settings,
+            name="Howl",
+            action_type=ActionType.SPECIAL,
+        )
+        assert action.get_damage_description() == ""
+
+    def test_ranged_attack_single_range(self):
+        """Ranged attack with only normal range (no long range)."""
+        settings = MonsterSettings.objects.get(name=MonsterName.MAGE)
+        action = MonsterActionTemplate.objects.create(
+            monster=settings,
+            name="Fire Bolt",
+            action_type=ActionType.RANGED_SPELL,
+            attack_bonus=6,
+            range_normal=120,
+            targets="one target",
+        )
+        desc = action.get_attack_description()
+        assert "range 120 ft." in desc
+        assert "/" not in desc
+
+    def test_action_with_effects_json(self):
+        """Action can store additional effects as JSON."""
+        settings = MonsterSettings.objects.get(name=MonsterName.WOLF)
+        action = MonsterActionTemplate.objects.create(
+            monster=settings,
+            name="Bite",
+            action_type=ActionType.MELEE_WEAPON,
+            effects=[
+                {
+                    "type": "knockdown",
+                    "description": "Target must succeed on DC 11 STR save or be knocked prone",
+                }
+            ],
+        )
+        assert len(action.effects) == 1
+        assert action.effects[0]["type"] == "knockdown"
+
+    def test_requires_save_with_dc_but_no_type(self):
+        """Action with save_dc but NONE save_type should not require save."""
+        settings = MonsterSettings.objects.get(name=MonsterName.WOLF)
+        action = MonsterActionTemplate.objects.create(
+            monster=settings,
+            name="Test",
+            action_type=ActionType.SPECIAL,
+            save_dc=15,
+            save_type=SaveType.NONE,
+        )
+        assert action.requires_save is False
+
+    def test_action_ordering(self):
+        """Actions should be ordered by monster, sort_order, name."""
+        settings = MonsterSettings.objects.get(name=MonsterName.OGRE)
+        action_z = MonsterActionTemplate.objects.create(
+            monster=settings,
+            name="Zzz Attack",
+            action_type=ActionType.MELEE_WEAPON,
+            sort_order=1,
+        )
+        action_a = MonsterActionTemplate.objects.create(
+            monster=settings,
+            name="Aaa Attack",
+            action_type=ActionType.MELEE_WEAPON,
+            sort_order=0,
+        )
+        actions = list(MonsterActionTemplate.objects.filter(monster=settings))
+        assert actions[0] == action_a
+        assert actions[1] == action_z
+
+
+@pytest.mark.django_db
+class TestLegendaryActionTemplateEdgeCases:
+    """Edge case tests for LegendaryActionTemplate."""
+
+    def test_cost_3_action(self):
+        """Legendary action can cost 3 actions."""
+        settings = MonsterSettings.objects.get(name=MonsterName.LICH)
+        legendary = LegendaryActionTemplate.objects.create(
+            monster=settings,
+            name="Disrupt Life",
+            description="Each non-undead creature within 20 feet must make a DC 18 CON save.",
+            cost=3,
+        )
+        assert legendary.cost == 3
+        assert "Costs 3 Actions" in str(legendary)
+
+    def test_legendary_action_ordering(self):
+        """Legendary actions ordered by sort_order then cost."""
+        settings = MonsterSettings.objects.get(name=MonsterName.ADULT_RED_DRAGON)
+        leg_3 = LegendaryActionTemplate.objects.create(
+            monster=settings,
+            name="Wing Attack",
+            description="Wing attack",
+            cost=2,
+            sort_order=2,
+        )
+        leg_1 = LegendaryActionTemplate.objects.create(
+            monster=settings,
+            name="Detect",
+            description="Detect",
+            cost=1,
+            sort_order=0,
+        )
+        leg_2 = LegendaryActionTemplate.objects.create(
+            monster=settings,
+            name="Tail Attack",
+            description="Tail attack",
+            cost=1,
+            sort_order=1,
+        )
+        legendaries = list(LegendaryActionTemplate.objects.filter(monster=settings))
+        assert legendaries[0] == leg_1
+        assert legendaries[1] == leg_2
+        assert legendaries[2] == leg_3
+
+
+@pytest.mark.django_db
+class TestMonsterTraitEdgeCases:
+    """Edge case tests for MonsterTrait."""
+
+    def test_trait_unlimited_uses(self):
+        """Trait without uses_per_day has unlimited uses."""
+        settings = MonsterSettings.objects.get(name=MonsterName.WOLF)
+        trait = MonsterTrait.objects.create(
+            monster=settings,
+            name="Pack Tactics",
+            description="Test description",
+        )
+        assert trait.uses_per_day is None
+
+    def test_trait_ordering(self):
+        """Traits ordered by sort_order then name."""
+        settings = MonsterSettings.objects.get(name=MonsterName.WOLF)
+        trait_b = MonsterTrait.objects.create(
+            monster=settings,
+            name="B Trait",
+            description="Test",
+            sort_order=1,
+        )
+        trait_a = MonsterTrait.objects.create(
+            monster=settings,
+            name="A Trait",
+            description="Test",
+            sort_order=0,
+        )
+        traits = list(MonsterTrait.objects.filter(monster=settings))
+        assert traits[0] == trait_a
+        assert traits[1] == trait_b
+
+
+@pytest.mark.django_db
+class TestLairActionTemplateEdgeCases:
+    """Edge case tests for LairActionTemplate."""
+
+    def test_lair_action_with_effects(self):
+        """Lair action can have additional effects."""
+        settings = MonsterSettings.objects.get(name=MonsterName.LICH)
+        lair = LairActionTemplate.objects.create(
+            monster=settings,
+            description="Shadows coalesce around one creature.",
+            effects=[
+                {"type": "restrained", "duration": "until initiative 20 next round"}
+            ],
+        )
+        assert len(lair.effects) == 1
+
+    def test_lair_action_ordering(self):
+        """Lair actions ordered by sort_order."""
+        settings = MonsterSettings.objects.get(name=MonsterName.LICH)
+        lair_2 = LairActionTemplate.objects.create(
+            monster=settings,
+            description="Lair action 2",
+            sort_order=1,
+        )
+        lair_1 = LairActionTemplate.objects.create(
+            monster=settings,
+            description="Lair action 1",
+            sort_order=0,
+        )
+        lairs = list(LairActionTemplate.objects.filter(monster=settings))
+        assert lairs[0] == lair_1
+        assert lairs[1] == lair_2
+
+
+@pytest.mark.django_db
+class TestMultiattackEdgeCases:
+    """Edge case tests for Multiattack models."""
+
+    def test_multiattack_with_grouped_options(self):
+        """Multiattack can have grouped 'or' options."""
+        settings = MonsterSettings.objects.get(name=MonsterName.ADULT_RED_DRAGON)
+        bite = MonsterActionTemplate.objects.create(
+            monster=settings, name="Bite", action_type=ActionType.MELEE_WEAPON
+        )
+        claw = MonsterActionTemplate.objects.create(
+            monster=settings, name="Claw", action_type=ActionType.MELEE_WEAPON
+        )
+        tail = MonsterActionTemplate.objects.create(
+            monster=settings, name="Tail", action_type=ActionType.MELEE_WEAPON
+        )
+
+        multiattack = MonsterMultiattack.objects.create(
+            monster=settings,
+            description="The dragon makes one bite and two claw attacks, or one tail attack.",
+        )
+
+        # Group 0: bite + 2 claws
+        MultiattackAction.objects.create(
+            multiattack=multiattack, action=bite, count=1, group=0
+        )
+        MultiattackAction.objects.create(
+            multiattack=multiattack, action=claw, count=2, group=0
+        )
+
+        # Group 1: tail (alternative)
+        MultiattackAction.objects.create(
+            multiattack=multiattack, action=tail, count=1, is_optional=True, group=1
+        )
+
+        group_0_actions = multiattack.actions.filter(group=0)
+        group_1_actions = multiattack.actions.filter(group=1)
+
+        assert group_0_actions.count() == 2
+        assert group_1_actions.count() == 1
+        assert group_1_actions.first().is_optional is True
+
+    def test_multiattack_one_to_one(self):
+        """Each monster can only have one multiattack."""
+        settings = MonsterSettings.objects.get(name=MonsterName.OWLBEAR)
+        MonsterMultiattack.objects.create(
+            monster=settings,
+            description="First multiattack",
+        )
+        # OneToOne field should prevent creating another
+        with pytest.raises(Exception):
+            MonsterMultiattack.objects.create(
+                monster=settings,
+                description="Second multiattack",
+            )
+
+
+@pytest.mark.django_db
+class TestMonsterReactionEdgeCases:
+    """Edge case tests for MonsterReaction."""
+
+    def test_reaction_ordering(self):
+        """Reactions ordered by name."""
+        settings = MonsterSettings.objects.get(name=MonsterName.KNIGHT)
+        reaction_b = MonsterReaction.objects.create(
+            monster=settings,
+            name="B Reaction",
+            description="Test",
+            trigger="Test trigger",
+        )
+        reaction_a = MonsterReaction.objects.create(
+            monster=settings,
+            name="A Reaction",
+            description="Test",
+            trigger="Test trigger",
+        )
+        reactions = list(MonsterReaction.objects.filter(monster=settings))
+        assert reactions[0] == reaction_a
+        assert reactions[1] == reaction_b
