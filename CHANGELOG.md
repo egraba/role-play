@@ -5,6 +5,20 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Added
+* Magic item framework for D&D 5e SRD items:
+  - MagicItemSettings model for item definitions (rarity, type, attunement, effects)
+  - MagicItem model for concrete item instances with charge tracking
+  - Attunement model enforcing max 3 attunement slots per character
+  - Rarity system: Common, Uncommon, Rare, Very Rare, Legendary
+  - Item types: Armor, Potion, Ring, Rod, Scroll, Staff, Wand, Weapon, Wondrous
+  - SRD 5.2.1 magic item fixtures (33 items):
+    - +1/+2/+3 Weapons and Armor with attack/damage/AC bonuses
+    - Potions of Healing (4 tiers with scaling healing)
+    - Wands: Magic Missiles (7 charges), War Mage +1/+2/+3 (spell attack bonus)
+    - Staffs: Healing, Power, Magi, Woodlands (with charges)
+    - Rings: Protection, Spell Storing
+    - Wondrous Items: Amulet of Health, Bag of Holding, Boots of Elvenkind/Speed, Bracers of Defense, Cloaks of Elvenkind/Protection, Gauntlets of Ogre Power, Headband of Intellect, Pearl of Power
+  - Comprehensive test coverage (57 tests)
 * Comprehensive armor fixture tests validating D&D 5e AC calculation rules:
   - Light armor (3): AC = base + full DEX modifier (Padded, Leather, Studded leather)
   - Medium armor (5): AC = base + DEX modifier (max 2) (Hide, Chain shirt, Scale mail, Breastplate, Half plate)
