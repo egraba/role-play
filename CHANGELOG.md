@@ -5,6 +5,38 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Added
+* Monster stat block system for D&D 5e SRD creatures:
+  - MonsterSettings model with complete stat blocks:
+    - Basic info: name, size, creature type, subtype, alignment
+    - Combat stats: AC, HP (average and hit dice), speed (walk/fly/swim/climb/burrow)
+    - Ability scores with computed modifiers (STR, DEX, CON, INT, WIS, CHA)
+    - Saving throw proficiencies and skill bonuses
+    - Damage resistances, immunities, and vulnerabilities
+    - Condition immunities
+    - Senses: darkvision, blindsight, tremorsense, truesight, passive perception
+    - Languages and telepathy range
+    - Challenge rating with XP lookup table
+    - Proficiency bonus
+    - Special traits, actions, reactions
+    - Legendary actions and lair actions for legendary creatures
+    - Spellcasting details for spellcasting monsters
+  - Monster model for concrete combat instances with HP tracking
+  - Monster constants: CreatureSize, CreatureType, Alignment, ChallengeRating, DamageType, SenseType, MovementType
+  - SRD 5.2.1 monster fixtures (17 creatures across all CRs):
+    - CR 0: Commoner
+    - CR 1/8: Bandit
+    - CR 1/4: Skeleton, Zombie, Wolf
+    - CR 1/2: Orc
+    - CR 1: Ghoul, Dire Wolf
+    - CR 2: Ogre
+    - CR 3: Owlbear, Minotaur
+    - CR 5: Air Elemental
+    - CR 6: Mage
+    - CR 8: Assassin
+    - CR 16: Iron Golem
+    - CR 17: Adult Red Dragon (legendary with 3 legendary actions)
+    - CR 21: Lich (legendary with lair actions and spellcasting)
+  - Comprehensive test coverage (56 tests)
 * Magic item framework for D&D 5e SRD items:
   - MagicItemSettings model for item definitions (rarity, type, attunement, effects)
   - MagicItem model for concrete item instances with charge tracking

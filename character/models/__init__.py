@@ -52,6 +52,10 @@ from .magic_items import (
     MagicItem,
     MagicItemSettings,
 )
+from .monsters import (
+    Monster,
+    MonsterSettings,
+)
 
 __all__ = [
     "Ability",
@@ -103,4 +107,7 @@ __all__ = [
     "Attunement",
     "MagicItem",
     "MagicItemSettings",
+    # Monsters
+    "Monster",
+    "MonsterSettings",
 ]
