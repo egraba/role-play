@@ -47,6 +47,16 @@ from character.models.spell_effects import (
     SpellEffectTemplate,
     SummonedCreature,
 )
+from character.models.magic_items import (
+    Attunement,
+    MagicItem,
+    MagicItemSettings,
+)
+from character.constants.magic_items import (
+    MagicItemName,
+    MagicItemType,
+    Rarity,
+)
 from character.constants.spells import (
     CasterType,
     CastingTime,
@@ -403,3 +413,31 @@ class SummonedCreatureFactory(factory.django.DjangoModelFactory):
     ac = 13
     rounds_remaining = 10
     is_concentration = True
+
+
+class MagicItemSettingsFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = MagicItemSettings
+        django_get_or_create = ("name",)
+
+    name = factory.Faker("random_element", elements=MagicItemName)
+    item_type = MagicItemType.WONDROUS
+    rarity = Rarity.UNCOMMON
+    requires_attunement = False
+    description = factory.Faker("text", max_nb_chars=200)
+
+
+class MagicItemFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = MagicItem
+
+    settings = factory.SubFactory(MagicItemSettingsFactory)
+    inventory = factory.SubFactory(InventoryFactory)
+
+
+class AttunementFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Attunement
+
+    character = factory.SubFactory(CharacterFactory)
+    magic_item = factory.SubFactory(MagicItemFactory)

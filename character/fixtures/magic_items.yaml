@@ -1,0 +1,551 @@
+# Magic Items from D&D 5e SRD 5.2.1
+# Organized by item type
+
+# +1/+2/+3 Weapons
+- model: character.magicitemsettings
+  fields:
+    name: Weapon +1
+    item_type: weapon
+    rarity: uncommon
+    requires_attunement: false
+    description: >
+      You have a +1 bonus to attack and damage rolls made with this magic weapon.
+    bonus: "+1"
+    effects:
+      attack_bonus: 1
+      damage_bonus: 1
+    weight: 0
+    cost: 500
+
+- model: character.magicitemsettings
+  fields:
+    name: Weapon +2
+    item_type: weapon
+    rarity: rare
+    requires_attunement: false
+    description: >
+      You have a +2 bonus to attack and damage rolls made with this magic weapon.
+    bonus: "+2"
+    effects:
+      attack_bonus: 2
+      damage_bonus: 2
+    weight: 0
+    cost: 4000
+
+- model: character.magicitemsettings
+  fields:
+    name: Weapon +3
+    item_type: weapon
+    rarity: very_rare
+    requires_attunement: false
+    description: >
+      You have a +3 bonus to attack and damage rolls made with this magic weapon.
+    bonus: "+3"
+    effects:
+      attack_bonus: 3
+      damage_bonus: 3
+    weight: 0
+    cost: 16000
+
+# +1/+2/+3 Armor
+- model: character.magicitemsettings
+  fields:
+    name: Armor +1
+    item_type: armor
+    rarity: rare
+    requires_attunement: false
+    description: >
+      You have a +1 bonus to AC while wearing this armor.
+    bonus: "+1"
+    effects:
+      ac_bonus: 1
+    weight: 0
+    cost: 1500
+
+- model: character.magicitemsettings
+  fields:
+    name: Armor +2
+    item_type: armor
+    rarity: very_rare
+    requires_attunement: false
+    description: >
+      You have a +2 bonus to AC while wearing this armor.
+    bonus: "+2"
+    effects:
+      ac_bonus: 2
+    weight: 0
+    cost: 6000
+
+- model: character.magicitemsettings
+  fields:
+    name: Armor +3
+    item_type: armor
+    rarity: legendary
+    requires_attunement: false
+    description: >
+      You have a +3 bonus to AC while wearing this armor.
+    bonus: "+3"
+    effects:
+      ac_bonus: 3
+    weight: 0
+    cost: 24000
+
+# +1/+2/+3 Shields
+- model: character.magicitemsettings
+  fields:
+    name: Shield +1
+    item_type: armor
+    rarity: uncommon
+    requires_attunement: false
+    description: >
+      While holding this shield, you have a +1 bonus to AC in addition to the shield's normal bonus to AC.
+    bonus: "+1"
+    effects:
+      ac_bonus: 1
+    weight: 6
+    cost: 500
+
+- model: character.magicitemsettings
+  fields:
+    name: Shield +2
+    item_type: armor
+    rarity: rare
+    requires_attunement: false
+    description: >
+      While holding this shield, you have a +2 bonus to AC in addition to the shield's normal bonus to AC.
+    bonus: "+2"
+    effects:
+      ac_bonus: 2
+    weight: 6
+    cost: 4000
+
+- model: character.magicitemsettings
+  fields:
+    name: Shield +3
+    item_type: armor
+    rarity: very_rare
+    requires_attunement: false
+    description: >
+      While holding this shield, you have a +3 bonus to AC in addition to the shield's normal bonus to AC.
+    bonus: "+3"
+    effects:
+      ac_bonus: 3
+    weight: 6
+    cost: 16000
+
+# Potions of Healing
+- model: character.magicitemsettings
+  fields:
+    name: Potion of Healing
+    item_type: potion
+    rarity: common
+    requires_attunement: false
+    description: >
+      You regain 2d4 + 2 hit points when you drink this potion. The potion's red liquid
+      glimmers when agitated.
+    effects:
+      healing_dice: 2d4
+      healing_bonus: 2
+    is_consumable: true
+    weight: 0
+    cost: 50
+
+- model: character.magicitemsettings
+  fields:
+    name: Potion of Greater Healing
+    item_type: potion
+    rarity: uncommon
+    requires_attunement: false
+    description: >
+      You regain 4d4 + 4 hit points when you drink this potion. The potion's red liquid
+      glimmers when agitated.
+    effects:
+      healing_dice: 4d4
+      healing_bonus: 4
+    is_consumable: true
+    weight: 0
+    cost: 150
+
+- model: character.magicitemsettings
+  fields:
+    name: Potion of Superior Healing
+    item_type: potion
+    rarity: rare
+    requires_attunement: false
+    description: >
+      You regain 8d4 + 8 hit points when you drink this potion. The potion's red liquid
+      glimmers when agitated.
+    effects:
+      healing_dice: 8d4
+      healing_bonus: 8
+    is_consumable: true
+    weight: 0
+    cost: 500
+
+- model: character.magicitemsettings
+  fields:
+    name: Potion of Supreme Healing
+    item_type: potion
+    rarity: very_rare
+    requires_attunement: false
+    description: >
+      You regain 10d4 + 20 hit points when you drink this potion. The potion's red liquid
+      glimmers when agitated.
+    effects:
+      healing_dice: 10d4
+      healing_bonus: 20
+    is_consumable: true
+    weight: 0
+    cost: 1350
+
+# Wands
+- model: character.magicitemsettings
+  fields:
+    name: Wand of Magic Missiles
+    item_type: wand
+    rarity: uncommon
+    requires_attunement: false
+    description: >
+      This wand has 7 charges. While holding it, you can use an action to expend 1 or more
+      of its charges to cast the magic missile spell from it. For 1 charge, you cast the
+      1st-level version of the spell. You can increase the spell slot level by one for
+      each additional charge you expend. The wand regains 1d6 + 1 expended charges daily
+      at dawn. If you expend the wand's last charge, roll a d20. On a 1, the wand
+      crumbles into ashes and is destroyed.
+    effects:
+      charges: 7
+      recharge: 1d6+1
+      spell: Magic Missile
+    weight: 1
+    cost: 500
+
+- model: character.magicitemsettings
+  fields:
+    name: Wand of the War Mage +1
+    item_type: wand
+    rarity: uncommon
+    requires_attunement: true
+    attunement_requirement: by a spellcaster
+    description: >
+      While holding this wand, you gain a +1 bonus to spell attack rolls. In addition, you
+      ignore half cover when making a spell attack.
+    bonus: "+1"
+    effects:
+      spell_attack_bonus: 1
+      ignore_half_cover: true
+    weight: 1
+    cost: 500
+
+- model: character.magicitemsettings
+  fields:
+    name: Wand of the War Mage +2
+    item_type: wand
+    rarity: rare
+    requires_attunement: true
+    attunement_requirement: by a spellcaster
+    description: >
+      While holding this wand, you gain a +2 bonus to spell attack rolls. In addition, you
+      ignore half cover when making a spell attack.
+    bonus: "+2"
+    effects:
+      spell_attack_bonus: 2
+      ignore_half_cover: true
+    weight: 1
+    cost: 4000
+
+- model: character.magicitemsettings
+  fields:
+    name: Wand of the War Mage +3
+    item_type: wand
+    rarity: very_rare
+    requires_attunement: true
+    attunement_requirement: by a spellcaster
+    description: >
+      While holding this wand, you gain a +3 bonus to spell attack rolls. In addition, you
+      ignore half cover when making a spell attack.
+    bonus: "+3"
+    effects:
+      spell_attack_bonus: 3
+      ignore_half_cover: true
+    weight: 1
+    cost: 16000
+
+# Staffs
+- model: character.magicitemsettings
+  fields:
+    name: Staff of Healing
+    item_type: staff
+    rarity: rare
+    requires_attunement: true
+    attunement_requirement: by a bard, cleric, or druid
+    description: >
+      This staff has 10 charges. While holding it, you can use an action to expend 1 or
+      more of its charges to cast one of the following spells from it, using your spell
+      save DC and spellcasting ability modifier: cure wounds (1 charge per spell level,
+      up to 4th), lesser restoration (2 charges), or mass cure wounds (5 charges).
+      The staff regains 1d6 + 4 expended charges daily at dawn.
+    effects:
+      charges: 10
+      recharge: 1d6+4
+      spells:
+        - name: Cure Wounds
+          charges_per_level: 1
+          max_level: 4
+        - name: Lesser Restoration
+          charges: 2
+        - name: Mass Cure Wounds
+          charges: 5
+    weight: 4
+    cost: 13000
+
+- model: character.magicitemsettings
+  fields:
+    name: Staff of Power
+    item_type: staff
+    rarity: very_rare
+    requires_attunement: true
+    attunement_requirement: by a sorcerer, warlock, or wizard
+    description: >
+      This staff can be wielded as a magic quarterstaff that grants a +2 bonus to attack
+      and damage rolls made with it. While holding it, you gain a +2 bonus to AC, saving
+      throws, and spell attack rolls. The staff has 20 charges for various spells.
+    bonus: "+2"
+    effects:
+      attack_bonus: 2
+      damage_bonus: 2
+      ac_bonus: 2
+      save_bonus: 2
+      spell_attack_bonus: 2
+      charges: 20
+      recharge: 2d8+4
+    weight: 4
+    cost: 95500
+
+- model: character.magicitemsettings
+  fields:
+    name: Staff of the Magi
+    item_type: staff
+    rarity: legendary
+    requires_attunement: true
+    attunement_requirement: by a sorcerer, warlock, or wizard
+    description: >
+      This staff can be wielded as a magic quarterstaff that grants a +2 bonus to attack
+      and damage rolls made with it. While you hold it, you gain a +2 bonus to spell
+      attack rolls. The staff has 50 charges and can cast numerous powerful spells.
+    bonus: "+2"
+    effects:
+      attack_bonus: 2
+      damage_bonus: 2
+      spell_attack_bonus: 2
+      charges: 50
+      recharge: 4d6+2
+      spell_absorption: true
+    weight: 4
+    cost: 350000
+
+- model: character.magicitemsettings
+  fields:
+    name: Staff of the Woodlands
+    item_type: staff
+    rarity: rare
+    requires_attunement: true
+    attunement_requirement: by a druid
+    description: >
+      This staff can be wielded as a magic quarterstaff that grants a +2 bonus to attack
+      and damage rolls made with it. While holding it, you have a +2 bonus to spell
+      attack rolls. The staff has 10 charges for druid spells.
+    bonus: "+2"
+    effects:
+      attack_bonus: 2
+      damage_bonus: 2
+      spell_attack_bonus: 2
+      charges: 10
+      recharge: 1d6+4
+    weight: 4
+    cost: 44000
+
+# Rings
+- model: character.magicitemsettings
+  fields:
+    name: Ring of Protection
+    item_type: ring
+    rarity: rare
+    requires_attunement: true
+    description: >
+      You gain a +1 bonus to AC and saving throws while wearing this ring.
+    effects:
+      ac_bonus: 1
+      save_bonus: 1
+    weight: 0
+    cost: 3500
+
+- model: character.magicitemsettings
+  fields:
+    name: Ring of Spell Storing
+    item_type: ring
+    rarity: rare
+    requires_attunement: true
+    description: >
+      This ring stores spells cast into it, holding them until the attuned wearer uses
+      them. The ring can store up to 5 levels worth of spells at a time.
+    effects:
+      spell_levels: 5
+    weight: 0
+    cost: 24000
+
+# Wondrous Items
+- model: character.magicitemsettings
+  fields:
+    name: Amulet of Health
+    item_type: wondrous
+    rarity: rare
+    requires_attunement: true
+    description: >
+      Your Constitution score is 19 while you wear this amulet. It has no effect on you
+      if your Constitution is already 19 or higher.
+    effects:
+      set_constitution: 19
+    weight: 1
+    cost: 8000
+
+- model: character.magicitemsettings
+  fields:
+    name: Bag of Holding
+    item_type: wondrous
+    rarity: uncommon
+    requires_attunement: false
+    description: >
+      This bag has an interior space considerably larger than its outside dimensions,
+      roughly 2 feet in diameter at the mouth and 4 feet deep. The bag can hold up to
+      500 pounds, not exceeding a volume of 64 cubic feet.
+    effects:
+      capacity_pounds: 500
+      capacity_cubic_feet: 64
+    weight: 15
+    cost: 500
+
+- model: character.magicitemsettings
+  fields:
+    name: Boots of Elvenkind
+    item_type: wondrous
+    rarity: uncommon
+    requires_attunement: false
+    description: >
+      While you wear these boots, your steps make no sound, regardless of the surface
+      you are moving across. You also have advantage on Dexterity (Stealth) checks that
+      rely on moving silently.
+    effects:
+      stealth_advantage: true
+      silent_movement: true
+    weight: 1
+    cost: 2500
+
+- model: character.magicitemsettings
+  fields:
+    name: Boots of Speed
+    item_type: wondrous
+    rarity: rare
+    requires_attunement: true
+    description: >
+      While you wear these boots, you can use a bonus action and click the boots' heels
+      together. If you do, the boots double your walking speed, and any creature that
+      makes an opportunity attack against you has disadvantage on the attack roll. The
+      effect ends after 10 minutes.
+    effects:
+      speed_multiplier: 2
+      opportunity_attack_disadvantage: true
+      duration_minutes: 10
+    weight: 1
+    cost: 4000
+
+- model: character.magicitemsettings
+  fields:
+    name: Bracers of Defense
+    item_type: wondrous
+    rarity: rare
+    requires_attunement: true
+    description: >
+      While wearing these bracers, you gain a +2 bonus to AC if you are wearing no armor
+      and using no shield.
+    effects:
+      ac_bonus: 2
+      requires_no_armor: true
+      requires_no_shield: true
+    weight: 1
+    cost: 6000
+
+- model: character.magicitemsettings
+  fields:
+    name: Cloak of Elvenkind
+    item_type: wondrous
+    rarity: uncommon
+    requires_attunement: true
+    description: >
+      While you wear this cloak with its hood up, Wisdom (Perception) checks made to see
+      you have disadvantage, and you have advantage on Dexterity (Stealth) checks made
+      to hide, as the cloak's color shifts to camouflage you.
+    effects:
+      stealth_advantage: true
+      perception_disadvantage_against: true
+    weight: 1
+    cost: 5000
+
+- model: character.magicitemsettings
+  fields:
+    name: Cloak of Protection
+    item_type: wondrous
+    rarity: uncommon
+    requires_attunement: true
+    description: >
+      You gain a +1 bonus to AC and saving throws while you wear this cloak.
+    effects:
+      ac_bonus: 1
+      save_bonus: 1
+    weight: 1
+    cost: 3500
+
+- model: character.magicitemsettings
+  fields:
+    name: Gauntlets of Ogre Power
+    item_type: wondrous
+    rarity: uncommon
+    requires_attunement: true
+    description: >
+      Your Strength score is 19 while you wear these gauntlets. They have no effect on
+      you if your Strength is already 19 or higher.
+    effects:
+      set_strength: 19
+    weight: 1
+    cost: 8000
+
+- model: character.magicitemsettings
+  fields:
+    name: Headband of Intellect
+    item_type: wondrous
+    rarity: uncommon
+    requires_attunement: true
+    description: >
+      Your Intelligence score is 19 while you wear this headband. It has no effect on
+      you if your Intelligence is already 19 or higher.
+    effects:
+      set_intelligence: 19
+    weight: 0
+    cost: 8000
+
+- model: character.magicitemsettings
+  fields:
+    name: Pearl of Power
+    item_type: wondrous
+    rarity: uncommon
+    requires_attunement: true
+    attunement_requirement: by a spellcaster
+    description: >
+      While this pearl is on your person, you can use an action to speak its command
+      word and regain one expended spell slot. If the expended slot was of 4th level
+      or higher, the new slot is 3rd level. Once you use the pearl, it can't be used
+      again until the next dawn.
+    effects:
+      restore_spell_slot_level: 3
+      uses_per_day: 1
+    weight: 0
+    cost: 6000

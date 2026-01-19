@@ -47,6 +47,11 @@ from .spell_effects import (
     SpellEffectTemplate,
     SummonedCreature,
 )
+from .magic_items import (
+    Attunement,
+    MagicItem,
+    MagicItemSettings,
+)
 
 __all__ = [
     "Ability",
@@ -94,4 +99,8 @@ __all__ = [
     "ActiveSpellEffect",
     "SpellEffectTemplate",
     "SummonedCreature",
+    # Magic Items
+    "Attunement",
+    "MagicItem",
+    "MagicItemSettings",
 ]
