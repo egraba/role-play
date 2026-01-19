@@ -1119,25 +1119,25 @@ class TestMonsterReaction:
 
     def test_creation(self):
         """Can create a monster reaction."""
-        settings = MonsterSettings.objects.get(name=MonsterName.KNIGHT)
+        settings = MonsterSettings.objects.get(name=MonsterName.ASSASSIN)
         reaction = MonsterReaction.objects.create(
             monster=settings,
             name="Parry",
-            description="The knight adds 2 to its AC against one melee attack.",
+            description="The assassin adds 2 to its AC against one melee attack.",
             trigger="When hit by a melee attack it can see",
         )
         assert reaction.pk is not None
 
     def test_str(self):
         """String representation includes monster and reaction name."""
-        settings = MonsterSettings.objects.get(name=MonsterName.KNIGHT)
+        settings = MonsterSettings.objects.get(name=MonsterName.ASSASSIN)
         reaction = MonsterReaction.objects.create(
             monster=settings,
             name="Parry",
             description="Test description",
             trigger="When hit by a melee attack",
         )
-        assert "Knight" in str(reaction)
+        assert "Assassin" in str(reaction)
         assert "Parry" in str(reaction)
 
     def test_reaction_with_linked_action(self):
@@ -1501,7 +1501,7 @@ class TestMonsterReactionEdgeCases:
 
     def test_reaction_ordering(self):
         """Reactions ordered by name."""
-        settings = MonsterSettings.objects.get(name=MonsterName.KNIGHT)
+        settings = MonsterSettings.objects.get(name=MonsterName.ASSASSIN)
         reaction_b = MonsterReaction.objects.create(
             monster=settings,
             name="B Reaction",
