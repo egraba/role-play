@@ -5,6 +5,27 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Added
+* Monster action template system for structured D&D 5e combat abilities:
+  - MonsterActionTemplate model for structured actions with:
+    - Attack properties: bonus, reach, range (normal/long), targets
+    - Damage properties: dice, type, extra damage with type
+    - Saving throw properties: DC, type, effect on save
+    - Area of effect: shape (sphere, cube, cone, line, cylinder) and size
+    - Recharge mechanics (5-6, 6, 4-6, short/long rest, daily uses)
+  - MonsterMultiattack and MultiattackAction for complex attack patterns:
+    - Links multiple actions with counts
+    - Supports optional/grouped "or" options
+  - LegendaryActionTemplate for legendary creatures:
+    - Cost-based actions (1-3 actions)
+    - Can link to existing action templates
+  - LairActionTemplate for lair actions:
+    - Saving throw support
+    - Area of effect support
+  - MonsterTrait for special abilities with optional uses/recharge
+  - MonsterReaction for triggered abilities with conditions
+  - New constants: ActionType, RechargeType, SaveType, SaveEffect, AreaShape
+  - Added SLASHING and THUNDER to DamageType enum
+  - Comprehensive test coverage (90+ new tests)
 * Monster stat block system for D&D 5e SRD creatures:
   - MonsterSettings model with complete stat blocks:
     - Basic info: name, size, creature type, subtype, alignment

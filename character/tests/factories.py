@@ -58,14 +58,23 @@ from character.constants.magic_items import (
     Rarity,
 )
 from character.models.monsters import (
+    LairActionTemplate,
+    LegendaryActionTemplate,
     Monster,
+    MonsterActionTemplate,
+    MonsterMultiattack,
+    MonsterReaction,
     MonsterSettings,
+    MonsterTrait,
+    MultiattackAction,
 )
 from character.constants.monsters import (
+    ActionType,
     Alignment,
     ChallengeRating,
     CreatureSize,
     CreatureType,
+    DamageType,
     MonsterName,
 )
 from character.constants.spells import (
@@ -485,3 +494,71 @@ class MonsterFactory(factory.django.DjangoModelFactory):
     settings = factory.SubFactory(MonsterSettingsFactory)
     hp_current = factory.LazyAttribute(lambda o: o.settings.hp_average)
     hp_max = factory.LazyAttribute(lambda o: o.settings.hp_average)
+
+
+class MonsterActionTemplateFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = MonsterActionTemplate
+
+    monster = factory.SubFactory(MonsterSettingsFactory)
+    name = factory.Sequence(lambda n: f"Action {n}")
+    action_type = ActionType.MELEE_WEAPON
+    attack_bonus = 5
+    reach = 5
+    targets = "one target"
+    damage_dice = "1d8+3"
+    damage_type = DamageType.SLASHING
+
+
+class MonsterMultiattackFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = MonsterMultiattack
+
+    monster = factory.SubFactory(MonsterSettingsFactory)
+    description = "The creature makes two attacks."
+
+
+class MultiattackActionFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = MultiattackAction
+
+    multiattack = factory.SubFactory(MonsterMultiattackFactory)
+    action = factory.SubFactory(MonsterActionTemplateFactory)
+    count = 2
+
+
+class LegendaryActionTemplateFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = LegendaryActionTemplate
+
+    monster = factory.SubFactory(MonsterSettingsFactory)
+    name = factory.Sequence(lambda n: f"Legendary Action {n}")
+    description = "The creature performs a legendary action."
+    cost = 1
+
+
+class LairActionTemplateFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = LairActionTemplate
+
+    monster = factory.SubFactory(MonsterSettingsFactory)
+    description = "A lair effect occurs."
+
+
+class MonsterTraitFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = MonsterTrait
+
+    monster = factory.SubFactory(MonsterSettingsFactory)
+    name = factory.Sequence(lambda n: f"Trait {n}")
+    description = "This creature has a special trait."
+
+
+class MonsterReactionFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = MonsterReaction
+
+    monster = factory.SubFactory(MonsterSettingsFactory)
+    name = factory.Sequence(lambda n: f"Reaction {n}")
+    description = "The creature reacts."
+    trigger = "When attacked"

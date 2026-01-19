@@ -13,12 +13,18 @@ from django.db import models
 
 from ..ability_modifiers import compute_ability_modifier
 from ..constants.monsters import (
+    ActionType,
     Alignment,
+    AreaShape,
     ChallengeRating,
     CR_XP_TABLE,
     CreatureSize,
     CreatureType,
+    DamageType,
     MonsterName,
+    RechargeType,
+    SaveEffect,
+    SaveType,
 )
 
 
@@ -456,3 +462,456 @@ class Monster(models.Model):
             hp_max=hp,
             legendary_actions_remaining=settings.legendary_action_count,
         )
+
+
+class MonsterActionTemplate(models.Model):
+    """
+    Structured action template for monster abilities.
+
+    This model provides structured data for monster actions including:
+    - Melee/ranged weapon attacks with hit bonuses and damage
+    - Melee/ranged spell attacks
+    - Special abilities with saving throws
+    - Area of effect abilities
+    - Recharge mechanics
+    """
+
+    monster = models.ForeignKey(
+        MonsterSettings,
+        on_delete=models.CASCADE,
+        related_name="action_templates",
+    )
+
+    # Basic action information
+    name = models.CharField(max_length=100)
+    action_type = models.CharField(
+        max_length=20,
+        choices=ActionType.choices,
+        default=ActionType.SPECIAL,
+    )
+    description = models.TextField(
+        max_length=1000,
+        blank=True,
+        help_text="Full description text for the action",
+    )
+
+    # Attack properties (for weapon/spell attacks)
+    attack_bonus = models.SmallIntegerField(
+        null=True,
+        blank=True,
+        help_text="Bonus to attack roll (e.g., +5)",
+    )
+    reach = models.PositiveSmallIntegerField(
+        null=True,
+        blank=True,
+        help_text="Melee reach in feet",
+    )
+    range_normal = models.PositiveSmallIntegerField(
+        null=True,
+        blank=True,
+        help_text="Normal range in feet",
+    )
+    range_long = models.PositiveSmallIntegerField(
+        null=True,
+        blank=True,
+        help_text="Long range in feet (with disadvantage)",
+    )
+    targets = models.CharField(
+        max_length=100,
+        default="one target",
+        help_text="Target description (e.g., 'one target', 'one creature')",
+    )
+
+    # Damage properties
+    damage_dice = models.CharField(
+        max_length=30,
+        blank=True,
+        help_text="Damage dice (e.g., '2d6+4')",
+    )
+    damage_type = models.CharField(
+        max_length=20,
+        choices=DamageType.choices,
+        blank=True,
+    )
+    extra_damage_dice = models.CharField(
+        max_length=30,
+        blank=True,
+        help_text="Additional damage dice (e.g., '1d6' poison)",
+    )
+    extra_damage_type = models.CharField(
+        max_length=20,
+        choices=DamageType.choices,
+        blank=True,
+    )
+    versatile_damage = models.CharField(
+        max_length=30,
+        blank=True,
+        help_text="Damage dice when used two-handed",
+    )
+
+    # Saving throw properties
+    save_dc = models.PositiveSmallIntegerField(
+        null=True,
+        blank=True,
+        help_text="Saving throw DC",
+    )
+    save_type = models.CharField(
+        max_length=5,
+        choices=SaveType.choices,
+        default=SaveType.NONE,
+    )
+    save_effect = models.CharField(
+        max_length=20,
+        choices=SaveEffect.choices,
+        default=SaveEffect.NONE,
+    )
+
+    # Area of effect properties
+    area_shape = models.CharField(
+        max_length=15,
+        choices=AreaShape.choices,
+        default=AreaShape.NONE,
+    )
+    area_size = models.PositiveSmallIntegerField(
+        null=True,
+        blank=True,
+        help_text="Size of the area in feet",
+    )
+
+    # Recharge mechanics
+    recharge = models.CharField(
+        max_length=15,
+        choices=RechargeType.choices,
+        default=RechargeType.NONE,
+    )
+
+    # Additional effects (stored as JSON for flexibility)
+    # E.g., conditions applied, movement restrictions, etc.
+    effects = models.JSONField(
+        default=list,
+        blank=True,
+        help_text="Additional effects as list of {type, description}",
+    )
+
+    # Ordering for display
+    sort_order = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        ordering = ["monster", "sort_order", "name"]
+        verbose_name = "monster action template"
+        verbose_name_plural = "monster action templates"
+
+    def __str__(self):
+        return f"{self.monster.name}: {self.name}"
+
+    @property
+    def is_attack(self) -> bool:
+        """Check if this action is an attack."""
+        return self.action_type in [
+            ActionType.MELEE_WEAPON,
+            ActionType.RANGED_WEAPON,
+            ActionType.MELEE_SPELL,
+            ActionType.RANGED_SPELL,
+        ]
+
+    @property
+    def requires_save(self) -> bool:
+        """Check if this action requires a saving throw."""
+        return self.save_type != SaveType.NONE and self.save_dc is not None
+
+    @property
+    def has_area_effect(self) -> bool:
+        """Check if this action has an area of effect."""
+        return self.area_shape != AreaShape.NONE
+
+    def get_attack_description(self) -> str:
+        """Generate formatted attack description."""
+        if not self.is_attack:
+            return ""
+
+        attack_type = ActionType(self.action_type).label
+        parts = [f"{attack_type}:"]
+
+        if self.attack_bonus is not None:
+            bonus_str = (
+                f"+{self.attack_bonus}"
+                if self.attack_bonus >= 0
+                else str(self.attack_bonus)
+            )
+            parts.append(f"{bonus_str} to hit,")
+
+        if self.reach:
+            parts.append(f"reach {self.reach} ft.,")
+        elif self.range_normal:
+            if self.range_long:
+                parts.append(f"range {self.range_normal}/{self.range_long} ft.,")
+            else:
+                parts.append(f"range {self.range_normal} ft.,")
+
+        parts.append(f"{self.targets}.")
+
+        return " ".join(parts)
+
+    def get_damage_description(self) -> str:
+        """Generate formatted damage description."""
+        if not self.damage_dice:
+            return ""
+
+        parts = [f"Hit: {self.damage_dice}"]
+        if self.damage_type:
+            parts.append(f"{DamageType(self.damage_type).label.lower()} damage")
+
+        if self.extra_damage_dice and self.extra_damage_type:
+            parts.append(
+                f"plus {self.extra_damage_dice} "
+                f"{DamageType(self.extra_damage_type).label.lower()} damage"
+            )
+
+        return " ".join(parts) + "."
+
+
+class MonsterMultiattack(models.Model):
+    """
+    Defines multiattack patterns for monsters.
+
+    Specifies which actions can be combined in a multiattack
+    and how many times each can be used.
+    """
+
+    monster = models.OneToOneField(
+        MonsterSettings,
+        on_delete=models.CASCADE,
+        related_name="multiattack",
+    )
+    description = models.TextField(
+        max_length=500,
+        help_text="Text description of the multiattack",
+    )
+
+    class Meta:
+        verbose_name = "monster multiattack"
+        verbose_name_plural = "monster multiattacks"
+
+    def __str__(self):
+        return f"{self.monster.name}: Multiattack"
+
+
+class MultiattackAction(models.Model):
+    """
+    Individual action within a multiattack pattern.
+
+    Links to action templates and specifies count.
+    """
+
+    multiattack = models.ForeignKey(
+        MonsterMultiattack,
+        on_delete=models.CASCADE,
+        related_name="actions",
+    )
+    action = models.ForeignKey(
+        MonsterActionTemplate,
+        on_delete=models.CASCADE,
+        related_name="multiattack_uses",
+    )
+    count = models.PositiveSmallIntegerField(
+        default=1,
+        help_text="Number of times this action is used in multiattack",
+    )
+    is_optional = models.BooleanField(
+        default=False,
+        help_text="Whether this action is optional (e.g., 'or' options)",
+    )
+    group = models.PositiveSmallIntegerField(
+        default=0,
+        help_text="Group number for 'or' options (same group = choose one)",
+    )
+
+    class Meta:
+        ordering = ["multiattack", "group", "-count"]
+        verbose_name = "multiattack action"
+        verbose_name_plural = "multiattack actions"
+
+    def __str__(self):
+        return f"{self.multiattack.monster.name}: {self.count}x {self.action.name}"
+
+
+class LegendaryActionTemplate(models.Model):
+    """
+    Structured legendary action for legendary creatures.
+
+    Legendary actions can be taken at the end of another creature's turn,
+    using a pool of legendary action points that refresh each round.
+    """
+
+    monster = models.ForeignKey(
+        MonsterSettings,
+        on_delete=models.CASCADE,
+        related_name="legendary_action_templates",
+    )
+    name = models.CharField(max_length=100)
+    description = models.TextField(max_length=500)
+    cost = models.PositiveSmallIntegerField(
+        default=1,
+        validators=[MinValueValidator(1), MaxValueValidator(3)],
+        help_text="Legendary action cost (1-3)",
+    )
+
+    # Link to an action template if this legendary action uses one
+    action_template = models.ForeignKey(
+        MonsterActionTemplate,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="legendary_uses",
+        help_text="Link to action template if this uses an existing action",
+    )
+
+    # Ordering for display
+    sort_order = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        ordering = ["monster", "sort_order", "cost", "name"]
+        verbose_name = "legendary action template"
+        verbose_name_plural = "legendary action templates"
+
+    def __str__(self):
+        cost_str = f"(Costs {self.cost} Actions)" if self.cost > 1 else ""
+        return f"{self.monster.name}: {self.name} {cost_str}".strip()
+
+
+class LairActionTemplate(models.Model):
+    """
+    Structured lair action for creatures with lairs.
+
+    Lair actions occur on initiative count 20 (losing ties)
+    when the creature is in its lair.
+    """
+
+    monster = models.ForeignKey(
+        MonsterSettings,
+        on_delete=models.CASCADE,
+        related_name="lair_action_templates",
+    )
+    description = models.TextField(max_length=500)
+
+    # Saving throw if required
+    save_dc = models.PositiveSmallIntegerField(
+        null=True,
+        blank=True,
+    )
+    save_type = models.CharField(
+        max_length=5,
+        choices=SaveType.choices,
+        default=SaveType.NONE,
+    )
+    save_effect = models.CharField(
+        max_length=20,
+        choices=SaveEffect.choices,
+        default=SaveEffect.NONE,
+    )
+
+    # Area effect if applicable
+    area_shape = models.CharField(
+        max_length=15,
+        choices=AreaShape.choices,
+        default=AreaShape.NONE,
+    )
+    area_size = models.PositiveSmallIntegerField(
+        null=True,
+        blank=True,
+    )
+
+    # Effects (stored as JSON)
+    effects = models.JSONField(
+        default=list,
+        blank=True,
+    )
+
+    # Ordering for display
+    sort_order = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        ordering = ["monster", "sort_order"]
+        verbose_name = "lair action template"
+        verbose_name_plural = "lair action templates"
+
+    def __str__(self):
+        return f"{self.monster.name}: Lair Action {self.sort_order + 1}"
+
+
+class MonsterTrait(models.Model):
+    """
+    Structured special trait for monsters.
+
+    Traits are passive abilities that are always active,
+    like Keen Senses, Pack Tactics, or Magic Resistance.
+    """
+
+    monster = models.ForeignKey(
+        MonsterSettings,
+        on_delete=models.CASCADE,
+        related_name="trait_templates",
+    )
+    name = models.CharField(max_length=100)
+    description = models.TextField(max_length=1000)
+
+    # Some traits have limited uses
+    uses_per_day = models.PositiveSmallIntegerField(
+        null=True,
+        blank=True,
+        help_text="Number of uses per day (null = unlimited)",
+    )
+    recharge = models.CharField(
+        max_length=15,
+        choices=RechargeType.choices,
+        default=RechargeType.NONE,
+    )
+
+    # Ordering for display
+    sort_order = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        ordering = ["monster", "sort_order", "name"]
+        verbose_name = "monster trait"
+        verbose_name_plural = "monster traits"
+
+    def __str__(self):
+        return f"{self.monster.name}: {self.name}"
+
+
+class MonsterReaction(models.Model):
+    """
+    Structured reaction for monsters.
+
+    Reactions are triggered by specific conditions and can be
+    taken once per round, outside the monster's turn.
+    """
+
+    monster = models.ForeignKey(
+        MonsterSettings,
+        on_delete=models.CASCADE,
+        related_name="reaction_templates",
+    )
+    name = models.CharField(max_length=100)
+    description = models.TextField(max_length=500)
+    trigger = models.CharField(
+        max_length=200,
+        help_text="What triggers this reaction",
+    )
+
+    # Link to an action template if the reaction uses one
+    action_template = models.ForeignKey(
+        MonsterActionTemplate,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="reaction_uses",
+    )
+
+    class Meta:
+        ordering = ["monster", "name"]
+        verbose_name = "monster reaction"
+        verbose_name_plural = "monster reactions"
+
+    def __str__(self):
+        return f"{self.monster.name}: {self.name}"

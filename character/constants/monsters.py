@@ -162,6 +162,71 @@ class DamageType(TextChoices):
     THUNDER = "thunder", "Thunder"
 
 
+class ActionType(TextChoices):
+    """Types of monster actions per D&D 5e SRD."""
+
+    # Standard actions
+    MELEE_WEAPON = "melee_weapon", "Melee Weapon Attack"
+    RANGED_WEAPON = "ranged_weapon", "Ranged Weapon Attack"
+    MELEE_SPELL = "melee_spell", "Melee Spell Attack"
+    RANGED_SPELL = "ranged_spell", "Ranged Spell Attack"
+    MULTIATTACK = "multiattack", "Multiattack"
+    SPECIAL = "special", "Special Ability"
+
+    # Legendary and Lair
+    LEGENDARY = "legendary", "Legendary Action"
+    LAIR = "lair", "Lair Action"
+
+    # Reactions
+    REACTION = "reaction", "Reaction"
+
+
+class RechargeType(TextChoices):
+    """Recharge conditions for monster abilities."""
+
+    NONE = "none", "No Recharge"
+    RECHARGE_5_6 = "5-6", "Recharge 5-6"
+    RECHARGE_6 = "6", "Recharge 6"
+    RECHARGE_4_6 = "4-6", "Recharge 4-6"
+    SHORT_REST = "short_rest", "Recharges on Short Rest"
+    LONG_REST = "long_rest", "Recharges on Long Rest"
+    DAILY_1 = "daily_1", "1/Day"
+    DAILY_2 = "daily_2", "2/Day"
+    DAILY_3 = "daily_3", "3/Day"
+
+
+class SaveType(TextChoices):
+    """Saving throw types for monster abilities."""
+
+    NONE = "none", "None"
+    STRENGTH = "STR", "Strength"
+    DEXTERITY = "DEX", "Dexterity"
+    CONSTITUTION = "CON", "Constitution"
+    INTELLIGENCE = "INT", "Intelligence"
+    WISDOM = "WIS", "Wisdom"
+    CHARISMA = "CHA", "Charisma"
+
+
+class SaveEffect(TextChoices):
+    """Effect on successful save."""
+
+    NONE = "none", "None"
+    HALF_DAMAGE = "half_damage", "Half Damage"
+    NEGATES = "negates", "Negates Effect"
+    ENDS_EFFECT = "ends_effect", "Ends Effect"
+
+
+class AreaShape(TextChoices):
+    """Area of effect shapes."""
+
+    NONE = "none", "None"
+    SPHERE = "sphere", "Sphere"
+    CUBE = "cube", "Cube"
+    CONE = "cone", "Cone"
+    LINE = "line", "Line"
+    CYLINDER = "cylinder", "Cylinder"
+
+
 class SenseType(TextChoices):
     """Special senses per D&D 5e SRD."""
 
