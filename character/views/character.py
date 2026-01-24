@@ -1,3 +1,4 @@
+import json
 import re
 from enum import StrEnum
 
@@ -277,16 +278,18 @@ class CharacterCreateView(LoginRequiredMixin, SessionWizardView):
         current_step = self.steps.current
 
         if current_step == self.Step.SPECIES_SELECTION:
-            context["species_preview"] = form.get_species_preview_data()
+            context["species_preview"] = json.dumps(form.get_species_preview_data())
 
         elif current_step == self.Step.CLASS_SELECTION:
-            context["class_preview"] = form.get_class_preview_data()
+            context["class_preview"] = json.dumps(form.get_class_preview_data())
 
         elif current_step == self.Step.BACKGROUND_SELECTION:
-            context["background_preview"] = form.get_background_preview_data()
+            context["background_preview"] = json.dumps(
+                form.get_background_preview_data()
+            )
 
         elif current_step == self.Step.SKILLS_SELECTION:
-            context["skill_descriptions"] = form.get_skill_descriptions()
+            context["skill_descriptions"] = json.dumps(form.get_skill_descriptions())
             # Pass class info for display
             class_data = self.storage.get_step_data(self.Step.CLASS_SELECTION)
             if class_data:
