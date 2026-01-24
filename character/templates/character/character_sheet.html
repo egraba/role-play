@@ -465,7 +465,7 @@
         <div class="sheet-actions mt-2">
             <a href="{% url 'index' %}" class="rpg-btn">Return to Menu</a>
             {% if character.player.game %}
-                <a href="{% url 'game' character.player.game.id %}" class="rpg-btn btn-primary">Enter Game</a>
+                <a href="{% url 'game' character.player.game.id %}" class="rpg-btn btn-primary">Enter Game: {{ character.player.game.name }}</a>
             {% endif %}
         </div>
     </div>
