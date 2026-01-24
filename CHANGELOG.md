@@ -5,6 +5,20 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Added
+* Responsive character sheet template with RPGUI frames:
+  - Header panel with character portrait, name, species, class, level, background, and XP
+  - 3-column responsive grid layout (abilities, combat stats, skills)
+  - Ability scores in 6-box grid with calculated modifiers
+  - Combat stats panel with HP bar, AC, Initiative, Speed, and death saves
+  - Full D&D 5e skills list with proficiency indicators and calculated modifiers
+  - CSS-only tabbed interface for Features/Spells/Equipment/Background sections
+  - Responsive breakpoints for desktop (3-col), tablet (2-col), and mobile (1-col)
+  - CharacterDetailView now provides comprehensive context data:
+    - Abilities with abbreviations, scores, and modifiers
+    - All skills with proficiency status and calculated modifiers
+    - Saving throws with proficiency and modifiers
+    - Weapon attacks with calculated attack bonus and damage (handles finesse/ranged)
+    - Species traits, class features, and feats with descriptions
 * Enhanced character creation wizard with full D&D 5e support:
   - **Character Model**: Added `darkvision` field (range in feet, 0 for none)
   - **CharacterFeature Model**: New junction table to track class features gained by characters
