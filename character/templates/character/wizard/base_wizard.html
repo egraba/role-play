@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block head %}
+  {{ wizard.form.media }}
+{% endblock %}
+
+{% block content %}
+  <div class="rpg-container wizard-container">
+    <div class="rpg-panel">
+      <!-- Header -->
+      <div class="wizard-header">
+        <h1>Create Your Character</h1>
+        <p class="wizard-subtitle">Forge your destiny in the realm of adventure</p>
+      </div>
+
+      <!-- Progress Indicator -->
+      <div class="wizard-progress">
+        {% for step_num, step_title in step_titles.items %}
+          <div class="wizard-step {% if step_num == current_step %}active{% elif step_num|add:"0" < current_step|add:"0" %}completed{% endif %}">
+            <div class="wizard-step-icon">
+              {% if step_num|add:"0" < current_step|add:"0" %}
+                &#10003;
+              {% else %}
+                {% if step_num == "0" %}&#128126;{% endif %}
+                {% if step_num == "1" %}&#9876;{% endif %}
+                {% if step_num == "2" %}&#127922;{% endif %}
+                {% if step_num == "3" %}&#128220;{% endif %}
+                {% if step_num == "4" %}&#127919;{% endif %}
+                {% if step_num == "5" %}&#128737;{% endif %}
+                {% if step_num == "6" %}&#10024;{% endif %}
+              {% endif %}
+            </div>
+            <span class="wizard-step-label">{{ step_title }}</span>
+          </div>
+        {% endfor %}
+      </div>
+
+      <form action="" method="post">
+        {% csrf_token %}
+        {{ wizard.management_form }}
+
+        <div class="wizard-content">
+          <div class="wizard-form-section">
+            <h2>{% block step_title %}{{ current_step_title }}{% endblock %}</h2>
+            <p class="step-description">
+              {% block step_description %}
+                Complete this step to continue building your character.
+              {% endblock %}
+            </p>
+            {% if wizard.form.non_field_errors %}
+              <div class="game-message error" style="margin-bottom: 20px;">
+                {{ wizard.form.non_field_errors }}
+              </div>
+            {% endif %}
+            <div class="rpg-form-group">
+              {% block wizard_form %}
+                {{ wizard.form }}
+              {% endblock %}
+            </div>
+          </div>
+
+          <div class="wizard-preview-section">
+            {% block wizard_preview %}
+              <div class="preview-title">Preview</div>
+              <div class="preview-empty">Select an option to see details</div>
+            {% endblock %}
+          </div>
+        </div>
+
+        <div class="wizard-navigation">
+          <div>
+            {% if wizard.steps.prev %}
+              <button name="wizard_goto_step" class="wizard-btn wizard-btn-prev" type="submit" value="{{ wizard.steps.prev }}">
+                Previous
+              </button>
+            {% endif %}
+          </div>
+          <div>
+            {% if wizard.steps.current == "6" %}
+              <button class="wizard-btn wizard-btn-create" type="submit">
+                Create Character
+              </button>
+            {% else %}
+              <button class="wizard-btn wizard-btn-next" type="submit">
+                Continue
+              </button>
+            {% endif %}
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

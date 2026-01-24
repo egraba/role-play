@@ -1,0 +1,96 @@
+{% extends 'character/wizard/base_wizard.html' %}
+
+{% block step_description %}
+  Choose your character's class. Your class defines your combat style, abilities, and role in the party through unique features and proficiencies.
+{% endblock %}
+
+{% block wizard_form %}
+  <div class="rpg-form-group">
+    <label for="id_1-klass">Select Class</label>
+    {{ wizard.form.klass }}
+  </div>
+{% endblock %}
+
+{% block wizard_preview %}
+  <div class="preview-title">Class Features</div>
+  <div id="class-preview" class="preview-empty">
+    Select a class to see its features
+  </div>
+
+  <script>
+    const classData = {{ class_preview|safe }};
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const select = document.getElementById('id_1-klass');
+      const preview = document.getElementById('class-preview');
+
+      function updatePreview() {
+        const value = select.value;
+        if (!value || !classData[value]) {
+          preview.innerHTML = '<div class="preview-empty">Select a class to see its features</div>';
+          return;
+        }
+
+        const data = classData[value];
+        let html = `
+          <div class="preview-stat">
+            <span class="preview-stat-label">Hit Die</span>
+            <span class="preview-stat-value">${data.hit_die}</span>
+          </div>
+          <div class="preview-stat">
+            <span class="preview-stat-label">HP at 1st Level</span>
+            <span class="preview-stat-value">${data.hp_first_level} + CON mod</span>
+          </div>
+          <div class="preview-stat">
+            <span class="preview-stat-label">Primary Ability</span>
+            <span class="preview-stat-value">${data.primary_ability}</span>
+          </div>
+        `;
+
+        if (data.saving_throws && data.saving_throws.length > 0) {
+          html += `
+            <div class="preview-stat">
+              <span class="preview-stat-label">Saving Throws</span>
+              <span class="preview-stat-value">${data.saving_throws.join(', ')}</span>
+            </div>
+          `;
+        }
+
+        if (data.armor_proficiencies && data.armor_proficiencies.length > 0) {
+          html += `
+            <div class="preview-stat">
+              <span class="preview-stat-label">Armor</span>
+              <span class="preview-stat-value">${data.armor_proficiencies.join(', ')}</span>
+            </div>
+          `;
+        }
+
+        if (data.weapon_proficiencies && data.weapon_proficiencies.length > 0) {
+          html += `
+            <div class="preview-stat">
+              <span class="preview-stat-label">Weapons</span>
+              <span class="preview-stat-value">${data.weapon_proficiencies.join(', ')}</span>
+            </div>
+          `;
+        }
+
+        if (data.level_1_features && data.level_1_features.length > 0) {
+          html += '<div class="preview-section-header">Level 1 Features</div>';
+          data.level_1_features.forEach(feature => {
+            html += `
+              <div class="preview-trait">
+                <div class="preview-trait-name">${feature.name}</div>
+                <div class="preview-trait-description">${feature.description.substring(0, 200)}${feature.description.length > 200 ? '...' : ''}</div>
+              </div>
+            `;
+          });
+        }
+
+        preview.innerHTML = html;
+      }
+
+      select.addEventListener('change', updatePreview);
+      updatePreview();
+    });
+  </script>
+{% endblock %}

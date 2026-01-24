@@ -7,20 +7,15 @@ from pytest_django.asserts import assertContains, assertRedirects, assertTemplat
 from character.constants.abilities import AbilityName, AbilityScore
 from character.constants.backgrounds import BACKGROUNDS, Background
 from character.constants.equipment import ArmorName, GearName, ToolName, WeaponName
-from character.constants.character import Gender
 from character.constants.species import SpeciesName
 from character.constants.skills import SkillName
-from character.forms.backgrounds import (
-    _get_gaming_set_tools,
-    _get_holy_symbols,
-)
 from character.forms.equipment_choices_providers import (
     ClericEquipmentChoicesProvider,
     FighterEquipmentChoicesProvider,
     RogueEquipmentChoicesProvider,
     WizardEquipmentChoicesProvider,
 )
-from character.forms.skills import _get_skills
+from character.forms.wizard_forms import _get_skills
 from character.models.character import Character
 from character.constants.classes import ClassName
 from character.models.proficiencies import SavingThrowProficiency, SkillProficiency
@@ -229,6 +224,8 @@ def create_characters(django_db_blocker):
 
 @pytest.mark.django_db
 class TestCharacterCreateView:
+    """Tests for the 7-step character creation wizard."""
+
     path_name = "character-create"
 
     @pytest.fixture(autouse=True)
@@ -244,128 +241,91 @@ class TestCharacterCreateView:
     def test_template_mapping(self, client):
         response = client.get(reverse(self.path_name))
         assert response.status_code == 200
-        assertTemplateUsed(response, "character/character_create.html")
+        assertTemplateUsed(response, "character/wizard/step_species.html")
 
     @pytest.fixture
-    def character_form(self):
+    def species_form(self):
+        """Step 0: Species selection form."""
         fake = Faker()
-        # Create species in database for form to reference
         species = SpeciesFactory(name=fake.enum(enum_cls=SpeciesName))
-        # Only use classes that have equipment/skills choices implemented
+        return {
+            "character_create_view-current_step": CharacterCreateView.Step.SPECIES_SELECTION,
+            f"{CharacterCreateView.Step.SPECIES_SELECTION}-species": species.name,
+        }
+
+    @pytest.fixture
+    def class_form(self):
+        """Step 1: Class selection form."""
+        fake = Faker()
         supported_classes = [
             ClassName.CLERIC,
             ClassName.FIGHTER,
             ClassName.ROGUE,
             ClassName.WIZARD,
         ]
-        current_step = CharacterCreateView.Step.BASE_ATTRIBUTES_SELECTION
         return {
-            "character_create_view-current_step": current_step,
-            f"{current_step}-name": f"{fake.name()}",
-            f"{current_step}-species": species.name,
-            f"{current_step}-klass": fake.random_element(supported_classes),
-            f"{current_step}-background": f"{fake.enum(enum_cls=Background)}",
-            f"{current_step}-strength": AbilityScore.SCORE_10,
-            f"{current_step}-dexterity": AbilityScore.SCORE_12,
-            f"{current_step}-constitution": AbilityScore.SCORE_13,
-            f"{current_step}-intelligence": AbilityScore.SCORE_14,
-            f"{current_step}-wisdom": AbilityScore.SCORE_15,
-            f"{current_step}-charisma": AbilityScore.SCORE_8,
-            f"{current_step}-gender": f"{fake.enum(enum_cls=Gender)}",
+            "character_create_view-current_step": CharacterCreateView.Step.CLASS_SELECTION,
+            f"{CharacterCreateView.Step.CLASS_SELECTION}-klass": fake.random_element(
+                supported_classes
+            ),
         }
 
     @pytest.fixture
-    def dwarf_form(self, character_form):
-        current_step = character_form["character_create_view-current_step"]
-        species = SpeciesFactory(name=SpeciesName.DWARF)
-        character_form[f"{current_step}-species"] = species.name
-        return character_form
+    def abilities_form(self):
+        """Step 2: Ability scores form."""
+        return {
+            "character_create_view-current_step": CharacterCreateView.Step.ABILITY_SCORES,
+            f"{CharacterCreateView.Step.ABILITY_SCORES}-generation_method": "standard",
+            f"{CharacterCreateView.Step.ABILITY_SCORES}-strength": AbilityScore.SCORE_10,
+            f"{CharacterCreateView.Step.ABILITY_SCORES}-dexterity": AbilityScore.SCORE_12,
+            f"{CharacterCreateView.Step.ABILITY_SCORES}-constitution": AbilityScore.SCORE_13,
+            f"{CharacterCreateView.Step.ABILITY_SCORES}-intelligence": AbilityScore.SCORE_14,
+            f"{CharacterCreateView.Step.ABILITY_SCORES}-wisdom": AbilityScore.SCORE_15,
+            f"{CharacterCreateView.Step.ABILITY_SCORES}-charisma": AbilityScore.SCORE_8,
+        }
 
     @pytest.fixture
-    def elf_form(self, character_form):
-        current_step = character_form["character_create_view-current_step"]
-        species = SpeciesFactory(name=SpeciesName.ELF)
-        character_form[f"{current_step}-species"] = species.name
-        return character_form
-
-    @pytest.fixture
-    def halfling_form(self, character_form):
-        current_step = character_form["character_create_view-current_step"]
-        species = SpeciesFactory(name=SpeciesName.HALFLING)
-        character_form[f"{current_step}-species"] = species.name
-        return character_form
-
-    @pytest.fixture
-    def human_form(self, character_form):
-        current_step = character_form["character_create_view-current_step"]
-        species = SpeciesFactory(name=SpeciesName.HUMAN)
-        character_form[f"{current_step}-species"] = species.name
-        return character_form
-
-    @pytest.fixture
-    def skills_form(self, character_form):
+    def background_form(self):
+        """Step 3: Background selection form."""
         fake = Faker()
-        klass_key = f"{CharacterCreateView.Step.BASE_ATTRIBUTES_SELECTION}-klass"
-        current_step = CharacterCreateView.Step.SKILLS_SELECTION
-        skills = fake.random_elements(
-            sorted(_get_skills(character_form[klass_key])), length=4, unique=True
-        )
-        data = {
-            "character_create_view-current_step": current_step,
-            f"{current_step}-first_skill": skills[0],
-            f"{current_step}-second_skill": skills[1],
+        return {
+            "character_create_view-current_step": CharacterCreateView.Step.BACKGROUND_SELECTION,
+            f"{CharacterCreateView.Step.BACKGROUND_SELECTION}-background": fake.enum(
+                enum_cls=Background
+            ),
         }
-        if character_form[klass_key] == ClassName.ROGUE:
+
+    @pytest.fixture
+    def skills_form(self, class_form):
+        """Step 4: Skills selection form."""
+        fake = Faker()
+        klass = class_form[f"{CharacterCreateView.Step.CLASS_SELECTION}-klass"]
+        skills = fake.random_elements(sorted(_get_skills(klass)), length=4, unique=True)
+        data = {
+            "character_create_view-current_step": CharacterCreateView.Step.SKILLS_SELECTION,
+            f"{CharacterCreateView.Step.SKILLS_SELECTION}-first_skill": skills[0],
+            f"{CharacterCreateView.Step.SKILLS_SELECTION}-second_skill": skills[1],
+        }
+        if klass == ClassName.ROGUE:
             data.update(
                 {
-                    f"{current_step}-third_skill": skills[2],
-                    f"{current_step}-fourth_skill": skills[3],
+                    f"{CharacterCreateView.Step.SKILLS_SELECTION}-third_skill": skills[
+                        2
+                    ],
+                    f"{CharacterCreateView.Step.SKILLS_SELECTION}-fourth_skill": skills[
+                        3
+                    ],
                 }
             )
         return data
 
     @pytest.fixture
-    def background_form(self, character_form):
-        def _get_random_element(choices):
-            fake = Faker()
-            choice = fake.random_element(choices)
-            # This is necessary to send valid data to the form.
-            return (choice[0], choice[0])
-
-        background_key = (
-            f"{CharacterCreateView.Step.BASE_ATTRIBUTES_SELECTION}-background"
-        )
-        current_step = CharacterCreateView.Step.BACKGROUND_COMPLETION
-        data = {"character_create_view-current_step": current_step}
-        match character_form[background_key]:
-            case Background.ACOLYTE:
-                data.update(
-                    {
-                        f"{current_step}-equipment": _get_random_element(
-                            _get_holy_symbols()
-                        ),
-                    }
-                )
-            case Background.CRIMINAL:
-                pass  # Thieves' Tools granted automatically
-            case Background.SAGE:
-                pass  # Calligrapher's Supplies granted automatically
-            case Background.SOLDIER:
-                data.update(
-                    {
-                        f"{current_step}-tool_proficiency": _get_random_element(
-                            _get_gaming_set_tools()
-                        )
-                    }
-                )
-        return data
-
-    @pytest.fixture
-    def equipment_form(self, character_form):
+    def equipment_form(self, class_form):
+        """Step 5: Equipment selection form."""
         fake = Faker()
-        klass_key = f"{CharacterCreateView.Step.BASE_ATTRIBUTES_SELECTION}-klass"
-        current_step = CharacterCreateView.Step.EQUIPMENT_SELECTION
-        match character_form[klass_key]:
+        klass = class_form[f"{CharacterCreateView.Step.CLASS_SELECTION}-klass"]
+        step = CharacterCreateView.Step.EQUIPMENT_SELECTION
+        match klass:
             case ClassName.CLERIC:
                 choices_provider = ClericEquipmentChoicesProvider()
                 field_list = ["first_weapon", "second_weapon", "armor", "gear", "pack"]
@@ -378,6 +338,10 @@ class TestCharacterCreateView:
             case ClassName.WIZARD:
                 choices_provider = WizardEquipmentChoicesProvider()
                 field_list = ["first_weapon", "gear", "pack"]
+            case _:
+                choices_provider = ClericEquipmentChoicesProvider()
+                field_list = ["first_weapon", "second_weapon", "armor", "gear", "pack"]
+
         fields = {}
         if first_weapon_choices := choices_provider.get_first_weapon_choices():
             fields["first_weapon"] = fake.random_element(first_weapon_choices)[1]
@@ -391,13 +355,171 @@ class TestCharacterCreateView:
             fields["gear"] = fake.random_element(gear_choices)[1]
         if pack_choices := choices_provider.get_pack_choices():
             fields["pack"] = fake.random_element(pack_choices)[1]
-        data = {"character_create_view-current_step": current_step}
+
+        data = {"character_create_view-current_step": step}
         for field in fields:
             if field in field_list:
-                data[f"{current_step}-{field}"] = fields[field]
+                data[f"{step}-{field}"] = fields[field]
+        return data
+
+    @pytest.fixture
+    def review_form(self):
+        """Step 6: Review and name form."""
+        fake = Faker()
+        return {
+            "character_create_view-current_step": CharacterCreateView.Step.REVIEW,
+            f"{CharacterCreateView.Step.REVIEW}-name": fake.name(),
+        }
+
+    # Species-specific fixtures
+    @pytest.fixture
+    def dwarf_species_form(self):
+        species = SpeciesFactory(name=SpeciesName.DWARF)
+        return {
+            "character_create_view-current_step": CharacterCreateView.Step.SPECIES_SELECTION,
+            f"{CharacterCreateView.Step.SPECIES_SELECTION}-species": species.name,
+        }
+
+    @pytest.fixture
+    def elf_species_form(self):
+        species = SpeciesFactory(name=SpeciesName.ELF)
+        return {
+            "character_create_view-current_step": CharacterCreateView.Step.SPECIES_SELECTION,
+            f"{CharacterCreateView.Step.SPECIES_SELECTION}-species": species.name,
+        }
+
+    @pytest.fixture
+    def halfling_species_form(self):
+        species = SpeciesFactory(name=SpeciesName.HALFLING)
+        return {
+            "character_create_view-current_step": CharacterCreateView.Step.SPECIES_SELECTION,
+            f"{CharacterCreateView.Step.SPECIES_SELECTION}-species": species.name,
+        }
+
+    @pytest.fixture
+    def human_species_form(self):
+        species = SpeciesFactory(name=SpeciesName.HUMAN)
+        return {
+            "character_create_view-current_step": CharacterCreateView.Step.SPECIES_SELECTION,
+            f"{CharacterCreateView.Step.SPECIES_SELECTION}-species": species.name,
+        }
+
+    # Class-specific fixtures
+    @pytest.fixture
+    def cleric_class_form(self):
+        return {
+            "character_create_view-current_step": CharacterCreateView.Step.CLASS_SELECTION,
+            f"{CharacterCreateView.Step.CLASS_SELECTION}-klass": ClassName.CLERIC,
+        }
+
+    @pytest.fixture
+    def fighter_class_form(self):
+        return {
+            "character_create_view-current_step": CharacterCreateView.Step.CLASS_SELECTION,
+            f"{CharacterCreateView.Step.CLASS_SELECTION}-klass": ClassName.FIGHTER,
+        }
+
+    @pytest.fixture
+    def rogue_class_form(self):
+        return {
+            "character_create_view-current_step": CharacterCreateView.Step.CLASS_SELECTION,
+            f"{CharacterCreateView.Step.CLASS_SELECTION}-klass": ClassName.ROGUE,
+        }
+
+    @pytest.fixture
+    def wizard_class_form(self):
+        return {
+            "character_create_view-current_step": CharacterCreateView.Step.CLASS_SELECTION,
+            f"{CharacterCreateView.Step.CLASS_SELECTION}-klass": ClassName.WIZARD,
+        }
+
+    # Background-specific fixtures
+    @pytest.fixture
+    def acolyte_background_form(self):
+        return {
+            "character_create_view-current_step": CharacterCreateView.Step.BACKGROUND_SELECTION,
+            f"{CharacterCreateView.Step.BACKGROUND_SELECTION}-background": Background.ACOLYTE,
+        }
+
+    @pytest.fixture
+    def criminal_background_form(self):
+        return {
+            "character_create_view-current_step": CharacterCreateView.Step.BACKGROUND_SELECTION,
+            f"{CharacterCreateView.Step.BACKGROUND_SELECTION}-background": Background.CRIMINAL,
+        }
+
+    @pytest.fixture
+    def sage_background_form(self):
+        return {
+            "character_create_view-current_step": CharacterCreateView.Step.BACKGROUND_SELECTION,
+            f"{CharacterCreateView.Step.BACKGROUND_SELECTION}-background": Background.SAGE,
+        }
+
+    @pytest.fixture
+    def soldier_background_form(self):
+        return {
+            "character_create_view-current_step": CharacterCreateView.Step.BACKGROUND_SELECTION,
+            f"{CharacterCreateView.Step.BACKGROUND_SELECTION}-background": Background.SOLDIER,
+        }
+
+    def _make_skills_form(self, klass):
+        """Create skills form for a specific class."""
+        fake = Faker()
+        skills = fake.random_elements(sorted(_get_skills(klass)), length=4, unique=True)
+        step = CharacterCreateView.Step.SKILLS_SELECTION
+        data = {
+            "character_create_view-current_step": step,
+            f"{step}-first_skill": skills[0],
+            f"{step}-second_skill": skills[1],
+        }
+        if klass == ClassName.ROGUE:
+            data[f"{step}-third_skill"] = skills[2]
+            data[f"{step}-fourth_skill"] = skills[3]
+        return data
+
+    def _make_equipment_form(self, klass):
+        """Create equipment form for a specific class."""
+        fake = Faker()
+        step = CharacterCreateView.Step.EQUIPMENT_SELECTION
+        match klass:
+            case ClassName.CLERIC:
+                choices_provider = ClericEquipmentChoicesProvider()
+                field_list = ["first_weapon", "second_weapon", "armor", "gear", "pack"]
+            case ClassName.FIGHTER:
+                choices_provider = FighterEquipmentChoicesProvider()
+                field_list = ["first_weapon", "second_weapon", "third_weapon", "pack"]
+            case ClassName.ROGUE:
+                choices_provider = RogueEquipmentChoicesProvider()
+                field_list = ["first_weapon", "second_weapon", "pack"]
+            case ClassName.WIZARD:
+                choices_provider = WizardEquipmentChoicesProvider()
+                field_list = ["first_weapon", "gear", "pack"]
+            case _:
+                choices_provider = ClericEquipmentChoicesProvider()
+                field_list = ["first_weapon", "second_weapon", "armor", "gear", "pack"]
+
+        fields = {}
+        if first_weapon_choices := choices_provider.get_first_weapon_choices():
+            fields["first_weapon"] = fake.random_element(first_weapon_choices)[1]
+        if second_weapon_choices := choices_provider.get_second_weapon_choices():
+            fields["second_weapon"] = fake.random_element(second_weapon_choices)[1]
+        if third_weapon_choices := choices_provider.get_third_weapon_choices():
+            fields["third_weapon"] = fake.random_element(third_weapon_choices)[1]
+        if armor_choices := choices_provider.get_armor_choices():
+            fields["armor"] = fake.random_element(armor_choices)[1]
+        if gear_choices := choices_provider.get_gear_choices():
+            fields["gear"] = fake.random_element(gear_choices)[1]
+        if pack_choices := choices_provider.get_pack_choices():
+            fields["pack"] = fake.random_element(pack_choices)[1]
+
+        data = {"character_create_view-current_step": step}
+        for field in fields:
+            if field in field_list:
+                data[f"{step}-{field}"] = fields[field]
         return data
 
     def _create_character(self, client, form_list):
+        """Submit all wizard steps and return the created character."""
         character = None
         for step, data_step in enumerate(form_list, 1):
             response = client.post((reverse(self.path_name)), data_step)
@@ -406,14 +528,28 @@ class TestCharacterCreateView:
                 assertRedirects(response, character.get_absolute_url())
             else:
                 assert response.status_code == 200
-                # To be sure there is no error at each step.
-                assertContains(response, f"Step {step + 1}")
         return character
 
     def test_character_creation(
-        self, client, character_form, skills_form, background_form, equipment_form
+        self,
+        client,
+        species_form,
+        class_form,
+        abilities_form,
+        background_form,
+        skills_form,
+        equipment_form,
+        review_form,
     ):
-        form_list = [character_form, skills_form, background_form, equipment_form]
+        form_list = [
+            species_form,
+            class_form,
+            abilities_form,
+            background_form,
+            skills_form,
+            equipment_form,
+            review_form,
+        ]
         character = self._create_character(client, form_list)
         assert character.name
         assert character.species is not None
@@ -423,79 +559,145 @@ class TestCharacterCreateView:
         assert character.hp == character.max_hp
 
     def test_dwarf_creation(
-        self, client, dwarf_form, skills_form, background_form, equipment_form
+        self,
+        client,
+        dwarf_species_form,
+        class_form,
+        abilities_form,
+        background_form,
+        skills_form,
+        equipment_form,
+        review_form,
     ):
-        """Test dwarf character creation with D&D 2024 rules (no ability score increases)."""
-        form_list = [dwarf_form, skills_form, background_form, equipment_form]
+        """Test dwarf character creation with D&D 2024 rules."""
+        form_list = [
+            dwarf_species_form,
+            class_form,
+            abilities_form,
+            background_form,
+            skills_form,
+            equipment_form,
+            review_form,
+        ]
         character = self._create_character(client, form_list)
-        # Ability scores are player-chosen in 2024 rules, not species-determined
         assert character.dexterity.score == AbilityScore.SCORE_12
         assert character.constitution.score == AbilityScore.SCORE_13
         assert character.intelligence.score == AbilityScore.SCORE_14
         assert character.charisma.score == AbilityScore.SCORE_8
-        # Species-derived attributes
         assert character.species.name == SpeciesName.DWARF
-        assert character.speed == 30  # 2024 rules: dwarves have 30 speed
+        assert character.speed == 30
 
     def test_elf_creation(
-        self, client, elf_form, skills_form, background_form, equipment_form
+        self,
+        client,
+        elf_species_form,
+        class_form,
+        abilities_form,
+        background_form,
+        skills_form,
+        equipment_form,
+        review_form,
     ):
-        """Test elf character creation with D&D 2024 rules (no ability score increases)."""
-        form_list = [elf_form, skills_form, background_form, equipment_form]
+        """Test elf character creation with D&D 2024 rules."""
+        form_list = [
+            elf_species_form,
+            class_form,
+            abilities_form,
+            background_form,
+            skills_form,
+            equipment_form,
+            review_form,
+        ]
         character = self._create_character(client, form_list)
-        # Ability scores are player-chosen in 2024 rules, not species-determined
         assert character.strength.score == AbilityScore.SCORE_10
         assert character.dexterity.score == AbilityScore.SCORE_12
         assert character.constitution.score == AbilityScore.SCORE_13
         assert character.charisma.score == AbilityScore.SCORE_8
-        # Species-derived attributes
         assert character.species.name == SpeciesName.ELF
         assert character.speed == 30
 
     def test_halfling_creation(
-        self, client, halfling_form, skills_form, background_form, equipment_form
+        self,
+        client,
+        halfling_species_form,
+        class_form,
+        abilities_form,
+        background_form,
+        skills_form,
+        equipment_form,
+        review_form,
     ):
-        """Test halfling character creation with D&D 2024 rules (no ability score increases)."""
-        form_list = [halfling_form, skills_form, background_form, equipment_form]
+        """Test halfling character creation with D&D 2024 rules."""
+        form_list = [
+            halfling_species_form,
+            class_form,
+            abilities_form,
+            background_form,
+            skills_form,
+            equipment_form,
+            review_form,
+        ]
         character = self._create_character(client, form_list)
-        # Ability scores are player-chosen in 2024 rules, not species-determined
         assert character.strength.score == AbilityScore.SCORE_10
         assert character.dexterity.score == AbilityScore.SCORE_12
         assert character.constitution.score == AbilityScore.SCORE_13
         assert character.intelligence.score == AbilityScore.SCORE_14
         assert character.wisdom.score == AbilityScore.SCORE_15
         assert character.charisma.score == AbilityScore.SCORE_8
-        # Species-derived attributes
         assert character.species.name == SpeciesName.HALFLING
         assert character.speed == 30
 
     def test_human_creation(
-        self, client, human_form, skills_form, background_form, equipment_form
+        self,
+        client,
+        human_species_form,
+        class_form,
+        abilities_form,
+        background_form,
+        skills_form,
+        equipment_form,
+        review_form,
     ):
-        """Test human character creation with D&D 2024 rules (no ability score increases)."""
-        form_list = [human_form, skills_form, background_form, equipment_form]
+        """Test human character creation with D&D 2024 rules."""
+        form_list = [
+            human_species_form,
+            class_form,
+            abilities_form,
+            background_form,
+            skills_form,
+            equipment_form,
+            review_form,
+        ]
         character = self._create_character(client, form_list)
-        # Ability scores are player-chosen in 2024 rules, not species-determined
         assert character.strength.score == AbilityScore.SCORE_10
         assert character.dexterity.score == AbilityScore.SCORE_12
         assert character.constitution.score == AbilityScore.SCORE_13
         assert character.intelligence.score == AbilityScore.SCORE_14
         assert character.wisdom.score == AbilityScore.SCORE_15
         assert character.charisma.score == AbilityScore.SCORE_8
-        # Species-derived attributes
         assert character.species.name == SpeciesName.HUMAN
         assert character.speed == 30
 
-    @pytest.fixture
-    def cleric_form(self, character_form):
-        current_step = character_form["character_create_view-current_step"]
-        character_form[f"{current_step}-klass"] = ClassName.CLERIC
-        return character_form
-
     def test_cleric_creation(
-        self, client, cleric_form, skills_form, background_form, equipment_form
+        self,
+        client,
+        species_form,
+        cleric_class_form,
+        abilities_form,
+        background_form,
+        review_form,
     ):
-        form_list = [cleric_form, skills_form, background_form, equipment_form]
+        skills_form = self._make_skills_form(ClassName.CLERIC)
+        equipment_form = self._make_equipment_form(ClassName.CLERIC)
+        form_list = [
+            species_form,
+            cleric_class_form,
+            abilities_form,
+            background_form,
+            skills_form,
+            equipment_form,
+            review_form,
+        ]
         character = self._create_character(client, form_list)
         assert character.hit_dice == "1d8"
         hp = 100 + 8 + character.constitution.modifier
@@ -506,25 +708,36 @@ class TestCharacterCreateView:
                 | Q(ability_type_id=AbilityName.CHARISMA)
             )
         )
-        assert 100 <= character.inventory.gp <= 250  # Class wealth + 50 GP background
+        assert 100 <= character.inventory.gp <= 250
         inventory = character.inventory
-        assert inventory.contains(equipment_form["3-first_weapon"])
-        assert inventory.contains(equipment_form["3-second_weapon"])
-        assert inventory.contains(equipment_form["3-armor"])
-        assert inventory.contains(equipment_form["3-gear"])
-        assert inventory.contains(equipment_form["3-pack"])
+        step = CharacterCreateView.Step.EQUIPMENT_SELECTION
+        assert inventory.contains(equipment_form[f"{step}-first_weapon"])
+        assert inventory.contains(equipment_form[f"{step}-second_weapon"])
+        assert inventory.contains(equipment_form[f"{step}-armor"])
+        assert inventory.contains(equipment_form[f"{step}-gear"])
+        assert inventory.contains(equipment_form[f"{step}-pack"])
         assert inventory.contains(ArmorName.SHIELD)
 
-    @pytest.fixture
-    def fighter_form(self, character_form):
-        current_step = character_form["character_create_view-current_step"]
-        character_form[f"{current_step}-klass"] = ClassName.FIGHTER
-        return character_form
-
     def test_fighter_creation(
-        self, client, fighter_form, skills_form, background_form, equipment_form
+        self,
+        client,
+        species_form,
+        fighter_class_form,
+        abilities_form,
+        background_form,
+        review_form,
     ):
-        form_list = [fighter_form, skills_form, background_form, equipment_form]
+        skills_form = self._make_skills_form(ClassName.FIGHTER)
+        equipment_form = self._make_equipment_form(ClassName.FIGHTER)
+        form_list = [
+            species_form,
+            fighter_class_form,
+            abilities_form,
+            background_form,
+            skills_form,
+            equipment_form,
+            review_form,
+        ]
         character = self._create_character(client, form_list)
         assert character.hit_dice == "1d10"
         constitution_modifier = character.abilities.get(
@@ -538,28 +751,38 @@ class TestCharacterCreateView:
                 | Q(ability_type_id=AbilityName.CONSTITUTION)
             )
         )
-        assert 100 <= character.inventory.gp <= 250  # Class wealth + 50 GP background
+        assert 100 <= character.inventory.gp <= 250
         inventory = character.inventory
-        # First weapon
+        step = CharacterCreateView.Step.EQUIPMENT_SELECTION
         assert (
             inventory.contains(ArmorName.CHAIN_MAIL)
             or inventory.contains(ArmorName.LEATHER)
             and inventory.contains(WeaponName.LONGBOW)
         )
-        assert inventory.contains(equipment_form["3-second_weapon"])
-        assert inventory.contains(equipment_form["3-third_weapon"])
-        assert inventory.contains(equipment_form["3-pack"])
-
-    @pytest.fixture
-    def rogue_form(self, character_form):
-        current_step = character_form["character_create_view-current_step"]
-        character_form[f"{current_step}-klass"] = ClassName.ROGUE
-        return character_form
+        assert inventory.contains(equipment_form[f"{step}-second_weapon"])
+        assert inventory.contains(equipment_form[f"{step}-third_weapon"])
+        assert inventory.contains(equipment_form[f"{step}-pack"])
 
     def test_rogue_creation(
-        self, client, rogue_form, skills_form, background_form, equipment_form
+        self,
+        client,
+        species_form,
+        rogue_class_form,
+        abilities_form,
+        background_form,
+        review_form,
     ):
-        form_list = [rogue_form, skills_form, background_form, equipment_form]
+        skills_form = self._make_skills_form(ClassName.ROGUE)
+        equipment_form = self._make_equipment_form(ClassName.ROGUE)
+        form_list = [
+            species_form,
+            rogue_class_form,
+            abilities_form,
+            background_form,
+            skills_form,
+            equipment_form,
+            review_form,
+        ]
         character = self._create_character(client, form_list)
         assert character.hit_dice == "1d8"
         constitution_modifier = character.abilities.get(
@@ -573,25 +796,36 @@ class TestCharacterCreateView:
                 | Q(ability_type_id=AbilityName.INTELLIGENCE)
             )
         )
-        assert 90 <= character.inventory.gp <= 210  # Class wealth + 50 GP background
+        assert 90 <= character.inventory.gp <= 210
         inventory = character.inventory
-        assert inventory.contains(equipment_form["3-first_weapon"])
-        assert inventory.contains(equipment_form["3-second_weapon"])
-        assert inventory.contains(equipment_form["3-pack"])
+        step = CharacterCreateView.Step.EQUIPMENT_SELECTION
+        assert inventory.contains(equipment_form[f"{step}-first_weapon"])
+        assert inventory.contains(equipment_form[f"{step}-second_weapon"])
+        assert inventory.contains(equipment_form[f"{step}-pack"])
         assert inventory.contains(ArmorName.LEATHER)
         assert inventory.contains(WeaponName.DAGGER, 2)
         assert inventory.contains(ToolName.THIEVES_TOOLS)
 
-    @pytest.fixture
-    def wizard_form(self, character_form):
-        current_step = character_form["character_create_view-current_step"]
-        character_form[f"{current_step}-klass"] = ClassName.WIZARD
-        return character_form
-
     def test_wizard_creation(
-        self, client, wizard_form, skills_form, background_form, equipment_form
+        self,
+        client,
+        species_form,
+        wizard_class_form,
+        abilities_form,
+        background_form,
+        review_form,
     ):
-        form_list = [wizard_form, skills_form, background_form, equipment_form]
+        skills_form = self._make_skills_form(ClassName.WIZARD)
+        equipment_form = self._make_equipment_form(ClassName.WIZARD)
+        form_list = [
+            species_form,
+            wizard_class_form,
+            abilities_form,
+            background_form,
+            skills_form,
+            equipment_form,
+            review_form,
+        ]
         character = self._create_character(client, form_list)
         assert character.hit_dice == "1d6"
         constitution_modifier = character.abilities.get(
@@ -605,23 +839,34 @@ class TestCharacterCreateView:
                 | Q(ability_type_id=AbilityName.WISDOM)
             )
         )
-        assert 90 <= character.inventory.gp <= 210  # Class wealth + 50 GP background
+        assert 90 <= character.inventory.gp <= 210
         inventory = character.inventory
-        assert inventory.contains(equipment_form["3-first_weapon"])
-        assert inventory.contains(equipment_form["3-gear"])
-        assert inventory.contains(equipment_form["3-pack"])
+        step = CharacterCreateView.Step.EQUIPMENT_SELECTION
+        assert inventory.contains(equipment_form[f"{step}-first_weapon"])
+        assert inventory.contains(equipment_form[f"{step}-gear"])
+        assert inventory.contains(equipment_form[f"{step}-pack"])
         assert inventory.contains(GearName.SPELLBOOK)
 
-    @pytest.fixture
-    def acolyte_form(self, character_form):
-        current_step = character_form["character_create_view-current_step"]
-        character_form[f"{current_step}-background"] = Background.ACOLYTE
-        return character_form
-
     def test_acolyte_creation(
-        self, client, acolyte_form, skills_form, background_form, equipment_form
+        self,
+        client,
+        species_form,
+        class_form,
+        abilities_form,
+        acolyte_background_form,
+        skills_form,
+        equipment_form,
+        review_form,
     ):
-        form_list = [acolyte_form, skills_form, background_form, equipment_form]
+        form_list = [
+            species_form,
+            class_form,
+            abilities_form,
+            acolyte_background_form,
+            skills_form,
+            equipment_form,
+            review_form,
+        ]
         character = self._create_character(client, form_list)
         SkillProficiency.objects.filter(
             Q(character=character, skill=Skill.objects.get(name=SkillName.INSIGHT))
@@ -635,16 +880,26 @@ class TestCharacterCreateView:
         assert character.bond in BACKGROUNDS[Background.ACOLYTE]["bonds"].values()
         assert character.flaw in BACKGROUNDS[Background.ACOLYTE]["flaws"].values()
 
-    @pytest.fixture
-    def criminal_form(self, character_form):
-        current_step = character_form["character_create_view-current_step"]
-        character_form[f"{current_step}-background"] = Background.CRIMINAL
-        return character_form
-
     def test_criminal_creation(
-        self, client, criminal_form, skills_form, background_form, equipment_form
+        self,
+        client,
+        species_form,
+        class_form,
+        abilities_form,
+        criminal_background_form,
+        skills_form,
+        equipment_form,
+        review_form,
     ):
-        form_list = [criminal_form, skills_form, background_form, equipment_form]
+        form_list = [
+            species_form,
+            class_form,
+            abilities_form,
+            criminal_background_form,
+            skills_form,
+            equipment_form,
+            review_form,
+        ]
         character = self._create_character(client, form_list)
         SkillProficiency.objects.filter(
             Q(
@@ -661,16 +916,26 @@ class TestCharacterCreateView:
         assert character.bond in BACKGROUNDS[Background.CRIMINAL]["bonds"].values()
         assert character.flaw in BACKGROUNDS[Background.CRIMINAL]["flaws"].values()
 
-    @pytest.fixture
-    def sage_form(self, character_form):
-        current_step = character_form["character_create_view-current_step"]
-        character_form[f"{current_step}-background"] = Background.SAGE
-        return character_form
-
     def test_sage_creation(
-        self, client, sage_form, skills_form, background_form, equipment_form
+        self,
+        client,
+        species_form,
+        class_form,
+        abilities_form,
+        sage_background_form,
+        skills_form,
+        equipment_form,
+        review_form,
     ):
-        form_list = [sage_form, skills_form, background_form, equipment_form]
+        form_list = [
+            species_form,
+            class_form,
+            abilities_form,
+            sage_background_form,
+            skills_form,
+            equipment_form,
+            review_form,
+        ]
         character = self._create_character(client, form_list)
         SkillProficiency.objects.filter(
             Q(character=character, skill=Skill.objects.get(name=SkillName.ARCANA))
@@ -684,16 +949,26 @@ class TestCharacterCreateView:
         assert character.bond in BACKGROUNDS[Background.SAGE]["bonds"].values()
         assert character.flaw in BACKGROUNDS[Background.SAGE]["flaws"].values()
 
-    @pytest.fixture
-    def soldier_form(self, character_form):
-        current_step = character_form["character_create_view-current_step"]
-        character_form[f"{current_step}-background"] = Background.SOLDIER
-        return character_form
-
     def test_soldier_creation(
-        self, client, soldier_form, skills_form, background_form, equipment_form
+        self,
+        client,
+        species_form,
+        class_form,
+        abilities_form,
+        soldier_background_form,
+        skills_form,
+        equipment_form,
+        review_form,
     ):
-        form_list = [soldier_form, skills_form, background_form, equipment_form]
+        form_list = [
+            species_form,
+            class_form,
+            abilities_form,
+            soldier_background_form,
+            skills_form,
+            equipment_form,
+            review_form,
+        ]
         character = self._create_character(client, form_list)
         SkillProficiency.objects.filter(
             Q(character=character, skill=Skill.objects.get(name=SkillName.ATHLETICS))

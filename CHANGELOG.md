@@ -5,6 +5,18 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Added
+* Enhanced 7-step character creation wizard with improved UX:
+  - Step 1: Species selection with racial traits preview
+  - Step 2: Class selection with features and proficiencies preview
+  - Step 3: Ability scores with three generation methods (Standard Array, Point Buy, Roll 4d6 drop lowest)
+  - Step 4: Background selection with skills, tool proficiency, and origin feat preview
+  - Step 5: Class-specific skill selection
+  - Step 6: Class-specific equipment selection
+  - Step 7: Review and confirm with edit buttons for each section
+  - Progress indicator with step icons and completion states
+  - Real-time JavaScript previews for all selection steps
+  - Animated transitions and visual enhancements
+  - Real-time duplicate ability score validation with field highlighting
 * Responsive character sheet template with RPGUI frames:
   - Header panel with character portrait, name, species, class, level, background, and XP
   - 3-column responsive grid layout (abilities, combat stats, skills)
@@ -193,6 +205,8 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * django-htmx middleware for HTMX request detection (`request.htmx`)
 
 ### Fixed
+* Character wizard duplicate validation mixin now properly filters empty values and returns cleaned data
+* Character wizard preview data (species, class, background, skills) now correctly serialized to JSON for JavaScript
 * Armor disadvantage system now correctly applies penalties:
   - Fixed `_set_disadvantage()` to use `.filter().exists()` instead of `.get().exists()` (was throwing DoesNotExist)
   - Fixed ability type references to use `ability_type_id` since name is the primary key

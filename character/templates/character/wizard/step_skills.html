@@ -1,0 +1,78 @@
+{% extends 'character/wizard/base_wizard.html' %}
+
+{% block step_description %}
+  Select your class skills.
+  {% if selected_class %}
+    As a <strong style="color: var(--color-primary);">{{ selected_class }}</strong>, you can choose from a specialized set of skills that complement your training.
+  {% endif %}
+{% endblock %}
+
+{% block wizard_form %}
+  {% if wizard.form.fields %}
+    {% for field in wizard.form %}
+      <div class="rpg-form-group" style="margin-bottom: 15px;">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}
+          <div class="game-message error field-error" style="margin-top: 8px;">{{ field.errors }}</div>
+        {% endif %}
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="game-message info" style="padding: 20px; background: rgba(52, 152, 219, 0.1); border: 1px solid rgba(52, 152, 219, 0.3); border-radius: 8px;">
+      No skill choices available for this class.
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block wizard_preview %}
+  <div class="preview-title">Selected Skills</div>
+  <div id="skill-preview">
+    <div id="skill-details"></div>
+  </div>
+
+  <script>
+    const skillData = {{ skill_descriptions|safe }};
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const skillDetails = document.getElementById('skill-details');
+      const skillSelects = document.querySelectorAll('select[id^="id_4-"]');
+
+      function updateSelectedSkills() {
+        let html = '';
+        let hasSelection = false;
+        let selectedCount = 0;
+
+        skillSelects.forEach((select, index) => {
+          const value = select.value;
+          if (value && skillData[value]) {
+            hasSelection = true;
+            selectedCount++;
+            const data = skillData[value];
+            html += `
+              <div class="preview-trait">
+                <div class="preview-trait-name">${data.display_name}</div>
+                <div style="color: var(--color-mana); font-size: 0.8rem; margin-bottom: 5px;">${data.ability}</div>
+                <div class="preview-trait-description">${data.description}</div>
+              </div>
+            `;
+          }
+        });
+
+        if (!hasSelection) {
+          html = '<div class="preview-empty">Select skills to see their details</div>';
+        } else {
+          html = `<p style="color: var(--color-text-muted); margin-bottom: 15px; font-size: 0.9rem;">${selectedCount} skill${selectedCount > 1 ? 's' : ''} selected</p>` + html;
+        }
+
+        skillDetails.innerHTML = html;
+      }
+
+      skillSelects.forEach(select => {
+        select.addEventListener('change', updateSelectedSkills);
+      });
+
+      updateSelectedSkills();
+    });
+  </script>
+{% endblock %}
