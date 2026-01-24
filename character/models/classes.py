@@ -72,3 +72,25 @@ class CharacterClass(models.Model):
 
     def __str__(self) -> str:
         return f"{self.character.name}: {self.klass.name} {self.level}"
+
+
+class CharacterFeature(models.Model):
+    """Junction table tracking class features gained by a character."""
+
+    character = models.ForeignKey(
+        "Character", on_delete=models.CASCADE, related_name="class_features"
+    )
+    class_feature = models.ForeignKey(
+        ClassFeature, on_delete=models.CASCADE, related_name="character_instances"
+    )
+    source_class = models.ForeignKey(
+        Class, on_delete=models.CASCADE, related_name="granted_features"
+    )
+    level_gained = models.PositiveIntegerField(default=1)
+
+    class Meta:
+        unique_together = ["character", "class_feature"]
+        ordering = ["source_class", "level_gained", "class_feature__name"]
+
+    def __str__(self) -> str:
+        return f"{self.character.name}: {self.class_feature.name}"

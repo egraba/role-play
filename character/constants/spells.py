@@ -93,6 +93,7 @@ class CasterType(TextChoices):
 
     PREPARED = "prepared", "Prepared"  # Cleric, Druid, Paladin, Wizard
     KNOWN = "known", "Known"  # Bard, Ranger, Sorcerer, Warlock
+    PACT = "pact", "Pact"  # Warlock Pact Magic
 
 
 class SpellcastingAbility(TextChoices):

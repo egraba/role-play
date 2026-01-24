@@ -25,6 +25,7 @@ from .equipment import (
 from .feats import CharacterFeat, Feat
 from .classes import (
     CharacterClass,
+    CharacterFeature,
     Class,
     ClassFeature,
 )
@@ -74,6 +75,7 @@ __all__ = [
     "CharacterClass",
     "CharacterCondition",
     "CharacterFeat",
+    "CharacterFeature",
     "Class",
     "ClassFeature",
     "Condition",

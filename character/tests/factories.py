@@ -6,9 +6,11 @@ from character.constants.conditions import ConditionName
 from character.constants.feats import FeatName, FeatType
 from character.constants.equipment import (
     ArmorName,
+    ArmorType,
     GearName,
     PackName,
     ToolName,
+    WeaponType,
     WeaponName,
 )
 from character.constants.classes import ClassName
@@ -30,7 +32,12 @@ from character.models.equipment import (
     Weapon,
     WeaponSettings,
 )
-from character.models.classes import CharacterClass, Class, ClassFeature
+from character.models.classes import (
+    CharacterClass,
+    CharacterFeature,
+    Class,
+    ClassFeature,
+)
 from character.models.species import Species, SpeciesTrait
 from character.models.spells import (
     CharacterSpellSlot,
@@ -164,8 +171,9 @@ class ArmorSettingsFactory(factory.django.DjangoModelFactory):
         django_get_or_create = ("name",)
 
     name = factory.Faker("random_element", elements=ArmorName)
+    armor_type = ArmorType.LIGHT_ARMOR
     cost = factory.Faker("random_int")
-    ac = factory.Faker("random_int")
+    ac = factory.Faker("pystr", max_chars=5)
     weight = factory.Faker("random_int")
 
 
@@ -182,6 +190,11 @@ class WeponSettingsFactory(factory.django.DjangoModelFactory):
         django_get_or_create = ("name",)
 
     name = factory.Faker("random_element", elements=WeaponName)
+    weapon_type = WeaponType.SIMPLE_MELEE
+    cost = factory.Faker("random_int")
+    damage = factory.Faker("pystr", max_chars=5)
+    weight = factory.Faker("random_int")
+    properties = ""
 
 
 class WeaponFactory(factory.django.DjangoModelFactory):
@@ -308,6 +321,16 @@ class CharacterClassFactory(factory.django.DjangoModelFactory):
     is_primary = True
 
 
+class CharacterFeatureFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = CharacterFeature
+
+    character = factory.SubFactory(CharacterFactory)
+    class_feature = factory.SubFactory(ClassFeatureFactory)
+    source_class = factory.SubFactory(ClassFactory)
+    level_gained = 1
+
+
 class SpellSettingsFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = SpellSettings
@@ -347,6 +370,7 @@ class SpellPreparationFactory(factory.django.DjangoModelFactory):
 class SpellSlotTableFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = SpellSlotTable
+        django_get_or_create = ("class_name", "class_level", "slot_level")
 
     class_name = ClassName.WIZARD
     class_level = 1
