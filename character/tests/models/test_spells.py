@@ -354,21 +354,26 @@ class TestClassSpellcastingModel:
         assert "Non-caster" in str(spellcasting)
 
     def test_is_caster_property(self):
-        klass1 = ClassFactory()
-        klass2 = ClassFactory()
+        # Use explicit class names to avoid conflicts in parallel tests
+        klass1 = ClassFactory(name=ClassName.BARD)
+        klass2 = ClassFactory(name=ClassName.BARBARIAN)
+        # Delete any existing spellcasting records from other tests
+        ClassSpellcasting.objects.filter(klass__in=[klass1, klass2]).delete()
         caster = ClassSpellcastingFactory(klass=klass1, caster_type=CasterType.KNOWN)
         non_caster = ClassSpellcastingFactory(klass=klass2, caster_type="")
         assert caster.is_caster is True
         assert non_caster.is_caster is False
 
     def test_one_to_one_constraint(self):
-        klass = ClassFactory()
+        klass = ClassFactory(name=ClassName.DRUID)
+        ClassSpellcasting.objects.filter(klass=klass).delete()
         ClassSpellcasting.objects.create(klass=klass, caster_type=CasterType.PREPARED)
         with pytest.raises(Exception):
             ClassSpellcasting.objects.create(klass=klass, caster_type=CasterType.KNOWN)
 
     def test_class_spellcasting_relation(self):
-        klass = ClassFactory()
+        klass = ClassFactory(name=ClassName.RANGER)
+        ClassSpellcasting.objects.filter(klass=klass).delete()
         spellcasting = ClassSpellcastingFactory(klass=klass)
         assert klass.spellcasting == spellcasting
 

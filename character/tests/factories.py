@@ -401,6 +401,7 @@ class WarlockSpellSlotFactory(factory.django.DjangoModelFactory):
 class ClassSpellcastingFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = ClassSpellcasting
+        django_get_or_create = ("klass",)
 
     klass = factory.SubFactory(ClassFactory)
     caster_type = CasterType.PREPARED
