@@ -6,9 +6,11 @@ from character.constants.conditions import ConditionName
 from character.constants.feats import FeatName, FeatType
 from character.constants.equipment import (
     ArmorName,
+    ArmorType,
     GearName,
     PackName,
     ToolName,
+    WeaponType,
     WeaponName,
 )
 from character.constants.classes import ClassName
@@ -169,8 +171,9 @@ class ArmorSettingsFactory(factory.django.DjangoModelFactory):
         django_get_or_create = ("name",)
 
     name = factory.Faker("random_element", elements=ArmorName)
+    armor_type = ArmorType.LIGHT_ARMOR
     cost = factory.Faker("random_int")
-    ac = factory.Faker("random_int")
+    ac = factory.Faker("pystr", max_chars=5)
     weight = factory.Faker("random_int")
 
 
@@ -187,6 +190,11 @@ class WeponSettingsFactory(factory.django.DjangoModelFactory):
         django_get_or_create = ("name",)
 
     name = factory.Faker("random_element", elements=WeaponName)
+    weapon_type = WeaponType.SIMPLE_MELEE
+    cost = factory.Faker("random_int")
+    damage = factory.Faker("pystr", max_chars=5)
+    weight = factory.Faker("random_int")
+    properties = ""
 
 
 class WeaponFactory(factory.django.DjangoModelFactory):

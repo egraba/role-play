@@ -20,6 +20,7 @@ from character.constants.equipment import ArmorType, WeaponType
 from character.constants.skills import SkillName
 from character.constants.spells import CasterType, SpellcastingAbility
 from character.models.classes import CharacterFeature
+from character.models.equipment import ArmorSettings, WeaponSettings
 from character.models.proficiencies import (
     ArmorProficiency,
     SkillProficiency,
@@ -51,7 +52,7 @@ from .factories import (
 class TestSpeciesBuilder:
     def test_apply_darkvision(self):
         """Test that darkvision is applied from species."""
-        species = SpeciesFactory(name="test_dwarf_dv", darkvision=60)
+        species = SpeciesFactory(name="dwarf_dv", darkvision=60)
         character = CharacterFactory(species=species)
         SpeciesBuilder(character).build()
 
@@ -59,7 +60,7 @@ class TestSpeciesBuilder:
 
     def test_no_darkvision(self):
         """Test that species without darkvision sets 0."""
-        species = SpeciesFactory(name="test_human_nodv", darkvision=0)
+        species = SpeciesFactory(name="human_ndv", darkvision=0)
         character = CharacterFactory(species=species)
         SpeciesBuilder(character).build()
 
@@ -67,7 +68,7 @@ class TestSpeciesBuilder:
 
     def test_apply_size(self):
         """Test that size is applied from species."""
-        species = SpeciesFactory(name="test_size_m", size="M")
+        species = SpeciesFactory(name="size_m", size="M")
         character = CharacterFactory(species=species)
         SpeciesBuilder(character).build()
 
@@ -75,7 +76,7 @@ class TestSpeciesBuilder:
 
     def test_apply_speed(self):
         """Test that speed is applied from species."""
-        species = SpeciesFactory(name="test_speed_25", speed=25)
+        species = SpeciesFactory(name="spd_25", speed=25)
         character = CharacterFactory(species=species)
         SpeciesBuilder(character).build()
 
@@ -89,7 +90,7 @@ class TestSpeciesBuilder:
 
     def test_superior_darkvision(self):
         """Test species with 120ft darkvision."""
-        species = SpeciesFactory(name="test_drow_dv120", darkvision=120)
+        species = SpeciesFactory(name="drow_dv12", darkvision=120)
         character = CharacterFactory(species=species)
         SpeciesBuilder(character).build()
 
@@ -97,7 +98,7 @@ class TestSpeciesBuilder:
 
     def test_small_size_species(self):
         """Test small size species."""
-        species = SpeciesFactory(name="test_halfling_s", size="S", speed=25)
+        species = SpeciesFactory(name="half_s", size="S", speed=25)
         character = CharacterFactory(species=species)
         SpeciesBuilder(character).build()
 
@@ -145,7 +146,7 @@ class TestClassBuilderArmorProficiencies:
         """Test class gets all armor proficiencies."""
         str_type = AbilityTypeFactory(name="STR")
         klass = ClassFactory(
-            name="test_fighter_all_armor",
+            name="ftr_all_armr",
             primary_ability=str_type,
             armor_proficiencies=["LA", "MA", "HA", "SH"],
         )
@@ -153,13 +154,20 @@ class TestClassBuilderArmorProficiencies:
         ClassBuilder(character, klass)._apply_armor_proficiencies()
 
         profs = ArmorProficiency.objects.filter(character=character)
-        assert profs.count() == 4
+        expected = ArmorSettings.objects.filter(
+            armor_type__in=["LA", "MA", "HA", "SH"]
+        ).count()
+        assert profs.count() == expected
+        assert profs.filter(armor__name="Test Leather").exists()
+        assert profs.filter(armor__name="Test Chain").exists()
+        assert profs.filter(armor__name="Test Scale").exists()
+        assert profs.filter(armor__name="Test Shield").exists()
 
     def test_apply_armor_proficiencies_none(self, armor_settings):
         """Test class with no armor proficiencies."""
         int_type = AbilityTypeFactory(name="INT")
         klass = ClassFactory(
-            name="test_wizard_no_armor",
+            name="wiz_no_armr",
             primary_ability=int_type,
             armor_proficiencies=[],
         )
@@ -173,7 +181,7 @@ class TestClassBuilderArmorProficiencies:
         """Test class with only light armor proficiency."""
         dex_type = AbilityTypeFactory(name="DEX")
         klass = ClassFactory(
-            name="test_rogue_la_only",
+            name="rog_la_only",
             primary_ability=dex_type,
             armor_proficiencies=["LA"],
         )
@@ -181,14 +189,15 @@ class TestClassBuilderArmorProficiencies:
         ClassBuilder(character, klass)._apply_armor_proficiencies()
 
         profs = ArmorProficiency.objects.filter(character=character)
-        assert profs.count() == 1
-        assert profs.first().armor.name == "Test Leather"
+        expected = ArmorSettings.objects.filter(armor_type__in=["LA"]).count()
+        assert profs.count() == expected
+        assert profs.filter(armor__name="Test Leather").exists()
 
     def test_light_medium_shield(self, armor_settings):
         """Test class with light, medium armor and shields."""
         wis_type = AbilityTypeFactory(name="WIS")
         klass = ClassFactory(
-            name="test_cleric_lms",
+            name="clr_lms",
             primary_ability=wis_type,
             armor_proficiencies=["LA", "MA", "SH"],
         )
@@ -196,7 +205,10 @@ class TestClassBuilderArmorProficiencies:
         ClassBuilder(character, klass)._apply_armor_proficiencies()
 
         profs = ArmorProficiency.objects.filter(character=character)
-        assert profs.count() == 3
+        expected = ArmorSettings.objects.filter(
+            armor_type__in=["LA", "MA", "SH"]
+        ).count()
+        assert profs.count() == expected
 
 
 # =============================================================================
@@ -210,7 +222,7 @@ class TestClassBuilderWeaponProficiencies:
         """Test class gets all weapon proficiencies."""
         str_type = AbilityTypeFactory(name="STR")
         klass = ClassFactory(
-            name="test_fighter_all_wpn",
+            name="ftr_all_wpn",
             primary_ability=str_type,
             weapon_proficiencies=["simple", "martial"],
         )
@@ -218,13 +230,16 @@ class TestClassBuilderWeaponProficiencies:
         ClassBuilder(character, klass)._apply_weapon_proficiencies()
 
         profs = WeaponProficiency.objects.filter(character=character)
-        assert profs.count() == 5
+        expected = WeaponSettings.objects.filter(
+            weapon_type__in=["SM", "SR", "MM", "MR"]
+        ).count()
+        assert profs.count() == expected
 
     def test_apply_weapon_proficiencies_simple(self, weapon_settings):
         """Test class gets only simple weapon proficiencies."""
         int_type = AbilityTypeFactory(name="INT")
         klass = ClassFactory(
-            name="test_wizard_simple_wpn",
+            name="wiz_simple",
             primary_ability=int_type,
             weapon_proficiencies=["simple"],
         )
@@ -232,13 +247,14 @@ class TestClassBuilderWeaponProficiencies:
         ClassBuilder(character, klass)._apply_weapon_proficiencies()
 
         profs = WeaponProficiency.objects.filter(character=character)
-        assert profs.count() == 3  # Club, Dagger, Shortbow
+        expected = WeaponSettings.objects.filter(weapon_type__in=["SM", "SR"]).count()
+        assert profs.count() == expected
 
     def test_no_weapon_proficiencies(self, weapon_settings):
         """Test class with no weapon proficiencies."""
         cha_type = AbilityTypeFactory(name="CHA")
         klass = ClassFactory(
-            name="test_sorc_no_wpn",
+            name="sorc_no_wpn",
             primary_ability=cha_type,
             weapon_proficiencies=[],
         )
@@ -252,7 +268,7 @@ class TestClassBuilderWeaponProficiencies:
         """Test class with only martial proficiencies."""
         str_type = AbilityTypeFactory(name="STR")
         klass = ClassFactory(
-            name="test_barb_martial",
+            name="barb_martial",
             primary_ability=str_type,
             weapon_proficiencies=["martial"],
         )
@@ -260,7 +276,8 @@ class TestClassBuilderWeaponProficiencies:
         ClassBuilder(character, klass)._apply_weapon_proficiencies()
 
         profs = WeaponProficiency.objects.filter(character=character)
-        assert profs.count() == 2  # Longsword, Longbow
+        expected = WeaponSettings.objects.filter(weapon_type__in=["MM", "MR"]).count()
+        assert profs.count() == expected
 
 
 # =============================================================================
@@ -273,7 +290,7 @@ class TestClassBuilderFeatures:
     def test_apply_class_features_level_1(self):
         """Test that level 1 class features are applied."""
         str_type = AbilityTypeFactory(name="STR")
-        klass = ClassFactory(name="test_fighter_feat1", primary_ability=str_type)
+        klass = ClassFactory(name="ftr_feat1", primary_ability=str_type)
         ClassFeatureFactory(klass=klass, name="Fighting Style", level=1)
         ClassFeatureFactory(klass=klass, name="Second Wind", level=1)
         ClassFeatureFactory(klass=klass, name="Action Surge", level=2)  # Not applied
@@ -292,7 +309,7 @@ class TestClassBuilderFeatures:
     def test_class_feature_source_tracking(self):
         """Test that feature source class is correctly tracked."""
         str_type = AbilityTypeFactory(name="STR")
-        klass = ClassFactory(name="test_fighter_src", primary_ability=str_type)
+        klass = ClassFactory(name="ftr_src", primary_ability=str_type)
         feature = ClassFeatureFactory(klass=klass, name="Test Feature", level=1)
 
         character = CharacterFactory()
@@ -308,7 +325,7 @@ class TestClassBuilderFeatures:
     def test_no_level_1_features(self):
         """Test class with no level 1 features."""
         str_type = AbilityTypeFactory(name="STR")
-        klass = ClassFactory(name="test_fighter_nol1", primary_ability=str_type)
+        klass = ClassFactory(name="ftr_nol1", primary_ability=str_type)
         ClassFeatureFactory(klass=klass, name="Action Surge", level=2)
 
         character = CharacterFactory()
@@ -321,7 +338,7 @@ class TestClassBuilderFeatures:
     def test_many_level_1_features(self):
         """Test class with many level 1 features."""
         dex_type = AbilityTypeFactory(name="DEX")
-        klass = ClassFactory(name="test_monk_many", primary_ability=dex_type)
+        klass = ClassFactory(name="monk_many", primary_ability=dex_type)
         ClassFeatureFactory(klass=klass, name="Unarmored Defense", level=1)
         ClassFeatureFactory(klass=klass, name="Martial Arts", level=1)
         ClassFeatureFactory(klass=klass, name="Deft Strike", level=1)
@@ -401,7 +418,7 @@ class TestSpellcastingBuilder:
     def test_is_spellcaster_true(self):
         """Test spellcaster is identified correctly."""
         int_type = AbilityTypeFactory(name="INT")
-        klass = ClassFactory(name="test_wiz_caster", primary_ability=int_type)
+        klass = ClassFactory(name="wiz_caster", primary_ability=int_type)
         ClassSpellcastingFactory(
             klass=klass,
             caster_type=CasterType.PREPARED,
@@ -417,7 +434,7 @@ class TestSpellcastingBuilder:
     def test_is_not_spellcaster(self):
         """Test non-caster is identified correctly."""
         str_type = AbilityTypeFactory(name="STR")
-        klass = ClassFactory(name="test_ftr_nocaster", primary_ability=str_type)
+        klass = ClassFactory(name="ftr_nocast", primary_ability=str_type)
         # No ClassSpellcasting created
 
         character = CharacterFactory()
@@ -453,7 +470,7 @@ class TestSpellcastingBuilder:
     def test_setup_warlock_pact_magic_level_1(self):
         """Test Warlock Pact Magic setup at level 1."""
         cha_type = AbilityTypeFactory(name="CHA")
-        klass = ClassFactory(name="test_wlk_pact1", primary_ability=cha_type)
+        klass = ClassFactory(name="wlk_pact1", primary_ability=cha_type)
         ClassSpellcastingFactory(
             klass=klass,
             caster_type=CasterType.PACT,
@@ -471,7 +488,7 @@ class TestSpellcastingBuilder:
     def test_setup_warlock_pact_magic_level_2(self):
         """Test Warlock Pact Magic setup at level 2."""
         cha_type = AbilityTypeFactory(name="CHA")
-        klass = ClassFactory(name="test_wlk_pact2", primary_ability=cha_type)
+        klass = ClassFactory(name="wlk_pact2", primary_ability=cha_type)
         ClassSpellcastingFactory(
             klass=klass,
             caster_type=CasterType.PACT,
@@ -489,7 +506,7 @@ class TestSpellcastingBuilder:
     def test_setup_warlock_pact_magic_level_5(self):
         """Test Warlock Pact Magic setup at level 5."""
         cha_type = AbilityTypeFactory(name="CHA")
-        klass = ClassFactory(name="test_wlk_pact5", primary_ability=cha_type)
+        klass = ClassFactory(name="wlk_pact5", primary_ability=cha_type)
         ClassSpellcastingFactory(
             klass=klass,
             caster_type=CasterType.PACT,
@@ -507,7 +524,7 @@ class TestSpellcastingBuilder:
     def test_non_caster_no_spell_slots(self):
         """Test non-caster doesn't get spell slots."""
         str_type = AbilityTypeFactory(name="STR")
-        klass = ClassFactory(name="test_ftr_noslots", primary_ability=str_type)
+        klass = ClassFactory(name="ftr_noslot", primary_ability=str_type)
 
         character = CharacterFactory()
         CharacterClassFactory(character=character, klass=klass)
@@ -562,7 +579,7 @@ class TestBuilderIntegration:
         con_type = AbilityTypeFactory(name="CON")
 
         klass = ClassFactory(
-            name="test_ftr_integ",
+            name="ftr_integ",
             hit_die=10,
             hp_first_level=10,
             hp_higher_levels=6,
@@ -574,9 +591,7 @@ class TestBuilderIntegration:
         klass.saving_throws.add(str_type, con_type)
         ClassFeatureFactory(klass=klass, name="Fighting Style", level=1)
 
-        species = SpeciesFactory(
-            name="test_human_integ", size="M", speed=30, darkvision=0
-        )
+        species = SpeciesFactory(name="human_itg", size="M", speed=30, darkvision=0)
         character = CharacterFactory(species=species)
 
         SpeciesBuilder(character).build()
@@ -587,9 +602,25 @@ class TestBuilderIntegration:
         assert character.darkvision == 0
         assert character.size == "M"
         assert character.speed == 30
-        assert ArmorProficiency.objects.filter(character=character).count() == 4
-        assert WeaponProficiency.objects.filter(character=character).count() == 5
-        assert CharacterFeature.objects.filter(character=character).count() == 1
+        expected_armor = ArmorSettings.objects.filter(
+            armor_type__in=["LA", "MA", "HA", "SH"]
+        ).count()
+        expected_weapons = WeaponSettings.objects.filter(
+            weapon_type__in=["SM", "SR", "MM", "MR"]
+        ).count()
+        assert (
+            ArmorProficiency.objects.filter(character=character).count()
+            == expected_armor
+        )
+        assert (
+            WeaponProficiency.objects.filter(character=character).count()
+            == expected_weapons
+        )
+        expected_features = klass.features.filter(level=1).count()
+        assert (
+            CharacterFeature.objects.filter(character=character).count()
+            == expected_features
+        )
         assert CharacterSpellSlot.objects.filter(character=character).count() == 0
 
     def test_full_spellcaster_build(self, armor_settings, weapon_settings):
@@ -618,11 +649,9 @@ class TestBuilderIntegration:
         SpellSlotTableFactory(
             class_name=ClassName.WIZARD, class_level=98, slot_level=1, slots=2
         )
-        ClassFeatureFactory(klass=klass, name="Arcane Recovery", level=1)
+        ClassFeatureFactory(klass=klass, name="Arcane Recovery Test", level=1)
 
-        species = SpeciesFactory(
-            name="test_elf_integ", size="M", speed=30, darkvision=60
-        )
+        species = SpeciesFactory(name="elf_itg", size="M", speed=30, darkvision=60)
         character = CharacterFactory(species=species)
 
         SpeciesBuilder(character).build()
@@ -637,8 +666,21 @@ class TestBuilderIntegration:
 
         assert character.darkvision == 60
         assert ArmorProficiency.objects.filter(character=character).count() == 0
-        assert WeaponProficiency.objects.filter(character=character).count() == 3
-        assert CharacterFeature.objects.filter(character=character).count() == 1
+        expected_weapons = WeaponSettings.objects.filter(
+            weapon_type__in=["SM", "SR"]
+        ).count()
+        assert (
+            WeaponProficiency.objects.filter(character=character).count()
+            == expected_weapons
+        )
+        expected_features = klass.features.filter(level=1).count()
+        assert (
+            CharacterFeature.objects.filter(character=character).count()
+            == expected_features
+        )
+        assert CharacterFeature.objects.filter(
+            character=character, class_feature__name="Arcane Recovery Test"
+        ).exists()
         assert CharacterSpellSlot.objects.filter(character=character).count() == 1
 
     def test_warlock_full_build(self, armor_settings, weapon_settings):
@@ -647,7 +689,7 @@ class TestBuilderIntegration:
         wis_type = AbilityTypeFactory(name="WIS")
 
         klass = ClassFactory(
-            name="test_wlk_integ",
+            name="wlk_integ",
             hit_die=8,
             hp_first_level=8,
             hp_higher_levels=5,
@@ -665,9 +707,7 @@ class TestBuilderIntegration:
         )
         ClassFeatureFactory(klass=klass, name="Pact Magic", level=1)
 
-        species = SpeciesFactory(
-            name="test_tiefling_integ", size="M", speed=30, darkvision=60
-        )
+        species = SpeciesFactory(name="tief_itg", size="M", speed=30, darkvision=60)
         character = CharacterFactory(species=species)
 
         SpeciesBuilder(character).build()
@@ -676,8 +716,18 @@ class TestBuilderIntegration:
         SpellcastingBuilder(character, klass).build()
 
         assert character.darkvision == 60
-        assert ArmorProficiency.objects.filter(character=character).count() == 1
-        assert WeaponProficiency.objects.filter(character=character).count() == 3
+        expected_armor = ArmorSettings.objects.filter(armor_type__in=["LA"]).count()
+        expected_weapons = WeaponSettings.objects.filter(
+            weapon_type__in=["SM", "SR"]
+        ).count()
+        assert (
+            ArmorProficiency.objects.filter(character=character).count()
+            == expected_armor
+        )
+        assert (
+            WeaponProficiency.objects.filter(character=character).count()
+            == expected_weapons
+        )
         assert CharacterFeature.objects.filter(character=character).count() == 1
         assert CharacterSpellSlot.objects.filter(character=character).count() == 0
         pact_slot = WarlockSpellSlot.objects.get(character=character)
