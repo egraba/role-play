@@ -45,7 +45,7 @@ class TestCharacterDetailView:
     def test_template_mapping(self, client, character):
         response = client.get(character.get_absolute_url())
         assert response.status_code == 200
-        assertTemplateUsed(response, "character/character.html")
+        assertTemplateUsed(response, "character/character_sheet.html")
 
     def test_content_character_is_in_game(self, client, character):
         game = GameFactory()
@@ -53,6 +53,170 @@ class TestCharacterDetailView:
         response = client.get(character.get_absolute_url())
         assert response.status_code == 200
         assertContains(response, game.name)
+
+    def test_context_contains_abilities(self, client, character):
+        response = client.get(character.get_absolute_url())
+        assert response.status_code == 200
+        abilities = response.context["abilities"]
+        assert len(abilities) == 6
+        ability_names = {a["abbreviation"] for a in abilities}
+        assert ability_names == {"STR", "DEX", "CON", "INT", "WIS", "CHA"}
+        for ability in abilities:
+            assert "name" in ability
+            assert "abbreviation" in ability
+            assert "score" in ability
+            assert "modifier" in ability
+
+    def test_context_contains_skills(self, client, character):
+        response = client.get(character.get_absolute_url())
+        assert response.status_code == 200
+        skills = response.context["skills"]
+        assert len(skills) > 0
+        for skill in skills:
+            assert "name" in skill
+            assert "ability" in skill
+            assert "proficient" in skill
+            assert "modifier" in skill
+
+    def test_context_contains_saving_throws(self, client, character):
+        response = client.get(character.get_absolute_url())
+        assert response.status_code == 200
+        saving_throws = response.context["saving_throws"]
+        assert len(saving_throws) == 6
+        for save in saving_throws:
+            assert "name" in save
+            assert "proficient" in save
+            assert "modifier" in save
+
+    def test_context_contains_inventory(self, client, character):
+        response = client.get(character.get_absolute_url())
+        assert response.status_code == 200
+        assert "inventory" in response.context
+        assert response.context["inventory"] == character.inventory
+
+    def test_context_contains_attacks(self, client, character):
+        response = client.get(character.get_absolute_url())
+        assert response.status_code == 200
+        assert "attacks" in response.context
+        assert isinstance(response.context["attacks"], list)
+
+    def test_context_contains_racial_traits(self, client, character):
+        response = client.get(character.get_absolute_url())
+        assert response.status_code == 200
+        assert "racial_traits" in response.context
+        assert isinstance(response.context["racial_traits"], list)
+
+    def test_context_contains_class_features(self, client, character):
+        response = client.get(character.get_absolute_url())
+        assert response.status_code == 200
+        assert "class_features" in response.context
+        assert isinstance(response.context["class_features"], list)
+
+    def test_context_contains_feats(self, client, character):
+        response = client.get(character.get_absolute_url())
+        assert response.status_code == 200
+        assert "feats" in response.context
+        assert isinstance(response.context["feats"], list)
+
+    def test_context_contains_spell_placeholders(self, client, character):
+        response = client.get(character.get_absolute_url())
+        assert response.status_code == 200
+        assert response.context["spells_by_level"] == {}
+        assert response.context["spell_slots"] == []
+
+
+@pytest.mark.django_db
+class TestCharacterDetailViewWithWeapons:
+    """Tests for attack calculation with weapons."""
+
+    def test_melee_weapon_attack_uses_strength(self, client, character):
+        from character.models.equipment import Weapon, WeaponSettings
+
+        settings = WeaponSettings.objects.get(name=WeaponName.LONGSWORD)
+        Weapon.objects.create(settings=settings, inventory=character.inventory)
+        response = client.get(character.get_absolute_url())
+        attacks = response.context["attacks"]
+        assert len(attacks) == 1
+        assert attacks[0]["name"] == str(WeaponName.LONGSWORD)
+        assert "bonus" in attacks[0]
+        assert "damage" in attacks[0]
+
+    def test_ranged_weapon_attack_uses_dexterity(self, client, character):
+        from character.models.equipment import Weapon, WeaponSettings
+
+        settings = WeaponSettings.objects.get(name=WeaponName.LONGBOW)
+        Weapon.objects.create(settings=settings, inventory=character.inventory)
+        response = client.get(character.get_absolute_url())
+        attacks = response.context["attacks"]
+        assert len(attacks) == 1
+        assert attacks[0]["name"] == str(WeaponName.LONGBOW)
+
+    def test_finesse_weapon_uses_best_modifier(self, client, character):
+        from character.models.equipment import Weapon, WeaponSettings
+
+        settings = WeaponSettings.objects.get(name=WeaponName.RAPIER)
+        Weapon.objects.create(settings=settings, inventory=character.inventory)
+        response = client.get(character.get_absolute_url())
+        attacks = response.context["attacks"]
+        assert len(attacks) == 1
+        assert attacks[0]["name"] == str(WeaponName.RAPIER)
+
+
+@pytest.mark.django_db
+class TestCharacterDetailViewWithClassFeatures:
+    """Tests for class feature display."""
+
+    def test_displays_class_features(self, client, fighter):
+        from character.models.classes import CharacterFeature, ClassFeature
+
+        feature = ClassFeature.objects.filter(
+            klass__name=ClassName.FIGHTER, level=1
+        ).first()
+        if feature:
+            CharacterFeature.objects.create(
+                character=fighter,
+                class_feature=feature,
+                source_class=fighter.primary_class,
+                level_gained=1,
+            )
+        response = client.get(fighter.get_absolute_url())
+        class_features = response.context["class_features"]
+        if feature:
+            assert len(class_features) >= 1
+            assert any(f["name"] == feature.name for f in class_features)
+
+
+@pytest.mark.django_db
+class TestCharacterDetailViewWithFeats:
+    """Tests for feat display."""
+
+    def test_displays_feats(self, client, character):
+        from character.models.feats import CharacterFeat, Feat
+        from character.constants.feats import FeatName
+
+        feat = Feat.objects.get(name=FeatName.ALERT)
+        CharacterFeat.objects.create(
+            character=character, feat=feat, granted_by="background"
+        )
+        response = client.get(character.get_absolute_url())
+        feats = response.context["feats"]
+        assert len(feats) == 1
+        assert feats[0]["name"] == feat.get_name_display()
+        assert feats[0]["description"] == feat.description
+
+
+@pytest.mark.django_db
+class TestCharacterDetailViewWithSpeciesTraits:
+    """Tests for species trait display."""
+
+    def test_displays_species_traits(self, client, character):
+        response = client.get(character.get_absolute_url())
+        racial_traits = response.context["racial_traits"]
+        if character.species and character.species.traits.exists():
+            assert len(racial_traits) > 0
+            for trait in racial_traits:
+                assert "name" in trait
+                assert "description" in trait
 
 
 @pytest.fixture(scope="class")
