@@ -10,7 +10,9 @@ from ..character_attributes_builders import (
     BackgroundBuilder,
     BaseBuilder,
     ClassBuilder,
+    DerivedStatsBuilder,
     SpeciesBuilder,
+    SpellcastingBuilder,
 )
 from ..constants.equipment import ArmorName, GearName, ToolName, WeaponName
 from ..constants.classes import ClassName
@@ -72,14 +74,23 @@ class CharacterCreateView(LoginRequiredMixin, SessionWizardView):
                 character = form.save(commit=False)
                 character.user = self.request.user
                 klass = form.cleaned_data["klass"]
+                # Phase 1: Base setup - inventory and ability scores
                 BaseBuilder(character, form).build()
+                # Phase 2: Species traits - size, speed, darkvision, languages
                 SpeciesBuilder(character).build()
+                # Phase 3: Class - HP, proficiencies, features, wealth
                 ClassBuilder(character, klass).build()
             elif isinstance(form, SkillsSelectForm):
                 for field in form.cleaned_data.keys():
                     character.skills.add(form.cleaned_data[field])
             elif isinstance(form, BackgroundForm):
+                # Phase 4: Background - skill proficiencies, tools, feat, personality
                 BackgroundBuilder(character).build()
+                # Phase 5: Derived stats (after all modifiers are applied)
+                DerivedStatsBuilder(character).build()
+                # Phase 6: Spellcasting setup (if class is a spellcaster)
+                if klass:
+                    SpellcastingBuilder(character, klass).build()
             elif isinstance(form, EquipmentSelectForm):
                 inventory = character.inventory
                 for field in form.cleaned_data.keys():

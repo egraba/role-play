@@ -30,7 +30,12 @@ from character.models.equipment import (
     Weapon,
     WeaponSettings,
 )
-from character.models.classes import CharacterClass, Class, ClassFeature
+from character.models.classes import (
+    CharacterClass,
+    CharacterFeature,
+    Class,
+    ClassFeature,
+)
 from character.models.species import Species, SpeciesTrait
 from character.models.spells import (
     CharacterSpellSlot,
@@ -306,6 +311,16 @@ class CharacterClassFactory(factory.django.DjangoModelFactory):
     klass = factory.SubFactory(ClassFactory)
     level = 1
     is_primary = True
+
+
+class CharacterFeatureFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = CharacterFeature
+
+    character = factory.SubFactory(CharacterFactory)
+    class_feature = factory.SubFactory(ClassFeatureFactory)
+    source_class = factory.SubFactory(ClassFactory)
+    level_gained = 1
 
 
 class SpellSettingsFactory(factory.django.DjangoModelFactory):

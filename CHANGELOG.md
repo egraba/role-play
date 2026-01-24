@@ -5,6 +5,20 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Added
+* Enhanced character creation wizard with full D&D 5e support:
+  - **Character Model**: Added `darkvision` field (range in feet, 0 for none)
+  - **CharacterFeature Model**: New junction table to track class features gained by characters
+  - **SpeciesBuilder**: Now applies darkvision from species to character during creation
+  - **ClassBuilder**: Implemented armor and weapon proficiency assignment based on class categories:
+    - Armor proficiencies use type codes (LA, MA, HA, SH)
+    - Weapon proficiencies use categories (simple, martial)
+    - Level 1 class features now automatically assigned to character
+  - **DerivedStatsBuilder**: New builder for derived statistics (passive perception calculation)
+  - **SpellcastingBuilder**: New builder for spellcasting class setup:
+    - Standard spell slot creation from SpellSlotTable for prepared/known casters
+    - Warlock Pact Magic support with proper slot progression
+  - Wizard `done()` method now calls all builders in correct sequence
+  - Comprehensive test suite for all builders (test_character_builders.py)
 * Monster action template system for structured D&D 5e combat abilities:
   - MonsterActionTemplate model for structured actions with:
     - Attack properties: bonus, reach, range (normal/long), targets

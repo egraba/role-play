@@ -42,6 +42,7 @@ class Character(models.Model):
     ac = models.SmallIntegerField(default=0)
     size = models.CharField(max_length=1, choices=Size.choices, null=True, blank=True)
     speed = models.SmallIntegerField(null=True, blank=True)
+    darkvision = models.PositiveIntegerField(default=0)  # Range in feet, 0 = none
     languages = models.ManyToManyField(Language)
     hit_dice = models.CharField(max_length=5, default="1d8")
     hp_increase = models.SmallIntegerField(default=0)
