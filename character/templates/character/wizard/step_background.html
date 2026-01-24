@@ -1,0 +1,83 @@
+{% extends 'character/wizard/base_wizard.html' %}
+
+{% block wizard_form %}
+  <p class="text-muted mb-2">Choose your character's background. This represents their life before becoming an adventurer and grants skills, tool proficiencies, and a feat.</p>
+  <div class="rpg-form-group">
+    <label for="id_3-background">Background</label>
+    {{ wizard.form.background }}
+  </div>
+{% endblock %}
+
+{% block wizard_preview %}
+  <div class="preview-title">Background Details</div>
+  <div id="background-preview" class="preview-empty">
+    Select a background to see its details
+  </div>
+
+  <script>
+    const backgroundData = {{ background_preview|safe }};
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const select = document.getElementById('id_3-background');
+      const preview = document.getElementById('background-preview');
+
+      function updatePreview() {
+        const value = select.value;
+        if (!value || !backgroundData[value]) {
+          preview.innerHTML = '<div class="preview-empty">Select a background to see its details</div>';
+          return;
+        }
+
+        const data = backgroundData[value];
+        let html = '';
+
+        if (data.skill_proficiencies && data.skill_proficiencies.length > 0) {
+          html += `
+            <div class="preview-stat">
+              <span class="preview-stat-label">Skill Proficiencies</span>
+              <span class="preview-stat-value">${data.skill_proficiencies.join(', ')}</span>
+            </div>
+          `;
+        }
+
+        if (data.tool_proficiency) {
+          html += `
+            <div class="preview-stat">
+              <span class="preview-stat-label">Tool Proficiency</span>
+              <span class="preview-stat-value">${data.tool_proficiency}</span>
+            </div>
+          `;
+        }
+
+        if (data.origin_feat) {
+          html += `
+            <div class="mt-2">
+              <strong class="text-primary">Origin Feat</strong>
+            </div>
+            <div class="preview-trait">
+              <div class="preview-trait-name">${data.origin_feat.name}</div>
+              <div class="preview-trait-description">${data.origin_feat.description.substring(0, 300)}${data.origin_feat.description.length > 300 ? '...' : ''}</div>
+            </div>
+          `;
+        }
+
+        if (data.personality_traits && data.personality_traits.length > 0) {
+          html += `
+            <div class="mt-2">
+              <strong class="text-primary">Sample Personality Traits</strong>
+              <ul class="preview-list" style="max-height: 150px; overflow-y: auto;">
+          `;
+          data.personality_traits.slice(0, 3).forEach(trait => {
+            html += `<li style="font-size: 0.85rem;">"${trait}"</li>`;
+          });
+          html += '</ul></div>';
+        }
+
+        preview.innerHTML = html;
+      }
+
+      select.addEventListener('change', updatePreview);
+      updatePreview();
+    });
+  </script>
+{% endblock %}

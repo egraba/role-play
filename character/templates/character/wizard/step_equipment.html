@@ -1,0 +1,78 @@
+{% extends 'character/wizard/base_wizard.html' %}
+
+{% block wizard_form %}
+  <p class="text-muted mb-2">
+    Choose your starting equipment.
+    {% if selected_class %}
+      As a <strong class="text-primary">{{ selected_class }}</strong>, you have the following equipment choices.
+    {% endif %}
+  </p>
+
+  {% if wizard.form.fields %}
+    {% for field in wizard.form %}
+      <div class="rpg-form-group">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}
+          <div class="game-message error field-error">{{ field.errors }}</div>
+        {% endif %}
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="game-message info">
+      No equipment choices available for this class. You will receive standard starting equipment.
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block wizard_preview %}
+  <div class="preview-title">Equipment Summary</div>
+  <div id="equipment-preview">
+    <p class="text-muted mb-2">Your selected equipment:</p>
+    <div id="equipment-list"></div>
+
+    {% if selected_class %}
+      <div class="mt-2">
+        <strong class="text-primary">Automatic Equipment</strong>
+        <p class="text-muted" style="font-size: 0.9rem; margin-top: 5px;">
+          Some equipment is granted automatically based on your class.
+        </p>
+      </div>
+    {% endif %}
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const equipmentList = document.getElementById('equipment-list');
+      const equipmentSelects = document.querySelectorAll('select[id^="id_5-"]');
+
+      function updateEquipmentList() {
+        let html = '<ul class="preview-list">';
+        let hasSelection = false;
+
+        equipmentSelects.forEach(select => {
+          const selectedOption = select.options[select.selectedIndex];
+          if (selectedOption && selectedOption.value) {
+            hasSelection = true;
+            const label = select.previousElementSibling ? select.previousElementSibling.textContent : 'Item';
+            html += `<li><strong>${label}:</strong> ${selectedOption.textContent}</li>`;
+          }
+        });
+
+        if (!hasSelection) {
+          html = '<div class="text-muted">No equipment selected yet</div>';
+        } else {
+          html += '</ul>';
+        }
+
+        equipmentList.innerHTML = html;
+      }
+
+      equipmentSelects.forEach(select => {
+        select.addEventListener('change', updateEquipmentList);
+      });
+
+      updateEquipmentList();
+    });
+  </script>
+{% endblock %}

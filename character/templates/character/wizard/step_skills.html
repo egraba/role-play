@@ -1,0 +1,98 @@
+{% extends 'character/wizard/base_wizard.html' %}
+
+{% block wizard_form %}
+  <p class="text-muted mb-2">
+    Choose your class skills.
+    {% if selected_class %}
+      As a <strong class="text-primary">{{ selected_class }}</strong>, you can choose from the following skills.
+    {% endif %}
+  </p>
+
+  {% if wizard.form.fields %}
+    {% for field in wizard.form %}
+      <div class="rpg-form-group">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}
+          <div class="game-message error field-error">{{ field.errors }}</div>
+        {% endif %}
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="game-message info">
+      No skill choices available for this class.
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block wizard_preview %}
+  <div class="preview-title">Skill Information</div>
+  <div id="skill-preview">
+    <p class="text-muted">Hover over or select a skill to see its description.</p>
+
+    <div id="skill-details" style="margin-top: 15px;"></div>
+  </div>
+
+  <script>
+    const skillData = {{ skill_descriptions|safe }};
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const skillDetails = document.getElementById('skill-details');
+      const skillSelects = document.querySelectorAll('select[id^="id_4-"]');
+
+      function showSkillInfo(skillName) {
+        if (!skillName || !skillData[skillName]) {
+          skillDetails.innerHTML = '<div class="preview-empty">Select a skill to see details</div>';
+          return;
+        }
+
+        const data = skillData[skillName];
+        skillDetails.innerHTML = `
+          <div class="preview-trait">
+            <div class="preview-trait-name">${data.display_name}</div>
+            <div style="color: var(--color-text-muted); font-size: 0.85rem; margin-bottom: 5px;">
+              (${data.ability})
+            </div>
+            <div class="preview-trait-description">${data.description}</div>
+          </div>
+        `;
+      }
+
+      // Show selected skills summary
+      function updateSelectedSkills() {
+        let html = '<div class="mb-2"><strong>Selected Skills:</strong></div>';
+        let hasSelection = false;
+
+        skillSelects.forEach((select, index) => {
+          const value = select.value;
+          if (value && skillData[value]) {
+            hasSelection = true;
+            html += `
+              <div class="preview-stat">
+                <span class="preview-stat-label">${index + 1}.</span>
+                <span class="preview-stat-value">${skillData[value].display_name}</span>
+              </div>
+            `;
+          }
+        });
+
+        if (!hasSelection) {
+          html += '<div class="text-muted">No skills selected yet</div>';
+        }
+
+        skillDetails.innerHTML = html;
+      }
+
+      skillSelects.forEach(select => {
+        select.addEventListener('change', updateSelectedSkills);
+        select.addEventListener('focus', function() {
+          if (this.value) {
+            showSkillInfo(this.value);
+          }
+        });
+      });
+
+      updateSelectedSkills();
+    });
+  </script>
+{% endblock %}

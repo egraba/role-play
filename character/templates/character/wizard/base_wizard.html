@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block head %}
+  {{ wizard.form.media }}
+{% endblock %}
+
+{% block content %}
+  <div class="rpg-container">
+    <div class="rpg-panel" style="max-width: 1000px; margin: 30px auto;">
+      <h1 class="panel-title">Create Your Character</h1>
+
+      <!-- Progress Indicator -->
+      <div class="wizard-progress">
+        {% for step_num, step_title in step_titles.items %}
+          <div class="wizard-step {% if step_num == current_step %}active{% elif step_num|add:"0" < current_step|add:"0" %}completed{% endif %}">
+            <div class="wizard-step-number">
+              {% if step_num|add:"0" < current_step|add:"0" %}
+                &#10003;
+              {% else %}
+                {{ step_num|add:"1" }}
+              {% endif %}
+            </div>
+            <span class="wizard-step-label">{{ step_title }}</span>
+          </div>
+        {% endfor %}
+      </div>
+
+      <form action="" method="post">
+        {% csrf_token %}
+        {{ wizard.management_form }}
+
+        <div class="wizard-content">
+          <div class="wizard-form-section">
+            <h2 class="text-primary mb-2">{{ current_step_title }}</h2>
+            <div class="rpg-form-group">
+              {% block wizard_form %}
+                {{ wizard.form }}
+              {% endblock %}
+            </div>
+          </div>
+
+          <div class="wizard-preview-section">
+            {% block wizard_preview %}
+              <div class="preview-title">Preview</div>
+              <div class="preview-empty">Select an option to see details</div>
+            {% endblock %}
+          </div>
+        </div>
+
+        <div class="action-buttons mt-2">
+          {% if wizard.steps.prev %}
+            <button name="wizard_goto_step" class="rpg-btn btn-defend" type="submit" value="{{ wizard.steps.prev }}">
+              Previous
+            </button>
+          {% endif %}
+          <button class="rpg-btn btn-primary" type="submit">
+            {% if wizard.steps.current == "6" %}
+              Create Character
+            {% else %}
+              Next Step
+            {% endif %}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

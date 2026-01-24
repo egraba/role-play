@@ -1,0 +1,75 @@
+{% extends 'character/wizard/base_wizard.html' %}
+
+{% block wizard_form %}
+  <p class="text-muted mb-2">Choose your character's species. Each species grants unique traits, abilities, and languages.</p>
+  <div class="rpg-form-group">
+    <label for="id_0-species">Species</label>
+    {{ wizard.form.species }}
+  </div>
+{% endblock %}
+
+{% block wizard_preview %}
+  <div class="preview-title">Species Traits</div>
+  <div id="species-preview" class="preview-empty">
+    Select a species to see its traits
+  </div>
+
+  <script>
+    const speciesData = {{ species_preview|safe }};
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const select = document.getElementById('id_0-species');
+      const preview = document.getElementById('species-preview');
+
+      function updatePreview() {
+        const value = select.value;
+        if (!value || !speciesData[value]) {
+          preview.innerHTML = '<div class="preview-empty">Select a species to see its traits</div>';
+          return;
+        }
+
+        const data = speciesData[value];
+        let html = `
+          <div class="preview-stat">
+            <span class="preview-stat-label">Size</span>
+            <span class="preview-stat-value">${data.size}</span>
+          </div>
+          <div class="preview-stat">
+            <span class="preview-stat-label">Speed</span>
+            <span class="preview-stat-value">${data.speed} ft.</span>
+          </div>
+          <div class="preview-stat">
+            <span class="preview-stat-label">Darkvision</span>
+            <span class="preview-stat-value">${data.darkvision > 0 ? data.darkvision + ' ft.' : 'None'}</span>
+          </div>
+        `;
+
+        if (data.languages && data.languages.length > 0) {
+          html += `
+            <div class="preview-stat">
+              <span class="preview-stat-label">Languages</span>
+              <span class="preview-stat-value">${data.languages.join(', ')}</span>
+            </div>
+          `;
+        }
+
+        if (data.traits && data.traits.length > 0) {
+          html += '<div class="mt-2"><strong class="text-primary">Racial Traits</strong></div>';
+          data.traits.forEach(trait => {
+            html += `
+              <div class="preview-trait">
+                <div class="preview-trait-name">${trait.name}</div>
+                <div class="preview-trait-description">${trait.description}</div>
+              </div>
+            `;
+          });
+        }
+
+        preview.innerHTML = html;
+      }
+
+      select.addEventListener('change', updatePreview);
+      updatePreview();
+    });
+  </script>
+{% endblock %}

@@ -1,0 +1,291 @@
+{% extends 'character/wizard/base_wizard.html' %}
+
+{% block head %}
+  {{ block.super }}
+  <style>
+    .generation-method-group {
+      margin-bottom: 20px;
+    }
+
+    .generation-method-group label {
+      display: block;
+      padding: 10px 15px;
+      margin-bottom: 5px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 2px solid #444;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .generation-method-group label:hover {
+      border-color: var(--color-primary);
+    }
+
+    .generation-method-group input[type="radio"] {
+      margin-right: 10px;
+    }
+
+    .generation-method-group input[type="radio"]:checked + span {
+      color: var(--color-primary);
+    }
+
+    .ability-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+
+    .ability-field {
+      background: rgba(0, 0, 0, 0.2);
+      padding: 15px;
+      border-radius: 5px;
+      border: 1px solid #444;
+    }
+
+    .ability-field label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    .point-buy-info {
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--color-primary);
+      border-radius: 5px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .points-remaining {
+      font-size: 1.2rem;
+      color: var(--color-primary);
+      font-weight: bold;
+    }
+
+    .roll-buttons {
+      margin-bottom: 15px;
+    }
+
+    @media (max-width: 600px) {
+      .ability-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+{% endblock %}
+
+{% block wizard_form %}
+  <p class="text-muted mb-2">Determine your character's ability scores. These define your character's physical and mental capabilities.</p>
+
+  <div class="generation-method-group">
+    <p><strong>Generation Method:</strong></p>
+    {% for radio in wizard.form.generation_method %}
+      <label>
+        {{ radio.tag }}
+        <span>{{ radio.choice_label }}</span>
+      </label>
+    {% endfor %}
+  </div>
+
+  <div id="point-buy-info" class="point-buy-info" style="display: none;">
+    <p>Allocate your <strong>27 points</strong> across your abilities.</p>
+    <p>Points remaining: <span class="points-remaining" id="points-remaining">27</span></p>
+    <small class="text-muted">Cost: 8=0, 9=1, 10=2, 11=3, 12=4, 13=5, 14=7, 15=9</small>
+  </div>
+
+  <div id="roll-section" class="roll-buttons" style="display: none;">
+    <button type="button" class="rpg-btn btn-skill" id="roll-all-btn">Roll All Abilities (4d6 drop lowest)</button>
+    <p class="text-muted mt-1"><small>Click to roll, then assign scores to abilities below.</small></p>
+    <div id="rolled-values" style="margin-top: 10px;"></div>
+  </div>
+
+  <div class="ability-grid">
+    <div class="ability-field">
+      <label for="id_2-strength">Strength</label>
+      {{ wizard.form.strength }}
+    </div>
+    <div class="ability-field">
+      <label for="id_2-dexterity">Dexterity</label>
+      {{ wizard.form.dexterity }}
+    </div>
+    <div class="ability-field">
+      <label for="id_2-constitution">Constitution</label>
+      {{ wizard.form.constitution }}
+    </div>
+    <div class="ability-field">
+      <label for="id_2-intelligence">Intelligence</label>
+      {{ wizard.form.intelligence }}
+    </div>
+    <div class="ability-field">
+      <label for="id_2-wisdom">Wisdom</label>
+      {{ wizard.form.wisdom }}
+    </div>
+    <div class="ability-field">
+      <label for="id_2-charisma">Charisma</label>
+      {{ wizard.form.charisma }}
+    </div>
+  </div>
+
+  <script>
+    const pointCosts = {8: 0, 9: 1, 10: 2, 11: 3, 12: 4, 13: 5, 14: 7, 15: 9};
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const methodRadios = document.querySelectorAll('input[name="2-generation_method"]');
+      const pointBuyInfo = document.getElementById('point-buy-info');
+      const rollSection = document.getElementById('roll-section');
+      const pointsRemaining = document.getElementById('points-remaining');
+      const rollBtn = document.getElementById('roll-all-btn');
+      const rolledValues = document.getElementById('rolled-values');
+
+      const abilitySelects = [
+        document.getElementById('id_2-strength'),
+        document.getElementById('id_2-dexterity'),
+        document.getElementById('id_2-constitution'),
+        document.getElementById('id_2-intelligence'),
+        document.getElementById('id_2-wisdom'),
+        document.getElementById('id_2-charisma')
+      ];
+
+      function updateMethodDisplay() {
+        const selected = document.querySelector('input[name="2-generation_method"]:checked');
+        const method = selected ? selected.value : 'standard';
+
+        pointBuyInfo.style.display = method === 'point_buy' ? 'block' : 'none';
+        rollSection.style.display = method === 'roll' ? 'block' : 'none';
+      }
+
+      function calculatePoints() {
+        let total = 0;
+        abilitySelects.forEach(select => {
+          const value = parseInt(select.value) || 0;
+          if (pointCosts[value] !== undefined) {
+            total += pointCosts[value];
+          }
+        });
+        const remaining = 27 - total;
+        pointsRemaining.textContent = remaining;
+        pointsRemaining.style.color = remaining < 0 ? 'var(--color-health)' : 'var(--color-primary)';
+      }
+
+      function roll4d6DropLowest() {
+        const rolls = [];
+        for (let i = 0; i < 4; i++) {
+          rolls.push(Math.floor(Math.random() * 6) + 1);
+        }
+        rolls.sort((a, b) => b - a);
+        return rolls.slice(0, 3).reduce((a, b) => a + b, 0);
+      }
+
+      rollBtn.addEventListener('click', function() {
+        const values = [];
+        for (let i = 0; i < 6; i++) {
+          values.push(roll4d6DropLowest());
+        }
+        values.sort((a, b) => b - a);
+
+        rolledValues.innerHTML = '<strong>Rolled values:</strong> ' +
+        values.map(v => `<span class="text-primary" style="margin: 0 5px; font-weight: bold;">${v}</span>`).join(' ');
+
+        // Update select options to include rolled values
+        abilitySelects.forEach(select => {
+          const currentValue = select.value;
+          select.innerHTML = '<option value="">---------</option>';
+          values.forEach(v => {
+            const option = document.createElement('option');
+            option.value = v;
+            option.textContent = v;
+            select.appendChild(option);
+          });
+          if (currentValue && values.includes(parseInt(currentValue))) {
+            select.value = currentValue;
+          }
+        });
+      });
+
+      methodRadios.forEach(radio => {
+        radio.addEventListener('change', updateMethodDisplay);
+      });
+
+      abilitySelects.forEach(select => {
+        select.addEventListener('change', calculatePoints);
+      });
+
+      updateMethodDisplay();
+      calculatePoints();
+    });
+  </script>
+{% endblock %}
+
+{% block wizard_preview %}
+  <div class="preview-title">Ability Modifiers</div>
+  <div id="ability-preview">
+    <p class="text-muted mb-2">Your ability modifiers are calculated as (score - 10) / 2, rounded down.</p>
+
+    <div class="preview-stat">
+      <span class="preview-stat-label">STR</span>
+      <span class="preview-stat-value" id="str-mod">--</span>
+    </div>
+    <div class="preview-stat">
+      <span class="preview-stat-label">DEX</span>
+      <span class="preview-stat-value" id="dex-mod">--</span>
+    </div>
+    <div class="preview-stat">
+      <span class="preview-stat-label">CON</span>
+      <span class="preview-stat-value" id="con-mod">--</span>
+    </div>
+    <div class="preview-stat">
+      <span class="preview-stat-label">INT</span>
+      <span class="preview-stat-value" id="int-mod">--</span>
+    </div>
+    <div class="preview-stat">
+      <span class="preview-stat-label">WIS</span>
+      <span class="preview-stat-value" id="wis-mod">--</span>
+    </div>
+    <div class="preview-stat">
+      <span class="preview-stat-label">CHA</span>
+      <span class="preview-stat-value" id="cha-mod">--</span>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const abilityMap = {
+        'id_2-strength': 'str-mod',
+        'id_2-dexterity': 'dex-mod',
+        'id_2-constitution': 'con-mod',
+        'id_2-intelligence': 'int-mod',
+        'id_2-wisdom': 'wis-mod',
+        'id_2-charisma': 'cha-mod'
+      };
+
+      function calcModifier(score) {
+        return Math.floor((score - 10) / 2);
+      }
+
+      function formatModifier(mod) {
+        return mod >= 0 ? '+' + mod : mod.toString();
+      }
+
+      function updateModifiers() {
+        for (const [selectId, modId] of Object.entries(abilityMap)) {
+          const select = document.getElementById(selectId);
+          const modSpan = document.getElementById(modId);
+          const value = parseInt(select.value);
+
+          if (isNaN(value)) {
+            modSpan.textContent = '--';
+          } else {
+            modSpan.textContent = formatModifier(calcModifier(value));
+          }
+        }
+      }
+
+      Object.keys(abilityMap).forEach(selectId => {
+        document.getElementById(selectId).addEventListener('change', updateModifiers);
+      });
+
+      updateModifiers();
+    });
+  </script>
+{% endblock %}
