@@ -1,9 +1,12 @@
 {% extends 'character/wizard/base_wizard.html' %}
 
+{% block step_description %}
+  Choose your character's species. Each species grants unique racial traits, physical characteristics, and languages that shape your character's identity.
+{% endblock %}
+
 {% block wizard_form %}
-  <p class="text-muted mb-2">Choose your character's species. Each species grants unique traits, abilities, and languages.</p>
   <div class="rpg-form-group">
-    <label for="id_0-species">Species</label>
+    <label for="id_0-species">Select Species</label>
     {{ wizard.form.species }}
   </div>
 {% endblock %}
@@ -54,7 +57,7 @@
         }
 
         if (data.traits && data.traits.length > 0) {
-          html += '<div class="mt-2"><strong class="text-primary">Racial Traits</strong></div>';
+          html += '<div class="preview-section-header">Racial Traits</div>';
           data.traits.forEach(trait => {
             html += `
               <div class="preview-trait">

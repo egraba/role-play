@@ -1,9 +1,12 @@
 {% extends 'character/wizard/base_wizard.html' %}
 
+{% block step_description %}
+  Choose your character's class. Your class defines your combat style, abilities, and role in the party through unique features and proficiencies.
+{% endblock %}
+
 {% block wizard_form %}
-  <p class="text-muted mb-2">Choose your character's class. Your class determines your combat abilities, skills, and special features.</p>
   <div class="rpg-form-group">
-    <label for="id_1-klass">Class</label>
+    <label for="id_1-klass">Select Class</label>
     {{ wizard.form.klass }}
   </div>
 {% endblock %}
@@ -36,7 +39,7 @@
           </div>
           <div class="preview-stat">
             <span class="preview-stat-label">HP at 1st Level</span>
-            <span class="preview-stat-value">${data.hp_first_level} + CON modifier</span>
+            <span class="preview-stat-value">${data.hp_first_level} + CON mod</span>
           </div>
           <div class="preview-stat">
             <span class="preview-stat-label">Primary Ability</span>
@@ -72,7 +75,7 @@
         }
 
         if (data.level_1_features && data.level_1_features.length > 0) {
-          html += '<div class="mt-2"><strong class="text-primary">Level 1 Features</strong></div>';
+          html += '<div class="preview-section-header">Level 1 Features</div>';
           data.level_1_features.forEach(feature => {
             html += `
               <div class="preview-trait">

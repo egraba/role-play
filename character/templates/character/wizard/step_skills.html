@@ -1,36 +1,34 @@
 {% extends 'character/wizard/base_wizard.html' %}
 
-{% block wizard_form %}
-  <p class="text-muted mb-2">
-    Choose your class skills.
-    {% if selected_class %}
-      As a <strong class="text-primary">{{ selected_class }}</strong>, you can choose from the following skills.
-    {% endif %}
-  </p>
+{% block step_description %}
+  Select your class skills.
+  {% if selected_class %}
+    As a <strong style="color: var(--color-primary);">{{ selected_class }}</strong>, you can choose from a specialized set of skills that complement your training.
+  {% endif %}
+{% endblock %}
 
+{% block wizard_form %}
   {% if wizard.form.fields %}
     {% for field in wizard.form %}
-      <div class="rpg-form-group">
+      <div class="rpg-form-group" style="margin-bottom: 15px;">
         <label for="{{ field.id_for_label }}">{{ field.label }}</label>
         {{ field }}
         {% if field.errors %}
-          <div class="game-message error field-error">{{ field.errors }}</div>
+          <div class="game-message error field-error" style="margin-top: 8px;">{{ field.errors }}</div>
         {% endif %}
       </div>
     {% endfor %}
   {% else %}
-    <div class="game-message info">
+    <div class="game-message info" style="padding: 20px; background: rgba(52, 152, 219, 0.1); border: 1px solid rgba(52, 152, 219, 0.3); border-radius: 8px;">
       No skill choices available for this class.
     </div>
   {% endif %}
 {% endblock %}
 
 {% block wizard_preview %}
-  <div class="preview-title">Skill Information</div>
+  <div class="preview-title">Selected Skills</div>
   <div id="skill-preview">
-    <p class="text-muted">Hover over or select a skill to see its description.</p>
-
-    <div id="skill-details" style="margin-top: 15px;"></div>
+    <div id="skill-details"></div>
   </div>
 
   <script>
@@ -40,44 +38,31 @@
       const skillDetails = document.getElementById('skill-details');
       const skillSelects = document.querySelectorAll('select[id^="id_4-"]');
 
-      function showSkillInfo(skillName) {
-        if (!skillName || !skillData[skillName]) {
-          skillDetails.innerHTML = '<div class="preview-empty">Select a skill to see details</div>';
-          return;
-        }
-
-        const data = skillData[skillName];
-        skillDetails.innerHTML = `
-          <div class="preview-trait">
-            <div class="preview-trait-name">${data.display_name}</div>
-            <div style="color: var(--color-text-muted); font-size: 0.85rem; margin-bottom: 5px;">
-              (${data.ability})
-            </div>
-            <div class="preview-trait-description">${data.description}</div>
-          </div>
-        `;
-      }
-
-      // Show selected skills summary
       function updateSelectedSkills() {
-        let html = '<div class="mb-2"><strong>Selected Skills:</strong></div>';
+        let html = '';
         let hasSelection = false;
+        let selectedCount = 0;
 
         skillSelects.forEach((select, index) => {
           const value = select.value;
           if (value && skillData[value]) {
             hasSelection = true;
+            selectedCount++;
+            const data = skillData[value];
             html += `
-              <div class="preview-stat">
-                <span class="preview-stat-label">${index + 1}.</span>
-                <span class="preview-stat-value">${skillData[value].display_name}</span>
+              <div class="preview-trait">
+                <div class="preview-trait-name">${data.display_name}</div>
+                <div style="color: var(--color-mana); font-size: 0.8rem; margin-bottom: 5px;">${data.ability}</div>
+                <div class="preview-trait-description">${data.description}</div>
               </div>
             `;
           }
         });
 
         if (!hasSelection) {
-          html += '<div class="text-muted">No skills selected yet</div>';
+          html = '<div class="preview-empty">Select skills to see their details</div>';
+        } else {
+          html = `<p style="color: var(--color-text-muted); margin-bottom: 15px; font-size: 0.9rem;">${selectedCount} skill${selectedCount > 1 ? 's' : ''} selected</p>` + html;
         }
 
         skillDetails.innerHTML = html;
@@ -85,11 +70,6 @@
 
       skillSelects.forEach(select => {
         select.addEventListener('change', updateSelectedSkills);
-        select.addEventListener('focus', function() {
-          if (this.value) {
-            showSkillInfo(this.value);
-          }
-        });
       });
 
       updateSelectedSkills();

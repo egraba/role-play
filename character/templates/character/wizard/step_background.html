@@ -1,9 +1,12 @@
 {% extends 'character/wizard/base_wizard.html' %}
 
+{% block step_description %}
+  Choose your character's background. This represents their life before becoming an adventurer and grants skill proficiencies, tools, and a starting feat.
+{% endblock %}
+
 {% block wizard_form %}
-  <p class="text-muted mb-2">Choose your character's background. This represents their life before becoming an adventurer and grants skills, tool proficiencies, and a feat.</p>
   <div class="rpg-form-group">
-    <label for="id_3-background">Background</label>
+    <label for="id_3-background">Select Background</label>
     {{ wizard.form.background }}
   </div>
 {% endblock %}
@@ -51,9 +54,7 @@
 
         if (data.origin_feat) {
           html += `
-            <div class="mt-2">
-              <strong class="text-primary">Origin Feat</strong>
-            </div>
+            <div class="preview-section-header">Origin Feat</div>
             <div class="preview-trait">
               <div class="preview-trait-name">${data.origin_feat.name}</div>
               <div class="preview-trait-description">${data.origin_feat.description.substring(0, 300)}${data.origin_feat.description.length > 300 ? '...' : ''}</div>
@@ -63,14 +64,13 @@
 
         if (data.personality_traits && data.personality_traits.length > 0) {
           html += `
-            <div class="mt-2">
-              <strong class="text-primary">Sample Personality Traits</strong>
-              <ul class="preview-list" style="max-height: 150px; overflow-y: auto;">
+            <div class="preview-section-header">Sample Personality Traits</div>
+            <ul class="preview-list" style="max-height: 150px; overflow-y: auto;">
           `;
           data.personality_traits.slice(0, 3).forEach(trait => {
-            html += `<li style="font-size: 0.85rem;">"${trait}"</li>`;
+            html += `<li style="font-size: 0.88rem; font-style: italic;">"${trait}"</li>`;
           });
-          html += '</ul></div>';
+          html += '</ul>';
         }
 
         preview.innerHTML = html;

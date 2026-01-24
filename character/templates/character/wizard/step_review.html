@@ -1,76 +1,15 @@
 {% extends 'character/wizard/base_wizard.html' %}
 
-{% block head %}
-  {{ block.super }}
-  <style>
-    .review-section {
-      background: rgba(0, 0, 0, 0.2);
-      border: 1px solid #444;
-      border-radius: 5px;
-      padding: 15px;
-      margin-bottom: 15px;
-    }
-
-    .review-section-title {
-      color: var(--color-primary);
-      font-size: 1rem;
-      font-weight: bold;
-      margin-bottom: 10px;
-      border-bottom: 1px solid #444;
-      padding-bottom: 5px;
-    }
-
-    .review-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-    }
-
-    .review-ability {
-      text-align: center;
-      padding: 10px;
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 5px;
-    }
-
-    .review-ability-name {
-      font-size: 0.8rem;
-      color: var(--color-text-muted);
-    }
-
-    .review-ability-score {
-      font-size: 1.5rem;
-      color: var(--color-primary);
-      font-weight: bold;
-    }
-
-    .review-edit-link {
-      float: right;
-      font-size: 0.85rem;
-      color: var(--color-mana);
-      cursor: pointer;
-    }
-
-    .review-edit-link:hover {
-      color: var(--color-primary);
-    }
-
-    @media (max-width: 600px) {
-      .review-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-  </style>
+{% block step_description %}
+  Review your character and give them a name. You can go back to any previous step to make changes before finalizing your creation.
 {% endblock %}
 
 {% block wizard_form %}
-  <p class="text-muted mb-2">Review your character and enter a name. Click "Create Character" when you're ready.</p>
-
-  <div class="rpg-form-group">
-    <label for="id_6-name">Character Name</label>
+  <div class="rpg-form-group" style="margin-bottom: 25px;">
+    <label for="id_6-name" style="font-size: 1.1rem;">Character Name</label>
     {{ wizard.form.name }}
     {% if wizard.form.name.errors %}
-      <div class="game-message error field-error">{{ wizard.form.name.errors }}</div>
+      <div class="game-message error field-error" style="margin-top: 8px;">{{ wizard.form.name.errors }}</div>
     {% endif %}
   </div>
 
@@ -78,7 +17,7 @@
     <!-- Species & Class -->
     <div class="review-section">
       <div class="review-section-title">
-        Basic Info
+        <span>Basic Information</span>
         <button type="submit" name="wizard_goto_step" value="0" class="review-edit-link">Edit</button>
       </div>
       {% if character_summary.species %}
@@ -105,7 +44,7 @@
     {% if character_summary.abilities %}
       <div class="review-section">
         <div class="review-section-title">
-          Ability Scores
+          <span>Ability Scores</span>
           <button type="submit" name="wizard_goto_step" value="2" class="review-edit-link">Edit</button>
         </div>
         <div class="review-grid">
@@ -141,7 +80,7 @@
     {% if character_summary.skills %}
       <div class="review-section">
         <div class="review-section-title">
-          Skills
+          <span>Skills</span>
           <button type="submit" name="wizard_goto_step" value="4" class="review-edit-link">Edit</button>
         </div>
         <ul class="preview-list">
@@ -156,7 +95,7 @@
     {% if character_summary.equipment %}
       <div class="review-section">
         <div class="review-section-title">
-          Equipment
+          <span>Equipment</span>
           <button type="submit" name="wizard_goto_step" value="5" class="review-edit-link">Edit</button>
         </div>
         <ul class="preview-list">
@@ -170,14 +109,14 @@
 {% endblock %}
 
 {% block wizard_preview %}
-  <div class="preview-title">Character Ready</div>
-  <div class="text-center" style="padding: 20px;">
-    <div style="font-size: 4rem; margin-bottom: 15px;">&#9876;</div>
-    <p class="text-muted">
-      Your character is ready to begin their adventure!
+  <div class="preview-title">Ready to Begin</div>
+  <div style="text-align: center; padding: 30px 20px;">
+    <div style="font-size: 4rem; margin-bottom: 20px; text-shadow: 0 0 30px rgba(212, 175, 55, 0.5);">⚔</div>
+    <p style="color: var(--color-primary); font-size: 1.1rem; font-weight: bold; margin-bottom: 10px;">
+      Your Adventure Awaits
     </p>
-    <p class="text-muted" style="font-size: 0.9rem;">
-      Review the details on the left, enter a name, and click "Create Character" to finish.
+    <p class="text-muted" style="font-size: 0.9rem; line-height: 1.5;">
+      Review your choices, enter a name, and click <strong>"Create Character"</strong> to begin your journey.
     </p>
   </div>
 {% endblock %}

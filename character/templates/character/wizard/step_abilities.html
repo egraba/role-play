@@ -1,85 +1,12 @@
 {% extends 'character/wizard/base_wizard.html' %}
 
-{% block head %}
-  {{ block.super }}
-  <style>
-    .generation-method-group {
-      margin-bottom: 20px;
-    }
-
-    .generation-method-group label {
-      display: block;
-      padding: 10px 15px;
-      margin-bottom: 5px;
-      background: rgba(0, 0, 0, 0.3);
-      border: 2px solid #444;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .generation-method-group label:hover {
-      border-color: var(--color-primary);
-    }
-
-    .generation-method-group input[type="radio"] {
-      margin-right: 10px;
-    }
-
-    .generation-method-group input[type="radio"]:checked + span {
-      color: var(--color-primary);
-    }
-
-    .ability-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
-    }
-
-    .ability-field {
-      background: rgba(0, 0, 0, 0.2);
-      padding: 15px;
-      border-radius: 5px;
-      border: 1px solid #444;
-    }
-
-    .ability-field label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: bold;
-    }
-
-    .point-buy-info {
-      background: rgba(212, 175, 55, 0.1);
-      border: 1px solid var(--color-primary);
-      border-radius: 5px;
-      padding: 15px;
-      margin-bottom: 20px;
-    }
-
-    .points-remaining {
-      font-size: 1.2rem;
-      color: var(--color-primary);
-      font-weight: bold;
-    }
-
-    .roll-buttons {
-      margin-bottom: 15px;
-    }
-
-    @media (max-width: 600px) {
-      .ability-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+{% block step_description %}
+  Determine your ability scores. These six attributes define your character's physical and mental capabilities, influencing everything from combat to social interactions.
 {% endblock %}
 
 {% block wizard_form %}
-  <p class="text-muted mb-2">Determine your character's ability scores. These define your character's physical and mental capabilities.</p>
-
   <div class="generation-method-group">
-    <p><strong>Generation Method:</strong></p>
+    <p>Generation Method</p>
     {% for radio in wizard.form.generation_method %}
       <label>
         {{ radio.tag }}
@@ -94,10 +21,12 @@
     <small class="text-muted">Cost: 8=0, 9=1, 10=2, 11=3, 12=4, 13=5, 14=7, 15=9</small>
   </div>
 
-  <div id="roll-section" class="roll-buttons" style="display: none;">
-    <button type="button" class="rpg-btn btn-skill" id="roll-all-btn">Roll All Abilities (4d6 drop lowest)</button>
-    <p class="text-muted mt-1"><small>Click to roll, then assign scores to abilities below.</small></p>
-    <div id="rolled-values" style="margin-top: 10px;"></div>
+  <div id="roll-section" class="roll-buttons" style="display: none; margin-bottom: 20px;">
+    <button type="button" class="wizard-btn wizard-btn-next" style="width: 100%; margin-bottom: 10px;" id="roll-all-btn">
+      Roll All Abilities (4d6 drop lowest)
+    </button>
+    <p class="text-muted"><small>Click to roll, then assign scores to abilities below.</small></p>
+    <div id="rolled-values" style="margin-top: 10px; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 8px; text-align: center;"></div>
   </div>
 
   <div class="ability-grid">
@@ -184,8 +113,8 @@
         }
         values.sort((a, b) => b - a);
 
-        rolledValues.innerHTML = '<strong>Rolled values:</strong> ' +
-        values.map(v => `<span class="text-primary" style="margin: 0 5px; font-weight: bold;">${v}</span>`).join(' ');
+        rolledValues.innerHTML = '<strong>Rolled values:</strong><br>' +
+        values.map(v => `<span style="display: inline-block; margin: 5px 8px; padding: 8px 15px; background: linear-gradient(145deg, var(--color-primary), #b8962e); color: var(--color-bg-dark); border-radius: 6px; font-weight: bold; font-size: 1.1rem;">${v}</span>`).join('');
 
         // Update select options to include rolled values
         abilitySelects.forEach(select => {
@@ -220,7 +149,7 @@
 {% block wizard_preview %}
   <div class="preview-title">Ability Modifiers</div>
   <div id="ability-preview">
-    <p class="text-muted mb-2">Your ability modifiers are calculated as (score - 10) / 2, rounded down.</p>
+    <p class="text-muted" style="margin-bottom: 15px; font-size: 0.9rem;">Modifiers are calculated as (score - 10) / 2, rounded down.</p>
 
     <div class="preview-stat">
       <span class="preview-stat-label">STR</span>

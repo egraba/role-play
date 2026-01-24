@@ -1,25 +1,25 @@
 {% extends 'character/wizard/base_wizard.html' %}
 
-{% block wizard_form %}
-  <p class="text-muted mb-2">
-    Choose your starting equipment.
-    {% if selected_class %}
-      As a <strong class="text-primary">{{ selected_class }}</strong>, you have the following equipment choices.
-    {% endif %}
-  </p>
+{% block step_description %}
+  Choose your starting equipment.
+  {% if selected_class %}
+    As a <strong style="color: var(--color-primary);">{{ selected_class }}</strong>, you have access to specific weapons, armor, and gear suited to your fighting style.
+  {% endif %}
+{% endblock %}
 
+{% block wizard_form %}
   {% if wizard.form.fields %}
     {% for field in wizard.form %}
-      <div class="rpg-form-group">
+      <div class="rpg-form-group" style="margin-bottom: 15px;">
         <label for="{{ field.id_for_label }}">{{ field.label }}</label>
         {{ field }}
         {% if field.errors %}
-          <div class="game-message error field-error">{{ field.errors }}</div>
+          <div class="game-message error field-error" style="margin-top: 8px;">{{ field.errors }}</div>
         {% endif %}
       </div>
     {% endfor %}
   {% else %}
-    <div class="game-message info">
+    <div class="game-message info" style="padding: 20px; background: rgba(52, 152, 219, 0.1); border: 1px solid rgba(52, 152, 219, 0.3); border-radius: 8px;">
       No equipment choices available for this class. You will receive standard starting equipment.
     </div>
   {% endif %}
@@ -28,14 +28,13 @@
 {% block wizard_preview %}
   <div class="preview-title">Equipment Summary</div>
   <div id="equipment-preview">
-    <p class="text-muted mb-2">Your selected equipment:</p>
     <div id="equipment-list"></div>
 
     {% if selected_class %}
-      <div class="mt-2">
-        <strong class="text-primary">Automatic Equipment</strong>
-        <p class="text-muted" style="font-size: 0.9rem; margin-top: 5px;">
-          Some equipment is granted automatically based on your class.
+      <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(100, 100, 140, 0.2);">
+        <p class="preview-section-header" style="margin-top: 0;">Automatic Equipment</p>
+        <p class="text-muted" style="font-size: 0.88rem;">
+          Some equipment is granted automatically based on your class choice.
         </p>
       </div>
     {% endif %}
@@ -47,7 +46,7 @@
       const equipmentSelects = document.querySelectorAll('select[id^="id_5-"]');
 
       function updateEquipmentList() {
-        let html = '<ul class="preview-list">';
+        let html = '';
         let hasSelection = false;
 
         equipmentSelects.forEach(select => {
@@ -55,14 +54,17 @@
           if (selectedOption && selectedOption.value) {
             hasSelection = true;
             const label = select.previousElementSibling ? select.previousElementSibling.textContent : 'Item';
-            html += `<li><strong>${label}:</strong> ${selectedOption.textContent}</li>`;
+            html += `
+              <div class="preview-stat">
+                <span class="preview-stat-label">${label}</span>
+                <span class="preview-stat-value">${selectedOption.textContent}</span>
+              </div>
+            `;
           }
         });
 
         if (!hasSelection) {
-          html = '<div class="text-muted">No equipment selected yet</div>';
-        } else {
-          html += '</ul>';
+          html = '<div class="preview-empty">Select equipment to build your inventory</div>';
         }
 
         equipmentList.innerHTML = html;
