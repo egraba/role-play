@@ -47,6 +47,11 @@
                 Complete this step to continue building your character.
               {% endblock %}
             </p>
+            {% if wizard.form.non_field_errors %}
+              <div class="game-message error" style="margin-bottom: 20px;">
+                {{ wizard.form.non_field_errors }}
+              </div>
+            {% endif %}
             <div class="rpg-form-group">
               {% block wizard_form %}
                 {{ wizard.form }}

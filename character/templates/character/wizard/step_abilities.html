@@ -29,6 +29,8 @@
     <div id="rolled-values" style="margin-top: 10px; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 8px; text-align: center;"></div>
   </div>
 
+  <div id="duplicate-error" class="game-message error" style="display: none; margin-bottom: 15px;"></div>
+
   <div class="ability-grid">
     <div class="ability-field">
       <label for="id_2-strength">Strength</label>
@@ -97,6 +99,55 @@
         pointsRemaining.style.color = remaining < 0 ? 'var(--color-health)' : 'var(--color-primary)';
       }
 
+      const duplicateError = document.getElementById('duplicate-error');
+      const abilityLabels = {
+        'id_2-strength': 'Strength',
+        'id_2-dexterity': 'Dexterity',
+        'id_2-constitution': 'Constitution',
+        'id_2-intelligence': 'Intelligence',
+        'id_2-wisdom': 'Wisdom',
+        'id_2-charisma': 'Charisma'
+      };
+
+      function checkDuplicates() {
+        const values = {};
+        const duplicates = {};
+
+        abilitySelects.forEach(select => {
+          const value = select.value;
+          if (value && value !== '') {
+            if (values[value]) {
+              if (!duplicates[value]) {
+                duplicates[value] = [values[value]];
+              }
+              duplicates[value].push(select.id);
+            } else {
+              values[value] = select.id;
+            }
+          }
+        });
+
+        // Clear previous highlights
+        abilitySelects.forEach(select => {
+          select.classList.remove('error-field');
+        });
+
+        const duplicateFields = [];
+        for (const fieldIds of Object.values(duplicates)) {
+          for (const fieldId of fieldIds) {
+            document.getElementById(fieldId).classList.add('error-field');
+            duplicateFields.push(abilityLabels[fieldId]);
+          }
+        }
+
+        if (duplicateFields.length > 0) {
+          duplicateError.textContent = duplicateFields.join(', ') + ' must have different values';
+          duplicateError.style.display = 'block';
+        } else {
+          duplicateError.style.display = 'none';
+        }
+      }
+
       function roll4d6DropLowest() {
         const rolls = [];
         for (let i = 0; i < 4; i++) {
@@ -137,11 +188,15 @@
       });
 
       abilitySelects.forEach(select => {
-        select.addEventListener('change', calculatePoints);
+        select.addEventListener('change', function() {
+          calculatePoints();
+          checkDuplicates();
+        });
       });
 
       updateMethodDisplay();
       calculatePoints();
+      checkDuplicates();
     });
   </script>
 {% endblock %}
