@@ -132,6 +132,16 @@ class AbilityScoreForm(NoDuplicateValuesFormMixin, forms.Form):
 
     EMPTY_CHOICE = ("", "---------")
 
+    # Only check ability score fields for duplicates, not generation_method
+    duplicate_check_fields = [
+        "strength",
+        "dexterity",
+        "constitution",
+        "intelligence",
+        "wisdom",
+        "charisma",
+    ]
+
     GENERATION_METHODS = [
         ("standard", "Standard Array (15, 14, 13, 12, 10, 8)"),
         ("point_buy", "Point Buy (27 points)"),
