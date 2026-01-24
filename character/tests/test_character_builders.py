@@ -15,7 +15,6 @@ from character.character_attributes_builders import (
     SpeciesBuilder,
     SpellcastingBuilder,
 )
-from character.constants.classes import ClassName
 from character.constants.equipment import ArmorType, WeaponType
 from character.constants.skills import SkillName
 from character.constants.spells import CasterType, SpellcastingAbility
@@ -114,7 +113,7 @@ def fighter_class_with_armor():
     """Create a Fighter class with full armor proficiencies."""
     str_type = AbilityTypeFactory(name="STR")
     klass = ClassFactory(
-        name=ClassName.FIGHTER,
+        name="test_fighter_full_armor",
         hit_die=10,
         hp_first_level=10,
         hp_higher_levels=6,
@@ -131,7 +130,7 @@ def wizard_class_no_armor():
     """Create a Wizard class with no armor proficiencies."""
     int_type = AbilityTypeFactory(name="INT")
     klass = ClassFactory(
-        name=ClassName.WIZARD,
+        name="test_wizard_no_armor",
         hit_die=6,
         hp_first_level=6,
         hp_higher_levels=4,
@@ -248,7 +247,7 @@ class TestClassBuilderWeaponProficiencies:
         """Test class with no weapon proficiencies."""
         int_type = AbilityTypeFactory(name="INT")
         klass = ClassFactory(
-            name=ClassName.SORCERER,
+            name="test_sorcerer_no_weapons",
             primary_ability=int_type,
             armor_proficiencies=[],
             weapon_proficiencies=[],
@@ -271,7 +270,7 @@ class TestClassBuilderFeatures:
     def test_apply_class_features_level_1(self):
         """Test that level 1 class features are applied."""
         str_type = AbilityTypeFactory(name="STR")
-        klass = ClassFactory(name=ClassName.FIGHTER, primary_ability=str_type)
+        klass = ClassFactory(name="test_fighter_features_l1", primary_ability=str_type)
         ClassFeatureFactory(klass=klass, name="Fighting Style", level=1)
         ClassFeatureFactory(klass=klass, name="Second Wind", level=1)
         # Level 2 feature should not be applied
@@ -293,7 +292,7 @@ class TestClassBuilderFeatures:
     def test_class_feature_source_tracking(self):
         """Test that feature source class is correctly tracked."""
         str_type = AbilityTypeFactory(name="STR")
-        klass = ClassFactory(name=ClassName.FIGHTER, primary_ability=str_type)
+        klass = ClassFactory(name="test_fighter_source_track", primary_ability=str_type)
         feature = ClassFeatureFactory(klass=klass, name="Test Feature", level=1)
 
         character = CharacterFactory()
@@ -317,11 +316,14 @@ class TestClassBuilderFeatures:
 def perception_skill(db):
     """Create Perception skill."""
     wis_type = AbilityTypeFactory(name="WIS")
-    return Skill.objects.create(
+    skill, _ = Skill.objects.get_or_create(
         name=SkillName.PERCEPTION,
-        ability_type=wis_type,
-        description="Your Wisdom (Perception) check lets you spot, hear, or otherwise detect the presence of something.",
+        defaults={
+            "ability_type": wis_type,
+            "description": "Your Wisdom (Perception) check lets you spot, hear, or otherwise detect the presence of something.",
+        },
     )
+    return skill
 
 
 @pytest.mark.django_db
@@ -361,7 +363,7 @@ def wizard_spellcaster():
     """Create a Wizard with spellcasting configuration."""
     int_type = AbilityTypeFactory(name="INT")
     klass = ClassFactory(
-        name=ClassName.WIZARD,
+        name="test_wizard_spellcaster",
         primary_ability=int_type,
     )
     ClassSpellcastingFactory(
@@ -380,7 +382,7 @@ def warlock_spellcaster():
     """Create a Warlock with Pact Magic."""
     cha_type = AbilityTypeFactory(name="CHA")
     klass = ClassFactory(
-        name=ClassName.WARLOCK,
+        name="test_warlock_spellcaster",
         primary_ability=cha_type,
     )
     ClassSpellcastingFactory(
@@ -397,7 +399,7 @@ def non_caster():
     """Create a Fighter with no spellcasting."""
     str_type = AbilityTypeFactory(name="STR")
     return ClassFactory(
-        name=ClassName.FIGHTER,
+        name="test_fighter_non_caster",
         primary_ability=str_type,
     )
 
@@ -424,7 +426,7 @@ class TestSpellcastingBuilder:
         """Test spell slot setup for Wizard."""
         # Create spell slot table entries
         SpellSlotTableFactory(
-            class_name=ClassName.WIZARD, class_level=1, slot_level=1, slots=2
+            class_name="test_wizard_spellcaster", class_level=1, slot_level=1, slots=2
         )
 
         character = CharacterFactory()
@@ -478,7 +480,7 @@ class TestBuilderIntegration:
         con_type = AbilityTypeFactory(name="CON")
 
         klass = ClassFactory(
-            name=ClassName.FIGHTER,
+            name="test_fighter_martial_build",
             hit_die=10,
             hp_first_level=10,
             hp_higher_levels=6,
@@ -517,7 +519,7 @@ class TestBuilderIntegration:
         wis_type = AbilityTypeFactory(name="WIS")
 
         klass = ClassFactory(
-            name=ClassName.WIZARD,
+            name="test_wizard_caster_build",
             hit_die=6,
             hp_first_level=6,
             hp_higher_levels=4,
@@ -537,7 +539,7 @@ class TestBuilderIntegration:
 
         # Add spell slot table entry
         SpellSlotTableFactory(
-            class_name=ClassName.WIZARD, class_level=1, slot_level=1, slots=2
+            class_name="test_wizard_caster_build", class_level=1, slot_level=1, slots=2
         )
 
         # Add a level 1 feature
@@ -619,7 +621,7 @@ class TestClassBuilderArmorProficienciesExtended:
         """Test class with only light armor proficiency (e.g., Bard, Rogue)."""
         dex_type = AbilityTypeFactory(name="DEX")
         klass = ClassFactory(
-            name=ClassName.ROGUE,
+            name="test_rogue_light_armor",
             primary_ability=dex_type,
             armor_proficiencies=["LA"],
             weapon_proficiencies=["simple"],
@@ -637,7 +639,7 @@ class TestClassBuilderArmorProficienciesExtended:
         """Test class with light, medium armor and shields (e.g., Cleric)."""
         wis_type = AbilityTypeFactory(name="WIS")
         klass = ClassFactory(
-            name=ClassName.CLERIC,
+            name="test_cleric_lm_shield",
             primary_ability=wis_type,
             armor_proficiencies=["LA", "MA", "SH"],
             weapon_proficiencies=["simple"],
@@ -668,7 +670,7 @@ class TestClassBuilderWeaponProficienciesExtended:
         """Test class with only martial proficiencies (theoretical)."""
         str_type = AbilityTypeFactory(name="STR")
         klass = ClassFactory(
-            name=ClassName.BARBARIAN,
+            name="test_barbarian_martial_only",
             primary_ability=str_type,
             armor_proficiencies=[],
             weapon_proficiencies=["martial"],
@@ -698,7 +700,7 @@ class TestClassBuilderFeaturesExtended:
     def test_no_level_1_features(self):
         """Test class with no level 1 features."""
         str_type = AbilityTypeFactory(name="STR")
-        klass = ClassFactory(name=ClassName.FIGHTER, primary_ability=str_type)
+        klass = ClassFactory(name="test_fighter_no_l1_feat", primary_ability=str_type)
         # Only add higher level features
         ClassFeatureFactory(klass=klass, name="Action Surge", level=2)
         ClassFeatureFactory(klass=klass, name="Extra Attack", level=5)
@@ -714,7 +716,7 @@ class TestClassBuilderFeaturesExtended:
     def test_many_level_1_features(self):
         """Test class with many level 1 features."""
         str_type = AbilityTypeFactory(name="STR")
-        klass = ClassFactory(name=ClassName.MONK, primary_ability=str_type)
+        klass = ClassFactory(name="test_monk_many_l1_feat", primary_ability=str_type)
         # Monks get several features at level 1
         ClassFeatureFactory(klass=klass, name="Unarmored Defense", level=1)
         ClassFeatureFactory(klass=klass, name="Martial Arts", level=1)
@@ -791,7 +793,7 @@ class TestSpellcastingBuilderExtended:
     def test_warlock_level_2(self):
         """Test Warlock at level 2 (2 slots at level 1)."""
         cha_type = AbilityTypeFactory(name="CHA")
-        klass = ClassFactory(name=ClassName.WARLOCK, primary_ability=cha_type)
+        klass = ClassFactory(name="test_warlock_level_2", primary_ability=cha_type)
         ClassSpellcastingFactory(
             klass=klass,
             caster_type=CasterType.PACT,
@@ -810,7 +812,7 @@ class TestSpellcastingBuilderExtended:
     def test_warlock_level_3(self):
         """Test Warlock at level 3 (2 slots at level 2)."""
         cha_type = AbilityTypeFactory(name="CHA")
-        klass = ClassFactory(name=ClassName.WARLOCK, primary_ability=cha_type)
+        klass = ClassFactory(name="test_warlock_level_3", primary_ability=cha_type)
         ClassSpellcastingFactory(
             klass=klass,
             caster_type=CasterType.PACT,
@@ -829,7 +831,7 @@ class TestSpellcastingBuilderExtended:
     def test_warlock_level_5(self):
         """Test Warlock at level 5 (2 slots at level 3)."""
         cha_type = AbilityTypeFactory(name="CHA")
-        klass = ClassFactory(name=ClassName.WARLOCK, primary_ability=cha_type)
+        klass = ClassFactory(name="test_warlock_level_5", primary_ability=cha_type)
         ClassSpellcastingFactory(
             klass=klass,
             caster_type=CasterType.PACT,
@@ -848,7 +850,7 @@ class TestSpellcastingBuilderExtended:
     def test_wizard_multiple_slot_levels(self):
         """Test Wizard with multiple spell slot levels (level 3)."""
         int_type = AbilityTypeFactory(name="INT")
-        klass = ClassFactory(name=ClassName.WIZARD, primary_ability=int_type)
+        klass = ClassFactory(name="test_wizard_multi_slots", primary_ability=int_type)
         ClassSpellcastingFactory(
             klass=klass,
             caster_type=CasterType.PREPARED,
@@ -857,10 +859,10 @@ class TestSpellcastingBuilderExtended:
 
         # Level 3 wizard has 4 1st-level and 2 2nd-level slots
         SpellSlotTableFactory(
-            class_name=ClassName.WIZARD, class_level=3, slot_level=1, slots=4
+            class_name="test_wizard_multi_slots", class_level=3, slot_level=1, slots=4
         )
         SpellSlotTableFactory(
-            class_name=ClassName.WIZARD, class_level=3, slot_level=2, slots=2
+            class_name="test_wizard_multi_slots", class_level=3, slot_level=2, slots=2
         )
 
         character = CharacterFactory()
@@ -884,7 +886,7 @@ class TestSpellcastingBuilderExtended:
     def test_half_caster_paladin(self):
         """Test half-caster (Paladin) spell slot setup."""
         str_type = AbilityTypeFactory(name="STR")
-        klass = ClassFactory(name=ClassName.PALADIN, primary_ability=str_type)
+        klass = ClassFactory(name="test_paladin_half_caster", primary_ability=str_type)
         ClassSpellcastingFactory(
             klass=klass,
             caster_type=CasterType.PREPARED,
@@ -893,7 +895,7 @@ class TestSpellcastingBuilderExtended:
 
         # Level 2 paladin gets 2 1st-level slots
         SpellSlotTableFactory(
-            class_name=ClassName.PALADIN, class_level=2, slot_level=1, slots=2
+            class_name="test_paladin_half_caster", class_level=2, slot_level=1, slots=2
         )
 
         character = CharacterFactory()
@@ -909,7 +911,7 @@ class TestSpellcastingBuilderExtended:
     def test_spellcasting_config_caching(self):
         """Test that spellcasting config is cached after first access."""
         int_type = AbilityTypeFactory(name="INT")
-        klass = ClassFactory(name=ClassName.WIZARD, primary_ability=int_type)
+        klass = ClassFactory(name="test_wizard_caching", primary_ability=int_type)
         ClassSpellcastingFactory(
             klass=klass,
             caster_type=CasterType.PREPARED,
@@ -941,7 +943,7 @@ class TestBuilderIntegrationExtended:
         cha_type = AbilityTypeFactory(name="CHA")
 
         klass = ClassFactory(
-            name=ClassName.PALADIN,
+            name="test_paladin_integ_build",
             hit_die=10,
             hp_first_level=10,
             hp_higher_levels=6,
@@ -961,7 +963,7 @@ class TestBuilderIntegrationExtended:
 
         # Level 2 paladin spell slots
         SpellSlotTableFactory(
-            class_name=ClassName.PALADIN, class_level=2, slot_level=1, slots=2
+            class_name="test_paladin_integ_build", class_level=2, slot_level=1, slots=2
         )
 
         # Add level 1 features
@@ -994,7 +996,7 @@ class TestBuilderIntegrationExtended:
         wis_type = AbilityTypeFactory(name="WIS")
 
         klass = ClassFactory(
-            name=ClassName.WARLOCK,
+            name="test_warlock_integ_build",
             hit_die=8,
             hp_first_level=8,
             hp_higher_levels=5,
@@ -1047,7 +1049,7 @@ class TestBuilderIntegrationExtended:
         """Test that building in correct order produces valid character."""
         str_type = AbilityTypeFactory(name="STR")
         klass = ClassFactory(
-            name=ClassName.FIGHTER,
+            name="test_fighter_build_order",
             primary_ability=str_type,
             armor_proficiencies=["LA", "MA", "HA", "SH"],
             weapon_proficiencies=["simple", "martial"],

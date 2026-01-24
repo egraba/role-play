@@ -362,6 +362,7 @@ class SpellPreparationFactory(factory.django.DjangoModelFactory):
 class SpellSlotTableFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = SpellSlotTable
+        django_get_or_create = ("class_name", "class_level", "slot_level")
 
     class_name = ClassName.WIZARD
     class_level = 1
