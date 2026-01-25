@@ -4,6 +4,8 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 
 ## Unreleased
 
+## v0.14.0 - 2026-01-25
+
 ### Added
 * Enhanced 7-step character creation wizard with improved UX:
   - Step 1: Species selection with racial traits preview
