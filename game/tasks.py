@@ -14,13 +14,12 @@ from .models.events import (
     CombatInitiativeResponse,
     CombatInitiativeResult,
     CombatStarted,
-    Message,
     RollRequest,
     RollResponse,
     RollResult,
     TurnStarted,
 )
-from .models.game import Game, Master, Player
+from .models.game import Game, Player
 from .rolls import perform_combat_initiative_roll, perform_roll
 from .utils.channels import send_to_channel
 
@@ -33,40 +32,6 @@ def send_mail(
 ) -> int:
     logger.info(f"{subject=}, {message=}, {from_email=}, {recipient_list=}")
     return django_send_mail(subject, message, from_email, recipient_list)
-
-
-@shared_task
-def store_message(
-    game_id: int,
-    date: datetime,
-    message: str,
-    author_str: str,
-) -> None:
-    """
-    Store the message received in the channel.
-    """
-    logger.info(f"{game_id=}, {date=}, {message=}")
-    try:
-        game = Game.objects.get(id=game_id)
-    except Game.DoesNotExist as exc:
-        raise InvalidTaskError(f"Game of {game_id=} not found") from exc
-    author = None
-    try:
-        author = Master.objects.get(game=game, user__username=author_str)
-    except Master.DoesNotExist:
-        pass
-    try:
-        author = Player.objects.get(game=game, user__username=author_str)
-    except Player.DoesNotExist:
-        pass
-    if author is None:
-        raise InvalidTaskError(f"{author_str} not found")
-    Message.objects.create(
-        game=game,
-        date=date,
-        content=message,
-        author=author,
-    )
 
 
 @shared_task

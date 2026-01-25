@@ -4,16 +4,12 @@ from pydantic import ValidationError
 
 from character.models.character import Character
 
-from .commands import (
-    AbilityCheckResponseCommand,
-    CombatInitiativeResponseCommand,
-    ProcessMessageCommand,
-    SavingThrowResponseCommand,
-)
-from .event_enrichers import MessageEnricher, RollResponseEnricher
+from .constants.events import RollType
 from .exceptions import EventSchemaValidationError
 from .models.game import Game
 from .schemas import EventOrigin, EventSchema, EventType
+from .services import GameEventService
+from .tasks import process_combat_initiative_roll, process_roll
 
 
 class GameEventsConsumer(JsonWebsocketConsumer):
@@ -53,41 +49,70 @@ class GameEventsConsumer(JsonWebsocketConsumer):
             EventSchema(**content)
         except ValidationError as exc:
             raise EventSchemaValidationError(exc.errors()) from exc
-        # If the event comes from the server, the related data has already been stored
-        # in the database, so the event has just to be sent to the group.
-        # If the event comes from the client, the data needs to be stored in the database,
-        # when it is received by the server.
-        if "origin" in content:
-            if content["origin"] == EventOrigin.SERVER_SIDE:
-                pass
-        else:
-            match content["type"]:
-                case EventType.MESSAGE:
-                    command = ProcessMessageCommand()
-                    event_enricher = MessageEnricher(self.game, content, self.user)
-                case EventType.ABILITY_CHECK_RESPONSE:
-                    command = AbilityCheckResponseCommand()
-                    event_enricher = RollResponseEnricher(self.game, content, self.user)
-                case EventType.SAVING_THROW_RESPONSE:
-                    command = SavingThrowResponseCommand()
-                    event_enricher = RollResponseEnricher(self.game, content, self.user)
-                case EventType.COMBAT_INITIALIZATION:
-                    command = ProcessMessageCommand()
-                case EventType.COMBAT_INITIATIVE_RESPONSE:
-                    command = CombatInitiativeResponseCommand()
-                    event_enricher = RollResponseEnricher(self.game, content, self.user)
-                case _:
-                    pass
-            try:
-                command.execute(
-                    content=content,
-                    user=self.user,
+
+        # Server-side events are already processed, just forward to group
+        if content.get("origin") == EventOrigin.SERVER_SIDE:
+            async_to_sync(self.channel_layer.group_send)(self.game_group_name, content)
+            return
+
+        # Client-side events: save to DB first, then broadcast
+        match content["type"]:
+            case EventType.MESSAGE:
+                # Service saves to DB and broadcasts via send_to_channel
+                GameEventService.create_message(
                     game=self.game,
+                    user=self.user,
+                    content=content["message"],
+                    date=content["date"],
                 )
-            except Character.DoesNotExist:
-                self.close(reason="Character not found")
-            event_enricher.enrich()
-        async_to_sync(self.channel_layer.group_send)(self.game_group_name, content)
+                return  # Service handles broadcast
+
+            case EventType.ABILITY_CHECK_RESPONSE:
+                try:
+                    character = GameEventService.get_character(self.user)
+                except Character.DoesNotExist:
+                    self.close(reason="Character not found")
+                    return
+                process_roll.delay(
+                    game_id=self.game.id,
+                    author_id=character.player.id,
+                    date=content["date"],
+                    roll_type=RollType.ABILITY_CHECK,
+                )
+                return  # Celery task handles broadcast
+
+            case EventType.SAVING_THROW_RESPONSE:
+                try:
+                    character = GameEventService.get_character(self.user)
+                except Character.DoesNotExist:
+                    self.close(reason="Character not found")
+                    return
+                process_roll.delay(
+                    game_id=self.game.id,
+                    author_id=character.player.id,
+                    date=content["date"],
+                    roll_type=RollType.SAVING_THROW,
+                )
+                return  # Celery task handles broadcast
+
+            case EventType.COMBAT_INITIATIVE_RESPONSE:
+                try:
+                    character = GameEventService.get_character(self.user)
+                except Character.DoesNotExist:
+                    self.close(reason="Character not found")
+                    return
+                process_combat_initiative_roll.delay(
+                    game_id=self.game.id,
+                    player_id=character.player.id,
+                    date=content["date"],
+                )
+                return  # Celery task handles broadcast
+
+            case _:
+                # For unhandled client events, forward to group
+                async_to_sync(self.channel_layer.group_send)(
+                    self.game_group_name, content
+                )
 
     def message(self, event):
         """Message typed by player or master on the keyboard."""
@@ -145,4 +170,48 @@ class GameEventsConsumer(JsonWebsocketConsumer):
 
     def combat_initialization_complete(self, event):
         """Combat initialization complete."""
+        self.send_json(event)
+
+    def combat_started(self, event):
+        """Combat has officially started."""
+        self.send_json(event)
+
+    def turn_started(self, event):
+        """A fighter's turn has started."""
+        self.send_json(event)
+
+    def turn_ended(self, event):
+        """A fighter's turn has ended."""
+        self.send_json(event)
+
+    def round_ended(self, event):
+        """A combat round has ended."""
+        self.send_json(event)
+
+    def combat_ended(self, event):
+        """Combat has ended."""
+        self.send_json(event)
+
+    def action_taken(self, event):
+        """A fighter has taken an action."""
+        self.send_json(event)
+
+    def spell_cast(self, event):
+        """A spell has been cast."""
+        self.send_json(event)
+
+    def spell_damage_dealt(self, event):
+        """Spell damage has been dealt."""
+        self.send_json(event)
+
+    def spell_healing_received(self, event):
+        """Spell healing has been received."""
+        self.send_json(event)
+
+    def spell_condition_applied(self, event):
+        """A spell condition has been applied."""
+        self.send_json(event)
+
+    def spell_saving_throw(self, event):
+        """A spell saving throw has been made."""
         self.send_json(event)

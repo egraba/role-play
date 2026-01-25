@@ -8,7 +8,6 @@ from game.models.events import (
     CombatInitiativeRequest,
     CombatInitiativeResponse,
     CombatInitiativeResult,
-    Message,
     RollRequest,
     RollResponse,
     RollResult,
@@ -17,14 +16,11 @@ from game.tasks import (
     process_combat_initiative_roll,
     process_roll,
     send_mail,
-    store_message,
 )
 
 from .factories import (
     CombatInitalizationFactory,
     CombatInitiativeRequestFactory,
-    GameFactory,
-    PlayerFactory,
     RollRequestFactory,
 )
 
@@ -54,58 +50,6 @@ class TestSendMail:
         mocked_send_mail.assert_called_once_with(
             subject, message, from_email, recipient_list
         )
-
-
-class TestStoreMessage:
-    def test_message_message_stored_from_master(self, celery_session_worker):
-        fake = Faker()
-        game = GameFactory()
-        store_message.delay(
-            game_id=game.id,
-            author_str=game.master.user.username,
-            date=timezone.now(),
-            message=fake.text(100),
-        ).get()
-        message = Message.objects.last()
-        assert message.game == game
-        assert message.author == game.master.actor_ptr
-        assert message.message == message
-
-    def test_message_message_stored_from_player(self, celery_session_worker):
-        fake = Faker()
-        game = GameFactory()
-        player = PlayerFactory(game=game)
-        store_message.delay(
-            game_id=game.id,
-            author_str=player.user.username,
-            date=timezone.now(),
-            message=fake.text(100),
-        ).get()
-        message = Message.objects.last()
-        assert message.game == game
-        assert message.author == player.actor_ptr
-        assert message.message == message
-
-    def test_message_message_stored_from_unfound_author(self, celery_session_worker):
-        fake = Faker()
-        game = GameFactory()
-        with pytest.raises(InvalidTaskError):
-            store_message.delay(
-                game_id=game.id,
-                author_str=fake.user_name(),
-                date=timezone.now(),
-                message=fake.text(100),
-            ).get()
-
-    def test_message_game_not_found(self, celery_session_worker):
-        fake = Faker()
-        with pytest.raises(InvalidTaskError):
-            store_message.delay(
-                game_id=fake.random_int(min=9999),
-                date=timezone.now(),
-                message=fake.text(100),
-                author_str=fake.user_name(),
-            ).get()
 
 
 class TestProcessRoll:

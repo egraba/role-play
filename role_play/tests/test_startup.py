@@ -96,7 +96,6 @@ class TestCeleryStartup:
 
         expected_tasks = [
             "game.tasks.process_roll",
-            "game.tasks.store_message",
             "game.tasks.send_mail",
             "game.tasks.process_combat_initiative_roll",
         ]

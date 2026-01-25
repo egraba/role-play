@@ -4,6 +4,15 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 
 ## Unreleased
 
+### Changed
+* Refactored WebSocket event system for simpler architecture:
+  - Added `get_event_type()` method to all Event model subclasses, replacing 55-line isinstance chain
+  - Created `GameEventService` class for event creation and broadcasting (save-first-then-broadcast pattern)
+  - Simplified consumer to use service layer for messages and call Celery tasks directly for rolls
+  - Removed `event_enrichers.py` and `commands.py` (redundant abstraction layers)
+  - Removed `store_message` Celery task (now handled synchronously by service)
+  - Added missing WebSocket handler methods for combat and spell events
+
 ## v0.14.0 - 2026-01-25
 
 ### Added
