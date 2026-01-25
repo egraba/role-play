@@ -2,6 +2,7 @@ import pytest
 from django.utils import timezone
 from freezegun import freeze_time
 
+from game.constants.events import RollType
 from game.models.events import (
     CombatEnded,
     CombatInitialization,
@@ -23,6 +24,7 @@ from game.models.events import (
     TurnStarted,
     UserInvitation,
 )
+from game.schemas import EventType
 from utils.constants import FREEZED_TIME
 
 from character.tests.factories import (
@@ -32,9 +34,14 @@ from character.tests.factories import (
 )
 
 from ..factories import (
+    ActionTakenFactory,
     ActorFactory,
     CombatEndedFactory,
     CombatInitalizationFactory,
+    CombatInitativeOrderSetFactory,
+    CombatInitiativeRequestFactory,
+    CombatInitiativeResponseFactory,
+    CombatInitiativeResultFactory,
     CombatStartedFactory,
     EventFactory,
     FighterFactory,
@@ -460,3 +467,166 @@ class TestSpellSavingThrowModel:
         assert "DC 14" in message
         assert "Hold Person" in message
         assert "10" in message
+
+
+class TestGetEventType:
+    """Tests for get_event_type() method on all Event subclasses."""
+
+    def test_game_start_event_type(self):
+        event = GameStartFactory()
+        assert event.get_event_type() == EventType.GAME_START
+
+    def test_message_event_type(self):
+        event = MessageFactory()
+        assert event.get_event_type() == EventType.MESSAGE
+
+    def test_quest_update_event_type(self):
+        event = QuestUpdateFactory()
+        assert event.get_event_type() == EventType.QUEST_UPDATE
+
+    def test_roll_request_ability_check_event_type(self):
+        event = RollRequestFactory(roll_type=RollType.ABILITY_CHECK)
+        assert event.get_event_type() == EventType.ABILITY_CHECK_REQUEST
+
+    def test_roll_request_saving_throw_event_type(self):
+        event = RollRequestFactory(roll_type=RollType.SAVING_THROW)
+        assert event.get_event_type() == EventType.SAVING_THROW_REQUEST
+
+    def test_roll_response_ability_check_event_type(self):
+        request = RollRequestFactory(roll_type=RollType.ABILITY_CHECK)
+        event = RollResponseFactory(request=request, game=request.game)
+        assert event.get_event_type() == EventType.ABILITY_CHECK_RESPONSE
+
+    def test_roll_response_saving_throw_event_type(self):
+        request = RollRequestFactory(roll_type=RollType.SAVING_THROW)
+        event = RollResponseFactory(request=request, game=request.game)
+        assert event.get_event_type() == EventType.SAVING_THROW_RESPONSE
+
+    def test_roll_result_ability_check_event_type(self):
+        request = RollRequestFactory(roll_type=RollType.ABILITY_CHECK)
+        response = RollResponseFactory(request=request, game=request.game)
+        event = RollResultFactory(request=request, response=response, game=request.game)
+        assert event.get_event_type() == EventType.ABILITY_CHECK_RESULT
+
+    def test_roll_result_saving_throw_event_type(self):
+        request = RollRequestFactory(roll_type=RollType.SAVING_THROW)
+        response = RollResponseFactory(request=request, game=request.game)
+        event = RollResultFactory(request=request, response=response, game=request.game)
+        assert event.get_event_type() == EventType.SAVING_THROW_RESULT
+
+    def test_combat_initialization_event_type(self):
+        event = CombatInitalizationFactory()
+        assert event.get_event_type() == EventType.COMBAT_INITIALIZATION
+
+    def test_combat_initiative_request_event_type(self):
+        event = CombatInitiativeRequestFactory()
+        assert event.get_event_type() == EventType.COMBAT_INITIATIVE_REQUEST
+
+    def test_combat_initiative_response_event_type(self):
+        event = CombatInitiativeResponseFactory()
+        assert event.get_event_type() == EventType.COMBAT_INITIATIVE_RESPONSE
+
+    def test_combat_initiative_result_event_type(self):
+        request = CombatInitiativeRequestFactory()
+        response = CombatInitiativeResponseFactory(request=request)
+        event = CombatInitiativeResultFactory(
+            request=request, response=response, fighter=request.fighter
+        )
+        assert event.get_event_type() == EventType.COMBAT_INITIATIVE_RESULT
+
+    def test_combat_initiative_order_set_event_type(self):
+        event = CombatInitativeOrderSetFactory()
+        assert event.get_event_type() == EventType.COMBAT_INITIALIZATION_COMPLETE
+
+    def test_combat_started_event_type(self):
+        event = CombatStartedFactory()
+        assert event.get_event_type() == EventType.COMBAT_STARTED
+
+    def test_turn_started_event_type(self):
+        event = TurnStartedFactory()
+        assert event.get_event_type() == EventType.TURN_STARTED
+
+    def test_turn_ended_event_type(self):
+        event = TurnEndedFactory()
+        assert event.get_event_type() == EventType.TURN_ENDED
+
+    def test_round_ended_event_type(self):
+        event = RoundEndedFactory()
+        assert event.get_event_type() == EventType.ROUND_ENDED
+
+    def test_combat_ended_event_type(self):
+        event = CombatEndedFactory()
+        assert event.get_event_type() == EventType.COMBAT_ENDED
+
+    def test_action_taken_event_type(self):
+        event = ActionTakenFactory()
+        assert event.get_event_type() == EventType.ACTION_TAKEN
+
+    def test_spell_cast_event_type(self):
+        game = GameFactory()
+        author = ActorFactory()
+        caster = CharacterFactory()
+        spell = SpellSettingsFactory()
+        event = SpellCast.objects.create(
+            game=game, author=author, caster=caster, spell=spell, slot_level=1
+        )
+        assert event.get_event_type() == EventType.SPELL_CAST
+
+    def test_spell_damage_dealt_event_type(self):
+        game = GameFactory()
+        author = ActorFactory()
+        spell = SpellSettingsFactory()
+        target = CharacterFactory()
+        event = SpellDamageDealt.objects.create(
+            game=game,
+            author=author,
+            spell=spell,
+            target=target,
+            damage=10,
+            damage_type="fire",
+        )
+        assert event.get_event_type() == EventType.SPELL_DAMAGE_DEALT
+
+    def test_spell_healing_received_event_type(self):
+        game = GameFactory()
+        author = ActorFactory()
+        spell = SpellSettingsFactory()
+        target = CharacterFactory()
+        event = SpellHealingReceived.objects.create(
+            game=game, author=author, spell=spell, target=target, healing=10
+        )
+        assert event.get_event_type() == EventType.SPELL_HEALING_RECEIVED
+
+    def test_spell_condition_applied_event_type(self):
+        game = GameFactory()
+        author = ActorFactory()
+        spell = SpellSettingsFactory()
+        target = CharacterFactory()
+        condition = ConditionFactory()
+        event = SpellConditionApplied.objects.create(
+            game=game, author=author, spell=spell, target=target, condition=condition
+        )
+        assert event.get_event_type() == EventType.SPELL_CONDITION_APPLIED
+
+    def test_spell_saving_throw_event_type(self):
+        game = GameFactory()
+        author = ActorFactory()
+        spell = SpellSettingsFactory()
+        target = CharacterFactory()
+        event = SpellSavingThrow.objects.create(
+            game=game,
+            author=author,
+            spell=spell,
+            target=target,
+            save_type="DEX",
+            dc=15,
+            roll=12,
+            success=False,
+        )
+        assert event.get_event_type() == EventType.SPELL_SAVING_THROW
+
+    def test_base_event_get_event_type_raises(self):
+        """Test that base Event class raises NotImplementedError."""
+        event = EventFactory()
+        with pytest.raises(NotImplementedError):
+            event.get_event_type()

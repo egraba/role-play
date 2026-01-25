@@ -416,3 +416,314 @@ async def test_disconnect_without_connection(application, player_user):
     assert not connected
     # Disconnect should not raise even without game_group_name
     await communicator.disconnect()
+
+
+@pytest.mark.asyncio
+async def test_combat_started_handler(application, game, master_user):
+    """Test combat_started event handler."""
+    communicator = WebsocketCommunicator(application, f"/events/{game.id}/")
+    communicator.scope["user"] = master_user
+    communicator.scope["game_id"] = game.id
+    connected, _ = await communicator.connect()
+    assert connected
+
+    fake = Faker()
+    game_event = {
+        "type": EventType.COMBAT_STARTED,
+        "username": master_user.username,
+        "date": fake.date_time().isoformat(),
+        "message": "Combat has begun!",
+        "origin": EventOrigin.SERVER_SIDE,
+    }
+
+    await communicator.send_json_to(game_event)
+    response = await communicator.receive_json_from()
+    assert response["type"] == EventType.COMBAT_STARTED
+
+    await communicator.disconnect()
+
+
+@pytest.mark.asyncio
+async def test_turn_started_handler(application, game, master_user):
+    """Test turn_started event handler."""
+    communicator = WebsocketCommunicator(application, f"/events/{game.id}/")
+    communicator.scope["user"] = master_user
+    communicator.scope["game_id"] = game.id
+    connected, _ = await communicator.connect()
+    assert connected
+
+    fake = Faker()
+    game_event = {
+        "type": EventType.TURN_STARTED,
+        "username": master_user.username,
+        "date": fake.date_time().isoformat(),
+        "message": "Fighter's turn!",
+        "origin": EventOrigin.SERVER_SIDE,
+    }
+
+    await communicator.send_json_to(game_event)
+    response = await communicator.receive_json_from()
+    assert response["type"] == EventType.TURN_STARTED
+
+    await communicator.disconnect()
+
+
+@pytest.mark.asyncio
+async def test_turn_ended_handler(application, game, master_user):
+    """Test turn_ended event handler."""
+    communicator = WebsocketCommunicator(application, f"/events/{game.id}/")
+    communicator.scope["user"] = master_user
+    communicator.scope["game_id"] = game.id
+    connected, _ = await communicator.connect()
+    assert connected
+
+    fake = Faker()
+    game_event = {
+        "type": EventType.TURN_ENDED,
+        "username": master_user.username,
+        "date": fake.date_time().isoformat(),
+        "message": "Turn ended",
+        "origin": EventOrigin.SERVER_SIDE,
+    }
+
+    await communicator.send_json_to(game_event)
+    response = await communicator.receive_json_from()
+    assert response["type"] == EventType.TURN_ENDED
+
+    await communicator.disconnect()
+
+
+@pytest.mark.asyncio
+async def test_round_ended_handler(application, game, master_user):
+    """Test round_ended event handler."""
+    communicator = WebsocketCommunicator(application, f"/events/{game.id}/")
+    communicator.scope["user"] = master_user
+    communicator.scope["game_id"] = game.id
+    connected, _ = await communicator.connect()
+    assert connected
+
+    fake = Faker()
+    game_event = {
+        "type": EventType.ROUND_ENDED,
+        "username": master_user.username,
+        "date": fake.date_time().isoformat(),
+        "message": "Round ended",
+        "origin": EventOrigin.SERVER_SIDE,
+    }
+
+    await communicator.send_json_to(game_event)
+    response = await communicator.receive_json_from()
+    assert response["type"] == EventType.ROUND_ENDED
+
+    await communicator.disconnect()
+
+
+@pytest.mark.asyncio
+async def test_combat_ended_handler(application, game, master_user):
+    """Test combat_ended event handler."""
+    communicator = WebsocketCommunicator(application, f"/events/{game.id}/")
+    communicator.scope["user"] = master_user
+    communicator.scope["game_id"] = game.id
+    connected, _ = await communicator.connect()
+    assert connected
+
+    fake = Faker()
+    game_event = {
+        "type": EventType.COMBAT_ENDED,
+        "username": master_user.username,
+        "date": fake.date_time().isoformat(),
+        "message": "Combat ended",
+        "origin": EventOrigin.SERVER_SIDE,
+    }
+
+    await communicator.send_json_to(game_event)
+    response = await communicator.receive_json_from()
+    assert response["type"] == EventType.COMBAT_ENDED
+
+    await communicator.disconnect()
+
+
+@pytest.mark.asyncio
+async def test_action_taken_handler(application, game, master_user):
+    """Test action_taken event handler."""
+    communicator = WebsocketCommunicator(application, f"/events/{game.id}/")
+    communicator.scope["user"] = master_user
+    communicator.scope["game_id"] = game.id
+    connected, _ = await communicator.connect()
+    assert connected
+
+    fake = Faker()
+    game_event = {
+        "type": EventType.ACTION_TAKEN,
+        "username": master_user.username,
+        "date": fake.date_time().isoformat(),
+        "message": "Fighter attacked!",
+        "origin": EventOrigin.SERVER_SIDE,
+    }
+
+    await communicator.send_json_to(game_event)
+    response = await communicator.receive_json_from()
+    assert response["type"] == EventType.ACTION_TAKEN
+
+    await communicator.disconnect()
+
+
+@pytest.mark.asyncio
+async def test_spell_cast_handler(application, game, master_user):
+    """Test spell_cast event handler."""
+    communicator = WebsocketCommunicator(application, f"/events/{game.id}/")
+    communicator.scope["user"] = master_user
+    communicator.scope["game_id"] = game.id
+    connected, _ = await communicator.connect()
+    assert connected
+
+    fake = Faker()
+    game_event = {
+        "type": EventType.SPELL_CAST,
+        "username": master_user.username,
+        "date": fake.date_time().isoformat(),
+        "message": "Wizard cast Fireball!",
+        "origin": EventOrigin.SERVER_SIDE,
+    }
+
+    await communicator.send_json_to(game_event)
+    response = await communicator.receive_json_from()
+    assert response["type"] == EventType.SPELL_CAST
+
+    await communicator.disconnect()
+
+
+@pytest.mark.asyncio
+async def test_spell_damage_dealt_handler(application, game, master_user):
+    """Test spell_damage_dealt event handler."""
+    communicator = WebsocketCommunicator(application, f"/events/{game.id}/")
+    communicator.scope["user"] = master_user
+    communicator.scope["game_id"] = game.id
+    connected, _ = await communicator.connect()
+    assert connected
+
+    fake = Faker()
+    game_event = {
+        "type": EventType.SPELL_DAMAGE_DEALT,
+        "username": master_user.username,
+        "date": fake.date_time().isoformat(),
+        "message": "Goblin took 28 fire damage",
+        "origin": EventOrigin.SERVER_SIDE,
+    }
+
+    await communicator.send_json_to(game_event)
+    response = await communicator.receive_json_from()
+    assert response["type"] == EventType.SPELL_DAMAGE_DEALT
+
+    await communicator.disconnect()
+
+
+@pytest.mark.asyncio
+async def test_spell_healing_received_handler(application, game, master_user):
+    """Test spell_healing_received event handler."""
+    communicator = WebsocketCommunicator(application, f"/events/{game.id}/")
+    communicator.scope["user"] = master_user
+    communicator.scope["game_id"] = game.id
+    connected, _ = await communicator.connect()
+    assert connected
+
+    fake = Faker()
+    game_event = {
+        "type": EventType.SPELL_HEALING_RECEIVED,
+        "username": master_user.username,
+        "date": fake.date_time().isoformat(),
+        "message": "Fighter healed for 12 HP",
+        "origin": EventOrigin.SERVER_SIDE,
+    }
+
+    await communicator.send_json_to(game_event)
+    response = await communicator.receive_json_from()
+    assert response["type"] == EventType.SPELL_HEALING_RECEIVED
+
+    await communicator.disconnect()
+
+
+@pytest.mark.asyncio
+async def test_spell_condition_applied_handler(application, game, master_user):
+    """Test spell_condition_applied event handler."""
+    communicator = WebsocketCommunicator(application, f"/events/{game.id}/")
+    communicator.scope["user"] = master_user
+    communicator.scope["game_id"] = game.id
+    connected, _ = await communicator.connect()
+    assert connected
+
+    fake = Faker()
+    game_event = {
+        "type": EventType.SPELL_CONDITION_APPLIED,
+        "username": master_user.username,
+        "date": fake.date_time().isoformat(),
+        "message": "Bandit is paralyzed",
+        "origin": EventOrigin.SERVER_SIDE,
+    }
+
+    await communicator.send_json_to(game_event)
+    response = await communicator.receive_json_from()
+    assert response["type"] == EventType.SPELL_CONDITION_APPLIED
+
+    await communicator.disconnect()
+
+
+@pytest.mark.asyncio
+async def test_spell_saving_throw_handler(application, game, master_user):
+    """Test spell_saving_throw event handler."""
+    communicator = WebsocketCommunicator(application, f"/events/{game.id}/")
+    communicator.scope["user"] = master_user
+    communicator.scope["game_id"] = game.id
+    connected, _ = await communicator.connect()
+    assert connected
+
+    fake = Faker()
+    game_event = {
+        "type": EventType.SPELL_SAVING_THROW,
+        "username": master_user.username,
+        "date": fake.date_time().isoformat(),
+        "message": "Rogue succeeded on DEX save",
+        "origin": EventOrigin.SERVER_SIDE,
+    }
+
+    await communicator.send_json_to(game_event)
+    response = await communicator.receive_json_from()
+    assert response["type"] == EventType.SPELL_SAVING_THROW
+
+    await communicator.disconnect()
+
+
+@pytest.mark.asyncio
+async def test_message_saved_to_database(application, game, master_user):
+    """Test that MESSAGE events from clients are saved to database."""
+    from game.models.events import Message
+
+    communicator = WebsocketCommunicator(application, f"/events/{game.id}/")
+    communicator.scope["user"] = master_user
+    communicator.scope["game_id"] = game.id
+    connected, _ = await communicator.connect()
+    assert connected
+
+    fake = Faker()
+    date = fake.date_time().isoformat()
+    message_content = "Test message to save"
+    game_event = {
+        "type": EventType.MESSAGE,
+        "username": master_user.username,
+        "date": date,
+        "message": message_content,
+    }
+
+    initial_count = Message.objects.filter(game=game).count()
+
+    await communicator.send_json_to(game_event)
+    await communicator.receive_json_from()
+
+    # Verify message was saved
+    final_count = Message.objects.filter(game=game).count()
+    assert final_count == initial_count + 1
+
+    saved_message = Message.objects.filter(game=game).last()
+    assert saved_message.content == message_content
+
+    await communicator.disconnect()
