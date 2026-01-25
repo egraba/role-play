@@ -4,7 +4,6 @@ Test-specific Django settings optimized for faster test execution.
 Key optimizations:
 - MD5PasswordHasher: Much faster than default password hashers
 - In-memory channel layer: Avoids Redis overhead for tests
-- Eager Celery execution: Tasks run synchronously without broker
 """
 
 import os
@@ -27,10 +26,6 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels.layers.InMemoryChannelLayer",
     },
 }
-
-# Celery: Execute tasks eagerly (synchronously) during tests
-CELERY_TASK_ALWAYS_EAGER = True
-CELERY_TASK_EAGER_PROPAGATES = True
 
 # Disable logging during tests for speed
 LOGGING = {

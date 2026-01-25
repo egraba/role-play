@@ -15,13 +15,11 @@ requires-python = "<4.0,>=3.14"
 dependencies = [
     "anthropic",
     "async-timeout",
-    "celery",
     "channels",
     "channels-redis",
     "daphne",
     "dj-database-url",
     "django~=5.2",
-    "django-celery-beat",
     "django-extensions",
     "django-formtools",
     "django-htmx>=1.27.0",

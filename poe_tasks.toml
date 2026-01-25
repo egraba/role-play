@@ -75,10 +75,6 @@ sequence = ["db-migrate", { cmd = "manage.py runserver" }]
 help = "Run the development server (alias for dev-run)"
 ref = "dev-run"
 
-[tasks.worker]
-help = "Run Celery worker"
-cmd = "celery -A role_play worker --beat --scheduler django --loglevel=info"
-
 [tasks.shell]
 help = "Launch Django shell"
 cmd = "manage.py shell"
@@ -164,10 +160,6 @@ sequence = [
     { cmd = "manage.py collectstatic --noinput" },
     { shell = "daphne role_play.asgi:application -b 0.0.0.0 -p $PORT --access-log -" },
 ]
-
-[tasks.prod-worker]
-help = "Run Celery worker for production"
-ref = "worker"
 
 # ----------------------------------------------------------------------------
 # Staging Environment Tasks (Fly.io)

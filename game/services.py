@@ -1,11 +1,29 @@
+import logging
 from datetime import datetime
 
 from character.models.character import Character
 
-from .models.events import Message
+from .constants.events import RollStatus, RollType
+from .models.combat import Combat
+from .models.events import (
+    CombatInitativeOrderSet,
+    CombatInitialization,
+    CombatInitiativeRequest,
+    CombatInitiativeResponse,
+    CombatInitiativeResult,
+    CombatStarted,
+    Message,
+    RollRequest,
+    RollResponse,
+    RollResult,
+    TurnStarted,
+)
 from .models.game import Actor, Game, Master, Player
+from .rolls import perform_combat_initiative_roll, perform_roll
 from .utils.channels import send_to_channel
 from user.models import User
+
+logger = logging.getLogger(__name__)
 
 
 class GameEventService:
@@ -103,3 +121,171 @@ class GameEventService:
             Player.DoesNotExist: If user is not a player in the game
         """
         return Player.objects.get(game=game, user=user)
+
+    @staticmethod
+    def process_roll(
+        game: Game,
+        player: Player,
+        date: datetime,
+        roll_type: RollType,
+    ) -> RollResult:
+        """
+        Process a dice roll.
+
+        Args:
+            game: The game instance
+            player: The player performing the roll
+            date: The timestamp of the roll
+            roll_type: The type of roll (ability check or saving throw)
+
+        Returns:
+            The RollResult instance
+
+        Raises:
+            RollRequest.DoesNotExist: If no pending roll request found
+        """
+        logger.info(f"Processing roll: {game.id=}, {player.id=}, {roll_type=}, {date=}")
+
+        # Retrieve the corresponding roll request.
+        roll_request = RollRequest.objects.filter(
+            roll_type=roll_type, player=player, status=RollStatus.PENDING
+        ).first()
+        if roll_request is None:
+            raise RollRequest.DoesNotExist("Roll request not found")
+        logger.info(f"{roll_request=}, {roll_request.player=}")
+
+        # Store the roll response.
+        roll_response = RollResponse.objects.create(
+            game=game, author=player, date=date, request=roll_request
+        )
+        logger.info(f"{roll_response.request=}")
+
+        score, result = perform_roll(player, roll_request)
+        roll_result = RollResult.objects.create(
+            game=game,
+            author=player,
+            date=date,
+            request=roll_request,
+            response=roll_response,
+            score=score,
+            result=result,
+        )
+
+        # The corresponding roll request is considered now as done.
+        roll_request.status = RollStatus.DONE
+        roll_request.save()
+
+        logger.info(
+            f"{roll_result.request=}, {roll_result.score=}, {roll_result.result=}"
+        )
+        send_to_channel(roll_result)
+
+        return roll_result
+
+    @staticmethod
+    def process_combat_initiative_roll(
+        game: Game,
+        player: Player,
+        date: datetime,
+    ) -> CombatInitiativeResult:
+        """
+        Process a dice roll for combat initiative.
+        After each roll, checks if all fighters have rolled and starts combat if so.
+
+        Args:
+            game: The game instance
+            player: The player performing the roll
+            date: The timestamp of the roll
+
+        Returns:
+            The CombatInitiativeResult instance
+
+        Raises:
+            CombatInitiativeRequest.DoesNotExist: If no pending initiative request found
+        """
+        logger.info(f"Processing combat initiative: {game.id=}, {player.id=}, {date=}")
+
+        # Retrieve the corresponding roll request.
+        roll_request = CombatInitiativeRequest.objects.filter(
+            fighter__player=player, status=RollStatus.PENDING
+        ).first()
+        if roll_request is None:
+            raise CombatInitiativeRequest.DoesNotExist("Roll request not found")
+        logger.info(f"{roll_request=}, {roll_request.fighter=}")
+
+        # Store the roll response.
+        roll_response = CombatInitiativeResponse.objects.create(
+            request=roll_request,
+            game=game,
+            author=player,
+        )
+        logger.info(f"{roll_response.request=}")
+
+        score = perform_combat_initiative_roll(roll_request.fighter)
+        roll_result = CombatInitiativeResult.objects.create(
+            fighter=roll_request.fighter,
+            game=game,
+            author=player,
+            request=roll_request,
+            response=roll_response,
+            score=score,
+        )
+
+        # The corresponding roll request is considered now as done.
+        roll_request.status = RollStatus.DONE
+        roll_request.save()
+
+        logger.info(f"{roll_result.request=}, {roll_result.score=}")
+        send_to_channel(roll_result)
+
+        # Check if all fighters have rolled initiative
+        combat = roll_request.fighter.combat
+        _check_and_start_combat(combat, game)
+
+        return roll_result
+
+
+def _check_and_start_combat(combat: Combat, game: Game) -> None:
+    """
+    Check if all fighters have rolled initiative and start combat if so.
+    This replaces the celery-beat periodic task with immediate checking.
+    """
+    if not combat.all_initiative_rolled():
+        logger.info("Still waiting for initiative rolls")
+        return
+
+    logger.info("All initiative rolled!")
+    logger.info(f"Initiative order={combat.get_initiative_order()}")
+
+    # Get the author from the CombatInitialization event
+    combat_init = CombatInitialization.objects.get(combat=combat)
+
+    # Create initiative order set event (only if not already created)
+    initiative_order_set, created = CombatInitativeOrderSet.objects.get_or_create(
+        combat=combat,
+        game=game,
+        author=combat_init.author,
+    )
+
+    if created:
+        send_to_channel(initiative_order_set)
+
+        # Start combat and create turn started event
+        first_fighter = combat.start_combat()
+        if first_fighter:
+            combat_started = CombatStarted.objects.create(
+                combat=combat,
+                game=game,
+                author=combat_init.author,
+            )
+            send_to_channel(combat_started)
+
+            turn_started = TurnStarted.objects.create(
+                combat=combat,
+                fighter=first_fighter,
+                round_number=combat.current_round,
+                game=game,
+                author=combat_init.author,
+            )
+            send_to_channel(turn_started)
+            logger.info(f"Combat started! First turn: {first_fighter}")

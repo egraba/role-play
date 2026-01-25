@@ -62,17 +62,12 @@ DATABASES = {
     }
 }
 
-# Cache (using local memory - Redis still needed for Channels and Celery)
+# Cache (using local memory - Redis still needed for Channels)
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
     }
 }
-
-# Celery
-CELERY_BROKER_URL = f"redis://default:{os.environ['REDIS_PASSWORD']}@fly-role-play-redis.upstash.io:6379"
-CELERY_RESULT_BACKEND = f"redis://default:{os.environ['REDIS_PASSWORD']}@fly-role-play-redis.upstash.io:6379"
-CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 
 # Email backend
 DEFAULT_FROM_EMAIL = "grandmaster@egrabaroleplay.org"

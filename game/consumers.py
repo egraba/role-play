@@ -9,7 +9,6 @@ from .exceptions import EventSchemaValidationError
 from .models.game import Game
 from .schemas import EventOrigin, EventSchema, EventType
 from .services import GameEventService
-from .tasks import process_combat_initiative_roll, process_roll
 
 
 class GameEventsConsumer(JsonWebsocketConsumer):
@@ -73,13 +72,13 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                 except Character.DoesNotExist:
                     self.close(reason="Character not found")
                     return
-                process_roll.delay(
-                    game_id=self.game.id,
-                    author_id=character.player.id,
+                GameEventService.process_roll(
+                    game=self.game,
+                    player=character.player,
                     date=content["date"],
                     roll_type=RollType.ABILITY_CHECK,
                 )
-                return  # Celery task handles broadcast
+                return  # Service handles broadcast
 
             case EventType.SAVING_THROW_RESPONSE:
                 try:
@@ -87,13 +86,13 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                 except Character.DoesNotExist:
                     self.close(reason="Character not found")
                     return
-                process_roll.delay(
-                    game_id=self.game.id,
-                    author_id=character.player.id,
+                GameEventService.process_roll(
+                    game=self.game,
+                    player=character.player,
                     date=content["date"],
                     roll_type=RollType.SAVING_THROW,
                 )
-                return  # Celery task handles broadcast
+                return  # Service handles broadcast
 
             case EventType.COMBAT_INITIATIVE_RESPONSE:
                 try:
@@ -101,12 +100,12 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                 except Character.DoesNotExist:
                     self.close(reason="Character not found")
                     return
-                process_combat_initiative_roll.delay(
-                    game_id=self.game.id,
-                    player_id=character.player.id,
+                GameEventService.process_combat_initiative_roll(
+                    game=self.game,
+                    player=character.player,
                     date=content["date"],
                 )
-                return  # Celery task handles broadcast
+                return  # Service handles broadcast
 
             case _:
                 # For unhandled client events, forward to group
