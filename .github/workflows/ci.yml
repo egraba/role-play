@@ -17,7 +17,10 @@ jobs:
         with:
           python-version: '3.14'
       - name: Install uv
-        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
       - name: Install Dependencies
         run: uv sync
       - name: Run pre-commit checks
@@ -58,7 +61,10 @@ jobs:
       - name: Install Doppler CLI
         uses: dopplerhq/cli-action@v3
       - name: Install uv
-        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
       - name: Install Dependencies
         run: uv sync
       - name: Run Tests with Coverage
