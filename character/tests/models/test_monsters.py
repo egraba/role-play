@@ -382,9 +382,6 @@ class TestMonsterSettingsFixture:
 
 
 @pytest.mark.django_db
-@pytest.mark.skip(
-    reason="Skipped due to pre-existing game.Combat ForeignKey resolution issue"
-)
 class TestMonsterModel:
     """Tests for the Monster model (concrete instances)."""
 

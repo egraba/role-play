@@ -4,6 +4,9 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 
 ## Unreleased
 
+### Fixed
+* Enabled 24 skipped `TestMonsterModel` tests - the `game.Combat` ForeignKey issue was resolved (nullable FK works correctly)
+
 ### Changed
 * Refactored WebSocket event system for simpler architecture:
   - Added `get_event_type()` method to all Event model subclasses, replacing 55-line isinstance chain
