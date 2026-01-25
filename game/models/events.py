@@ -14,6 +14,7 @@ from ..constants.events import (
     RollType,
 )
 from ..exceptions import UnsupportedActor
+from ..schemas import EventType
 from .combat import Combat, Fighter, TurnAction
 from .game import Actor, Game, Player, Quest
 
@@ -45,10 +46,23 @@ class Event(models.Model):
         """
         pass
 
+    def get_event_type(self) -> EventType:
+        """
+        Return the EventType for this event.
+
+        Override in subclasses. Default raises NotImplementedError.
+        """
+        raise NotImplementedError(
+            f"{self.__class__.__name__} must implement get_event_type()"
+        )
+
 
 class GameStart(Event):
     def get_message(self):
         return "The game started."
+
+    def get_event_type(self) -> EventType:
+        return EventType.GAME_START
 
 
 class UserInvitation(Event):
@@ -56,6 +70,9 @@ class UserInvitation(Event):
 
     def get_message(self):
         return f"{self.user} was added to the game."
+
+    def get_event_type(self) -> EventType:
+        return EventType.MESSAGE
 
 
 class Message(Event):
@@ -73,6 +90,9 @@ class Message(Event):
             raise UnsupportedActor(f"{type(self.author)} is not supported")
         return f"{author_str} said: {self.content}"
 
+    def get_event_type(self) -> EventType:
+        return EventType.MESSAGE
+
 
 class QuestUpdate(Event):
     quest = models.OneToOneField(Quest, on_delete=models.CASCADE)
@@ -82,6 +102,9 @@ class QuestUpdate(Event):
 
     def get_message(self):
         return "The Master updated the quest."
+
+    def get_event_type(self) -> EventType:
+        return EventType.QUEST_UPDATE
 
 
 class RollRequest(Event):
@@ -106,12 +129,26 @@ class RollRequest(Event):
         return f"{self.player} needs to perform a {self.ability_type} check! \
             Difficulty: {self.get_difficulty_class_display()}."
 
+    def get_event_type(self) -> EventType:
+        if self.roll_type == RollType.ABILITY_CHECK:
+            return EventType.ABILITY_CHECK_REQUEST
+        elif self.roll_type == RollType.SAVING_THROW:
+            return EventType.SAVING_THROW_REQUEST
+        raise ValueError(f"Unsupported roll_type: {self.roll_type}")
+
 
 class RollResponse(Event):
     request = models.ForeignKey(RollRequest, on_delete=models.CASCADE)
 
     def get_message(self):
         return f"{self.request.player} performed an ability check!"
+
+    def get_event_type(self) -> EventType:
+        if self.request.roll_type == RollType.ABILITY_CHECK:
+            return EventType.ABILITY_CHECK_RESPONSE
+        elif self.request.roll_type == RollType.SAVING_THROW:
+            return EventType.SAVING_THROW_RESPONSE
+        raise ValueError(f"Unsupported roll_type: {self.request.roll_type}")
 
 
 class RollResult(Event):
@@ -123,6 +160,13 @@ class RollResult(Event):
     def get_message(self):
         return f"{self.request.player}'s score: {self.score}, \
             {self.request.get_roll_type_display()} result: {self.get_result_display()}"
+
+    def get_event_type(self) -> EventType:
+        if self.request.roll_type == RollType.ABILITY_CHECK:
+            return EventType.ABILITY_CHECK_RESULT
+        elif self.request.roll_type == RollType.SAVING_THROW:
+            return EventType.SAVING_THROW_RESULT
+        raise ValueError(f"Unsupported roll_type: {self.request.roll_type}")
 
 
 class CombatInitialization(Event):
@@ -148,6 +192,9 @@ class CombatInitialization(Event):
             return f"Combat! Initiative order: {fighters_display}"
         return f"Combat! {fighters_display}"
 
+    def get_event_type(self) -> EventType:
+        return EventType.COMBAT_INITIALIZATION
+
 
 class CombatInitiativeRequest(Event):
     fighter = models.OneToOneField(Fighter, on_delete=models.CASCADE)
@@ -158,12 +205,18 @@ class CombatInitiativeRequest(Event):
     def get_message(self):
         return f"{self.fighter} needs to perform a {AbilityName.DEXTERITY} check!"
 
+    def get_event_type(self) -> EventType:
+        return EventType.COMBAT_INITIATIVE_REQUEST
+
 
 class CombatInitiativeResponse(Event):
     request = models.OneToOneField(CombatInitiativeRequest, on_delete=models.CASCADE)
 
     def get_message(self):
         return f"{self.request.fighter.character} performed a dexterity check!"
+
+    def get_event_type(self) -> EventType:
+        return EventType.COMBAT_INITIATIVE_RESPONSE
 
 
 class CombatInitiativeResult(Event):
@@ -175,6 +228,9 @@ class CombatInitiativeResult(Event):
     def get_message(self):
         return f"{self.fighter.character.name}'s initiative roll: {self.score}"
 
+    def get_event_type(self) -> EventType:
+        return EventType.COMBAT_INITIATIVE_RESULT
+
 
 class CombatInitativeOrderSet(Event):
     combat = models.OneToOneField(Combat, on_delete=models.CASCADE)
@@ -183,6 +239,9 @@ class CombatInitativeOrderSet(Event):
         order = self.combat.get_initiative_order()
         names = [f"{f.character.name} ({f.dexterity_check})" for f in order]
         return f"Initiative order: {', '.join(names)}"
+
+    def get_event_type(self) -> EventType:
+        return EventType.COMBAT_INITIALIZATION_COMPLETE
 
 
 class CombatStarted(Event):
@@ -194,6 +253,9 @@ class CombatStarted(Event):
 
     def get_message(self):
         return "Combat has begun! Roll for initiative order has been determined."
+
+    def get_event_type(self) -> EventType:
+        return EventType.COMBAT_STARTED
 
 
 class TurnStarted(Event):
@@ -210,6 +272,9 @@ class TurnStarted(Event):
     def get_message(self):
         return f"Round {self.round_number}: {self.fighter.character.name}'s turn!"
 
+    def get_event_type(self) -> EventType:
+        return EventType.TURN_STARTED
+
 
 class TurnEnded(Event):
     """Event fired when a fighter's turn ends."""
@@ -225,6 +290,9 @@ class TurnEnded(Event):
     def get_message(self):
         return f"{self.fighter.character.name}'s turn has ended."
 
+    def get_event_type(self) -> EventType:
+        return EventType.TURN_ENDED
+
 
 class RoundEnded(Event):
     """Event fired when a combat round ends."""
@@ -237,6 +305,9 @@ class RoundEnded(Event):
     def get_message(self):
         return f"Round {self.round_number} has ended."
 
+    def get_event_type(self) -> EventType:
+        return EventType.ROUND_ENDED
+
 
 class CombatEnded(Event):
     """Event fired when combat ends."""
@@ -247,6 +318,9 @@ class CombatEnded(Event):
 
     def get_message(self):
         return "Combat has ended."
+
+    def get_event_type(self) -> EventType:
+        return EventType.COMBAT_ENDED
 
 
 class ActionTaken(Event):
@@ -269,6 +343,9 @@ class ActionTaken(Event):
         action_type = self.turn_action.get_action_type_display()
         action = self.turn_action.get_action_display()
         return f"{self.fighter.character.name} used {action} ({action_type}){target}."
+
+    def get_event_type(self) -> EventType:
+        return EventType.ACTION_TAKEN
 
 
 class SpellCast(Event):
@@ -296,6 +373,9 @@ class SpellCast(Event):
             return f"{self.caster.name} cast {self.spell.name} on {target_names}."
         return f"{self.caster.name} cast {self.spell.name}."
 
+    def get_event_type(self) -> EventType:
+        return EventType.SPELL_CAST
+
 
 class SpellDamageDealt(Event):
     """Event when spell damage is dealt."""
@@ -319,6 +399,9 @@ class SpellDamageDealt(Event):
             f"from {self.spell.name}."
         )
 
+    def get_event_type(self) -> EventType:
+        return EventType.SPELL_DAMAGE_DEALT
+
 
 class SpellHealingReceived(Event):
     """Event when spell healing is received."""
@@ -339,6 +422,9 @@ class SpellHealingReceived(Event):
         return (
             f"{self.target.name} was healed for {self.healing} HP by {self.spell.name}."
         )
+
+    def get_event_type(self) -> EventType:
+        return EventType.SPELL_HEALING_RECEIVED
 
 
 class SpellConditionApplied(Event):
@@ -362,6 +448,9 @@ class SpellConditionApplied(Event):
 
     def get_message(self):
         return f"{self.target.name} is now {self.condition} from {self.spell.name}."
+
+    def get_event_type(self) -> EventType:
+        return EventType.SPELL_CONDITION_APPLIED
 
 
 class SpellSavingThrow(Event):
@@ -388,3 +477,6 @@ class SpellSavingThrow(Event):
             f"{self.target.name} {result} a {self.save_type} save (DC {self.dc}) "
             f"against {self.spell.name} with a {self.roll}."
         )
+
+    def get_event_type(self) -> EventType:
+        return EventType.SPELL_SAVING_THROW

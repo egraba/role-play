@@ -1,11 +1,26 @@
 import pytest
 
+from character.tests.factories import (
+    CharacterFactory,
+    ConditionFactory,
+    SpellSettingsFactory,
+)
 from game.constants.events import RollType
+from game.models.events import (
+    SpellCast,
+    SpellConditionApplied,
+    SpellDamageDealt,
+    SpellHealingReceived,
+    SpellSavingThrow,
+)
 from game.schemas import EventType
 from game.utils.channels import _get_event_type
 
 from ..factories import (
+    ActorFactory,
+    GameFactory,
     GameStartFactory,
+    MessageFactory,
     QuestUpdateFactory,
     RollRequestFactory,
     RollResponseFactory,
@@ -131,3 +146,91 @@ class TestGetEventType:
         combat_init = CombatInitalizationFactory()
         event_type = _get_event_type(combat_init)
         assert event_type == EventType.COMBAT_INITIALIZATION
+
+    def test_message_returns_correct_type(self):
+        """Ensure Message returns MESSAGE."""
+        message = MessageFactory()
+        event_type = _get_event_type(message)
+        assert event_type == EventType.MESSAGE
+
+    def test_roll_response_saving_throw_returns_correct_type(self):
+        """Ensure RollResponse with SAVING_THROW request returns SAVING_THROW_RESPONSE."""
+        roll_request = RollRequestFactory(roll_type=RollType.SAVING_THROW)
+        roll_response = RollResponseFactory(
+            request=roll_request, game=roll_request.game
+        )
+        event_type = _get_event_type(roll_response)
+        assert event_type == EventType.SAVING_THROW_RESPONSE
+
+    def test_spell_cast_returns_correct_type(self):
+        """Ensure SpellCast returns SPELL_CAST."""
+        game = GameFactory()
+        author = ActorFactory()
+        caster = CharacterFactory()
+        spell = SpellSettingsFactory()
+        event = SpellCast.objects.create(
+            game=game, author=author, caster=caster, spell=spell, slot_level=1
+        )
+        event_type = _get_event_type(event)
+        assert event_type == EventType.SPELL_CAST
+
+    def test_spell_damage_dealt_returns_correct_type(self):
+        """Ensure SpellDamageDealt returns SPELL_DAMAGE_DEALT."""
+        game = GameFactory()
+        author = ActorFactory()
+        spell = SpellSettingsFactory()
+        target = CharacterFactory()
+        event = SpellDamageDealt.objects.create(
+            game=game,
+            author=author,
+            spell=spell,
+            target=target,
+            damage=10,
+            damage_type="fire",
+        )
+        event_type = _get_event_type(event)
+        assert event_type == EventType.SPELL_DAMAGE_DEALT
+
+    def test_spell_healing_received_returns_correct_type(self):
+        """Ensure SpellHealingReceived returns SPELL_HEALING_RECEIVED."""
+        game = GameFactory()
+        author = ActorFactory()
+        spell = SpellSettingsFactory()
+        target = CharacterFactory()
+        event = SpellHealingReceived.objects.create(
+            game=game, author=author, spell=spell, target=target, healing=10
+        )
+        event_type = _get_event_type(event)
+        assert event_type == EventType.SPELL_HEALING_RECEIVED
+
+    def test_spell_condition_applied_returns_correct_type(self):
+        """Ensure SpellConditionApplied returns SPELL_CONDITION_APPLIED."""
+        game = GameFactory()
+        author = ActorFactory()
+        spell = SpellSettingsFactory()
+        target = CharacterFactory()
+        condition = ConditionFactory()
+        event = SpellConditionApplied.objects.create(
+            game=game, author=author, spell=spell, target=target, condition=condition
+        )
+        event_type = _get_event_type(event)
+        assert event_type == EventType.SPELL_CONDITION_APPLIED
+
+    def test_spell_saving_throw_returns_correct_type(self):
+        """Ensure SpellSavingThrow returns SPELL_SAVING_THROW."""
+        game = GameFactory()
+        author = ActorFactory()
+        spell = SpellSettingsFactory()
+        target = CharacterFactory()
+        event = SpellSavingThrow.objects.create(
+            game=game,
+            author=author,
+            spell=spell,
+            target=target,
+            save_type="DEX",
+            dc=15,
+            roll=12,
+            success=False,
+        )
+        event_type = _get_event_type(event)
+        assert event_type == EventType.SPELL_SAVING_THROW

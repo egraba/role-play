@@ -4,32 +4,8 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from pydantic import ValidationError
 
-from ..constants.events import RollType
 from ..exceptions import EventSchemaValidationError
-from ..models.events import (
-    ActionTaken,
-    CombatEnded,
-    CombatInitativeOrderSet,
-    CombatInitialization,
-    CombatInitiativeRequest,
-    CombatInitiativeResponse,
-    CombatInitiativeResult,
-    CombatStarted,
-    Event,
-    GameStart,
-    QuestUpdate,
-    RollRequest,
-    RollResponse,
-    RollResult,
-    RoundEnded,
-    SpellCast,
-    SpellConditionApplied,
-    SpellDamageDealt,
-    SpellHealingReceived,
-    SpellSavingThrow,
-    TurnEnded,
-    TurnStarted,
-)
+from ..models.events import Event
 from ..schemas import (
     EventOrigin,
     EventSchema,
@@ -40,57 +16,10 @@ from ..schemas import (
 def _get_event_type(event: Event) -> EventType:
     """
     Retrieve event type according to Event instance class.
+
+    Delegates to the event's get_event_type() method.
     """
-    if isinstance(event, QuestUpdate):
-        event_type = EventType.QUEST_UPDATE
-    elif isinstance(event, GameStart):
-        event_type = EventType.GAME_START
-    elif isinstance(event, RollRequest):
-        if event.roll_type == RollType.ABILITY_CHECK:
-            event_type = EventType.ABILITY_CHECK_REQUEST
-        elif event.roll_type == RollType.SAVING_THROW:
-            event_type = EventType.SAVING_THROW_REQUEST
-    elif isinstance(event, RollResponse):
-        if event.request.roll_type == RollType.ABILITY_CHECK:
-            event_type = EventType.ABILITY_CHECK_RESPONSE
-    elif isinstance(event, RollResult):
-        if event.request.roll_type == RollType.ABILITY_CHECK:
-            event_type = EventType.ABILITY_CHECK_RESULT
-        if event.request.roll_type == RollType.SAVING_THROW:
-            event_type = EventType.SAVING_THROW_RESULT
-    elif isinstance(event, CombatInitialization):
-        event_type = EventType.COMBAT_INITIALIZATION
-    elif isinstance(event, CombatInitiativeRequest):
-        event_type = EventType.COMBAT_INITIATIVE_REQUEST
-    elif isinstance(event, CombatInitiativeResponse):
-        event_type = EventType.COMBAT_INITIATIVE_RESPONSE
-    elif isinstance(event, CombatInitiativeResult):
-        event_type = EventType.COMBAT_INITIATIVE_RESULT
-    elif isinstance(event, CombatInitativeOrderSet):
-        event_type = EventType.COMBAT_INITIALIZATION_COMPLETE
-    elif isinstance(event, CombatStarted):
-        event_type = EventType.COMBAT_STARTED
-    elif isinstance(event, TurnStarted):
-        event_type = EventType.TURN_STARTED
-    elif isinstance(event, TurnEnded):
-        event_type = EventType.TURN_ENDED
-    elif isinstance(event, RoundEnded):
-        event_type = EventType.ROUND_ENDED
-    elif isinstance(event, CombatEnded):
-        event_type = EventType.COMBAT_ENDED
-    elif isinstance(event, ActionTaken):
-        event_type = EventType.ACTION_TAKEN
-    elif isinstance(event, SpellCast):
-        event_type = EventType.SPELL_CAST
-    elif isinstance(event, SpellDamageDealt):
-        event_type = EventType.SPELL_DAMAGE_DEALT
-    elif isinstance(event, SpellHealingReceived):
-        event_type = EventType.SPELL_HEALING_RECEIVED
-    elif isinstance(event, SpellConditionApplied):
-        event_type = EventType.SPELL_CONDITION_APPLIED
-    elif isinstance(event, SpellSavingThrow):
-        event_type = EventType.SPELL_SAVING_THROW
-    return event_type
+    return event.get_event_type()
 
 
 def send_to_channel(event: Event) -> None:
