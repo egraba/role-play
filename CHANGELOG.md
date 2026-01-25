@@ -8,6 +8,11 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * Enabled 24 skipped `TestMonsterModel` tests - the `game.Combat` ForeignKey issue was resolved (nullable FK works correctly)
 
 ### Changed
+* Removed Celery and converted to synchronous execution:
+  - Moved `process_roll` and `process_combat_initiative_roll` from Celery tasks to `GameEventService` static methods
+  - Replaced `send_mail.delay()` calls with direct `django.core.mail.send_mail()` calls
+  - Removed worker process from Fly.io deployment (eliminates worker VM costs)
+  - Removed `celery` and `django-celery-beat` dependencies
 * Refactored WebSocket event system for simpler architecture:
   - Added `get_event_type()` method to all Event model subclasses, replacing 55-line isinstance chain
   - Created `GameEventService` class for event creation and broadcasting (save-first-then-broadcast pattern)
@@ -243,6 +248,8 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * Combat initiative completion check now runs immediately after each roll instead of using celery-beat periodic task (more efficient, eliminates 2-second polling delay)
 
 ### Removed
+* Removed Celery infrastructure: `game/tasks.py`, `role_play/celery.py`, worker process, and all Celery settings
+* Removed `django_celery_beat` from INSTALLED_APPS
 * **BREAKING**: Removed legacy class system: `Klass` enum, `KLASS_FEATURES` dictionary, `KlassBuilder`, and `Character.klass` field (replaced by Class model and ClassBuilder)
 * Removed legacy models: `KlassFeature`, `HitPoints`, `KlassAdvancement` (class data now in Class/ClassFeature models)
 * Redis cache usage removed from application code (Redis still required for Channels and Celery)

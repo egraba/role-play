@@ -18,7 +18,6 @@ INSTALLED_APPS = [
     "django.contrib.humanize",
     "channels",
     "django_extensions",
-    "django_celery_beat",
     "django_htmx",
 ]
 

@@ -1,5 +1,4 @@
 import pytest
-from role_play.celery import app as celery_app
 
 from game.flows import GameFlow
 
@@ -99,16 +98,3 @@ def saving_throw_request(db):
     from .factories import RollRequestFactory
 
     return RollRequestFactory(roll_type=RollType.SAVING_THROW)
-
-
-@pytest.fixture(scope="session")
-def celery_session_worker(celery_parameters):
-    """Run Celery tasks eagerly (synchronously) for testing.
-
-    This replaces the pytest-celery fixture with eager task execution.
-    """
-    celery_app.conf.task_always_eager = True
-    celery_app.conf.task_eager_propagates = True
-    yield
-    celery_app.conf.task_always_eager = False
-    celery_app.conf.task_eager_propagates = False

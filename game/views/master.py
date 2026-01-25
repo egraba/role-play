@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import FormView, ListView, UpdateView
@@ -8,13 +9,12 @@ from ai.generators import TextGenerator
 from character.models.character import Character
 from user.models import User
 
-from ..constants.combat import FighterAttributeChoices
+from ..constants.combat import CombatState, FighterAttributeChoices
 from ..constants.events import RollStatus, RollType
 from ..exceptions import UserHasNoCharacter
 from ..flows import GameFlow
 from ..forms import AbilityCheckRequestForm, CombatCreateForm, QuestCreateForm
 from ..models.combat import Combat, Fighter
-from ..constants.combat import CombatState
 from ..models.events import (
     CombatEnded,
     CombatInitialization,
@@ -27,7 +27,6 @@ from ..models.events import (
     UserInvitation,
 )
 from ..models.game import Actor, Player, Quest
-from ..tasks import send_mail
 from ..utils.channels import send_to_channel
 from ..utils.emails import get_players_emails
 from ..views.mixins import EventContextMixin, GameContextMixin, GameStatusControlMixin
@@ -67,7 +66,7 @@ class UserInviteConfirmView(UserPassesTestMixin, UpdateView, GameContextMixin):
             master__game=self.game, master__user=self.request.user
         )
         UserInvitation.objects.create(game=self.game, author=author, user=user)
-        send_mail.delay(
+        send_mail(
             subject=f"The Master invited you to join [{self.game}].",
             message=f"{user}, the Master invited you to join [{self.game}].",
             from_email=self.game.master.user.email,
@@ -129,7 +128,7 @@ class QuestCreateView(UserPassesTestMixin, FormView, EventContextMixin):
             game=self.game, author=author, quest=quest
         )
         send_to_channel(quest_update)
-        send_mail.delay(
+        send_mail(
             subject=f"[{self.game}] The Master updated the quest.",
             message=f"The Master said:\n{quest.environment}",
             from_email=self.game.master.user.email,

@@ -14,7 +14,6 @@ release_command = 'doppler run -- uv run poe prod-deploy'
 
 [processes]
 app = "doppler run -- uv run poe prod-run"
-worker = "doppler run -- uv run poe prod-worker"
 
 [env]
 PORT = '8000'
@@ -42,11 +41,6 @@ processes = ['app']
 size = "shared-cpu-2x"
 memory = "512mb"
 processes = ["app"]
-
-[[vm]]
-size = "shared-cpu-2x"
-memory = "512mb"
-processes = ["worker"]
 
 [[statics]]
 guest_path = '/code/staticfiles'
