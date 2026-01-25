@@ -696,6 +696,8 @@ async def test_spell_saving_throw_handler(application, game, master_user):
 @pytest.mark.asyncio
 async def test_message_saved_to_database(application, game, master_user):
     """Test that MESSAGE events from clients are saved to database."""
+    from asgiref.sync import sync_to_async
+
     from game.models.events import Message
 
     communicator = WebsocketCommunicator(application, f"/events/{game.id}/")
@@ -714,16 +716,16 @@ async def test_message_saved_to_database(application, game, master_user):
         "message": message_content,
     }
 
-    initial_count = Message.objects.filter(game=game).count()
+    initial_count = await sync_to_async(Message.objects.filter(game=game).count)()
 
     await communicator.send_json_to(game_event)
     await communicator.receive_json_from()
 
     # Verify message was saved
-    final_count = Message.objects.filter(game=game).count()
+    final_count = await sync_to_async(Message.objects.filter(game=game).count)()
     assert final_count == initial_count + 1
 
-    saved_message = Message.objects.filter(game=game).last()
+    saved_message = await sync_to_async(Message.objects.filter(game=game).last)()
     assert saved_message.content == message_content
 
     await communicator.disconnect()
