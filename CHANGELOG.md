@@ -6,8 +6,24 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 
 ### Fixed
 * Enabled 24 skipped `TestMonsterModel` tests - the `game.Combat` ForeignKey issue was resolved (nullable FK works correctly)
+* Fixed CI test failure caused by stale `PYTEST_PLUGINS` environment variable in Doppler injecting celery plugin
 
 ### Changed
+* Upgraded to Django 6.0.1 (from 5.2.x)
+* Upgraded all dependencies including:
+  - anthropic 0.75.0 → 0.76.0
+  - pydantic 2.23 → 3.0
+  - gunicorn 23.0.0 → 24.1.1
+  - sentry-sdk 2.48.0 → 2.50.0
+* Updated pre-commit hooks (ruff 0.14.10 → 0.14.14)
+* Updated CI workflow to use `astral-sh/setup-uv@v5` for proper dependency caching
+
+### Added
+* Extended test coverage with 948 lines of new tests:
+  - `game/tests/test_schemas.py`: EventType, EventOrigin, EventSchema validation
+  - `master/tests/test_forms.py`: CampaignCreateForm, CampaignUpdateForm
+  - `game/tests/views/test_mixins.py`: GameContextMixin, GameStatusControlMixin, EventContextMixin
+  - `character/tests/forms/test_wizard_forms.py`: All 7 character wizard steps
 * Removed Celery and converted to synchronous execution:
   - Moved `process_roll` and `process_combat_initiative_roll` from Celery tasks to `GameEventService` static methods
   - Replaced `send_mail.delay()` calls with direct `django.core.mail.send_mail()` calls
