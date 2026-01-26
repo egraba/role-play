@@ -19,7 +19,7 @@ dependencies = [
     "channels-redis",
     "daphne",
     "dj-database-url",
-    "django~=5.2",
+    "django~=6.0",
     "django-extensions",
     "django-formtools",
     "django-htmx>=1.27.0",
