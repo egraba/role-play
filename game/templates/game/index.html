@@ -4,7 +4,7 @@
 {% block content %}
     <div class="rpg-container">
         <div class="rpg-panel">
-            <h1 id="title" class="panel-title" style="font-size: 2.5rem; margin-bottom: 20px;">⚔️ Role Play ⚔️</h1>
+            <h1 id="title" class="panel-title" style="font-size: 2.5rem; margin-bottom: 20px;"><img src="/static/images/icons/actions/attack.svg" alt="" class="rpg-icon rpg-icon-xl rpg-icon-primary"> Role Play <img src="/static/images/icons/actions/attack.svg" alt="" class="rpg-icon rpg-icon-xl rpg-icon-primary"></h1>
 
             <div class="rpg-section text-center">
                 {% if user.is_authenticated %}
@@ -16,7 +16,7 @@
                         <button class="rpg-btn btn-primary" type="submit">Log out</button>
                     </form>
                 {% else %}
-                    <p style="font-size: 1.1rem; margin-bottom: 10px;">🗝️ <strong>Your adventure awaits!</strong></p>
+                    <p style="font-size: 1.1rem; margin-bottom: 10px;"><img src="/static/images/icons/ui/settings.svg" alt="" class="rpg-icon rpg-icon-md rpg-icon-primary"> <strong>Your adventure awaits!</strong></p>
                     <p class="text-muted mb-2">Log in to create your character and begin your epic journey.</p>
                     <div class="action-buttons">
                         <a href="{% url 'login' %}" class="rpg-btn btn-primary">Log in</a>
@@ -25,18 +25,20 @@
             </div>
 
             <div class="rpg-section">
-                <div style="text-align: center; font-size: 4rem; margin-bottom: 20px;">
-                    ⚔️ 🏰 🎲
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <img src="/static/images/icons/actions/attack.svg" alt="" class="rpg-icon rpg-icon-xl rpg-icon-danger">
+                    <img src="/static/images/icons/actions/defend.svg" alt="" class="rpg-icon rpg-icon-xl rpg-icon-info" style="margin: 0 20px;">
+                    <img src="/static/images/icons/actions/roll.svg" alt="" class="rpg-icon rpg-icon-xl rpg-icon-warning">
                 </div>
                 <h2 class="panel-title" style="font-size: 1.5rem; margin-bottom: 15px;">Embark on Epic Adventures</h2>
                 <p class="mb-1">Welcome to <strong>Role Play</strong> – an open-source virtual tabletop implementation of Dungeons & Dragons! Experience the magic of the world's greatest roleplaying game online, powered by the D&D 5th Edition SRD 5.2.</p>
                 <p class="mb-2"><strong>What awaits you:</strong></p>
-                <ul style="text-align: left; margin: 0 auto 15px; max-width: 600px; line-height: 1.8;">
-                    <li>🎭 <strong>Create unique characters</strong> with diverse races, classes, and abilities</li>
-                    <li>🎲 <strong>Roll dice and make choices</strong> that shape your destiny</li>
-                    <li>⚔️ <strong>Engage in tactical combat</strong> and overcome challenging encounters</li>
-                    <li>📖 <strong>Follow rich storylines</strong> filled with mystery and adventure</li>
-                    <li>🌍 <strong>Explore a living world</strong> where your decisions matter</li>
+                <ul style="text-align: left; margin: 0 auto 15px; max-width: 600px; line-height: 1.8; list-style: none; padding-left: 0;">
+                    <li><img src="/static/images/icons/actions/persuade.svg" alt="" class="rpg-icon rpg-icon-sm rpg-icon-primary"> <strong>Create unique characters</strong> with diverse races, classes, and abilities</li>
+                    <li><img src="/static/images/icons/actions/roll.svg" alt="" class="rpg-icon rpg-icon-sm rpg-icon-warning"> <strong>Roll dice and make choices</strong> that shape your destiny</li>
+                    <li><img src="/static/images/icons/actions/attack.svg" alt="" class="rpg-icon rpg-icon-sm rpg-icon-danger"> <strong>Engage in tactical combat</strong> and overcome challenging encounters</li>
+                    <li><img src="/static/images/icons/actions/cast-spell.svg" alt="" class="rpg-icon rpg-icon-sm rpg-icon-info"> <strong>Follow rich storylines</strong> filled with mystery and adventure</li>
+                    <li><img src="/static/images/icons/actions/search.svg" alt="" class="rpg-icon rpg-icon-sm rpg-icon-success"> <strong>Explore a living world</strong> where your decisions matter</li>
                 </ul>
             </div>
 
@@ -61,9 +63,9 @@
             {% endif %}
 
             <div class="rpg-section">
-                <h2 class="panel-title" style="font-size: 1.5rem;">🌟 Join Our Growing Community</h2>
+                <h2 class="panel-title" style="font-size: 1.5rem;"><img src="/static/images/icons/damage-types/radiant.svg" alt="" class="rpg-icon rpg-icon-md rpg-icon-primary"> Join Our Growing Community</h2>
                 <div class="game-message info">
-                    <p class="mb-1"><strong>✨ Actively Evolving</strong></p>
+                    <p class="mb-1"><strong><img src="/static/images/icons/damage-types/radiant.svg" alt="" class="rpg-icon rpg-icon-sm rpg-icon-primary"> Actively Evolving</strong></p>
                     <p>We're continuously adding new features, quests, and improvements! Your adventure gets better with every update.</p>
                 </div>
                 <p class="text-center mt-2" style="line-height: 1.6;">

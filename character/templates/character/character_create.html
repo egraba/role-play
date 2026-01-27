@@ -7,7 +7,7 @@
 {% block content %}
   <div class="rpg-container">
     <div class="rpg-panel" style="max-width: 800px; margin: 50px auto;">
-      <h1 class="panel-title">✨ New Character</h1>
+      <h1 class="panel-title"><img src="/static/images/icons/damage-types/radiant.svg" alt="" class="rpg-icon rpg-icon-lg rpg-icon-primary"> New Character</h1>
       <p class="text-center text-muted mb-2">Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}</p>
       <form action="" method="post">
         {% csrf_token %}

@@ -33,7 +33,7 @@ MULTI_EQUIPMENT_REGEX = r"\S+\s&\s\S+"
 
 class CharacterDetailView(LoginRequiredMixin, DetailView):
     model = Character
-    template_name = "character/character_sheet.html"
+    template_name = "character/character.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

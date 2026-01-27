@@ -40,7 +40,7 @@ class TestCharacterDetailView:
     def test_template_mapping(self, client, character):
         response = client.get(character.get_absolute_url())
         assert response.status_code == 200
-        assertTemplateUsed(response, "character/character_sheet.html")
+        assertTemplateUsed(response, "character/character.html")
 
     def test_content_character_is_in_game(self, client, character):
         game = GameFactory()
