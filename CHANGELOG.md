@@ -19,6 +19,11 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * Updated CI workflow to use `astral-sh/setup-uv@v5` for proper dependency caching
 
 ### Added
+* Integrated RPG icons throughout the application, replacing emoji icons with SVG icons:
+  - Added icon assets from game-icons.net (CC BY 3.0) including classes, actions, conditions, damage types, and UI icons
+  - Updated CSS with `.rpg-icon` classes supporting size modifiers (sm, md, lg, xl) and color variants (primary, danger, success, info, warning)
+  - Updated all templates (28 files) to use the new SVG icons in section headers and UI elements
+  - Character details view now displays class-specific icons dynamically based on character's primary class
 * Extended test coverage with 948 lines of new tests:
   - `game/tests/test_schemas.py`: EventType, EventOrigin, EventSchema validation
   - `master/tests/test_forms.py`: CampaignCreateForm, CampaignUpdateForm

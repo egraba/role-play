@@ -1624,3 +1624,117 @@ body {
         display: none;
     }
 }
+
+/* ==================== RPG ICONS ==================== */
+/*
+ * Icons from game-icons.net (CC BY 3.0)
+ * Attribution: https://game-icons.net/about.html
+ *
+ * Usage with <img> tags (recommended for Django templates):
+ *   <img src="{% static 'images/icons/classes/fighter.svg' %}" class="rpg-icon rpg-icon-md rpg-icon-primary" alt="">
+ *
+ * Usage with <span> tags (for CSS background-image approach):
+ *   <span class="rpg-icon rpg-icon-md rpg-icon-primary rpg-icon-fighter"></span>
+ */
+
+.rpg-icon {
+    display: inline-block;
+    width: 1.2em;
+    height: 1.2em;
+    vertical-align: middle;
+    filter: invert(1);
+}
+
+/* For span-based icons using background-image */
+span.rpg-icon {
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* For img-based icons */
+img.rpg-icon {
+    object-fit: contain;
+}
+
+.rpg-icon-sm { width: 1em; height: 1em; }
+.rpg-icon-md { width: 1.5em; height: 1.5em; }
+.rpg-icon-lg { width: 2em; height: 2em; }
+.rpg-icon-xl { width: 3em; height: 3em; }
+
+/* Icon Colors - works with both img and span elements */
+.rpg-icon-primary { filter: invert(75%) sepia(50%) saturate(500%) hue-rotate(10deg); }
+.rpg-icon-danger { filter: invert(30%) sepia(100%) saturate(2000%) hue-rotate(350deg); }
+.rpg-icon-success { filter: invert(60%) sepia(50%) saturate(500%) hue-rotate(80deg); }
+.rpg-icon-info { filter: invert(50%) sepia(80%) saturate(400%) hue-rotate(180deg); }
+.rpg-icon-warning { filter: invert(70%) sepia(80%) saturate(600%) hue-rotate(10deg); }
+
+/* Condition Icons */
+.rpg-icon-blinded { background-image: url('../images/icons/conditions/blinded.svg'); }
+.rpg-icon-charmed { background-image: url('../images/icons/conditions/charmed.svg'); }
+.rpg-icon-deafened { background-image: url('../images/icons/conditions/deafened.svg'); }
+.rpg-icon-exhaustion { background-image: url('../images/icons/conditions/exhaustion.svg'); }
+.rpg-icon-frightened { background-image: url('../images/icons/conditions/frightened.svg'); }
+.rpg-icon-grappled { background-image: url('../images/icons/conditions/grappled.svg'); }
+.rpg-icon-incapacitated { background-image: url('../images/icons/conditions/incapacitated.svg'); }
+.rpg-icon-invisible { background-image: url('../images/icons/conditions/invisible.svg'); }
+.rpg-icon-paralyzed { background-image: url('../images/icons/conditions/paralyzed.svg'); }
+.rpg-icon-petrified { background-image: url('../images/icons/conditions/petrified.svg'); }
+.rpg-icon-poisoned { background-image: url('../images/icons/conditions/poisoned.svg'); }
+.rpg-icon-prone { background-image: url('../images/icons/conditions/prone.svg'); }
+.rpg-icon-restrained { background-image: url('../images/icons/conditions/restrained.svg'); }
+.rpg-icon-stunned { background-image: url('../images/icons/conditions/stunned.svg'); }
+.rpg-icon-unconscious { background-image: url('../images/icons/conditions/unconscious.svg'); }
+
+/* Class Icons */
+.rpg-icon-barbarian { background-image: url('../images/icons/classes/barbarian.svg'); }
+.rpg-icon-bard { background-image: url('../images/icons/classes/bard.svg'); }
+.rpg-icon-cleric { background-image: url('../images/icons/classes/cleric.svg'); }
+.rpg-icon-druid { background-image: url('../images/icons/classes/druid.svg'); }
+.rpg-icon-fighter { background-image: url('../images/icons/classes/fighter.svg'); }
+.rpg-icon-monk { background-image: url('../images/icons/classes/monk.svg'); }
+.rpg-icon-paladin { background-image: url('../images/icons/classes/paladin.svg'); }
+.rpg-icon-ranger { background-image: url('../images/icons/classes/ranger.svg'); }
+.rpg-icon-rogue { background-image: url('../images/icons/classes/rogue.svg'); }
+.rpg-icon-sorcerer { background-image: url('../images/icons/classes/sorcerer.svg'); }
+.rpg-icon-warlock { background-image: url('../images/icons/classes/warlock.svg'); }
+.rpg-icon-wizard { background-image: url('../images/icons/classes/wizard.svg'); }
+
+/* Damage Type Icons */
+.rpg-icon-acid { background-image: url('../images/icons/damage-types/acid.svg'); }
+.rpg-icon-bludgeoning { background-image: url('../images/icons/damage-types/bludgeoning.svg'); }
+.rpg-icon-cold { background-image: url('../images/icons/damage-types/cold.svg'); }
+.rpg-icon-fire { background-image: url('../images/icons/damage-types/fire.svg'); }
+.rpg-icon-force { background-image: url('../images/icons/damage-types/force.svg'); }
+.rpg-icon-lightning { background-image: url('../images/icons/damage-types/lightning.svg'); }
+.rpg-icon-necrotic { background-image: url('../images/icons/damage-types/necrotic.svg'); }
+.rpg-icon-piercing { background-image: url('../images/icons/damage-types/piercing.svg'); }
+.rpg-icon-poison { background-image: url('../images/icons/damage-types/poison.svg'); }
+.rpg-icon-psychic { background-image: url('../images/icons/damage-types/psychic.svg'); }
+.rpg-icon-radiant { background-image: url('../images/icons/damage-types/radiant.svg'); }
+.rpg-icon-slashing { background-image: url('../images/icons/damage-types/slashing.svg'); }
+.rpg-icon-thunder { background-image: url('../images/icons/damage-types/thunder.svg'); }
+
+/* Action Icons */
+.rpg-icon-attack { background-image: url('../images/icons/actions/attack.svg'); }
+.rpg-icon-cast-spell { background-image: url('../images/icons/actions/cast-spell.svg'); }
+.rpg-icon-dash { background-image: url('../images/icons/actions/dash.svg'); }
+.rpg-icon-defend { background-image: url('../images/icons/actions/defend.svg'); }
+.rpg-icon-disengage { background-image: url('../images/icons/actions/disengage.svg'); }
+.rpg-icon-dodge { background-image: url('../images/icons/actions/dodge.svg'); }
+.rpg-icon-help { background-image: url('../images/icons/actions/help.svg'); }
+.rpg-icon-hide { background-image: url('../images/icons/actions/hide.svg'); }
+.rpg-icon-persuade { background-image: url('../images/icons/actions/persuade.svg'); }
+.rpg-icon-ready { background-image: url('../images/icons/actions/ready.svg'); }
+.rpg-icon-roll { background-image: url('../images/icons/actions/roll.svg'); }
+.rpg-icon-search { background-image: url('../images/icons/actions/search.svg'); }
+
+/* UI Icons */
+.rpg-icon-close { background-image: url('../images/icons/ui/close.svg'); }
+.rpg-icon-confirm { background-image: url('../images/icons/ui/confirm.svg'); }
+.rpg-icon-delete { background-image: url('../images/icons/ui/delete.svg'); }
+.rpg-icon-info { background-image: url('../images/icons/ui/info.svg'); }
+.rpg-icon-pause { background-image: url('../images/icons/ui/pause.svg'); }
+.rpg-icon-play { background-image: url('../images/icons/ui/play.svg'); }
+.rpg-icon-search-ui { background-image: url('../images/icons/ui/search.svg'); }
+.rpg-icon-settings { background-image: url('../images/icons/ui/settings.svg'); }

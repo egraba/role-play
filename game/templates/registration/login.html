@@ -3,7 +3,7 @@
 {% block content %}
     <div class="rpg-container">
         <div class="rpg-panel" style="max-width: 500px; margin: 50px auto;">
-            <h1 class="panel-title">🔐 Log in</h1>
+            <h1 class="panel-title"><img src="/static/images/icons/ui/settings.svg" alt="" class="rpg-icon rpg-icon-lg rpg-icon-primary"> Log in</h1>
             <form method="post">
                 {% csrf_token %}
                 {% if form.non_field_errors %}

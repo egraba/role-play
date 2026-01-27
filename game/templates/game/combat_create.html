@@ -3,7 +3,7 @@
 {% block content %}
     <div class="rpg-container">
         <div class="rpg-panel" style="max-width: 900px; margin: 50px auto;">
-            <h1 class="panel-title" style="font-size: 2rem;">⚔️ Initiate Combat</h1>
+            <h1 class="panel-title" style="font-size: 2rem;"><img src="/static/images/icons/actions/attack.svg" alt="" class="rpg-icon rpg-icon-lg rpg-icon-danger"> Initiate Combat</h1>
             <p class="text-center text-muted mb-2">Select which characters will participate in this combat encounter.</p>
 
             {% if request.method == 'POST' and form.non_field_errors %}
@@ -19,7 +19,7 @@
                     {% for field in form %}
                         <div class="fighter-card">
                             <div class="fighter-header">
-                                <span class="fighter-icon">🧙</span>
+                                <img src="/static/images/icons/classes/wizard.svg" alt="" class="rpg-icon rpg-icon-lg rpg-icon-primary fighter-icon">
                                 <span class="fighter-name">{{ field.label }}</span>
                             </div>
                             <div class="fighter-options">
@@ -28,9 +28,9 @@
                                         {{ checkbox.tag }}
                                         <span class="option-label">
                                             {% if 'fighting' in checkbox.data.label|lower %}
-                                                ⚔️ {{ checkbox.data.label }}
+                                                <img src="/static/images/icons/actions/attack.svg" alt="" class="rpg-icon rpg-icon-sm rpg-icon-danger"> {{ checkbox.data.label }}
                                             {% else %}
-                                                😵 {{ checkbox.data.label }}
+                                                <img src="/static/images/icons/conditions/stunned.svg" alt="" class="rpg-icon rpg-icon-sm rpg-icon-warning"> {{ checkbox.data.label }}
                                             {% endif %}
                                         </span>
                                     </label>
@@ -44,13 +44,13 @@
 
                 <div class="combat-info mt-2">
                     <div class="game-message info">
-                        <p><strong>💡 Combat Tip:</strong> Surprised characters have disadvantage on initiative.</p>
+                        <p><strong><img src="/static/images/icons/ui/info.svg" alt="" class="rpg-icon rpg-icon-sm rpg-icon-info"> Combat Tip:</strong> Surprised characters have disadvantage on initiative.</p>
                     </div>
                 </div>
 
                 <div class="action-buttons mt-2">
                     <a href="{{ request.META.HTTP_REFERER|default:'/' }}" class="rpg-btn btn-defend">Cancel</a>
-                    <button class="rpg-btn btn-attack" type="submit">⚔️ Start Combat</button>
+                    <button class="rpg-btn btn-attack" type="submit"><img src="/static/images/icons/actions/attack.svg" alt="" class="rpg-icon rpg-icon-sm" style="filter: none;"> Start Combat</button>
                 </div>
             </form>
         </div>

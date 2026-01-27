@@ -6,13 +6,20 @@
         <div class="rpg-panel" style="margin-bottom: 20px;">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
                 <div>
-                    <h1 class="panel-title" style="font-size: 2rem; margin-bottom: 5px;">⚔️ {{ character }}</h1>
+                    <h1 class="panel-title" style="font-size: 2rem; margin-bottom: 5px;">
+                        {% if character.primary_class %}
+                            <img src="/static/images/icons/classes/{{ character.primary_class.name }}.svg" alt="" class="rpg-icon rpg-icon-lg rpg-icon-primary">
+                        {% else %}
+                            <img src="/static/images/icons/actions/attack.svg" alt="" class="rpg-icon rpg-icon-lg rpg-icon-primary">
+                        {% endif %}
+                        {{ character }}
+                    </h1>
                     <div style="color: var(--color-text-muted);">
-                        {{ character.get_race_display }} {{ character.get_klass_display }} • {{ character.get_alignment_display }}
+                        {{ character.species }} {{ character.primary_class }}
                     </div>
                 </div>
                 <div style="text-align: right;">
-                    <div style="color: var(--color-primary); font-size: 1.2rem;">Level {{ character.level }}</div>
+                    <div style="color: var(--color-primary); font-size: 1.2rem;"><img src="/static/images/icons/damage-types/radiant.svg" alt="" class="rpg-icon rpg-icon-sm rpg-icon-primary"> Level {{ character.level }}</div>
                     <div style="color: var(--color-text-muted); font-size: 0.9rem;">{{ character.xp }} XP</div>
                 </div>
             </div>
@@ -27,7 +34,7 @@
             <div class="character-column">
                 <!-- HP Section -->
                 <div class="rpg-panel" style="margin-bottom: 20px;">
-                    <h3 class="panel-title" style="font-size: 1.2rem; margin-bottom: 15px;">❤️ Vitals</h3>
+                    <h3 class="panel-title" style="font-size: 1.2rem; margin-bottom: 15px;"><img src="/static/images/icons/conditions/unconscious.svg" alt="" class="rpg-icon rpg-icon-md rpg-icon-danger"> Vitals</h3>
                     <div class="stat-bar">
                         <div class="stat-label">
                             <span class="stat-label-name">HP</span>
@@ -45,7 +52,7 @@
 
                 <!-- Abilities Section -->
                 <div class="rpg-panel" style="margin-bottom: 20px;">
-                    <h3 class="panel-title" style="font-size: 1.2rem; margin-bottom: 15px;">💪 Abilities</h3>
+                    <h3 class="panel-title" style="font-size: 1.2rem; margin-bottom: 15px;"><img src="/static/images/icons/damage-types/force.svg" alt="" class="rpg-icon rpg-icon-md rpg-icon-primary"> Abilities</h3>
                     <div class="attributes-grid">
                         {% for ability in abilities %}
                             <div class="attribute-item">
@@ -58,7 +65,7 @@
 
                 <!-- Game Section -->
                 <div class="rpg-panel">
-                    <h3 class="panel-title" style="font-size: 1.2rem; margin-bottom: 15px;">🎲 Game</h3>
+                    <h3 class="panel-title" style="font-size: 1.2rem; margin-bottom: 15px;"><img src="/static/images/icons/actions/roll.svg" alt="" class="rpg-icon rpg-icon-md rpg-icon-warning"> Game</h3>
                     {% with game=character.player.game %}
                         {% if game %}
                             <p>Ongoing game: <a href="{% url 'game' game.id %}" style="color: var(--color-primary); text-decoration: underline;">{{ game }}</a></p>
@@ -73,7 +80,7 @@
             <div class="character-column">
                 <!-- Skills Section -->
                 <div class="rpg-panel" style="margin-bottom: 20px;">
-                    <h3 class="panel-title" style="font-size: 1.2rem; margin-bottom: 15px;">🎯 Skills</h3>
+                    <h3 class="panel-title" style="font-size: 1.2rem; margin-bottom: 15px;"><img src="/static/images/icons/actions/search.svg" alt="" class="rpg-icon rpg-icon-md rpg-icon-info"> Skills</h3>
                     {% for skill in character.skills.all %}
                         <div class="attribute-item" style="margin-bottom: 8px;">
                             <span class="attribute-name">{{ skill }}</span>
@@ -85,7 +92,7 @@
 
                 <!-- Languages Section -->
                 <div class="rpg-panel">
-                    <h3 class="panel-title" style="font-size: 1.2rem; margin-bottom: 15px;">💬 Languages</h3>
+                    <h3 class="panel-title" style="font-size: 1.2rem; margin-bottom: 15px;"><img src="/static/images/icons/actions/persuade.svg" alt="" class="rpg-icon rpg-icon-md rpg-icon-success"> Languages</h3>
                     {% for language in character.languages.all %}
                         <div class="attribute-item" style="margin-bottom: 8px;">
                             <span class="attribute-name">{{ language.get_name_display }}</span>
@@ -99,11 +106,11 @@
             <!-- Right Column: Inventory -->
             <div class="character-column">
                 <div class="rpg-panel">
-                    <h3 class="panel-title" style="font-size: 1.2rem; margin-bottom: 15px;">🎒 Inventory</h3>
+                    <h3 class="panel-title" style="font-size: 1.2rem; margin-bottom: 15px;"><img src="/static/images/icons/actions/ready.svg" alt="" class="rpg-icon rpg-icon-md rpg-icon-primary"> Inventory</h3>
 
                     {% if inventory.armor_set.all %}
                         <div style="margin-bottom: 15px;">
-                            <h4 style="color: var(--color-primary); font-size: 1rem; margin-bottom: 8px;">🛡️ Armor</h4>
+                            <h4 style="color: var(--color-primary); font-size: 1rem; margin-bottom: 8px;"><img src="/static/images/icons/actions/defend.svg" alt="" class="rpg-icon rpg-icon-sm rpg-icon-info"> Armor</h4>
                             {% for armor in inventory.armor_set.all %}
                                 <div class="attribute-item" style="margin-bottom: 5px;">
                                     <span class="attribute-name">{{ armor }}</span>
@@ -114,7 +121,7 @@
 
                     {% if inventory.weapon_set.all %}
                         <div style="margin-bottom: 15px;">
-                            <h4 style="color: var(--color-primary); font-size: 1rem; margin-bottom: 8px;">⚔️ Weapons</h4>
+                            <h4 style="color: var(--color-primary); font-size: 1rem; margin-bottom: 8px;"><img src="/static/images/icons/actions/attack.svg" alt="" class="rpg-icon rpg-icon-sm rpg-icon-danger"> Weapons</h4>
                             {% for weapon in inventory.weapon_set.all %}
                                 <div class="attribute-item" style="margin-bottom: 5px;">
                                     <span class="attribute-name">{{ weapon }}</span>
@@ -125,7 +132,7 @@
 
                     {% if inventory.pack_set.all %}
                         <div style="margin-bottom: 15px;">
-                            <h4 style="color: var(--color-primary); font-size: 1rem; margin-bottom: 8px;">🎒 Pack</h4>
+                            <h4 style="color: var(--color-primary); font-size: 1rem; margin-bottom: 8px;"><img src="/static/images/icons/actions/ready.svg" alt="" class="rpg-icon rpg-icon-sm rpg-icon-primary"> Pack</h4>
                             {% for pack in inventory.pack_set.all %}
                                 <div class="attribute-item" style="margin-bottom: 5px;">
                                     <span class="attribute-name">{{ pack }}</span>
@@ -136,7 +143,7 @@
 
                     {% if inventory.gear_set.all %}
                         <div style="margin-bottom: 15px;">
-                            <h4 style="color: var(--color-primary); font-size: 1rem; margin-bottom: 8px;">⚙️ Gear</h4>
+                            <h4 style="color: var(--color-primary); font-size: 1rem; margin-bottom: 8px;"><img src="/static/images/icons/ui/settings.svg" alt="" class="rpg-icon rpg-icon-sm rpg-icon-primary"> Gear</h4>
                             {% for gear in inventory.gear_set.all %}
                                 <div class="attribute-item" style="margin-bottom: 5px;">
                                     <span class="attribute-name">{{ gear }}</span>
@@ -147,7 +154,7 @@
 
                     {% if inventory.tool_set.all %}
                         <div style="margin-bottom: 15px;">
-                            <h4 style="color: var(--color-primary); font-size: 1rem; margin-bottom: 8px;">🔧 Tools</h4>
+                            <h4 style="color: var(--color-primary); font-size: 1rem; margin-bottom: 8px;"><img src="/static/images/icons/ui/settings.svg" alt="" class="rpg-icon rpg-icon-sm rpg-icon-primary"> Tools</h4>
                             {% for tool in inventory.tool_set.all %}
                                 <div class="attribute-item" style="margin-bottom: 5px;">
                                     <span class="attribute-name">{{ tool }}</span>

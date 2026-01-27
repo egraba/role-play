@@ -9,8 +9,10 @@
                     <div class="character-portrait">
                         {% if character.portrait %}
                             <img src="{{ character.portrait.url }}" alt="{{ character.name }}">
+                        {% elif character.primary_class %}
+                            <img src="/static/images/icons/classes/{{ character.primary_class.name }}.svg" alt="" class="rpg-icon rpg-icon-xl rpg-icon-primary">
                         {% else %}
-                            ⚔️
+                            <img src="/static/images/icons/actions/attack.svg" alt="" class="rpg-icon rpg-icon-xl rpg-icon-primary">
                         {% endif %}
                     </div>
                 </div>
