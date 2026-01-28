@@ -30,6 +30,9 @@ class Character(models.Model):
     xp = models.IntegerField(default=0)
     hp = models.SmallIntegerField(default=100)
     max_hp = models.SmallIntegerField(default=100)
+    temp_hp = models.PositiveSmallIntegerField(default=0)
+    death_save_successes = models.PositiveSmallIntegerField(default=0)
+    death_save_failures = models.PositiveSmallIntegerField(default=0)
     skills = models.ManyToManyField(Skill)
     abilities = models.ManyToManyField(Ability)
     feats = models.ManyToManyField(
@@ -173,3 +176,111 @@ class Character(models.Model):
     def has_disadvantage(self, roll_type: RollType, against: Against) -> bool:
         # Not supported.
         return False
+
+    @property
+    def is_unconscious(self) -> bool:
+        """Check if character is at 0 HP."""
+        return self.hp <= 0
+
+    @property
+    def is_dead(self) -> bool:
+        """Check if character has failed 3 death saves."""
+        return self.death_save_failures >= 3
+
+    @property
+    def is_stable(self) -> bool:
+        """Check if character has succeeded 3 death saves."""
+        return self.death_save_successes >= 3
+
+    @property
+    def effective_hp(self) -> int:
+        """Return total effective HP including temporary HP."""
+        return self.hp + self.temp_hp
+
+    @property
+    def hp_percentage(self) -> int:
+        """Return HP as percentage of max HP."""
+        if self.max_hp <= 0:
+            return 0
+        return min(100, max(0, int((self.hp / self.max_hp) * 100)))
+
+    def take_damage(self, damage: int) -> int:
+        """Apply damage to character, consuming temp HP first.
+
+        Returns the actual damage taken (after temp HP absorption).
+        """
+        if damage <= 0:
+            return 0
+
+        actual_damage = damage
+
+        # Temp HP absorbs damage first
+        if self.temp_hp > 0:
+            if self.temp_hp >= damage:
+                self.temp_hp -= damage
+                self.save()
+                return 0  # All damage absorbed by temp HP
+            else:
+                damage -= self.temp_hp
+                self.temp_hp = 0
+
+        # Apply remaining damage to HP
+        self.hp = max(0, self.hp - damage)
+
+        # Reset death saves if dropping to 0 HP
+        if self.hp == 0:
+            self.death_save_successes = 0
+            self.death_save_failures = 0
+
+        self.save()
+        return actual_damage
+
+    def heal(self, amount: int) -> int:
+        """Heal character up to max HP.
+
+        Returns the actual amount healed.
+        """
+        if amount <= 0:
+            return 0
+
+        old_hp = self.hp
+        self.hp = min(self.max_hp, self.hp + amount)
+
+        # Reset death saves when healed from 0
+        if old_hp == 0 and self.hp > 0:
+            self.death_save_successes = 0
+            self.death_save_failures = 0
+
+        self.save()
+        return self.hp - old_hp
+
+    def add_temp_hp(self, amount: int) -> None:
+        """Add temporary HP. Takes the higher value if already has temp HP."""
+        if amount > self.temp_hp:
+            self.temp_hp = amount
+            self.save()
+
+    def remove_temp_hp(self) -> None:
+        """Remove all temporary HP."""
+        self.temp_hp = 0
+        self.save()
+
+    def add_death_save_success(self) -> bool:
+        """Record a death save success. Returns True if now stable."""
+        if self.death_save_successes < 3:
+            self.death_save_successes += 1
+            self.save()
+        return self.is_stable
+
+    def add_death_save_failure(self) -> bool:
+        """Record a death save failure. Returns True if now dead."""
+        if self.death_save_failures < 3:
+            self.death_save_failures += 1
+            self.save()
+        return self.is_dead
+
+    def reset_death_saves(self) -> None:
+        """Reset death save counters."""
+        self.death_save_successes = 0
+        self.death_save_failures = 0
+        self.save()

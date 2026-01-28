@@ -32,6 +32,20 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * Updated CI workflow to use `astral-sh/setup-uv@v5` for proper dependency caching
 
 ### Added
+* Dynamic HP bar component with HTMX and real-time WebSocket updates:
+  - HTMX-powered HP bar partial template with automatic refresh
+  - Current/max HP display with animated progress bar
+  - Temporary HP indicator with blue styling and badge display
+  - Death saves tracker with success/failure circles (shown when at 0 HP)
+  - Visual feedback animations: flash red for damage, flash green for healing, flash blue for temp HP
+  - Critical HP warning with pulsing animation below 25%
+  - Status indicators for unconscious, stable, and dead states
+  - Character model extended with `temp_hp`, `death_save_successes`, `death_save_failures` fields
+  - HP management methods: `take_damage()`, `heal()`, `add_temp_hp()`, `remove_temp_hp()`
+  - Death save methods: `add_death_save_success()`, `add_death_save_failure()`, `reset_death_saves()`
+  - HTMX endpoints for damage, healing, temp HP, and death saves
+  - WebSocket event broadcasting for HP changes to all players in game session
+  - New event types: HP_DAMAGE, HP_HEAL, HP_TEMP, HP_DEATH_SAVE
 * Responsive navigation system with persistent navbar:
   - Sticky navbar with brand logo, navigation links, and user dropdown
   - Mobile hamburger menu at 768px breakpoint with full-screen slide-in animation

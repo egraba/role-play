@@ -214,3 +214,19 @@ class GameEventsConsumer(JsonWebsocketConsumer):
     def spell_saving_throw(self, event):
         """A spell saving throw has been made."""
         self.send_json(event)
+
+    def hp_damage(self, event):
+        """A character has taken damage."""
+        self.send_json(event)
+
+    def hp_heal(self, event):
+        """A character has been healed."""
+        self.send_json(event)
+
+    def hp_temp(self, event):
+        """A character has received temporary HP."""
+        self.send_json(event)
+
+    def hp_death_save(self, event):
+        """A character has made a death save."""
+        self.send_json(event)
