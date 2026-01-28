@@ -70,7 +70,7 @@ body {
 
 .rpg-panel {
     background: var(--color-bg-light);
-    border: 2px solid var(--color-primary);
+    border: none;
     border-radius: var(--border-radius);
     padding: 20px;
     box-shadow: var(--shadow-default);
