@@ -11,16 +11,9 @@
                     <div class="game-message info">
                         <strong>Welcome, {{ user.username }}!</strong>
                     </div>
-                    <form method="post" action="{% url 'logout' %}" style="margin-top: 15px;">
-                        {% csrf_token %}
-                        <button class="rpg-btn btn-primary" type="submit">Log out</button>
-                    </form>
                 {% else %}
                     <p style="font-size: 1.1rem; margin-bottom: 10px;"><img src="/static/images/icons/ui/settings.svg" alt="" class="rpg-icon rpg-icon-md rpg-icon-primary"> <strong>Your adventure awaits!</strong></p>
                     <p class="text-muted mb-2">Log in to create your character and begin your epic journey.</p>
-                    <div class="action-buttons">
-                        <a href="{% url 'login' %}" class="rpg-btn btn-primary">Log in</a>
-                    </div>
                 {% endif %}
             </div>
 

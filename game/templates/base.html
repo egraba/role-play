@@ -2,29 +2,155 @@
 {% load static %}
 <html lang="en">
     <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{% block title %}egraba's role-play{% endblock %}</title>
         <link rel="stylesheet" href="{% static 'css/rpg-styles.css' %}">
         <script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
     </head>
 
     <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
-        {% block content %}{% endblock%}
+        <nav class="rpg-navbar" role="navigation" aria-label="Main navigation">
+            <div class="navbar-container">
+                <a href="{% url 'index' %}" class="navbar-brand">
+                    <img src="{% static 'images/icons/actions/roll.svg' %}" alt="" class="rpg-icon rpg-icon-primary">
+                    Role Play
+                </a>
 
-        <footer style="text-align: center; padding: 20px; margin-top: 40px; border-top: 1px solid var(--color-border, #4a4a4a); font-size: 0.85rem; color: var(--color-text-muted, #999);">
-            <p style="margin: 5px 0;">
-                This virtual tabletop implements D&D 5th Edition rules based on the
-                <a href="https://media.dndbeyond.com/compendium-images/srd/5.2/SRD_CC_v5.2.1.pdf"
-                   style="color: var(--color-primary, #d4af37); text-decoration: underline;"
-                   target="_blank"
-                   rel="noopener noreferrer">Systems Reference Document 5.2</a>
-            </p>
-            <p style="margin: 5px 0;">
-                The SRD 5.2 is © Wizards of the Coast and licensed under
-                <a href="https://creativecommons.org/licenses/by/4.0/"
-                   style="color: var(--color-primary, #d4af37); text-decoration: underline;"
-                   target="_blank"
-                   rel="noopener noreferrer">CC-BY-4.0</a>
-            </p>
-        </footer>
+                <button class="navbar-toggle" aria-expanded="false" aria-controls="navbar-menu" aria-label="Toggle navigation menu">
+                    <span class="navbar-toggle-bar"></span>
+                    <span class="navbar-toggle-bar"></span>
+                    <span class="navbar-toggle-bar"></span>
+                </button>
+
+                <ul class="navbar-menu" id="navbar-menu">
+                    <li class="navbar-item">
+                        <a href="{% url 'index' %}" class="navbar-link">
+                            <img src="{% static 'images/icons/actions/roll.svg' %}" alt="" class="rpg-icon rpg-icon-primary">
+                            Home
+                        </a>
+                    </li>
+                    <li class="navbar-item">
+                        <a href="{% url 'game-list' %}" class="navbar-link">
+                            <img src="{% static 'images/icons/actions/attack.svg' %}" alt="" class="rpg-icon rpg-icon-danger">
+                            Games
+                        </a>
+                    </li>
+                    {% if user.is_authenticated %}
+                        <li class="navbar-item">
+                            <a href="{% url 'campaign-list' %}" class="navbar-link">
+                                <img src="{% static 'images/icons/actions/cast-spell.svg' %}" alt="" class="rpg-icon rpg-icon-info">
+                                Campaigns
+                            </a>
+                        </li>
+                        {% if user_character %}
+                            <li class="navbar-item">
+                                <a href="{{ user_character.get_absolute_url }}" class="navbar-link">
+                                    <img src="{% static 'images/icons/actions/help.svg' %}" alt="" class="rpg-icon rpg-icon-success">
+                                    My Character
+                                </a>
+                            </li>
+                        {% endif %}
+                        <li class="navbar-item navbar-user">
+                            <button class="navbar-user-toggle" aria-expanded="false" aria-controls="user-dropdown">
+                                {% if user_character and user_character.primary_class %}
+                                    <img src="{% static 'images/icons/classes/' %}{{ user_character.primary_class.name|lower }}.svg" alt="" class="rpg-icon rpg-icon-primary">
+                                {% else %}
+                                    <img src="{% static 'images/icons/ui/settings.svg' %}" alt="" class="rpg-icon rpg-icon-primary">
+                                {% endif %}
+                                {{ user.username }}
+                            </button>
+                            <ul class="navbar-dropdown" id="user-dropdown">
+                                <li class="navbar-dropdown-item">
+                                    <form method="post" action="{% url 'logout' %}" id="logout-form">
+                                        {% csrf_token %}
+                                        <a href="#" class="navbar-dropdown-link" onclick="document.getElementById('logout-form').submit(); return false;">
+                                            <img src="{% static 'images/icons/ui/close.svg' %}" alt="" class="rpg-icon rpg-icon-danger">
+                                            Log out
+                                        </a>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="navbar-item">
+                            <a href="{% url 'login' %}" class="navbar-login">
+                                <img src="{% static 'images/icons/ui/settings.svg' %}" alt="" class="rpg-icon">
+                                Log in
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            {% block content %}{% endblock%}
+
+            <footer style="text-align: center; padding: 20px; margin-top: 40px; border-top: 1px solid var(--color-border, #4a4a4a); font-size: 0.85rem; color: var(--color-text-muted, #999);">
+                <p style="margin: 5px 0;">
+                    This virtual tabletop implements D&D 5th Edition rules based on the
+                    <a href="https://media.dndbeyond.com/compendium-images/srd/5.2/SRD_CC_v5.2.1.pdf"
+                       style="color: var(--color-primary, #d4af37); text-decoration: underline;"
+                       target="_blank"
+                       rel="noopener noreferrer">Systems Reference Document 5.2</a>
+                </p>
+                <p style="margin: 5px 0;">
+                    The SRD 5.2 is © Wizards of the Coast and licensed under
+                    <a href="https://creativecommons.org/licenses/by/4.0/"
+                       style="color: var(--color-primary, #d4af37); text-decoration: underline;"
+                       target="_blank"
+                       rel="noopener noreferrer">CC-BY-4.0</a>
+                </p>
+            </footer>
+        </main>
+
+        <script>
+            (function() {
+                const navbarToggle = document.querySelector('.navbar-toggle');
+                const navbarMenu = document.getElementById('navbar-menu');
+                const userToggle = document.querySelector('.navbar-user-toggle');
+                const userDropdown = document.getElementById('user-dropdown');
+
+                // Toggle mobile menu
+                if (navbarToggle && navbarMenu) {
+                    navbarToggle.addEventListener('click', function() {
+                        const expanded = this.getAttribute('aria-expanded') === 'true';
+                        this.setAttribute('aria-expanded', !expanded);
+                        navbarMenu.classList.toggle('open');
+                    });
+                }
+
+                // Toggle user dropdown
+                if (userToggle && userDropdown) {
+                    userToggle.addEventListener('click', function() {
+                        const expanded = this.getAttribute('aria-expanded') === 'true';
+                        this.setAttribute('aria-expanded', !expanded);
+                        userDropdown.classList.toggle('open');
+                    });
+                }
+
+                // Close menus on escape key
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        if (navbarToggle && navbarMenu) {
+                            navbarToggle.setAttribute('aria-expanded', 'false');
+                            navbarMenu.classList.remove('open');
+                        }
+                        if (userToggle && userDropdown) {
+                            userToggle.setAttribute('aria-expanded', 'false');
+                            userDropdown.classList.remove('open');
+                        }
+                    }
+                });
+
+                // Close user dropdown when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (userToggle && userDropdown && !userToggle.contains(e.target) && !userDropdown.contains(e.target)) {
+                        userToggle.setAttribute('aria-expanded', 'false');
+                        userDropdown.classList.remove('open');
+                    }
+                });
+            })();
+        </script>
     </body>
 </html>

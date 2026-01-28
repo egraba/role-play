@@ -19,6 +19,14 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * Updated CI workflow to use `astral-sh/setup-uv@v5` for proper dependency caching
 
 ### Added
+* Responsive navigation system with persistent navbar:
+  - Sticky navbar with brand logo, navigation links, and user dropdown
+  - Mobile hamburger menu at 768px breakpoint with full-screen slide-in animation
+  - Context processor providing `user_character` globally for "My Character" link
+  - User dropdown shows character's class icon when available
+  - Accessibility features: aria-expanded, escape key to close, click outside to dismiss
+  - Removed redundant login/logout UI from homepage (now in navbar)
+  - Removed border from page panels for cleaner appearance
 * Integrated RPG icons throughout the application, replacing emoji icons with SVG icons:
   - Added icon assets from game-icons.net (CC BY 3.0) including classes, actions, conditions, damage types, and UI icons
   - Updated CSS with `.rpg-icon` classes supporting size modifiers (sm, md, lg, xl) and color variants (primary, danger, success, info, warning)
