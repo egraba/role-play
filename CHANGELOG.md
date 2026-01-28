@@ -34,6 +34,15 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
   - HTMX endpoints for damage, healing, temp HP, and death saves
   - WebSocket event broadcasting for HP changes to all players in game session
   - New event types: HP_DAMAGE, HP_HEAL, HP_TEMP, HP_DEATH_SAVE
+* Interactive skills panel with HTMX for all 18 D&D 5e skills:
+  - Filter buttons to show skills by ability score (STR, DEX, INT, WIS, CHA) or all
+  - Proficiency indicators (filled/empty circles) with green background for proficient skills
+  - Total modifier display combining ability modifier and proficiency bonus
+  - Color-coded ability tags for each skill
+  - Roll button for each skill that displays d20 result with breakdown
+  - Natural 20 (green glow) and natural 1 (red glow) visual feedback
+  - Proficiency bonus display at bottom of panel
+  - Responsive design with mobile-optimized layout
 
 ## v0.14.1 - 2026-01-27
 
