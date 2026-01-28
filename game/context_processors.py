@@ -1,8 +1,6 @@
 def navbar_context(request):
     """Provide navbar-related context variables to all templates."""
-    context = {
-        "user_character": None,
-    }
+    context = {}
 
     if request.user.is_authenticated:
         # Character has OneToOneField to User, so we can access it via reverse relation
