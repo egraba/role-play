@@ -4,10 +4,6 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 
 ## Unreleased
 
-### Fixed
-* Enabled 24 skipped `TestMonsterModel` tests - the `game.Combat` ForeignKey issue was resolved (nullable FK works correctly)
-* Fixed CI test failure caused by stale `PYTEST_PLUGINS` environment variable in Doppler injecting celery plugin
-
 ### Changed
 * Enhanced character detail template to follow SRD 5.2 structure:
   - 3-column responsive layout with ability scores, combat stats, and skills
@@ -22,14 +18,6 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
   - Background tab with personality trait, ideal, bond, and flaw
   - Responsive design with breakpoints for desktop, tablet, and mobile
   - Removed unused character_sheet.html template
-* Upgraded to Django 6.0.1 (from 5.2.x)
-* Upgraded all dependencies including:
-  - anthropic 0.75.0 → 0.76.0
-  - pydantic 2.23 → 3.0
-  - gunicorn 23.0.0 → 24.1.1
-  - sentry-sdk 2.48.0 → 2.50.0
-* Updated pre-commit hooks (ruff 0.14.10 → 0.14.14)
-* Updated CI workflow to use `astral-sh/setup-uv@v5` for proper dependency caching
 
 ### Added
 * Dynamic HP bar component with HTMX and real-time WebSocket updates:
@@ -46,6 +34,24 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
   - HTMX endpoints for damage, healing, temp HP, and death saves
   - WebSocket event broadcasting for HP changes to all players in game session
   - New event types: HP_DAMAGE, HP_HEAL, HP_TEMP, HP_DEATH_SAVE
+
+## v0.14.1 - 2026-01-27
+
+### Fixed
+* Enabled 24 skipped `TestMonsterModel` tests - the `game.Combat` ForeignKey issue was resolved (nullable FK works correctly)
+* Fixed CI test failure caused by stale `PYTEST_PLUGINS` environment variable in Doppler injecting celery plugin
+
+### Changed
+* Upgraded to Django 6.0.1 (from 5.2.x)
+* Upgraded all dependencies including:
+  - anthropic 0.75.0 → 0.76.0
+  - pydantic 2.23 → 3.0
+  - gunicorn 23.0.0 → 24.1.1
+  - sentry-sdk 2.48.0 → 2.50.0
+* Updated pre-commit hooks (ruff 0.14.10 → 0.14.14)
+* Updated CI workflow to use `astral-sh/setup-uv@v5` for proper dependency caching
+
+### Added
 * Responsive navigation system with persistent navbar:
   - Sticky navbar with brand logo, navigation links, and user dropdown
   - Mobile hamburger menu at 768px breakpoint with full-screen slide-in animation
