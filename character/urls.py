@@ -10,6 +10,7 @@ from .views.hp import (
     ResetDeathSavesView,
     TakeDamageView,
 )
+from .views.skills import SkillRollView, SkillsPanelView
 
 urlpatterns = [
     path(
@@ -57,5 +58,16 @@ urlpatterns = [
         "<int:pk>/hp/death-save/reset/",
         ResetDeathSavesView.as_view(),
         name="character-reset-death-saves",
+    ),
+    # HTMX Skills Panel endpoints
+    path(
+        "<int:pk>/skills/",
+        SkillsPanelView.as_view(),
+        name="character-skills-panel",
+    ),
+    path(
+        "<int:pk>/skills/roll/",
+        SkillRollView.as_view(),
+        name="character-skill-roll",
     ),
 ]

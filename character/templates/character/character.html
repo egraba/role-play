@@ -162,17 +162,11 @@
             <div class="sheet-column sheet-column-skills">
                 <div class="rpg-panel">
                     <h3 class="panel-title"><img src="/static/images/icons/actions/search.svg" alt="" class="rpg-icon rpg-icon-md rpg-icon-info"> Skills</h3>
-                    <div class="skills-list">
-                        {% for skill in skills %}
-                            <div class="skill-item {% if skill.proficient %}proficient{% endif %}">
-                                <span class="skill-proficiency">{% if skill.proficient %}●{% else %}○{% endif %}</span>
-                                <span class="skill-modifier">{% if skill.modifier >= 0 %}+{% endif %}{{ skill.modifier }}</span>
-                                <span class="skill-name">{{ skill.name }}</span>
-                                <span class="skill-ability">({{ skill.ability }})</span>
-                            </div>
-                        {% empty %}
-                            <p class="text-muted">No skills defined</p>
-                        {% endfor %}
+                    <!-- Skills Panel Component (HTMX-enabled) -->
+                    <div hx-get="{% url 'character-skills-panel' character.pk %}"
+                         hx-trigger="load"
+                         hx-swap="innerHTML">
+                        <p class="text-muted text-center">Loading skills...</p>
                     </div>
                 </div>
 

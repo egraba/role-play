@@ -1,0 +1,427 @@
+<div id="skills-panel-component" class="skills-panel-component">
+    <!-- Filter Controls -->
+    <div class="skills-filter">
+        <label class="filter-label">Filter by Ability:</label>
+        <div class="filter-buttons">
+            <button type="button"
+                    class="filter-btn {% if not ability_filter %}active{% endif %}"
+                    hx-get="{% url 'character-skills-panel' character.pk %}"
+                    hx-target="#skills-panel-component"
+                    hx-swap="outerHTML">
+                All
+            </button>
+            {% for ability in ability_types %}
+                <button type="button"
+                        class="filter-btn {% if ability_filter == ability.code %}active{% endif %}"
+                        hx-get="{% url 'character-skills-panel' character.pk %}?ability={{ ability.code }}"
+                        hx-target="#skills-panel-component"
+                        hx-swap="outerHTML">
+                    {{ ability.code }}
+                </button>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Skills List -->
+    <div class="skills-list-container">
+        {% for skill in skills %}
+            <div class="skill-row {% if skill.proficient %}proficient{% endif %}"
+                 data-ability="{{ skill.ability }}">
+                <!-- Proficiency Checkbox -->
+                <div class="skill-proficiency-box">
+                    <span class="proficiency-indicator {% if skill.proficient %}filled{% endif %}"
+                          title="{% if skill.proficient %}Proficient{% else %}Not Proficient{% endif %}">
+                        {% if skill.proficient %}&#9679;{% else %}&#9675;{% endif %}
+                    </span>
+                </div>
+
+                <!-- Total Modifier -->
+                <div class="skill-modifier-box">
+                    <span class="skill-total {% if skill.modifier >= 0 %}positive{% else %}negative{% endif %}">
+                        {% if skill.modifier >= 0 %}+{% endif %}{{ skill.modifier }}
+                    </span>
+                </div>
+
+                <!-- Skill Name -->
+                <div class="skill-name-box">
+                    <span class="skill-name">{{ skill.name }}</span>
+                </div>
+
+                <!-- Ability Tag -->
+                <div class="skill-ability-box">
+                    <span class="skill-ability-tag {{ skill.ability|lower }}">{{ skill.ability }}</span>
+                </div>
+
+                <!-- Roll Button -->
+                <div class="skill-roll-box">
+                    <button type="button"
+                            class="skill-roll-btn"
+                            hx-post="{% url 'character-skill-roll' character.pk %}"
+                            hx-vals='{"skill": "{{ skill.name }}", "modifier": "{{ skill.modifier }}"}'
+                            hx-target="#skill-roll-result"
+                            hx-swap="innerHTML"
+                            title="Roll {{ skill.name }} check">
+                        <img src="/static/images/icons/actions/roll.svg" alt="Roll" class="roll-icon">
+                    </button>
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-muted text-center">No skills match the filter</p>
+        {% endfor %}
+    </div>
+
+    <!-- Roll Result Display -->
+    <div id="skill-roll-result" class="skill-roll-result"></div>
+
+    <!-- Proficiency Bonus Display -->
+    <div class="proficiency-bonus-display">
+        <span class="prof-label">Proficiency Bonus:</span>
+        <span class="prof-value">+{{ character.proficiency_bonus }}</span>
+    </div>
+</div>
+
+<style>
+/* Skills Panel Component */
+    .skills-panel-component {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+/* Filter Controls */
+    .skills-filter {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .filter-label {
+        font-size: 0.8rem;
+        color: var(--color-text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .filter-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .filter-btn {
+        padding: 6px 12px;
+        border: 1px solid var(--color-secondary);
+        border-radius: 4px;
+        background: rgba(0, 0, 0, 0.3);
+        color: var(--color-text-muted);
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .filter-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--color-text);
+        border-color: var(--color-primary);
+    }
+
+    .filter-btn.active {
+        background: rgba(212, 175, 55, 0.2);
+        color: var(--color-primary);
+        border-color: var(--color-primary);
+    }
+
+/* Skills List */
+    .skills-list-container {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        max-height: 450px;
+        overflow-y: auto;
+        padding-right: 4px;
+    }
+
+    .skills-list-container::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .skills-list-container::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 3px;
+    }
+
+    .skills-list-container::-webkit-scrollbar-thumb {
+        background: var(--color-secondary);
+        border-radius: 3px;
+    }
+
+/* Skill Row */
+    .skill-row {
+        display: grid;
+        grid-template-columns: 24px 40px 1fr 40px 36px;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 4px;
+        transition: all 0.2s ease;
+    }
+
+    .skill-row:hover {
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .skill-row.proficient {
+        background: rgba(46, 204, 113, 0.1);
+    }
+
+    .skill-row.proficient:hover {
+        background: rgba(46, 204, 113, 0.15);
+    }
+
+/* Proficiency Indicator */
+    .skill-proficiency-box {
+        display: flex;
+        justify-content: center;
+    }
+
+    .proficiency-indicator {
+        font-size: 0.7rem;
+        color: var(--color-text-muted);
+        cursor: default;
+    }
+
+    .proficiency-indicator.filled {
+        color: var(--color-stamina);
+    }
+
+/* Modifier Display */
+    .skill-modifier-box {
+        display: flex;
+        justify-content: center;
+    }
+
+    .skill-total {
+        font-size: 0.95rem;
+        font-weight: bold;
+        font-family: monospace;
+    }
+
+    .skill-total.positive {
+        color: var(--color-primary);
+    }
+
+    .skill-total.negative {
+        color: var(--color-health);
+    }
+
+/* Skill Name */
+    .skill-name-box {
+        overflow: hidden;
+    }
+
+    .skill-name {
+        font-size: 0.85rem;
+        color: var(--color-text);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+/* Ability Tag */
+    .skill-ability-box {
+        display: flex;
+        justify-content: center;
+    }
+
+    .skill-ability-tag {
+        font-size: 0.7rem;
+        font-weight: bold;
+        padding: 2px 6px;
+        border-radius: 3px;
+        text-transform: uppercase;
+    }
+
+    .skill-ability-tag.str {
+        background: rgba(231, 76, 60, 0.2);
+        color: #e74c3c;
+    }
+
+    .skill-ability-tag.dex {
+        background: rgba(46, 204, 113, 0.2);
+        color: #2ecc71;
+    }
+
+    .skill-ability-tag.con {
+        background: rgba(230, 126, 34, 0.2);
+        color: #e67e22;
+    }
+
+    .skill-ability-tag.int {
+        background: rgba(52, 152, 219, 0.2);
+        color: #3498db;
+    }
+
+    .skill-ability-tag.wis {
+        background: rgba(155, 89, 182, 0.2);
+        color: #9b59b6;
+    }
+
+    .skill-ability-tag.cha {
+        background: rgba(241, 196, 15, 0.2);
+        color: #f1c40f;
+    }
+
+/* Roll Button */
+    .skill-roll-box {
+        display: flex;
+        justify-content: center;
+    }
+
+    .skill-roll-btn {
+        width: 28px;
+        height: 28px;
+        padding: 4px;
+        border: 1px solid var(--color-secondary);
+        border-radius: 4px;
+        background: rgba(0, 0, 0, 0.3);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .skill-roll-btn:hover {
+        background: rgba(212, 175, 55, 0.2);
+        border-color: var(--color-primary);
+        transform: scale(1.1);
+    }
+
+    .skill-roll-btn:active {
+        transform: scale(0.95);
+    }
+
+    .roll-icon {
+        width: 18px;
+        height: 18px;
+        filter: invert(1) opacity(0.7);
+    }
+
+    .skill-roll-btn:hover .roll-icon {
+        filter: invert(1) opacity(1);
+    }
+
+/* Roll Result */
+    .skill-roll-result {
+        min-height: 0;
+        transition: all 0.3s ease;
+    }
+
+    .skill-roll-result:not(:empty) {
+        margin-top: 12px;
+        padding: 12px;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 6px;
+        border: 1px solid var(--color-secondary);
+        animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .roll-result-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .roll-result-skill {
+        font-size: 0.9rem;
+        color: var(--color-text-muted);
+    }
+
+    .roll-result-total {
+        font-size: 2rem;
+        font-weight: bold;
+        color: var(--color-primary);
+    }
+
+    .roll-result-total.nat20 {
+        color: var(--color-stamina);
+        text-shadow: 0 0 10px rgba(46, 204, 113, 0.5);
+    }
+
+    .roll-result-total.nat1 {
+        color: var(--color-health);
+        text-shadow: 0 0 10px rgba(231, 76, 60, 0.5);
+    }
+
+    .roll-result-breakdown {
+        font-size: 0.8rem;
+        color: var(--color-text-muted);
+    }
+
+/* Proficiency Bonus Display */
+    .proficiency-bonus-display {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 12px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        margin-top: 8px;
+    }
+
+    .prof-label {
+        font-size: 0.8rem;
+        color: var(--color-text-muted);
+    }
+
+    .prof-value {
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: var(--color-primary);
+    }
+
+/* Responsive */
+    @media (max-width: 480px) {
+        .skill-row {
+            grid-template-columns: 20px 36px 1fr 32px 32px;
+            gap: 4px;
+            padding: 6px 8px;
+        }
+
+        .skill-name {
+            font-size: 0.8rem;
+        }
+
+        .skill-ability-tag {
+            font-size: 0.65rem;
+            padding: 1px 4px;
+        }
+
+        .skill-roll-btn {
+            width: 24px;
+            height: 24px;
+        }
+
+        .roll-icon {
+            width: 14px;
+            height: 14px;
+        }
+
+        .filter-buttons {
+            gap: 4px;
+        }
+
+        .filter-btn {
+            padding: 4px 8px;
+            font-size: 0.75rem;
+        }
+    }
+</style>
