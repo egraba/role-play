@@ -9,6 +9,19 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 * Fixed CI test failure caused by stale `PYTEST_PLUGINS` environment variable in Doppler injecting celery plugin
 
 ### Changed
+* Enhanced character detail template to follow SRD 5.2 structure:
+  - 3-column responsive layout with ability scores, combat stats, and skills
+  - Ability scores with abbreviations and calculated modifiers in grid layout
+  - Saving throws with proficiency markers and modifiers
+  - Combat stats panel with HP bar, Armor Class, Initiative, Speed, and Hit Dice
+  - Attacks section with attack bonus and damage
+  - Full skill list with proficiency indicators, modifiers, and associated abilities
+  - CSS-only tabbed interface for Features & Traits, Spells, Equipment, and Background
+  - Species traits, class features, and feats with descriptions
+  - Equipment tab with currency (CP, SP, GP, PP), armor, weapons, gear, packs, and tools
+  - Background tab with personality trait, ideal, bond, and flaw
+  - Responsive design with breakpoints for desktop, tablet, and mobile
+  - Removed unused character_sheet.html template
 * Upgraded to Django 6.0.1 (from 5.2.x)
 * Upgraded all dependencies including:
   - anthropic 0.75.0 → 0.76.0
