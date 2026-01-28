@@ -36,6 +36,11 @@ class EventType(StrEnum):
     SPELL_HEALING_RECEIVED = "spell.healing.received"
     SPELL_CONDITION_APPLIED = "spell.condition.applied"
     SPELL_SAVING_THROW = "spell.saving.throw"
+    # HP events
+    HP_DAMAGE = "hp.damage"
+    HP_HEAL = "hp.heal"
+    HP_TEMP = "hp.temp"
+    HP_DEATH_SAVE = "hp.death.save"
 
 
 class EventOrigin(IntFlag):

@@ -91,19 +91,11 @@
                 <div class="rpg-panel">
                     <h3 class="panel-title"><img src="/static/images/icons/conditions/unconscious.svg" alt="" class="rpg-icon rpg-icon-md rpg-icon-danger"> Combat Stats</h3>
 
-                <!-- HP Bar -->
-                    <div class="combat-hp-section">
-                        <div class="hp-display">
-                            <div class="hp-current">{{ character.hp }}</div>
-                            <div class="hp-separator">/</div>
-                            <div class="hp-max">{{ character.max_hp }}</div>
-                        </div>
-                        <div class="stat-bar">
-                            <div class="stat-progress">
-                                <div class="stat-fill health" style="width: {% widthratio character.hp character.max_hp 100 %}%"></div>
-                            </div>
-                        </div>
-                        <div class="hp-label">Hit Points</div>
+                <!-- HP Bar Component (HTMX-enabled) -->
+                    <div hx-get="{% url 'character-hp-bar' character.pk %}"
+                         hx-trigger="hp-updated from:body"
+                         hx-swap="innerHTML">
+                        {% include "character/partials/hp_bar.html" %}
                     </div>
 
                 <!-- Combat Stats Grid -->

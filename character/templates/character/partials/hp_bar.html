@@ -1,0 +1,356 @@
+<div id="hp-bar-component"
+     class="hp-bar-component {% if animation %}hp-{{ animation }}{% endif %}"
+     hx-swap-oob="true">
+
+    <!-- HP Display -->
+    <div class="hp-bar-header">
+        <div class="hp-values">
+            <span class="hp-current {% if character.is_unconscious %}unconscious{% endif %}">{{ character.hp }}</span>
+            <span class="hp-separator">/</span>
+            <span class="hp-max">{{ character.max_hp }}</span>
+        </div>
+        {% if character.temp_hp > 0 %}
+            <div class="hp-temp">
+                <span class="temp-hp-icon">+</span>
+                <span class="temp-hp-value">{{ character.temp_hp }}</span>
+                <span class="temp-hp-label">temp</span>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- HP Progress Bar -->
+    <div class="hp-bar-container">
+        <div class="hp-bar-track">
+            <!-- Main HP Bar -->
+            <div class="hp-bar-fill {% if character.hp_percentage <= 25 %}critical{% elif character.hp_percentage <= 50 %}warning{% endif %}"
+                 style="width: {{ character.hp_percentage }}%">
+            </div>
+            <!-- Temp HP Overlay -->
+            {% if character.temp_hp > 0 %}
+                {% widthratio character.temp_hp character.max_hp 100 as temp_percentage %}
+                <div class="hp-bar-temp"
+                     style="left: {{ character.hp_percentage }}%; width: {{ temp_percentage }}%">
+                </div>
+            {% endif %}
+        </div>
+        <span class="hp-bar-text">{{ character.hp }} / {{ character.max_hp }}</span>
+    </div>
+
+    <!-- Death Saves (only shown when at 0 HP) -->
+    {% if character.is_unconscious and not character.is_dead %}
+        <div class="death-saves-container">
+            <div class="death-saves-title">Death Saves</div>
+            <div class="death-saves-row">
+                <div class="death-saves-group successes">
+                    <span class="death-saves-label">Successes</span>
+                    <div class="death-saves-boxes">
+                        <span class="death-save-box {% if character.death_save_successes >= 1 %}filled{% endif %}"></span>
+                        <span class="death-save-box {% if character.death_save_successes >= 2 %}filled{% endif %}"></span>
+                        <span class="death-save-box {% if character.death_save_successes >= 3 %}filled{% endif %}"></span>
+                    </div>
+                </div>
+                <div class="death-saves-group failures">
+                    <span class="death-saves-label">Failures</span>
+                    <div class="death-saves-boxes">
+                        <span class="death-save-box {% if character.death_save_failures >= 1 %}filled{% endif %}"></span>
+                        <span class="death-save-box {% if character.death_save_failures >= 2 %}filled{% endif %}"></span>
+                        <span class="death-save-box {% if character.death_save_failures >= 3 %}filled{% endif %}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Status Indicators -->
+    {% if character.is_dead %}
+        <div class="hp-status dead">
+            <span class="status-icon">&#x1F480;</span>
+            <span class="status-text">Dead</span>
+        </div>
+    {% elif character.is_stable %}
+        <div class="hp-status stable">
+            <span class="status-icon">&#x2764;</span>
+            <span class="status-text">Stable</span>
+        </div>
+    {% elif character.is_unconscious %}
+        <div class="hp-status unconscious">
+            <span class="status-icon">&#x1F4A4;</span>
+            <span class="status-text">Unconscious</span>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+/* HP Bar Component Styles */
+    .hp-bar-component {
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 8px;
+        padding: 12px;
+        transition: all 0.3s ease;
+    }
+
+/* Flash Animations */
+    .hp-bar-component.hp-damage {
+        animation: flash-damage 0.5s ease-out;
+    }
+
+    .hp-bar-component.hp-heal {
+        animation: flash-heal 0.5s ease-out;
+    }
+
+    .hp-bar-component.hp-temp {
+        animation: flash-temp 0.5s ease-out;
+    }
+
+    @keyframes flash-damage {
+        0% { background: rgba(231, 76, 60, 0.6); box-shadow: 0 0 20px rgba(231, 76, 60, 0.8); }
+        100% { background: rgba(0, 0, 0, 0.3); box-shadow: none; }
+    }
+
+    @keyframes flash-heal {
+        0% { background: rgba(46, 204, 113, 0.6); box-shadow: 0 0 20px rgba(46, 204, 113, 0.8); }
+        100% { background: rgba(0, 0, 0, 0.3); box-shadow: none; }
+    }
+
+    @keyframes flash-temp {
+        0% { background: rgba(52, 152, 219, 0.6); box-shadow: 0 0 20px rgba(52, 152, 219, 0.8); }
+        100% { background: rgba(0, 0, 0, 0.3); box-shadow: none; }
+    }
+
+/* HP Header */
+    .hp-bar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+
+    .hp-values {
+        display: flex;
+        align-items: baseline;
+        gap: 4px;
+    }
+
+    .hp-current {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: var(--color-health);
+        transition: color 0.3s ease;
+    }
+
+    .hp-current.unconscious {
+        color: #7f8c8d;
+    }
+
+    .hp-separator {
+        font-size: 1.2rem;
+        color: var(--color-text-muted);
+    }
+
+    .hp-max {
+        font-size: 1.2rem;
+        color: var(--color-text-muted);
+    }
+
+/* Temp HP Badge */
+    .hp-temp {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        background: rgba(52, 152, 219, 0.3);
+        border: 1px solid var(--color-mana);
+        border-radius: 12px;
+        padding: 4px 10px;
+    }
+
+    .temp-hp-icon {
+        color: var(--color-mana);
+        font-weight: bold;
+    }
+
+    .temp-hp-value {
+        font-size: 1rem;
+        font-weight: bold;
+        color: var(--color-mana);
+    }
+
+    .temp-hp-label {
+        font-size: 0.7rem;
+        color: var(--color-mana);
+        text-transform: uppercase;
+    }
+
+/* HP Bar */
+    .hp-bar-container {
+        position: relative;
+        margin-bottom: 8px;
+    }
+
+    .hp-bar-track {
+        height: 24px;
+        background: rgba(0, 0, 0, 0.5);
+        border: 1px solid #555;
+        border-radius: 4px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .hp-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #27ae60, var(--color-stamina));
+        transition: width 0.5s ease, background 0.3s ease;
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+
+    .hp-bar-fill.warning {
+        background: linear-gradient(90deg, #e67e22, #f39c12);
+    }
+
+    .hp-bar-fill.critical {
+        background: linear-gradient(90deg, #c0392b, var(--color-health));
+        animation: pulse-critical 1s ease-in-out infinite;
+    }
+
+    @keyframes pulse-critical {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+    }
+
+    .hp-bar-temp {
+        height: 100%;
+        background: linear-gradient(90deg, rgba(52, 152, 219, 0.7), rgba(41, 128, 185, 0.7));
+        position: absolute;
+        top: 0;
+        transition: width 0.5s ease, left 0.5s ease;
+    }
+
+    .hp-bar-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 0.85rem;
+        font-weight: bold;
+        color: white;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        z-index: 1;
+    }
+
+/* Death Saves */
+    .death-saves-container {
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .death-saves-title {
+        font-size: 0.85rem;
+        color: var(--color-text-muted);
+        text-align: center;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .death-saves-row {
+        display: flex;
+        justify-content: space-around;
+        gap: 20px;
+    }
+
+    .death-saves-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .death-saves-label {
+        font-size: 0.75rem;
+        color: var(--color-text-muted);
+    }
+
+    .death-saves-boxes {
+        display: flex;
+        gap: 6px;
+    }
+
+    .death-save-box {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        border: 2px solid #555;
+        background: transparent;
+        transition: all 0.3s ease;
+    }
+
+    .successes .death-save-box.filled {
+        background: var(--color-stamina);
+        border-color: var(--color-stamina);
+        box-shadow: 0 0 8px rgba(46, 204, 113, 0.5);
+    }
+
+    .failures .death-save-box.filled {
+        background: var(--color-health);
+        border-color: var(--color-health);
+        box-shadow: 0 0 8px rgba(231, 76, 60, 0.5);
+    }
+
+/* Status Indicators */
+    .hp-status {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 10px;
+        padding: 8px;
+        border-radius: 6px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .hp-status.dead {
+        background: rgba(139, 0, 0, 0.4);
+        color: #e74c3c;
+        border: 1px solid #e74c3c;
+    }
+
+    .hp-status.unconscious {
+        background: rgba(127, 140, 141, 0.3);
+        color: #95a5a6;
+        border: 1px solid #7f8c8d;
+    }
+
+    .hp-status.stable {
+        background: rgba(46, 204, 113, 0.2);
+        color: var(--color-stamina);
+        border: 1px solid var(--color-stamina);
+    }
+
+    .status-icon {
+        font-size: 1.2rem;
+    }
+
+    .status-text {
+        font-size: 0.85rem;
+    }
+
+/* Responsive */
+    @media (max-width: 480px) {
+        .hp-current {
+            font-size: 1.4rem;
+        }
+
+        .hp-max {
+            font-size: 1rem;
+        }
+
+        .death-saves-row {
+            flex-direction: column;
+            gap: 10px;
+        }
+    }
+</style>
