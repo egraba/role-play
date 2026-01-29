@@ -3,7 +3,7 @@ import pytest
 from character.models.races import Language
 
 
-@pytest.mark.django_db
+@pytest.mark.django_db(transaction=True)
 class TestLanguageModel:
     language = None
 
