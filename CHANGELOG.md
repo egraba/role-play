@@ -43,6 +43,20 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
   - Natural 20 (green glow) and natural 1 (red glow) visual feedback
   - Proficiency bonus display at bottom of panel
   - Responsive design with mobile-optimized layout
+* HTMX-powered initiative tracker component for combat management:
+  - Turn order display sorted by initiative (dexterity check)
+  - Round counter with visual badge
+  - Per-combatant row with initiative score, character name, mini HP bar
+  - HP bar color states: green (healthy), orange (<=50%), red pulsing (<=25% critical)
+  - Condition icons from character's active conditions with tooltips
+  - "(You)" indicator for current player's character
+  - Ready and Delay action buttons (only visible on player's turn)
+  - Current turn highlight with gold border and pulsing animation
+  - Surprised state visual indicator (reduced opacity)
+  - DM controls: Next Turn and End Combat buttons
+  - Real-time WebSocket sync for turn changes, HP updates, and action events
+  - HTMX endpoints: initiative-tracker, combat-ready, combat-delay
+  - Responsive grid layout with mobile breakpoints
 
 ## v0.14.1 - 2026-01-27
 
