@@ -1,0 +1,453 @@
+<div id="initiative-tracker"
+     class="initiative-tracker {% if animation %}tracker-{{ animation }}{% endif %}">
+
+    <!-- Header with Round Counter -->
+    <div class="tracker-header">
+        <h3 class="tracker-title">
+            <img src="/static/images/icons/actions/attack.svg" alt="" class="rpg-icon rpg-icon-md rpg-icon-warning">
+            Initiative Order
+        </h3>
+        <div class="round-counter">
+            <span class="round-label">Round</span>
+            <span class="round-number">{{ current_round }}</span>
+        </div>
+    </div>
+
+    <!-- Combatant List -->
+    <div class="combatant-list">
+        {% for data in fighters %}
+            <div class="combatant-row {% if data.is_current %}current-turn{% endif %} {% if data.is_surprised %}surprised{% endif %}">
+                <!-- Initiative Badge -->
+                <div class="initiative-badge">
+                    <span class="initiative-value">{{ data.initiative|default:"--" }}</span>
+                </div>
+
+                <!-- Character Info with Mini HP Bar -->
+                <div class="combatant-info">
+                    <div class="combatant-name">
+                        {{ data.character.name }}
+                        {% if data.is_owned_by_user %}
+                            <span class="you-indicator">(You)</span>
+                        {% endif %}
+                    </div>
+                    <!-- Mini HP Bar -->
+                    <div class="mini-hp-container">
+                        <div class="mini-hp-track">
+                            <div class="mini-hp-fill {% if data.hp_percentage <= 25 %}critical{% elif data.hp_percentage <= 50 %}warning{% endif %}"
+                                 style="width: {{ data.hp_percentage }}%">
+                            </div>
+                        </div>
+                        <span class="mini-hp-text">{{ data.hp }}/{{ data.max_hp }}</span>
+                    </div>
+                </div>
+
+                <!-- Condition Icons -->
+                <div class="condition-icons">
+                    {% for char_condition in data.conditions %}
+                        <img src="/static/images/icons/conditions/{{ char_condition.condition.name }}.svg"
+                             alt="{{ char_condition.condition }}"
+                             title="{{ char_condition.condition }}{% if char_condition.exhaustion_level %} (Level {{ char_condition.exhaustion_level }}){% endif %}"
+                             class="condition-icon">
+                    {% empty %}
+                        <span class="no-conditions"></span>
+                    {% endfor %}
+                </div>
+
+                <!-- Actions (only for current player's turn) -->
+                <div class="combatant-actions">
+                    {% if data.is_player_turn %}
+                        <button hx-post="{% url 'combat-ready' game.id combat.id %}"
+                                hx-target="#initiative-tracker"
+                                hx-swap="outerHTML"
+                                class="tracker-btn btn-ready"
+                                title="Ready an action">
+                            Ready
+                        </button>
+                        <button hx-post="{% url 'combat-delay' game.id combat.id %}"
+                                hx-target="#initiative-tracker"
+                                hx-swap="outerHTML"
+                                class="tracker-btn btn-delay"
+                                title="Delay your turn">
+                            Delay
+                        </button>
+                    {% elif data.is_current %}
+                        <span class="turn-indicator">
+                            <span class="turn-indicator-dot"></span>
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-muted text-center">No combatants in initiative order.</p>
+        {% endfor %}
+    </div>
+
+    <!-- DM Controls -->
+    {% if is_dm %}
+        <div class="dm-controls">
+            <form action="{% url 'combat-advance-turn' game.id combat.id %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="rpg-btn btn-primary">Next Turn</button>
+            </form>
+            <form action="{% url 'combat-end' game.id combat.id %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="rpg-btn btn-danger">End Combat</button>
+            </form>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+/* Initiative Tracker Styles */
+    .initiative-tracker {
+        background: rgba(0, 0, 0, 0.4);
+        border: 2px solid var(--color-border);
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+/* Animations */
+    .initiative-tracker.tracker-ready {
+        animation: tracker-ready 0.5s ease-out;
+    }
+
+    .initiative-tracker.tracker-delay {
+        animation: tracker-delay 0.5s ease-out;
+    }
+
+    @keyframes tracker-ready {
+        0% { background: rgba(46, 204, 113, 0.4); box-shadow: 0 0 15px rgba(46, 204, 113, 0.6); }
+        100% { background: rgba(0, 0, 0, 0.4); box-shadow: none; }
+    }
+
+    @keyframes tracker-delay {
+        0% { opacity: 0.5; }
+        100% { opacity: 1; }
+    }
+
+/* Header */
+    .tracker-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .tracker-title {
+        font-size: 1.2rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--color-text);
+    }
+
+    .round-counter {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(139, 69, 19, 0.3);
+        border: 1px solid var(--color-primary);
+        border-radius: 20px;
+        padding: 5px 15px;
+    }
+
+    .round-label {
+        font-size: 0.85rem;
+        color: var(--color-text-muted);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .round-number {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: var(--color-primary);
+    }
+
+/* Combatant List */
+    .combatant-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+/* Combatant Row */
+    .combatant-row {
+        display: grid;
+        grid-template-columns: 50px 1fr 80px 120px;
+        gap: 10px;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 6px;
+        padding: 10px;
+        border-left: 3px solid transparent;
+        transition: all 0.3s ease;
+    }
+
+    .combatant-row.current-turn {
+        border-left-color: var(--color-primary);
+        background: rgba(139, 69, 19, 0.2);
+        animation: pulse-border 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-border {
+        0%, 100% { border-left-color: var(--color-primary); box-shadow: 0 0 5px rgba(218, 165, 32, 0.3); }
+        50% { border-left-color: #f1c40f; box-shadow: 0 0 15px rgba(241, 196, 15, 0.4); }
+    }
+
+    .combatant-row.surprised {
+        opacity: 0.6;
+    }
+
+/* Initiative Badge */
+    .initiative-badge {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #2c3e50, #34495e);
+        border: 2px solid var(--color-border);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .initiative-value {
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: var(--color-text);
+    }
+
+    .current-turn .initiative-badge {
+        background: linear-gradient(135deg, #8b4513, #a0522d);
+        border-color: var(--color-primary);
+    }
+
+/* Combatant Info */
+    .combatant-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 0;
+    }
+
+    .combatant-name {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--color-text);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .you-indicator {
+        font-size: 0.8rem;
+        font-weight: normal;
+        color: var(--color-primary);
+        margin-left: 5px;
+    }
+
+/* Mini HP Bar */
+    .mini-hp-container {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .mini-hp-track {
+        flex: 1;
+        height: 8px;
+        background: rgba(0, 0, 0, 0.5);
+        border: 1px solid #444;
+        border-radius: 4px;
+        overflow: hidden;
+        max-width: 120px;
+    }
+
+    .mini-hp-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #27ae60, var(--color-stamina));
+        transition: width 0.5s ease, background 0.3s ease;
+    }
+
+    .mini-hp-fill.warning {
+        background: linear-gradient(90deg, #e67e22, #f39c12);
+    }
+
+    .mini-hp-fill.critical {
+        background: linear-gradient(90deg, #c0392b, var(--color-health));
+        animation: pulse-critical 1s ease-in-out infinite;
+    }
+
+    @keyframes pulse-critical {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+    }
+
+    .mini-hp-text {
+        font-size: 0.75rem;
+        color: var(--color-text-muted);
+        min-width: 50px;
+    }
+
+/* Condition Icons */
+    .condition-icons {
+        display: flex;
+        gap: 4px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .condition-icon {
+        width: 20px;
+        height: 20px;
+        opacity: 0.9;
+        filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
+        cursor: help;
+    }
+
+    .no-conditions {
+        width: 20px;
+        height: 20px;
+    }
+
+/* Combatant Actions */
+    .combatant-actions {
+        display: flex;
+        gap: 5px;
+        justify-content: flex-end;
+    }
+
+    .tracker-btn {
+        padding: 5px 10px;
+        font-size: 0.75rem;
+        border: 1px solid;
+        border-radius: 4px;
+        cursor: pointer;
+        font-family: var(--font-text);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.2s ease;
+    }
+
+    .tracker-btn.btn-ready {
+        background: rgba(46, 204, 113, 0.2);
+        border-color: var(--color-stamina);
+        color: var(--color-stamina);
+    }
+
+    .tracker-btn.btn-ready:hover {
+        background: rgba(46, 204, 113, 0.4);
+    }
+
+    .tracker-btn.btn-delay {
+        background: rgba(241, 196, 15, 0.2);
+        border-color: #f1c40f;
+        color: #f1c40f;
+    }
+
+    .tracker-btn.btn-delay:hover {
+        background: rgba(241, 196, 15, 0.4);
+    }
+
+/* Turn Indicator */
+    .turn-indicator {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .turn-indicator-dot {
+        width: 12px;
+        height: 12px;
+        background: var(--color-primary);
+        border-radius: 50%;
+        animation: pulse-dot 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.3); opacity: 0.7; }
+    }
+
+/* DM Controls */
+    .dm-controls {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .dm-controls .rpg-btn {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+    }
+
+    .btn-danger {
+        background: linear-gradient(135deg, #8b0000, #a52a2a);
+        border-color: #e74c3c;
+        color: var(--color-text);
+    }
+
+    .btn-danger:hover {
+        background: linear-gradient(135deg, #a52a2a, #b22222);
+        box-shadow: 0 0 10px rgba(231, 76, 60, 0.5);
+    }
+
+/* Responsive */
+    @media (max-width: 600px) {
+        .combatant-row {
+            grid-template-columns: 40px 1fr 60px;
+            gap: 8px;
+        }
+
+        .condition-icons {
+            display: none;
+        }
+
+        .combatant-actions {
+            grid-column: 3;
+        }
+
+        .tracker-btn {
+            padding: 4px 8px;
+            font-size: 0.7rem;
+        }
+
+        .dm-controls {
+            flex-direction: column;
+        }
+
+        .dm-controls .rpg-btn {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 400px) {
+        .combatant-row {
+            grid-template-columns: 35px 1fr auto;
+        }
+
+        .initiative-badge {
+            width: 30px;
+            height: 30px;
+        }
+
+        .initiative-value {
+            font-size: 0.9rem;
+        }
+
+        .combatant-name {
+            font-size: 0.9rem;
+        }
+
+        .mini-hp-track {
+            max-width: 80px;
+        }
+    }
+</style>

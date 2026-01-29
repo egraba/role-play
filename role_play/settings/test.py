@@ -4,6 +4,7 @@ Test-specific Django settings optimized for faster test execution.
 Key optimizations:
 - MD5PasswordHasher: Much faster than default password hashers
 - In-memory channel layer: Avoids Redis overhead for tests
+- SQLite: Uses in-memory SQLite database for faster tests
 """
 
 import os
@@ -13,6 +14,14 @@ if os.environ.get("CI"):
     from role_play.settings.ci import *
 else:
     from role_play.settings.local import *
+
+# Override database to use SQLite for faster tests
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": ":memory:",
+    }
+}
 
 # Use a faster password hasher for tests
 # MD5 is insecure for production but perfectly fine for testing

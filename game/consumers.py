@@ -230,3 +230,11 @@ class GameEventsConsumer(JsonWebsocketConsumer):
     def hp_death_save(self, event):
         """A character has made a death save."""
         self.send_json(event)
+
+    def fighter_ready(self, event):
+        """A fighter has taken the Ready action."""
+        self.send_json(event)
+
+    def fighter_delay(self, event):
+        """A fighter has delayed their turn."""
+        self.send_json(event)

@@ -7,8 +7,10 @@ from django.views.generic import CreateView, ListView, TemplateView
 from character.models.character import Character
 from master.models import Campaign
 
+from ..constants.combat import CombatState
 from ..constants.events import RollStatus, RollType
 from ..flows import GameFlow
+from ..models.combat import Combat
 from ..models.events import Event, RollRequest, CombatInitiativeRequest
 from ..models.game import Game, Master, Player, Quest
 from ..views.mixins import GameContextMixin
@@ -58,6 +60,10 @@ class GameView(LoginRequiredMixin, ListView, GameContextMixin):
         context["character_list"] = Character.objects.filter(
             player__game=self.game.id
         ).order_by("name")
+        # Get active combat for initiative tracker
+        context["combat"] = Combat.objects.filter(
+            game=self.game, state=CombatState.ACTIVE
+        ).first()
         try:
             current_player = Player.objects.get(character__user=self.request.user)
             context["player"] = current_player
