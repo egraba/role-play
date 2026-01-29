@@ -53,6 +53,15 @@
                     </div>
                 {% endif %}
 
+                {% if combat %}
+                    <div class="rpg-section">
+                        <div hx-get="{% url 'initiative-tracker' game.id combat.id %}"
+                             hx-trigger="load, initiative-updated from:body"
+                             hx-swap="innerHTML">
+                        </div>
+                    </div>
+                {% endif %}
+
                 <div id="panel" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
                     <div class="rpg-section">
                         <div id="characters" class="rpg-panel" style="background: rgba(0, 0, 0, 0.3);">
@@ -194,11 +203,17 @@
                     $("#quest").load(" #quest > *");
                 } else if (message["type"] === MESSAGE) {
                     // Do nothing.
-                } else {
+                } else if (message["type"].startsWith("turn.") ||
+                    message["type"].startsWith("combat.") ||
+                    message["type"].startsWith("hp.") ||
+                    message["type"] === "action.taken") {
+                    // Trigger HTMX refresh for combat-related events
+                        htmx.trigger(document.body, 'initiative-updated');
+                    } else {
                     // The full page has to be reloaded, otherwise clicking on the button
                     // triggers no action.
-                    location.reload();
-                }
+                        location.reload();
+                    }
             };
 
             eventsSocket.onclose = function(event) {
