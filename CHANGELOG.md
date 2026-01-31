@@ -4,6 +4,26 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 
 ## Unreleased
 
+### Added
+* Attack resolution modal for combat encounters:
+  - HTMX-powered modal dialog triggered from Attack action button
+  - Target selection dropdown showing all valid targets with their AC
+  - Advantage/Disadvantage/Normal toggle with color-coded styling
+  - Attack bonus display calculated from STR modifier + proficiency bonus
+  - Animated d20 roll with 3D rotation animation
+  - Critical hit detection (natural 20) with green glow and pulsing effect
+  - Critical miss detection (natural 1) with red glow and shake effect
+  - Second die display when rolling with advantage/disadvantage
+  - Hit/miss determination with visual feedback (green for hit, red for miss)
+  - Damage roll phase with individual dice display
+  - Critical hits double damage dice per D&D 5e rules
+  - Apply damage button that uses character's take_damage() method
+  - Action consumption and event broadcasting on damage application
+  - Modal dismissal via close button, clicking outside, or Escape key
+  - Responsive design with mobile breakpoints
+  - New views: AttackModalView, AttackRollView, DamageRollView, ApplyDamageView
+  - New URL endpoints: combat-attack-modal, combat-attack-roll, combat-damage-roll, combat-apply-damage
+
 ### Changed
 * Enhanced character detail template to follow SRD 5.2 structure:
   - 3-column responsive layout with ability scores, combat stats, and skills

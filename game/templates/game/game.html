@@ -333,6 +333,42 @@
 
         if (input) input.focus();
 
+        // Attack modal event handlers
+        document.body.addEventListener('attack-modal-closed', function() {
+            // Remove any attack modals from the DOM
+            const modals = document.querySelectorAll('#attack-modal');
+            modals.forEach(modal => modal.remove());
+            // Refresh the action panel
+            htmx.trigger(document.body, 'action-taken');
+        });
+
+        document.body.addEventListener('damage-applied', function() {
+            // Remove any attack modals from the DOM
+            const modals = document.querySelectorAll('#attack-modal');
+            modals.forEach(modal => modal.remove());
+            // Refresh both panels
+            htmx.trigger(document.body, 'initiative-updated');
+        });
+
+        // Close modal when clicking outside
+        document.addEventListener('click', function(event) {
+            if (event.target.classList.contains('rpg-modal')) {
+                event.target.classList.remove('active');
+                htmx.trigger(document.body, 'attack-modal-closed');
+            }
+        });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const modal = document.getElementById('attack-modal');
+                if (modal && modal.classList.contains('active')) {
+                    modal.classList.remove('active');
+                    htmx.trigger(document.body, 'attack-modal-closed');
+                }
+            }
+        });
+
     </script>
 
 {% endblock %}

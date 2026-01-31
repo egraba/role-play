@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import action_panel, common, initiative, master, player
+from .views import action_panel, attack, common, initiative, master, player
 
 urlpatterns = [
     path("", common.IndexView.as_view(), name="index"),
@@ -95,5 +95,25 @@ urlpatterns = [
         "<int:game_id>/combat/<int:combat_id>/delay/",
         initiative.DelayTurnView.as_view(),
         name="combat-delay",
+    ),
+    path(
+        "<int:game_id>/combat/<int:combat_id>/attack/",
+        attack.AttackModalView.as_view(),
+        name="combat-attack-modal",
+    ),
+    path(
+        "<int:game_id>/combat/<int:combat_id>/attack/roll/",
+        attack.AttackRollView.as_view(),
+        name="combat-attack-roll",
+    ),
+    path(
+        "<int:game_id>/combat/<int:combat_id>/attack/damage/",
+        attack.DamageRollView.as_view(),
+        name="combat-damage-roll",
+    ),
+    path(
+        "<int:game_id>/combat/<int:combat_id>/attack/apply/",
+        attack.ApplyDamageView.as_view(),
+        name="combat-apply-damage",
     ),
 ]
