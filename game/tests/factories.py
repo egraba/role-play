@@ -15,6 +15,7 @@ from game.models.events import (
     CombatInitiativeResponse,
     CombatInitiativeResult,
     CombatStarted,
+    DiceRoll,
     Event,
     GameStart,
     Message,
@@ -315,3 +316,18 @@ class ActionTakenFactory(factory.django.DjangoModelFactory):
     combat = factory.SubFactory(CombatFactory)
     fighter = factory.SubFactory(FighterFactory)
     turn_action = factory.SubFactory(TurnActionFactory)
+
+
+class DiceRollFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = DiceRoll
+
+    game = factory.SubFactory(GameFactory)
+    author = factory.SubFactory(ActorFactory)
+    dice_notation = "2d6"
+    dice_type = 6
+    num_dice = 2
+    modifier = 0
+    individual_rolls = [3, 4]
+    total = 7
+    roll_purpose = ""

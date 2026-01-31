@@ -5,6 +5,23 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Added
+* Animated dice roller component for general-purpose dice rolling:
+  - HTMX-powered modal dialog triggered from "Roll Dice" button in game view
+  - Support for all D&D dice types (d4, d6, d8, d10, d12, d20)
+  - Dice type selector with color-coded buttons (d4=red, d6=blue, d8=green, d10=orange, d12=purple, d20=gold)
+  - Number of dice selector (1-10) with increment/decrement buttons
+  - Modifier input (-20 to +20) for adding bonuses/penalties
+  - Optional purpose field to label rolls (e.g., "Perception check")
+  - Live roll preview showing dice notation and modifier
+  - 3D CSS animated dice with staggered roll animations (0.1s delays per die)
+  - Individual die results with max roll highlighting (green glow) and min roll indicator (red)
+  - Roll breakdown showing formula, individual values, and total
+  - WebSocket broadcasting of dice.roll events to all connected clients
+  - DiceRoll event model for game history persistence
+  - New views: DiceRollerModalView, DiceRollView
+  - New URL endpoints: dice-roller-modal, dice-roll
+  - New EventType: DICE_ROLL
+  - DiceRollService for event creation and broadcasting
 * Attack resolution modal for combat encounters:
   - HTMX-powered modal dialog triggered from Attack action button
   - Target selection dropdown showing all valid targets with their AC

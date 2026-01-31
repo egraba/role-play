@@ -238,3 +238,7 @@ class GameEventsConsumer(JsonWebsocketConsumer):
     def fighter_delay(self, event):
         """A fighter has delayed their turn."""
         self.send_json(event)
+
+    def dice_roll(self, event):
+        """A dice roll has been made."""
+        self.send_json(event)

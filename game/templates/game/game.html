@@ -38,6 +38,12 @@
                         </div>
                         <div id="player-actions" class="action-buttons">
                             <button id="message-submit" class="rpg-btn btn-primary" type="submit">Send</button>
+                            <button hx-get="{% url 'dice-roller-modal' game.id %}"
+                                    hx-target="body"
+                                    hx-swap="beforeend"
+                                    class="rpg-btn btn-skill">
+                                <img src="{% static 'images/icons/actions/roll.svg' %}" alt="" class="rpg-icon rpg-icon-sm"> Roll Dice
+                            </button>
                             {% if player %}
                                 {% if ability_check_request %}
                                     <button id="ability-check-submit" class="rpg-btn btn-skill" type="submit">Perform ability check</button>
@@ -141,6 +147,7 @@
         const ABILITY_CHECK_RESPONSE = "ability.check.response";
         const SAVING_THROW_RESPONSE = "saving.throw.response";
         const COMBAT_INITIATIVE_RESPONSE = "combat.initiative.response";
+        const DICE_ROLL = "dice.roll";
 
         // WebSocket reconnection state
         let eventsSocket = null;
@@ -207,8 +214,8 @@
                 }
                 if (message["type"] === QUEST_UPDATE) {
                     $("#quest").load(" #quest > *");
-                } else if (message["type"] === MESSAGE) {
-                    // Do nothing.
+                } else if (message["type"] === MESSAGE || message["type"] === DICE_ROLL) {
+                    // Just display the message in the event list, no additional action needed.
                 } else if (message["type"].startsWith("turn.") ||
                     message["type"].startsWith("combat.") ||
                     message["type"].startsWith("hp.") ||
@@ -361,11 +368,31 @@
         // Close modal on Escape key
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
-                const modal = document.getElementById('attack-modal');
-                if (modal && modal.classList.contains('active')) {
-                    modal.classList.remove('active');
+                const attackModal = document.getElementById('attack-modal');
+                if (attackModal && attackModal.classList.contains('active')) {
+                    attackModal.classList.remove('active');
                     htmx.trigger(document.body, 'attack-modal-closed');
                 }
+                const diceModal = document.getElementById('dice-roller-modal');
+                if (diceModal && diceModal.classList.contains('active')) {
+                    diceModal.classList.remove('active');
+                    htmx.trigger(document.body, 'dice-roller-closed');
+                }
+            }
+        });
+
+        // Dice roller modal event handlers
+        document.body.addEventListener('dice-roller-closed', function() {
+            // Remove dice roller modal from the DOM
+            const modals = document.querySelectorAll('#dice-roller-modal');
+            modals.forEach(modal => modal.remove());
+        });
+
+        // Close dice roller modal when clicking outside
+        document.addEventListener('click', function(event) {
+            if (event.target.id === 'dice-roller-modal') {
+                event.target.classList.remove('active');
+                htmx.trigger(document.body, 'dice-roller-closed');
             }
         });
 

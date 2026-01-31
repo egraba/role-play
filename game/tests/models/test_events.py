@@ -7,6 +7,7 @@ from game.models.events import (
     CombatEnded,
     CombatInitialization,
     CombatStarted,
+    DiceRoll,
     Event,
     GameStart,
     Message,
@@ -43,6 +44,7 @@ from ..factories import (
     CombatInitiativeResponseFactory,
     CombatInitiativeResultFactory,
     CombatStartedFactory,
+    DiceRollFactory,
     EventFactory,
     FighterFactory,
     GameFactory,
@@ -630,3 +632,78 @@ class TestGetEventType:
         event = EventFactory()
         with pytest.raises(NotImplementedError):
             event.get_event_type()
+
+    def test_dice_roll_event_type(self):
+        """Test DiceRoll event type."""
+        event = DiceRollFactory()
+        assert event.get_event_type() == EventType.DICE_ROLL
+
+
+class TestDiceRollModel:
+    """Tests for DiceRoll model."""
+
+    @pytest.fixture
+    def dice_roll(self):
+        return DiceRollFactory()
+
+    def test_creation(self, dice_roll):
+        assert isinstance(dice_roll, DiceRoll)
+        assert dice_roll.dice_notation == "2d6"
+        assert dice_roll.dice_type == 6
+        assert dice_roll.num_dice == 2
+        assert dice_roll.individual_rolls == [3, 4]
+        assert dice_roll.total == 7
+
+    def test_get_message_basic(self, dice_roll):
+        message = dice_roll.get_message()
+        assert "2d6" in message
+        assert "[3, 4]" in message
+        assert "7" in message
+
+    def test_get_message_with_positive_modifier(self):
+        dice_roll = DiceRollFactory(
+            dice_notation="1d20",
+            dice_type=20,
+            num_dice=1,
+            modifier=5,
+            individual_rolls=[15],
+            total=20,
+        )
+        message = dice_roll.get_message()
+        assert "+5" in message
+        assert "20" in message
+
+    def test_get_message_with_negative_modifier(self):
+        dice_roll = DiceRollFactory(
+            dice_notation="1d20",
+            dice_type=20,
+            num_dice=1,
+            modifier=-2,
+            individual_rolls=[10],
+            total=8,
+        )
+        message = dice_roll.get_message()
+        assert "-2" in message
+        assert "8" in message
+
+    def test_get_message_with_purpose(self):
+        dice_roll = DiceRollFactory(
+            roll_purpose="Perception check",
+        )
+        message = dice_roll.get_message()
+        assert "for Perception check" in message
+
+    def test_get_message_from_master(self):
+        game = GameFactory()
+        author = ActorFactory()
+        author.master = game.master
+        dice_roll = DiceRollFactory(game=game, author=author)
+        message = dice_roll.get_message()
+        assert "The Master" in message
+
+    def test_get_message_from_player(self):
+        game = GameFactory()
+        player = PlayerFactory(game=game)
+        dice_roll = DiceRollFactory(game=game, author=player)
+        message = dice_roll.get_message()
+        assert str(player) in message

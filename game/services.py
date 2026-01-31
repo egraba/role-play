@@ -12,6 +12,7 @@ from .models.events import (
     CombatInitiativeResponse,
     CombatInitiativeResult,
     CombatStarted,
+    DiceRoll,
     Message,
     RollRequest,
     RollResponse,
@@ -289,3 +290,52 @@ def _check_and_start_combat(combat: Combat, game: Game) -> None:
             )
             send_to_channel(turn_started)
             logger.info(f"Combat started! First turn: {first_fighter}")
+
+
+class DiceRollService:
+    """Service for creating dice roll events."""
+
+    @classmethod
+    def create_dice_roll(
+        cls,
+        game: Game,
+        user: "User",
+        dice_notation: str,
+        dice_type: int,
+        num_dice: int,
+        modifier: int,
+        individual_rolls: list[int],
+        total: int,
+        roll_purpose: str = "",
+    ) -> DiceRoll:
+        """
+        Create a dice roll event, save to DB, and broadcast to channel.
+
+        Args:
+            game: The game instance
+            user: The authenticated user making the roll
+            dice_notation: String like "3d6"
+            dice_type: The die type (4, 6, 8, 10, 12, 20)
+            num_dice: Number of dice rolled
+            modifier: Modifier applied to the roll
+            individual_rolls: List of individual die results
+            total: Final total including modifier
+            roll_purpose: Optional description of what the roll is for
+
+        Returns:
+            The created DiceRoll instance
+        """
+        author = GameEventService.get_author(game, user)
+        dice_roll = DiceRoll.objects.create(
+            game=game,
+            author=author,
+            dice_notation=dice_notation,
+            dice_type=dice_type,
+            num_dice=num_dice,
+            modifier=modifier,
+            individual_rolls=individual_rolls,
+            total=total,
+            roll_purpose=roll_purpose,
+        )
+        send_to_channel(dice_roll)
+        return dice_roll
