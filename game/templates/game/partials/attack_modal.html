@@ -1,0 +1,713 @@
+{% load static %}
+
+<div id="attack-modal" class="rpg-modal {% if show_modal %}active{% endif %}">
+    <div class="modal-content attack-modal-content">
+        <span class="modal-close" onclick="closeAttackModal()">&times;</span>
+        <h2 class="modal-header">
+            <img src="{% static 'images/icons/actions/attack.svg' %}" alt="" class="rpg-icon rpg-icon-lg rpg-icon-danger">
+            Attack Resolution
+        </h2>
+
+        {% if not attack_result %}
+        <!-- Phase 1: Target Selection & Attack Roll Setup -->
+            <form id="attack-form"
+                  hx-post="{% url 'combat-attack-roll' game.id combat.id %}"
+                  hx-target="#attack-modal"
+                  hx-swap="outerHTML">
+
+            <!-- Target Selection -->
+                <div class="attack-section">
+                    <label class="attack-label">
+                        <img src="{% static 'images/icons/ui/search.svg' %}" alt="" class="rpg-icon rpg-icon-sm">
+                        Select Target
+                    </label>
+                    <select name="target_id" class="rpg-select target-select" required>
+                        <option value="">-- Choose a target --</option>
+                        {% for fighter in targets %}
+                            <option value="{{ fighter.id }}"
+                                    {% if selected_target == fighter.id %}selected{% endif %}>
+                                {{ fighter.character.name }}
+                                (AC {{ fighter.character.ac|default:"10" }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+            <!-- Advantage/Disadvantage Toggle -->
+                <div class="attack-section">
+                    <label class="attack-label">Roll Modifier</label>
+                    <div class="advantage-toggle">
+                        <button type="button"
+                                class="toggle-btn {% if roll_modifier == 'disadvantage' %}active{% endif %}"
+                                data-value="disadvantage"
+                                onclick="setRollModifier(this, 'disadvantage')">
+                            <span class="toggle-icon">-</span>
+                            Disadvantage
+                        </button>
+                        <button type="button"
+                                class="toggle-btn {% if roll_modifier == 'normal' or not roll_modifier %}active{% endif %}"
+                                data-value="normal"
+                                onclick="setRollModifier(this, 'normal')">
+                            <span class="toggle-icon">=</span>
+                            Normal
+                        </button>
+                        <button type="button"
+                                class="toggle-btn {% if roll_modifier == 'advantage' %}active{% endif %}"
+                                data-value="advantage"
+                                onclick="setRollModifier(this, 'advantage')">
+                            <span class="toggle-icon">+</span>
+                            Advantage
+                        </button>
+                    </div>
+                    <input type="hidden" name="roll_modifier" id="roll-modifier-input" value="{{ roll_modifier|default:'normal' }}">
+                </div>
+
+            <!-- Attack Bonus Display -->
+                <div class="attack-section attack-bonus-section">
+                    <div class="stat-preview">
+                        <span class="stat-preview-label">Attack Bonus</span>
+                        <span class="stat-preview-value">+{{ attack_bonus|default:"0" }}</span>
+                    </div>
+                </div>
+
+            <!-- Roll Button -->
+                <div class="attack-actions">
+                    <button type="button" class="rpg-btn" onclick="closeAttackModal()">Cancel</button>
+                    <button type="submit" class="rpg-btn btn-attack roll-attack-btn">
+                        <img src="{% static 'images/icons/actions/roll.svg' %}" alt="" class="rpg-icon rpg-icon-sm">
+                        Roll Attack
+                    </button>
+                </div>
+            </form>
+
+        {% else %}
+        <!-- Phase 2: Attack Result Display -->
+            <div class="attack-result-container">
+            <!-- Target Info -->
+                <div class="target-info">
+                    <span class="target-name">{{ target.character.name }}</span>
+                    <span class="target-ac">AC {{ target.character.ac|default:"10" }}</span>
+                </div>
+
+            <!-- D20 Roll Animation -->
+                <div class="dice-roller attack-dice-roller">
+                    <div class="d20-container {% if is_critical_hit %}critical-hit{% elif is_critical_miss %}critical-miss{% endif %}">
+                        <div class="d20-die {% if animate %}rolling{% endif %}" id="d20-die">
+                            <span class="d20-value">{{ natural_roll }}</span>
+                        </div>
+                        {% if roll_modifier != 'normal' %}
+                            <div class="second-die-info">
+                                <span class="second-roll">({{ second_roll }})</span>
+                                <span class="modifier-label">
+                                    {% if roll_modifier == 'advantage' %}Advantage{% else %}Disadvantage{% endif %}
+                                </span>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="roll-breakdown">
+                        <span class="roll-formula">
+                            {{ natural_roll }} + {{ attack_bonus }} = <strong>{{ total_roll }}</strong>
+                        </span>
+                    </div>
+                </div>
+
+            <!-- Hit/Miss Result -->
+                <div class="hit-result {% if is_hit %}hit{% else %}miss{% endif %}">
+                    {% if is_critical_hit %}
+                        <span class="result-text critical">CRITICAL HIT!</span>
+                    {% elif is_critical_miss %}
+                        <span class="result-text fumble">CRITICAL MISS!</span>
+                    {% elif is_hit %}
+                        <span class="result-text">HIT!</span>
+                    {% else %}
+                        <span class="result-text">MISS</span>
+                    {% endif %}
+                    <span class="result-detail">
+                        {{ total_roll }} vs AC {{ target.character.ac|default:"10" }}
+                    </span>
+                </div>
+
+                {% if is_hit %}
+            <!-- Damage Section (only shown on hit) -->
+                    <div class="damage-section">
+                        <div class="damage-header">
+                            <img src="{% static 'images/icons/damage-types/slashing.svg' %}" alt="" class="rpg-icon rpg-icon-md rpg-icon-danger">
+                            <span>Damage Roll</span>
+                        </div>
+
+                        {% if damage_rolled %}
+                    <!-- Damage Result -->
+                            <div class="damage-result">
+                                <div class="damage-dice">
+                                    {% for die in damage_dice %}
+                                        <span class="damage-die">{{ die }}</span>
+                                    {% endfor %}
+                                </div>
+                                <div class="damage-total">
+                                    <span class="damage-formula">{{ damage_formula }}</span>
+                                    <span class="damage-value {% if is_critical_hit %}critical{% endif %}">
+                                        {{ total_damage }} damage
+                                    </span>
+                                </div>
+                            </div>
+
+                    <!-- Apply Damage Button -->
+                            <form hx-post="{% url 'combat-apply-damage' game.id combat.id %}"
+                                  hx-target="#attack-modal"
+                                  hx-swap="outerHTML">
+                                <input type="hidden" name="target_id" value="{{ target.id }}">
+                                <input type="hidden" name="damage" value="{{ total_damage }}">
+                                <div class="attack-actions">
+                                    <button type="button" class="rpg-btn" onclick="closeAttackModal()">Cancel</button>
+                                    <button type="submit" class="rpg-btn btn-attack apply-damage-btn">
+                                        <img src="{% static 'images/icons/damage-types/slashing.svg' %}" alt="" class="rpg-icon rpg-icon-sm">
+                                        Apply {{ total_damage }} Damage
+                                    </button>
+                                </div>
+                            </form>
+                        {% else %}
+                    <!-- Roll Damage Button -->
+                            <form hx-post="{% url 'combat-damage-roll' game.id combat.id %}"
+                                  hx-target="#attack-modal"
+                                  hx-swap="outerHTML">
+                                <input type="hidden" name="target_id" value="{{ target.id }}">
+                                <input type="hidden" name="is_critical" value="{{ is_critical_hit|yesno:'true,false' }}">
+                                <input type="hidden" name="natural_roll" value="{{ natural_roll }}">
+                                <input type="hidden" name="total_roll" value="{{ total_roll }}">
+                                <div class="attack-actions">
+                                    <button type="button" class="rpg-btn" onclick="closeAttackModal()">Cancel</button>
+                                    <button type="submit" class="rpg-btn btn-primary roll-damage-btn">
+                                        <img src="{% static 'images/icons/actions/roll.svg' %}" alt="" class="rpg-icon rpg-icon-sm">
+                                        Roll Damage
+                                    </button>
+                                </div>
+                            </form>
+                        {% endif %}
+                    </div>
+                {% else %}
+            <!-- Miss - Close Button -->
+                    <div class="attack-actions">
+                        <button type="button" class="rpg-btn btn-primary" onclick="closeAttackModal()">
+                            Close
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {% if damage_applied %}
+        <!-- Phase 3: Damage Applied Confirmation -->
+            <div class="damage-applied-confirmation">
+                <div class="confirmation-icon">
+                    <img src="{% static 'images/icons/ui/confirm.svg' %}" alt="" class="rpg-icon rpg-icon-xl rpg-icon-success">
+                </div>
+                <div class="confirmation-text">
+                    <span class="confirmation-title">Damage Applied!</span>
+                    <span class="confirmation-detail">
+                        {{ target.character.name }} took {{ damage_applied }} damage
+                    </span>
+                    <span class="confirmation-hp">
+                        HP: {{ target.character.hp }} / {{ target.character.max_hp }}
+                    </span>
+                </div>
+                <div class="attack-actions">
+                    <button type="button" class="rpg-btn btn-primary" onclick="closeAttackModal()">
+                        Close
+                    </button>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+/* Attack Modal Specific Styles */
+    .attack-modal-content {
+        min-width: 400px;
+        max-width: 500px;
+    }
+
+    .attack-section {
+        margin-bottom: 20px;
+    }
+
+    .attack-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 10px;
+        color: var(--color-text);
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
+
+    .target-select {
+        font-size: 1rem;
+    }
+
+/* Advantage/Disadvantage Toggle */
+    .advantage-toggle {
+        display: flex;
+        gap: 8px;
+    }
+
+    .toggle-btn {
+        flex: 1;
+        padding: 12px 8px;
+        background: rgba(0, 0, 0, 0.4);
+        border: 2px solid #444;
+        border-radius: 6px;
+        color: var(--color-text-muted);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: inherit;
+        font-size: 0.85rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .toggle-btn:hover {
+        border-color: var(--color-primary);
+        color: var(--color-text);
+    }
+
+    .toggle-btn.active {
+        background: rgba(212, 175, 55, 0.2);
+        border-color: var(--color-primary);
+        color: var(--color-primary);
+    }
+
+    .toggle-btn[data-value="disadvantage"].active {
+        background: rgba(231, 76, 60, 0.2);
+        border-color: var(--color-health);
+        color: var(--color-health);
+    }
+
+    .toggle-btn[data-value="advantage"].active {
+        background: rgba(46, 204, 113, 0.2);
+        border-color: var(--color-stamina);
+        color: var(--color-stamina);
+    }
+
+    .toggle-icon {
+        font-size: 1.2rem;
+        font-weight: bold;
+    }
+
+/* Attack Bonus Preview */
+    .attack-bonus-section {
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 8px;
+        padding: 15px;
+    }
+
+    .stat-preview {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .stat-preview-label {
+        color: var(--color-text-muted);
+        font-size: 0.9rem;
+    }
+
+    .stat-preview-value {
+        color: var(--color-primary);
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+/* Attack Actions */
+    .attack-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .roll-attack-btn,
+    .roll-damage-btn,
+    .apply-damage-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+/* D20 Dice Animation */
+    .attack-dice-roller {
+        margin: 25px 0;
+    }
+
+    .d20-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .d20-die {
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(145deg, #2a2a4a, #1a1a2e);
+        border: 3px solid var(--color-primary);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.5),
+        inset 0 2px 10px rgba(255, 255, 255, 0.1);
+        position: relative;
+        transform-style: preserve-3d;
+    }
+
+    .d20-value {
+        font-size: 3rem;
+        font-weight: bold;
+        color: var(--color-primary);
+        text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+    }
+
+/* Rolling Animation */
+    .d20-die.rolling {
+        animation: diceRoll 1s ease-out;
+    }
+
+    @keyframes diceRoll {
+        0% {
+            transform: rotateX(0deg) rotateY(0deg) scale(0.8);
+            opacity: 0;
+        }
+        25% {
+            transform: rotateX(180deg) rotateY(90deg) scale(1.1);
+        }
+        50% {
+            transform: rotateX(360deg) rotateY(180deg) scale(1);
+        }
+        75% {
+            transform: rotateX(540deg) rotateY(270deg) scale(1.05);
+        }
+        100% {
+            transform: rotateX(720deg) rotateY(360deg) scale(1);
+            opacity: 1;
+        }
+    }
+
+/* Critical Hit/Miss Effects */
+    .d20-container.critical-hit .d20-die {
+        border-color: var(--color-stamina);
+        animation: diceRoll 1s ease-out, criticalPulse 1s ease-in-out infinite 1s;
+    }
+
+    .d20-container.critical-hit .d20-value {
+        color: var(--color-stamina);
+        text-shadow: 0 0 30px rgba(46, 204, 113, 0.8);
+    }
+
+    .d20-container.critical-miss .d20-die {
+        border-color: var(--color-health);
+        animation: diceRoll 1s ease-out, fumbleShake 0.5s ease-in-out 1s;
+    }
+
+    .d20-container.critical-miss .d20-value {
+        color: var(--color-health);
+        text-shadow: 0 0 30px rgba(231, 76, 60, 0.8);
+    }
+
+    @keyframes criticalPulse {
+        0%, 100% {
+            box-shadow:
+            0 10px 30px rgba(0, 0, 0, 0.5),
+            0 0 20px rgba(46, 204, 113, 0.3);
+        }
+        50% {
+            box-shadow:
+            0 10px 30px rgba(0, 0, 0, 0.5),
+            0 0 40px rgba(46, 204, 113, 0.6);
+        }
+    }
+
+    @keyframes fumbleShake {
+        0%, 100% { transform: translateX(0); }
+        20% { transform: translateX(-10px); }
+        40% { transform: translateX(10px); }
+        60% { transform: translateX(-10px); }
+        80% { transform: translateX(10px); }
+    }
+
+/* Second Die Info (for advantage/disadvantage) */
+    .second-die-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        color: var(--color-text-muted);
+        font-size: 0.9rem;
+    }
+
+    .second-roll {
+        font-size: 1.2rem;
+        color: var(--color-text);
+    }
+
+    .modifier-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+/* Roll Breakdown */
+    .roll-breakdown {
+        margin-top: 15px;
+        text-align: center;
+    }
+
+    .roll-formula {
+        color: var(--color-text-muted);
+        font-size: 1.1rem;
+    }
+
+    .roll-formula strong {
+        color: var(--color-primary);
+        font-size: 1.3rem;
+    }
+
+/* Hit/Miss Result */
+    .hit-result {
+        text-align: center;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+    }
+
+    .hit-result.hit {
+        background: rgba(46, 204, 113, 0.15);
+        border: 2px solid var(--color-stamina);
+    }
+
+    .hit-result.miss {
+        background: rgba(231, 76, 60, 0.15);
+        border: 2px solid var(--color-health);
+    }
+
+    .result-text {
+        display: block;
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .hit-result.hit .result-text {
+        color: var(--color-stamina);
+    }
+
+    .hit-result.miss .result-text {
+        color: var(--color-health);
+    }
+
+    .result-text.critical {
+        color: var(--color-stamina);
+        text-shadow: 0 0 20px rgba(46, 204, 113, 0.5);
+        animation: criticalText 0.5s ease-out;
+    }
+
+    .result-text.fumble {
+        color: var(--color-health);
+        text-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
+    }
+
+    @keyframes criticalText {
+        0% { transform: scale(0.5); opacity: 0; }
+        50% { transform: scale(1.2); }
+        100% { transform: scale(1); opacity: 1; }
+    }
+
+    .result-detail {
+        color: var(--color-text-muted);
+        font-size: 0.9rem;
+    }
+
+/* Target Info */
+    .target-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 15px;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 6px;
+        margin-bottom: 15px;
+    }
+
+    .target-name {
+        color: var(--color-text);
+        font-weight: 600;
+    }
+
+    .target-ac {
+        color: var(--color-mana);
+        font-weight: bold;
+    }
+
+/* Damage Section */
+    .damage-section {
+        background: rgba(139, 0, 0, 0.15);
+        border: 1px solid rgba(231, 76, 60, 0.3);
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 20px;
+    }
+
+    .damage-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 15px;
+        color: var(--color-health);
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    .damage-result {
+        text-align: center;
+    }
+
+    .damage-dice {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .damage-die {
+        width: 45px;
+        height: 45px;
+        background: linear-gradient(145deg, #4a2020, #2a1010);
+        border: 2px solid var(--color-health);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: var(--color-health);
+    }
+
+    .damage-total {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .damage-formula {
+        color: var(--color-text-muted);
+        font-size: 0.9rem;
+    }
+
+    .damage-value {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--color-health);
+    }
+
+    .damage-value.critical {
+        color: var(--color-stamina);
+        text-shadow: 0 0 15px rgba(46, 204, 113, 0.5);
+    }
+
+/* Damage Applied Confirmation */
+    .damage-applied-confirmation {
+        text-align: center;
+        padding: 20px;
+    }
+
+    .confirmation-icon {
+        margin-bottom: 20px;
+    }
+
+    .confirmation-text {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .confirmation-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: var(--color-stamina);
+    }
+
+    .confirmation-detail {
+        color: var(--color-text);
+        font-size: 1.1rem;
+    }
+
+    .confirmation-hp {
+        color: var(--color-health);
+        font-weight: 600;
+    }
+
+/* Responsive */
+    @media (max-width: 500px) {
+        .attack-modal-content {
+            min-width: auto;
+            max-width: 100%;
+            margin: 10px;
+        }
+
+        .advantage-toggle {
+            flex-direction: column;
+        }
+
+        .toggle-btn {
+            flex-direction: row;
+            justify-content: center;
+        }
+
+        .d20-die {
+            width: 80px;
+            height: 80px;
+        }
+
+        .d20-value {
+            font-size: 2.5rem;
+        }
+    }
+</style>
+
+<script>
+    function setRollModifier(button, value) {
+    // Remove active class from all toggle buttons
+        document.querySelectorAll('.toggle-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+    // Add active class to clicked button
+        button.classList.add('active');
+    // Update hidden input
+        document.getElementById('roll-modifier-input').value = value;
+    }
+
+    function closeAttackModal() {
+        const modal = document.getElementById('attack-modal');
+        if (modal) {
+            modal.classList.remove('active');
+        }
+    // Trigger refresh of action panel
+        htmx.trigger(document.body, 'attack-modal-closed');
+    }
+
+// Trigger animation when modal content updates
+    document.addEventListener('htmx:afterSwap', function(event) {
+        if (event.detail.target.id === 'attack-modal') {
+            const die = document.getElementById('d20-die');
+            if (die && !die.classList.contains('rolling')) {
+                die.classList.add('rolling');
+            }
+        }
+    });
+</script>

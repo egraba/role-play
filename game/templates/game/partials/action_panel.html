@@ -28,22 +28,41 @@
             </div>
             <div class="action-buttons-grid">
                 {% for action in standard_actions %}
-                    <button class="action-btn {% if turn.action_used %}disabled{% endif %}"
-                            {% if not turn.action_used and is_player_turn %}
-                                hx-post="{% url 'combat-take-action' game.id combat.id %}"
-                                hx-vals='{"action": "{{ action.value }}", "action_type": "A"}'
-                                hx-target="#action-panel"
-                                hx-swap="outerHTML"
-                            {% else %}
-                                disabled
-                            {% endif %}
-                            title="{{ action.description }}">
-                        <img src="/static/images/icons/actions/{{ action.icon }}.svg"
-                             alt=""
-                             class="action-icon">
-                        <span class="action-name">{{ action.label }}</span>
-                        <span class="action-tooltip">{{ action.description }}</span>
-                    </button>
+                    {% if action.value == 'attack' %}
+                    <!-- Attack button opens modal -->
+                        <button class="action-btn {% if turn.action_used %}disabled{% endif %}"
+                                {% if not turn.action_used and is_player_turn %}
+                                    hx-get="{% url 'combat-attack-modal' game.id combat.id %}"
+                                    hx-target="body"
+                                    hx-swap="beforeend"
+                                {% else %}
+                                    disabled
+                                {% endif %}
+                                title="{{ action.description }}">
+                            <img src="/static/images/icons/actions/{{ action.icon }}.svg"
+                                 alt=""
+                                 class="action-icon">
+                            <span class="action-name">{{ action.label }}</span>
+                            <span class="action-tooltip">{{ action.description }}</span>
+                        </button>
+                    {% else %}
+                        <button class="action-btn {% if turn.action_used %}disabled{% endif %}"
+                                {% if not turn.action_used and is_player_turn %}
+                                    hx-post="{% url 'combat-take-action' game.id combat.id %}"
+                                    hx-vals='{"action": "{{ action.value }}", "action_type": "A"}'
+                                    hx-target="#action-panel"
+                                    hx-swap="outerHTML"
+                                {% else %}
+                                    disabled
+                                {% endif %}
+                                title="{{ action.description }}">
+                            <img src="/static/images/icons/actions/{{ action.icon }}.svg"
+                                 alt=""
+                                 class="action-icon">
+                            <span class="action-name">{{ action.label }}</span>
+                            <span class="action-tooltip">{{ action.description }}</span>
+                        </button>
+                    {% endif %}
                 {% endfor %}
             </div>
         </div>
