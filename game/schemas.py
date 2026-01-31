@@ -41,6 +41,8 @@ class EventType(StrEnum):
     HP_HEAL = "hp.heal"
     HP_TEMP = "hp.temp"
     HP_DEATH_SAVE = "hp.death.save"
+    # Dice roll events
+    DICE_ROLL = "dice.roll"
 
 
 class EventOrigin(IntFlag):

@@ -480,3 +480,33 @@ class SpellSavingThrow(Event):
 
     def get_event_type(self) -> EventType:
         return EventType.SPELL_SAVING_THROW
+
+
+class DiceRoll(Event):
+    """Event for a generic dice roll."""
+
+    dice_notation = models.CharField(max_length=20)  # e.g., "3d6"
+    dice_type = models.SmallIntegerField()  # 4, 6, 8, 10, 12, 20
+    num_dice = models.SmallIntegerField(default=1)
+    modifier = models.SmallIntegerField(default=0)
+    individual_rolls = models.JSONField()  # [3, 5, 2]
+    total = models.SmallIntegerField()
+    roll_purpose = models.CharField(max_length=50, blank=True)
+
+    def get_message(self):
+        author_name = str(self.author)
+        if hasattr(self.author, "master"):
+            author_name = "The Master"
+        purpose = f" for {self.roll_purpose}" if self.roll_purpose else ""
+        modifier_str = ""
+        if self.modifier > 0:
+            modifier_str = f"+{self.modifier}"
+        elif self.modifier < 0:
+            modifier_str = str(self.modifier)
+        return (
+            f"{author_name} rolled {self.dice_notation}{modifier_str}{purpose}: "
+            f"{self.individual_rolls} = {self.total}"
+        )
+
+    def get_event_type(self) -> EventType:
+        return EventType.DICE_ROLL
