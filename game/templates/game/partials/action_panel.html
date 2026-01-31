@@ -1,0 +1,541 @@
+<div id="action-panel"
+     class="action-panel {% if not is_player_turn %}panel-disabled{% endif %}">
+
+    <!-- Header -->
+    <div class="action-panel-header">
+        <h3 class="action-panel-title">
+            <img src="/static/images/icons/actions/attack.svg" alt="" class="rpg-icon rpg-icon-md rpg-icon-warning">
+            Combat Actions
+        </h3>
+        {% if is_player_turn %}
+            <span class="your-turn-badge">Your Turn</span>
+        {% endif %}
+    </div>
+
+    <!-- Action Economy Grid -->
+    <div class="action-economy-grid">
+        <!-- Standard Action -->
+        <div class="action-category {% if turn.action_used %}used{% endif %}">
+            <div class="category-header">
+                <span class="category-label">Action</span>
+                <span class="category-status">
+                    {% if turn.action_used %}
+                        <span class="status-used">Used</span>
+                    {% else %}
+                        <span class="status-available">Available</span>
+                    {% endif %}
+                </span>
+            </div>
+            <div class="action-buttons-grid">
+                {% for action in standard_actions %}
+                    <button class="action-btn {% if turn.action_used %}disabled{% endif %}"
+                            {% if not turn.action_used and is_player_turn %}
+                                hx-post="{% url 'combat-take-action' game.id combat.id %}"
+                                hx-vals='{"action": "{{ action.value }}", "action_type": "A"}'
+                                hx-target="#action-panel"
+                                hx-swap="outerHTML"
+                            {% else %}
+                                disabled
+                            {% endif %}
+                            title="{{ action.description }}">
+                        <img src="/static/images/icons/actions/{{ action.icon }}.svg"
+                             alt=""
+                             class="action-icon">
+                        <span class="action-name">{{ action.label }}</span>
+                        <span class="action-tooltip">{{ action.description }}</span>
+                    </button>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Bonus Action -->
+        <div class="action-category bonus-action {% if turn.bonus_action_used %}used{% endif %}">
+            <div class="category-header">
+                <span class="category-label">Bonus Action</span>
+                <span class="category-status">
+                    {% if turn.bonus_action_used %}
+                        <span class="status-used">Used</span>
+                    {% else %}
+                        <span class="status-available">Available</span>
+                    {% endif %}
+                </span>
+            </div>
+            <div class="bonus-action-info">
+                <p class="bonus-hint">
+                    {% if turn.bonus_action_used %}
+                        Bonus action spent this turn.
+                    {% else %}
+                        Available if you have a feature or spell that uses a bonus action.
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+
+        <!-- Reaction -->
+        <div class="action-category reaction {% if turn.reaction_used %}used{% endif %}">
+            <div class="category-header">
+                <span class="category-label">Reaction</span>
+                <span class="category-status">
+                    {% if turn.reaction_used %}
+                        <span class="status-used">Used</span>
+                    {% else %}
+                        <span class="status-available">Available</span>
+                    {% endif %}
+                </span>
+            </div>
+            <div class="reaction-info">
+                <p class="reaction-hint">
+                    {% if turn.reaction_used %}
+                        Reaction spent this round.
+                    {% else %}
+                        Ready to respond: opportunity attacks, spells like Shield, etc.
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+
+        <!-- Movement -->
+        <div class="action-category movement">
+            <div class="category-header">
+                <span class="category-label">Movement</span>
+                <span class="category-status">
+                    <span class="movement-display">{{ turn.remaining_movement }}/{{ turn.movement_total }} ft</span>
+                </span>
+            </div>
+            <div class="movement-bar-container">
+                <div class="movement-bar-track">
+                    {% with movement_pct=turn.remaining_movement|default:0 %}
+                        <div class="movement-bar-fill {% if movement_pct == 0 %}depleted{% endif %}"
+                             style="width: {% widthratio turn.remaining_movement turn.movement_total 100 %}%">
+                        </div>
+                    {% endwith %}
+                </div>
+                {% if is_player_turn and turn.remaining_movement > 0 %}
+                    <div class="movement-controls">
+                        <button class="move-btn"
+                                hx-post="{% url 'combat-move' game.id combat.id %}"
+                                hx-vals='{"feet": "5"}'
+                                hx-target="#action-panel"
+                                hx-swap="outerHTML"
+                                title="Move 5 feet">
+                            5 ft
+                        </button>
+                        <button class="move-btn"
+                                hx-post="{% url 'combat-move' game.id combat.id %}"
+                                hx-vals='{"feet": "10"}'
+                                hx-target="#action-panel"
+                                hx-swap="outerHTML"
+                                title="Move 10 feet">
+                            10 ft
+                        </button>
+                        <button class="move-btn"
+                                hx-post="{% url 'combat-move' game.id combat.id %}"
+                                hx-vals='{"feet": "{{ turn.remaining_movement }}"}'
+                                hx-target="#action-panel"
+                                hx-swap="outerHTML"
+                                title="Use all remaining movement">
+                            All
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Actions Taken This Turn -->
+    {% if actions_taken %}
+        <div class="actions-log">
+            <div class="log-header">Actions Taken</div>
+            <ul class="log-list">
+                {% for action in actions_taken %}
+                    <li class="log-item">
+                        <span class="log-type type-{{ action.action_type|lower }}">{{ action.get_action_type_display }}</span>
+                        <span class="log-action">{{ action.get_action_display }}</span>
+                        {% if action.target_fighter %}
+                            <span class="log-target">→ {{ action.target_fighter }}</span>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+/* Action Panel Styles */
+    .action-panel {
+        background: rgba(0, 0, 0, 0.4);
+        border: 2px solid var(--color-border);
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .action-panel.panel-disabled {
+        opacity: 0.6;
+        pointer-events: none;
+    }
+
+/* Header */
+    .action-panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .action-panel-title {
+        font-size: 1.2rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--color-text);
+    }
+
+    .your-turn-badge {
+        background: linear-gradient(135deg, #27ae60, #2ecc71);
+        color: white;
+        font-size: 0.75rem;
+        font-weight: bold;
+        padding: 4px 12px;
+        border-radius: 12px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        animation: pulse-glow 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+        0%, 100% { box-shadow: 0 0 5px rgba(46, 204, 113, 0.5); }
+        50% { box-shadow: 0 0 15px rgba(46, 204, 113, 0.8); }
+    }
+
+/* Action Economy Grid */
+    .action-economy-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+
+/* Action Category */
+    .action-category {
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 6px;
+        padding: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .action-category.used {
+        opacity: 0.5;
+        background: rgba(50, 50, 50, 0.3);
+    }
+
+    .action-category.used .category-label {
+        text-decoration: line-through;
+    }
+
+    .category-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .category-label {
+        font-weight: 600;
+        color: var(--color-text);
+        font-size: 0.95rem;
+    }
+
+    .category-status {
+        font-size: 0.75rem;
+    }
+
+    .status-available {
+        color: var(--color-stamina);
+        font-weight: 600;
+    }
+
+    .status-used {
+        color: var(--color-health);
+        font-weight: 600;
+    }
+
+/* Action Buttons Grid */
+    .action-buttons-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .action-btn {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        padding: 10px 8px;
+        background: rgba(139, 69, 19, 0.2);
+        border: 1px solid var(--color-border);
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-family: var(--font-text);
+    }
+
+    .action-btn:not(.disabled):hover {
+        background: rgba(139, 69, 19, 0.4);
+        border-color: var(--color-primary);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .action-btn:not(.disabled):active {
+        transform: translateY(0);
+    }
+
+    .action-btn.disabled {
+        cursor: not-allowed;
+        opacity: 0.4;
+        filter: grayscale(100%);
+    }
+
+    .action-icon {
+        width: 24px;
+        height: 24px;
+        filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
+    }
+
+    .action-name {
+        font-size: 0.7rem;
+        color: var(--color-text);
+        text-align: center;
+        line-height: 1.2;
+    }
+
+/* Action Tooltip */
+    .action-tooltip {
+        position: absolute;
+        bottom: calc(100% + 8px);
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(20, 20, 30, 0.95);
+        border: 1px solid var(--color-primary);
+        border-radius: 6px;
+        padding: 10px 12px;
+        font-size: 0.75rem;
+        color: var(--color-text);
+        white-space: normal;
+        width: 180px;
+        text-align: left;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.2s ease, visibility 0.2s ease;
+        z-index: 100;
+        pointer-events: none;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .action-tooltip::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 6px solid transparent;
+        border-top-color: var(--color-primary);
+    }
+
+    .action-btn:hover .action-tooltip {
+        opacity: 1;
+        visibility: visible;
+    }
+
+/* Bonus Action & Reaction Info */
+    .bonus-action-info,
+    .reaction-info {
+        padding: 8px;
+    }
+
+    .bonus-hint,
+    .reaction-hint {
+        margin: 0;
+        font-size: 0.8rem;
+        color: var(--color-text-muted);
+        font-style: italic;
+    }
+
+/* Movement */
+    .action-category.movement {
+        grid-column: 1 / -1;
+    }
+
+    .movement-display {
+        font-weight: 600;
+        color: var(--color-mana);
+        font-size: 0.9rem;
+    }
+
+    .movement-bar-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .movement-bar-track {
+        height: 12px;
+        background: rgba(0, 0, 0, 0.5);
+        border: 1px solid #444;
+        border-radius: 6px;
+        overflow: hidden;
+    }
+
+    .movement-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #2980b9, var(--color-mana));
+        transition: width 0.3s ease;
+    }
+
+    .movement-bar-fill.depleted {
+        background: #555;
+    }
+
+    .movement-controls {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+    }
+
+    .move-btn {
+        padding: 6px 14px;
+        font-size: 0.75rem;
+        background: rgba(52, 152, 219, 0.2);
+        border: 1px solid var(--color-mana);
+        border-radius: 4px;
+        color: var(--color-mana);
+        cursor: pointer;
+        font-family: var(--font-text);
+        transition: all 0.2s ease;
+    }
+
+    .move-btn:hover {
+        background: rgba(52, 152, 219, 0.4);
+        transform: translateY(-1px);
+    }
+
+/* Actions Log */
+    .actions-log {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .log-header {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--color-text-muted);
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .log-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .log-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 0;
+        font-size: 0.85rem;
+        color: var(--color-text);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .log-item:last-child {
+        border-bottom: none;
+    }
+
+    .log-type {
+        font-size: 0.65rem;
+        font-weight: 600;
+        padding: 2px 6px;
+        border-radius: 3px;
+        text-transform: uppercase;
+    }
+
+    .log-type.type-a {
+        background: rgba(231, 76, 60, 0.2);
+        color: #e74c3c;
+    }
+
+    .log-type.type-b {
+        background: rgba(241, 196, 15, 0.2);
+        color: #f1c40f;
+    }
+
+    .log-type.type-r {
+        background: rgba(155, 89, 182, 0.2);
+        color: #9b59b6;
+    }
+
+    .log-action {
+        flex: 1;
+    }
+
+    .log-target {
+        color: var(--color-text-muted);
+        font-style: italic;
+    }
+
+/* Responsive */
+    @media (max-width: 600px) {
+        .action-economy-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .action-category.movement {
+            grid-column: 1;
+        }
+
+        .action-buttons-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .action-btn {
+            padding: 8px 4px;
+        }
+
+        .action-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        .action-name {
+            font-size: 0.65rem;
+        }
+
+        .action-tooltip {
+            display: none;
+        }
+    }
+
+    @media (max-width: 400px) {
+        .action-buttons-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .movement-controls {
+            flex-wrap: wrap;
+        }
+    }
+</style>

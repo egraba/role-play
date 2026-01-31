@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import UserPassesTestMixin
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
+from django.views import View
 
 from ..constants.combat import ActionType, CombatAction, CombatState
 from ..exceptions import ActionNotAvailable
@@ -7,10 +8,11 @@ from ..models.combat import Combat, Fighter, Turn
 from ..models.events import ActionTaken
 from ..models.game import Actor
 from ..utils.channels import send_to_channel
+from .action_panel import ActionPanelMixin
 from .mixins import GameContextMixin
 
 
-class TakeActionView(UserPassesTestMixin, GameContextMixin):
+class TakeActionView(UserPassesTestMixin, ActionPanelMixin, GameContextMixin, View):
     """View for a player to take an action during their turn."""
 
     def test_func(self):
@@ -36,7 +38,12 @@ class TakeActionView(UserPassesTestMixin, GameContextMixin):
         target_id = request.POST.get("target_id")
         action_type = request.POST.get("action_type", ActionType.ACTION)
 
+        # Check if this is an HTMX request
+        is_htmx = request.headers.get("HX-Request") == "true"
+
         if action not in CombatAction.values:
+            if is_htmx:
+                return HttpResponse("Invalid action", status=400)
             return JsonResponse(
                 {"status": "error", "message": "Invalid action"}, status=400
             )
@@ -49,6 +56,8 @@ class TakeActionView(UserPassesTestMixin, GameContextMixin):
         ).first()
 
         if not turn:
+            if is_htmx:
+                return HttpResponse("No active turn found", status=400)
             return JsonResponse(
                 {"status": "error", "message": "No active turn found"}, status=400
             )
@@ -59,6 +68,8 @@ class TakeActionView(UserPassesTestMixin, GameContextMixin):
             try:
                 target_fighter = Fighter.objects.get(id=target_id, combat=combat)
             except Fighter.DoesNotExist:
+                if is_htmx:
+                    return HttpResponse("Invalid target", status=400)
                 return JsonResponse(
                     {"status": "error", "message": "Invalid target"}, status=400
                 )
@@ -72,10 +83,14 @@ class TakeActionView(UserPassesTestMixin, GameContextMixin):
             elif action_type == ActionType.REACTION:
                 turn_action = turn.use_reaction(action, target_fighter)
             else:
+                if is_htmx:
+                    return HttpResponse("Invalid action type", status=400)
                 return JsonResponse(
                     {"status": "error", "message": "Invalid action type"}, status=400
                 )
         except ActionNotAvailable as e:
+            if is_htmx:
+                return HttpResponse(str(e), status=400)
             return JsonResponse({"status": "error", "message": str(e)}, status=400)
 
         # Create and broadcast event
@@ -91,10 +106,17 @@ class TakeActionView(UserPassesTestMixin, GameContextMixin):
         )
         send_to_channel(action_event)
 
+        # Return updated action panel for HTMX requests
+        if is_htmx:
+            html = self.render_panel(combat, request.user, self.game)
+            response = HttpResponse(html)
+            response["HX-Trigger"] = "action-taken"
+            return response
+
         return JsonResponse({"status": "ok", "action_id": turn_action.id})
 
 
-class TurnStateView(GameContextMixin):
+class TurnStateView(GameContextMixin, View):
     """Returns current turn state for the active combat."""
 
     def get(self, request, *args, **kwargs):
@@ -152,7 +174,7 @@ class TurnStateView(GameContextMixin):
         )
 
 
-class MoveView(UserPassesTestMixin, GameContextMixin):
+class MoveView(UserPassesTestMixin, ActionPanelMixin, GameContextMixin, View):
     """View for a player to use movement during their turn."""
 
     def test_func(self):
@@ -174,14 +196,21 @@ class MoveView(UserPassesTestMixin, GameContextMixin):
         combat = Combat.objects.get(id=combat_id, game=self.game)
         fighter = combat.current_fighter
 
+        # Check if this is an HTMX request
+        is_htmx = request.headers.get("HX-Request") == "true"
+
         try:
             feet = int(request.POST.get("feet", 0))
         except (ValueError, TypeError):
+            if is_htmx:
+                return HttpResponse("Invalid feet value", status=400)
             return JsonResponse(
                 {"status": "error", "message": "Invalid feet value"}, status=400
             )
 
         if feet <= 0:
+            if is_htmx:
+                return HttpResponse("Feet must be positive", status=400)
             return JsonResponse(
                 {"status": "error", "message": "Feet must be positive"}, status=400
             )
@@ -193,11 +222,18 @@ class MoveView(UserPassesTestMixin, GameContextMixin):
         ).first()
 
         if not turn:
+            if is_htmx:
+                return HttpResponse("No active turn found", status=400)
             return JsonResponse(
                 {"status": "error", "message": "No active turn found"}, status=400
             )
 
         actual_moved = turn.use_movement(feet)
+
+        # Return updated action panel for HTMX requests
+        if is_htmx:
+            html = self.render_panel(combat, request.user, self.game)
+            return HttpResponse(html)
 
         return JsonResponse(
             {

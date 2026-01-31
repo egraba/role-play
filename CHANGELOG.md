@@ -57,6 +57,17 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
   - Real-time WebSocket sync for turn changes, HP updates, and action events
   - HTMX endpoints: initiative-tracker, combat-ready, combat-delay
   - Responsive grid layout with mobile breakpoints
+* Combat action panel for turn management:
+  - Action buttons for all D&D 5e actions (Attack, Cast Spell, Dash, Disengage, Dodge, Help, Hide, Ready, Search, Use Object)
+  - Hover tooltips with action descriptions from SRD 5.2
+  - Bonus Action and Reaction status indicators
+  - Movement bar showing remaining/total feet with quick movement buttons (5ft, 10ft, All)
+  - Actions log displaying actions taken during current turn
+  - Visual greying out of used actions
+  - Panel disabled when not player's turn
+  - Auto-refresh on turn changes via HTMX and WebSocket events
+  - HTMX endpoints updated: combat-take-action, combat-move return HTML for seamless updates
+  - Responsive grid layout with mobile breakpoints
 
 ## v0.14.1 - 2026-01-27
 
