@@ -3,17 +3,18 @@ import pytest
 from character.models.races import Language
 
 
-@pytest.mark.django_db(transaction=True)
+@pytest.mark.django_db
 class TestLanguageModel:
-    language = None
-
-    @pytest.fixture(autouse=True)
-    def setup(self):
-        # Fixtures are automatically loaded during the test session initialization.
-        self.language = Language.objects.last()
-
     def test_creation(self):
-        assert isinstance(self.language, Language)
+        language, _ = Language.objects.get_or_create(
+            name="common",
+            defaults={"language_type": "S"},
+        )
+        assert isinstance(language, Language)
 
     def test_str(self):
-        assert str(self.language) == self.language.name
+        language, _ = Language.objects.get_or_create(
+            name="elvish",
+            defaults={"language_type": "S"},
+        )
+        assert str(language) == language.name
