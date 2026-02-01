@@ -242,3 +242,19 @@ class GameEventsConsumer(JsonWebsocketConsumer):
     def dice_roll(self, event):
         """A dice roll has been made."""
         self.send_json(event)
+
+    def concentration_save_required(self, event):
+        """A character needs to make a concentration save."""
+        self.send_json(event)
+
+    def concentration_save_result(self, event):
+        """A concentration save result has been determined."""
+        self.send_json(event)
+
+    def concentration_broken(self, event):
+        """A character has lost concentration."""
+        self.send_json(event)
+
+    def concentration_started(self, event):
+        """A character has started concentrating on a spell."""
+        self.send_json(event)

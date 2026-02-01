@@ -3,6 +3,8 @@ from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.views import View
 
+from character.models.spells import Concentration
+
 from ..constants.combat import CombatAction, CombatState
 from ..models.combat import Combat, Turn
 from .mixins import GameContextMixin
@@ -112,12 +114,25 @@ class ActionPanelMixin:
 
             turn = MockTurn()
 
+        # Get concentration info for the current fighter's character
+        concentration = None
+        can_break_concentration = False
+        if current_fighter:
+            try:
+                concentration = current_fighter.character.concentration
+                # Players can break their own concentration, master can break any
+                can_break_concentration = is_player_turn
+            except Concentration.DoesNotExist:
+                pass
+
         return {
             "combat": combat,
             "turn": turn,
             "is_player_turn": is_player_turn,
             "standard_actions": ACTION_DEFINITIONS,
             "actions_taken": actions_taken,
+            "concentration": concentration,
+            "can_break_concentration": can_break_concentration,
         }
 
     def render_panel(self, combat, user, game):

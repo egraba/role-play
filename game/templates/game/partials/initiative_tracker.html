@@ -41,15 +41,20 @@
                     </div>
                 </div>
 
-                <!-- Condition Icons -->
+                <!-- Condition & Concentration Icons -->
                 <div class="condition-icons">
+                    {% if data.concentration %}
+                        <span class="concentration-icon-tracker" title="Concentrating on {{ data.concentration.spell.name }}">&#9673;</span>
+                    {% endif %}
                     {% for char_condition in data.conditions %}
                         <img src="/static/images/icons/conditions/{{ char_condition.condition.name }}.svg"
                              alt="{{ char_condition.condition }}"
                              title="{{ char_condition.condition }}{% if char_condition.exhaustion_level %} (Level {{ char_condition.exhaustion_level }}){% endif %}"
                              class="condition-icon">
                     {% empty %}
-                        <span class="no-conditions"></span>
+                        {% if not data.concentration %}
+                            <span class="no-conditions"></span>
+                        {% endif %}
                     {% endfor %}
                 </div>
 
@@ -312,6 +317,19 @@
     .no-conditions {
         width: 20px;
         height: 20px;
+    }
+
+/* Concentration Icon in Tracker */
+    .concentration-icon-tracker {
+        font-size: 1.1rem;
+        color: #9b59b6;
+        cursor: help;
+        animation: concentration-glow 2s ease-in-out infinite;
+    }
+
+    @keyframes concentration-glow {
+        0%, 100% { text-shadow: 0 0 5px rgba(155, 89, 182, 0.3); opacity: 1; }
+        50% { text-shadow: 0 0 10px rgba(155, 89, 182, 0.6); opacity: 0.8; }
     }
 
 /* Combatant Actions */

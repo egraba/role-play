@@ -3,6 +3,8 @@ from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.views import View
 
+from character.models.spells import Concentration
+
 from ..constants.combat import CombatAction, CombatState
 from ..models.combat import Combat, Turn
 from ..models.events import ActionTaken
@@ -33,6 +35,12 @@ class InitiativeTrackerMixin:
                 character.active_conditions.select_related("condition").all()
             )
 
+            # Get concentration if any
+            try:
+                concentration = character.concentration
+            except Concentration.DoesNotExist:
+                concentration = None
+
             fighters_data.append(
                 {
                     "fighter": fighter,
@@ -48,6 +56,7 @@ class InitiativeTrackerMixin:
                     "max_hp": character.max_hp,
                     "hp_percentage": character.hp_percentage,
                     "conditions": conditions,
+                    "concentration": concentration,
                 }
             )
 

@@ -43,6 +43,11 @@ class EventType(StrEnum):
     HP_DEATH_SAVE = "hp.death.save"
     # Dice roll events
     DICE_ROLL = "dice.roll"
+    # Concentration events
+    CONCENTRATION_SAVE_REQUIRED = "concentration.save.required"
+    CONCENTRATION_SAVE_RESULT = "concentration.save.result"
+    CONCENTRATION_BROKEN = "concentration.broken"
+    CONCENTRATION_STARTED = "concentration.started"
 
 
 class EventOrigin(IntFlag):

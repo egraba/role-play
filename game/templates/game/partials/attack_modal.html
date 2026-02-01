@@ -211,11 +211,41 @@
                         HP: {{ target.character.hp }} / {{ target.character.max_hp }}
                     </span>
                 </div>
-                <div class="attack-actions">
-                    <button type="button" class="rpg-btn btn-primary" onclick="closeAttackModal()">
-                        Close
-                    </button>
-                </div>
+                {% if concentration_info %}
+                <!-- Concentration Save Required -->
+                    <div class="concentration-warning">
+                        <div class="concentration-warning-icon">
+                            <span class="conc-icon">&#9673;</span>
+                        </div>
+                        <div class="concentration-warning-text">
+                            <span class="warning-title">Concentration Check Required!</span>
+                            <span class="warning-detail">
+                                {{ target.character.name }} must make a DC {{ concentration_info.dc }}
+                                Constitution save to maintain {{ concentration_info.spell_name }}.
+                            </span>
+                        </div>
+                    </div>
+                    <div class="attack-actions">
+                        <button type="button" class="rpg-btn" onclick="closeAttackModal()">
+                            Later
+                        </button>
+                        <button type="button"
+                                class="rpg-btn btn-concentration"
+                                hx-get="{% url 'concentration-save-modal' game.id concentration_info.character_id %}?damage={{ concentration_info.damage }}"
+                                hx-target="body"
+                                hx-swap="beforeend"
+                                onclick="closeAttackModal()">
+                            <span class="conc-btn-icon">&#9673;</span>
+                            Roll Concentration Save
+                        </button>
+                    </div>
+                {% else %}
+                    <div class="attack-actions">
+                        <button type="button" class="rpg-btn btn-primary" onclick="closeAttackModal()">
+                            Close
+                        </button>
+                    </div>
+                {% endif %}
             </div>
         {% endif %}
     </div>
@@ -650,6 +680,70 @@
     .confirmation-hp {
         color: var(--color-health);
         font-weight: 600;
+    }
+
+/* Concentration Warning */
+    .concentration-warning {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        background: linear-gradient(135deg, rgba(155, 89, 182, 0.2), rgba(142, 68, 173, 0.15));
+        border: 2px solid #9b59b6;
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: 20px;
+        text-align: left;
+        animation: concentration-alert 1s ease-in-out infinite;
+    }
+
+    @keyframes concentration-alert {
+        0%, 100% { border-color: #9b59b6; box-shadow: 0 0 5px rgba(155, 89, 182, 0.3); }
+        50% { border-color: #8e44ad; box-shadow: 0 0 15px rgba(155, 89, 182, 0.5); }
+    }
+
+    .concentration-warning-icon {
+        flex-shrink: 0;
+    }
+
+    .concentration-warning-icon .conc-icon {
+        font-size: 1.8rem;
+        color: #9b59b6;
+        animation: pulse-glow 1.5s ease-in-out infinite;
+    }
+
+    .concentration-warning-text {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .warning-title {
+        font-size: 1rem;
+        font-weight: bold;
+        color: #9b59b6;
+    }
+
+    .warning-detail {
+        font-size: 0.9rem;
+        color: var(--color-text-muted);
+        line-height: 1.4;
+    }
+
+    .btn-concentration {
+        background: linear-gradient(135deg, rgba(155, 89, 182, 0.3), rgba(142, 68, 173, 0.4));
+        border-color: #9b59b6;
+        color: #9b59b6;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-concentration:hover {
+        background: linear-gradient(135deg, rgba(155, 89, 182, 0.5), rgba(142, 68, 173, 0.6));
+    }
+
+    .conc-btn-icon {
+        font-size: 1.1rem;
     }
 
 /* Responsive */

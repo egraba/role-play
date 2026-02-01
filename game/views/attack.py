@@ -5,12 +5,15 @@ from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.views import View
 
+from character.models.spells import Concentration
+
 from ..constants.combat import CombatAction, CombatState
 from ..models.combat import Combat, Fighter, Turn
 from ..models.events import ActionTaken
 from ..models.game import Actor
 from ..utils.channels import send_to_channel
 from .action_panel import ActionPanelMixin
+from .concentration import check_concentration_on_damage
 from .mixins import GameContextMixin
 
 
@@ -310,12 +313,26 @@ class ApplyDamageView(
             )
             send_to_channel(action_event)
 
+        # Check if target has concentration and needs to make a save
+        concentration_info = None
+        try:
+            if target_character.concentration:
+                concentration_info = check_concentration_on_damage(
+                    game=self.game,
+                    character=target_character,
+                    damage=damage,
+                    author=author,
+                )
+        except Concentration.DoesNotExist:
+            pass
+
         # Build confirmation context
         context = self.get_attack_context(combat, request.user, fighter)
         context.update(
             {
                 "damage_applied": damage,
                 "target": target,
+                "concentration_info": concentration_info,
             }
         )
 

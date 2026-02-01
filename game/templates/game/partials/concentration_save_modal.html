@@ -1,0 +1,504 @@
+{% load static %}
+
+<div id="concentration-save-modal" class="rpg-modal {% if show_modal %}active{% endif %}">
+    <div class="modal-content concentration-modal-content">
+        <span class="modal-close" onclick="closeConcentrationModal()">&times;</span>
+
+        {% if not show_result %}
+        <!-- Concentration Save Required -->
+            <div class="concentration-header">
+                <div class="concentration-icon-wrapper">
+                    <span class="concentration-icon pulse">&#9673;</span>
+                </div>
+                <h2 class="modal-title">Concentration Check!</h2>
+            </div>
+
+            <div class="concentration-info-box">
+                <div class="info-row">
+                    <span class="info-label">Character</span>
+                    <span class="info-value">{{ character.name }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Concentrating on</span>
+                    <span class="info-value spell-name">{{ concentration.spell.name }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Damage Taken</span>
+                    <span class="info-value damage">{{ damage }}</span>
+                </div>
+            </div>
+
+            <div class="dc-display">
+                <span class="dc-label">Constitution Save DC</span>
+                <span class="dc-value">{{ dc }}</span>
+            </div>
+
+            <div class="modifier-display">
+                <span class="modifier-label">Constitution Modifier</span>
+                <span class="modifier-value">{% if con_modifier >= 0 %}+{% endif %}{{ con_modifier }}</span>
+            </div>
+
+            <form hx-post="{% url 'concentration-save-roll' game.id character.pk %}"
+                  hx-target="#concentration-save-modal"
+                  hx-swap="outerHTML">
+                <input type="hidden" name="dc" value="{{ dc }}">
+                <input type="hidden" name="con_modifier" value="{{ con_modifier }}">
+
+                <div class="concentration-actions">
+                    <button type="button" class="rpg-btn" onclick="closeConcentrationModal()">Skip</button>
+                    <button type="submit" class="rpg-btn btn-concentration roll-save-btn">
+                        <img src="{% static 'images/icons/actions/roll.svg' %}" alt="" class="rpg-icon rpg-icon-sm">
+                        Roll Constitution Save
+                    </button>
+                </div>
+            </form>
+
+        {% else %}
+        <!-- Roll Result Display -->
+            <div class="concentration-header">
+                <div class="concentration-icon-wrapper {% if success %}success{% else %}failed{% endif %}">
+                    <span class="concentration-icon">{% if success %}&#10003;{% else %}&#10007;{% endif %}</span>
+                </div>
+                <h2 class="modal-title">
+                    {% if success %}Concentration Maintained!{% else %}Concentration Lost!{% endif %}
+                </h2>
+            </div>
+
+            <div class="concentration-info-box">
+                <div class="info-row">
+                    <span class="info-label">Character</span>
+                    <span class="info-value">{{ character.name }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Spell</span>
+                    <span class="info-value spell-name">{{ spell_name }}</span>
+                </div>
+            </div>
+
+        <!-- D20 Roll Display -->
+            <div class="dice-roller concentration-dice-roller">
+                <div class="d20-container {% if success %}save-success{% else %}save-failure{% endif %} {% if is_natural_20 %}critical-success{% elif is_natural_1 %}critical-failure{% endif %}">
+                    <div class="d20-die rolling" id="concentration-d20-die">
+                        <span class="d20-value">{{ roll }}</span>
+                    </div>
+                </div>
+
+                <div class="roll-breakdown">
+                    <span class="roll-formula">
+                        {{ roll }} {% if con_modifier >= 0 %}+{% endif %} {{ con_modifier }} = <strong>{{ total }}</strong>
+                    </span>
+                    <span class="vs-dc">vs DC {{ dc }}</span>
+                </div>
+            </div>
+
+        <!-- Result Display -->
+            <div class="save-result {% if success %}success{% else %}failure{% endif %}">
+                {% if is_natural_20 %}
+                    <span class="result-text critical">NATURAL 20!</span>
+                {% elif is_natural_1 %}
+                    <span class="result-text fumble">NATURAL 1!</span>
+                {% elif success %}
+                    <span class="result-text">SUCCESS</span>
+                {% else %}
+                    <span class="result-text">FAILED</span>
+                {% endif %}
+                <span class="result-detail">
+                    {% if success %}
+                        {{ character.name }} maintains concentration on {{ spell_name }}.
+                    {% else %}
+                        {{ character.name }} has lost concentration on {{ spell_name }}!
+                    {% endif %}
+                </span>
+            </div>
+
+            <div class="concentration-actions">
+                <button type="button" class="rpg-btn btn-primary" onclick="closeConcentrationModal()">
+                    Close
+                </button>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+/* Concentration Modal Styles */
+    .concentration-modal-content {
+        min-width: 380px;
+        max-width: 450px;
+    }
+
+    .concentration-header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .concentration-icon-wrapper {
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 15px;
+        background: linear-gradient(135deg, rgba(155, 89, 182, 0.3), rgba(142, 68, 173, 0.2));
+        border: 2px solid #9b59b6;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .concentration-icon-wrapper.success {
+        background: linear-gradient(135deg, rgba(46, 204, 113, 0.3), rgba(39, 174, 96, 0.2));
+        border-color: var(--color-stamina);
+    }
+
+    .concentration-icon-wrapper.failed {
+        background: linear-gradient(135deg, rgba(231, 76, 60, 0.3), rgba(192, 57, 43, 0.2));
+        border-color: var(--color-health);
+    }
+
+    .concentration-icon {
+        font-size: 2rem;
+        color: #9b59b6;
+    }
+
+    .concentration-icon-wrapper.success .concentration-icon {
+        color: var(--color-stamina);
+    }
+
+    .concentration-icon-wrapper.failed .concentration-icon {
+        color: var(--color-health);
+    }
+
+    .concentration-icon.pulse {
+        animation: concentration-pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes concentration-pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.7; transform: scale(1.1); }
+    }
+
+    .modal-title {
+        font-size: 1.4rem;
+        color: var(--color-text);
+        margin: 0;
+    }
+
+/* Info Box */
+    .concentration-info-box {
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .info-row:last-child {
+        border-bottom: none;
+    }
+
+    .info-label {
+        color: var(--color-text-muted);
+        font-size: 0.9rem;
+    }
+
+    .info-value {
+        color: var(--color-text);
+        font-weight: 600;
+    }
+
+    .info-value.spell-name {
+        color: #9b59b6;
+    }
+
+    .info-value.damage {
+        color: var(--color-health);
+    }
+
+/* DC Display */
+    .dc-display {
+        background: rgba(155, 89, 182, 0.15);
+        border: 2px solid #9b59b6;
+        border-radius: 8px;
+        padding: 15px;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+
+    .dc-label {
+        display: block;
+        font-size: 0.85rem;
+        color: var(--color-text-muted);
+        margin-bottom: 5px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .dc-value {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #9b59b6;
+    }
+
+/* Modifier Display */
+    .modifier-display {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 6px;
+        padding: 12px 15px;
+        margin-bottom: 20px;
+    }
+
+    .modifier-label {
+        color: var(--color-text-muted);
+        font-size: 0.9rem;
+    }
+
+    .modifier-value {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: var(--color-primary);
+    }
+
+/* Dice Roller */
+    .concentration-dice-roller {
+        margin: 25px 0;
+        text-align: center;
+    }
+
+    .concentration-dice-roller .d20-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .concentration-dice-roller .d20-die {
+        width: 90px;
+        height: 90px;
+        background: linear-gradient(145deg, #2a2a4a, #1a1a2e);
+        border: 3px solid #9b59b6;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.5),
+        inset 0 2px 10px rgba(255, 255, 255, 0.1);
+    }
+
+    .concentration-dice-roller .d20-value {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #9b59b6;
+        text-shadow: 0 0 20px rgba(155, 89, 182, 0.5);
+    }
+
+    .d20-container.save-success .d20-die {
+        border-color: var(--color-stamina);
+        animation: diceRoll 1s ease-out, successPulse 1s ease-in-out infinite 1s;
+    }
+
+    .d20-container.save-success .d20-value {
+        color: var(--color-stamina);
+        text-shadow: 0 0 30px rgba(46, 204, 113, 0.8);
+    }
+
+    .d20-container.save-failure .d20-die {
+        border-color: var(--color-health);
+        animation: diceRoll 1s ease-out, failureShake 0.5s ease-in-out 1s;
+    }
+
+    .d20-container.save-failure .d20-value {
+        color: var(--color-health);
+        text-shadow: 0 0 30px rgba(231, 76, 60, 0.8);
+    }
+
+    .d20-container.critical-success .d20-die {
+        box-shadow: 0 0 30px rgba(46, 204, 113, 0.6);
+    }
+
+    .d20-container.critical-failure .d20-die {
+        box-shadow: 0 0 30px rgba(231, 76, 60, 0.6);
+    }
+
+/* Roll Animation */
+    .concentration-dice-roller .d20-die.rolling {
+        animation: diceRoll 1s ease-out;
+    }
+
+    @keyframes diceRoll {
+        0% { transform: rotateX(0deg) rotateY(0deg) scale(0.8); opacity: 0; }
+        25% { transform: rotateX(180deg) rotateY(90deg) scale(1.1); }
+        50% { transform: rotateX(360deg) rotateY(180deg) scale(1); }
+        75% { transform: rotateX(540deg) rotateY(270deg) scale(1.05); }
+        100% { transform: rotateX(720deg) rotateY(360deg) scale(1); opacity: 1; }
+    }
+
+    @keyframes successPulse {
+        0%, 100% { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(46, 204, 113, 0.3); }
+        50% { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 40px rgba(46, 204, 113, 0.6); }
+    }
+
+    @keyframes failureShake {
+        0%, 100% { transform: translateX(0); }
+        20% { transform: translateX(-10px); }
+        40% { transform: translateX(10px); }
+        60% { transform: translateX(-10px); }
+        80% { transform: translateX(10px); }
+    }
+
+    .roll-breakdown {
+        margin-top: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .roll-formula {
+        color: var(--color-text-muted);
+        font-size: 1.1rem;
+    }
+
+    .roll-formula strong {
+        color: var(--color-primary);
+        font-size: 1.3rem;
+    }
+
+    .vs-dc {
+        font-size: 0.9rem;
+        color: var(--color-text-muted);
+    }
+
+/* Result Display */
+    .save-result {
+        text-align: center;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+    }
+
+    .save-result.success {
+        background: rgba(46, 204, 113, 0.15);
+        border: 2px solid var(--color-stamina);
+    }
+
+    .save-result.failure {
+        background: rgba(231, 76, 60, 0.15);
+        border: 2px solid var(--color-health);
+    }
+
+    .save-result .result-text {
+        display: block;
+        font-size: 1.8rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .save-result.success .result-text {
+        color: var(--color-stamina);
+    }
+
+    .save-result.failure .result-text {
+        color: var(--color-health);
+    }
+
+    .result-text.critical {
+        color: var(--color-stamina);
+        text-shadow: 0 0 20px rgba(46, 204, 113, 0.5);
+        animation: criticalText 0.5s ease-out;
+    }
+
+    .result-text.fumble {
+        color: var(--color-health);
+        text-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
+    }
+
+    @keyframes criticalText {
+        0% { transform: scale(0.5); opacity: 0; }
+        50% { transform: scale(1.2); }
+        100% { transform: scale(1); opacity: 1; }
+    }
+
+    .result-detail {
+        color: var(--color-text-muted);
+        font-size: 0.95rem;
+        line-height: 1.4;
+    }
+
+/* Actions */
+    .concentration-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-concentration {
+        background: linear-gradient(135deg, rgba(155, 89, 182, 0.3), rgba(142, 68, 173, 0.4));
+        border-color: #9b59b6;
+        color: #9b59b6;
+    }
+
+    .btn-concentration:hover {
+        background: linear-gradient(135deg, rgba(155, 89, 182, 0.5), rgba(142, 68, 173, 0.6));
+    }
+
+    .roll-save-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+/* Responsive */
+    @media (max-width: 450px) {
+        .concentration-modal-content {
+            min-width: auto;
+            max-width: 100%;
+            margin: 10px;
+        }
+
+        .concentration-dice-roller .d20-die {
+            width: 75px;
+            height: 75px;
+        }
+
+        .concentration-dice-roller .d20-value {
+            font-size: 2rem;
+        }
+
+        .dc-value {
+            font-size: 2rem;
+        }
+    }
+</style>
+
+<script>
+    function closeConcentrationModal() {
+        const modal = document.getElementById('concentration-save-modal');
+        if (modal) {
+            modal.classList.remove('active');
+        }
+    // Trigger refresh of initiative tracker
+        htmx.trigger(document.body, 'concentration-modal-closed');
+    }
+
+// Trigger animation when modal content updates
+    document.addEventListener('htmx:afterSwap', function(event) {
+        if (event.detail.target.id === 'concentration-save-modal') {
+            const die = document.getElementById('concentration-d20-die');
+            if (die && !die.classList.contains('rolling')) {
+                die.classList.add('rolling');
+            }
+        }
+    });
+</script>
