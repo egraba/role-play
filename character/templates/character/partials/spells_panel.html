@@ -1,4 +1,7 @@
 <div id="spells-panel-component" class="spells-panel-component">
+    <!-- Spell Card Modal Container -->
+    <div id="spell-card-modal" class="rpg-modal"></div>
+
     <!-- Cast Result Message -->
     {% if cast_result %}
         <div class="cast-result-message">
@@ -234,7 +237,14 @@
                                         {% endif %}
                                     </div>
                                     <div class="spell-name-box">
-                                        <span class="spell-name">{{ spell.settings.name }}</span>
+                                        <button type="button"
+                                                class="spell-name-btn"
+                                                hx-get="{% url 'character-spell-card' character.pk spell.settings.name %}"
+                                                hx-target="#spell-card-modal"
+                                                hx-swap="outerHTML"
+                                                title="View spell details">
+                                            <span class="spell-name">{{ spell.settings.name }}</span>
+                                        </button>
                                         {% if spell.always_prepared %}
                                             <span class="always-prepared-badge" title="Always Prepared">&#9733;</span>
                                         {% endif %}
@@ -298,7 +308,14 @@
                                         {% endif %}
                                     </div>
                                     <div class="spell-name-box">
-                                        <span class="spell-name">{{ spell.settings.name }}</span>
+                                        <button type="button"
+                                                class="spell-name-btn"
+                                                hx-get="{% url 'character-spell-card' character.pk spell.settings.name %}"
+                                                hx-target="#spell-card-modal"
+                                                hx-swap="outerHTML"
+                                                title="View spell details">
+                                            <span class="spell-name">{{ spell.settings.name }}</span>
+                                        </button>
                                     </div>
                                     <div class="spell-school-box">
                                         <span class="spell-school {{ spell.settings.school }}">
@@ -847,6 +864,22 @@
     .always-prepared-badge {
         color: var(--color-primary);
         font-size: 0.8rem;
+    }
+
+    .spell-name-btn {
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        text-align: left;
+        font-family: inherit;
+        max-width: 100%;
+        transition: color 0.2s ease;
+    }
+
+    .spell-name-btn:hover .spell-name {
+        color: var(--color-primary);
+        text-decoration: underline;
     }
 
     .spell-school-box {
