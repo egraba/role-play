@@ -16,6 +16,7 @@ from .views.spells import (
     CastSpellView,
     RestoreAllSlotsView,
     RestoreSpellSlotView,
+    SpellCardModalView,
     SpellsPanelView,
     UseSpellSlotView,
 )
@@ -108,5 +109,10 @@ urlpatterns = [
         "<int:pk>/spells/concentration/break/",
         BreakConcentrationView.as_view(),
         name="character-break-concentration",
+    ),
+    path(
+        "<int:pk>/spells/<str:spell_name>/",
+        SpellCardModalView.as_view(),
+        name="character-spell-card",
     ),
 ]

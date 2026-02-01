@@ -384,3 +384,46 @@ class BreakConcentrationView(LoginRequiredMixin, SpellsPanelMixin, View):
             request=request,
         )
         return HttpResponse(html)
+
+
+class SpellCardModalView(LoginRequiredMixin, SpellsPanelMixin, View):
+    """View for displaying full spell details in a modal."""
+
+    def get(self, request, pk: int, spell_name: str) -> HttpResponse:
+        """Show the spell card modal for a specific spell."""
+        from ..models.spells import CharacterSpellSlot, SpellSettings
+
+        character = self.get_character(pk)
+        spell = get_object_or_404(SpellSettings, name=spell_name)
+
+        # Get available spell slots for upcasting options
+        available_slots = []
+        if spell.level > 0:
+            slots = CharacterSpellSlot.objects.filter(
+                character=character,
+                slot_level__gte=spell.level,
+                total__gt=0,
+            ).order_by("slot_level")
+            for slot in slots:
+                available_slots.append(
+                    {
+                        "level": slot.slot_level,
+                        "remaining": slot.remaining,
+                        "total": slot.total,
+                        "available": slot.remaining > 0,
+                    }
+                )
+
+        context = {
+            "character": character,
+            "spell": spell,
+            "show_modal": True,
+            "available_slots": available_slots,
+            "is_cantrip": spell.level == 0,
+        }
+        html = render_to_string(
+            "character/partials/spell_card_modal.html",
+            context,
+            request=request,
+        )
+        return HttpResponse(html)

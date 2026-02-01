@@ -392,3 +392,142 @@ class TestBreakConcentrationView:
         url = reverse("character-break-concentration", args=[spells_character.pk])
         response = client.post(url)
         assert response.status_code == 302
+
+
+@pytest.mark.django_db
+class TestSpellCardModalView:
+    """Test spell card modal view."""
+
+    def test_spell_card_modal_returns_modal(self, client, character_with_spells):
+        url = reverse(
+            "character-spell-card",
+            args=[character_with_spells.pk, "Fireball"],
+        )
+        response = client.get(url)
+        assert response.status_code == 200
+        assert b"spell-card-modal" in response.content
+        assert b"Fireball" in response.content
+
+    def test_spell_card_modal_shows_spell_details(self, client, character_with_spells):
+        url = reverse(
+            "character-spell-card",
+            args=[character_with_spells.pk, "Fireball"],
+        )
+        response = client.get(url)
+        assert response.status_code == 200
+        # Check for spell metadata sections
+        assert b"Casting Time" in response.content
+        assert b"Range" in response.content
+        assert b"Components" in response.content
+        assert b"Duration" in response.content
+        assert b"spell-card-meta" in response.content
+
+    def test_spell_card_modal_shows_level_and_school(
+        self, client, character_with_spells
+    ):
+        url = reverse(
+            "character-spell-card",
+            args=[character_with_spells.pk, "Fireball"],
+        )
+        response = client.get(url)
+        assert response.status_code == 200
+        # Fireball is 3rd-level evocation
+        assert b"3rd-level" in response.content
+        assert b"evocation" in response.content.lower()
+
+    def test_spell_card_modal_shows_cantrip_subtitle(
+        self, client, character_with_spells
+    ):
+        url = reverse(
+            "character-spell-card",
+            args=[character_with_spells.pk, "Fire Bolt"],
+        )
+        response = client.get(url)
+        assert response.status_code == 200
+        assert b"cantrip" in response.content.lower()
+
+    def test_spell_card_modal_shows_concentration_indicator(
+        self, client, character_with_spells
+    ):
+        url = reverse(
+            "character-spell-card",
+            args=[character_with_spells.pk, "Hold Person"],
+        )
+        response = client.get(url)
+        assert response.status_code == 200
+        assert b"concentration-indicator" in response.content
+
+    def test_spell_card_modal_shows_upcast_options(self, client, character_with_spells):
+        url = reverse(
+            "character-spell-card",
+            args=[character_with_spells.pk, "Fireball"],
+        )
+        response = client.get(url)
+        assert response.status_code == 200
+        # Should show upcast section for non-cantrip spells
+        assert b"upcast-section" in response.content
+        assert b"Cast at Level" in response.content
+
+    def test_spell_card_modal_cantrip_has_cast_button(
+        self, client, character_with_spells
+    ):
+        url = reverse(
+            "character-spell-card",
+            args=[character_with_spells.pk, "Fire Bolt"],
+        )
+        response = client.get(url)
+        assert response.status_code == 200
+        assert b"Cast Cantrip" in response.content
+
+    def test_spell_card_modal_shows_available_slots(
+        self, client, character_with_spells
+    ):
+        url = reverse(
+            "character-spell-card",
+            args=[character_with_spells.pk, "Fireball"],
+        )
+        response = client.get(url)
+        assert response.status_code == 200
+        # Should show slot availability
+        assert b"upcast-slots" in response.content
+
+    def test_spell_card_modal_requires_login(self, client, character_with_spells):
+        client.logout()
+        url = reverse(
+            "character-spell-card",
+            args=[character_with_spells.pk, "Fireball"],
+        )
+        response = client.get(url)
+        assert response.status_code == 302
+
+    def test_spell_card_modal_404_for_unknown_spell(
+        self, client, character_with_spells
+    ):
+        url = reverse(
+            "character-spell-card",
+            args=[character_with_spells.pk, "Unknown Spell"],
+        )
+        response = client.get(url)
+        assert response.status_code == 404
+
+    def test_spell_card_modal_shows_ritual_badge(self, client, spells_character):
+        # Create a ritual spell
+        ritual_spell = SpellSettingsFactory(
+            name="Detect Magic",
+            level=1,
+            school="divination",
+            ritual=True,
+        )
+        SpellFactory(character=spells_character, settings=ritual_spell)
+        CharacterSpellSlotFactory(
+            character=spells_character, slot_level=1, total=2, used=0
+        )
+
+        url = reverse(
+            "character-spell-card",
+            args=[spells_character.pk, "Detect Magic"],
+        )
+        response = client.get(url)
+        assert response.status_code == 200
+        assert b"spell-ritual-badge" in response.content
+        assert b"Ritual" in response.content

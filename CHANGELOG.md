@@ -5,6 +5,24 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Added
+* Spell card modal for viewing full spell details:
+  - Parchment-styled modal with dark gradient background and subtle texture overlay
+  - Spell name header with ritual badge indicator when applicable
+  - Level and school subtitle (e.g., "3rd-level evocation" or "Divination cantrip")
+  - Metadata grid showing casting time, range, components, and duration
+  - Color-coded component badges (V=blue, S=green, M=yellow) with material details
+  - Animated concentration indicator with pulsing effect
+  - Decorative star divider between metadata and description
+  - Scrollable description area with custom parchment-style scrollbar
+  - "At Higher Levels" section highlighted with gold border
+  - Cast button for cantrips or level-selectable upcast buttons showing remaining slots
+  - Disabled upcast buttons when no slots available at that level
+  - Click spell names in spells panel to open the modal
+  - Close via button, clicking outside, or Escape key
+  - Responsive design with mobile breakpoints
+  - New view: SpellCardModalView
+  - New URL endpoint: character-spell-card
+  - Test coverage for spell card modal (12 tests)
 * Interactive spell management panel with HTMX for character spellcasting:
   - Visual spell slot tracker with clickable circles that fill/empty on use
   - Circles glow blue when filled (available), click to toggle used/available state
