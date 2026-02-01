@@ -5,6 +5,32 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Added
+* Interactive spell management panel with HTMX for character spellcasting:
+  - Visual spell slot tracker with clickable circles that fill/empty on use
+  - Circles glow blue when filled (available), click to toggle used/available state
+  - Pact Magic slots displayed separately with purple styling for Warlocks
+  - Long Rest button to restore all spell slots at once
+  - Active concentration banner with pulsing purple border and break button
+  - Quick Cast section with cantrips and common 1st-level spells for one-click casting
+  - Disabled state on quick-cast buttons when no slots remaining
+  - Search input with 300ms debounced filtering
+  - Filter by spell level (Cantrip through 9th)
+  - Filter by school of magic (dropdown with all 8 schools)
+  - Filter by concentration requirement (All/Yes/No toggle)
+  - Prepared spells list grouped by level (for Cleric, Wizard, Druid, Paladin)
+  - Known spells list grouped by level (for Bard, Sorcerer, Warlock, Ranger)
+  - Always-prepared badge (star icon) for domain/subclass spells
+  - Cast buttons on each spell that consume appropriate slot level
+  - Casting a concentration spell automatically starts concentration tracking
+  - Cast result feedback message with fade animation
+  - School-of-magic color coding (Evocation=orange, Abjuration=blue, etc.)
+  - Concentration and Ritual indicators on spell rows
+  - Casting time display for each spell
+  - Responsive design with mobile breakpoints
+  - New views: SpellsPanelView, UseSpellSlotView, RestoreSpellSlotView, RestoreAllSlotsView, CastSpellView, BreakConcentrationView
+  - New URL endpoints: character-spells-panel, character-use-spell-slot, character-restore-spell-slot, character-restore-all-slots, character-cast-spell, character-break-concentration
+  - Loading spinner styles added to rpg-styles.css
+  - Comprehensive test coverage (35+ tests) for all spell panel views
 * Animated dice roller component for general-purpose dice rolling:
   - HTMX-powered modal dialog triggered from "Roll Dice" button in game view
   - Support for all D&D dice types (d4, d6, d8, d10, d12, d20)

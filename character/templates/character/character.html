@@ -246,35 +246,13 @@
 
             <!-- Spells Tab Content -->
                 <div class="tab-content" id="content-spells">
-                    {% if spell_slots %}
-                        <div class="spell-slots-grid">
-                            {% for slot in spell_slots %}
-                                <div class="spell-slot-item">
-                                    <div class="spell-slot-level">{{ slot.level }}</div>
-                                    <div class="spell-slot-count">{{ slot.used }}/{{ slot.total }}</div>
-                                </div>
-                            {% endfor %}
+                    <div hx-get="{% url 'character-spells-panel' character.pk %}"
+                         hx-trigger="load, intersect once"
+                         hx-swap="innerHTML">
+                        <div class="loading-placeholder">
+                            <span class="loading-spinner"></span>
+                            Loading spells...
                         </div>
-                    {% endif %}
-
-                    <div class="spells-by-level">
-                        {% for level, spells in spells_by_level.items %}
-                            <div class="spell-level-section">
-                                <h4 class="spell-level-title">
-                                    {% if level == 0 %}Cantrips{% else %}Level {{ level }}{% endif %}
-                                </h4>
-                                <div class="spell-list">
-                                    {% for spell in spells %}
-                                        <div class="spell-item">
-                                            <span class="spell-name">{{ spell.name }}</span>
-                                            {% if spell.prepared %}<span class="spell-prepared">Prepared</span>{% endif %}
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                        {% empty %}
-                            <p class="text-muted text-center">No spells known</p>
-                        {% endfor %}
                     </div>
                 </div>
 

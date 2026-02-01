@@ -1,0 +1,944 @@
+<div id="spells-panel-component" class="spells-panel-component">
+    <!-- Cast Result Message -->
+    {% if cast_result %}
+        <div class="cast-result-message">
+            {{ cast_result }}
+        </div>
+    {% endif %}
+
+    <!-- Active Concentration -->
+    {% if active_concentration %}
+        <div class="concentration-banner">
+            <div class="concentration-info">
+                <span class="concentration-icon">&#9673;</span>
+                <span class="concentration-label">Concentrating on:</span>
+                <span class="concentration-spell">{{ active_concentration.spell.name }}</span>
+            </div>
+            <button type="button"
+                    class="concentration-break-btn"
+                    hx-post="{% url 'character-break-concentration' character.pk %}"
+                    hx-target="#spells-panel-component"
+                    hx-swap="outerHTML"
+                    title="Break concentration">
+                &#10005;
+            </button>
+        </div>
+    {% endif %}
+
+    <!-- Spell Slots Section -->
+    {% if spell_slots or pact_magic %}
+        <div class="spell-slots-section">
+            <div class="section-header">
+                <h4 class="section-title">Spell Slots</h4>
+                <button type="button"
+                        class="restore-all-btn"
+                        hx-post="{% url 'character-restore-all-slots' character.pk %}"
+                        hx-target="#spells-panel-component"
+                        hx-swap="outerHTML"
+                        title="Long Rest - Restore all slots">
+                    Long Rest
+                </button>
+            </div>
+
+            <div class="spell-slots-grid">
+                {% for slot in spell_slots %}
+                    <div class="slot-row">
+                        <div class="slot-level-badge">{{ slot.level }}</div>
+                        <div class="slot-circles">
+                            {% for circle in slot.circles %}
+                                <button type="button"
+                                        class="slot-circle {% if circle.filled %}filled{% else %}empty{% endif %}"
+                                        {% if circle.filled %}
+                                            hx-post="{% url 'character-use-spell-slot' character.pk %}"
+                                            hx-vals='{"slot_level": "{{ slot.level }}"}'
+                                            title="Use slot"
+                                        {% else %}
+                                            hx-post="{% url 'character-restore-spell-slot' character.pk %}"
+                                            hx-vals='{"slot_level": "{{ slot.level }}"}'
+                                            title="Restore slot"
+                                        {% endif %}
+                                        hx-target="#spells-panel-component"
+                                        hx-swap="outerHTML">
+                                    <span class="circle-inner"></span>
+                                </button>
+                            {% endfor %}
+                        </div>
+                        <div class="slot-count">{{ slot.remaining }}/{{ slot.total }}</div>
+                    </div>
+                {% endfor %}
+
+                {% if pact_magic %}
+                    <div class="slot-row pact-magic">
+                        <div class="slot-level-badge pact">P{{ pact_magic.level }}</div>
+                        <div class="slot-circles">
+                            {% for circle in pact_magic.circles %}
+                                <button type="button"
+                                        class="slot-circle pact {% if circle.filled %}filled{% else %}empty{% endif %}"
+                                        title="{% if circle.filled %}Use pact slot{% else %}Restore pact slot{% endif %}">
+                                    <span class="circle-inner"></span>
+                                </button>
+                            {% endfor %}
+                        </div>
+                        <div class="slot-count pact">{{ pact_magic.remaining }}/{{ pact_magic.total }}</div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Quick Cast Section -->
+    {% if quick_cast_spells %}
+        <div class="quick-cast-section">
+            <h4 class="section-title">Quick Cast</h4>
+            <div class="quick-cast-grid">
+                {% for item in quick_cast_spells %}
+                    <button type="button"
+                            class="quick-cast-btn {% if not item.can_cast %}disabled{% endif %}"
+                            {% if item.can_cast %}
+                                hx-post="{% url 'character-cast-spell' character.pk %}"
+                                hx-vals='{"spell_name": "{{ item.spell.settings.name }}", "cast_level": "{{ item.spell.settings.level }}"}'
+                                hx-target="#spells-panel-component"
+                                hx-swap="outerHTML"
+                            {% endif %}
+                            title="{{ item.spell.settings.name }}">
+                        <span class="quick-cast-name">{{ item.spell.settings.name }}</span>
+                        <span class="quick-cast-level">
+                            {% if item.spell.settings.level == 0 %}C{% else %}L{{ item.spell.settings.level }}{% endif %}
+                        </span>
+                        {% if item.spell.settings.concentration %}
+                            <span class="quick-cast-conc" title="Concentration">&#9673;</span>
+                        {% endif %}
+                    </button>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Search and Filters -->
+    <div class="spells-filter">
+        <div class="search-box">
+            <input type="text"
+                   name="search"
+                   class="search-input"
+                   placeholder="Search spells..."
+                   value="{{ search_query|default:'' }}"
+                   hx-get="{% url 'character-spells-panel' character.pk %}"
+                   hx-trigger="keyup changed delay:300ms"
+                   hx-target="#spells-panel-component"
+                   hx-swap="outerHTML"
+                   hx-include="[name='level'],[name='school'],[name='concentration']">
+        </div>
+
+        <div class="filter-row">
+            <label class="filter-label">Level:</label>
+            <div class="filter-buttons">
+                <button type="button"
+                        class="filter-btn {% if level_filter == None %}active{% endif %}"
+                        hx-get="{% url 'character-spells-panel' character.pk %}{% if school_filter %}?school={{ school_filter }}{% endif %}{% if concentration_filter != None %}&concentration={{ concentration_filter }}{% endif %}"
+                        hx-target="#spells-panel-component"
+                        hx-swap="outerHTML">
+                    All
+                </button>
+                {% for level in spell_levels %}
+                    <button type="button"
+                            class="filter-btn {% if level_filter == level.value %}active{% endif %}"
+                            hx-get="{% url 'character-spells-panel' character.pk %}?level={{ level.value }}{% if school_filter %}&school={{ school_filter }}{% endif %}{% if concentration_filter != None %}&concentration={{ concentration_filter }}{% endif %}"
+                            hx-target="#spells-panel-component"
+                            hx-swap="outerHTML">
+                        {% if level.value == 0 %}C{% else %}{{ level.value }}{% endif %}
+                    </button>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="filter-row">
+            <label class="filter-label">School:</label>
+            <select name="school"
+                    class="filter-select"
+                    hx-get="{% url 'character-spells-panel' character.pk %}"
+                    hx-trigger="change"
+                    hx-target="#spells-panel-component"
+                    hx-swap="outerHTML"
+                    hx-include="[name='level'],[name='concentration'],[name='search']">
+                <option value="">All Schools</option>
+                {% for school in spell_schools %}
+                    <option value="{{ school.value }}" {% if school_filter == school.value %}selected{% endif %}>
+                        {{ school.label }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="filter-row">
+            <label class="filter-label">Concentration:</label>
+            <div class="filter-buttons">
+                <button type="button"
+                        class="filter-btn {% if concentration_filter == None %}active{% endif %}"
+                        hx-get="{% url 'character-spells-panel' character.pk %}{% if level_filter != None %}?level={{ level_filter }}{% endif %}{% if school_filter %}&school={{ school_filter }}{% endif %}"
+                        hx-target="#spells-panel-component"
+                        hx-swap="outerHTML">
+                    All
+                </button>
+                <button type="button"
+                        class="filter-btn {% if concentration_filter == True %}active{% endif %}"
+                        hx-get="{% url 'character-spells-panel' character.pk %}?concentration=true{% if level_filter != None %}&level={{ level_filter }}{% endif %}{% if school_filter %}&school={{ school_filter }}{% endif %}"
+                        hx-target="#spells-panel-component"
+                        hx-swap="outerHTML">
+                    Yes
+                </button>
+                <button type="button"
+                        class="filter-btn {% if concentration_filter == False %}active{% endif %}"
+                        hx-get="{% url 'character-spells-panel' character.pk %}?concentration=false{% if level_filter != None %}&level={{ level_filter }}{% endif %}{% if school_filter %}&school={{ school_filter }}{% endif %}"
+                        hx-target="#spells-panel-component"
+                        hx-swap="outerHTML">
+                    No
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Spells Lists -->
+    <div class="spells-lists">
+        {% if has_prepared %}
+            <div class="spells-list-section">
+                <h4 class="list-section-title">Prepared Spells</h4>
+                <div class="spells-list-container">
+                    {% for level, spells in prepared_by_level.items %}
+                        <div class="spell-level-group">
+                            <div class="level-header">
+                                {% if level == 0 %}Cantrips{% else %}Level {{ level }}{% endif %}
+                            </div>
+                            {% for spell in spells %}
+                                <div class="spell-row" data-spell-level="{{ spell.settings.level }}">
+                                    <div class="spell-cast-box">
+                                        {% if spell.settings.level == 0 %}
+                                            <button type="button"
+                                                    class="spell-cast-btn cantrip"
+                                                    hx-post="{% url 'character-cast-spell' character.pk %}"
+                                                    hx-vals='{"spell_name": "{{ spell.settings.name }}", "cast_level": "0"}'
+                                                    hx-target="#spells-panel-component"
+                                                    hx-swap="outerHTML"
+                                                    title="Cast cantrip">
+                                                &#9889;
+                                            </button>
+                                        {% else %}
+                                            <button type="button"
+                                                    class="spell-cast-btn"
+                                                    hx-post="{% url 'character-cast-spell' character.pk %}"
+                                                    hx-vals='{"spell_name": "{{ spell.settings.name }}", "cast_level": "{{ spell.settings.level }}"}'
+                                                    hx-target="#spells-panel-component"
+                                                    hx-swap="outerHTML"
+                                                    title="Cast at level {{ spell.settings.level }}">
+                                                &#9889;
+                                            </button>
+                                        {% endif %}
+                                    </div>
+                                    <div class="spell-name-box">
+                                        <span class="spell-name">{{ spell.settings.name }}</span>
+                                        {% if spell.always_prepared %}
+                                            <span class="always-prepared-badge" title="Always Prepared">&#9733;</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="spell-school-box">
+                                        <span class="spell-school {{ spell.settings.school }}">
+                                            {{ spell.settings.get_school_display|slice:":3" }}
+                                        </span>
+                                    </div>
+                                    <div class="spell-meta-box">
+                                        {% if spell.settings.concentration %}
+                                            <span class="meta-icon conc" title="Concentration">&#9673;</span>
+                                        {% endif %}
+                                        {% if spell.settings.ritual %}
+                                            <span class="meta-icon ritual" title="Ritual">R</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="spell-time-box">
+                                        <span class="casting-time">{{ spell.settings.get_casting_time_display }}</span>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        {% if has_known %}
+            <div class="spells-list-section">
+                <h4 class="list-section-title">Known Spells</h4>
+                <div class="spells-list-container">
+                    {% for level, spells in known_by_level.items %}
+                        <div class="spell-level-group">
+                            <div class="level-header">
+                                {% if level == 0 %}Cantrips{% else %}Level {{ level }}{% endif %}
+                            </div>
+                            {% for spell in spells %}
+                                <div class="spell-row" data-spell-level="{{ spell.settings.level }}">
+                                    <div class="spell-cast-box">
+                                        {% if spell.settings.level == 0 %}
+                                            <button type="button"
+                                                    class="spell-cast-btn cantrip"
+                                                    hx-post="{% url 'character-cast-spell' character.pk %}"
+                                                    hx-vals='{"spell_name": "{{ spell.settings.name }}", "cast_level": "0"}'
+                                                    hx-target="#spells-panel-component"
+                                                    hx-swap="outerHTML"
+                                                    title="Cast cantrip">
+                                                &#9889;
+                                            </button>
+                                        {% else %}
+                                            <button type="button"
+                                                    class="spell-cast-btn"
+                                                    hx-post="{% url 'character-cast-spell' character.pk %}"
+                                                    hx-vals='{"spell_name": "{{ spell.settings.name }}", "cast_level": "{{ spell.settings.level }}"}'
+                                                    hx-target="#spells-panel-component"
+                                                    hx-swap="outerHTML"
+                                                    title="Cast at level {{ spell.settings.level }}">
+                                                &#9889;
+                                            </button>
+                                        {% endif %}
+                                    </div>
+                                    <div class="spell-name-box">
+                                        <span class="spell-name">{{ spell.settings.name }}</span>
+                                    </div>
+                                    <div class="spell-school-box">
+                                        <span class="spell-school {{ spell.settings.school }}">
+                                            {{ spell.settings.get_school_display|slice:":3" }}
+                                        </span>
+                                    </div>
+                                    <div class="spell-meta-box">
+                                        {% if spell.settings.concentration %}
+                                            <span class="meta-icon conc" title="Concentration">&#9673;</span>
+                                        {% endif %}
+                                        {% if spell.settings.ritual %}
+                                            <span class="meta-icon ritual" title="Ritual">R</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="spell-time-box">
+                                        <span class="casting-time">{{ spell.settings.get_casting_time_display }}</span>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        {% if not has_prepared and not has_known %}
+            <p class="text-muted text-center">No spells match the current filters</p>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+/* Spells Panel Component */
+    .spells-panel-component {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+/* Cast Result Message */
+    .cast-result-message {
+        padding: 10px 14px;
+        background: rgba(46, 204, 113, 0.2);
+        border: 1px solid var(--color-stamina);
+        border-radius: 6px;
+        color: var(--color-stamina);
+        text-align: center;
+        font-weight: 500;
+        animation: fadeInOut 3s ease forwards;
+    }
+
+    @keyframes fadeInOut {
+        0% { opacity: 0; transform: translateY(-10px); }
+        10% { opacity: 1; transform: translateY(0); }
+        80% { opacity: 1; }
+        100% { opacity: 0; }
+    }
+
+/* Concentration Banner */
+    .concentration-banner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 14px;
+        background: linear-gradient(135deg, rgba(155, 89, 182, 0.3), rgba(142, 68, 173, 0.2));
+        border: 1px solid #9b59b6;
+        border-radius: 6px;
+        animation: pulse-border 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-border {
+        0%, 100% { border-color: #9b59b6; box-shadow: 0 0 5px rgba(155, 89, 182, 0.3); }
+        50% { border-color: #8e44ad; box-shadow: 0 0 15px rgba(155, 89, 182, 0.5); }
+    }
+
+    .concentration-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .concentration-icon {
+        font-size: 1.2rem;
+        color: #9b59b6;
+        animation: pulse-glow 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.6; }
+    }
+
+    .concentration-label {
+        font-size: 0.8rem;
+        color: var(--color-text-muted);
+    }
+
+    .concentration-spell {
+        font-weight: 600;
+        color: #9b59b6;
+    }
+
+    .concentration-break-btn {
+        width: 24px;
+        height: 24px;
+        border: 1px solid rgba(231, 76, 60, 0.5);
+        border-radius: 4px;
+        background: rgba(231, 76, 60, 0.2);
+        color: var(--color-health);
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+    }
+
+    .concentration-break-btn:hover {
+        background: rgba(231, 76, 60, 0.4);
+        border-color: var(--color-health);
+    }
+
+/* Spell Slots Section */
+    .spell-slots-section {
+        padding-bottom: 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+    }
+
+    .section-title {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--color-primary);
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .restore-all-btn {
+        padding: 4px 10px;
+        border: 1px solid var(--color-mana);
+        border-radius: 4px;
+        background: rgba(52, 152, 219, 0.2);
+        color: var(--color-mana);
+        font-size: 0.75rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .restore-all-btn:hover {
+        background: rgba(52, 152, 219, 0.4);
+    }
+
+    .spell-slots-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .slot-row {
+        display: grid;
+        grid-template-columns: 32px 1fr 50px;
+        align-items: center;
+        gap: 10px;
+        padding: 6px 8px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 4px;
+    }
+
+    .slot-level-badge {
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(52, 152, 219, 0.3);
+        border: 1px solid var(--color-mana);
+        border-radius: 4px;
+        font-size: 0.85rem;
+        font-weight: bold;
+        color: var(--color-mana);
+    }
+
+    .slot-level-badge.pact {
+        background: rgba(155, 89, 182, 0.3);
+        border-color: #9b59b6;
+        color: #9b59b6;
+        font-size: 0.7rem;
+    }
+
+    .slot-circles {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+
+    .slot-circle {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        border: 2px solid var(--color-mana);
+        background: transparent;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+        padding: 0;
+    }
+
+    .slot-circle .circle-inner {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: transparent;
+        transition: all 0.2s ease;
+    }
+
+    .slot-circle.filled .circle-inner {
+        background: var(--color-mana);
+        box-shadow: 0 0 8px rgba(52, 152, 219, 0.6);
+    }
+
+    .slot-circle.empty:hover {
+        border-color: var(--color-stamina);
+    }
+
+    .slot-circle.empty:hover .circle-inner {
+        background: rgba(46, 204, 113, 0.3);
+    }
+
+    .slot-circle.filled:hover {
+        border-color: var(--color-health);
+    }
+
+    .slot-circle.filled:hover .circle-inner {
+        background: var(--color-health);
+    }
+
+    .slot-circle.pact {
+        border-color: #9b59b6;
+    }
+
+    .slot-circle.pact.filled .circle-inner {
+        background: #9b59b6;
+        box-shadow: 0 0 8px rgba(155, 89, 182, 0.6);
+    }
+
+    .slot-count {
+        font-size: 0.8rem;
+        font-family: monospace;
+        color: var(--color-mana);
+        text-align: right;
+    }
+
+    .slot-count.pact {
+        color: #9b59b6;
+    }
+
+/* Quick Cast Section */
+    .quick-cast-section {
+        padding-bottom: 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .quick-cast-section .section-title {
+        margin-bottom: 10px;
+    }
+
+    .quick-cast-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 8px;
+    }
+
+    .quick-cast-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border: 1px solid var(--color-secondary);
+        border-radius: 6px;
+        background: rgba(0, 0, 0, 0.3);
+        color: var(--color-text);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-align: left;
+    }
+
+    .quick-cast-btn:hover:not(.disabled) {
+        background: rgba(212, 175, 55, 0.2);
+        border-color: var(--color-primary);
+        transform: translateY(-1px);
+    }
+
+    .quick-cast-btn.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .quick-cast-name {
+        flex: 1;
+        font-size: 0.8rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .quick-cast-level {
+        font-size: 0.7rem;
+        font-weight: bold;
+        padding: 2px 6px;
+        background: rgba(52, 152, 219, 0.3);
+        border-radius: 3px;
+        color: var(--color-mana);
+    }
+
+    .quick-cast-conc {
+        font-size: 0.9rem;
+        color: #9b59b6;
+    }
+
+/* Search and Filters */
+    .spells-filter {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .search-box {
+        width: 100%;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid var(--color-secondary);
+        border-radius: 4px;
+        background: rgba(0, 0, 0, 0.3);
+        color: var(--color-text);
+        font-size: 0.85rem;
+    }
+
+    .search-input::placeholder {
+        color: var(--color-text-muted);
+    }
+
+    .search-input:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        background: rgba(0, 0, 0, 0.4);
+    }
+
+    .filter-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .filter-label {
+        font-size: 0.75rem;
+        color: var(--color-text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        min-width: 80px;
+    }
+
+    .filter-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+
+    .filter-btn {
+        padding: 4px 10px;
+        border: 1px solid var(--color-secondary);
+        border-radius: 4px;
+        background: rgba(0, 0, 0, 0.3);
+        color: var(--color-text-muted);
+        font-size: 0.75rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .filter-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--color-text);
+        border-color: var(--color-primary);
+    }
+
+    .filter-btn.active {
+        background: rgba(212, 175, 55, 0.2);
+        color: var(--color-primary);
+        border-color: var(--color-primary);
+    }
+
+    .filter-select {
+        padding: 6px 10px;
+        border: 1px solid var(--color-secondary);
+        border-radius: 4px;
+        background: rgba(0, 0, 0, 0.3);
+        color: var(--color-text);
+        font-size: 0.8rem;
+        cursor: pointer;
+        min-width: 140px;
+    }
+
+    .filter-select:focus {
+        outline: none;
+        border-color: var(--color-primary);
+    }
+
+/* Spells Lists */
+    .spells-lists {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .spells-list-section {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .list-section-title {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--color-primary);
+        margin: 0;
+        padding-bottom: 6px;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+    }
+
+    .spells-list-container {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        max-height: 400px;
+        overflow-y: auto;
+        padding-right: 4px;
+    }
+
+    .spells-list-container::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .spells-list-container::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 3px;
+    }
+
+    .spells-list-container::-webkit-scrollbar-thumb {
+        background: var(--color-secondary);
+        border-radius: 3px;
+    }
+
+    .spell-level-group {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .level-header {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--color-mana);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 4px 8px;
+        background: rgba(52, 152, 219, 0.15);
+        border-radius: 4px;
+    }
+
+    .spell-row {
+        display: grid;
+        grid-template-columns: 32px 1fr 40px 50px 80px;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 8px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 4px;
+        transition: all 0.2s ease;
+    }
+
+    .spell-row:hover {
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .spell-cast-box {
+        display: flex;
+        justify-content: center;
+    }
+
+    .spell-cast-btn {
+        width: 26px;
+        height: 26px;
+        border: 1px solid var(--color-primary);
+        border-radius: 4px;
+        background: rgba(212, 175, 55, 0.2);
+        color: var(--color-primary);
+        cursor: pointer;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+    }
+
+    .spell-cast-btn:hover {
+        background: rgba(212, 175, 55, 0.4);
+        transform: scale(1.1);
+    }
+
+    .spell-cast-btn.cantrip {
+        border-color: var(--color-stamina);
+        background: rgba(46, 204, 113, 0.2);
+        color: var(--color-stamina);
+    }
+
+    .spell-cast-btn.cantrip:hover {
+        background: rgba(46, 204, 113, 0.4);
+    }
+
+    .spell-name-box {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        overflow: hidden;
+    }
+
+    .spell-name {
+        font-size: 0.85rem;
+        color: var(--color-text);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .always-prepared-badge {
+        color: var(--color-primary);
+        font-size: 0.8rem;
+    }
+
+    .spell-school-box {
+        display: flex;
+        justify-content: center;
+    }
+
+    .spell-school {
+        font-size: 0.65rem;
+        font-weight: bold;
+        padding: 2px 6px;
+        border-radius: 3px;
+        text-transform: uppercase;
+    }
+
+    .spell-school.abjuration { background: rgba(52, 152, 219, 0.2); color: #3498db; }
+    .spell-school.conjuration { background: rgba(241, 196, 15, 0.2); color: #f1c40f; }
+    .spell-school.divination { background: rgba(155, 89, 182, 0.2); color: #9b59b6; }
+    .spell-school.enchantment { background: rgba(231, 76, 60, 0.2); color: #e74c3c; }
+    .spell-school.evocation { background: rgba(230, 126, 34, 0.2); color: #e67e22; }
+    .spell-school.illusion { background: rgba(149, 165, 166, 0.2); color: #95a5a6; }
+    .spell-school.necromancy { background: rgba(44, 62, 80, 0.4); color: #7f8c8d; }
+    .spell-school.transmutation { background: rgba(46, 204, 113, 0.2); color: #2ecc71; }
+
+    .spell-meta-box {
+        display: flex;
+        gap: 4px;
+        justify-content: center;
+    }
+
+    .meta-icon {
+        font-size: 0.75rem;
+        font-weight: bold;
+    }
+
+    .meta-icon.conc {
+        color: #9b59b6;
+    }
+
+    .meta-icon.ritual {
+        color: var(--color-mana);
+        font-size: 0.7rem;
+        padding: 1px 4px;
+        background: rgba(52, 152, 219, 0.2);
+        border-radius: 3px;
+    }
+
+    .spell-time-box {
+        text-align: right;
+    }
+
+    .casting-time {
+        font-size: 0.7rem;
+        color: var(--color-text-muted);
+    }
+
+/* Responsive */
+    @media (max-width: 600px) {
+        .spell-row {
+            grid-template-columns: 28px 1fr 32px 40px;
+        }
+
+        .spell-time-box {
+            display: none;
+        }
+
+        .quick-cast-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .filter-label {
+            min-width: 60px;
+        }
+    }
+
+    @media (max-width: 400px) {
+        .spell-row {
+            grid-template-columns: 26px 1fr 32px;
+        }
+
+        .spell-meta-box {
+            display: none;
+        }
+
+        .slot-circle {
+            width: 24px;
+            height: 24px;
+        }
+
+        .slot-circle .circle-inner {
+            width: 12px;
+            height: 12px;
+        }
+    }
+</style>
