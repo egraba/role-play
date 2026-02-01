@@ -11,6 +11,14 @@ from .views.hp import (
     TakeDamageView,
 )
 from .views.skills import SkillRollView, SkillsPanelView
+from .views.spells import (
+    BreakConcentrationView,
+    CastSpellView,
+    RestoreAllSlotsView,
+    RestoreSpellSlotView,
+    SpellsPanelView,
+    UseSpellSlotView,
+)
 
 urlpatterns = [
     path(
@@ -69,5 +77,36 @@ urlpatterns = [
         "<int:pk>/skills/roll/",
         SkillRollView.as_view(),
         name="character-skill-roll",
+    ),
+    # HTMX Spells Panel endpoints
+    path(
+        "<int:pk>/spells/",
+        SpellsPanelView.as_view(),
+        name="character-spells-panel",
+    ),
+    path(
+        "<int:pk>/spells/slot/use/",
+        UseSpellSlotView.as_view(),
+        name="character-use-spell-slot",
+    ),
+    path(
+        "<int:pk>/spells/slot/restore/",
+        RestoreSpellSlotView.as_view(),
+        name="character-restore-spell-slot",
+    ),
+    path(
+        "<int:pk>/spells/slots/restore-all/",
+        RestoreAllSlotsView.as_view(),
+        name="character-restore-all-slots",
+    ),
+    path(
+        "<int:pk>/spells/cast/",
+        CastSpellView.as_view(),
+        name="character-cast-spell",
+    ),
+    path(
+        "<int:pk>/spells/concentration/break/",
+        BreakConcentrationView.as_view(),
+        name="character-break-concentration",
     ),
 ]

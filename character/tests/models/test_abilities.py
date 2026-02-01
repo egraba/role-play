@@ -2,7 +2,7 @@ import pytest
 
 from character.models.abilities import Ability, AbilityType
 
-from ..factories import AbilityFactory
+from ..factories import AbilityFactory, AbilityTypeFactory
 
 
 @pytest.mark.django_db
@@ -11,8 +11,7 @@ class TestAbilityTypeModel:
 
     @pytest.fixture(autouse=True)
     def setup(self):
-        # Fixtures are automatically loaded during the test session initialization.
-        self.ability_type = AbilityType.objects.last()
+        self.ability_type = AbilityTypeFactory()
 
     def test_creation(self):
         assert isinstance(self.ability_type, AbilityType)
