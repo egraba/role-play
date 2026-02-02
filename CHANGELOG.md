@@ -179,6 +179,9 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
   - HTMX endpoints updated: combat-take-action, combat-move return HTML for seamless updates
   - Responsive grid layout with mobile breakpoints
 
+### Fixed
+* Test settings no longer require environment variables - tests can run without ANTHROPIC_API_KEY, DJANGO_SECRET_KEY, or POSTGRES_PASSWORD being set
+
 ## v0.14.1 - 2026-01-27
 
 ### Fixed
