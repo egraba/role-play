@@ -1,0 +1,29 @@
+"""
+Root conftest.py for pytest.
+
+This file ensures fixtures are loaded for all tests across all apps.
+The django_db_setup fixture loads required fixtures once per test session.
+"""
+
+import pytest
+from django.core.management import call_command
+from django.core.management.commands import loaddata
+
+
+@pytest.fixture(scope="session")
+def django_db_setup(django_db_setup, django_db_blocker):
+    """Load fixtures for all tests."""
+    with django_db_blocker.unblock():
+        # Character app fixtures
+        call_command(loaddata.Command(), "character/fixtures/advancement.yaml")
+        call_command(loaddata.Command(), "character/fixtures/abilities.yaml")
+        call_command(loaddata.Command(), "character/fixtures/languages.yaml")
+        call_command(loaddata.Command(), "character/fixtures/classes.yaml")
+        call_command(loaddata.Command(), "character/fixtures/class_features.yaml")
+        call_command(loaddata.Command(), "character/fixtures/skills.yaml")
+        call_command(loaddata.Command(), "character/fixtures/equipment.yaml")
+        call_command(loaddata.Command(), "character/fixtures/species_traits.yaml")
+        call_command(loaddata.Command(), "character/fixtures/species.yaml")
+        call_command(loaddata.Command(), "character/fixtures/feats.yaml")
+        call_command(loaddata.Command(), "character/fixtures/magic_items.yaml")
+        call_command(loaddata.Command(), "character/fixtures/monsters.yaml")
