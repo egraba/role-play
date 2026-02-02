@@ -7,35 +7,41 @@ Key optimizations:
 - SQLite: Uses in-memory SQLite database for faster tests
 """
 
-from role_play.settings.base import *
+import os
 
-# Test-specific settings that don't require environment variables
-SECRET_KEY = "test-secret-key-not-for-production"
+# Import from CI settings if running in CI (has env vars set), otherwise use base with defaults
+if os.environ.get("CI"):
+    from role_play.settings.ci import *
+else:
+    from role_play.settings.base import *
 
-DEBUG = True
+    # Test-specific settings that don't require environment variables (local only)
+    SECRET_KEY = "test-secret-key-not-for-production"
 
-ALLOWED_HOSTS: list[str] = []
+    DEBUG = True
 
-TEMPLATES = [
-    {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "templates"],
-        "APP_DIRS": True,
-        "OPTIONS": {
-            "context_processors": [
-                "django.template.context_processors.debug",
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
-                "game.context_processors.navbar_context",
-            ],
-            "debug": True,
+    ALLOWED_HOSTS = []  # type: ignore[misc]
+
+    TEMPLATES = [
+        {
+            "BACKEND": "django.template.backends.django.DjangoTemplates",
+            "DIRS": [BASE_DIR / "templates"],
+            "APP_DIRS": True,
+            "OPTIONS": {
+                "context_processors": [
+                    "django.template.context_processors.debug",
+                    "django.template.context_processors.request",
+                    "django.contrib.auth.context_processors.auth",
+                    "django.contrib.messages.context_processors.messages",
+                    "game.context_processors.navbar_context",
+                ],
+                "debug": True,
+            },
         },
-    },
-]
+    ]
 
-# Email backend
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+    # Email backend
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 # Override database to use SQLite for faster tests
 DATABASES = {
