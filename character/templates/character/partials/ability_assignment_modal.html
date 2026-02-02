@@ -1,0 +1,990 @@
+{% load static %}
+
+<div id="ability-assignment-modal" class="rpg-modal {% if show_modal %}active{% endif %}">
+    <div class="modal-content ability-assignment-modal-content">
+        <span class="modal-close" onclick="closeAbilityModal()">&times;</span>
+        <h2 class="modal-header">
+            <img src="{% static 'images/icons/ui/settings.svg' %}" alt="" class="rpg-icon rpg-icon-lg rpg-icon-primary">
+            Ability Score Assignment
+        </h2>
+
+        {% if save_success %}
+        <!-- Success State -->
+            <div class="save-success-container">
+                <div class="success-icon">&#10003;</div>
+                <h3 class="success-title">Abilities Saved!</h3>
+                <p class="success-message">Your ability scores have been assigned to {{ character.name }}.</p>
+
+                <div class="final-abilities-grid">
+                    {% for ability in abilities %}
+                        <div class="final-ability-card">
+                            <div class="final-ability-name">{{ ability.label }}</div>
+                            <div class="final-ability-score">{{ ability.score }}</div>
+                            <div class="final-ability-modifier {% if ability.modifier >= 0 %}positive{% else %}negative{% endif %}">
+                                {% if ability.modifier >= 0 %}+{% endif %}{{ ability.modifier }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="dice-actions">
+                    <button type="button" class="rpg-btn btn-primary" onclick="closeAbilityModal()">
+                        Done
+                    </button>
+                </div>
+            </div>
+        {% else %}
+        <!-- Assignment Interface -->
+            <div class="ability-mode-tabs">
+                <button type="button"
+                        class="mode-tab {% if mode == 'point_buy' %}active{% endif %}"
+                        onclick="switchMode('point_buy')">
+                    Point Buy
+                </button>
+                <button type="button"
+                        class="mode-tab {% if mode == 'standard_array' %}active{% endif %}"
+                        onclick="switchMode('standard_array')">
+                    Standard Array
+                </button>
+                <button type="button"
+                        class="mode-tab {% if mode == 'roll' %}active{% endif %}"
+                        onclick="switchMode('roll')">
+                    Roll (4d6)
+                </button>
+            </div>
+
+        <!-- Racial Bonus Section -->
+            <div class="racial-bonus-section">
+                <label class="dice-label">Racial/Background Bonuses</label>
+                <div class="racial-bonus-grid">
+                    {% for ability in abilities %}
+                        <div class="racial-bonus-field">
+                            <span class="racial-bonus-label">{{ ability.name }}</span>
+                            <div class="racial-bonus-controls">
+                                <button type="button" class="racial-btn" onclick="adjustRacialBonus('{{ ability.name }}', -1)">-</button>
+                                <input type="number"
+                                       name="racial_bonus_{{ ability.name }}"
+                                       id="racial-bonus-{{ ability.name }}"
+                                       value="{{ ability.racial_bonus|default:0 }}"
+                                       min="-2" max="4"
+                                       class="racial-bonus-input"
+                                       onchange="updateAbilityDisplay()">
+                                <button type="button" class="racial-btn" onclick="adjustRacialBonus('{{ ability.name }}', 1)">+</button>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        <!-- Point Buy Mode -->
+            <form id="point-buy-form"
+                  class="ability-mode-content {% if mode == 'point_buy' %}active{% endif %}"
+                  hx-post="{% url 'ability-point-buy' character.pk %}"
+                  hx-target="#ability-assignment-modal"
+                  hx-swap="outerHTML"
+                  hx-trigger="change from:.ability-score-select, change from:.racial-bonus-input">
+
+                <div class="point-buy-header">
+                    <div class="points-display">
+                        <span class="points-label">Points Remaining:</span>
+                        <span class="points-value {% if points_remaining < 0 %}negative{% elif points_remaining == 0 %}zero{% endif %}" id="points-remaining">
+                            {{ points_remaining }}
+                        </span>
+                        <span class="points-total">/ {{ point_buy_total }}</span>
+                    </div>
+                    <div class="cost-reference">
+                        <span class="cost-item">8=0</span>
+                        <span class="cost-item">9=1</span>
+                        <span class="cost-item">10=2</span>
+                        <span class="cost-item">11=3</span>
+                        <span class="cost-item">12=4</span>
+                        <span class="cost-item">13=5</span>
+                        <span class="cost-item">14=7</span>
+                        <span class="cost-item">15=9</span>
+                    </div>
+                </div>
+
+                {% for ability in abilities %}
+                    <input type="hidden" name="racial_bonus_{{ ability.name }}" value="{{ ability.racial_bonus|default:0 }}" class="racial-hidden">
+                {% endfor %}
+
+                <div class="abilities-grid">
+                    {% for ability in abilities %}
+                        <div class="ability-card">
+                            <div class="ability-header">
+                                <span class="ability-name">{{ ability.label }}</span>
+                                <span class="ability-abbrev">{{ ability.name }}</span>
+                            </div>
+                            <div class="ability-score-section">
+                                <select name="ability_{{ ability.name }}"
+                                        class="ability-score-select"
+                                        id="ability-{{ ability.name }}">
+                                    {% for score, cost in point_buy_costs.items %}
+                                        <option value="{{ score }}" {% if ability.score == score %}selected{% endif %}>
+                                            {{ score }} ({{ cost }} pts)
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="ability-racial-bonus {% if ability.racial_bonus > 0 %}positive{% elif ability.racial_bonus < 0 %}negative{% endif %}">
+                                {% if ability.racial_bonus and ability.racial_bonus != 0 %}
+                                    {% if ability.racial_bonus > 0 %}+{% endif %}{{ ability.racial_bonus }} racial
+                                {% else %}
+                                    &nbsp;
+                                {% endif %}
+                            </div>
+                            <div class="ability-final">
+                                <span class="final-score">{{ ability.final_score|default:ability.score }}</span>
+                                <span class="final-modifier {% if ability.modifier >= 0 %}positive{% else %}negative{% endif %}">
+                                    {% if ability.modifier >= 0 %}+{% endif %}{{ ability.modifier }}
+                                </span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </form>
+
+        <!-- Standard Array Mode -->
+            <form id="standard-array-form"
+                  class="ability-mode-content {% if mode == 'standard_array' %}active{% endif %}"
+                  hx-post="{% url 'ability-standard-array' character.pk %}"
+                  hx-target="#ability-assignment-modal"
+                  hx-swap="outerHTML"
+                  hx-trigger="change from:.ability-score-select, change from:.racial-bonus-input">
+
+                <div class="standard-array-header">
+                    <div class="array-values">
+                        <span class="array-label">Available Values:</span>
+                        {% for val in unassigned_values %}
+                            <span class="array-value available" draggable="true" data-value="{{ val }}">{{ val }}</span>
+                        {% empty %}
+                            {% for val in standard_array %}
+                                <span class="array-value {% if val in assigned_values %}used{% else %}available{% endif %}"
+                                      draggable="true"
+                                      data-value="{{ val }}">{{ val }}</span>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                    {% if has_duplicates %}
+                        <div class="array-error">Each value can only be used once!</div>
+                    {% endif %}
+                </div>
+
+                {% for ability in abilities %}
+                    <input type="hidden" name="racial_bonus_{{ ability.name }}" value="{{ ability.racial_bonus|default:0 }}" class="racial-hidden">
+                {% endfor %}
+
+                <div class="abilities-grid">
+                    {% for ability in abilities %}
+                        <div class="ability-card {% if ability.score == 0 %}empty{% endif %}"
+                             data-ability="{{ ability.name }}"
+                             ondrop="dropScore(event)"
+                             ondragover="allowDrop(event)">
+                            <div class="ability-header">
+                                <span class="ability-name">{{ ability.label }}</span>
+                                <span class="ability-abbrev">{{ ability.name }}</span>
+                            </div>
+                            <div class="ability-score-section">
+                                <select name="ability_{{ ability.name }}"
+                                        class="ability-score-select"
+                                        id="ability-{{ ability.name }}">
+                                    <option value="0" {% if ability.score == 0 %}selected{% endif %}>--</option>
+                                    {% for val in standard_array %}
+                                        <option value="{{ val }}" {% if ability.score == val %}selected{% endif %}>{{ val }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="ability-racial-bonus {% if ability.racial_bonus > 0 %}positive{% elif ability.racial_bonus < 0 %}negative{% endif %}">
+                                {% if ability.racial_bonus and ability.racial_bonus != 0 %}
+                                    {% if ability.racial_bonus > 0 %}+{% endif %}{{ ability.racial_bonus }} racial
+                                {% else %}
+                                    &nbsp;
+                                {% endif %}
+                            </div>
+                            <div class="ability-final">
+                                {% if ability.score > 0 %}
+                                    <span class="final-score">{{ ability.final_score }}</span>
+                                    <span class="final-modifier {% if ability.modifier >= 0 %}positive{% else %}negative{% endif %}">
+                                        {% if ability.modifier >= 0 %}+{% endif %}{{ ability.modifier }}
+                                    </span>
+                                {% else %}
+                                    <span class="final-score empty">--</span>
+                                    <span class="final-modifier empty">--</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </form>
+
+        <!-- Roll Mode -->
+            <form id="roll-form"
+                  class="ability-mode-content {% if mode == 'roll' %}active{% endif %}"
+                  hx-post="{% url 'ability-roll' character.pk %}"
+                  hx-target="#ability-assignment-modal"
+                  hx-swap="outerHTML">
+
+                {% for ability in abilities %}
+                    <input type="hidden" name="racial_bonus_{{ ability.name }}" value="{{ ability.racial_bonus|default:0 }}" class="racial-hidden">
+                {% endfor %}
+
+                {% if not has_rolled %}
+                    <div class="roll-prompt">
+                        <p>Click the button below to roll 4d6 (drop lowest) for each ability score.</p>
+                        <input type="hidden" name="action" value="roll">
+                        <button type="submit" class="rpg-btn btn-primary roll-btn">
+                            <img src="{% static 'images/icons/actions/roll.svg' %}" alt="" class="rpg-icon rpg-icon-sm">
+                            Roll All Abilities
+                        </button>
+                    </div>
+                {% else %}
+                    <div class="roll-results">
+                        <div class="abilities-grid">
+                            {% for ability in abilities %}
+                                <div class="ability-card rolled">
+                                    <div class="ability-header">
+                                        <span class="ability-name">{{ ability.label }}</span>
+                                        <span class="ability-abbrev">{{ ability.name }}</span>
+                                    </div>
+                                    <div class="dice-display-row">
+                                        {% for die in ability.dice %}
+                                            <span class="die-face {% if forloop.last %}dropped{% endif %} {% if animate_dice %}rolling{% endif %}"
+                                                  style="animation-delay: {{ forloop.counter0 }}50ms">
+                                                {{ die }}
+                                            </span>
+                                        {% endfor %}
+                                    </div>
+                                    <input type="hidden" name="ability_{{ ability.name }}" value="{{ ability.score }}">
+                                    <input type="hidden" name="dice_{{ ability.name }}" value="{{ ability.dice|join:',' }}">
+                                    <div class="ability-racial-bonus {% if ability.racial_bonus > 0 %}positive{% elif ability.racial_bonus < 0 %}negative{% endif %}">
+                                        {% if ability.racial_bonus and ability.racial_bonus != 0 %}
+                                            {% if ability.racial_bonus > 0 %}+{% endif %}{{ ability.racial_bonus }} racial
+                                        {% else %}
+                                            &nbsp;
+                                        {% endif %}
+                                    </div>
+                                    <div class="ability-final">
+                                        <span class="final-score">{{ ability.final_score }}</span>
+                                        <span class="final-modifier {% if ability.modifier >= 0 %}positive{% else %}negative{% endif %}">
+                                            {% if ability.modifier >= 0 %}+{% endif %}{{ ability.modifier }}
+                                        </span>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="roll-actions">
+                            <input type="hidden" name="action" id="roll-action" value="keep">
+                            <button type="submit" class="rpg-btn" onclick="document.getElementById('roll-action').value='reroll'">
+                                <img src="{% static 'images/icons/actions/roll.svg' %}" alt="" class="rpg-icon rpg-icon-sm">
+                                Reroll All
+                            </button>
+                        </div>
+                    </div>
+                {% endif %}
+            </form>
+
+        <!-- Save Section -->
+            <form id="save-form"
+                  hx-post="{% url 'ability-save' character.pk %}"
+                  hx-target="#ability-assignment-modal"
+                  hx-swap="outerHTML">
+                <div id="save-inputs"></div>
+                <div class="dice-actions">
+                    <button type="button" class="rpg-btn" onclick="closeAbilityModal()">Cancel</button>
+                    <button type="submit" class="rpg-btn btn-primary save-abilities-btn" id="save-btn" onclick="prepareSave()">
+                        Save Abilities
+                    </button>
+                </div>
+            </form>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+/* Ability Assignment Modal Styles */
+    .ability-assignment-modal-content {
+        min-width: 600px;
+        max-width: 750px;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+/* Mode Tabs */
+    .ability-mode-tabs {
+        display: flex;
+        gap: 5px;
+        margin-bottom: 20px;
+        border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+        padding-bottom: 15px;
+    }
+
+    .mode-tab {
+        flex: 1;
+        padding: 12px 20px;
+        background: rgba(0, 0, 0, 0.3);
+        border: 2px solid #444;
+        border-radius: 8px 8px 0 0;
+        color: var(--color-text-muted);
+        font-family: inherit;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .mode-tab:hover {
+        border-color: var(--color-primary);
+        color: var(--color-text);
+    }
+
+    .mode-tab.active {
+        background: rgba(212, 175, 55, 0.15);
+        border-color: var(--color-primary);
+        color: var(--color-primary);
+    }
+
+/* Racial Bonus Section */
+    .racial-bonus-section {
+        background: rgba(0, 0, 0, 0.25);
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .racial-bonus-grid {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 8px;
+    }
+
+    .racial-bonus-field {
+        text-align: center;
+    }
+
+    .racial-bonus-label {
+        display: block;
+        font-size: 0.75rem;
+        color: var(--color-text-muted);
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .racial-bonus-controls {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+    }
+
+    .racial-btn {
+        width: 24px;
+        height: 24px;
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid var(--color-border);
+        border-radius: 4px;
+        color: var(--color-text);
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+    }
+
+    .racial-btn:hover {
+        border-color: var(--color-primary);
+        color: var(--color-primary);
+    }
+
+    .racial-bonus-input {
+        width: 36px;
+        height: 24px;
+        background: rgba(0, 0, 0, 0.5);
+        border: 1px solid var(--color-border);
+        border-radius: 4px;
+        color: var(--color-text);
+        font-size: 0.85rem;
+        text-align: center;
+        font-family: inherit;
+    }
+
+    .racial-bonus-input:focus {
+        outline: none;
+        border-color: var(--color-primary);
+    }
+
+/* Mode Content */
+    .ability-mode-content {
+        display: none;
+    }
+
+    .ability-mode-content.active {
+        display: block;
+    }
+
+/* Point Buy Header */
+    .point-buy-header {
+        background: rgba(212, 175, 55, 0.1);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .points-display {
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .points-label {
+        color: var(--color-text-muted);
+        font-size: 0.9rem;
+    }
+
+    .points-value {
+        font-size: 2rem;
+        font-weight: bold;
+        color: var(--color-primary);
+        margin: 0 10px;
+    }
+
+    .points-value.negative {
+        color: var(--color-health);
+    }
+
+    .points-value.zero {
+        color: var(--color-stamina);
+    }
+
+    .points-total {
+        color: var(--color-text-muted);
+        font-size: 1rem;
+    }
+
+    .cost-reference {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .cost-item {
+        font-size: 0.75rem;
+        color: var(--color-text-muted);
+        background: rgba(0, 0, 0, 0.3);
+        padding: 3px 8px;
+        border-radius: 4px;
+    }
+
+/* Standard Array Header */
+    .standard-array-header {
+        background: rgba(212, 175, 55, 0.1);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .array-values {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .array-label {
+        color: var(--color-text-muted);
+        font-size: 0.9rem;
+        margin-right: 10px;
+    }
+
+    .array-value {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.4);
+        border: 2px solid var(--color-primary);
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: var(--color-primary);
+        cursor: grab;
+        transition: all 0.3s ease;
+    }
+
+    .array-value:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+
+    .array-value.used {
+        opacity: 0.3;
+        cursor: not-allowed;
+        border-color: #444;
+        color: var(--color-text-muted);
+    }
+
+    .array-error {
+        color: var(--color-health);
+        font-size: 0.85rem;
+        margin-top: 10px;
+    }
+
+/* Abilities Grid */
+    .abilities-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .ability-card {
+        background: linear-gradient(145deg, rgba(30, 30, 50, 0.8), rgba(20, 20, 40, 0.8));
+        border: 2px solid rgba(100, 100, 140, 0.3);
+        border-radius: 10px;
+        padding: 15px;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+    .ability-card:hover {
+        border-color: var(--color-primary);
+    }
+
+    .ability-card.empty {
+        border-style: dashed;
+        opacity: 0.7;
+    }
+
+    .ability-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .ability-name {
+        font-weight: bold;
+        color: var(--color-text);
+        font-size: 0.9rem;
+    }
+
+    .ability-abbrev {
+        font-size: 0.7rem;
+        color: var(--color-text-muted);
+        background: rgba(0, 0, 0, 0.3);
+        padding: 2px 6px;
+        border-radius: 4px;
+    }
+
+    .ability-score-section {
+        margin-bottom: 8px;
+    }
+
+    .ability-score-select {
+        width: 100%;
+        padding: 8px;
+        background: rgba(0, 0, 0, 0.5);
+        border: 2px solid var(--color-border);
+        border-radius: 6px;
+        color: var(--color-text);
+        font-family: inherit;
+        font-size: 1rem;
+        cursor: pointer;
+        text-align: center;
+    }
+
+    .ability-score-select:focus {
+        outline: none;
+        border-color: var(--color-primary);
+    }
+
+    .ability-racial-bonus {
+        font-size: 0.75rem;
+        height: 18px;
+        margin-bottom: 8px;
+    }
+
+    .ability-racial-bonus.positive {
+        color: var(--color-stamina);
+    }
+
+    .ability-racial-bonus.negative {
+        color: var(--color-health);
+    }
+
+    .ability-final {
+        display: flex;
+        justify-content: center;
+        align-items: baseline;
+        gap: 8px;
+        padding-top: 8px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .final-score {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: var(--color-primary);
+    }
+
+    .final-score.empty {
+        color: var(--color-text-muted);
+    }
+
+    .final-modifier {
+        font-size: 1rem;
+        font-weight: bold;
+    }
+
+    .final-modifier.positive {
+        color: var(--color-stamina);
+    }
+
+    .final-modifier.negative {
+        color: var(--color-health);
+    }
+
+    .final-modifier.empty {
+        color: var(--color-text-muted);
+    }
+
+/* Roll Mode */
+    .roll-prompt {
+        text-align: center;
+        padding: 40px 20px;
+    }
+
+    .roll-prompt p {
+        color: var(--color-text-muted);
+        margin-bottom: 20px;
+    }
+
+    .roll-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 15px 30px;
+        font-size: 1.1rem;
+    }
+
+    .dice-display-row {
+        display: flex;
+        justify-content: center;
+        gap: 5px;
+        margin: 10px 0;
+    }
+
+    .die-face {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(145deg, #3a3a5a, #2a2a4a);
+        border: 2px solid var(--color-primary);
+        border-radius: 6px;
+        font-size: 1rem;
+        font-weight: bold;
+        color: var(--color-primary);
+    }
+
+    .die-face.dropped {
+        opacity: 0.4;
+        border-color: var(--color-health);
+        color: var(--color-health);
+        text-decoration: line-through;
+    }
+
+    .die-face.rolling {
+        animation: dieRoll 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+
+    @keyframes dieRoll {
+        0% {
+            transform: rotateX(0deg) rotateY(0deg) scale(0.5);
+            opacity: 0;
+        }
+        50% {
+            transform: rotateX(180deg) rotateY(180deg) scale(1.2);
+            opacity: 1;
+        }
+        100% {
+            transform: rotateX(360deg) rotateY(360deg) scale(1);
+        }
+    }
+
+    .roll-actions {
+        text-align: center;
+        margin-top: 15px;
+    }
+
+/* Save Success */
+    .save-success-container {
+        text-align: center;
+        padding: 20px;
+    }
+
+    .success-icon {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 20px;
+        background: linear-gradient(145deg, var(--color-stamina), #25a35c);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        color: white;
+        box-shadow: 0 0 30px rgba(46, 204, 113, 0.5);
+    }
+
+    .success-title {
+        color: var(--color-stamina);
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+    }
+
+    .success-message {
+        color: var(--color-text-muted);
+        margin-bottom: 25px;
+    }
+
+    .final-abilities-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .final-ability-card {
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 8px;
+        padding: 15px;
+    }
+
+    .final-ability-name {
+        font-size: 0.85rem;
+        color: var(--color-text-muted);
+        margin-bottom: 5px;
+    }
+
+    .final-ability-score {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: var(--color-primary);
+    }
+
+    .final-ability-modifier {
+        font-size: 1rem;
+        font-weight: bold;
+    }
+
+    .final-ability-modifier.positive {
+        color: var(--color-stamina);
+    }
+
+    .final-ability-modifier.negative {
+        color: var(--color-health);
+    }
+
+/* Actions */
+    .dice-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+/* Responsive */
+    @media (max-width: 700px) {
+        .ability-assignment-modal-content {
+            min-width: auto;
+            max-width: 100%;
+            margin: 10px;
+        }
+
+        .abilities-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .racial-bonus-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .final-abilities-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 500px) {
+        .abilities-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .final-abilities-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .ability-mode-tabs {
+            flex-direction: column;
+        }
+
+        .racial-bonus-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+</style>
+
+<script>
+    function closeAbilityModal() {
+        const modal = document.getElementById('ability-assignment-modal');
+        if (modal) {
+            modal.classList.remove('active');
+        }
+        htmx.trigger(document.body, 'ability-modal-closed');
+    }
+
+    function switchMode(mode) {
+    // Update tabs
+        document.querySelectorAll('.mode-tab').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        event.target.classList.add('active');
+
+    // Update content
+        document.querySelectorAll('.ability-mode-content').forEach(content => {
+            content.classList.remove('active');
+        });
+
+        const formId = mode === 'point_buy' ? 'point-buy-form' :
+            mode === 'standard_array' ? 'standard-array-form' : 'roll-form';
+        document.getElementById(formId).classList.add('active');
+
+    // Copy racial bonus values to the active form
+        syncRacialBonuses();
+    }
+
+    function adjustRacialBonus(ability, delta) {
+        const input = document.getElementById('racial-bonus-' + ability);
+        if (input) {
+            let value = parseInt(input.value) + delta;
+            value = Math.max(-2, Math.min(4, value));
+            input.value = value;
+            syncRacialBonuses();
+            updateAbilityDisplay();
+        }
+    }
+
+    function syncRacialBonuses() {
+    // Sync racial bonus values across all forms
+        const abilities = ['STR', 'DEX', 'CON', 'INT', 'WIS', 'CHA'];
+        abilities.forEach(ability => {
+            const mainInput = document.getElementById('racial-bonus-' + ability);
+            if (mainInput) {
+                const value = mainInput.value;
+                document.querySelectorAll('input[name="racial_bonus_' + ability + '"]').forEach(input => {
+                    input.value = value;
+                });
+            }
+        });
+    }
+
+    function updateAbilityDisplay() {
+    // Trigger form update for the active mode
+        const activeForm = document.querySelector('.ability-mode-content.active');
+        if (activeForm) {
+        // Trigger htmx to refresh
+            const select = activeForm.querySelector('.ability-score-select');
+            if (select) {
+                htmx.trigger(select, 'change');
+            }
+        }
+    }
+
+// Drag and drop for standard array
+    function allowDrop(event) {
+        event.preventDefault();
+        event.currentTarget.classList.add('drag-over');
+    }
+
+    function dropScore(event) {
+        event.preventDefault();
+        event.currentTarget.classList.remove('drag-over');
+        const value = event.dataTransfer.getData('text/plain');
+        const select = event.currentTarget.querySelector('.ability-score-select');
+        if (select && value) {
+            select.value = value;
+            htmx.trigger(select, 'change');
+        }
+    }
+
+    document.addEventListener('dragstart', function(event) {
+        if (event.target.classList.contains('array-value') && !event.target.classList.contains('used')) {
+            event.dataTransfer.setData('text/plain', event.target.dataset.value);
+            event.target.classList.add('dragging');
+        }
+    });
+
+    document.addEventListener('dragend', function(event) {
+        if (event.target.classList.contains('array-value')) {
+            event.target.classList.remove('dragging');
+        }
+        document.querySelectorAll('.ability-card').forEach(card => {
+            card.classList.remove('drag-over');
+        });
+    });
+
+    function prepareSave() {
+    // Collect all ability values from the active form
+        const activeForm = document.querySelector('.ability-mode-content.active');
+        const saveInputs = document.getElementById('save-inputs');
+        saveInputs.innerHTML = '';
+
+        if (activeForm) {
+        // Copy all inputs from active form to save form
+            activeForm.querySelectorAll('input, select').forEach(input => {
+                const hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.name = input.name;
+                hidden.value = input.value;
+                saveInputs.appendChild(hidden);
+            });
+        }
+
+    // Also copy racial bonuses
+        const abilities = ['STR', 'DEX', 'CON', 'INT', 'WIS', 'CHA'];
+        abilities.forEach(ability => {
+            const mainInput = document.getElementById('racial-bonus-' + ability);
+            if (mainInput) {
+                const hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.name = 'racial_bonus_' + ability;
+                hidden.value = mainInput.value;
+                saveInputs.appendChild(hidden);
+            }
+        });
+    }
+
+// Animation trigger on modal update
+    document.addEventListener('htmx:afterSwap', function(event) {
+        if (event.detail.target.id === 'ability-assignment-modal') {
+        // Re-trigger dice animations if present
+            const dice = document.querySelectorAll('.die-face');
+            dice.forEach((die, index) => {
+                if (!die.classList.contains('rolling') && die.closest('.roll-results')) {
+                    die.classList.add('rolling');
+                }
+            });
+        }
+    });
+</script>
