@@ -9,6 +9,12 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
   - More concise and scannable format
   - Essential commands and PR checklist prominently placed
   - Removed redundant content covered by README and ARCHITECTURE.md
+* Comprehensive rewrite of ARCHITECTURE.md to reflect current codebase
+  - Updated from outdated Celery-based architecture to synchronous service layer
+  - Documented new models: Species (replaces Race), Class system with multiclassing, Spellcasting, Combat
+  - Added Service Layer section (GameEventService, DiceRollService)
+  - Updated technology stack (Django 6.0, HTMX, removed Celery references)
+  - Documented all event types, combat system, and character creation flow
 
 ### Fixed
 * Fixed flaky tests in CI caused by parallel test execution with shared PostgreSQL database

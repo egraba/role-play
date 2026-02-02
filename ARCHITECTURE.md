@@ -1,377 +1,362 @@
 # Role-Play Application Architecture
 
-A Django-based D&D 5e role-playing game platform with real-time WebSocket communication, AI-powered content generation, and comprehensive game mechanics.
+A Django-based D&D 5e virtual tabletop with real-time WebSocket gameplay, AI-powered content generation, and comprehensive SRD 5.2.1 mechanics.
 
 ## Table of Contents
 
 1. [Django App Structure](#django-app-structure)
-2. [Character Models](#character-models)
-3. [Game Models](#game-models)
-4. [Game Logic](#game-logic)
-5. [Master/Player Distinction](#masterplayer-distinction)
-6. [Real-Time Communication](#real-time-communication)
+2. [Character Module](#character-module)
+3. [Game Module](#game-module)
+4. [Service Layer](#service-layer)
+5. [Real-Time Communication](#real-time-communication)
+6. [Master/Player Roles](#masterplayer-roles)
 7. [Key Technologies](#key-technologies)
 
 ---
 
 ## Django App Structure
 
-The application is organized into 5 Django apps:
-
 ```
 role_play/
-├── character/    # Character creation and management
-├── game/         # Core game engine and real-time communication
+├── character/    # Character creation, spells, equipment, D&D mechanics
+├── game/         # Game engine, combat, events, WebSocket
 ├── master/       # Campaign management
 ├── user/         # Custom user model
-└── ai/           # AI-powered content generation
+├── ai/           # Anthropic Claude integration
+└── utils/        # Shared utilities (dice, channels)
 ```
 
-### `character/` - Character System
+### App Responsibilities
 
-Manages character sheets with D&D 5e mechanics:
-- Character creation via multi-step wizard
-- Equipment and inventory management
-- Ability scores, skills, proficiencies, and languages
-- Race and class features
-
-### `game/` - Game Engine
-
-Core game session management:
-- Games, players, masters, and events
-- WebSocket support via Django Channels
-- Celery tasks for async game logic
-- Event-driven architecture with RPG mechanics
-- Combat system with initiative tracking
-
-### `master/` - Campaign Management
-
-Campaign creation and configuration:
-- Campaign synopsis, main conflict, objectives
-- Templates for dungeon masters
-
-### `user/` - Authentication
-
-Custom user model extending Django's `AbstractUser`:
-- Standard Django authentication integration
-- Base for both masters and players
-
-### `ai/` - Content Generation
-
-Anthropic Claude integration:
-- Quest generation and enrichment
-- Uses `claude-3-5-sonnet-20241022`
+| App | Purpose |
+|-----|---------|
+| `character/` | Character sheets, spellcasting, equipment, skills, species, classes |
+| `game/` | Game sessions, combat, events, real-time communication |
+| `master/` | Campaign creation and configuration |
+| `user/` | Authentication (extends Django's AbstractUser) |
+| `ai/` | Quest enrichment via Claude API |
 
 ---
 
-## Character Models
+## Character Module
 
-Located in `character/models/`
+Located in `character/models/`. Implements D&D 5e SRD 5.2.1 rules.
 
 ### Core Character Model
 
-**`Character`** - Main character entity (`character/models/character.py`)
+**`Character`** (`character.py`)
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `name` | CharField (unique) | Character identifier |
+| `name` | CharField | Unique identifier |
 | `user` | OneToOne → User | Owning player |
-| `race` | ChoiceField | D&D race (Dwarf, Elf, Halfling, etc.) |
-| `klass` | CharField | Class (Cleric, Fighter, Rogue, Wizard) |
-| `level` | SmallInt | Current level (default: 1) |
-| `xp` | Int | Experience points (default: 0) |
-| `hp` / `max_hp` | SmallInt | Hit points |
+| `species` | FK → Species | D&D 2024 species (formerly "race") |
+| `level` | SmallInt | Character level (default: 1) |
+| `hp`, `max_hp`, `temp_hp` | SmallInt | Hit points |
 | `ac` | SmallInt | Armor class |
-| `proficiency_bonus` | Property | Calculated from level: `(level-1)//4 + 2` |
-| `alignment` | ChoiceField | D&D alignment |
-| `size` | ChoiceField | Size category |
-| `speed` | SmallInt | Movement speed (feet) |
-| `hit_dice` | CharField | e.g., "1d8" |
+| `death_save_successes/failures` | SmallInt | Death save tracking |
 | `background` | ChoiceField | Character background |
-| `personality_trait`, `ideal`, `bond`, `flaw` | TextField | RP details |
+| `inventory` | OneToOne → Inventory | Equipment container |
 
-**Relationships:**
-- M2M: `skills`, `abilities`, `languages`, `senses`
-- OneToOne: `inventory` → Inventory
+**Key Properties:**
+- `proficiency_bonus` = `(level - 1) // 4 + 2`
+- `primary_class` / `class_level` - From CharacterClass junction
+- `is_unconscious`, `is_dead`, `is_stable` - Death state checks
 
-**Key Methods:**
-- `strength`, `dexterity`, `constitution`, `intelligence`, `wisdom`, `charisma` - Property getters
-- `increase_xp(xp)` - Handles XP gain and level progression
-- `is_proficient(ability)` - Check saving throw proficiency
-- `has_advantage()` / `has_disadvantage()` - Race-based modifiers
+**HP Methods:** `take_damage()`, `heal()`, `add_temp_hp()`, `add_death_save_success/failure()`
 
-### Ability Models (`character/models/ability.py`)
+### Class System (`classes.py`)
 
-**`AbilityType`** - D&D ability types
-- `name` (PK): STR, DEX, CON, INT, WIS, CHA
-- `description`: Ability description
+Supports multiclassing via junction table.
 
-**`Ability`** - Character's ability scores
-- `ability_type` → AbilityType
-- `score`: Raw score (3-20)
-- `modifier`: Calculated modifier ((score - 10) / 2)
+```
+Class (D&D 5e class definition)
+├── name: ClassName (PK)
+├── hit_die, hp_first_level, hp_higher_levels
+├── primary_ability: FK → AbilityType
+├── saving_throws: M2M → AbilityType
+├── armor_proficiencies, weapon_proficiencies: JSONField
+└── features → ClassFeature (M2M)
 
-### Equipment & Inventory (`character/models/inventory.py`)
+CharacterClass (Junction - supports multiclassing)
+├── character: FK → Character
+├── klass: FK → Class
+├── level: PositiveSmallInt
+└── is_primary: Boolean
+```
 
-**`Inventory`**
-- `capacity`: Weight/item capacity
-- `gp`: Gold pieces
+### Species System (`species.py`)
 
-**Equipment Types** (each with Settings model for D&D specs):
-- `Armor` / `ArmorSettings`
-- `Weapon` / `WeaponSettings`
-- `Pack` / `PackSettings`
-- `Gear` / `GearSettings`
-- `Tool` / `ToolSettings`
+D&D 2024 terminology (replaces "Race").
 
-### Skills (`character/models/skill.py`)
+```
+Species
+├── name: SpeciesName (PK) - DWARF, ELF, HALFLING, HUMAN
+├── size, speed, darkvision
+├── traits: M2M → SpeciesTrait
+└── languages: M2M → Language
+```
 
-**`Skill`**
-- `name` (PK): Skill name (e.g., "Acrobatics")
-- `ability_type` → AbilityType
-- `description`
+### Spellcasting System (`spells.py`)
 
-### Class System (`character/models/klass.py`)
+Complete D&D 5e magic implementation.
 
-**`Klass`** - TextChoices: CLERIC, FIGHTER, ROGUE, WIZARD
+```
+SpellSettings (Spell definitions)
+├── name (PK), level, school
+├── casting_time, range, duration
+├── components: JSONField (V, S, M)
+├── concentration, ritual
+├── description, higher_levels
+└── classes: JSONField
 
-**`HitPoints`** - Class-specific HP mechanics
+CharacterSpellSlot (Slot tracking)
+├── character, slot_level (1-9)
+├── total, used
+└── Methods: use_slot(), restore_slot(), restore_all()
 
-**`KlassFeature`** - Class features
+WarlockSpellSlot (Pact Magic - short rest recovery)
 
-**`KlassAdvancement`** - Proficiency progression by level
+Concentration (Active spell tracking)
+├── character: OneToOne
+├── spell: FK → SpellSettings
+└── Methods: break_concentration(), start_concentration()
 
-### Race Features (`character/models/race.py`)
+Spell (Known spells - spontaneous casters)
+SpellPreparation (Prepared spells - prepared casters)
+ClassSpellcasting (Class casting config)
+```
 
-**`Language`** - D&D languages with types and scripts
+### Equipment System (`equipment.py`)
 
-**`Sense`** - Racial senses/features (e.g., "Dwarven Resilience", "Fey Ancestry")
+```
+Inventory
+├── capacity, gp
+├── weapons, armor, packs, gear, tools
 
-### Proficiencies (`character/models/proficiency.py`)
+WeaponSettings / Weapon
+ArmorSettings / Armor
+ToolSettings / Tool
+GearSettings / Gear
+PackSettings / Pack
+```
 
-- `SavingThrowProficiency`
-- `SkillProficiency`
-- `ArmorProficiency`
-- `WeaponProficiency`
-- `ToolProficiency`
+### Additional Character Models
 
-### Disadvantages (`character/models/disadvantage.py`)
+| Model | File | Purpose |
+|-------|------|---------|
+| `Ability`, `AbilityType` | `abilities.py` | STR, DEX, CON, INT, WIS, CHA |
+| `Skill` | `skills.py` | All 18 D&D skills |
+| `Feat`, `CharacterFeat` | `feats.py` | Feats and origin feats |
+| `Condition`, `CharacterCondition` | `conditions.py` | Status conditions |
+| `MagicItem`, `Attunement` | `magic_items.py` | Magic item tracking |
+| `MonsterSettings`, `Monster` | `monsters.py` | Monster stat blocks |
+| `SpellEffectTemplate`, `ActiveSpellEffect` | `spell_effects.py` | Spell effect tracking |
 
-- `AbilityCheckDisadvantage`
-- `SavingThrowDisadvantage`
-- `AttackRollDisadvantage`
-- `SpellCastDisadvantage`
+### Character Creation
+
+Uses **Builder Pattern** in `character_attributes_builders.py`:
+
+1. **BaseBuilder** - Initialize abilities, inventory
+2. **SpeciesBuilder** - Apply species traits (size, speed, darkvision)
+3. **ClassBuilder** - Class features, HP, proficiencies
+4. **BackgroundBuilder** - Background traits, skills, tools, feats
+5. **DerivedStatsBuilder** - AC, HP finalization
+6. **SpellcastingBuilder** - Spell slots for caster classes
+
+**SessionWizardView** (7 steps):
+Species → Class → Abilities → Background → Skills → Equipment → Review
 
 ---
 
-## Game Models
+## Game Module
 
-Located in `game/models/`
+Located in `game/models/`. Manages game sessions and real-time gameplay.
 
-### Core Game Model (`game/models/game.py`)
+### Game Model (`game.py`)
 
-**`Game`** - Central game session
-- `name`: Game name
-- `campaign` → Campaign
-- `start_date`: When game started
-- `state`: UNDER_PREPARATION or ONGOING
-- Uses `GameFlow` FSM for state management
+```
+Game
+├── name, campaign: FK → Campaign
+├── state: UNDER_PREPARATION | ONGOING
+└── Uses GameFlow FSM for state transitions
 
-**`Quest`** - Game environment/scenario
-- `environment`: Quest description (3000 chars)
-- `game` → Game
+Master (OneToOne → Game, FK → User)
+Player (FK → Game, OneToOne → User, FK → Character)
+Actor (Abstract base for Master/Player)
+```
 
-### Actors (`game/models/game.py`)
+### Event System (`events.py`)
 
-**`Actor`** - Abstract base for game participants
+Polymorphic events using `InheritanceManager`.
 
-**`Master`** - Dungeon Master
-- `user` → User (FK)
-- `game` → Game (OneToOne)
-- Cannot be both Master and Player in same game
-
-**`Player`** - Player participant
-- `user` → User (OneToOne)
-- `game` → Game (FK, multiple players per game)
-- `character` → Character (OneToOne)
-
-### Events (`game/models/events.py`)
-
-Polymorphic event system using `InheritanceManager`:
-
-**Base `Event`**
+**Base Event:**
 - `game` → Game
 - `author` → Actor
 - `date`: Auto timestamp
 
-**Event Types:**
-| Event | Description |
-|-------|-------------|
-| `GameStart` | Game started |
-| `UserInvitation` | Player invited |
-| `Message` | Chat message (100 chars) |
-| `QuestUpdate` | Quest updated |
-| `RollRequest` | Master requests roll |
-| `RollResponse` | Player performs roll |
-| `RollResult` | Roll outcome |
-| `CombatInitialization` | Combat started |
-| `CombatInitiativeRequest` | Initiative requested |
-| `CombatInitiativeResponse` | Initiative rolled |
-| `CombatInitiativeResult` | Initiative result |
-| `CombatInitativeOrderSet` | Order determined |
+**Event Categories:**
 
-### Combat System (`game/models/combat.py`)
+| Category | Event Types |
+|----------|-------------|
+| Core | `GameStart`, `UserInvitation`, `Message`, `QuestUpdate` |
+| Rolls | `RollRequest`, `RollResponse`, `RollResult` |
+| Combat Init | `CombatInitialization`, `CombatInitiativeRequest/Response/Result`, `CombatInitativeOrderSet` |
+| Combat Flow | `CombatStarted`, `TurnStarted`, `TurnEnded`, `RoundEnded`, `CombatEnded`, `ActionTaken` |
+| Spells | `SpellCast`, `SpellDamageDealt`, `SpellHealingReceived`, `SpellConditionApplied`, `SpellSavingThrow` |
+| Concentration | `ConcentrationSaveRequired`, `ConcentrationSaveResult`, `ConcentrationBroken`, `ConcentrationStarted` |
+| HP | `HPDamage`, `HPHeal`, `HPTemp`, `HPDeathSave` |
+| Other | `DiceRoll` |
 
-**`Combat`** - Combat session
-- `game` → Game
-- `get_initiative_order()`: Fighters sorted by DEX check
+### Combat System (`combat.py`)
 
-**`Round`** - Combat round
-- `combat` → Combat
+```
+Combat
+├── state: ROLLING_INITIATIVE | ACTIVE | ENDED
+├── current_round, current_fighter, current_turn_index
+├── Methods: start_combat(), advance_turn(), end_combat()
 
-**`Turn`** - Individual turn
-- `player` → Player
-- `round` → Round
-- `move`: Movement
-- `action`: CombatAction
+Fighter
+├── player, character, combat
+├── is_surprised, dexterity_check (initiative)
 
-**`Fighter`** - Character in combat
-- `player` → Player
-- `character` → Character
-- `is_surprised`: Boolean
-- `combat` → Combat
-- `dexterity_check`: Initiative roll result
+Turn
+├── fighter, round
+├── action_used, bonus_action_used, reaction_used
+├── movement_used, movement_total
+└── Methods: can_take_action(), remaining_movement()
+
+TurnAction
+├── turn, action_type (ACTION | BONUS_ACTION | REACTION)
+├── action: CombatAction (ATTACK, CAST_SPELL, DASH, etc.)
+└── target_fighter
+```
 
 ---
 
-## Game Logic
+## Service Layer
 
-### State Machine (`game/flows.py`)
+Centralized business logic in `game/services.py`.
 
-**`GameFlow`** - Finite State Machine (viewflow.fsm)
-```
-States: UNDER_PREPARATION → ONGOING
-Transition: start() [requires ≥2 players]
-```
+### GameEventService
 
-### Roll Mechanics (`game/rolls.py`)
+Primary service for event creation and broadcasting.
 
-**`perform_roll(player, request)`**
-- Roll d20 + ability modifier + proficiency bonus
-- Supports advantage/disadvantage
-- Compares against difficulty class
-- Returns (score, SUCCESS/FAILURE)
-
-**`perform_combat_initiative_roll(fighter)`**
-- d20 + DEX modifier
-
-### Character Building (`character/character_attributes_builders.py`)
-
-Builder pattern for character creation:
-
-1. **`BaseBuilder`** - Initialize abilities, inventory
-2. **`RaceBuilder`** - Apply racial traits
-3. **`ClassBuilder`** - Apply class features
-4. **`BackgroundBuilder`** - Apply background
-
-### Background Processing (`game/tasks.py`)
-
-Celery tasks:
-- `send_mail()` - Email notifications
-- `store_message()` - Save chat messages
-- `process_roll()` - Handle ability checks/saving throws
-- `process_combat_initiative_roll()` - Handle initiative
-- `check_combat_roll_initiative_complete()` - Periodic check for combat readiness
-
-### Command Pattern (`game/commands.py`)
-
-WebSocket command handlers:
-- `ProcessMessageCommand` - Store chat
-- `AbilityCheckResponseCommand` - Respond to ability check
-- `SavingThrowResponseCommand` - Respond to saving throw
-- `CombatInitiativeResponseCommand` - Roll initiative
-
----
-
-## Master/Player Distinction
-
-### Database Level
-
-| Role | Model | Relationship | Constraint |
-|------|-------|--------------|------------|
-| Master | `Master` | OneToOne → Game | One per game |
-| Player | `Player` | FK → Game | Multiple per game |
-
-### Permission System (`game/views/mixins.py`)
-
-**`GameContextMixin`**:
 ```python
-is_user_master()  # Check if user == game.master.user
-is_user_player()  # Check if user in game.player_set
+class GameEventService:
+    @staticmethod
+    def get_author(game, user) → Master | Player
+
+    @staticmethod
+    def create_message(game, user, content, date) → Message
+
+    @staticmethod
+    def process_roll(game, player, date, roll_type) → RollResult
+        # Creates RollResponse, RollResult, broadcasts to channel
+
+    @staticmethod
+    def process_combat_initiative_roll(game, player, date)
+        # Rolls initiative, checks if all fighters ready
+        # Starts combat immediately when ready (no Celery)
 ```
 
-### Role Capabilities
+**Key Pattern:** Events are created and broadcast in a single transaction. No background workers - all processing is synchronous.
 
-**Masters can:**
-- Create/update campaigns
-- Invite players to game
-- Start game (state transition)
-- Create/update quests
-- Request ability checks and saving throws
-- Initiate combat
-- Use AI to enrich quest descriptions
+### DiceRollService
 
-**Players can:**
-- Create characters
-- Join games (when invited)
-- Send chat messages
-- Respond to roll requests
-- Roll initiative in combat
-- View game events and quest
-
-### Master-Only Views
-
-Located in `game/views/master.py`:
-- `UserInviteView` - Invite players
-- `UserInviteConfirmView` - Confirm invitation
-- `GameStartView` - Start game
-- `QuestCreateView` - Create/update quest
-- `AbilityCheckRequestView` - Request rolls
-- `CombatCreateView` - Initialize combat
+```python
+class DiceRollService:
+    @staticmethod
+    def create_dice_roll(game, user, notation, rolls, total, purpose)
+```
 
 ---
 
 ## Real-Time Communication
 
-### WebSocket Consumer (`game/consumers.py`)
+### WebSocket Consumer (`consumers.py`)
 
-**`GameEventsConsumer`**
-```python
-connect()       # Join game channel (game_{id}_events)
-disconnect()    # Leave game channel
-receive_json()  # Process incoming event
-```
-
-Event handlers:
-- `message()` - Chat message
-- `game_start()` - Game started
-- `quest_update()` - Quest updated
-- `ability_check_request()` / `ability_check_response()`
-- `saving_throw_request()` / `saving_throw_response()`
-- `combat_*` events
-
-### Channel Utilities (`game/utils/channels.py`)
+**`GameEventsConsumer`** (JsonWebsocketConsumer):
 
 ```python
-send_to_channel(game, event_type, event)  # Broadcast to group
+connect()       # Join channel group: game_{id}_events
+disconnect()    # Leave channel group
+receive_json()  # Route events to handlers
 ```
 
-### Event Enrichers (`game/event_enrichers.py`)
+Event routing:
+- `CLIENT_SIDE` events → Save to DB via service → Broadcast
+- `SERVER_SIDE` events → Forward to channel group
 
-Transform events before broadcasting:
-- `MessageEnricher` - Format with author
-- `RollResponseEnricher` - Format roll result
-- `CombatInitiativeResponseEnricher` - Format initiative
+### Channel Utilities (`utils/channels.py`)
+
+```python
+send_to_channel(game, event_type, event)  # Broadcast to all clients
+```
+
+### Event Schema Validation (`schemas.py`)
+
+```python
+EventType (StrEnum)    # All event type constants
+EventOrigin (IntFlag)  # CLIENT_SIDE | SERVER_SIDE
+EventSchema (Pydantic) # Validates WebSocket messages
+```
+
+---
+
+## Master/Player Roles
+
+### Database Level
+
+| Role | Model | Constraint |
+|------|-------|------------|
+| Master | `Master` | OneToOne → Game (one per game) |
+| Player | `Player` | FK → Game (multiple per game) |
+
+### Permissions (`game/views/mixins.py`)
+
+```python
+GameContextMixin:
+    is_user_master()  # user == game.master.user
+    is_user_player()  # user in game.player_set
+```
+
+### Capabilities
+
+**Masters:**
+- Create/update campaigns and quests
+- Invite players, start game
+- Request ability checks and saving throws
+- Initiate and manage combat
+- Use AI to enrich quest descriptions
+
+**Players:**
+- Create characters
+- Join games when invited
+- Send messages, respond to rolls
+- Roll initiative, take combat actions
+
+### Key Views
+
+**Master Views** (`game/views/master.py`):
+- `UserInviteView`, `GameStartView`, `QuestCreateView`
+- `AbilityCheckRequestView`, `SavingThrowRequestView`
+- `CombatCreateView`, `CombatAdvanceTurnView`, `CombatEndView`
+
+**Player Views** (`game/views/player.py`):
+- Roll responses, message sending
+
+**Combat Views**:
+- `views/action_panel.py` - Combat actions
+- `views/attack.py` - Attack resolution
+- `views/concentration.py` - Concentration saves
+- `views/initiative.py` - Initiative tracking
+
+**Character Views** (`character/views/`):
+- `spells.py` - Spell management, casting
+- `abilities.py` - Ability score assignment
+- `hp.py` - HP management, death saves
+- `skills.py` - Skill checks
 
 ---
 
@@ -379,56 +364,56 @@ Transform events before broadcasting:
 
 | Technology | Purpose |
 |------------|---------|
+| Django 6.0 | Web framework |
 | Django Channels | WebSocket support |
-| Redis | Channel layer & Celery broker |
-| Celery | Background task processing |
-| django-celery-beat | Periodic tasks |
-| Anthropic Claude | AI content generation |
+| Daphne | ASGI server |
+| Redis | Channel layer backend |
 | PostgreSQL | Database |
+| HTMX | Dynamic UI updates |
+| Pydantic | Event validation |
+| django-htmx | HTMX integration |
+| django-formtools | Multi-step wizard |
 | viewflow.fsm | Game state machine |
-| django-formtools | Multi-step character wizard |
-| model-utils | Polymorphic Event inheritance |
+| model-utils | Polymorphic inheritance |
+| Anthropic Claude | AI content generation |
 
-### D&D Mechanics Implementation
+### D&D Mechanics
 
-- **Dice**: `utils/dice.py` - DiceString class ("d20", "2d6+3")
-- **Modifiers**: (score - 10) / 2 (rounded down)
-- **Advantage/Disadvantage**: Roll twice, take better/worse
-- **Proficiency**: Standard D&D progression by level
-- **Difficulty Class**: 5-30 scale
+- **Dice**: `utils/dice.py` - Parsing "2d6+3" notation
+- **Modifiers**: `(ability_score - 10) // 2`
+- **Proficiency**: `(level - 1) // 4 + 2`
+- **Advantage/Disadvantage**: Roll 2d20, take best/worst
 
 ---
 
-## Key File Locations
+## File Locations
 
 ### Configuration
-- `role_play/settings/base.py` - Django settings
+- `role_play/settings/` - Django settings (base, local, ci, test, production)
 - `role_play/urls.py` - URL routing
-- `role_play/asgi.py` - ASGI for Channels
+- `role_play/asgi.py` - ASGI configuration
 
 ### Models
-- `character/models/` - Character system (9 files)
-- `game/models/` - Game session system (3 files)
-- `master/models.py` - Campaign model
-- `user/models.py` - User model
+- `character/models/` - Character system (~15 files)
+- `game/models/` - Game/combat/events (3 files)
+- `master/models.py` - Campaign
+- `user/models.py` - User
+
+### Business Logic
+- `game/services.py` - Event and roll services
+- `game/rolls.py` - Dice mechanics
+- `game/flows.py` - Game state machine
+- `character/character_attributes_builders.py` - Character creation
 
 ### Views
-- `character/views/character.py` - Character CRUD
-- `game/views/common.py` - Game display views
-- `game/views/master.py` - Master control views
+- `game/views/` - Game, combat, master, player views
+- `character/views/` - Character, spell, HP, skill views
 
-### Game Logic
-- `game/rolls.py` - Dice roll mechanics
-- `game/tasks.py` - Celery tasks
-- `game/commands.py` - WebSocket commands
-- `game/flows.py` - Game state machine
-- `game/consumers.py` - WebSocket consumer
-
-### Constants & Rules
+### Constants
 - `character/constants/` - D&D rules data
-- `game/constants/` - Game state constants
+- `game/constants/` - Event types, combat states
 
-### Utilities
-- `utils/dice.py` - Dice rolling
-- `game/utils/` - Channels, emails
-- `character/utils/` - Equipment utilities
+### Real-Time
+- `game/consumers.py` - WebSocket consumer
+- `game/schemas.py` - Event validation
+- `utils/channels.py` - Broadcast utilities
