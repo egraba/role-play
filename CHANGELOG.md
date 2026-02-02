@@ -5,6 +5,10 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Changed
+* Harmonized naming between poe tasks and Django settings files
+  - Renamed `local.py` to `dev.py` to match `dev-*` task prefix
+  - Renamed `production_fly.py` to `prod_fly.py` to match `prod-*` task prefix
+  - Updated `.env.example` and `fly.toml` references
 * Replaced AGENTS.md with CLAUDE.md for better Claude Code integration
   - More concise and scannable format
   - Essential commands and PR checklist prominently placed
@@ -131,6 +135,9 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
   - Responsive design with mobile breakpoints
   - New views: AttackModalView, AttackRollView, DamageRollView, ApplyDamageView
   - New URL endpoints: combat-attack-modal, combat-attack-roll, combat-damage-roll, combat-apply-damage
+
+### Removed
+* Removed staging (`stg-*`) poe tasks from `poe_tasks.toml`
 
 ### Changed
 * Enhanced character detail template to follow SRD 5.2 structure:
