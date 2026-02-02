@@ -5,6 +5,20 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Added
+* Ability score assignment interface with three generation modes:
+  - Point Buy mode: 27-point budget with cost per score (8=0, 9=1, 10=2, 11=3, 12=4, 13=5, 14=7, 15=9)
+  - Standard Array mode: Drag-and-drop assignment of 15, 14, 13, 12, 10, 8 values
+  - Roll mode: 4d6 drop lowest with animated dice display and reroll option
+  - Racial/background bonus controls (-2 to +4) for each ability
+  - Real-time modifier calculation using D&D formula: (score - 10) / 2
+  - Final score display combining base score and racial bonuses
+  - Tab-based mode switching with persistent racial bonus values
+  - Save functionality to persist abilities to character
+  - Success confirmation with final ability summary
+  - Responsive design with mobile breakpoints
+  - New views: AbilityAssignmentModalView, AbilityPointBuyView, AbilityStandardArrayView, AbilityRollView, AbilitySaveView
+  - New URL endpoints: ability-assignment-modal, ability-point-buy, ability-standard-array, ability-roll, ability-save
+  - Test coverage for all ability assignment views
 * Concentration indicator system for combat:
   - Shows currently concentrated spell in action panel during player's turn
   - Concentration icon displayed in initiative tracker for all fighters (visible to DM and players)
@@ -164,6 +178,9 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
   - Auto-refresh on turn changes via HTMX and WebSocket events
   - HTMX endpoints updated: combat-take-action, combat-move return HTML for seamless updates
   - Responsive grid layout with mobile breakpoints
+
+### Fixed
+* Test settings no longer require environment variables - tests can run without ANTHROPIC_API_KEY, DJANGO_SECRET_KEY, or POSTGRES_PASSWORD being set
 
 ## v0.14.1 - 2026-01-27
 

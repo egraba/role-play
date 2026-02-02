@@ -1,5 +1,12 @@
 from django.urls import path
 
+from .views.abilities import (
+    AbilityAssignmentModalView,
+    AbilityPointBuyView,
+    AbilityRollView,
+    AbilitySaveView,
+    AbilityStandardArrayView,
+)
 from .views.character import CharacterCreateView, CharacterDetailView
 from .views.hp import (
     AddTempHPView,
@@ -114,5 +121,31 @@ urlpatterns = [
         "<int:pk>/spells/<str:spell_name>/",
         SpellCardModalView.as_view(),
         name="character-spell-card",
+    ),
+    # HTMX Ability Assignment endpoints
+    path(
+        "<int:pk>/abilities/assign/",
+        AbilityAssignmentModalView.as_view(),
+        name="ability-assignment-modal",
+    ),
+    path(
+        "<int:pk>/abilities/point-buy/",
+        AbilityPointBuyView.as_view(),
+        name="ability-point-buy",
+    ),
+    path(
+        "<int:pk>/abilities/standard-array/",
+        AbilityStandardArrayView.as_view(),
+        name="ability-standard-array",
+    ),
+    path(
+        "<int:pk>/abilities/roll/",
+        AbilityRollView.as_view(),
+        name="ability-roll",
+    ),
+    path(
+        "<int:pk>/abilities/save/",
+        AbilitySaveView.as_view(),
+        name="ability-save",
     ),
 ]
