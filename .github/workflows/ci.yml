@@ -69,7 +69,7 @@ jobs:
         run: uv sync
       - name: Run Tests with Coverage
         run: |
-          unset PYTEST_PLUGINS && doppler run -- env -u PYTEST_PLUGINS uv run poe test-cov
+          unset PYTEST_PLUGINS && doppler run -- env -u PYTEST_PLUGINS uv run pytest --cov --cov-report= --color=yes -n 0
           uv run poe test-cov-report-xml
         env:
           DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}

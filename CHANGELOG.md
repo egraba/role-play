@@ -10,6 +10,12 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
   - Essential commands and PR checklist prominently placed
   - Removed redundant content covered by README and ARCHITECTURE.md
 
+### Fixed
+* Fixed flaky tests in CI caused by parallel test execution with shared PostgreSQL database
+  - CI now runs tests serially (`-n 0`) to avoid race conditions and duplicate key violations
+  - Made `TestSkillModel` tests more robust by handling missing fixtures gracefully
+  - Improved `conftest.py` fixture loading with better documentation for xdist compatibility
+
 ### Added
 * Ability score assignment interface with three generation modes:
   - Point Buy mode: 27-point budget with cost per score (8=0, 9=1, 10=2, 11=3, 12=4, 13=5, 14=7, 15=9)
