@@ -510,3 +510,102 @@ class DiceRoll(Event):
 
     def get_event_type(self) -> EventType:
         return EventType.DICE_ROLL
+
+
+class ConcentrationSaveRequired(Event):
+    """Event when a character needs to make a concentration save."""
+
+    character = models.ForeignKey(
+        "character.Character",
+        on_delete=models.CASCADE,
+        related_name="concentration_save_events",
+    )
+    spell = models.ForeignKey(
+        "character.SpellSettings",
+        on_delete=models.CASCADE,
+        related_name="concentration_check_events",
+    )
+    damage_taken = models.PositiveSmallIntegerField()
+    dc = models.PositiveSmallIntegerField()
+
+    def get_message(self):
+        return (
+            f"{self.character.name} must make a DC {self.dc} Constitution save "
+            f"to maintain concentration on {self.spell.name}!"
+        )
+
+    def get_event_type(self) -> EventType:
+        return EventType.CONCENTRATION_SAVE_REQUIRED
+
+
+class ConcentrationSaveResult(Event):
+    """Event recording the result of a concentration save."""
+
+    character = models.ForeignKey(
+        "character.Character",
+        on_delete=models.CASCADE,
+        related_name="concentration_save_result_events",
+    )
+    spell = models.ForeignKey(
+        "character.SpellSettings",
+        on_delete=models.CASCADE,
+        related_name="concentration_result_events",
+    )
+    dc = models.PositiveSmallIntegerField()
+    roll = models.PositiveSmallIntegerField()
+    modifier = models.SmallIntegerField()
+    total = models.SmallIntegerField()
+    success = models.BooleanField()
+
+    def get_message(self):
+        result = "maintained" if self.success else "lost"
+        return (
+            f"{self.character.name} rolled {self.roll} + {self.modifier} = {self.total} "
+            f"vs DC {self.dc} and {result} concentration on {self.spell.name}!"
+        )
+
+    def get_event_type(self) -> EventType:
+        return EventType.CONCENTRATION_SAVE_RESULT
+
+
+class ConcentrationBroken(Event):
+    """Event when concentration is broken."""
+
+    character = models.ForeignKey(
+        "character.Character",
+        on_delete=models.CASCADE,
+        related_name="concentration_broken_events",
+    )
+    spell = models.ForeignKey(
+        "character.SpellSettings",
+        on_delete=models.CASCADE,
+        related_name="broken_concentration_events",
+    )
+    reason = models.CharField(max_length=100)
+
+    def get_message(self):
+        return f"{self.character.name} lost concentration on {self.spell.name}: {self.reason}"
+
+    def get_event_type(self) -> EventType:
+        return EventType.CONCENTRATION_BROKEN
+
+
+class ConcentrationStarted(Event):
+    """Event when concentration begins on a spell."""
+
+    character = models.ForeignKey(
+        "character.Character",
+        on_delete=models.CASCADE,
+        related_name="concentration_started_events",
+    )
+    spell = models.ForeignKey(
+        "character.SpellSettings",
+        on_delete=models.CASCADE,
+        related_name="started_concentration_events",
+    )
+
+    def get_message(self):
+        return f"{self.character.name} is now concentrating on {self.spell.name}."
+
+    def get_event_type(self) -> EventType:
+        return EventType.CONCENTRATION_STARTED

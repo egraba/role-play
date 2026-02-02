@@ -219,6 +219,7 @@
                 } else if (message["type"].startsWith("turn.") ||
                     message["type"].startsWith("combat.") ||
                     message["type"].startsWith("hp.") ||
+                    message["type"].startsWith("concentration.") ||
                     message["type"] === "action.taken") {
                     // Trigger HTMX refresh for combat-related events
                         htmx.trigger(document.body, 'initiative-updated');
@@ -393,6 +394,34 @@
             if (event.target.id === 'dice-roller-modal') {
                 event.target.classList.remove('active');
                 htmx.trigger(document.body, 'dice-roller-closed');
+            }
+        });
+
+        // Concentration modal event handlers
+        document.body.addEventListener('concentration-modal-closed', function() {
+            // Remove concentration modal from the DOM
+            const modals = document.querySelectorAll('#concentration-save-modal');
+            modals.forEach(modal => modal.remove());
+            // Refresh the action panel
+            htmx.trigger(document.body, 'initiative-updated');
+        });
+
+        // Close concentration modal when clicking outside
+        document.addEventListener('click', function(event) {
+            if (event.target.id === 'concentration-save-modal') {
+                event.target.classList.remove('active');
+                htmx.trigger(document.body, 'concentration-modal-closed');
+            }
+        });
+
+        // Add Escape handler for concentration modal
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                const concModal = document.getElementById('concentration-save-modal');
+                if (concModal && concModal.classList.contains('active')) {
+                    concModal.classList.remove('active');
+                    htmx.trigger(document.body, 'concentration-modal-closed');
+                }
             }
         });
 

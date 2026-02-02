@@ -5,6 +5,21 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Added
+* Concentration indicator system for combat:
+  - Shows currently concentrated spell in action panel during player's turn
+  - Concentration icon displayed in initiative tracker for all fighters (visible to DM and players)
+  - Prompts for Constitution save when concentrating character takes damage
+  - Concentration save modal with animated d20 roll and DC display
+  - DC calculated as max(10, damage/2) per D&D 5e rules
+  - Natural 20 always succeeds, natural 1 always fails
+  - Auto-drops concentration if save failed
+  - Auto-drops concentration when new concentration spell is cast (existing behavior)
+  - Drop button to voluntarily end concentration
+  - WebSocket events for real-time concentration updates across all clients
+  - New event types: ConcentrationSaveRequired, ConcentrationSaveResult, ConcentrationBroken, ConcentrationStarted
+  - New views: ConcentrationSaveModalView, ConcentrationSaveRollView
+  - New URL endpoints: concentration-save-modal, concentration-save-roll
+  - Purple-themed UI matching existing concentration styling
 * Spell card modal for viewing full spell details:
   - Parchment-styled modal with dark gradient background and subtle texture overlay
   - Spell name header with ritual badge indicator when applicable

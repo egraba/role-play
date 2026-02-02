@@ -1,0 +1,138 @@
+{% if concentration %}
+    <div id="concentration-indicator" class="concentration-indicator">
+        <div class="concentration-indicator-content">
+            <div class="concentration-status">
+                <span class="concentration-icon-sm pulse">&#9673;</span>
+                <span class="concentration-text">
+                    <span class="conc-label">Concentrating:</span>
+                    <span class="conc-spell-name">{{ concentration.spell.name }}</span>
+                </span>
+            </div>
+            <div class="concentration-actions">
+                {% if can_break %}
+                    <button type="button"
+                            class="concentration-break-btn-sm"
+                            hx-post="{% url 'character-break-concentration' concentration.character.pk %}"
+                            hx-target="#concentration-indicator"
+                            hx-swap="outerHTML"
+                            title="Break concentration">
+                        Drop
+                    </button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% else %}
+    <div id="concentration-indicator"></div>
+{% endif %}
+
+<style>
+/* Concentration Indicator for Combat */
+    .concentration-indicator {
+        background: linear-gradient(135deg, rgba(155, 89, 182, 0.2), rgba(142, 68, 173, 0.15));
+        border: 1px solid #9b59b6;
+        border-radius: 6px;
+        padding: 10px 14px;
+        margin-bottom: 15px;
+        animation: indicator-pulse 2.5s ease-in-out infinite;
+    }
+
+    @keyframes indicator-pulse {
+        0%, 100% {
+            border-color: #9b59b6;
+            box-shadow: 0 0 5px rgba(155, 89, 182, 0.2);
+        }
+        50% {
+            border-color: #8e44ad;
+            box-shadow: 0 0 12px rgba(155, 89, 182, 0.4);
+        }
+    }
+
+    .concentration-indicator-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .concentration-status {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex: 1;
+    }
+
+    .concentration-icon-sm {
+        font-size: 1.3rem;
+        color: #9b59b6;
+        line-height: 1;
+    }
+
+    .concentration-icon-sm.pulse {
+        animation: icon-pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes icon-pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+
+    .concentration-text {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .conc-label {
+        font-size: 0.7rem;
+        color: var(--color-text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .conc-spell-name {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #9b59b6;
+    }
+
+    .concentration-actions {
+        flex-shrink: 0;
+    }
+
+    .concentration-break-btn-sm {
+        padding: 5px 12px;
+        font-size: 0.75rem;
+        background: rgba(231, 76, 60, 0.2);
+        border: 1px solid rgba(231, 76, 60, 0.5);
+        border-radius: 4px;
+        color: var(--color-health);
+        cursor: pointer;
+        font-family: var(--font-text);
+        transition: all 0.2s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .concentration-break-btn-sm:hover {
+        background: rgba(231, 76, 60, 0.4);
+        border-color: var(--color-health);
+    }
+
+/* Responsive */
+    @media (max-width: 400px) {
+        .concentration-indicator-content {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .concentration-actions {
+            width: 100%;
+        }
+
+        .concentration-break-btn-sm {
+            width: 100%;
+        }
+    }
+</style>
