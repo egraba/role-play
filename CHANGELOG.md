@@ -4,6 +4,12 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 
 ## Unreleased
 
+### Changed
+* Replaced AGENTS.md with CLAUDE.md for better Claude Code integration
+  - More concise and scannable format
+  - Essential commands and PR checklist prominently placed
+  - Removed redundant content covered by README and ARCHITECTURE.md
+
 ### Added
 * Ability score assignment interface with three generation modes:
   - Point Buy mode: 27-point budget with cost per score (8=0, 9=1, 10=2, 11=3, 12=4, 13=5, 14=7, 15=9)
