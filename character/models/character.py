@@ -57,6 +57,7 @@ class Character(models.Model):
     inventory = models.OneToOneField(
         Inventory, on_delete=models.CASCADE, blank=True, null=True
     )
+    location = models.CharField(max_length=100, blank=True, default="")
 
     class Meta:
         indexes = [

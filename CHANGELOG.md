@@ -27,6 +27,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
   - Improved `conftest.py` fixture loading with better documentation for xdist compatibility
 
 ### Added
+* Location field on Character model for tracking character position in-game
 * Ability score assignment interface with three generation modes:
   - Point Buy mode: 27-point budget with cost per score (8=0, 9=1, 10=2, 11=3, 12=4, 13=5, 14=7, 15=9)
   - Standard Array mode: Drag-and-drop assignment of 15, 14, 13, 12, 10, 8 values

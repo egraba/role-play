@@ -196,3 +196,18 @@ class TestCharacterModel:
         assert character.has_feat(FeatName.ALERT)
         assert character.has_feat(FeatName.SAVAGE_ATTACKER)
         assert not character.has_feat(FeatName.MAGIC_INITIATE_CLERIC)
+
+
+@pytest.mark.django_db
+class TestCharacterLocation:
+    def test_location_field_default_empty(self):
+        from character.tests.factories import CharacterFactory
+
+        character = CharacterFactory()
+        assert character.location == ""
+
+    def test_location_field_can_be_set(self):
+        from character.tests.factories import CharacterFactory
+
+        character = CharacterFactory(location="Guard Tower")
+        assert character.location == "Guard Tower"
