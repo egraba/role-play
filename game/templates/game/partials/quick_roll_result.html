@@ -1,0 +1,191 @@
+{% comment %}
+Quick Roll Result Toast
+=======================
+Displays the result of a quick dice roll as a toast notification.
+
+Context:
+    error: Error message (if roll failed)
+    dice_expr: The dice expression (e.g., "1d20+5")
+    label: Description of the roll
+    individual_rolls: List of individual die results
+    modifier: The modifier applied
+    total: Final total
+    dice_color: Color for the dice type
+    is_d20: Whether this is a d20 roll
+    is_nat_20: Whether a natural 20 was rolled
+    is_nat_1: Whether a natural 1 was rolled
+{% endcomment %}
+
+<div class="quick-roll-toast {% if is_nat_20 %}nat-20{% elif is_nat_1 %}nat-1{% endif %}"
+     style="--dice-color: {{ dice_color|default:'#f1c40f' }}">
+    {% if error %}
+        <div class="roll-error">{{ error }}</div>
+    {% else %}
+        <div class="roll-header">
+            {% if label %}
+                <span class="roll-label">{{ label }}</span>
+            {% endif %}
+            <span class="roll-dice">{{ dice_expr }}</span>
+        </div>
+        <div class="roll-result">
+            <span class="roll-total {% if is_nat_20 %}critical{% elif is_nat_1 %}fumble{% endif %}">
+                {{ total }}
+            </span>
+            {% if is_nat_20 %}
+                <span class="roll-badge nat-20-badge">NAT 20!</span>
+            {% elif is_nat_1 %}
+                <span class="roll-badge nat-1-badge">NAT 1</span>
+            {% endif %}
+        </div>
+        <div class="roll-breakdown">
+            {% for roll in individual_rolls %}
+                <span class="roll-die">{{ roll }}</span>
+            {% endfor %}
+            {% if modifier != 0 %}
+                <span class="roll-modifier">{% if modifier > 0 %}+{% endif %}{{ modifier }}</span>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .quick-roll-toast {
+        animation: toast-appear 0.3s ease-out;
+        background: linear-gradient(135deg, rgba(30, 30, 50, 0.95) 0%, rgba(20, 20, 35, 0.95) 100%);
+        border: 2px solid var(--dice-color);
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 15px color-mix(in srgb, var(--dice-color) 30%, transparent);
+        color: var(--color-text, #e4e4e4);
+        font-family: 'Georgia', serif;
+        max-width: 280px;
+        padding: 12px 16px;
+    }
+
+    .quick-roll-toast.nat-20 {
+        animation: toast-appear 0.3s ease-out, glow-gold 1s ease-in-out infinite;
+        border-color: #f1c40f;
+    }
+
+    .quick-roll-toast.nat-1 {
+        border-color: #e74c3c;
+    }
+
+    @keyframes toast-appear {
+        from {
+            opacity: 0;
+            transform: translateY(-10px) scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    @keyframes glow-gold {
+        0%, 100% {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(241, 196, 15, 0.3);
+        }
+        50% {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 25px rgba(241, 196, 15, 0.6);
+        }
+    }
+
+    .roll-error {
+        color: #e74c3c;
+        font-size: 0.9rem;
+    }
+
+    .roll-header {
+        display: flex;
+        gap: 8px;
+        justify-content: space-between;
+        margin-bottom: 8px;
+    }
+
+    .roll-label {
+        color: var(--color-text-muted, #a0a0c0);
+        font-size: 0.85rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .roll-dice {
+        color: var(--dice-color);
+        font-size: 0.85rem;
+        font-weight: bold;
+    }
+
+    .roll-result {
+        align-items: center;
+        display: flex;
+        gap: 10px;
+        margin-bottom: 6px;
+    }
+
+    .roll-total {
+        color: var(--color-primary, #d4af37);
+        font-size: 2rem;
+        font-weight: bold;
+        text-shadow: 0 0 10px color-mix(in srgb, var(--dice-color) 50%, transparent);
+    }
+
+    .roll-total.critical {
+        color: #f1c40f;
+        text-shadow: 0 0 15px rgba(241, 196, 15, 0.8);
+    }
+
+    .roll-total.fumble {
+        color: #e74c3c;
+        text-shadow: 0 0 15px rgba(231, 76, 60, 0.8);
+    }
+
+    .roll-badge {
+        border-radius: 4px;
+        font-size: 0.7rem;
+        font-weight: bold;
+        letter-spacing: 0.5px;
+        padding: 3px 8px;
+        text-transform: uppercase;
+    }
+
+    .nat-20-badge {
+        animation: pulse-badge 0.5s ease-in-out infinite;
+        background: linear-gradient(135deg, #f1c40f, #f39c12);
+        color: #1a1a2e;
+    }
+
+    .nat-1-badge {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        color: white;
+    }
+
+    @keyframes pulse-badge {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.05);
+        }
+    }
+
+    .roll-breakdown {
+        align-items: center;
+        color: var(--color-text-muted, #a0a0c0);
+        display: flex;
+        flex-wrap: wrap;
+        font-size: 0.8rem;
+        gap: 4px;
+    }
+
+    .roll-die {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 3px;
+        padding: 2px 6px;
+    }
+
+    .roll-modifier {
+        color: var(--dice-color);
+        font-weight: bold;
+    }
+</style>

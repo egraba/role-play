@@ -384,3 +384,253 @@ class TestDiceRollView:
 
         content = response.content.decode()
         assert "min-roll" in content
+
+
+class TestQuickRollView:
+    """Tests for QuickRollView."""
+
+    @pytest.fixture
+    def game_with_player(self):
+        """Set up a game with a player."""
+        game = GameFactory()
+        user = UserFactory()
+        character = CharacterFactory(user=user)
+        player = Player.objects.create(user=user, game=game, character=character)
+        return {"game": game, "player": player}
+
+    def test_quick_roll_returns_result_html(self, client, game_with_player):
+        """Test quick roll returns result HTML fragment."""
+        setup = game_with_player
+        client.force_login(setup["player"].user)
+
+        url = reverse("quick-roll", args=(setup["game"].id,))
+        with patch("game.services.send_to_channel"):
+            response = client.post(
+                url,
+                {
+                    "dice": "1d20+5",
+                    "label": "Goblin Strength",
+                },
+            )
+
+        assert response.status_code == 200
+        content = response.content.decode()
+        assert "quick-roll-toast" in content
+
+    @patch("utils.dice.random.randint")
+    def test_quick_roll_parses_dice_expression(
+        self, mock_randint, client, game_with_player
+    ):
+        """Test quick roll correctly parses dice expression."""
+        mock_randint.return_value = 10
+        setup = game_with_player
+        client.force_login(setup["player"].user)
+
+        url = reverse("quick-roll", args=(setup["game"].id,))
+        with patch("game.services.send_to_channel"):
+            response = client.post(
+                url,
+                {
+                    "dice": "1d20+5",
+                    "label": "Test roll",
+                },
+            )
+
+        content = response.content.decode()
+        # Total should be 10 + 5 = 15
+        assert "15" in content
+
+    @patch("utils.dice.random.randint")
+    def test_quick_roll_handles_negative_modifier(
+        self, mock_randint, client, game_with_player
+    ):
+        """Test quick roll handles negative modifiers."""
+        mock_randint.return_value = 10
+        setup = game_with_player
+        client.force_login(setup["player"].user)
+
+        url = reverse("quick-roll", args=(setup["game"].id,))
+        with patch("game.services.send_to_channel"):
+            response = client.post(
+                url,
+                {
+                    "dice": "1d20-2",
+                    "label": "Test roll",
+                },
+            )
+
+        content = response.content.decode()
+        # Total should be 10 - 2 = 8
+        assert "8" in content
+
+    def test_quick_roll_shows_label(self, client, game_with_player):
+        """Test quick roll displays the label."""
+        setup = game_with_player
+        client.force_login(setup["player"].user)
+
+        url = reverse("quick-roll", args=(setup["game"].id,))
+        with patch("game.services.send_to_channel"):
+            response = client.post(
+                url,
+                {
+                    "dice": "1d20+3",
+                    "label": "Goblin Bite Attack",
+                },
+            )
+
+        content = response.content.decode()
+        assert "Goblin Bite Attack" in content
+
+    def test_quick_roll_creates_event(self, client, game_with_player):
+        """Test quick roll creates DiceRoll event."""
+        setup = game_with_player
+        client.force_login(setup["player"].user)
+
+        url = reverse("quick-roll", args=(setup["game"].id,))
+        with patch("game.services.send_to_channel"):
+            client.post(
+                url,
+                {
+                    "dice": "2d6+4",
+                    "label": "Longsword Damage",
+                },
+            )
+
+        event = DiceRoll.objects.filter(game=setup["game"]).first()
+        assert event is not None
+        assert event.dice_notation == "2d6"
+        assert event.dice_type == 6
+        assert event.num_dice == 2
+        assert event.modifier == 4
+        assert event.roll_purpose == "Longsword Damage"
+
+    def test_quick_roll_broadcasts_to_channel(self, client, game_with_player):
+        """Test quick roll broadcasts via WebSocket."""
+        setup = game_with_player
+        client.force_login(setup["player"].user)
+
+        url = reverse("quick-roll", args=(setup["game"].id,))
+        with patch("game.services.send_to_channel") as mock_send:
+            client.post(
+                url,
+                {
+                    "dice": "1d20",
+                    "label": "",
+                },
+            )
+
+        mock_send.assert_called_once()
+
+    def test_quick_roll_handles_invalid_dice(self, client, game_with_player):
+        """Test quick roll handles invalid dice expression gracefully."""
+        setup = game_with_player
+        client.force_login(setup["player"].user)
+
+        url = reverse("quick-roll", args=(setup["game"].id,))
+        response = client.post(
+            url,
+            {
+                "dice": "invalid",
+                "label": "",
+            },
+        )
+
+        assert response.status_code == 200
+        content = response.content.decode()
+        assert "Invalid dice" in content
+
+    def test_quick_roll_handles_no_modifier(self, client, game_with_player):
+        """Test quick roll works without modifier."""
+        setup = game_with_player
+        client.force_login(setup["player"].user)
+
+        url = reverse("quick-roll", args=(setup["game"].id,))
+        with patch("game.services.send_to_channel"):
+            response = client.post(
+                url,
+                {
+                    "dice": "d20",
+                    "label": "",
+                },
+            )
+
+        assert response.status_code == 200
+        event = DiceRoll.objects.filter(game=setup["game"]).first()
+        assert event is not None
+        assert event.modifier == 0
+
+    @patch("utils.dice.random.randint")
+    def test_quick_roll_nat_20_highlighted(
+        self, mock_randint, client, game_with_player
+    ):
+        """Test natural 20 gets special styling."""
+        mock_randint.return_value = 20
+        setup = game_with_player
+        client.force_login(setup["player"].user)
+
+        url = reverse("quick-roll", args=(setup["game"].id,))
+        with patch("game.services.send_to_channel"):
+            response = client.post(
+                url,
+                {
+                    "dice": "1d20+5",
+                    "label": "",
+                },
+            )
+
+        content = response.content.decode()
+        assert "nat-20" in content or "NAT 20" in content
+
+    @patch("utils.dice.random.randint")
+    def test_quick_roll_nat_1_highlighted(self, mock_randint, client, game_with_player):
+        """Test natural 1 gets special styling."""
+        mock_randint.return_value = 1
+        setup = game_with_player
+        client.force_login(setup["player"].user)
+
+        url = reverse("quick-roll", args=(setup["game"].id,))
+        with patch("game.services.send_to_channel"):
+            response = client.post(
+                url,
+                {
+                    "dice": "1d20+5",
+                    "label": "",
+                },
+            )
+
+        content = response.content.decode()
+        assert "nat-1" in content or "NAT 1" in content
+
+    def test_quick_roll_accessible_by_master(self, client):
+        """Test quick roll accessible by game master."""
+        game = GameFactory()
+        client.force_login(game.master.user)
+
+        url = reverse("quick-roll", args=(game.id,))
+        with patch("game.services.send_to_channel"):
+            response = client.post(
+                url,
+                {
+                    "dice": "1d20",
+                    "label": "",
+                },
+            )
+
+        assert response.status_code == 200
+
+    def test_quick_roll_forbidden_for_non_participant(self, client, game_with_player):
+        """Test quick roll forbidden for non-participants."""
+        setup = game_with_player
+        other_user = UserFactory()
+        client.force_login(other_user)
+
+        url = reverse("quick-roll", args=(setup["game"].id,))
+        response = client.post(
+            url,
+            {
+                "dice": "1d20",
+                "label": "",
+            },
+        )
+
+        assert response.status_code == 403

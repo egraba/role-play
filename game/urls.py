@@ -136,6 +136,11 @@ urlpatterns = [
         name="dice-roll",
     ),
     path(
+        "<int:game_id>/quick-roll/",
+        dice_roller.QuickRollView.as_view(),
+        name="quick-roll",
+    ),
+    path(
         "<int:game_id>/concentration/<int:character_id>/",
         concentration.ConcentrationSaveModalView.as_view(),
         name="concentration-save-modal",

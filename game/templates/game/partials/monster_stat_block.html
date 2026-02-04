@@ -1,0 +1,583 @@
+{% comment %}
+Monster Stat Block Component
+============================
+Renders a D&D 5e monster stat block in official format with parchment aesthetic.
+
+Usage:
+    {% include "game/partials/monster_stat_block.html" with monster=goblin %}
+    {% include "game/partials/monster_stat_block.html" with monster=goblin show_roll_buttons=True game=game %}
+
+Context:
+    monster: MonsterSettings or Monster instance (required)
+    show_roll_buttons: Boolean to show interactive dice buttons (default: False)
+    game: Game instance (required if show_roll_buttons=True)
+{% endcomment %}
+
+<div class="monster-stat-block-wrapper">
+    {# Roll result toast container #}
+    {% if show_roll_buttons %}
+        <div id="stat-block-roll-result" class="stat-block-roll-container"></div>
+    {% endif %}
+
+    <div class="monster-stat-block">
+    {# Header: Name and Type #}
+        <div class="stat-block-header">
+            <h3 class="monster-name">{{ monster.name|default:monster.settings.name }}</h3>
+            <p class="monster-type">
+                {{ monster.size|default:monster.settings.size }}
+                {{ monster.creature_type|default:monster.settings.creature_type }}{% if monster.subtype|default:monster.settings.subtype %} ({{ monster.subtype|default:monster.settings.subtype }}){% endif %},
+                {{ monster.alignment|default:monster.settings.alignment }}
+            </p>
+        </div>
+
+        <div class="stat-block-divider"></div>
+
+    {# Core Stats: AC, HP, Speed #}
+        <div class="stat-block-core">
+            <p class="stat-block-property">
+                <span class="property-label">Armor Class</span>
+                <span class="property-value">{{ monster.ac|default:monster.settings.ac }}{% if monster.ac_type|default:monster.settings.ac_type %} ({{ monster.ac_type|default:monster.settings.ac_type }}){% endif %}</span>
+            </p>
+            <p class="stat-block-property">
+                <span class="property-label">Hit Points</span>
+                <span class="property-value">
+                    {{ monster.hp_average|default:monster.settings.hp_average }} ({{ monster.hit_dice|default:monster.settings.hit_dice }})
+                    {% if show_roll_buttons and game %}
+                        <button class="stat-roll-btn"
+                                title="Roll HP"
+                                hx-post="{% url 'quick-roll' game.id %}"
+                                hx-vals='{"dice": "{{ monster.hit_dice|default:monster.settings.hit_dice }}", "label": "{{ monster.name|default:monster.settings.name }} HP"}'
+                                hx-target="#stat-block-roll-result"
+                                hx-swap="innerHTML">
+                            &#9860;
+                        </button>
+                    {% endif %}
+                </span>
+            </p>
+            <p class="stat-block-property">
+                <span class="property-label">Speed</span>
+                <span class="property-value">
+                    {% with speed=monster.speed|default:monster.settings.speed %}
+                        {% if speed.walk %}{{ speed.walk }} ft.{% endif %}
+                        {% if speed.fly %}, fly {{ speed.fly }} ft.{% endif %}
+                        {% if speed.swim %}, swim {{ speed.swim }} ft.{% endif %}
+                        {% if speed.climb %}, climb {{ speed.climb }} ft.{% endif %}
+                        {% if speed.burrow %}, burrow {{ speed.burrow }} ft.{% endif %}
+                    {% endwith %}
+                </span>
+            </p>
+        </div>
+
+        <div class="stat-block-divider"></div>
+
+    {# Ability Scores #}
+        <div class="stat-block-abilities">
+            {% with m=monster.settings|default:monster %}
+                <div class="ability">
+                    <span class="ability-label">STR</span>
+                    <span class="ability-score">{{ m.strength }}</span>
+                    {% if show_roll_buttons and game %}
+                        <button class="stat-roll-btn ability-mod"
+                                title="Strength Check"
+                                hx-post="{% url 'quick-roll' game.id %}"
+                                hx-vals='{"dice": "1d20{% if m.strength_modifier >= 0 %}+{% endif %}{{ m.strength_modifier }}", "label": "{{ monster.name|default:monster.settings.name }} Strength"}'
+                                hx-target="#stat-block-roll-result"
+                                hx-swap="innerHTML">
+                            ({% if m.strength_modifier >= 0 %}+{% endif %}{{ m.strength_modifier }})
+                        </button>
+                    {% else %}
+                        <span class="ability-mod">({% if m.strength_modifier >= 0 %}+{% endif %}{{ m.strength_modifier }})</span>
+                    {% endif %}
+                </div>
+                <div class="ability">
+                    <span class="ability-label">DEX</span>
+                    <span class="ability-score">{{ m.dexterity }}</span>
+                    {% if show_roll_buttons and game %}
+                        <button class="stat-roll-btn ability-mod"
+                                title="Dexterity Check"
+                                hx-post="{% url 'quick-roll' game.id %}"
+                                hx-vals='{"dice": "1d20{% if m.dexterity_modifier >= 0 %}+{% endif %}{{ m.dexterity_modifier }}", "label": "{{ monster.name|default:monster.settings.name }} Dexterity"}'
+                                hx-target="#stat-block-roll-result"
+                                hx-swap="innerHTML">
+                            ({% if m.dexterity_modifier >= 0 %}+{% endif %}{{ m.dexterity_modifier }})
+                        </button>
+                    {% else %}
+                        <span class="ability-mod">({% if m.dexterity_modifier >= 0 %}+{% endif %}{{ m.dexterity_modifier }})</span>
+                    {% endif %}
+                </div>
+                <div class="ability">
+                    <span class="ability-label">CON</span>
+                    <span class="ability-score">{{ m.constitution }}</span>
+                    {% if show_roll_buttons and game %}
+                        <button class="stat-roll-btn ability-mod"
+                                title="Constitution Check"
+                                hx-post="{% url 'quick-roll' game.id %}"
+                                hx-vals='{"dice": "1d20{% if m.constitution_modifier >= 0 %}+{% endif %}{{ m.constitution_modifier }}", "label": "{{ monster.name|default:monster.settings.name }} Constitution"}'
+                                hx-target="#stat-block-roll-result"
+                                hx-swap="innerHTML">
+                            ({% if m.constitution_modifier >= 0 %}+{% endif %}{{ m.constitution_modifier }})
+                        </button>
+                    {% else %}
+                        <span class="ability-mod">({% if m.constitution_modifier >= 0 %}+{% endif %}{{ m.constitution_modifier }})</span>
+                    {% endif %}
+                </div>
+                <div class="ability">
+                    <span class="ability-label">INT</span>
+                    <span class="ability-score">{{ m.intelligence }}</span>
+                    {% if show_roll_buttons and game %}
+                        <button class="stat-roll-btn ability-mod"
+                                title="Intelligence Check"
+                                hx-post="{% url 'quick-roll' game.id %}"
+                                hx-vals='{"dice": "1d20{% if m.intelligence_modifier >= 0 %}+{% endif %}{{ m.intelligence_modifier }}", "label": "{{ monster.name|default:monster.settings.name }} Intelligence"}'
+                                hx-target="#stat-block-roll-result"
+                                hx-swap="innerHTML">
+                            ({% if m.intelligence_modifier >= 0 %}+{% endif %}{{ m.intelligence_modifier }})
+                        </button>
+                    {% else %}
+                        <span class="ability-mod">({% if m.intelligence_modifier >= 0 %}+{% endif %}{{ m.intelligence_modifier }})</span>
+                    {% endif %}
+                </div>
+                <div class="ability">
+                    <span class="ability-label">WIS</span>
+                    <span class="ability-score">{{ m.wisdom }}</span>
+                    {% if show_roll_buttons and game %}
+                        <button class="stat-roll-btn ability-mod"
+                                title="Wisdom Check"
+                                hx-post="{% url 'quick-roll' game.id %}"
+                                hx-vals='{"dice": "1d20{% if m.wisdom_modifier >= 0 %}+{% endif %}{{ m.wisdom_modifier }}", "label": "{{ monster.name|default:monster.settings.name }} Wisdom"}'
+                                hx-target="#stat-block-roll-result"
+                                hx-swap="innerHTML">
+                            ({% if m.wisdom_modifier >= 0 %}+{% endif %}{{ m.wisdom_modifier }})
+                        </button>
+                    {% else %}
+                        <span class="ability-mod">({% if m.wisdom_modifier >= 0 %}+{% endif %}{{ m.wisdom_modifier }})</span>
+                    {% endif %}
+                </div>
+                <div class="ability">
+                    <span class="ability-label">CHA</span>
+                    <span class="ability-score">{{ m.charisma }}</span>
+                    {% if show_roll_buttons and game %}
+                        <button class="stat-roll-btn ability-mod"
+                                title="Charisma Check"
+                                hx-post="{% url 'quick-roll' game.id %}"
+                                hx-vals='{"dice": "1d20{% if m.charisma_modifier >= 0 %}+{% endif %}{{ m.charisma_modifier }}", "label": "{{ monster.name|default:monster.settings.name }} Charisma"}'
+                                hx-target="#stat-block-roll-result"
+                                hx-swap="innerHTML">
+                            ({% if m.charisma_modifier >= 0 %}+{% endif %}{{ m.charisma_modifier }})
+                        </button>
+                    {% else %}
+                        <span class="ability-mod">({% if m.charisma_modifier >= 0 %}+{% endif %}{{ m.charisma_modifier }})</span>
+                    {% endif %}
+                </div>
+            {% endwith %}
+        </div>
+
+        <div class="stat-block-divider"></div>
+
+    {# Properties: Saves, Skills, Resistances, Senses, Languages, CR #}
+        <div class="stat-block-properties">
+            {% with m=monster.settings|default:monster %}
+
+        {# Saving Throws #}
+                {% if m.saving_throws %}
+                    <p class="stat-block-property">
+                        <span class="property-label">Saving Throws</span>
+                        <span class="property-value">
+                            {% for save, bonus in m.saving_throws.items %}
+                                {{ save }} {% if bonus >= 0 %}+{% endif %}{{ bonus }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </span>
+                    </p>
+                {% endif %}
+
+        {# Skills #}
+                {% if m.skills %}
+                    <p class="stat-block-property">
+                        <span class="property-label">Skills</span>
+                        <span class="property-value">
+                            {% for skill, bonus in m.skills.items %}
+                                {{ skill|capfirst }} {% if bonus >= 0 %}+{% endif %}{{ bonus }}{% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </span>
+                    </p>
+                {% endif %}
+
+        {# Damage Vulnerabilities #}
+                {% if m.damage_vulnerabilities %}
+                    <p class="stat-block-property">
+                        <span class="property-label">Damage Vulnerabilities</span>
+                        <span class="property-value">{{ m.damage_vulnerabilities|join:", " }}</span>
+                    </p>
+                {% endif %}
+
+        {# Damage Resistances #}
+                {% if m.damage_resistances %}
+                    <p class="stat-block-property">
+                        <span class="property-label">Damage Resistances</span>
+                        <span class="property-value">{{ m.damage_resistances|join:", " }}</span>
+                    </p>
+                {% endif %}
+
+        {# Damage Immunities #}
+                {% if m.damage_immunities %}
+                    <p class="stat-block-property">
+                        <span class="property-label">Damage Immunities</span>
+                        <span class="property-value">{{ m.damage_immunities|join:", " }}</span>
+                    </p>
+                {% endif %}
+
+        {# Condition Immunities #}
+                {% if m.condition_immunities %}
+                    <p class="stat-block-property">
+                        <span class="property-label">Condition Immunities</span>
+                        <span class="property-value">{{ m.condition_immunities|join:", " }}</span>
+                    </p>
+                {% endif %}
+
+        {# Senses #}
+                {% if m.senses %}
+                    <p class="stat-block-property">
+                        <span class="property-label">Senses</span>
+                        <span class="property-value">
+                            {% for sense, value in m.senses.items %}
+                                {% if sense == "passive_perception" %}
+                                    passive Perception {{ value }}
+                                {% else %}
+                                    {{ sense }} {{ value }} ft.
+                                {% endif %}
+                                {% if not forloop.last %}, {% endif %}
+                            {% endfor %}
+                        </span>
+                    </p>
+                {% endif %}
+
+        {# Languages #}
+                <p class="stat-block-property">
+                    <span class="property-label">Languages</span>
+                    <span class="property-value">
+                        {% if m.languages %}
+                            {{ m.languages|join:", " }}
+                        {% else %}
+                            &mdash;
+                        {% endif %}
+                        {% if m.telepathy %}
+                            , telepathy {{ m.telepathy }} ft.
+                        {% endif %}
+                    </span>
+                </p>
+
+        {# Challenge Rating #}
+                <p class="stat-block-property">
+                    <span class="property-label">Challenge</span>
+                    <span class="property-value">{{ m.challenge_rating }} ({{ m.xp|default:"0" }} XP)</span>
+                    <span class="property-label proficiency-label">Proficiency Bonus</span>
+                    <span class="property-value">+{{ m.proficiency_bonus }}</span>
+                </p>
+
+            {% endwith %}
+        </div>
+
+        <div class="stat-block-divider"></div>
+
+    {# Traits #}
+        {% with m=monster.settings|default:monster %}
+            {% if m.traits %}
+                <div class="stat-block-section traits-section">
+                    {% for trait in m.traits %}
+                        <div class="stat-block-trait">
+                            <span class="trait-name">{{ trait.name }}.</span>
+                            <span class="trait-description">{{ trait.description }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+    {# Actions #}
+            {% if m.actions %}
+                <div class="stat-block-section actions-section">
+                    <h4 class="section-header">Actions</h4>
+                    {% for action in m.actions %}
+                        <div class="stat-block-action">
+                            <span class="action-name">{{ action.name }}.</span>
+                            <span class="action-description">{{ action.description }}</span>
+                            {% if show_roll_buttons and game and action.attack_bonus is not None %}
+                                <span class="action-rolls">
+                                    <button class="stat-roll-btn"
+                                            title="Attack Roll"
+                                            hx-post="{% url 'quick-roll' game.id %}"
+                                            hx-vals='{"dice": "1d20{% if action.attack_bonus >= 0 %}+{% endif %}{{ action.attack_bonus }}", "label": "{{ monster.name|default:monster.settings.name }} {{ action.name }} Attack"}'
+                                            hx-target="#stat-block-roll-result"
+                                            hx-swap="innerHTML">
+                                        &#9876; Attack
+                                    </button>
+                                    {% if action.damage_dice %}
+                                        <button class="stat-roll-btn"
+                                                title="Damage Roll"
+                                                hx-post="{% url 'quick-roll' game.id %}"
+                                                hx-vals='{"dice": "{{ action.damage_dice }}", "label": "{{ monster.name|default:monster.settings.name }} {{ action.name }} Damage"}'
+                                                hx-target="#stat-block-roll-result"
+                                                hx-swap="innerHTML">
+                                            &#9760; Damage
+                                        </button>
+                                    {% endif %}
+                                </span>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+    {# Reactions #}
+            {% if m.reactions %}
+                <div class="stat-block-section reactions-section">
+                    <h4 class="section-header">Reactions</h4>
+                    {% for reaction in m.reactions %}
+                        <div class="stat-block-action">
+                            <span class="action-name">{{ reaction.name }}.</span>
+                            <span class="action-description">{{ reaction.description }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+    {# Legendary Actions #}
+            {% if m.legendary_actions %}
+                <div class="stat-block-section legendary-section">
+                    <h4 class="section-header">Legendary Actions</h4>
+                    <p class="legendary-preamble">
+                        The {{ monster.name|default:monster.settings.name|lower }} can take {{ m.legendary_action_count }} legendary actions, choosing from the options below. Only one legendary action option can be used at a time and only at the end of another creature's turn. The {{ monster.name|default:monster.settings.name|lower }} regains spent legendary actions at the start of its turn.
+                    </p>
+                    {% for action in m.legendary_actions %}
+                        <div class="stat-block-action">
+                            <span class="action-name">{{ action.name }}{% if action.cost > 1 %} (Costs {{ action.cost }} Actions){% endif %}.</span>
+                            <span class="action-description">{{ action.description }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+    </div>
+</div>
+
+<style>
+/* Monster Stat Block - Parchment Style */
+    .monster-stat-block {
+        background: linear-gradient(135deg, #f4e4bc 0%, #e8d5a3 50%, #f0e0b8 100%);
+        border: 3px solid var(--color-primary, #d4af37);
+        border-radius: 2px;
+        box-shadow:
+        inset 0 0 30px rgba(0, 0, 0, 0.1),
+        0 10px 40px rgba(0, 0, 0, 0.5);
+        color: #1a1a1a;
+        font-family: 'Georgia', 'Times New Roman', serif;
+        font-size: 0.9rem;
+        line-height: 1.4;
+        max-width: 400px;
+        min-width: 280px;
+        padding: 15px 20px;
+    }
+
+/* Header */
+    .stat-block-header {
+        border-bottom: 2px solid #7a200d;
+        margin-bottom: 8px;
+        padding-bottom: 8px;
+    }
+
+    .monster-name {
+        color: #7a200d;
+        font-family: 'Georgia', serif;
+        font-size: 1.4rem;
+        font-weight: bold;
+        letter-spacing: 0.5px;
+        margin: 0 0 2px 0;
+        text-transform: uppercase;
+    }
+
+    .monster-type {
+        color: #1a1a1a;
+        font-size: 0.85rem;
+        font-style: italic;
+        margin: 0;
+    }
+
+/* Dividers */
+    .stat-block-divider {
+        background: linear-gradient(90deg, #7a200d 0%, #a0522d 50%, #7a200d 100%);
+        height: 2px;
+        margin: 8px 0;
+    }
+
+/* Core Stats */
+    .stat-block-core {
+        margin: 8px 0;
+    }
+
+/* Properties */
+    .stat-block-property {
+        margin: 3px 0;
+    }
+
+    .property-label {
+        color: #1a1a1a;
+        font-weight: bold;
+    }
+
+    .property-value {
+        color: #1a1a1a;
+    }
+
+    .proficiency-label {
+        margin-left: 15px;
+    }
+
+/* Ability Scores Grid */
+    .stat-block-abilities {
+        display: grid;
+        gap: 4px;
+        grid-template-columns: repeat(6, 1fr);
+        margin: 10px 0;
+        text-align: center;
+    }
+
+    .ability {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .ability-label {
+        color: #7a200d;
+        font-size: 0.75rem;
+        font-weight: bold;
+        letter-spacing: 1px;
+    }
+
+    .ability-score {
+        color: #1a1a1a;
+        font-size: 1rem;
+        font-weight: bold;
+    }
+
+    .ability-mod {
+        background: none;
+        border: none;
+        color: #1a1a1a;
+        cursor: default;
+        font-family: inherit;
+        font-size: 0.85rem;
+        padding: 0;
+    }
+
+    button.ability-mod {
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    button.ability-mod:hover {
+        background: rgba(139, 69, 19, 0.2);
+        border-radius: 3px;
+        color: #7a200d;
+    }
+
+/* Section Headers */
+    .section-header {
+        border-bottom: 1px solid #7a200d;
+        color: #7a200d;
+        font-size: 1.1rem;
+        margin: 12px 0 8px 0;
+        padding-bottom: 4px;
+    }
+
+/* Traits and Actions */
+    .stat-block-trait,
+    .stat-block-action {
+        margin: 8px 0;
+    }
+
+    .trait-name,
+    .action-name {
+        font-style: italic;
+        font-weight: bold;
+    }
+
+    .trait-description,
+    .action-description {
+        color: #1a1a1a;
+    }
+
+    .legendary-preamble {
+        font-size: 0.85rem;
+        font-style: italic;
+        margin-bottom: 10px;
+    }
+
+/* Action Rolls */
+    .action-rolls {
+        display: block;
+        margin-top: 5px;
+    }
+
+/* Roll Buttons */
+    .stat-roll-btn {
+        background: rgba(139, 69, 19, 0.15);
+        border: 1px solid #8b4513;
+        border-radius: 3px;
+        color: #5c3d2e;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 0.8rem;
+        margin-left: 5px;
+        padding: 2px 8px;
+        transition: all 0.2s ease;
+        vertical-align: middle;
+    }
+
+    .stat-roll-btn:hover {
+        background: rgba(212, 175, 55, 0.3);
+        border-color: #d4af37;
+        box-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
+    }
+
+    .stat-roll-btn:active {
+        transform: scale(0.95);
+    }
+
+/* Responsive */
+    @media (max-width: 350px) {
+        .stat-block-abilities {
+            gap: 2px;
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .ability {
+            margin-bottom: 8px;
+        }
+
+        .monster-stat-block {
+            font-size: 0.85rem;
+            padding: 12px 15px;
+        }
+
+        .monster-name {
+            font-size: 1.2rem;
+        }
+    }
+
+/* Wrapper and Roll Result Container */
+    .monster-stat-block-wrapper {
+        position: relative;
+    }
+
+    .stat-block-roll-container {
+        left: 50%;
+        position: absolute;
+        top: -10px;
+        transform: translateX(-50%);
+        z-index: 100;
+    }
+
+    .stat-block-roll-container:empty {
+        display: none;
+    }
+</style>
