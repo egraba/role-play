@@ -27,6 +27,18 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
   - Improved `conftest.py` fixture loading with better documentation for xdist compatibility
 
 ### Added
+* Monster stat block component for DM dashboard:
+  - Official D&D 5e stat block format with parchment aesthetic
+  - Gold-framed RPGUI container matching existing design system
+  - Displays: name/type, AC, HP, speed, ability scores, saves, skills, resistances, senses, languages, CR
+  - Traits, Actions, Reactions, and Legendary Actions sections
+  - Quick-roll buttons for ability checks, attacks, and damage
+  - Responsive design for sidebar use
+* Quick-roll endpoint for dice rolls from stat blocks:
+  - Accepts dice expression strings (e.g., "1d20+5", "2d6-1")
+  - Returns toast-style HTML fragment with roll results
+  - Highlights natural 20s and 1s on d20 rolls
+  - Integrates with existing DiceRollService for WebSocket broadcast
 * Location field on Character model for tracking character position in-game
 * Ability score assignment interface with three generation modes:
   - Point Buy mode: 27-point budget with cost per score (8=0, 9=1, 10=2, 11=3, 12=4, 13=5, 14=7, 15=9)
