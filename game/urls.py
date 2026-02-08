@@ -7,6 +7,7 @@ from .views import (
     concentration,
     dice_roller,
     initiative,
+    log,
     master,
     player,
 )
@@ -139,6 +140,11 @@ urlpatterns = [
         "<int:game_id>/quick-roll/",
         dice_roller.QuickRollView.as_view(),
         name="quick-roll",
+    ),
+    path(
+        "<int:game_id>/log/",
+        log.GameLogView.as_view(),
+        name="game-log",
     ),
     path(
         "<int:game_id>/concentration/<int:character_id>/",

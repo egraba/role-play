@@ -1,0 +1,8 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/game-log.css' %}">
+<script src="{% static 'js/game-log.js' %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        window.gameLog = new GameLog({{ game.id }}, '{{ user.username }}');
+    });
+</script>

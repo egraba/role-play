@@ -139,3 +139,6 @@ requirements.txt
 
 # ruff
 .ruff_cache/
+
+# Git worktrees
+.worktrees/
