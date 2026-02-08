@@ -27,6 +27,14 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
   - Improved `conftest.py` fixture loading with better documentation for xdist compatibility
 
 ### Added
+* Game log panel with real-time WebSocket updates:
+  - Color-coded event categories: rolls (blue), combat (red), spells (purple), chat (gray), DM (gold)
+  - Expandable entry details for dice rolls, ability checks, and spell casts
+  - Category and character filtering with multi-select dropdown
+  - Smart auto-scroll with "N new events" indicator when scrolled up
+  - REST endpoint for loading last 50 events on connect
+  - Enhanced WebSocket payload with category and character metadata
+  - Responsive layout: right sidebar on desktop, bottom sheet on mobile
 * Monster stat block component for DM dashboard:
   - Official D&D 5e stat block format with parchment aesthetic
   - Gold-framed RPGUI container matching existing design system
