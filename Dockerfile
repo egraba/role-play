@@ -6,6 +6,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV UV_COMPILE_BYTECODE=1
 ENV UV_LINK_MODE=copy
+ENV PATH="/root/.local/bin:$PATH"
 
 # Copy uv from official image
 COPY --from=uv /uv /uvx /usr/local/bin/
