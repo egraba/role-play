@@ -15,7 +15,7 @@ from pytest_django.asserts import (
 
 from character.models.character import Character
 from character.tests.factories import CharacterFactory
-from game.models.events import Event
+
 from game.models.game import Game, Player, Quest
 from game.views.common import (
     GameCreateErrorView,
@@ -253,20 +253,6 @@ class TestGameView:
         response = client.get(populated_game.get_absolute_url())
         assertTemplateUsed(response, "game/game.html")
 
-    def test_pagination_size(self, client, populated_game):
-        response = client.get(populated_game.get_absolute_url())
-        assert response.status_code == 200
-        assert "is_paginated" in response.context
-        assert response.context["is_paginated"]
-        assert len(response.context["event_list"]) == 10
-
-    def test_pagination_size_next_page(self, client, populated_game):
-        response = client.get(populated_game.get_absolute_url() + "?page=2")
-        assert response.status_code == 200
-        assert "is_paginated" in response.context
-        assert response.context["is_paginated"]
-        assert len(response.context["event_list"]) == 3  # Inherited events
-
     def test_ordering_character_name_ascending(self, client, populated_game):
         response = client.get(populated_game.get_absolute_url())
         assert response.status_code == 200
@@ -277,17 +263,6 @@ class TestGameView:
             else:
                 assert last_name <= character.name
                 last_name = character.name.upper()
-
-    def test_ordering_event_date_descending(self, client, populated_game):
-        response = client.get(populated_game.get_absolute_url())
-        assert response.status_code == 200
-        last_date = 0
-        for event in response.context["event_list"]:
-            if last_date == 0:
-                last_date = event.date
-            else:
-                assert last_date >= event.date
-                last_date = event.date
 
     def test_game_not_exists(self, client):
         game_id = random.randint(10000, 99999)
@@ -311,9 +286,6 @@ class TestGameView:
         assertQuerySetEqual(
             set(response.context["character_list"]), set(character_list)
         )
-        event_list = Event.objects.filter(game=populated_game).select_subclasses()
-        # issubset() is used because of pagination.
-        assert set(response.context["event_list"]).issubset(set(event_list))
         with pytest.raises(KeyError):
             response.context["player"]
 
@@ -332,9 +304,6 @@ class TestGameView:
         assertQuerySetEqual(
             set(response.context["character_list"]), set(character_list)
         )
-        event_list = Event.objects.filter(game=populated_game).select_subclasses()
-        # issubset() is used because of pagination.
-        assert set(response.context["event_list"]).issubset(set(event_list))
         player = Player.objects.get(game=populated_game, character__user=user)
         assert response.context["player"] == player
 
@@ -347,12 +316,6 @@ class TestGameView:
         response = client.get(populated_game.get_absolute_url())
         assert response.status_code == 200
         assertContains(response, "played by you")
-
-    def test_content_no_events(self, client, populated_game):
-        Event.objects.filter(game=populated_game).delete()
-        response = client.get(populated_game.get_absolute_url())
-        assert response.status_code == 200
-        assertContains(response, "The campaign did not start yet...")
 
     def test_websocket_auto_reconnect_script(self, client, populated_game):
         """Test that WebSocket auto-reconnect logic is present in the template."""
