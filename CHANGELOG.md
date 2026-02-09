@@ -21,6 +21,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
   - Documented all event types, combat system, and character creation flow
 
 ### Fixed
+* Fixed deployment failure by switching Docker base image from GHCR (`ghcr.io/astral-sh/uv`) to Docker Hub (`python:3.14-slim-trixie`) with standalone uv installer to avoid GHCR availability issues
 * Fixed deployment failure by updating Docker base image from removed `bookworm-slim` to `trixie-slim` (uv 0.9+)
 * Fixed flaky tests in CI caused by parallel test execution with shared PostgreSQL database
   - CI now runs tests serially (`-n 0`) to avoid race conditions and duplicate key violations
