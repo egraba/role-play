@@ -11,7 +11,7 @@ from ..constants.combat import CombatState
 from ..constants.events import RollStatus, RollType
 from ..flows import GameFlow
 from ..models.combat import Combat
-from ..models.events import Event, RollRequest, CombatInitiativeRequest
+from ..models.events import CombatInitiativeRequest, RollRequest
 from ..models.game import Game, Master, Player, Quest
 from ..views.mixins import GameContextMixin
 
@@ -47,10 +47,7 @@ class GameListView(LoginRequiredMixin, ListView):
         return super().get_queryset().filter(master__user=self.request.user)
 
 
-class GameView(LoginRequiredMixin, ListView, GameContextMixin):
-    model = Event
-    paginate_by = 10
-    ordering = ["-date"]
+class GameView(LoginRequiredMixin, TemplateView, GameContextMixin):
     template_name = "game/game.html"
 
     def get_context_data(self, **kwargs):
@@ -87,9 +84,6 @@ class GameView(LoginRequiredMixin, ListView, GameContextMixin):
         except Player.DoesNotExist:
             pass
         return context
-
-    def get_queryset(self):
-        return super().get_queryset().filter(game=self.game.id).select_subclasses()
 
 
 class GameCreateView(LoginRequiredMixin, CreateView):

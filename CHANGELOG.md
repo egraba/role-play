@@ -4,6 +4,12 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 
 ## Unreleased
 
+### Removed
+* Removed deprecated Game Events panel from game view in favor of the Game Log panel
+  - Events are now exclusively displayed in the right-side Game Log panel with filtering, categories, and expandable details
+  - Refactored `GameView` from `ListView` to `TemplateView` (eliminates unnecessary event query on page load)
+  - Moved connection status indicator to bottom-left to avoid overlapping with the Game Log panel
+
 ### Changed
 * Harmonized naming between poe tasks and Django settings files
   - Renamed `local.py` to `dev.py` to match `dev-*` task prefix

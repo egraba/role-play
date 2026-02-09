@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 {% load static %}
-{% load humanize %}
 
 {% block content %}
 
@@ -29,19 +28,6 @@
             </div>
 
             <div id="game">
-                <div class="rpg-section">
-                    <div id="events" class="rpg-panel" style="background: rgba(0, 0, 0, 0.3);">
-                        <h3 class="panel-title" style="font-size: 1.2rem;"><img src="/static/images/icons/actions/roll.svg" alt="" class="rpg-icon rpg-icon-md rpg-icon-warning"> Game Events</h3>
-                        <div id="event-list" style="max-height: 300px; overflow-y: auto;">
-                            {% for event in event_list reversed %}
-                                <p style="margin: 5px 0; color: var(--color-text);">[{{ event.date|date:"G:i" }}] {{ event.get_message }}</p>
-                            {% empty %}
-                                <p class="text-muted">The campaign did not start yet...</p>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-
                 {% if flow.is_ongoing %}
                     <div id="messaging" class="rpg-section">
                         <div class="rpg-form-group">
@@ -180,7 +166,6 @@
         const url = wsProtocol + window.location.host + '/events/' + {{ game.id }} + '/';
 
         // DOM elements
-        const eventList = document.getElementById('event-list');
         const input = document.getElementById('message-input');
         const sendButton = document.getElementById('message-submit');
         const abilityCheckButton = document.getElementById('ability-check-submit');
@@ -206,7 +191,7 @@
         function createConnectionStatus() {
             const statusDiv = document.createElement('div');
             statusDiv.id = 'connection-status';
-            statusDiv.style.cssText = 'position: fixed; bottom: 20px; right: 20px; padding: 10px 15px; border-radius: 5px; font-size: 0.9rem; z-index: 1000; display: none; cursor: pointer;';
+            statusDiv.style.cssText = 'position: fixed; bottom: 20px; left: 70px; padding: 10px 15px; border-radius: 5px; font-size: 0.9rem; z-index: 1000; display: none; cursor: pointer;';
             statusDiv.title = 'Click to retry connection';
             statusDiv.addEventListener('click', function() {
                 if (reconnectTimeout) {
@@ -251,21 +236,14 @@
 
             eventsSocket.onmessage = function(event) {
                 const message = JSON.parse(event.data);
-                // Pass to game log panel if available
+                // Pass to game log panel
                 if (window.gameLog) {
                     window.gameLog.handleWebSocketEvent(message);
-                }
-                const date = new Date(message["date"]);
-                eventList.innerHTML += '<p>[' + date.getUTCHours() + ':' + date.getUTCMinutes() + '] ' + message["message"] + '</p>';
-                const lines = eventList.innerHTML.split('</p>');
-                if (lines.length > 10) {
-                    lines.splice(0, 1);
-                    eventList.innerHTML = lines.join('\n');
                 }
                 if (message["type"] === QUEST_UPDATE) {
                     $("#quest").load(" #quest > *");
                 } else if (message["type"] === MESSAGE || message["type"] === DICE_ROLL) {
-                    // Just display the message in the event list, no additional action needed.
+                    // Handled by game log panel
                 } else if (message["type"].startsWith("turn.") ||
                     message["type"].startsWith("combat.") ||
                     message["type"].startsWith("hp.") ||
