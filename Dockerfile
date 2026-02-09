@@ -4,6 +4,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV UV_COMPILE_BYTECODE=1
 ENV UV_LINK_MODE=copy
+ENV PATH="/root/.local/bin:$PATH"
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -15,9 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Install uv
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
-    && ln -s /root/.local/bin/uv /usr/local/bin/uv \
-    && ln -s /root/.local/bin/uvx /usr/local/bin/uvx
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Install Doppler CLI using the recommended method
 RUN curl -sLf --retry 3 --tlsv1.2 --proto "=https" 'https://packages.doppler.com/public/cli/gpg.DE2A7741A397C129.key' \
