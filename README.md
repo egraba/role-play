@@ -7,6 +7,7 @@
 [![Renovate enabled](https://img.shields.io/badge/renovate-enabled-brightgreen.svg)](https://renovatebot.com)
 [![CI status](https://github.com/egraba/role-play/actions/workflows/ci.yml/badge.svg)](https://github.com/egraba/role-play/actions)
 [![codecov](https://codecov.io/gh/egraba/role-play/graph/badge.svg?token=Z3E788461G)](https://codecov.io/gh/egraba/role-play)
+[![Fly Deploy](https://github.com/egraba/role-play/actions/workflows/fly-deploy.yml/badge.svg)](https://github.com/egraba/role-play/actions/workflows/fly-deploy.yml)
 
 ---
 
