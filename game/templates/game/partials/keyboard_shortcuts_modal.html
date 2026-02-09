@@ -1,0 +1,156 @@
+{% load static %}
+
+<div id="keyboard-shortcuts-modal" class="rpg-modal">
+    <div class="modal-content shortcuts-modal-content">
+        <span class="modal-close" onclick="document.getElementById('keyboard-shortcuts-modal').classList.remove('active')">&times;</span>
+        <h2 class="modal-header">
+            <img src="{% static 'images/icons/ui/settings.svg' %}" alt="" class="rpg-icon rpg-icon-lg rpg-icon-primary">
+            Keyboard Shortcuts
+        </h2>
+
+        <div class="shortcuts-section">
+            <h3 class="shortcuts-section-title">General</h3>
+            <div class="shortcuts-list">
+                <div class="shortcut-row">
+                    <kbd class="shortcut-key">R</kbd>
+                    <span class="shortcut-desc">Open dice roller</span>
+                </div>
+                <div class="shortcut-row">
+                    <kbd class="shortcut-key">C</kbd>
+                    <span class="shortcut-desc">Open character sheet</span>
+                </div>
+                <div class="shortcut-row">
+                    <kbd class="shortcut-key">?</kbd>
+                    <span class="shortcut-desc">Show this help</span>
+                </div>
+                <div class="shortcut-row">
+                    <kbd class="shortcut-key">Esc</kbd>
+                    <span class="shortcut-desc">Close open modal</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="shortcuts-section">
+            <h3 class="shortcuts-section-title">Combat</h3>
+            <div class="shortcuts-list">
+                <div class="shortcut-row">
+                    <kbd class="shortcut-key">A</kbd>
+                    <span class="shortcut-desc">Open attack dialog</span>
+                </div>
+                <div class="shortcut-row">
+                    <kbd class="shortcut-key">S</kbd>
+                    <span class="shortcut-desc">Cast spell</span>
+                </div>
+                <div class="shortcut-row">
+                    <kbd class="shortcut-key">E</kbd>
+                    <span class="shortcut-desc">
+                        Next turn
+                        <span class="shortcut-note">DM only</span>
+                    </span>
+                </div>
+                <div class="shortcut-row">
+                    <kbd class="shortcut-key">I</kbd>
+                    <span class="shortcut-desc">Jump to initiative tracker</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="shortcuts-footer">
+            <button class="rpg-btn btn-primary" onclick="document.getElementById('keyboard-shortcuts-modal').classList.remove('active')">Close</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .shortcuts-modal-content {
+        min-width: 340px;
+        max-width: 420px;
+    }
+
+    .shortcuts-section {
+        margin-bottom: 20px;
+    }
+
+    .shortcuts-section-title {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--color-primary);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin: 0 0 12px 0;
+        padding-bottom: 8px;
+        border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+    }
+
+    .shortcuts-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .shortcut-row {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 6px 8px;
+        border-radius: 4px;
+        transition: background 0.2s ease;
+    }
+
+    .shortcut-row:hover {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .shortcut-key {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 36px;
+        height: 30px;
+        padding: 0 8px;
+        background: linear-gradient(180deg, #3a3a5a, #2a2a3e);
+        border: 1px solid #555;
+        border-bottom-width: 2px;
+        border-radius: 5px;
+        color: var(--color-text);
+        font-family: var(--font-text);
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-align: center;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        flex-shrink: 0;
+    }
+
+    .shortcut-desc {
+        font-size: 0.9rem;
+        color: var(--color-text);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .shortcut-note {
+        font-size: 0.7rem;
+        color: var(--color-text-muted);
+        background: rgba(255, 255, 255, 0.08);
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-style: italic;
+    }
+
+    .shortcuts-footer {
+        margin-top: 20px;
+        padding-top: 15px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    @media (max-width: 400px) {
+        .shortcuts-modal-content {
+            min-width: auto;
+            max-width: 100%;
+            margin: 10px;
+        }
+    }
+</style>

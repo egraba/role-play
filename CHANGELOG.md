@@ -27,6 +27,11 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
   - Improved `conftest.py` fixture loading with better documentation for xdist compatibility
 
 ### Added
+* Keyboard shortcuts for the game page:
+  - `R` open dice roller, `A` open attack dialog, `S` cast spell, `E` next turn (DM)
+  - `I` jump to initiative tracker, `C` open character sheet, `Esc` close modals
+  - `?` or floating help button to show shortcuts reference modal
+  - Shortcuts disabled when typing in inputs or when a modal is open
 * Quick reference panels for D&D 5e SRD rules during gameplay:
   - Conditions panel with all 15 SRD conditions and effect summaries
   - Actions in Combat panel covering standard actions, bonus actions, reactions, and movement
