@@ -1,0 +1,330 @@
+/* ==================== QUICK REFERENCE TOOLBAR ==================== */
+
+.qr-toolbar {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+    display: -webkit-flex;
+    display: flex;
+    gap: 6px;
+    background: var(--color-bg-light);
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 6px 10px;
+    z-index: 150;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.qr-toolbar-btn {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    gap: 5px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid #555;
+    border-radius: 6px;
+    padding: 6px 10px;
+    cursor: pointer;
+    color: var(--color-text-muted);
+    font-family: inherit;
+    font-size: 0.8rem;
+    -webkit-transition: all 0.2s;
+    transition: all 0.2s;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.qr-toolbar-btn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-text);
+}
+
+.qr-toolbar-btn.qr-active {
+    background: rgba(212, 175, 55, 0.2);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.qr-toolbar-icon {
+    font-size: 1rem;
+}
+
+.qr-toolbar-label {
+    display: none;
+}
+
+@media (min-width: 600px) {
+    .qr-toolbar-label {
+        display: inline;
+    }
+}
+
+/* ==================== QUICK REFERENCE PANELS ==================== */
+
+.qr-panel {
+    position: fixed;
+    width: 320px;
+    max-height: 70vh;
+    background: var(--color-bg-light);
+    border: 1px solid #555;
+    border-radius: var(--border-radius);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    overflow: hidden;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.qr-panel.qr-dragging {
+    opacity: 0.85;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6);
+}
+
+.qr-panel.qr-collapsed .qr-panel-body {
+    display: none;
+}
+
+.qr-panel.qr-collapsed {
+    max-height: none;
+}
+
+/* ==================== PANEL HEADER ==================== */
+
+.qr-panel-header {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    background: rgba(212, 175, 55, 0.1);
+    border-bottom: 1px solid #444;
+    cursor: grab;
+}
+
+.qr-panel-header:active {
+    cursor: grabbing;
+}
+
+.qr-panel-icon {
+    font-size: 1.1rem;
+}
+
+.qr-panel-title {
+    -webkit-flex: 1;
+    flex: 1;
+    font-size: 0.95rem;
+    font-weight: bold;
+    color: var(--color-primary);
+}
+
+.qr-panel-controls {
+    display: -webkit-flex;
+    display: flex;
+    gap: 4px;
+}
+
+.qr-control-btn {
+    background: none;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 2px 6px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    -webkit-transition: all 0.2s;
+    transition: all 0.2s;
+}
+
+.qr-control-btn:hover {
+    border-color: #666;
+    color: var(--color-text);
+}
+
+.qr-pin-btn.qr-pinned {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.qr-close-btn:hover {
+    color: var(--color-health);
+    border-color: var(--color-health);
+}
+
+/* ==================== PANEL BODY ==================== */
+
+.qr-panel-body {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+}
+
+/* ==================== SECTIONS ==================== */
+
+.qr-section {
+    margin-bottom: 4px;
+}
+
+.qr-section:last-child {
+    margin-bottom: 0;
+}
+
+.qr-section-title {
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: var(--color-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 6px 8px;
+    background: rgba(212, 175, 55, 0.05);
+    border-radius: 4px;
+    cursor: pointer;
+    -webkit-transition: background 0.2s;
+    transition: background 0.2s;
+}
+
+.qr-section-title:hover {
+    background: rgba(212, 175, 55, 0.1);
+}
+
+.qr-section-title::before {
+    content: "\25BC ";
+    font-size: 0.6rem;
+    margin-right: 4px;
+    display: inline-block;
+    -webkit-transition: transform 0.2s;
+    transition: transform 0.2s;
+}
+
+.qr-section-collapsed .qr-section-title::before {
+    -webkit-transform: rotate(-90deg);
+    transform: rotate(-90deg);
+}
+
+.qr-section-collapsed .qr-section-content {
+    display: none;
+}
+
+.qr-section-content {
+    padding: 4px 0;
+}
+
+.qr-text {
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+    padding: 6px 8px;
+    margin: 0;
+}
+
+/* ==================== ITEMS (Collapsible entries) ==================== */
+
+.qr-item {
+    padding: 5px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    -webkit-transition: background 0.2s;
+    transition: background 0.2s;
+}
+
+.qr-item:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.qr-item-name {
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: var(--color-text);
+}
+
+.qr-item-desc {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+    max-height: 0;
+    overflow: hidden;
+    -webkit-transition: max-height 0.25s ease, padding 0.25s ease;
+    transition: max-height 0.25s ease, padding 0.25s ease;
+    padding-top: 0;
+}
+
+.qr-item-expanded .qr-item-desc {
+    max-height: 200px;
+    padding-top: 4px;
+}
+
+.qr-item-name::after {
+    content: " \25B8";
+    font-size: 0.65rem;
+    color: var(--color-text-muted);
+    -webkit-transition: transform 0.2s;
+    transition: transform 0.2s;
+    display: inline-block;
+}
+
+.qr-item-expanded .qr-item-name::after {
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+
+/* ==================== SCROLLBAR STYLING ==================== */
+
+.qr-panel-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.qr-panel-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.qr-panel-body::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 3px;
+}
+
+.qr-panel-body::-webkit-scrollbar-thumb:hover {
+    background: #777;
+}
+
+/* ==================== RESPONSIVE ==================== */
+
+@media (max-width: 600px) {
+    .qr-panel {
+        width: 280px;
+        max-height: 60vh;
+    }
+
+    .qr-toolbar {
+        bottom: 10px;
+        padding: 4px 8px;
+        gap: 4px;
+    }
+
+    .qr-toolbar-btn {
+        padding: 6px 8px;
+    }
+}
+
+@media (max-width: 400px) {
+    .qr-panel {
+        width: calc(100vw - 20px);
+        left: 10px !important;
+    }
+}

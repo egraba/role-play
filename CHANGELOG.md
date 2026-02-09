@@ -32,6 +32,18 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
   - `I` jump to initiative tracker, `C` open character sheet, `Esc` close modals
   - `?` or floating help button to show shortcuts reference modal
   - Shortcuts disabled when typing in inputs or when a modal is open
+* Quick reference panels for D&D 5e SRD rules during gameplay:
+  - Conditions panel with all 15 SRD conditions and effect summaries
+  - Actions in Combat panel covering standard actions, bonus actions, reactions, and movement
+  - Cover Rules panel with cover types, details, and summary table
+  - Spellcasting Rules panel covering spell slots, components, concentration, and casting details
+  - Draggable panels with grab-handle headers for custom positioning
+  - Pin functionality to keep panels open (Escape closes unpinned panels)
+  - Collapsible panels and collapsible sections within each panel
+  - Click-to-expand item descriptions for compact browsing
+  - Position persistence via localStorage across sessions
+  - Fixed toolbar at bottom of game view for quick access
+  - Responsive design with mobile-friendly sizing
 * Game log panel with real-time WebSocket updates:
   - Color-coded event categories: rolls (blue), combat (red), spells (purple), chat (gray), DM (gold)
   - Expandable entry details for dice rolls, ability checks, and spell casts
