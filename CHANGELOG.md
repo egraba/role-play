@@ -21,6 +21,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
   - Documented all event types, combat system, and character creation flow
 
 ### Fixed
+* Added CI gate job to ensure badge and workflow status fail when any job fails
 * Fixed flaky tests in CI caused by parallel test execution with shared PostgreSQL database
   - CI now runs tests serially (`-n 0`) to avoid race conditions and duplicate key violations
   - Made `TestSkillModel` tests more robust by handling missing fixtures gracefully

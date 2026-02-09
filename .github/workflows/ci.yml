@@ -77,3 +77,19 @@ jobs:
         uses: codecov/codecov-action@v5
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+  ci:
+    name: CI
+    if: always()
+    needs: [lint, test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check results
+        env:
+          LINT_RESULT: ${{ needs.lint.result }}
+          TEST_RESULT: ${{ needs.test.result }}
+        run: |
+          if [[ "$LINT_RESULT" != "success" || "$TEST_RESULT" != "success" ]]; then
+            echo "One or more jobs failed"
+            exit 1
+          fi
