@@ -30,7 +30,7 @@ jobs:
         uses: superfly/flyctl-actions/setup-flyctl@master
 
       - name: Deploy to Fly.io
-        run: flyctl deploy --remote-only --wait-timeout 300
+        run: flyctl deploy --local-only --wait-timeout 300
 
       - name: Verify deployment health
         run: |
