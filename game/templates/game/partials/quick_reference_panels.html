@@ -1,0 +1,8 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/quick-reference.css' %}">
+<script src="{% static 'js/quick-reference.js' %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        window.quickReference = new QuickReference();
+    });
+</script>
