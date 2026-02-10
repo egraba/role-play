@@ -1,6 +1,6 @@
 import pytest
 
-from character.constants.monsters import (
+from bestiary.constants.monsters import (
     ActionType,
     AreaShape,
     ChallengeRating,
@@ -13,7 +13,7 @@ from character.constants.monsters import (
     SaveEffect,
     SaveType,
 )
-from character.models.monsters import (
+from bestiary.models.monsters import (
     LairActionTemplate,
     LegendaryActionTemplate,
     Monster,

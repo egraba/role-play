@@ -8,7 +8,7 @@ from .constants.skills import SkillName
 from .forms.character import CharacterCreateForm
 from .models.abilities import Ability, AbilityType
 from .models.character import Character
-from .models.equipment import Inventory, ToolSettings
+from equipment.models.equipment import Inventory, ToolSettings
 from .models.feats import CharacterFeat, Feat
 from .models.classes import CharacterClass, CharacterFeature, Class
 from .models.proficiencies import (
@@ -18,9 +18,9 @@ from .models.proficiencies import (
     ToolProficiency,
     WeaponProficiency,
 )
-from .models.equipment import ArmorSettings, WeaponSettings
+from equipment.models.equipment import ArmorSettings, WeaponSettings
 from .models.skills import Skill
-from .models.spells import (
+from magic.models.spells import (
     CharacterSpellSlot,
     ClassSpellcasting,
     SpellSlotTable,

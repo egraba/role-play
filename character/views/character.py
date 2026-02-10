@@ -15,7 +15,7 @@ from ..character_attributes_builders import (
     SpeciesBuilder,
     SpellcastingBuilder,
 )
-from ..constants.equipment import ArmorName, GearName, ToolName, WeaponName
+from equipment.constants.equipment import ArmorName, GearName, ToolName, WeaponName
 from ..constants.classes import ClassName
 from ..forms.wizard_forms import (
     AbilityScoreForm,

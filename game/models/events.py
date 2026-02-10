@@ -357,7 +357,7 @@ class SpellCast(Event):
         related_name="spell_cast_events",
     )
     spell = models.ForeignKey(
-        "character.SpellSettings",
+        "magic.SpellSettings",
         on_delete=models.CASCADE,
         related_name="cast_events",
     )
@@ -381,7 +381,7 @@ class SpellDamageDealt(Event):
     """Event when spell damage is dealt."""
 
     spell = models.ForeignKey(
-        "character.SpellSettings",
+        "magic.SpellSettings",
         on_delete=models.CASCADE,
         related_name="damage_events",
     )
@@ -407,7 +407,7 @@ class SpellHealingReceived(Event):
     """Event when spell healing is received."""
 
     spell = models.ForeignKey(
-        "character.SpellSettings",
+        "magic.SpellSettings",
         on_delete=models.CASCADE,
         related_name="healing_events",
     )
@@ -431,7 +431,7 @@ class SpellConditionApplied(Event):
     """Event when a spell applies a condition."""
 
     spell = models.ForeignKey(
-        "character.SpellSettings",
+        "magic.SpellSettings",
         on_delete=models.CASCADE,
         related_name="condition_events",
     )
@@ -457,7 +457,7 @@ class SpellSavingThrow(Event):
     """Event recording a spell saving throw."""
 
     spell = models.ForeignKey(
-        "character.SpellSettings",
+        "magic.SpellSettings",
         on_delete=models.CASCADE,
         related_name="saving_throw_events",
     )
@@ -521,7 +521,7 @@ class ConcentrationSaveRequired(Event):
         related_name="concentration_save_events",
     )
     spell = models.ForeignKey(
-        "character.SpellSettings",
+        "magic.SpellSettings",
         on_delete=models.CASCADE,
         related_name="concentration_check_events",
     )
@@ -547,7 +547,7 @@ class ConcentrationSaveResult(Event):
         related_name="concentration_save_result_events",
     )
     spell = models.ForeignKey(
-        "character.SpellSettings",
+        "magic.SpellSettings",
         on_delete=models.CASCADE,
         related_name="concentration_result_events",
     )
@@ -577,7 +577,7 @@ class ConcentrationBroken(Event):
         related_name="concentration_broken_events",
     )
     spell = models.ForeignKey(
-        "character.SpellSettings",
+        "magic.SpellSettings",
         on_delete=models.CASCADE,
         related_name="broken_concentration_events",
     )
@@ -599,7 +599,7 @@ class ConcentrationStarted(Event):
         related_name="concentration_started_events",
     )
     spell = models.ForeignKey(
-        "character.SpellSettings",
+        "magic.SpellSettings",
         on_delete=models.CASCADE,
         related_name="started_concentration_events",
     )

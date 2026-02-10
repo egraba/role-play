@@ -1,13 +1,12 @@
 import pytest
 from faker import Faker
 
-from character.utils.equipment_parsers import (
+from equipment.constants.equipment import DamageType
+from equipment.utils.equipment_parsers import (
     parse_ac_settings,
     parse_damage,
     parse_strength,
 )
-
-from character.constants.equipment import DamageType
 
 
 def test_parse_ac_settings_ac_only():

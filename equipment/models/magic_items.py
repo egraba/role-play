@@ -10,7 +10,7 @@ This module implements the magic item system including:
 from django.core.exceptions import ValidationError
 from django.db import models
 
-from ..constants.magic_items import (
+from equipment.constants.magic_items import (
     MagicArmorBonus,
     MagicItemName,
     MagicItemType,
@@ -65,6 +65,7 @@ class MagicItemSettings(models.Model):
     cost = models.PositiveIntegerField(default=0)
 
     class Meta:
+        db_table = "character_magicitemsettings"
         ordering = ["rarity", "name"]
         verbose_name = "magic item settings"
         verbose_name_plural = "magic item settings"
@@ -83,7 +84,7 @@ class MagicItem(models.Model):
 
     settings = models.ForeignKey(MagicItemSettings, on_delete=models.CASCADE)
     inventory = models.ForeignKey(
-        "character.Inventory", on_delete=models.SET_NULL, null=True, blank=True
+        "equipment.Inventory", on_delete=models.SET_NULL, null=True, blank=True
     )
 
     # For items with charges, track current charges
@@ -100,6 +101,7 @@ class MagicItem(models.Model):
     notes = models.TextField(max_length=500, blank=True)
 
     class Meta:
+        db_table = "character_magicitem"
         ordering = ["settings__name"]
         verbose_name = "magic item"
         verbose_name_plural = "magic items"
@@ -177,6 +179,7 @@ class Attunement(models.Model):
     attuned_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
+        db_table = "character_attunement"
         ordering = ["attuned_at"]
         verbose_name = "attunement"
         verbose_name_plural = "attunements"

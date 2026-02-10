@@ -5,8 +5,8 @@ from unittest.mock import patch
 import pytest
 
 from character.constants.abilities import AbilityName
-from character.constants.equipment import WeaponName, WeaponType
-from character.models.equipment import Weapon, WeaponSettings
+from equipment.constants.equipment import WeaponName, WeaponType
+from equipment.models.equipment import Weapon, WeaponSettings
 from character.models.proficiencies import WeaponProficiency
 from character.tests.factories import CharacterFactory
 

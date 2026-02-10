@@ -8,7 +8,7 @@ This module defines:
 
 from django.db import models
 
-from character.constants.spells import (
+from magic.constants.spells import (
     EffectDurationType,
     SpellDamageType,
     SpellEffectType,
@@ -26,7 +26,7 @@ class SpellEffectTemplate(models.Model):
     """
 
     spell = models.ForeignKey(
-        "SpellSettings",
+        "magic.SpellSettings",
         on_delete=models.CASCADE,
         related_name="effect_templates",
     )
@@ -70,7 +70,7 @@ class SpellEffectTemplate(models.Model):
 
     # Condition
     condition = models.ForeignKey(
-        "Condition",
+        "character.Condition",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
@@ -118,6 +118,7 @@ class SpellEffectTemplate(models.Model):
     )
 
     class Meta:
+        db_table = "character_spelleffecttemplate"
         ordering = ["spell", "effect_type"]
 
     def __str__(self) -> str:
@@ -132,7 +133,7 @@ class ActiveSpellEffect(models.Model):
     """
 
     character = models.ForeignKey(
-        "Character",
+        "character.Character",
         on_delete=models.CASCADE,
         related_name="active_spell_effects",
     )
@@ -141,7 +142,7 @@ class ActiveSpellEffect(models.Model):
         on_delete=models.CASCADE,
     )
     caster = models.ForeignKey(
-        "Character",
+        "character.Character",
         on_delete=models.CASCADE,
         related_name="cast_effects",
     )
@@ -157,6 +158,7 @@ class ActiveSpellEffect(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
+        db_table = "character_activespelleffect"
         ordering = ["-created_at"]
 
     def __str__(self) -> str:
@@ -184,12 +186,12 @@ class SummonedCreature(models.Model):
     """
 
     summoner = models.ForeignKey(
-        "Character",
+        "character.Character",
         on_delete=models.CASCADE,
         related_name="summoned_creatures",
     )
     spell = models.ForeignKey(
-        "SpellSettings",
+        "magic.SpellSettings",
         on_delete=models.CASCADE,
     )
     name = models.CharField(max_length=100)
@@ -215,6 +217,7 @@ class SummonedCreature(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
+        db_table = "character_summonedcreature"
         ordering = ["-created_at"]
 
     def __str__(self) -> str:

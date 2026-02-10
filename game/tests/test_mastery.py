@@ -5,8 +5,8 @@ from unittest.mock import patch
 import pytest
 
 from character.constants.abilities import AbilityName
-from character.constants.equipment import WeaponMastery, WeaponName, WeaponType
-from character.models.equipment import Weapon, WeaponSettings
+from equipment.constants.equipment import WeaponMastery, WeaponName, WeaponType
+from equipment.models.equipment import Weapon, WeaponSettings
 from character.tests.factories import CharacterFactory
 
 from game.attack import resolve_attack

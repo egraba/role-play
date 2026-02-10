@@ -1,11 +1,11 @@
 import pytest
 
-from character.constants.equipment import GearType, ToolType
+from equipment.constants.equipment import GearType, ToolType
 from character.forms.backgrounds import (
     _get_gaming_set_tools,
     _get_holy_symbols,
 )
-from character.models.equipment import GearSettings, ToolSettings
+from equipment.models.equipment import GearSettings, ToolSettings
 
 pytestmark = pytest.mark.django_db
 

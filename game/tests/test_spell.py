@@ -7,7 +7,8 @@ import pytest
 from character.constants.abilities import AbilityName
 from character.constants.classes import ClassName
 from character.constants.conditions import ConditionName
-from character.constants.spells import (
+from character.models import CharacterCondition
+from magic.constants.spells import (
     CasterType,
     EffectDurationType,
     SpellDamageType,
@@ -17,10 +18,7 @@ from character.constants.spells import (
     SpellSaveType,
     SpellcastingAbility,
 )
-from character.models import (
-    CharacterCondition,
-    Concentration,
-)
+from magic.models import Concentration
 from character.tests.factories import (
     CharacterClassFactory,
     CharacterFactory,
@@ -1049,7 +1047,7 @@ class TestApplySpellResult:
 
     def test_apply_spell_result_applies_buff(self, caster, target):
         """Test that apply_spell_result applies buff effects."""
-        from character.models import ActiveSpellEffect
+        from magic.models import ActiveSpellEffect
 
         spell = SpellSettingsFactory()
         template = SpellEffectTemplateFactory(

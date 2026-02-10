@@ -1,0 +1,2 @@
+class EquipmentDoesNotExist(Exception):
+    pass

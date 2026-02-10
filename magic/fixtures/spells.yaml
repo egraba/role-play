@@ -5,7 +5,7 @@
 # CANTRIPS (Level 0)
 # =============================================================================
 
-- model: character.spellsettings
+- model: magic.spellsettings
   fields:
     name: Fire Bolt
     level: 0
@@ -23,7 +23,7 @@
       and 17th level (4d10).
     classes: ["sorcerer", "wizard"]
 
-- model: character.spellsettings
+- model: magic.spellsettings
   fields:
     name: Light
     level: 0
@@ -43,7 +43,7 @@
       creature must succeed on a Dexterity saving throw to avoid the spell.
     classes: ["bard", "cleric", "sorcerer", "wizard"]
 
-- model: character.spellsettings
+- model: magic.spellsettings
   fields:
     name: Mage Hand
     level: 0
@@ -63,7 +63,7 @@
       activate magic items, or carry more than 10 pounds.
     classes: ["bard", "sorcerer", "warlock", "wizard"]
 
-- model: character.spellsettings
+- model: magic.spellsettings
   fields:
     name: Prestidigitation
     level: 0
@@ -90,7 +90,7 @@
 # LEVEL 1 SPELLS
 # =============================================================================
 
-- model: character.spellsettings
+- model: magic.spellsettings
   fields:
     name: Cure Wounds
     level: 1
@@ -109,7 +109,7 @@
       each slot level above 1st.
     classes: ["bard", "cleric", "druid", "paladin", "ranger"]
 
-- model: character.spellsettings
+- model: magic.spellsettings
   fields:
     name: Magic Missile
     level: 1
@@ -129,7 +129,7 @@
       each slot level above 1st.
     classes: ["sorcerer", "wizard"]
 
-- model: character.spellsettings
+- model: magic.spellsettings
   fields:
     name: Shield
     level: 1
@@ -146,7 +146,7 @@
       have a +5 bonus to AC, including against the triggering attack, and you take no damage from magic missile.
     classes: ["sorcerer", "wizard"]
 
-- model: character.spellsettings
+- model: magic.spellsettings
   fields:
     name: Sleep
     level: 1
@@ -176,7 +176,7 @@
 # LEVEL 2 SPELLS
 # =============================================================================
 
-- model: character.spellsettings
+- model: magic.spellsettings
   fields:
     name: Hold Person
     level: 2
@@ -197,7 +197,7 @@
       for each slot level above 2nd. The humanoids must be within 30 feet of each other when you target them.
     classes: ["bard", "cleric", "druid", "sorcerer", "warlock", "wizard"]
 
-- model: character.spellsettings
+- model: magic.spellsettings
   fields:
     name: Invisibility
     level: 2
@@ -217,7 +217,7 @@
       for each slot level above 2nd.
     classes: ["bard", "sorcerer", "warlock", "wizard"]
 
-- model: character.spellsettings
+- model: magic.spellsettings
   fields:
     name: Misty Step
     level: 2
@@ -236,7 +236,7 @@
 # LEVEL 3 SPELLS
 # =============================================================================
 
-- model: character.spellsettings
+- model: magic.spellsettings
   fields:
     name: Counterspell
     level: 3
@@ -258,7 +258,7 @@
       its level is less than or equal to the level of the spell slot you used.
     classes: ["sorcerer", "warlock", "wizard"]
 
-- model: character.spellsettings
+- model: magic.spellsettings
   fields:
     name: Fireball
     level: 3
@@ -282,7 +282,7 @@
       slot level above 3rd.
     classes: ["sorcerer", "wizard"]
 
-- model: character.spellsettings
+- model: magic.spellsettings
   fields:
     name: Fly
     level: 3

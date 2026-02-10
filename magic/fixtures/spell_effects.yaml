@@ -9,7 +9,7 @@
 # =============================================================================
 
 # Fire Bolt - Ranged spell attack, 1d10 fire damage (scales with level)
-- model: character.spelleffecttemplate
+- model: magic.spelleffecttemplate
   fields:
     spell: Fire Bolt
     effect_type: damage
@@ -25,7 +25,7 @@
 # =============================================================================
 
 # Cure Wounds - Healing, 1d8 + modifier
-- model: character.spelleffecttemplate
+- model: magic.spelleffecttemplate
   fields:
     spell: Cure Wounds
     effect_type: healing
@@ -38,7 +38,7 @@
 
 # Magic Missile - Auto-hit damage, 3 darts of 1d4+1 each
 # Simplified as total damage for 3 darts
-- model: character.spelleffecttemplate
+- model: magic.spelleffecttemplate
   fields:
     spell: Magic Missile
     effect_type: damage
@@ -50,7 +50,7 @@
     duration_type: instantaneous
 
 # Shield - +5 AC buff for 1 round
-- model: character.spelleffecttemplate
+- model: magic.spelleffecttemplate
   fields:
     spell: Shield
     effect_type: buff
@@ -61,7 +61,7 @@
     duration_value: 1
 
 # Sleep - Special area effect (not standard damage/save pattern)
-- model: character.spelleffecttemplate
+- model: magic.spelleffecttemplate
   fields:
     spell: Sleep
     effect_type: condition
@@ -77,7 +77,7 @@
 # =============================================================================
 
 # Hold Person - WIS save or paralyzed
-- model: character.spelleffecttemplate
+- model: magic.spelleffecttemplate
   fields:
     spell: Hold Person
     effect_type: condition
@@ -89,7 +89,7 @@
     duration_value: 1
 
 # Invisibility - Buff granting invisible condition
-- model: character.spelleffecttemplate
+- model: magic.spelleffecttemplate
   fields:
     spell: Invisibility
     effect_type: condition
@@ -101,7 +101,7 @@
     duration_value: 60
 
 # Misty Step - Utility teleport (no mechanical effect template needed for pure teleport)
-- model: character.spelleffecttemplate
+- model: magic.spelleffecttemplate
   fields:
     spell: Misty Step
     effect_type: utility
@@ -114,7 +114,7 @@
 # =============================================================================
 
 # Counterspell - Utility (no standard effect template for reaction counter)
-- model: character.spelleffecttemplate
+- model: magic.spelleffecttemplate
   fields:
     spell: Counterspell
     effect_type: utility
@@ -123,7 +123,7 @@
     duration_type: instantaneous
 
 # Fireball - DEX save for half, 8d6 fire damage in 20-foot sphere
-- model: character.spelleffecttemplate
+- model: magic.spelleffecttemplate
   fields:
     spell: Fireball
     effect_type: damage
@@ -138,7 +138,7 @@
     duration_type: instantaneous
 
 # Fly - Buff granting 60 feet flying speed
-- model: character.spelleffecttemplate
+- model: magic.spelleffecttemplate
   fields:
     spell: Fly
     effect_type: buff

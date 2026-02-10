@@ -2,7 +2,7 @@ from pydantic import BaseModel, ValidationError
 
 from utils.dice import DiceString, DiceStringFormatError
 
-from ..constants.equipment import DamageType
+from equipment.constants.equipment import DamageType
 
 
 def parse_ac_settings(settings: str) -> tuple[int, bool, int, int]:

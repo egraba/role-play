@@ -1,6 +1,6 @@
 from django.db.models import TextChoices
 
-from .equipment import ToolName
+from equipment.constants.equipment import ToolName
 from .feats import FeatName
 from .skills import SkillName
 

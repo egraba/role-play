@@ -3,7 +3,7 @@ import pytest
 from faker import Faker
 
 from character.constants.abilities import AbilityName
-from character.constants.equipment import (
+from equipment.constants.equipment import (
     ArmorName,
     ArmorType,
     Disadvantage,
@@ -12,7 +12,7 @@ from character.constants.equipment import (
     WeaponName,
     WeaponType,
 )
-from character.models.equipment import (
+from equipment.models.equipment import (
     ArmorSettings,
     GearSettings,
     Inventory,

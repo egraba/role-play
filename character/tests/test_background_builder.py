@@ -2,7 +2,7 @@ import pytest
 
 from character.character_attributes_builders import BackgroundBuilder
 from character.constants.backgrounds import BACKGROUNDS, Background
-from character.constants.equipment import ToolName
+from equipment.constants.equipment import ToolName
 from character.constants.feats import FeatName
 from character.constants.skills import SkillName
 from character.models.feats import CharacterFeat

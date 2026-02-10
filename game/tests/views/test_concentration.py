@@ -5,7 +5,7 @@ from unittest.mock import patch
 import pytest
 from django.urls import reverse
 
-from character.models.spells import Concentration
+from magic.models.spells import Concentration
 from character.tests.factories import CharacterFactory, SpellSettingsFactory
 from game.models.combat import Combat
 from game.models.events import (

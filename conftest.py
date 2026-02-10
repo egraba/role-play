@@ -21,12 +21,12 @@ FIXTURES = [
     "character/fixtures/classes.yaml",
     "character/fixtures/class_features.yaml",
     "character/fixtures/skills.yaml",
-    "character/fixtures/equipment.yaml",
+    "equipment/fixtures/equipment.yaml",
     "character/fixtures/species_traits.yaml",
     "character/fixtures/species.yaml",
     "character/fixtures/feats.yaml",
-    "character/fixtures/magic_items.yaml",
-    "character/fixtures/monsters.yaml",
+    "equipment/fixtures/magic_items.yaml",
+    "bestiary/fixtures/monsters.yaml",
 ]
 
 

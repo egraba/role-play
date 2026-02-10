@@ -1,8 +1,8 @@
 from django.db import models
 from django.db.models import TextChoices
 
-from ..constants.abilities import AbilityName
-from ..constants.equipment import (
+from character.constants.abilities import AbilityName
+from equipment.constants.equipment import (
     ArmorName,
     ArmorType,
     Disadvantage,
@@ -15,20 +15,23 @@ from ..constants.equipment import (
     WeaponName,
     WeaponType,
 )
-from ..exceptions import EquipmentDoesNotExist
-from ..models.disadvantages import (
+from equipment.exceptions import EquipmentDoesNotExist
+from character.models.disadvantages import (
     AbilityCheckDisadvantage,
     AttackRollDisadvantage,
     SavingThrowDisadvantage,
     SpellCastDisadvantage,
 )
-from ..models.proficiencies import ArmorProficiency
-from ..utils.equipment_parsers import parse_ac_settings, parse_strength
+from character.models.proficiencies import ArmorProficiency
+from equipment.utils.equipment_parsers import parse_ac_settings, parse_strength
 
 
 class Inventory(models.Model):
     capacity = models.SmallIntegerField(default=0)
     gp = models.SmallIntegerField(default=0)
+
+    class Meta:
+        db_table = "character_inventory"
 
     def _compute_ac(self, armor) -> None:
         """
@@ -175,6 +178,7 @@ class ArmorSettings(models.Model):
     weight = models.SmallIntegerField()
 
     class Meta:
+        db_table = "character_armorsettings"
         verbose_name_plural = "armor settings"
 
     def __str__(self):
@@ -186,6 +190,9 @@ class Armor(models.Model):
 
     settings = models.ForeignKey(ArmorSettings, on_delete=models.CASCADE)
     inventory = models.ForeignKey(Inventory, on_delete=models.SET_NULL, null=True)
+
+    class Meta:
+        db_table = "character_armor"
 
     def __str__(self):
         return str(self.settings.name)
@@ -203,6 +210,7 @@ class WeaponSettings(models.Model):
     )
 
     class Meta:
+        db_table = "character_weaponsettings"
         verbose_name_plural = "weapon settings"
 
     def __str__(self):
@@ -215,6 +223,9 @@ class Weapon(models.Model):
     settings = models.ForeignKey(WeaponSettings, on_delete=models.CASCADE)
     inventory = models.ForeignKey(Inventory, on_delete=models.SET_NULL, null=True)
 
+    class Meta:
+        db_table = "character_weapon"
+
     def __str__(self):
         return str(self.settings.name)
 
@@ -223,6 +234,7 @@ class PackSettings(models.Model):
     name = models.CharField(max_length=30, primary_key=True, choices=PackName.choices)
 
     class Meta:
+        db_table = "character_packsettings"
         verbose_name_plural = "pack settings"
 
     def __str__(self):
@@ -235,6 +247,9 @@ class Pack(models.Model):
     settings = models.ForeignKey(PackSettings, on_delete=models.CASCADE)
     inventory = models.ForeignKey(Inventory, on_delete=models.SET_NULL, null=True)
 
+    class Meta:
+        db_table = "character_pack"
+
     def __str__(self):
         return str(self.settings.name)
 
@@ -246,6 +261,7 @@ class GearSettings(models.Model):
     )
 
     class Meta:
+        db_table = "character_gearsettings"
         verbose_name_plural = "gear settings"
 
     def __str__(self):
@@ -258,6 +274,9 @@ class Gear(models.Model):
     settings = models.ForeignKey(GearSettings, on_delete=models.CASCADE)
     inventory = models.ForeignKey(Inventory, on_delete=models.SET_NULL, null=True)
 
+    class Meta:
+        db_table = "character_gear"
+
     def __str__(self):
         return str(self.settings.name)
 
@@ -269,6 +288,7 @@ class ToolSettings(models.Model):
     )
 
     class Meta:
+        db_table = "character_toolsettings"
         verbose_name_plural = "tool settings"
 
     def __str__(self):
@@ -280,6 +300,9 @@ class Tool(models.Model):
 
     settings = models.ForeignKey(ToolSettings, on_delete=models.CASCADE)
     inventory = models.ForeignKey(Inventory, on_delete=models.SET_NULL, null=True)
+
+    class Meta:
+        db_table = "character_tool"
 
     def __str__(self):
         return str(self.settings.name)

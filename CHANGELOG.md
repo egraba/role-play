@@ -4,6 +4,12 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 
 ## Unreleased
 
+### Changed
+* Split `character` app into 4 focused apps: `character` (core), `bestiary` (monsters), `equipment` (equipment & magic items), `magic` (spells & spell effects)
+  - Zero-downtime migration using `SeparateDatabaseAndState` (state-only, no DB changes)
+  - All moved models use `db_table` to preserve existing table names
+  - Updated all cross-app imports and FK references
+
 ### Removed
 * Removed deprecated Game Events panel from game view in favor of the Game Log panel
   - Events are now exclusively displayed in the right-side Game Log panel with filtering, categories, and expandable details

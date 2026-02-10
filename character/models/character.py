@@ -12,7 +12,7 @@ from ..constants.character import Gender
 from ..constants.races import Size
 from .abilities import Ability
 from .advancement import Advancement
-from .equipment import Inventory
+from equipment.models.equipment import Inventory
 from .classes import Class
 from .races import Language
 from .skills import Skill

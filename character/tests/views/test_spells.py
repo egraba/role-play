@@ -1,7 +1,7 @@
 import pytest
 from django.urls import reverse
 
-from character.models.spells import Concentration
+from magic.models.spells import Concentration
 
 from ..factories import (
     CharacterFactory,
