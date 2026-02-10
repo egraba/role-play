@@ -3,7 +3,7 @@ from django.db import models
 
 class ArmorProficiency(models.Model):
     character = models.ForeignKey("character.Character", on_delete=models.CASCADE)
-    armor = models.ForeignKey("character.ArmorSettings", on_delete=models.CASCADE)
+    armor = models.ForeignKey("equipment.ArmorSettings", on_delete=models.CASCADE)
 
     class Meta:
         verbose_name_plural = "armor proficiencies"
@@ -14,7 +14,7 @@ class ArmorProficiency(models.Model):
 
 class WeaponProficiency(models.Model):
     character = models.ForeignKey("character.Character", on_delete=models.CASCADE)
-    weapon = models.ForeignKey("character.WeaponSettings", on_delete=models.CASCADE)
+    weapon = models.ForeignKey("equipment.WeaponSettings", on_delete=models.CASCADE)
 
     class Meta:
         verbose_name_plural = "weapons proficiencies"
@@ -25,7 +25,7 @@ class WeaponProficiency(models.Model):
 
 class ToolProficiency(models.Model):
     character = models.ForeignKey("character.Character", on_delete=models.CASCADE)
-    tool = models.ForeignKey("character.ToolSettings", on_delete=models.CASCADE)
+    tool = models.ForeignKey("equipment.ToolSettings", on_delete=models.CASCADE)
 
     class Meta:
         verbose_name_plural = "tools proficiencies"

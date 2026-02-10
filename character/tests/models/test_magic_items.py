@@ -1,12 +1,12 @@
 import pytest
 from django.core.exceptions import ValidationError
 
-from character.constants.magic_items import (
+from equipment.constants.magic_items import (
     MagicItemName,
     MagicItemType,
     Rarity,
 )
-from character.models.magic_items import (
+from equipment.models.magic_items import (
     Attunement,
     MagicItem,
     MagicItemSettings,

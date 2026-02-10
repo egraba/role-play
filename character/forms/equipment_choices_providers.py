@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from django.db.models import Q
 
-from ..constants.equipment import (
+from equipment.constants.equipment import (
     ArmorName,
     GearName,
     GearType,
@@ -10,7 +10,7 @@ from ..constants.equipment import (
     WeaponType,
     PackName,
 )
-from ..models.equipment import (
+from equipment.models.equipment import (
     ArmorSettings,
     GearSettings,
     PackSettings,

@@ -2,7 +2,7 @@
 # Organized by item type
 
 # +1/+2/+3 Weapons
-- model: character.magicitemsettings
+- model: equipment.magicitemsettings
   fields:
     name: Weapon +1
     item_type: weapon
@@ -17,7 +17,7 @@
     weight: 0
     cost: 500
 
-- model: character.magicitemsettings
+- model: equipment.magicitemsettings
   fields:
     name: Weapon +2
     item_type: weapon
@@ -32,7 +32,7 @@
     weight: 0
     cost: 4000
 
-- model: character.magicitemsettings
+- model: equipment.magicitemsettings
   fields:
     name: Weapon +3
     item_type: weapon
@@ -48,7 +48,7 @@
     cost: 16000
 
 # +1/+2/+3 Armor
-- model: character.magicitemsettings
+- model: equipment.magicitemsettings
   fields:
     name: Armor +1
     item_type: armor
@@ -62,7 +62,7 @@
     weight: 0
     cost: 1500
 
-- model: character.magicitemsettings
+- model: equipment.magicitemsettings
   fields:
     name: Armor +2
     item_type: armor
@@ -76,7 +76,7 @@
     weight: 0
     cost: 6000
 
-- model: character.magicitemsettings
+- model: equipment.magicitemsettings
   fields:
     name: Armor +3
     item_type: armor
@@ -91,7 +91,7 @@
     cost: 24000
 
 # +1/+2/+3 Shields
-- model: character.magicitemsettings
+- model: equipment.magicitemsettings
   fields:
     name: Shield +1
     item_type: armor
@@ -105,7 +105,7 @@
     weight: 6
     cost: 500
 
-- model: character.magicitemsettings
+- model: equipment.magicitemsettings
   fields:
     name: Shield +2
     item_type: armor
@@ -119,7 +119,7 @@
     weight: 6
     cost: 4000
 
-- model: character.magicitemsettings
+- model: equipment.magicitemsettings
   fields:
     name: Shield +3
     item_type: armor
@@ -134,7 +134,7 @@
     cost: 16000
 
 # Potions of Healing
-- model: character.magicitemsettings
+- model: equipment.magicitemsettings
   fields:
     name: Potion of Healing
     item_type: potion
@@ -150,7 +150,7 @@
     weight: 0
     cost: 50
 
-- model: character.magicitemsettings
+- model: equipment.magicitemsettings
   fields:
     name: Potion of Greater Healing
     item_type: potion
@@ -166,7 +166,7 @@
     weight: 0
     cost: 150
 
-- model: character.magicitemsettings
+- model: equipment.magicitemsettings
   fields:
     name: Potion of Superior Healing
     item_type: potion
@@ -182,7 +182,7 @@
     weight: 0
     cost: 500
 
-- model: character.magicitemsettings
+- model: equipment.magicitemsettings
   fields:
     name: Potion of Supreme Healing
     item_type: potion
@@ -199,7 +199,7 @@
     cost: 1350
 
 # Wands
-- model: character.magicitemsettings
+- model: equipment.magicitemsettings
   fields:
     name: Wand of Magic Missiles
     item_type: wand
@@ -219,7 +219,7 @@
     weight: 1
     cost: 500
 
-- model: character.magicitemsettings
+- model: equipment.magicitemsettings
   fields:
     name: Wand of the War Mage +1
     item_type: wand
@@ -236,7 +236,7 @@
     weight: 1
     cost: 500
 
-- model: character.magicitemsettings
+- model: equipment.magicitemsettings
   fields:
     name: Wand of the War Mage +2
     item_type: wand
@@ -253,7 +253,7 @@
     weight: 1
     cost: 4000
 
-- model: character.magicitemsettings
+- model: equipment.magicitemsettings
   fields:
     name: Wand of the War Mage +3
     item_type: wand
@@ -271,7 +271,7 @@
     cost: 16000
 
 # Staffs
-- model: character.magicitemsettings
+- model: equipment.magicitemsettings
   fields:
     name: Staff of Healing
     item_type: staff
@@ -298,7 +298,7 @@
     weight: 4
     cost: 13000
 
-- model: character.magicitemsettings
+- model: equipment.magicitemsettings
   fields:
     name: Staff of Power
     item_type: staff
@@ -321,7 +321,7 @@
     weight: 4
     cost: 95500
 
-- model: character.magicitemsettings
+- model: equipment.magicitemsettings
   fields:
     name: Staff of the Magi
     item_type: staff
@@ -343,7 +343,7 @@
     weight: 4
     cost: 350000
 
-- model: character.magicitemsettings
+- model: equipment.magicitemsettings
   fields:
     name: Staff of the Woodlands
     item_type: staff
@@ -365,7 +365,7 @@
     cost: 44000
 
 # Rings
-- model: character.magicitemsettings
+- model: equipment.magicitemsettings
   fields:
     name: Ring of Protection
     item_type: ring
@@ -379,7 +379,7 @@
     weight: 0
     cost: 3500
 
-- model: character.magicitemsettings
+- model: equipment.magicitemsettings
   fields:
     name: Ring of Spell Storing
     item_type: ring
@@ -394,7 +394,7 @@
     cost: 24000
 
 # Wondrous Items
-- model: character.magicitemsettings
+- model: equipment.magicitemsettings
   fields:
     name: Amulet of Health
     item_type: wondrous
@@ -408,7 +408,7 @@
     weight: 1
     cost: 8000
 
-- model: character.magicitemsettings
+- model: equipment.magicitemsettings
   fields:
     name: Bag of Holding
     item_type: wondrous
@@ -424,7 +424,7 @@
     weight: 15
     cost: 500
 
-- model: character.magicitemsettings
+- model: equipment.magicitemsettings
   fields:
     name: Boots of Elvenkind
     item_type: wondrous
@@ -440,7 +440,7 @@
     weight: 1
     cost: 2500
 
-- model: character.magicitemsettings
+- model: equipment.magicitemsettings
   fields:
     name: Boots of Speed
     item_type: wondrous
@@ -458,7 +458,7 @@
     weight: 1
     cost: 4000
 
-- model: character.magicitemsettings
+- model: equipment.magicitemsettings
   fields:
     name: Bracers of Defense
     item_type: wondrous
@@ -474,7 +474,7 @@
     weight: 1
     cost: 6000
 
-- model: character.magicitemsettings
+- model: equipment.magicitemsettings
   fields:
     name: Cloak of Elvenkind
     item_type: wondrous
@@ -490,7 +490,7 @@
     weight: 1
     cost: 5000
 
-- model: character.magicitemsettings
+- model: equipment.magicitemsettings
   fields:
     name: Cloak of Protection
     item_type: wondrous
@@ -504,7 +504,7 @@
     weight: 1
     cost: 3500
 
-- model: character.magicitemsettings
+- model: equipment.magicitemsettings
   fields:
     name: Gauntlets of Ogre Power
     item_type: wondrous
@@ -518,7 +518,7 @@
     weight: 1
     cost: 8000
 
-- model: character.magicitemsettings
+- model: equipment.magicitemsettings
   fields:
     name: Headband of Intellect
     item_type: wondrous
@@ -532,7 +532,7 @@
     weight: 0
     cost: 8000
 
-- model: character.magicitemsettings
+- model: equipment.magicitemsettings
   fields:
     name: Pearl of Power
     item_type: wondrous

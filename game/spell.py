@@ -13,20 +13,14 @@ Following the resolve/apply pattern from game.attack module.
 
 from dataclasses import dataclass, field
 
-from character.constants.spells import (
+from character.models import Character, CharacterCondition, Condition
+from magic.constants.spells import (
     EffectDurationType,
     SpellEffectType,
     SpellSaveEffect,
     SpellSaveType,
 )
-from character.models import (
-    ActiveSpellEffect,
-    Character,
-    CharacterCondition,
-    Condition,
-    SpellEffectTemplate,
-    SpellSettings,
-)
+from magic.models import ActiveSpellEffect, SpellEffectTemplate, SpellSettings
 from utils.dice import DiceString, roll_d20_test
 
 
@@ -598,7 +592,7 @@ def apply_spell_result(result: SpellCastResult) -> None:
 
     # Start concentration if needed
     if result.concentration_started:
-        from character.models import Concentration
+        from magic.models import Concentration
 
         Concentration.start_concentration(
             character=result.caster,

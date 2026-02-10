@@ -4,9 +4,10 @@ from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.views import View
 
-from ..constants.spells import SpellLevel, SpellSchool
+from magic.constants.spells import SpellLevel, SpellSchool
+from magic.models.spells import Concentration
+
 from ..models.character import Character
-from ..models.spells import Concentration
 
 
 class SpellsPanelMixin:
@@ -391,7 +392,7 @@ class SpellCardModalView(LoginRequiredMixin, SpellsPanelMixin, View):
 
     def get(self, request, pk: int, spell_name: str) -> HttpResponse:
         """Show the spell card modal for a specific spell."""
-        from ..models.spells import CharacterSpellSlot, SpellSettings
+        from magic.models.spells import CharacterSpellSlot, SpellSettings
 
         character = self.get_character(pk)
         spell = get_object_or_404(SpellSettings, name=spell_name)

@@ -1,8 +1,8 @@
 from django import forms
 
 from ..constants.backgrounds import Background
-from ..constants.equipment import GearType, ToolType
-from ..models.equipment import GearSettings, ToolSettings
+from equipment.constants.equipment import GearType, ToolType
+from equipment.models.equipment import GearSettings, ToolSettings
 
 
 def _get_holy_symbols() -> set[tuple[str, str]]:

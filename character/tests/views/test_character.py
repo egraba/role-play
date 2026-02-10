@@ -6,7 +6,7 @@ from pytest_django.asserts import assertContains, assertRedirects, assertTemplat
 
 from character.constants.abilities import AbilityName, AbilityScore
 from character.constants.backgrounds import BACKGROUNDS, Background
-from character.constants.equipment import ArmorName, GearName, ToolName, WeaponName
+from equipment.constants.equipment import ArmorName, GearName, ToolName, WeaponName
 from character.constants.species import SpeciesName
 from character.constants.skills import SkillName
 from character.forms.equipment_choices_providers import (
@@ -125,7 +125,7 @@ class TestCharacterDetailViewWithWeapons:
     """Tests for attack calculation with weapons."""
 
     def test_melee_weapon_attack_uses_strength(self, client, character):
-        from character.models.equipment import Weapon, WeaponSettings
+        from equipment.models.equipment import Weapon, WeaponSettings
 
         settings = WeaponSettings.objects.get(name=WeaponName.LONGSWORD)
         Weapon.objects.create(settings=settings, inventory=character.inventory)
@@ -137,7 +137,7 @@ class TestCharacterDetailViewWithWeapons:
         assert "damage" in attacks[0]
 
     def test_ranged_weapon_attack_uses_dexterity(self, client, character):
-        from character.models.equipment import Weapon, WeaponSettings
+        from equipment.models.equipment import Weapon, WeaponSettings
 
         settings = WeaponSettings.objects.get(name=WeaponName.LONGBOW)
         Weapon.objects.create(settings=settings, inventory=character.inventory)
@@ -147,7 +147,7 @@ class TestCharacterDetailViewWithWeapons:
         assert attacks[0]["name"] == str(WeaponName.LONGBOW)
 
     def test_finesse_weapon_uses_best_modifier(self, client, character):
-        from character.models.equipment import Weapon, WeaponSettings
+        from equipment.models.equipment import Weapon, WeaponSettings
 
         settings = WeaponSettings.objects.get(name=WeaponName.RAPIER)
         Weapon.objects.create(settings=settings, inventory=character.inventory)

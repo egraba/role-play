@@ -1,7 +1,7 @@
 from django.db import models
 
 from character.constants.classes import ClassName
-from character.constants.spells import (
+from magic.constants.spells import (
     CasterType,
     CastingTime,
     SpellDuration,
@@ -56,6 +56,7 @@ class SpellSettings(models.Model):
     )
 
     class Meta:
+        db_table = "character_spellsettings"
         ordering = ["level", "name"]
         verbose_name_plural = "spell settings"
 
@@ -72,7 +73,7 @@ class Spell(models.Model):
     """A spell known by a character (for spontaneous casters like Sorcerer, Bard)."""
 
     character = models.ForeignKey(
-        "Character", on_delete=models.CASCADE, related_name="spells_known"
+        "character.Character", on_delete=models.CASCADE, related_name="spells_known"
     )
     settings = models.ForeignKey(SpellSettings, on_delete=models.CASCADE)
     source = models.CharField(
@@ -82,6 +83,7 @@ class Spell(models.Model):
     )
 
     class Meta:
+        db_table = "character_spell"
         unique_together = ["character", "settings"]
         ordering = ["settings__level", "settings__name"]
 
@@ -93,7 +95,7 @@ class SpellPreparation(models.Model):
     """A spell prepared by a character (for prepared casters like Cleric, Wizard)."""
 
     character = models.ForeignKey(
-        "Character", on_delete=models.CASCADE, related_name="prepared_spells"
+        "character.Character", on_delete=models.CASCADE, related_name="prepared_spells"
     )
     settings = models.ForeignKey(SpellSettings, on_delete=models.CASCADE)
     always_prepared = models.BooleanField(
@@ -101,6 +103,7 @@ class SpellPreparation(models.Model):
     )
 
     class Meta:
+        db_table = "character_spellpreparation"
         unique_together = ["character", "settings"]
         ordering = ["settings__level", "settings__name"]
 
@@ -119,6 +122,7 @@ class SpellSlotTable(models.Model):
     slots = models.PositiveSmallIntegerField(default=0)
 
     class Meta:
+        db_table = "character_spellslottable"
         unique_together = ["class_name", "class_level", "slot_level"]
         ordering = ["class_name", "class_level", "slot_level"]
         verbose_name_plural = "spell slot tables"
@@ -133,7 +137,7 @@ class CharacterSpellSlot(models.Model):
     """Tracks a character's spell slots and usage."""
 
     character = models.ForeignKey(
-        "Character", on_delete=models.CASCADE, related_name="spell_slots"
+        "character.Character", on_delete=models.CASCADE, related_name="spell_slots"
     )
     slot_level = models.PositiveSmallIntegerField(
         choices=[(i, f"Level {i}") for i in range(1, 10)]
@@ -142,6 +146,7 @@ class CharacterSpellSlot(models.Model):
     used = models.PositiveSmallIntegerField(default=0)
 
     class Meta:
+        db_table = "character_characterspellslot"
         unique_together = ["character", "slot_level"]
         ordering = ["character", "slot_level"]
 
@@ -177,11 +182,14 @@ class WarlockSpellSlot(models.Model):
     """Special spell slot tracking for Warlock's Pact Magic."""
 
     character = models.OneToOneField(
-        "Character", on_delete=models.CASCADE, related_name="pact_magic"
+        "character.Character", on_delete=models.CASCADE, related_name="pact_magic"
     )
     slot_level = models.PositiveSmallIntegerField(default=1)
     total = models.PositiveSmallIntegerField(default=1)
     used = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        db_table = "character_warlockspellslot"
 
     def __str__(self) -> str:
         return f"{self.character.name}: Pact Magic L{self.slot_level} ({self.remaining}/{self.total})"
@@ -208,7 +216,7 @@ class ClassSpellcasting(models.Model):
     """Spellcasting configuration per class."""
 
     klass = models.OneToOneField(
-        "Class", on_delete=models.CASCADE, related_name="spellcasting"
+        "character.Class", on_delete=models.CASCADE, related_name="spellcasting"
     )
     caster_type = models.CharField(
         max_length=10,
@@ -234,6 +242,7 @@ class ClassSpellcasting(models.Model):
     )
 
     class Meta:
+        db_table = "character_classspellcasting"
         verbose_name_plural = "class spellcasting"
 
     def __str__(self) -> str:
@@ -250,7 +259,7 @@ class Concentration(models.Model):
     """Tracks a character's active concentration spell."""
 
     character = models.OneToOneField(
-        "Character", on_delete=models.CASCADE, related_name="concentration"
+        "character.Character", on_delete=models.CASCADE, related_name="concentration"
     )
     spell = models.ForeignKey(
         SpellSettings, on_delete=models.CASCADE, related_name="active_concentrations"
@@ -261,6 +270,9 @@ class Concentration(models.Model):
         blank=True,
         help_text="Rounds remaining if duration is measured in rounds",
     )
+
+    class Meta:
+        db_table = "character_concentration"
 
     def __str__(self) -> str:
         return f"{self.character.name} concentrating on {self.spell.name}"

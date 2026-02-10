@@ -16,7 +16,7 @@ Mastery Properties:
 
 from dataclasses import dataclass, field
 
-from character.constants.equipment import WeaponMastery
+from equipment.constants.equipment import WeaponMastery
 
 
 @dataclass

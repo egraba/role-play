@@ -1,25 +1,57 @@
 import factory
 
+from bestiary.constants.monsters import (
+    ActionType,
+    Alignment,
+    ChallengeRating,
+    CreatureSize,
+    CreatureType,
+    DamageType,
+    MonsterName,
+)
+from bestiary.models.monsters import (
+    LairActionTemplate,
+    LegendaryActionTemplate,
+    Monster,
+    MonsterActionTemplate,
+    MonsterMultiattack,
+    MonsterReaction,
+    MonsterSettings,
+    MonsterTrait,
+    MultiattackAction,
+)
 from character.constants.abilities import AbilityName
 from character.constants.backgrounds import Background
+from character.constants.classes import ClassName
 from character.constants.conditions import ConditionName
 from character.constants.feats import FeatName, FeatType
-from character.constants.equipment import (
+from character.constants.species import SpeciesName, SpeciesTraitName
+from character.models.abilities import Ability, AbilityType
+from character.models.character import Character
+from character.models.classes import (
+    CharacterClass,
+    CharacterFeature,
+    Class,
+    ClassFeature,
+)
+from character.models.conditions import CharacterCondition, Condition
+from character.models.feats import CharacterFeat, Feat
+from character.models.species import Species, SpeciesTrait
+from equipment.constants.equipment import (
     ArmorName,
     ArmorType,
     GearName,
     PackName,
     ToolName,
-    WeaponType,
     WeaponName,
+    WeaponType,
 )
-from character.constants.classes import ClassName
-from character.constants.species import SpeciesName, SpeciesTraitName
-from character.models.abilities import Ability, AbilityType
-from character.models.character import Character
-from character.models.conditions import CharacterCondition, Condition
-from character.models.feats import CharacterFeat, Feat
-from character.models.equipment import (
+from equipment.constants.magic_items import (
+    MagicItemName,
+    MagicItemType,
+    Rarity,
+)
+from equipment.models.equipment import (
     Armor,
     ArmorSettings,
     Gear,
@@ -32,59 +64,12 @@ from character.models.equipment import (
     Weapon,
     WeaponSettings,
 )
-from character.models.classes import (
-    CharacterClass,
-    CharacterFeature,
-    Class,
-    ClassFeature,
-)
-from character.models.species import Species, SpeciesTrait
-from character.models.spells import (
-    CharacterSpellSlot,
-    ClassSpellcasting,
-    Concentration,
-    Spell,
-    SpellPreparation,
-    SpellSettings,
-    SpellSlotTable,
-    WarlockSpellSlot,
-)
-from character.models.spell_effects import (
-    ActiveSpellEffect,
-    SpellEffectTemplate,
-    SummonedCreature,
-)
-from character.models.magic_items import (
+from equipment.models.magic_items import (
     Attunement,
     MagicItem,
     MagicItemSettings,
 )
-from character.constants.magic_items import (
-    MagicItemName,
-    MagicItemType,
-    Rarity,
-)
-from character.models.monsters import (
-    LairActionTemplate,
-    LegendaryActionTemplate,
-    Monster,
-    MonsterActionTemplate,
-    MonsterMultiattack,
-    MonsterReaction,
-    MonsterSettings,
-    MonsterTrait,
-    MultiattackAction,
-)
-from character.constants.monsters import (
-    ActionType,
-    Alignment,
-    ChallengeRating,
-    CreatureSize,
-    CreatureType,
-    DamageType,
-    MonsterName,
-)
-from character.constants.spells import (
+from magic.constants.spells import (
     CasterType,
     CastingTime,
     EffectDurationType,
@@ -98,6 +83,21 @@ from character.constants.spells import (
     SpellSchool,
     SpellTargetType,
     SpellcastingAbility,
+)
+from magic.models.spell_effects import (
+    ActiveSpellEffect,
+    SpellEffectTemplate,
+    SummonedCreature,
+)
+from magic.models.spells import (
+    CharacterSpellSlot,
+    ClassSpellcasting,
+    Concentration,
+    Spell,
+    SpellPreparation,
+    SpellSettings,
+    SpellSlotTable,
+    WarlockSpellSlot,
 )
 
 

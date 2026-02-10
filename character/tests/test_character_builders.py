@@ -16,18 +16,18 @@ from character.character_attributes_builders import (
     SpellcastingBuilder,
 )
 from character.constants.classes import ClassName
-from character.constants.equipment import ArmorType, WeaponType
+from equipment.constants.equipment import ArmorType, WeaponType
 from character.constants.skills import SkillName
-from character.constants.spells import CasterType, SpellcastingAbility
+from magic.constants.spells import CasterType, SpellcastingAbility
 from character.models.classes import CharacterFeature
-from character.models.equipment import ArmorSettings, WeaponSettings
+from equipment.models.equipment import ArmorSettings, WeaponSettings
 from character.models.proficiencies import (
     ArmorProficiency,
     SkillProficiency,
     WeaponProficiency,
 )
 from character.models.skills import Skill
-from character.models.spells import CharacterSpellSlot, WarlockSpellSlot
+from magic.models.spells import CharacterSpellSlot, WarlockSpellSlot
 
 from .factories import (
     AbilityTypeFactory,

@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.views import View
 
-from character.models.spells import Concentration
+from magic.models.spells import Concentration
 
 from ..constants.combat import CombatAction, CombatState
 from ..models.combat import Combat, Fighter, Turn

@@ -1,6 +1,6 @@
 import pytest
 
-from character.constants.spells import (
+from magic.constants.spells import (
     EffectDurationType,
     SpellDamageType,
     SpellEffectType,
@@ -8,7 +8,7 @@ from character.constants.spells import (
     SpellSaveType,
     SpellTargetType,
 )
-from character.models.spell_effects import (
+from magic.models.spell_effects import (
     ActiveSpellEffect,
     SpellEffectTemplate,
     SummonedCreature,

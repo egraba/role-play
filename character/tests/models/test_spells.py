@@ -1,7 +1,7 @@
 import pytest
 
 from character.constants.classes import ClassName
-from character.constants.spells import (
+from magic.constants.spells import (
     CasterType,
     CastingTime,
     SpellDuration,
@@ -10,7 +10,7 @@ from character.constants.spells import (
     SpellSchool,
     SpellcastingAbility,
 )
-from character.models.spells import (
+from magic.models.spells import (
     CharacterSpellSlot,
     ClassSpellcasting,
     Concentration,

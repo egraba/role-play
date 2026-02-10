@@ -12,9 +12,9 @@ This module implements the core attack mechanics:
 from dataclasses import dataclass, field
 
 from character.constants.abilities import AbilityName
-from character.constants.equipment import WeaponProperty, WeaponType
 from character.models.character import Character
-from character.models.equipment import Weapon
+from equipment.constants.equipment import WeaponProperty, WeaponType
+from equipment.models.equipment import Weapon
 from character.models.proficiencies import WeaponProficiency
 from utils.dice import DiceString, roll_d20_test
 

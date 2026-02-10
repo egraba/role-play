@@ -11,8 +11,8 @@ This module implements the monster system including:
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
-from ..ability_modifiers import compute_ability_modifier
-from ..constants.monsters import (
+from character.ability_modifiers import compute_ability_modifier
+from bestiary.constants.monsters import (
     ActionType,
     Alignment,
     AreaShape,
@@ -218,6 +218,7 @@ class MonsterSettings(models.Model):
     )
 
     class Meta:
+        db_table = "character_monstersettings"
         ordering = ["name"]
         verbose_name = "monster settings"
         verbose_name_plural = "monster settings"
@@ -347,6 +348,7 @@ class Monster(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
+        db_table = "character_monster"
         ordering = ["settings__name", "instance_name"]
         verbose_name = "monster"
         verbose_name_plural = "monsters"
@@ -597,6 +599,7 @@ class MonsterActionTemplate(models.Model):
     sort_order = models.PositiveSmallIntegerField(default=0)
 
     class Meta:
+        db_table = "character_monsteractiontemplate"
         ordering = ["monster", "sort_order", "name"]
         verbose_name = "monster action template"
         verbose_name_plural = "monster action templates"
@@ -689,6 +692,7 @@ class MonsterMultiattack(models.Model):
     )
 
     class Meta:
+        db_table = "character_monstermultiattack"
         verbose_name = "monster multiattack"
         verbose_name_plural = "monster multiattacks"
 
@@ -727,6 +731,7 @@ class MultiattackAction(models.Model):
     )
 
     class Meta:
+        db_table = "character_multiattackaction"
         ordering = ["multiattack", "group", "-count"]
         verbose_name = "multiattack action"
         verbose_name_plural = "multiattack actions"
@@ -770,6 +775,7 @@ class LegendaryActionTemplate(models.Model):
     sort_order = models.PositiveSmallIntegerField(default=0)
 
     class Meta:
+        db_table = "character_legendaryactiontemplate"
         ordering = ["monster", "sort_order", "cost", "name"]
         verbose_name = "legendary action template"
         verbose_name_plural = "legendary action templates"
@@ -831,6 +837,7 @@ class LairActionTemplate(models.Model):
     sort_order = models.PositiveSmallIntegerField(default=0)
 
     class Meta:
+        db_table = "character_lairactiontemplate"
         ordering = ["monster", "sort_order"]
         verbose_name = "lair action template"
         verbose_name_plural = "lair action templates"
@@ -871,6 +878,7 @@ class MonsterTrait(models.Model):
     sort_order = models.PositiveSmallIntegerField(default=0)
 
     class Meta:
+        db_table = "character_monstertrait"
         ordering = ["monster", "sort_order", "name"]
         verbose_name = "monster trait"
         verbose_name_plural = "monster traits"
@@ -909,6 +917,7 @@ class MonsterReaction(models.Model):
     )
 
     class Meta:
+        db_table = "character_monsterreaction"
         ordering = ["monster", "name"]
         verbose_name = "monster reaction"
         verbose_name_plural = "monster reactions"
