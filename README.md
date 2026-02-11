@@ -68,11 +68,11 @@ The SRD 5.2 includes content from the 2024 D&D core rulebooks:
 
 | Layer | Technology |
 |-------|------------|
-| Backend | Python 3.14, Django 5.2 |
+| Backend | Python 3.14, Django 6.0 |
 | Real-time | Django Channels, WebSockets |
-| Background Tasks | Celery with Redis |
 | AI | Anthropic Claude API |
 | Database | PostgreSQL |
+| Cache / Channel Layer | Redis |
 | Task Runner | [Poe the Poet](https://github.com/nat-n/poethepoet) |
 
 ## Project Structure
@@ -80,7 +80,11 @@ The SRD 5.2 includes content from the 2024 D&D core rulebooks:
 ```
 role_play/
 ├── character/    # Character creation, abilities, inventory, equipment
-├── game/         # Game engine, events, combat, WebSocket consumers
+├── game/         # Game engine, events, combat, real-time WebSocket
+│   ├── models/          # Game, combat, and event models (pure data)
+│   ├── constants/       # Event registry, combat states, log categories
+│   ├── presenters.py    # Event message formatting
+│   └── consumers.py     # WebSocket consumer with dynamic dispatch
 ├── master/       # Campaign management
 ├── user/         # Custom user authentication
 └── ai/           # Claude AI integration for content generation
@@ -116,16 +120,12 @@ doppler run -- poe db-setup
 
 # Start the development server
 doppler run -- poe run
-
-# In a separate terminal, start Celery worker
-doppler run -- poe worker
 ```
 
 ### Common Tasks
 
 ```bash
 poe run          # Start development server
-poe worker       # Start Celery worker
 poe test         # Run tests
 poe ci           # Run full CI locally (tests + lint + typecheck)
 poe db-setup     # Set up database (migrate + load fixtures)

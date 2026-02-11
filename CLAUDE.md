@@ -87,6 +87,7 @@ Before submitting any PR:
    - `### Changed` - modifications
    - `### Fixed` - bug fixes
    - `### Removed` - removed features
+5. **Architecture changes documented** in all applicable files: `CLAUDE.md`, `ARCHITECTURE.md`, `README.md`
 
 ## Key Technical Details
 
@@ -94,6 +95,14 @@ Before submitting any PR:
 - **Async**: Django Channels for WebSockets, sync views otherwise (Celery was removed)
 - **AI logic** stays in `ai/` app
 - **License**: AGPL-3.0 (code), CC-BY-4.0 (D&D SRD content)
+
+### Event System Architecture
+
+- **Event models** (`game/models/events.py`): Pure data - fields and DB behavior only, no presentation or type-mapping logic
+- **Event registry** (`game/constants/event_registry.py`): Maps Event subclass → `EventType` via `get_event_type(event)`
+- **Presenters** (`game/presenters.py`): Maps Event subclass → display string via `format_event_message(event)`
+- **Consumer** (`game/consumers.py`): Uses `__getattr__` catch-all for Django Channels dispatch instead of per-event handler methods
+- **Circular import pattern**: Registries use lazy `_build_*()` functions with `None` sentinels to avoid model ↔ constants cycles
 
 ## Related Documentation
 

@@ -5,6 +5,13 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Changed
+* Refactored event system to separate concerns from model layer
+  - Extracted event-type mapping into `game/constants/event_registry.py` (`get_event_type()`)
+  - Extracted presentation logic into `game/presenters.py` (`format_event_message()`)
+  - Event models are now pure data (fields, DB behavior, `__str__` only)
+  - Replaced 37 identical WebSocket consumer handler methods with `__getattr__` catch-all
+  - Updated ARCHITECTURE.md, README.md, and CLAUDE.md to reflect new architecture
+  - Fixed outdated README.md tech stack (Django 6.0, removed Celery references)
 * Split `character` app into 4 focused apps: `character` (core), `bestiary` (monsters), `equipment` (equipment & magic items), `magic` (spells & spell effects)
   - Zero-downtime migration using `SeparateDatabaseAndState` (state-only, no DB changes)
   - All moved models use `db_table` to preserve existing table names

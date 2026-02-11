@@ -1,6 +1,7 @@
 import pytest
 
 from game.constants.log_categories import LogCategory
+from game.presenters import format_event_message
 from game.serializers import serialize_game_log_event
 from game.tests.factories import (
     DiceRollFactory,
@@ -22,7 +23,7 @@ class TestSerializeGameLogEvent:
         assert data["id"] == message.id
         assert data["type"] == "message"
         assert data["category"] == LogCategory.DM
-        assert data["message"] == message.get_message()
+        assert data["message"] == format_event_message(message)
         assert data["author_name"] == master.user.username
         assert "date" in data
 
