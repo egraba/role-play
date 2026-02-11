@@ -38,7 +38,7 @@ class GameEventsConsumer(JsonWebsocketConsumer):
         self.accept()
 
     def disconnect(self, code=None):
-        if hasattr(self, "game_group_name"):
+        if "game_group_name" in self.__dict__:
             async_to_sync(self.channel_layer.group_discard)(
                 self.game_group_name, self.channel_name
             )
@@ -113,148 +113,18 @@ class GameEventsConsumer(JsonWebsocketConsumer):
                     self.game_group_name, content
                 )
 
-    def message(self, event):
-        """Message typed by player or master on the keyboard."""
-        self.send_json(event)
+    def __getattr__(self, name: str):
+        """Catch-all for Django Channels event dispatch.
 
-    def game_start(self, event):
-        """Message notifying that the game has started."""
-        self.send_json(event)
-
-    def quest_update(self, event):
-        """Message notifying that the game's quest has been updated by the master."""
-        self.send_json(event)
-
-    def ability_check_request(self, event):
-        """Ability check request from the master."""
-        self.send_json(event)
-
-    def ability_check_response(self, event):
-        """Ability check roll from the player."""
-        self.send_json(event)
-
-    def ability_check_result(self, event):
-        """Ability check result."""
-        self.send_json(event)
-
-    def saving_throw_request(self, event):
-        """Saving throw request from the master."""
-        self.send_json(event)
-
-    def saving_throw_response(self, event):
-        """Saving throw roll from the player."""
-        self.send_json(event)
-
-    def saving_throw_result(self, event):
-        """Saving throw result."""
-        self.send_json(event)
-
-    def combat_initialization(self, event):
-        """Combat initialization."""
-        self.send_json(event)
-
-    def combat_initiative_request(self, event):
+        Channels converts event type dots to underscores and calls
+        the resulting method (e.g., "game.start" -> "game_start").
+        All handlers just forward via send_json, so we use __getattr__
+        instead of defining 37 identical methods.
         """
-        All players have to perform a dexterity check to determine combat order.
-        """
-        self.send_json(event)
+        if name.startswith("_") or name[0].isupper():
+            raise AttributeError(f"'{type(self).__name__}' has no attribute '{name}'")
 
-    def combat_initiative_response(self, event):
-        """Dexterity check roll from the player."""
-        self.send_json(event)
+        def _forward_event(event):
+            self.send_json(event)
 
-    def combat_initiative_result(self, event):
-        """Dexterity check roll result."""
-        self.send_json(event)
-
-    def combat_initialization_complete(self, event):
-        """Combat initialization complete."""
-        self.send_json(event)
-
-    def combat_started(self, event):
-        """Combat has officially started."""
-        self.send_json(event)
-
-    def turn_started(self, event):
-        """A fighter's turn has started."""
-        self.send_json(event)
-
-    def turn_ended(self, event):
-        """A fighter's turn has ended."""
-        self.send_json(event)
-
-    def round_ended(self, event):
-        """A combat round has ended."""
-        self.send_json(event)
-
-    def combat_ended(self, event):
-        """Combat has ended."""
-        self.send_json(event)
-
-    def action_taken(self, event):
-        """A fighter has taken an action."""
-        self.send_json(event)
-
-    def spell_cast(self, event):
-        """A spell has been cast."""
-        self.send_json(event)
-
-    def spell_damage_dealt(self, event):
-        """Spell damage has been dealt."""
-        self.send_json(event)
-
-    def spell_healing_received(self, event):
-        """Spell healing has been received."""
-        self.send_json(event)
-
-    def spell_condition_applied(self, event):
-        """A spell condition has been applied."""
-        self.send_json(event)
-
-    def spell_saving_throw(self, event):
-        """A spell saving throw has been made."""
-        self.send_json(event)
-
-    def hp_damage(self, event):
-        """A character has taken damage."""
-        self.send_json(event)
-
-    def hp_heal(self, event):
-        """A character has been healed."""
-        self.send_json(event)
-
-    def hp_temp(self, event):
-        """A character has received temporary HP."""
-        self.send_json(event)
-
-    def hp_death_save(self, event):
-        """A character has made a death save."""
-        self.send_json(event)
-
-    def fighter_ready(self, event):
-        """A fighter has taken the Ready action."""
-        self.send_json(event)
-
-    def fighter_delay(self, event):
-        """A fighter has delayed their turn."""
-        self.send_json(event)
-
-    def dice_roll(self, event):
-        """A dice roll has been made."""
-        self.send_json(event)
-
-    def concentration_save_required(self, event):
-        """A character needs to make a concentration save."""
-        self.send_json(event)
-
-    def concentration_save_result(self, event):
-        """A concentration save result has been determined."""
-        self.send_json(event)
-
-    def concentration_broken(self, event):
-        """A character has lost concentration."""
-        self.send_json(event)
-
-    def concentration_started(self, event):
-        """A character has started concentrating on a spell."""
-        self.send_json(event)
+        return _forward_event

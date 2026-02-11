@@ -5,28 +5,20 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from pydantic import ValidationError
 
+from ..constants.event_registry import get_event_type
 from ..constants.log_categories import LogCategory, get_category_for_event
 from ..exceptions import EventSchemaValidationError
 from ..models.events import Event
+from ..presenters import format_event_message
 from ..schemas import (
     EventOrigin,
     EventSchema,
-    EventType,
 )
-
-
-def _get_event_type(event: Event) -> EventType:
-    """
-    Retrieve event type according to Event instance class.
-
-    Delegates to the event's get_event_type() method.
-    """
-    return event.get_event_type()
 
 
 def _get_category(event: Event) -> str:
     """Get the log category for an event, considering author type."""
-    event_type = event.get_event_type()
+    event_type = get_event_type(event)
     category = get_category_for_event(event_type)
 
     # Master messages become DM category
@@ -42,10 +34,10 @@ def build_event_payload(event: Event) -> dict[str, Any]:
         event.date = datetime.datetime.fromtimestamp(event.date / 1e3)
 
     payload = {
-        "type": _get_event_type(event),
+        "type": get_event_type(event),
         "username": event.author.user.username,
         "date": event.date.isoformat(),
-        "message": event.get_message(),
+        "message": format_event_message(event),
         "origin": EventOrigin.SERVER_SIDE,
         "category": _get_category(event),
         "character_id": None,

@@ -729,3 +729,13 @@ async def test_message_saved_to_database(application, game, master_user):
     assert saved_message.content == message_content
 
     await communicator.disconnect()
+
+
+def test_getattr_raises_for_private_attributes():
+    """Test that __getattr__ raises AttributeError for non-event attributes."""
+    consumer = GameEventsConsumer()
+    with pytest.raises(AttributeError):
+        consumer._private_method
+
+    with pytest.raises(AttributeError):
+        consumer.UpperCase

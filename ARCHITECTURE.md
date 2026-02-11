@@ -186,9 +186,19 @@ Player (FK → Game, OneToOne → User, FK → Character)
 Actor (Abstract base for Master/Player)
 ```
 
-### Event System (`events.py`)
+### Event System
 
-Polymorphic events using `InheritanceManager`.
+Polymorphic events using `InheritanceManager`. Event models (`events.py`) are pure data — fields and DB behavior only. Presentation and type-mapping logic are separated into dedicated modules.
+
+**Architecture:**
+
+| Module | Purpose |
+|--------|---------|
+| `models/events.py` | Event model classes (fields, DB behavior, `__str__`) |
+| `constants/event_registry.py` | Maps Event subclass → `EventType` via `get_event_type(event)` |
+| `presenters.py` | Maps Event subclass → display string via `format_event_message(event)` |
+
+Both registries use lazy initialization (`_build_*()` functions with `None` sentinels) to avoid circular imports between models and constants.
 
 **Base Event:**
 - `game` → Game
@@ -205,7 +215,7 @@ Polymorphic events using `InheritanceManager`.
 | Combat Flow | `CombatStarted`, `TurnStarted`, `TurnEnded`, `RoundEnded`, `CombatEnded`, `ActionTaken` |
 | Spells | `SpellCast`, `SpellDamageDealt`, `SpellHealingReceived`, `SpellConditionApplied`, `SpellSavingThrow` |
 | Concentration | `ConcentrationSaveRequired`, `ConcentrationSaveResult`, `ConcentrationBroken`, `ConcentrationStarted` |
-| HP | `HPDamage`, `HPHeal`, `HPTemp`, `HPDeathSave` |
+| HP | `HPDamage`, `HPHeal`, `HPTemp`, `HPDeathSave` (raw dicts, no Event model) |
 | Other | `DiceRoll` |
 
 ### Combat System (`combat.py`)
@@ -281,8 +291,11 @@ class DiceRollService:
 ```python
 connect()       # Join channel group: game_{id}_events
 disconnect()    # Leave channel group
-receive_json()  # Route events to handlers
+receive_json()  # Route client events to service layer
+__getattr__()   # Catch-all for Django Channels event dispatch
 ```
+
+Django Channels converts event type dots to underscores and calls the resulting method (e.g., `game.start` → `game_start`). Instead of defining individual handler methods for each event type, a `__getattr__` catch-all forwards all events via `send_json`.
 
 Event routing:
 - `CLIENT_SIDE` events → Save to DB via service → Broadcast
@@ -291,7 +304,8 @@ Event routing:
 ### Channel Utilities (`utils/channels.py`)
 
 ```python
-send_to_channel(game, event_type, event)  # Broadcast to all clients
+build_event_payload(event)  # Build payload using registry + presenter
+send_to_channel(event)      # Validate and broadcast to all clients
 ```
 
 ### Event Schema Validation (`schemas.py`)
@@ -403,6 +417,8 @@ GameContextMixin:
 - `game/services.py` - Event and roll services
 - `game/rolls.py` - Dice mechanics
 - `game/flows.py` - Game state machine
+- `game/presenters.py` - Event message formatting
+- `game/constants/event_registry.py` - Event type mapping
 - `character/character_attributes_builders.py` - Character creation
 
 ### Views

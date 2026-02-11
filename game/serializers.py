@@ -2,13 +2,15 @@ from __future__ import annotations
 
 from typing import Any
 
+from .constants.event_registry import get_event_type
 from .constants.log_categories import LogCategory, get_category_for_event
 from .models.events import DiceRoll, Event, RollResult, SpellCast
+from .presenters import format_event_message
 
 
 def serialize_game_log_event(event: Event) -> dict[str, Any]:
     """Serialize a game event for the game log panel."""
-    event_type = event.get_event_type()
+    event_type = get_event_type(event)
     category = get_category_for_event(event_type)
 
     # Master messages become DM category
@@ -28,7 +30,7 @@ def serialize_game_log_event(event: Event) -> dict[str, Any]:
         "type": event_type.value,
         "category": category.value,
         "date": event.date.isoformat(),
-        "message": event.get_message(),
+        "message": format_event_message(event),
         "author_name": author_name,
         "character_id": character_id,
         "character_name": character_name,
