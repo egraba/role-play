@@ -118,56 +118,14 @@ class MonsterSettings(models.Model):
         help_text="Proficiency bonus based on CR",
     )
 
-    # Special Traits (stored as JSON for flexibility)
-    # Example: [{"name": "Keen Senses", "description": "Advantage on Perception checks..."}]
-    traits_json = models.JSONField(
-        default=list,
-        blank=True,
-        help_text="Special traits as list of {name, description} objects",
-    )
-
-    # Actions (stored as JSON for flexibility)
-    # Example: [{"name": "Bite", "description": "Melee Weapon Attack: +5 to hit..."}]
-    actions_json = models.JSONField(
-        default=list,
-        blank=True,
-        help_text="Actions as list of {name, description} objects",
-    )
-
-    # Reactions (stored as JSON)
-    reactions_json = models.JSONField(
-        default=list,
-        blank=True,
-        help_text="Reactions as list of {name, description} objects",
-    )
-
     # Legendary Actions (for legendary creatures)
-    legendary_actions_json = models.JSONField(
-        default=list,
-        blank=True,
-        help_text="Legendary actions as list of {name, description, cost} objects",
-    )
     legendary_action_count = models.PositiveSmallIntegerField(
         default=0,
         help_text="Number of legendary actions per round (typically 3)",
     )
 
     # Lair Actions (for creatures with lairs)
-    lair_actions_json = models.JSONField(
-        default=list,
-        blank=True,
-        help_text="Lair actions as list of {description} objects",
-    )
     has_lair = models.BooleanField(default=False)
-
-    # Spellcasting (optional, stored as JSON for flexibility)
-    # Example: {"ability": "INT", "save_dc": 15, "attack_bonus": 7,
-    #           "spells": {"cantrips": [...], "1st": [...], ...}}
-    spellcasting_json = models.JSONField(
-        default=dict,
-        blank=True,
-        help_text="Spellcasting details if the creature is a spellcaster",
-    )
 
     class Meta:
         db_table = "character_monstersettings"
