@@ -1326,7 +1326,9 @@ class TestMonsterActionTemplateEdgeCases:
             action_type=ActionType.MELEE_WEAPON,
             sort_order=0,
         )
-        actions = list(MonsterActionTemplate.objects.filter(monster=settings))
+        actions = list(
+            MonsterActionTemplate.objects.filter(pk__in=[action_a.pk, action_z.pk])
+        )
         assert actions[0] == action_a
         assert actions[1] == action_z
 
@@ -1371,7 +1373,11 @@ class TestLegendaryActionTemplateEdgeCases:
             cost=1,
             sort_order=1,
         )
-        legendaries = list(LegendaryActionTemplate.objects.filter(monster=settings))
+        legendaries = list(
+            LegendaryActionTemplate.objects.filter(
+                pk__in=[leg_1.pk, leg_2.pk, leg_3.pk]
+            )
+        )
         assert legendaries[0] == leg_1
         assert legendaries[1] == leg_2
         assert legendaries[2] == leg_3
@@ -1406,7 +1412,7 @@ class TestMonsterTraitEdgeCases:
             description="Test",
             sort_order=0,
         )
-        traits = list(MonsterTrait.objects.filter(monster=settings))
+        traits = list(MonsterTrait.objects.filter(pk__in=[trait_a.pk, trait_b.pk]))
         assert traits[0] == trait_a
         assert traits[1] == trait_b
 
@@ -1440,7 +1446,7 @@ class TestLairActionTemplateEdgeCases:
             description="Lair action 1",
             sort_order=0,
         )
-        lairs = list(LairActionTemplate.objects.filter(monster=settings))
+        lairs = list(LairActionTemplate.objects.filter(pk__in=[lair_1.pk, lair_2.pk]))
         assert lairs[0] == lair_1
         assert lairs[1] == lair_2
 
