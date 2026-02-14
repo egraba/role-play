@@ -837,3 +837,677 @@
   fields:
     monster: Lich
     language: "up to five other languages"
+
+# =============================================================================
+# MonsterTrait
+# =============================================================================
+
+# Zombie
+- model: bestiary.monstertrait
+  fields:
+    monster: Zombie
+    name: Undead Fortitude
+    description: "If damage reduces the zombie to 0 hit points, it must make a Constitution saving throw with a DC of 5 + the damage taken, unless the damage is radiant or from a critical hit. On a success, the zombie drops to 1 hit point instead."
+    sort_order: 0
+
+# Wolf
+- model: bestiary.monstertrait
+  fields:
+    monster: Wolf
+    name: Keen Hearing and Smell
+    description: "The wolf has advantage on Wisdom (Perception) checks that rely on hearing or smell."
+    sort_order: 0
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Wolf
+    name: Pack Tactics
+    description: "The wolf has advantage on attack rolls against a creature if at least one of the wolf's allies is within 5 feet of the creature and the ally isn't incapacitated."
+    sort_order: 1
+
+# Orc
+- model: bestiary.monstertrait
+  fields:
+    monster: Orc
+    name: Aggressive
+    description: "As a bonus action, the orc can move up to its speed toward a hostile creature that it can see."
+    sort_order: 0
+
+# Dire Wolf
+- model: bestiary.monstertrait
+  fields:
+    monster: Dire Wolf
+    name: Keen Hearing and Smell
+    description: "The wolf has advantage on Wisdom (Perception) checks that rely on hearing or smell."
+    sort_order: 0
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Dire Wolf
+    name: Pack Tactics
+    description: "The wolf has advantage on attack rolls against a creature if at least one of the wolf's allies is within 5 feet of the creature and the ally isn't incapacitated."
+    sort_order: 1
+
+# Owlbear
+- model: bestiary.monstertrait
+  fields:
+    monster: Owlbear
+    name: Keen Sight and Smell
+    description: "The owlbear has advantage on Wisdom (Perception) checks that rely on sight or smell."
+    sort_order: 0
+
+# Minotaur
+- model: bestiary.monstertrait
+  fields:
+    monster: Minotaur
+    name: Charge
+    description: "If the minotaur moves at least 10 feet straight toward a target and then hits it with a gore attack on the same turn, the target takes an extra 9 (2d8) piercing damage. If the target is a creature, it must succeed on a DC 14 Strength saving throw or be pushed up to 10 feet away and knocked prone."
+    sort_order: 0
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Minotaur
+    name: Labyrinthine Recall
+    description: "The minotaur can perfectly recall any path it has traveled."
+    sort_order: 1
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Minotaur
+    name: Reckless
+    description: "At the start of its turn, the minotaur can gain advantage on all melee weapon attack rolls it makes during that turn, but attack rolls against it have advantage until the start of its next turn."
+    sort_order: 2
+
+# Air Elemental
+- model: bestiary.monstertrait
+  fields:
+    monster: Air Elemental
+    name: Air Form
+    description: "The elemental can enter a hostile creature's space and stop there. It can move through a space as narrow as 1 inch wide without squeezing."
+    sort_order: 0
+
+# Assassin
+- model: bestiary.monstertrait
+  fields:
+    monster: Assassin
+    name: Assassinate
+    description: "During its first turn, the assassin has advantage on attack rolls against any creature that hasn't taken a turn. Any hit the assassin scores against a surprised creature is a critical hit."
+    sort_order: 0
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Assassin
+    name: Evasion
+    description: "If the assassin is subjected to an effect that allows it to make a Dexterity saving throw to take only half damage, the assassin instead takes no damage if it succeeds on the saving throw, and only half damage if it fails."
+    sort_order: 1
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Assassin
+    name: Sneak Attack (1/Turn)
+    description: "The assassin deals an extra 14 (4d6) damage when it hits a target with a weapon attack and has advantage on the attack roll, or when the target is within 5 feet of an ally of the assassin that isn't incapacitated and the assassin doesn't have disadvantage on the attack roll."
+    sort_order: 2
+
+# Iron Golem
+- model: bestiary.monstertrait
+  fields:
+    monster: Iron Golem
+    name: Fire Absorption
+    description: "Whenever the golem is subjected to fire damage, it takes no damage and instead regains a number of hit points equal to the fire damage dealt."
+    sort_order: 0
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Iron Golem
+    name: Immutable Form
+    description: "The golem is immune to any spell or effect that would alter its form."
+    sort_order: 1
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Iron Golem
+    name: Magic Resistance
+    description: "The golem has advantage on saving throws against spells and other magical effects."
+    sort_order: 2
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Iron Golem
+    name: Magic Weapons
+    description: "The golem's weapon attacks are magical."
+    sort_order: 3
+
+# Adult Red Dragon
+- model: bestiary.monstertrait
+  fields:
+    monster: Adult Red Dragon
+    name: Legendary Resistance (3/Day)
+    description: "If the dragon fails a saving throw, it can choose to succeed instead."
+    sort_order: 0
+
+# Lich
+- model: bestiary.monstertrait
+  fields:
+    monster: Lich
+    name: Legendary Resistance (3/Day)
+    description: "If the lich fails a saving throw, it can choose to succeed instead."
+    sort_order: 0
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Lich
+    name: Rejuvenation
+    description: "If it has a phylactery, a destroyed lich gains a new body in 1d10 days, regaining all its hit points and becoming active again. The new body appears within 5 feet of the phylactery."
+    sort_order: 1
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Lich
+    name: Turn Resistance
+    description: "The lich has advantage on saving throws against any effect that turns undead."
+    sort_order: 2
+
+# =============================================================================
+# MonsterActionTemplate
+# =============================================================================
+
+# Commoner
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Commoner
+    name: Club
+    description: "Melee Weapon Attack: +2 to hit, reach 5 ft., one target. Hit: 2 (1d4) bludgeoning damage."
+    sort_order: 0
+
+# Bandit
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Bandit
+    name: Scimitar
+    description: "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 4 (1d6 + 1) slashing damage."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Bandit
+    name: Light Crossbow
+    description: "Ranged Weapon Attack: +3 to hit, range 80/320 ft., one target. Hit: 5 (1d8 + 1) piercing damage."
+    sort_order: 1
+
+# Skeleton
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Skeleton
+    name: Shortsword
+    description: "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Skeleton
+    name: Shortbow
+    description: "Ranged Weapon Attack: +4 to hit, range 80/320 ft., one target. Hit: 5 (1d6 + 2) piercing damage."
+    sort_order: 1
+
+# Zombie
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Zombie
+    name: Slam
+    description: "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 4 (1d6 + 1) bludgeoning damage."
+    sort_order: 0
+
+# Wolf
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Wolf
+    name: Bite
+    description: "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 7 (2d4 + 2) piercing damage. If the target is a creature, it must succeed on a DC 11 Strength saving throw or be knocked prone."
+    sort_order: 0
+
+# Orc
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Orc
+    name: Greataxe
+    description: "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 9 (1d12 + 3) slashing damage."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Orc
+    name: Javelin
+    description: "Melee or Ranged Weapon Attack: +5 to hit, reach 5 ft. or range 30/120 ft., one target. Hit: 6 (1d6 + 3) piercing damage."
+    sort_order: 1
+
+# Ghoul
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Ghoul
+    name: Bite
+    description: "Melee Weapon Attack: +2 to hit, reach 5 ft., one creature. Hit: 9 (2d6 + 2) piercing damage."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Ghoul
+    name: Claws
+    description: "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 7 (2d4 + 2) slashing damage. If the target is a creature other than an elf or undead, it must succeed on a DC 10 Constitution saving throw or be paralyzed for 1 minute. The target can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success."
+    sort_order: 1
+
+# Dire Wolf
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Dire Wolf
+    name: Bite
+    description: "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 10 (2d6 + 3) piercing damage. If the target is a creature, it must succeed on a DC 13 Strength saving throw or be knocked prone."
+    sort_order: 0
+
+# Ogre
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Ogre
+    name: Greatclub
+    description: "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) bludgeoning damage."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Ogre
+    name: Javelin
+    description: "Melee or Ranged Weapon Attack: +6 to hit, reach 5 ft. or range 30/120 ft., one target. Hit: 11 (2d6 + 4) piercing damage."
+    sort_order: 1
+
+# Owlbear
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Owlbear
+    name: Multiattack
+    description: "The owlbear makes two attacks: one with its beak and one with its claws."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Owlbear
+    name: Beak
+    description: "Melee Weapon Attack: +7 to hit, reach 5 ft., one creature. Hit: 10 (1d10 + 5) piercing damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Owlbear
+    name: Claws
+    description: "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 14 (2d8 + 5) slashing damage."
+    sort_order: 2
+
+# Minotaur
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Minotaur
+    name: Greataxe
+    description: "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 17 (2d12 + 4) slashing damage."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Minotaur
+    name: Gore
+    description: "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) piercing damage."
+    sort_order: 1
+
+# Air Elemental
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Air Elemental
+    name: Multiattack
+    description: "The elemental makes two slam attacks."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Air Elemental
+    name: Slam
+    description: "Melee Weapon Attack: +8 to hit, reach 5 ft., one target. Hit: 14 (2d8 + 5) bludgeoning damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Air Elemental
+    name: Whirlwind (Recharge 4-6)
+    description: "Each creature in the elemental's space must make a DC 13 Strength saving throw. On a failure, a target takes 15 (3d8 + 2) bludgeoning damage and is flung up 20 feet away from the elemental in a random direction and knocked prone."
+    sort_order: 2
+
+# Mage
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Mage
+    name: Dagger
+    description: "Melee or Ranged Weapon Attack: +5 to hit, reach 5 ft. or range 20/60 ft., one target. Hit: 4 (1d4 + 2) piercing damage."
+    sort_order: 0
+
+# Assassin
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Assassin
+    name: Multiattack
+    description: "The assassin makes two shortsword attacks."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Assassin
+    name: Shortsword
+    description: "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 6 (1d6 + 3) piercing damage, and the target must make a DC 15 Constitution saving throw, taking 24 (7d6) poison damage on a failed save, or half as much damage on a successful one."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Assassin
+    name: Light Crossbow
+    description: "Ranged Weapon Attack: +6 to hit, range 80/320 ft., one target. Hit: 7 (1d8 + 3) piercing damage, and the target must make a DC 15 Constitution saving throw, taking 24 (7d6) poison damage on a failed save, or half as much damage on a successful one."
+    sort_order: 2
+
+# Iron Golem
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Iron Golem
+    name: Multiattack
+    description: "The golem makes two melee attacks."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Iron Golem
+    name: Slam
+    description: "Melee Weapon Attack: +13 to hit, reach 5 ft., one target. Hit: 20 (3d8 + 7) bludgeoning damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Iron Golem
+    name: Sword
+    description: "Melee Weapon Attack: +13 to hit, reach 10 ft., one target. Hit: 23 (3d10 + 7) slashing damage."
+    sort_order: 2
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Iron Golem
+    name: Poison Breath (Recharge 6)
+    description: "The golem exhales poisonous gas in a 15-foot cone. Each creature in that area must make a DC 19 Constitution saving throw, taking 45 (10d8) poison damage on a failed save, or half as much damage on a successful one."
+    sort_order: 3
+
+# Adult Red Dragon
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Adult Red Dragon
+    name: Multiattack
+    description: "The dragon can use its Frightful Presence. It then makes three attacks: one with its bite and two with its claws."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Adult Red Dragon
+    name: Bite
+    description: "Melee Weapon Attack: +14 to hit, reach 10 ft., one target. Hit: 19 (2d10 + 8) piercing damage plus 7 (2d6) fire damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Adult Red Dragon
+    name: Claw
+    description: "Melee Weapon Attack: +14 to hit, reach 5 ft., one target. Hit: 15 (2d6 + 8) slashing damage."
+    sort_order: 2
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Adult Red Dragon
+    name: Tail
+    description: "Melee Weapon Attack: +14 to hit, reach 15 ft., one target. Hit: 17 (2d8 + 8) bludgeoning damage."
+    sort_order: 3
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Adult Red Dragon
+    name: Frightful Presence
+    description: "Each creature of the dragon's choice that is within 120 feet of the dragon and aware of it must succeed on a DC 19 Wisdom saving throw or become frightened for 1 minute. A creature can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success."
+    sort_order: 4
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Adult Red Dragon
+    name: Fire Breath (Recharge 5-6)
+    description: "The dragon exhales fire in a 60-foot cone. Each creature in that area must make a DC 21 Dexterity saving throw, taking 63 (18d6) fire damage on a failed save, or half as much damage on a successful one."
+    sort_order: 5
+
+# Lich
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Lich
+    name: Paralyzing Touch
+    description: "Melee Spell Attack: +12 to hit, reach 5 ft., one creature. Hit: 10 (3d6) cold damage. The target must succeed on a DC 18 Constitution saving throw or be paralyzed for 1 minute. The target can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success."
+    sort_order: 0
+
+# =============================================================================
+# LegendaryActionTemplate
+# =============================================================================
+
+# Adult Red Dragon
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Adult Red Dragon
+    name: Detect
+    description: "The dragon makes a Wisdom (Perception) check."
+    cost: 1
+    sort_order: 0
+
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Adult Red Dragon
+    name: Tail Attack
+    description: "The dragon makes a tail attack."
+    cost: 1
+    sort_order: 1
+
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Adult Red Dragon
+    name: Wing Attack
+    description: "The dragon beats its wings. Each creature within 10 feet of the dragon must succeed on a DC 22 Dexterity saving throw or take 15 (2d6 + 8) bludgeoning damage and be knocked prone. The dragon can then fly up to half its flying speed."
+    cost: 2
+    sort_order: 2
+
+# Lich
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Lich
+    name: Cantrip
+    description: "The lich casts a cantrip."
+    cost: 1
+    sort_order: 0
+
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Lich
+    name: Paralyzing Touch
+    description: "The lich uses its Paralyzing Touch."
+    cost: 2
+    sort_order: 1
+
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Lich
+    name: Frightening Gaze
+    description: "The lich fixes its gaze on one creature it can see within 10 feet of it. The target must succeed on a DC 18 Wisdom saving throw against this magic or become frightened for 1 minute."
+    cost: 2
+    sort_order: 2
+
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Lich
+    name: Disrupt Life
+    description: "Each non-undead creature within 20 feet of the lich must make a DC 18 Constitution saving throw against this magic, taking 21 (6d6) necrotic damage on a failed save, or half as much damage on a successful one."
+    cost: 3
+    sort_order: 3
+
+# =============================================================================
+# LairActionTemplate
+# =============================================================================
+
+# Lich
+- model: bestiary.lairactiontemplate
+  fields:
+    monster: Lich
+    description: "The lich rolls a d8 and regains a spell slot of that level or lower. If it has no spent spell slots of that level or lower, nothing happens."
+    sort_order: 0
+
+- model: bestiary.lairactiontemplate
+  fields:
+    monster: Lich
+    description: "The lich targets one creature it can see within 30 feet of it. A crackling cord of negative energy tethers the lich to the target."
+    sort_order: 1
+
+- model: bestiary.lairactiontemplate
+  fields:
+    monster: Lich
+    description: "The lich calls forth the spirits of creatures that died in its lair. These spectral apparitions can move through creatures and objects."
+    sort_order: 2
+
+# =============================================================================
+# MonsterSpellcasting
+# =============================================================================
+
+# Mage
+- model: bestiary.monsterspellcasting
+  pk: 1
+  fields:
+    monster: Mage
+    ability: INT
+    save_dc: 14
+    attack_bonus: 6
+
+# Lich
+- model: bestiary.monsterspellcasting
+  pk: 2
+  fields:
+    monster: Lich
+    ability: INT
+    save_dc: 20
+    attack_bonus: 12
+
+# =============================================================================
+# MonsterSpellcastingLevel
+# =============================================================================
+
+# Mage
+- model: bestiary.monsterspellcastinglevel
+  fields:
+    spellcasting: 1
+    level: cantrips
+    slots: 0
+    spells: [fire bolt, light, mage hand, prestidigitation]
+
+- model: bestiary.monsterspellcastinglevel
+  fields:
+    spellcasting: 1
+    level: 1st
+    slots: 4
+    spells: [detect magic, mage armor, magic missile, shield]
+
+- model: bestiary.monsterspellcastinglevel
+  fields:
+    spellcasting: 1
+    level: 2nd
+    slots: 3
+    spells: [misty step, suggestion]
+
+- model: bestiary.monsterspellcastinglevel
+  fields:
+    spellcasting: 1
+    level: 3rd
+    slots: 3
+    spells: [counterspell, fireball, fly]
+
+- model: bestiary.monsterspellcastinglevel
+  fields:
+    spellcasting: 1
+    level: 4th
+    slots: 3
+    spells: [greater invisibility, ice storm]
+
+- model: bestiary.monsterspellcastinglevel
+  fields:
+    spellcasting: 1
+    level: 5th
+    slots: 1
+    spells: [cone of cold]
+
+# Lich
+- model: bestiary.monsterspellcastinglevel
+  fields:
+    spellcasting: 2
+    level: cantrips
+    slots: 0
+    spells: [mage hand, prestidigitation, ray of frost]
+
+- model: bestiary.monsterspellcastinglevel
+  fields:
+    spellcasting: 2
+    level: 1st
+    slots: 4
+    spells: [detect magic, magic missile, shield, thunderwave]
+
+- model: bestiary.monsterspellcastinglevel
+  fields:
+    spellcasting: 2
+    level: 2nd
+    slots: 3
+    spells: [detect thoughts, invisibility, acid arrow, mirror image]
+
+- model: bestiary.monsterspellcastinglevel
+  fields:
+    spellcasting: 2
+    level: 3rd
+    slots: 3
+    spells: [animate dead, counterspell, dispel magic, fireball]
+
+- model: bestiary.monsterspellcastinglevel
+  fields:
+    spellcasting: 2
+    level: 4th
+    slots: 3
+    spells: [blight, dimension door]
+
+- model: bestiary.monsterspellcastinglevel
+  fields:
+    spellcasting: 2
+    level: 5th
+    slots: 3
+    spells: [cloudkill, scrying]
+
+- model: bestiary.monsterspellcastinglevel
+  fields:
+    spellcasting: 2
+    level: 6th
+    slots: 1
+    spells: [disintegrate, globe of invulnerability]
+
+- model: bestiary.monsterspellcastinglevel
+  fields:
+    spellcasting: 2
+    level: 7th
+    slots: 1
+    spells: [finger of death, plane shift]
+
+- model: bestiary.monsterspellcastinglevel
+  fields:
+    spellcasting: 2
+    level: 8th
+    slots: 1
+    spells: [dominate monster, power word stun]
+
+- model: bestiary.monsterspellcastinglevel
+  fields:
+    spellcasting: 2
+    level: 9th
+    slots: 1
+    spells: [power word kill]

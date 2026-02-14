@@ -2,7 +2,9 @@
 # Organized by Challenge Rating
 #
 # NOTE: Speed, saving throws, skills, senses, damage relations,
-# condition immunities, and languages are now in monster_attributes.yaml.
+# condition immunities, languages, traits, actions, reactions,
+# legendary actions, lair actions, and spellcasting are now in
+# monster_attributes.yaml.
 
 # CR 0
 - model: bestiary.monstersettings
@@ -26,16 +28,8 @@
     telepathy: 0
     challenge_rating: "0"
     proficiency_bonus: 2
-    traits: []
-    actions:
-      - name: Club
-        description: "Melee Weapon Attack: +2 to hit, reach 5 ft., one target. Hit: 2 (1d4) bludgeoning damage."
-    reactions: []
-    legendary_actions: []
     legendary_action_count: 0
-    lair_actions: []
     has_lair: false
-    spellcasting: {}
     description: "Commoners include peasants, serfs, slaves, servants, pilgrims, merchants, artisans, and hermits."
 
 # CR 1/8
@@ -60,18 +54,8 @@
     telepathy: 0
     challenge_rating: "1/8"
     proficiency_bonus: 2
-    traits: []
-    actions:
-      - name: Scimitar
-        description: "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 4 (1d6 + 1) slashing damage."
-      - name: Light Crossbow
-        description: "Ranged Weapon Attack: +3 to hit, range 80/320 ft., one target. Hit: 5 (1d8 + 1) piercing damage."
-    reactions: []
-    legendary_actions: []
     legendary_action_count: 0
-    lair_actions: []
     has_lair: false
-    spellcasting: {}
     description: "Bandits rove in gangs and are sometimes led by thugs, veterans, or spellcasters."
 
 # CR 1/4
@@ -96,18 +80,8 @@
     telepathy: 0
     challenge_rating: "1/4"
     proficiency_bonus: 2
-    traits: []
-    actions:
-      - name: Shortsword
-        description: "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage."
-      - name: Shortbow
-        description: "Ranged Weapon Attack: +4 to hit, range 80/320 ft., one target. Hit: 5 (1d6 + 2) piercing damage."
-    reactions: []
-    legendary_actions: []
     legendary_action_count: 0
-    lair_actions: []
     has_lair: false
-    spellcasting: {}
     description: "Skeletons arise when animated by dark magic. They heed the summons of spellcasters who call them from their stony tombs."
 
 - model: bestiary.monstersettings
@@ -131,18 +105,8 @@
     telepathy: 0
     challenge_rating: "1/4"
     proficiency_bonus: 2
-    traits:
-      - name: Undead Fortitude
-        description: "If damage reduces the zombie to 0 hit points, it must make a Constitution saving throw with a DC of 5 + the damage taken, unless the damage is radiant or from a critical hit. On a success, the zombie drops to 1 hit point instead."
-    actions:
-      - name: Slam
-        description: "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 4 (1d6 + 1) bludgeoning damage."
-    reactions: []
-    legendary_actions: []
     legendary_action_count: 0
-    lair_actions: []
     has_lair: false
-    spellcasting: {}
     description: "From somewhere in the darkness, a gurgling moan is heard. A form lurches into view, dragging one foot as it raises bloated arms and broken hands."
 
 - model: bestiary.monstersettings
@@ -166,20 +130,8 @@
     telepathy: 0
     challenge_rating: "1/4"
     proficiency_bonus: 2
-    traits:
-      - name: Keen Hearing and Smell
-        description: "The wolf has advantage on Wisdom (Perception) checks that rely on hearing or smell."
-      - name: Pack Tactics
-        description: "The wolf has advantage on attack rolls against a creature if at least one of the wolf's allies is within 5 feet of the creature and the ally isn't incapacitated."
-    actions:
-      - name: Bite
-        description: "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 7 (2d4 + 2) piercing damage. If the target is a creature, it must succeed on a DC 11 Strength saving throw or be knocked prone."
-    reactions: []
-    legendary_actions: []
     legendary_action_count: 0
-    lair_actions: []
     has_lair: false
-    spellcasting: {}
     description: "A wolf hunts in packs and is often found in the company of dire wolves or winter wolves."
 
 # CR 1/2
@@ -204,20 +156,8 @@
     telepathy: 0
     challenge_rating: "1/2"
     proficiency_bonus: 2
-    traits:
-      - name: Aggressive
-        description: "As a bonus action, the orc can move up to its speed toward a hostile creature that it can see."
-    actions:
-      - name: Greataxe
-        description: "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 9 (1d12 + 3) slashing damage."
-      - name: Javelin
-        description: "Melee or Ranged Weapon Attack: +5 to hit, reach 5 ft. or range 30/120 ft., one target. Hit: 6 (1d6 + 3) piercing damage."
-    reactions: []
-    legendary_actions: []
     legendary_action_count: 0
-    lair_actions: []
     has_lair: false
-    spellcasting: {}
     description: "Orcs are savage raiders and pillagers with stooped postures, low foreheads, and piglike faces with prominent lower canines that resemble tusks."
 
 # CR 1
@@ -242,18 +182,8 @@
     telepathy: 0
     challenge_rating: "1"
     proficiency_bonus: 2
-    traits: []
-    actions:
-      - name: Bite
-        description: "Melee Weapon Attack: +2 to hit, reach 5 ft., one creature. Hit: 9 (2d6 + 2) piercing damage."
-      - name: Claws
-        description: "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 7 (2d4 + 2) slashing damage. If the target is a creature other than an elf or undead, it must succeed on a DC 10 Constitution saving throw or be paralyzed for 1 minute. The target can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success."
-    reactions: []
-    legendary_actions: []
     legendary_action_count: 0
-    lair_actions: []
     has_lair: false
-    spellcasting: {}
     description: "Ghouls roam the night in packs, driven by an insatiable hunger for humanoid flesh."
 
 - model: bestiary.monstersettings
@@ -277,20 +207,8 @@
     telepathy: 0
     challenge_rating: "1"
     proficiency_bonus: 2
-    traits:
-      - name: Keen Hearing and Smell
-        description: "The wolf has advantage on Wisdom (Perception) checks that rely on hearing or smell."
-      - name: Pack Tactics
-        description: "The wolf has advantage on attack rolls against a creature if at least one of the wolf's allies is within 5 feet of the creature and the ally isn't incapacitated."
-    actions:
-      - name: Bite
-        description: "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 10 (2d6 + 3) piercing damage. If the target is a creature, it must succeed on a DC 13 Strength saving throw or be knocked prone."
-    reactions: []
-    legendary_actions: []
     legendary_action_count: 0
-    lair_actions: []
     has_lair: false
-    spellcasting: {}
     description: "The dire wolf is a legendary creature of the wild that strikes fear into the hearts of travelers."
 
 # CR 2
@@ -315,18 +233,8 @@
     telepathy: 0
     challenge_rating: "2"
     proficiency_bonus: 2
-    traits: []
-    actions:
-      - name: Greatclub
-        description: "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) bludgeoning damage."
-      - name: Javelin
-        description: "Melee or Ranged Weapon Attack: +6 to hit, reach 5 ft. or range 30/120 ft., one target. Hit: 11 (2d6 + 4) piercing damage."
-    reactions: []
-    legendary_actions: []
     legendary_action_count: 0
-    lair_actions: []
     has_lair: false
-    spellcasting: {}
     description: "Ogres are as lazy of mind as they are strong of body. They live by raiding, scavenging, and killing for food and sport."
 
 # CR 3
@@ -351,22 +259,8 @@
     telepathy: 0
     challenge_rating: "3"
     proficiency_bonus: 2
-    traits:
-      - name: Keen Sight and Smell
-        description: "The owlbear has advantage on Wisdom (Perception) checks that rely on sight or smell."
-    actions:
-      - name: Multiattack
-        description: "The owlbear makes two attacks: one with its beak and one with its claws."
-      - name: Beak
-        description: "Melee Weapon Attack: +7 to hit, reach 5 ft., one creature. Hit: 10 (1d10 + 5) piercing damage."
-      - name: Claws
-        description: "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 14 (2d8 + 5) slashing damage."
-    reactions: []
-    legendary_actions: []
     legendary_action_count: 0
-    lair_actions: []
     has_lair: false
-    spellcasting: {}
     description: "An owlbear's screech echoes through dark valleys and benighted forests, striking fear into the hearts of woodland creatures."
 
 - model: bestiary.monstersettings
@@ -390,24 +284,8 @@
     telepathy: 0
     challenge_rating: "3"
     proficiency_bonus: 2
-    traits:
-      - name: Charge
-        description: "If the minotaur moves at least 10 feet straight toward a target and then hits it with a gore attack on the same turn, the target takes an extra 9 (2d8) piercing damage. If the target is a creature, it must succeed on a DC 14 Strength saving throw or be pushed up to 10 feet away and knocked prone."
-      - name: Labyrinthine Recall
-        description: "The minotaur can perfectly recall any path it has traveled."
-      - name: Reckless
-        description: "At the start of its turn, the minotaur can gain advantage on all melee weapon attack rolls it makes during that turn, but attack rolls against it have advantage until the start of its next turn."
-    actions:
-      - name: Greataxe
-        description: "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 17 (2d12 + 4) slashing damage."
-      - name: Gore
-        description: "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) piercing damage."
-    reactions: []
-    legendary_actions: []
     legendary_action_count: 0
-    lair_actions: []
     has_lair: false
-    spellcasting: {}
     description: "A minotaur's roar is a savage battle cry that most creatures fear."
 
 # CR 5
@@ -432,22 +310,8 @@
     telepathy: 0
     challenge_rating: "5"
     proficiency_bonus: 3
-    traits:
-      - name: Air Form
-        description: "The elemental can enter a hostile creature's space and stop there. It can move through a space as narrow as 1 inch wide without squeezing."
-    actions:
-      - name: Multiattack
-        description: "The elemental makes two slam attacks."
-      - name: Slam
-        description: "Melee Weapon Attack: +8 to hit, reach 5 ft., one target. Hit: 14 (2d8 + 5) bludgeoning damage."
-      - name: Whirlwind (Recharge 4-6)
-        description: "Each creature in the elemental's space must make a DC 13 Strength saving throw. On a failure, a target takes 15 (3d8 + 2) bludgeoning damage and is flung up 20 feet away from the elemental in a random direction and knocked prone."
-    reactions: []
-    legendary_actions: []
     legendary_action_count: 0
-    lair_actions: []
     has_lair: false
-    spellcasting: {}
     description: "An air elemental is a funneling cloud of whirling air with a vague semblance of a face."
 
 # CR 6
@@ -472,52 +336,8 @@
     telepathy: 0
     challenge_rating: "6"
     proficiency_bonus: 3
-    traits: []
-    actions:
-      - name: Dagger
-        description: "Melee or Ranged Weapon Attack: +5 to hit, reach 5 ft. or range 20/60 ft., one target. Hit: 4 (1d4 + 2) piercing damage."
-    reactions: []
-    legendary_actions: []
     legendary_action_count: 0
-    lair_actions: []
     has_lair: false
-    spellcasting:
-      ability: INT
-      save_dc: 14
-      attack_bonus: 6
-      spells:
-        cantrips:
-          - fire bolt
-          - light
-          - mage hand
-          - prestidigitation
-        1st:
-          slots: 4
-          spells:
-            - detect magic
-            - mage armor
-            - magic missile
-            - shield
-        2nd:
-          slots: 3
-          spells:
-            - misty step
-            - suggestion
-        3rd:
-          slots: 3
-          spells:
-            - counterspell
-            - fireball
-            - fly
-        4th:
-          slots: 3
-          spells:
-            - greater invisibility
-            - ice storm
-        5th:
-          slots: 1
-          spells:
-            - cone of cold
     description: "Mages spend their lives in the study of and practice of magic."
 
 # CR 8
@@ -542,26 +362,8 @@
     telepathy: 0
     challenge_rating: "8"
     proficiency_bonus: 3
-    traits:
-      - name: Assassinate
-        description: "During its first turn, the assassin has advantage on attack rolls against any creature that hasn't taken a turn. Any hit the assassin scores against a surprised creature is a critical hit."
-      - name: Evasion
-        description: "If the assassin is subjected to an effect that allows it to make a Dexterity saving throw to take only half damage, the assassin instead takes no damage if it succeeds on the saving throw, and only half damage if it fails."
-      - name: Sneak Attack (1/Turn)
-        description: "The assassin deals an extra 14 (4d6) damage when it hits a target with a weapon attack and has advantage on the attack roll, or when the target is within 5 feet of an ally of the assassin that isn't incapacitated and the assassin doesn't have disadvantage on the attack roll."
-    actions:
-      - name: Multiattack
-        description: "The assassin makes two shortsword attacks."
-      - name: Shortsword
-        description: "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 6 (1d6 + 3) piercing damage, and the target must make a DC 15 Constitution saving throw, taking 24 (7d6) poison damage on a failed save, or half as much damage on a successful one."
-      - name: Light Crossbow
-        description: "Ranged Weapon Attack: +6 to hit, range 80/320 ft., one target. Hit: 7 (1d8 + 3) piercing damage, and the target must make a DC 15 Constitution saving throw, taking 24 (7d6) poison damage on a failed save, or half as much damage on a successful one."
-    reactions: []
-    legendary_actions: []
     legendary_action_count: 0
-    lair_actions: []
     has_lair: false
-    spellcasting: {}
     description: "Trained in the use of poison, assassins are remorseless killers who work for nobles, guildmasters, sovereigns, and anyone else who can afford them."
 
 # CR 11
@@ -586,30 +388,8 @@
     telepathy: 0
     challenge_rating: "16"
     proficiency_bonus: 5
-    traits:
-      - name: Fire Absorption
-        description: "Whenever the golem is subjected to fire damage, it takes no damage and instead regains a number of hit points equal to the fire damage dealt."
-      - name: Immutable Form
-        description: "The golem is immune to any spell or effect that would alter its form."
-      - name: Magic Resistance
-        description: "The golem has advantage on saving throws against spells and other magical effects."
-      - name: Magic Weapons
-        description: "The golem's weapon attacks are magical."
-    actions:
-      - name: Multiattack
-        description: "The golem makes two melee attacks."
-      - name: Slam
-        description: "Melee Weapon Attack: +13 to hit, reach 5 ft., one target. Hit: 20 (3d8 + 7) bludgeoning damage."
-      - name: Sword
-        description: "Melee Weapon Attack: +13 to hit, reach 10 ft., one target. Hit: 23 (3d10 + 7) slashing damage."
-      - name: Poison Breath (Recharge 6)
-        description: "The golem exhales poisonous gas in a 15-foot cone. Each creature in that area must make a DC 19 Constitution saving throw, taking 45 (10d8) poison damage on a failed save, or half as much damage on a successful one."
-    reactions: []
-    legendary_actions: []
     legendary_action_count: 0
-    lair_actions: []
     has_lair: false
-    spellcasting: {}
     description: "The mightiest of golems, the iron golem is a massive, towering giant wrought of heavy metal."
 
 # CR 17 - Legendary Creature
@@ -634,37 +414,8 @@
     telepathy: 0
     challenge_rating: "17"
     proficiency_bonus: 6
-    traits:
-      - name: Legendary Resistance (3/Day)
-        description: "If the dragon fails a saving throw, it can choose to succeed instead."
-    actions:
-      - name: Multiattack
-        description: "The dragon can use its Frightful Presence. It then makes three attacks: one with its bite and two with its claws."
-      - name: Bite
-        description: "Melee Weapon Attack: +14 to hit, reach 10 ft., one target. Hit: 19 (2d10 + 8) piercing damage plus 7 (2d6) fire damage."
-      - name: Claw
-        description: "Melee Weapon Attack: +14 to hit, reach 5 ft., one target. Hit: 15 (2d6 + 8) slashing damage."
-      - name: Tail
-        description: "Melee Weapon Attack: +14 to hit, reach 15 ft., one target. Hit: 17 (2d8 + 8) bludgeoning damage."
-      - name: Frightful Presence
-        description: "Each creature of the dragon's choice that is within 120 feet of the dragon and aware of it must succeed on a DC 19 Wisdom saving throw or become frightened for 1 minute. A creature can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success."
-      - name: Fire Breath (Recharge 5-6)
-        description: "The dragon exhales fire in a 60-foot cone. Each creature in that area must make a DC 21 Dexterity saving throw, taking 63 (18d6) fire damage on a failed save, or half as much damage on a successful one."
-    reactions: []
-    legendary_actions:
-      - name: Detect
-        description: "The dragon makes a Wisdom (Perception) check."
-        cost: 1
-      - name: Tail Attack
-        description: "The dragon makes a tail attack."
-        cost: 1
-      - name: Wing Attack
-        description: "The dragon beats its wings. Each creature within 10 feet of the dragon must succeed on a DC 22 Dexterity saving throw or take 15 (2d6 + 8) bludgeoning damage and be knocked prone. The dragon can then fly up to half its flying speed."
-        cost: 2
     legendary_action_count: 3
-    lair_actions: []
     has_lair: false
-    spellcasting: {}
     description: "The most covetous of the true dragons, red dragons tirelessly seek to increase their treasure hoards."
 
 # CR 21 - Legendary Undead
@@ -689,93 +440,6 @@
     telepathy: 0
     challenge_rating: "21"
     proficiency_bonus: 7
-    traits:
-      - name: Legendary Resistance (3/Day)
-        description: "If the lich fails a saving throw, it can choose to succeed instead."
-      - name: Rejuvenation
-        description: "If it has a phylactery, a destroyed lich gains a new body in 1d10 days, regaining all its hit points and becoming active again. The new body appears within 5 feet of the phylactery."
-      - name: Turn Resistance
-        description: "The lich has advantage on saving throws against any effect that turns undead."
-    actions:
-      - name: Paralyzing Touch
-        description: "Melee Spell Attack: +12 to hit, reach 5 ft., one creature. Hit: 10 (3d6) cold damage. The target must succeed on a DC 18 Constitution saving throw or be paralyzed for 1 minute. The target can repeat the saving throw at the end of each of its turns, ending the effect on itself on a success."
-    reactions: []
-    legendary_actions:
-      - name: Cantrip
-        description: "The lich casts a cantrip."
-        cost: 1
-      - name: Paralyzing Touch
-        description: "The lich uses its Paralyzing Touch."
-        cost: 2
-      - name: Frightening Gaze
-        description: "The lich fixes its gaze on one creature it can see within 10 feet of it. The target must succeed on a DC 18 Wisdom saving throw against this magic or become frightened for 1 minute."
-        cost: 2
-      - name: Disrupt Life
-        description: "Each non-undead creature within 20 feet of the lich must make a DC 18 Constitution saving throw against this magic, taking 21 (6d6) necrotic damage on a failed save, or half as much damage on a successful one."
-        cost: 3
     legendary_action_count: 3
-    lair_actions:
-      - description: "The lich rolls a d8 and regains a spell slot of that level or lower. If it has no spent spell slots of that level or lower, nothing happens."
-      - description: "The lich targets one creature it can see within 30 feet of it. A crackling cord of negative energy tethers the lich to the target."
-      - description: "The lich calls forth the spirits of creatures that died in its lair. These spectral apparitions can move through creatures and objects."
     has_lair: true
-    spellcasting:
-      ability: INT
-      save_dc: 20
-      attack_bonus: 12
-      spells:
-        cantrips:
-          - mage hand
-          - prestidigitation
-          - ray of frost
-        1st:
-          slots: 4
-          spells:
-            - detect magic
-            - magic missile
-            - shield
-            - thunderwave
-        2nd:
-          slots: 3
-          spells:
-            - detect thoughts
-            - invisibility
-            - acid arrow
-            - mirror image
-        3rd:
-          slots: 3
-          spells:
-            - animate dead
-            - counterspell
-            - dispel magic
-            - fireball
-        4th:
-          slots: 3
-          spells:
-            - blight
-            - dimension door
-        5th:
-          slots: 3
-          spells:
-            - cloudkill
-            - scrying
-        6th:
-          slots: 1
-          spells:
-            - disintegrate
-            - globe of invulnerability
-        7th:
-          slots: 1
-          spells:
-            - finger of death
-            - plane shift
-        8th:
-          slots: 1
-          spells:
-            - dominate monster
-            - power word stun
-        9th:
-          slots: 1
-          spells:
-            - power word kill
     description: "A lich is created when a powerful wizard embraces undeath as a means of preserving itself."
