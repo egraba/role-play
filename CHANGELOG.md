@@ -5,12 +5,13 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Changed
-* Normalized 7 MonsterSettings JSON fields into proper relational tables
-  - New models: MonsterSpeed, MonsterSavingThrow, MonsterSkill, MonsterSense, MonsterDamageRelation, MonsterConditionImmunity, MonsterLanguage
+* Normalized all MonsterSettings JSON fields into proper relational tables
+  - Phase 1 (7 fields): MonsterSpeed, MonsterSavingThrow, MonsterSkill, MonsterSense, MonsterDamageRelation, MonsterConditionImmunity, MonsterLanguage
+  - Phase 2 (6 fields): Wired up existing MonsterTrait, MonsterActionTemplate, MonsterReaction, LegendaryActionTemplate, LairActionTemplate models; added new MonsterSpellcasting and MonsterSpellcastingLevel models
   - Extracted `passive_perception` from senses JSON into a dedicated IntegerField
   - Added `DamageRelationType` enum to `bestiary/constants/monsters.py`
   - Backward-compatible `cached_property` methods preserve existing dict/list interfaces
-  - 3-step migration: rename JSON fields → data migration → drop old fields
+  - 3-step migration pattern: rename JSON fields → data migration → drop old fields
   - Split fixtures: `monsters.yaml` (core) + `monster_attributes.yaml` (relational data)
 * Refactored event system to separate concerns from model layer
   - Extracted event-type mapping into `game/constants/event_registry.py` (`get_event_type()`)
