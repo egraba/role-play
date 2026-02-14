@@ -11,8 +11,8 @@
   "packageRules": [
     {
       "description": "Group Django and Django-related packages",
-      "matchPackagePatterns": [
-        "^[Dd]jango"
+      "matchPackageNames": [
+        "/^[Dd]jango/"
       ],
       "groupName": "Django packages"
     },
@@ -60,8 +60,6 @@
   ],
   "enabledManagers": [
     "pep621",
-    "uv",
-    "pip_requirements",
     "dockerfile",
     "docker-compose",
     "github-actions",
