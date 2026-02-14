@@ -6,7 +6,10 @@ This module implements the monster system including:
 - Monster: Concrete monster instances (for combat encounters)
 - MonsterAction: Actions available to monsters
 - MonsterTrait: Special traits and abilities
+- Monster attribute models: Normalized relational tables for speeds, saves, etc.
 """
+
+from functools import cached_property
 
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -20,11 +23,14 @@ from bestiary.constants.monsters import (
     CR_XP_TABLE,
     CreatureSize,
     CreatureType,
+    DamageRelationType,
     DamageType,
     MonsterName,
+    MovementType,
     RechargeType,
     SaveEffect,
     SaveType,
+    SenseType,
 )
 
 
@@ -69,11 +75,10 @@ class MonsterSettings(models.Model):
         help_text="Average HP (used for quick reference)",
     )
 
-    # Speed (stored as JSON for multiple movement types)
-    # Example: {"walk": 30, "fly": 60, "swim": 30}
-    speed = models.JSONField(
-        default=dict,
-        help_text="Movement speeds by type (e.g., {'walk': 30, 'fly': 60})",
+    # Passive Perception (extracted from senses JSON)
+    passive_perception = models.PositiveSmallIntegerField(
+        default=10,
+        help_text="Passive Perception score",
     )
 
     # Ability Scores
@@ -96,59 +101,6 @@ class MonsterSettings(models.Model):
         validators=[MinValueValidator(1), MaxValueValidator(30)]
     )
 
-    # Saving Throw Proficiencies (stored as JSON)
-    # Example: {"STR": 5, "CON": 7} - stores the total bonus
-    saving_throws = models.JSONField(
-        default=dict,
-        blank=True,
-        help_text="Saving throw bonuses (e.g., {'STR': 5, 'CON': 7})",
-    )
-
-    # Skills (stored as JSON)
-    # Example: {"perception": 5, "stealth": 6}
-    skills = models.JSONField(
-        default=dict,
-        blank=True,
-        help_text="Skill bonuses (e.g., {'perception': 5, 'stealth': 6})",
-    )
-
-    # Damage Resistances, Immunities, Vulnerabilities (stored as JSON arrays)
-    damage_vulnerabilities = models.JSONField(
-        default=list,
-        blank=True,
-        help_text="List of damage types the creature is vulnerable to",
-    )
-    damage_resistances = models.JSONField(
-        default=list,
-        blank=True,
-        help_text="List of damage types the creature resists",
-    )
-    damage_immunities = models.JSONField(
-        default=list,
-        blank=True,
-        help_text="List of damage types the creature is immune to",
-    )
-
-    # Condition Immunities (stored as JSON array)
-    condition_immunities = models.JSONField(
-        default=list,
-        blank=True,
-        help_text="List of conditions the creature is immune to",
-    )
-
-    # Senses (stored as JSON)
-    # Example: {"darkvision": 60, "blindsight": 30, "passive_perception": 14}
-    senses = models.JSONField(
-        default=dict,
-        help_text="Senses (e.g., {'darkvision': 60, 'passive_perception': 14})",
-    )
-
-    # Languages (stored as JSON array or string)
-    languages = models.JSONField(
-        default=list,
-        blank=True,
-        help_text="Languages the creature speaks/understands",
-    )
     telepathy = models.PositiveSmallIntegerField(
         default=0,
         help_text="Telepathy range in feet (0 if none)",
@@ -260,6 +212,62 @@ class MonsterSettings(models.Model):
     def charisma_modifier(self) -> int:
         """Calculate Charisma modifier."""
         return compute_ability_modifier(self.charisma)
+
+    # ------------------------------------------------------------------
+    # Backward-compatible properties replacing former JSONFields.
+    # These return the same dict/list interfaces that templates and
+    # helper methods (get_saving_throw, is_immune_to_damage, …) expect.
+    # ------------------------------------------------------------------
+
+    @cached_property
+    def speed(self) -> dict[str, int]:
+        return {e.movement_type: e.feet for e in self.speed_entries.all()}
+
+    @cached_property
+    def saving_throws(self) -> dict[str, int]:
+        return {e.ability: e.bonus for e in self.saving_throw_entries.all()}
+
+    @cached_property
+    def skills(self) -> dict[str, int]:
+        return {e.skill.lower(): e.bonus for e in self.skill_entries.all()}
+
+    @cached_property
+    def senses(self) -> dict[str, int]:
+        result = {e.sense_type: e.range_feet for e in self.sense_entries.all()}
+        result["passive_perception"] = self.passive_perception
+        return result
+
+    @cached_property
+    def damage_vulnerabilities(self) -> list[str]:
+        return list(
+            self.damage_relations.filter(
+                relation_type=DamageRelationType.VULNERABILITY
+            ).values_list("damage_type", flat=True)
+        )
+
+    @cached_property
+    def damage_resistances(self) -> list[str]:
+        return list(
+            self.damage_relations.filter(
+                relation_type=DamageRelationType.RESISTANCE
+            ).values_list("damage_type", flat=True)
+        )
+
+    @cached_property
+    def damage_immunities(self) -> list[str]:
+        return list(
+            self.damage_relations.filter(
+                relation_type=DamageRelationType.IMMUNITY
+            ).values_list("damage_type", flat=True)
+        )
+
+    @cached_property
+    def condition_immunities(self) -> list[str]:
+        return list(self.condition_immunity_entries.values_list("condition", flat=True))
+
+    @cached_property
+    def languages(self) -> list[str]:
+        return list(self.language_entries.values_list("language", flat=True))
 
     def get_saving_throw(self, ability: str) -> int:
         """
@@ -924,3 +932,199 @@ class MonsterReaction(models.Model):
 
     def __str__(self):
         return f"{self.monster.name}: {self.name}"
+
+
+# ------------------------------------------------------------------
+# Normalized attribute models (replacing former JSONFields on
+# MonsterSettings).  Each stores one aspect of the stat block as a
+# proper relational table so that monsters are queryable by attribute.
+# ------------------------------------------------------------------
+
+
+class MonsterSpeed(models.Model):
+    """Movement speed entry for a monster."""
+
+    monster = models.ForeignKey(
+        MonsterSettings,
+        on_delete=models.CASCADE,
+        related_name="speed_entries",
+    )
+    movement_type = models.CharField(max_length=10, choices=MovementType.choices)
+    feet = models.PositiveSmallIntegerField()
+
+    class Meta:
+        db_table = "character_monsterspeed"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["monster", "movement_type"],
+                name="unique_monster_speed",
+            ),
+        ]
+        ordering = ["monster", "movement_type"]
+        verbose_name = "monster speed"
+        verbose_name_plural = "monster speeds"
+
+    def __str__(self):
+        return f"{self.monster.name}: {self.movement_type} {self.feet} ft."
+
+
+class MonsterSavingThrow(models.Model):
+    """Saving throw proficiency for a monster."""
+
+    monster = models.ForeignKey(
+        MonsterSettings,
+        on_delete=models.CASCADE,
+        related_name="saving_throw_entries",
+    )
+    ability = models.CharField(max_length=3)
+    bonus = models.SmallIntegerField()
+
+    class Meta:
+        db_table = "character_monstersavingthrow"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["monster", "ability"],
+                name="unique_monster_saving_throw",
+            ),
+        ]
+        ordering = ["monster", "ability"]
+        verbose_name = "monster saving throw"
+        verbose_name_plural = "monster saving throws"
+
+    def __str__(self):
+        sign = "+" if self.bonus >= 0 else ""
+        return f"{self.monster.name}: {self.ability} {sign}{self.bonus}"
+
+
+class MonsterSkill(models.Model):
+    """Skill proficiency for a monster."""
+
+    monster = models.ForeignKey(
+        MonsterSettings,
+        on_delete=models.CASCADE,
+        related_name="skill_entries",
+    )
+    skill = models.CharField(max_length=30)
+    bonus = models.SmallIntegerField()
+
+    class Meta:
+        db_table = "character_monsterskill"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["monster", "skill"],
+                name="unique_monster_skill",
+            ),
+        ]
+        ordering = ["monster", "skill"]
+        verbose_name = "monster skill"
+        verbose_name_plural = "monster skills"
+
+    def __str__(self):
+        sign = "+" if self.bonus >= 0 else ""
+        return f"{self.monster.name}: {self.skill} {sign}{self.bonus}"
+
+
+class MonsterSense(models.Model):
+    """Special sense for a monster (darkvision, blindsight, etc.)."""
+
+    monster = models.ForeignKey(
+        MonsterSettings,
+        on_delete=models.CASCADE,
+        related_name="sense_entries",
+    )
+    sense_type = models.CharField(max_length=15, choices=SenseType.choices)
+    range_feet = models.PositiveSmallIntegerField()
+
+    class Meta:
+        db_table = "character_monstersense"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["monster", "sense_type"],
+                name="unique_monster_sense",
+            ),
+        ]
+        ordering = ["monster", "sense_type"]
+        verbose_name = "monster sense"
+        verbose_name_plural = "monster senses"
+
+    def __str__(self):
+        return f"{self.monster.name}: {self.sense_type} {self.range_feet} ft."
+
+
+class MonsterDamageRelation(models.Model):
+    """Damage vulnerability, resistance, or immunity for a monster."""
+
+    monster = models.ForeignKey(
+        MonsterSettings,
+        on_delete=models.CASCADE,
+        related_name="damage_relations",
+    )
+    damage_type = models.CharField(max_length=20, choices=DamageType.choices)
+    relation_type = models.CharField(max_length=15, choices=DamageRelationType.choices)
+
+    class Meta:
+        db_table = "character_monsterdamagerelation"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["monster", "damage_type", "relation_type"],
+                name="unique_monster_damage_relation",
+            ),
+        ]
+        ordering = ["monster", "relation_type", "damage_type"]
+        verbose_name = "monster damage relation"
+        verbose_name_plural = "monster damage relations"
+
+    def __str__(self):
+        return f"{self.monster.name}: {self.damage_type} {self.relation_type}"
+
+
+class MonsterConditionImmunity(models.Model):
+    """Condition immunity for a monster."""
+
+    monster = models.ForeignKey(
+        MonsterSettings,
+        on_delete=models.CASCADE,
+        related_name="condition_immunity_entries",
+    )
+    condition = models.CharField(max_length=20)
+
+    class Meta:
+        db_table = "character_monsterconditionimmunity"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["monster", "condition"],
+                name="unique_monster_condition_immunity",
+            ),
+        ]
+        ordering = ["monster", "condition"]
+        verbose_name = "monster condition immunity"
+        verbose_name_plural = "monster condition immunities"
+
+    def __str__(self):
+        return f"{self.monster.name}: immune to {self.condition}"
+
+
+class MonsterLanguage(models.Model):
+    """Language known by a monster."""
+
+    monster = models.ForeignKey(
+        MonsterSettings,
+        on_delete=models.CASCADE,
+        related_name="language_entries",
+    )
+    language = models.CharField(max_length=50)
+
+    class Meta:
+        db_table = "character_monsterlanguage"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["monster", "language"],
+                name="unique_monster_language",
+            ),
+        ]
+        ordering = ["monster", "language"]
+        verbose_name = "monster language"
+        verbose_name_plural = "monster languages"
+
+    def __str__(self):
+        return f"{self.monster.name}: {self.language}"

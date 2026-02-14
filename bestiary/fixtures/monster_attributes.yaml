@@ -1,0 +1,839 @@
+# Monster attribute records for D&D 5e SRD 5.2.1
+# Normalized relational data for MonsterSettings.
+# Depends on monsters.yaml (must be loaded first).
+
+# =============================================================================
+# MonsterSpeed
+# =============================================================================
+
+# Commoner
+- model: bestiary.monsterspeed
+  fields:
+    monster: Commoner
+    movement_type: walk
+    feet: 30
+
+# Bandit
+- model: bestiary.monsterspeed
+  fields:
+    monster: Bandit
+    movement_type: walk
+    feet: 30
+
+# Skeleton
+- model: bestiary.monsterspeed
+  fields:
+    monster: Skeleton
+    movement_type: walk
+    feet: 30
+
+# Zombie
+- model: bestiary.monsterspeed
+  fields:
+    monster: Zombie
+    movement_type: walk
+    feet: 20
+
+# Wolf
+- model: bestiary.monsterspeed
+  fields:
+    monster: Wolf
+    movement_type: walk
+    feet: 40
+
+# Orc
+- model: bestiary.monsterspeed
+  fields:
+    monster: Orc
+    movement_type: walk
+    feet: 30
+
+# Ghoul
+- model: bestiary.monsterspeed
+  fields:
+    monster: Ghoul
+    movement_type: walk
+    feet: 30
+
+# Dire Wolf
+- model: bestiary.monsterspeed
+  fields:
+    monster: Dire Wolf
+    movement_type: walk
+    feet: 50
+
+# Ogre
+- model: bestiary.monsterspeed
+  fields:
+    monster: Ogre
+    movement_type: walk
+    feet: 40
+
+# Owlbear
+- model: bestiary.monsterspeed
+  fields:
+    monster: Owlbear
+    movement_type: walk
+    feet: 40
+
+# Minotaur
+- model: bestiary.monsterspeed
+  fields:
+    monster: Minotaur
+    movement_type: walk
+    feet: 40
+
+# Air Elemental
+- model: bestiary.monsterspeed
+  fields:
+    monster: Air Elemental
+    movement_type: walk
+    feet: 0
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Air Elemental
+    movement_type: fly
+    feet: 90
+
+# Mage
+- model: bestiary.monsterspeed
+  fields:
+    monster: Mage
+    movement_type: walk
+    feet: 30
+
+# Assassin
+- model: bestiary.monsterspeed
+  fields:
+    monster: Assassin
+    movement_type: walk
+    feet: 30
+
+# Iron Golem
+- model: bestiary.monsterspeed
+  fields:
+    monster: Iron Golem
+    movement_type: walk
+    feet: 30
+
+# Adult Red Dragon
+- model: bestiary.monsterspeed
+  fields:
+    monster: Adult Red Dragon
+    movement_type: walk
+    feet: 40
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Adult Red Dragon
+    movement_type: climb
+    feet: 40
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Adult Red Dragon
+    movement_type: fly
+    feet: 80
+
+# Lich
+- model: bestiary.monsterspeed
+  fields:
+    monster: Lich
+    movement_type: walk
+    feet: 30
+
+# =============================================================================
+# MonsterSavingThrow
+# =============================================================================
+
+# Zombie
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Zombie
+    ability: WIS
+    bonus: 0
+
+# Mage
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Mage
+    ability: INT
+    bonus: 6
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Mage
+    ability: WIS
+    bonus: 4
+
+# Assassin
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Assassin
+    ability: DEX
+    bonus: 6
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Assassin
+    ability: INT
+    bonus: 4
+
+# Adult Red Dragon
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Adult Red Dragon
+    ability: DEX
+    bonus: 6
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Adult Red Dragon
+    ability: CON
+    bonus: 13
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Adult Red Dragon
+    ability: WIS
+    bonus: 7
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Adult Red Dragon
+    ability: CHA
+    bonus: 11
+
+# Lich
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Lich
+    ability: CON
+    bonus: 10
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Lich
+    ability: INT
+    bonus: 12
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Lich
+    ability: WIS
+    bonus: 9
+
+# =============================================================================
+# MonsterSkill
+# =============================================================================
+
+# Wolf
+- model: bestiary.monsterskill
+  fields:
+    monster: Wolf
+    skill: Perception
+    bonus: 3
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Wolf
+    skill: Stealth
+    bonus: 4
+
+# Orc
+- model: bestiary.monsterskill
+  fields:
+    monster: Orc
+    skill: Intimidation
+    bonus: 2
+
+# Dire Wolf
+- model: bestiary.monsterskill
+  fields:
+    monster: Dire Wolf
+    skill: Perception
+    bonus: 3
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Dire Wolf
+    skill: Stealth
+    bonus: 4
+
+# Owlbear
+- model: bestiary.monsterskill
+  fields:
+    monster: Owlbear
+    skill: Perception
+    bonus: 3
+
+# Minotaur
+- model: bestiary.monsterskill
+  fields:
+    monster: Minotaur
+    skill: Perception
+    bonus: 7
+
+# Mage
+- model: bestiary.monsterskill
+  fields:
+    monster: Mage
+    skill: Arcana
+    bonus: 6
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Mage
+    skill: History
+    bonus: 6
+
+# Assassin
+- model: bestiary.monsterskill
+  fields:
+    monster: Assassin
+    skill: Acrobatics
+    bonus: 6
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Assassin
+    skill: Deception
+    bonus: 3
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Assassin
+    skill: Perception
+    bonus: 3
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Assassin
+    skill: Stealth
+    bonus: 9
+
+# Adult Red Dragon
+- model: bestiary.monsterskill
+  fields:
+    monster: Adult Red Dragon
+    skill: Perception
+    bonus: 13
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Adult Red Dragon
+    skill: Stealth
+    bonus: 6
+
+# Lich
+- model: bestiary.monsterskill
+  fields:
+    monster: Lich
+    skill: Arcana
+    bonus: 18
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Lich
+    skill: History
+    bonus: 12
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Lich
+    skill: Insight
+    bonus: 9
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Lich
+    skill: Perception
+    bonus: 9
+
+# =============================================================================
+# MonsterSense
+# =============================================================================
+
+# Skeleton
+- model: bestiary.monstersense
+  fields:
+    monster: Skeleton
+    sense_type: darkvision
+    range_feet: 60
+
+# Zombie
+- model: bestiary.monstersense
+  fields:
+    monster: Zombie
+    sense_type: darkvision
+    range_feet: 60
+
+# Orc
+- model: bestiary.monstersense
+  fields:
+    monster: Orc
+    sense_type: darkvision
+    range_feet: 60
+
+# Ghoul
+- model: bestiary.monstersense
+  fields:
+    monster: Ghoul
+    sense_type: darkvision
+    range_feet: 60
+
+# Ogre
+- model: bestiary.monstersense
+  fields:
+    monster: Ogre
+    sense_type: darkvision
+    range_feet: 60
+
+# Owlbear
+- model: bestiary.monstersense
+  fields:
+    monster: Owlbear
+    sense_type: darkvision
+    range_feet: 60
+
+# Minotaur
+- model: bestiary.monstersense
+  fields:
+    monster: Minotaur
+    sense_type: darkvision
+    range_feet: 60
+
+# Air Elemental
+- model: bestiary.monstersense
+  fields:
+    monster: Air Elemental
+    sense_type: darkvision
+    range_feet: 60
+
+# Iron Golem
+- model: bestiary.monstersense
+  fields:
+    monster: Iron Golem
+    sense_type: darkvision
+    range_feet: 120
+
+# Adult Red Dragon
+- model: bestiary.monstersense
+  fields:
+    monster: Adult Red Dragon
+    sense_type: blindsight
+    range_feet: 60
+
+- model: bestiary.monstersense
+  fields:
+    monster: Adult Red Dragon
+    sense_type: darkvision
+    range_feet: 120
+
+# Lich
+- model: bestiary.monstersense
+  fields:
+    monster: Lich
+    sense_type: truesight
+    range_feet: 120
+
+# =============================================================================
+# MonsterDamageRelation
+# =============================================================================
+
+# Skeleton - vulnerabilities
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Skeleton
+    damage_type: bludgeoning
+    relation_type: vulnerability
+
+# Skeleton - immunities
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Skeleton
+    damage_type: poison
+    relation_type: immunity
+
+# Zombie - immunities
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Zombie
+    damage_type: poison
+    relation_type: immunity
+
+# Ghoul - immunities
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Ghoul
+    damage_type: poison
+    relation_type: immunity
+
+# Air Elemental - resistances
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Air Elemental
+    damage_type: lightning
+    relation_type: resistance
+
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Air Elemental
+    damage_type: thunder
+    relation_type: resistance
+
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Air Elemental
+    damage_type: bludgeoning
+    relation_type: resistance
+
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Air Elemental
+    damage_type: piercing
+    relation_type: resistance
+
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Air Elemental
+    damage_type: slashing
+    relation_type: resistance
+
+# Air Elemental - immunities
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Air Elemental
+    damage_type: poison
+    relation_type: immunity
+
+# Assassin - resistances
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Assassin
+    damage_type: poison
+    relation_type: resistance
+
+# Iron Golem - immunities
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Iron Golem
+    damage_type: fire
+    relation_type: immunity
+
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Iron Golem
+    damage_type: poison
+    relation_type: immunity
+
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Iron Golem
+    damage_type: psychic
+    relation_type: immunity
+
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Iron Golem
+    damage_type: bludgeoning
+    relation_type: immunity
+
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Iron Golem
+    damage_type: piercing
+    relation_type: immunity
+
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Iron Golem
+    damage_type: slashing
+    relation_type: immunity
+
+# Adult Red Dragon - immunities
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Adult Red Dragon
+    damage_type: fire
+    relation_type: immunity
+
+# Lich - resistances
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Lich
+    damage_type: cold
+    relation_type: resistance
+
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Lich
+    damage_type: lightning
+    relation_type: resistance
+
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Lich
+    damage_type: necrotic
+    relation_type: resistance
+
+# Lich - immunities
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Lich
+    damage_type: poison
+    relation_type: immunity
+
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Lich
+    damage_type: bludgeoning
+    relation_type: immunity
+
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Lich
+    damage_type: piercing
+    relation_type: immunity
+
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Lich
+    damage_type: slashing
+    relation_type: immunity
+
+# =============================================================================
+# MonsterConditionImmunity
+# =============================================================================
+
+# Skeleton
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Skeleton
+    condition: exhaustion
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Skeleton
+    condition: poisoned
+
+# Zombie
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Zombie
+    condition: poisoned
+
+# Ghoul
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Ghoul
+    condition: charmed
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Ghoul
+    condition: exhaustion
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Ghoul
+    condition: poisoned
+
+# Air Elemental
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Air Elemental
+    condition: exhaustion
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Air Elemental
+    condition: grappled
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Air Elemental
+    condition: paralyzed
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Air Elemental
+    condition: petrified
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Air Elemental
+    condition: poisoned
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Air Elemental
+    condition: prone
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Air Elemental
+    condition: restrained
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Air Elemental
+    condition: unconscious
+
+# Iron Golem
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Iron Golem
+    condition: charmed
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Iron Golem
+    condition: exhaustion
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Iron Golem
+    condition: frightened
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Iron Golem
+    condition: paralyzed
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Iron Golem
+    condition: petrified
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Iron Golem
+    condition: poisoned
+
+# Lich
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Lich
+    condition: charmed
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Lich
+    condition: exhaustion
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Lich
+    condition: frightened
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Lich
+    condition: paralyzed
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Lich
+    condition: poisoned
+
+# =============================================================================
+# MonsterLanguage
+# =============================================================================
+
+# Commoner
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Commoner
+    language: Common
+
+# Bandit
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Bandit
+    language: Common
+
+# Orc
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Orc
+    language: Common
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Orc
+    language: Orc
+
+# Ghoul
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Ghoul
+    language: Common
+
+# Ogre
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Ogre
+    language: Common
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Ogre
+    language: Giant
+
+# Minotaur
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Minotaur
+    language: Abyssal
+
+# Air Elemental
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Air Elemental
+    language: Auran
+
+# Mage
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Mage
+    language: Common
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Mage
+    language: "any four languages"
+
+# Assassin
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Assassin
+    language: "Thieves' cant"
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Assassin
+    language: "any two languages"
+
+# Adult Red Dragon
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Adult Red Dragon
+    language: Common
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Adult Red Dragon
+    language: Draconic
+
+# Lich
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Lich
+    language: Common
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Lich
+    language: "up to five other languages"

@@ -7,20 +7,30 @@ from bestiary.constants.monsters import (
     CR_XP_TABLE,
     CreatureSize,
     CreatureType,
+    DamageRelationType,
     DamageType,
     MonsterName,
+    MovementType,
     RechargeType,
     SaveEffect,
     SaveType,
+    SenseType,
 )
 from bestiary.models.monsters import (
     LairActionTemplate,
     LegendaryActionTemplate,
     Monster,
     MonsterActionTemplate,
+    MonsterConditionImmunity,
+    MonsterDamageRelation,
+    MonsterLanguage,
     MonsterMultiattack,
     MonsterReaction,
+    MonsterSavingThrow,
+    MonsterSense,
     MonsterSettings,
+    MonsterSkill,
+    MonsterSpeed,
     MonsterTrait,
     MultiattackAction,
 )
@@ -1514,3 +1524,222 @@ class TestMonsterReactionEdgeCases:
         reactions = list(MonsterReaction.objects.filter(monster=settings))
         assert reactions[0] == reaction_a
         assert reactions[1] == reaction_b
+
+
+@pytest.mark.django_db
+class TestMonsterSpeed:
+    """Tests for the MonsterSpeed model."""
+
+    def test_fixture_walk_speed(self):
+        """Walk speed loaded from fixture."""
+        wolf = MonsterSettings.objects.get(name=MonsterName.WOLF)
+        assert MonsterSpeed.objects.filter(
+            monster=wolf, movement_type=MovementType.WALK
+        ).exists()
+        assert wolf.speed["walk"] == 40
+
+    def test_fixture_fly_speed(self):
+        """Fly speed loaded from fixture."""
+        dragon = MonsterSettings.objects.get(name=MonsterName.ADULT_RED_DRAGON)
+        assert dragon.speed["fly"] == 80
+        assert dragon.speed["climb"] == 40
+        assert dragon.speed["walk"] == 40
+
+    def test_unique_constraint(self):
+        """Cannot have duplicate movement type per monster."""
+        settings = MonsterSettings.objects.get(name=MonsterName.COMMONER)
+        # Walk already exists from fixture
+        with pytest.raises(Exception):
+            MonsterSpeed.objects.create(
+                monster=settings, movement_type=MovementType.WALK, feet=60
+            )
+
+    def test_str(self):
+        speed = MonsterSpeed.objects.filter(monster__name=MonsterName.WOLF).first()
+        assert "Wolf" in str(speed)
+        assert "40 ft." in str(speed)
+
+
+@pytest.mark.django_db
+class TestMonsterSavingThrow:
+    """Tests for the MonsterSavingThrow model."""
+
+    def test_fixture_saving_throws(self):
+        """Saving throws loaded from fixture."""
+        dragon = MonsterSettings.objects.get(name=MonsterName.ADULT_RED_DRAGON)
+        assert dragon.saving_throws["DEX"] == 6
+        assert dragon.saving_throws["CON"] == 13
+        assert dragon.saving_throws["WIS"] == 7
+        assert dragon.saving_throws["CHA"] == 11
+
+    def test_unique_constraint(self):
+        """Cannot have duplicate ability per monster."""
+        dragon = MonsterSettings.objects.get(name=MonsterName.ADULT_RED_DRAGON)
+        with pytest.raises(Exception):
+            MonsterSavingThrow.objects.create(monster=dragon, ability="DEX", bonus=99)
+
+    def test_str(self):
+        st = MonsterSavingThrow.objects.filter(
+            monster__name=MonsterName.ADULT_RED_DRAGON, ability="DEX"
+        ).first()
+        assert "Adult Red Dragon" in str(st)
+        assert "+6" in str(st)
+
+
+@pytest.mark.django_db
+class TestMonsterSkill:
+    """Tests for the MonsterSkill model."""
+
+    def test_fixture_skills(self):
+        """Skills loaded from fixture with lowercase keys in cached_property."""
+        wolf = MonsterSettings.objects.get(name=MonsterName.WOLF)
+        assert wolf.skills["perception"] == 3
+        assert wolf.skills["stealth"] == 4
+
+    def test_skill_stored_title_case(self):
+        """Skills stored in Title Case in the database."""
+        skill = MonsterSkill.objects.filter(
+            monster__name=MonsterName.WOLF, skill="Perception"
+        ).first()
+        assert skill is not None
+        assert skill.bonus == 3
+
+    def test_str(self):
+        skill = MonsterSkill.objects.filter(
+            monster__name=MonsterName.WOLF, skill="Perception"
+        ).first()
+        assert "Wolf" in str(skill)
+        assert "Perception" in str(skill)
+
+
+@pytest.mark.django_db
+class TestMonsterSense:
+    """Tests for the MonsterSense model."""
+
+    def test_fixture_darkvision(self):
+        """Darkvision loaded from fixture."""
+        skeleton = MonsterSettings.objects.get(name=MonsterName.SKELETON)
+        assert skeleton.senses["darkvision"] == 60
+
+    def test_fixture_blindsight(self):
+        """Blindsight loaded from fixture."""
+        dragon = MonsterSettings.objects.get(name=MonsterName.ADULT_RED_DRAGON)
+        assert dragon.senses["blindsight"] == 60
+
+    def test_passive_perception_in_senses(self):
+        """Passive perception included in senses dict."""
+        wolf = MonsterSettings.objects.get(name=MonsterName.WOLF)
+        assert wolf.senses["passive_perception"] == 13
+
+    def test_str(self):
+        sense = MonsterSense.objects.filter(
+            monster__name=MonsterName.SKELETON, sense_type=SenseType.DARKVISION
+        ).first()
+        assert "Skeleton" in str(sense)
+        assert "60 ft." in str(sense)
+
+
+@pytest.mark.django_db
+class TestMonsterDamageRelation:
+    """Tests for the MonsterDamageRelation model."""
+
+    def test_fixture_vulnerabilities(self):
+        """Vulnerabilities loaded from fixture."""
+        skeleton = MonsterSettings.objects.get(name=MonsterName.SKELETON)
+        assert "bludgeoning" in skeleton.damage_vulnerabilities
+
+    def test_fixture_resistances(self):
+        """Resistances loaded from fixture."""
+        elemental = MonsterSettings.objects.get(name=MonsterName.AIR_ELEMENTAL)
+        assert "lightning" in elemental.damage_resistances
+        assert "thunder" in elemental.damage_resistances
+
+    def test_fixture_immunities(self):
+        """Immunities loaded from fixture."""
+        skeleton = MonsterSettings.objects.get(name=MonsterName.SKELETON)
+        assert "poison" in skeleton.damage_immunities
+
+    def test_unique_constraint(self):
+        """Cannot have duplicate damage_type+relation_type per monster."""
+        skeleton = MonsterSettings.objects.get(name=MonsterName.SKELETON)
+        with pytest.raises(Exception):
+            MonsterDamageRelation.objects.create(
+                monster=skeleton,
+                damage_type=DamageType.POISON,
+                relation_type=DamageRelationType.IMMUNITY,
+            )
+
+    def test_str(self):
+        rel = MonsterDamageRelation.objects.filter(
+            monster__name=MonsterName.SKELETON,
+            damage_type=DamageType.BLUDGEONING,
+        ).first()
+        assert "Skeleton" in str(rel)
+        assert "bludgeoning" in str(rel)
+
+
+@pytest.mark.django_db
+class TestMonsterConditionImmunity:
+    """Tests for the MonsterConditionImmunity model."""
+
+    def test_fixture_condition_immunities(self):
+        """Condition immunities loaded from fixture."""
+        skeleton = MonsterSettings.objects.get(name=MonsterName.SKELETON)
+        assert "exhaustion" in skeleton.condition_immunities
+        assert "poisoned" in skeleton.condition_immunities
+
+    def test_elemental_conditions(self):
+        """Air elemental should have many condition immunities."""
+        elemental = MonsterSettings.objects.get(name=MonsterName.AIR_ELEMENTAL)
+        assert "prone" in elemental.condition_immunities
+        assert "grappled" in elemental.condition_immunities
+
+    def test_str(self):
+        ci = MonsterConditionImmunity.objects.filter(
+            monster__name=MonsterName.SKELETON, condition="poisoned"
+        ).first()
+        assert "Skeleton" in str(ci)
+        assert "poisoned" in str(ci)
+
+
+@pytest.mark.django_db
+class TestMonsterLanguage:
+    """Tests for the MonsterLanguage model."""
+
+    def test_fixture_languages(self):
+        """Languages loaded from fixture."""
+        ogre = MonsterSettings.objects.get(name=MonsterName.OGRE)
+        assert "Common" in ogre.languages
+        assert "Giant" in ogre.languages
+
+    def test_no_languages(self):
+        """Beasts typically have no languages."""
+        wolf = MonsterSettings.objects.get(name=MonsterName.WOLF)
+        assert wolf.languages == []
+
+    def test_freeform_language(self):
+        """Freeform language values should work."""
+        mage = MonsterSettings.objects.get(name=MonsterName.MAGE)
+        assert "any four languages" in mage.languages
+
+    def test_str(self):
+        lang = MonsterLanguage.objects.filter(
+            monster__name=MonsterName.OGRE, language="Common"
+        ).first()
+        assert "Ogre" in str(lang)
+        assert "Common" in str(lang)
+
+
+@pytest.mark.django_db
+class TestPassivePerception:
+    """Tests for the passive_perception field."""
+
+    def test_passive_perception_field(self):
+        """Passive perception stored as dedicated field."""
+        wolf = MonsterSettings.objects.get(name=MonsterName.WOLF)
+        assert wolf.passive_perception == 13
+
+    def test_passive_perception_in_senses_dict(self):
+        """Passive perception included in senses cached_property."""
+        dragon = MonsterSettings.objects.get(name=MonsterName.ADULT_RED_DRAGON)
+        assert dragon.senses["passive_perception"] == 23

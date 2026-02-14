@@ -27,6 +27,7 @@ FIXTURES = [
     "character/fixtures/feats.yaml",
     "equipment/fixtures/magic_items.yaml",
     "bestiary/fixtures/monsters.yaml",
+    "bestiary/fixtures/monster_attributes.yaml",
 ]
 
 
