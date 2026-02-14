@@ -6,17 +6,27 @@ from bestiary.constants.monsters import (
     ChallengeRating,
     CreatureSize,
     CreatureType,
+    DamageRelationType,
     DamageType,
     MonsterName,
+    MovementType,
+    SenseType,
 )
 from bestiary.models.monsters import (
     LairActionTemplate,
     LegendaryActionTemplate,
     Monster,
     MonsterActionTemplate,
+    MonsterConditionImmunity,
+    MonsterDamageRelation,
+    MonsterLanguage,
     MonsterMultiattack,
     MonsterReaction,
+    MonsterSavingThrow,
+    MonsterSense,
     MonsterSettings,
+    MonsterSkill,
+    MonsterSpeed,
     MonsterTrait,
     MultiattackAction,
 )
@@ -500,7 +510,7 @@ class MonsterSettingsFactory(factory.django.DjangoModelFactory):
     ac = 10
     hit_dice = "1d8"
     hp_average = 4
-    speed = factory.LazyFunction(lambda: {"walk": 30})
+    passive_perception = 10
     strength = 10
     dexterity = 10
     constitution = 10
@@ -509,7 +519,6 @@ class MonsterSettingsFactory(factory.django.DjangoModelFactory):
     charisma = 10
     challenge_rating = ChallengeRating.CR_0
     proficiency_bonus = 2
-    senses = factory.LazyFunction(lambda: {"passive_perception": 10})
 
 
 class MonsterFactory(factory.django.DjangoModelFactory):
@@ -587,3 +596,64 @@ class MonsterReactionFactory(factory.django.DjangoModelFactory):
     name = factory.Sequence(lambda n: f"Reaction {n}")
     description = "The creature reacts."
     trigger = "When attacked"
+
+
+class MonsterSpeedFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = MonsterSpeed
+
+    monster = factory.SubFactory(MonsterSettingsFactory)
+    movement_type = MovementType.WALK
+    feet = 30
+
+
+class MonsterSavingThrowFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = MonsterSavingThrow
+
+    monster = factory.SubFactory(MonsterSettingsFactory)
+    ability = "STR"
+    bonus = 5
+
+
+class MonsterSkillFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = MonsterSkill
+
+    monster = factory.SubFactory(MonsterSettingsFactory)
+    skill = "Perception"
+    bonus = 3
+
+
+class MonsterSenseFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = MonsterSense
+
+    monster = factory.SubFactory(MonsterSettingsFactory)
+    sense_type = SenseType.DARKVISION
+    range_feet = 60
+
+
+class MonsterDamageRelationFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = MonsterDamageRelation
+
+    monster = factory.SubFactory(MonsterSettingsFactory)
+    damage_type = DamageType.FIRE
+    relation_type = DamageRelationType.IMMUNITY
+
+
+class MonsterConditionImmunityFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = MonsterConditionImmunity
+
+    monster = factory.SubFactory(MonsterSettingsFactory)
+    condition = "poisoned"
+
+
+class MonsterLanguageFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = MonsterLanguage
+
+    monster = factory.SubFactory(MonsterSettingsFactory)
+    language = "Common"

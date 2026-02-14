@@ -140,6 +140,14 @@ CR_XP_TABLE = {
 }
 
 
+class DamageRelationType(TextChoices):
+    """Relationship types for monster damage interactions."""
+
+    VULNERABILITY = "vulnerability", "Vulnerability"
+    RESISTANCE = "resistance", "Resistance"
+    IMMUNITY = "immunity", "Immunity"
+
+
 class DamageType(TextChoices):
     """
     All damage types per D&D 5e SRD.

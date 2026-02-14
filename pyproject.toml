@@ -61,8 +61,11 @@ parallel = true
 branch = true
 source = [
     "ai",
+    "bestiary",
     "character",
+    "equipment",
     "game",
+    "magic",
     "master",
     "user",
     "utils",
