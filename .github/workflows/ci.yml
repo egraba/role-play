@@ -29,37 +29,12 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
-    services:
-      redis:
-        image: redis:8
-        ports:
-          - 6379:6379
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-      postgres:
-        image: postgres:18
-        env:
-          POSTGRES_USER: ciuser
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_DB: role-play
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.14'
-      - name: Install Doppler CLI
-        uses: dopplerhq/cli-action@v3
       - name: Install uv
         uses: astral-sh/setup-uv@v5
         with:
@@ -69,10 +44,8 @@ jobs:
         run: uv sync
       - name: Run Tests with Coverage
         run: |
-          unset PYTEST_PLUGINS && doppler run -- env -u PYTEST_PLUGINS uv run pytest --cov --cov-report= --color=yes -n 0
+          uv run pytest --cov --cov-report= --color=yes -n 0
           uv run poe test-cov-report-xml
-        env:
-          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
         env:

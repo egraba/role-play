@@ -4,6 +4,13 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 
 ## Unreleased
 
+### Fixed
+* Fixed CI failing for Dependabot PRs due to inaccessible repository secrets
+  - Test settings (`test.py`) no longer depend on environment variables or Doppler
+  - Removed unused Postgres/Redis service containers from CI (tests use SQLite + InMemoryChannelLayer)
+  - Removed Doppler CLI dependency from CI test job
+  - Deleted unused `ci.py` settings module
+
 ### Changed
 * Normalized 7 MonsterSettings JSON fields into proper relational tables
   - New models: MonsterSpeed, MonsterSavingThrow, MonsterSkill, MonsterSense, MonsterDamageRelation, MonsterConditionImmunity, MonsterLanguage
