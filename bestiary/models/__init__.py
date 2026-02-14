@@ -13,6 +13,8 @@ from .monsters import (
     MonsterSettings,
     MonsterSkill,
     MonsterSpeed,
+    MonsterSpellcasting,
+    MonsterSpellcastingLevel,
     MonsterTrait,
     MultiattackAction,
 )
@@ -32,6 +34,8 @@ __all__ = [
     "MonsterSettings",
     "MonsterSkill",
     "MonsterSpeed",
+    "MonsterSpellcasting",
+    "MonsterSpellcastingLevel",
     "MonsterTrait",
     "MultiattackAction",
 ]

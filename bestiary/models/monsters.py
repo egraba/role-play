@@ -120,7 +120,7 @@ class MonsterSettings(models.Model):
 
     # Special Traits (stored as JSON for flexibility)
     # Example: [{"name": "Keen Senses", "description": "Advantage on Perception checks..."}]
-    traits = models.JSONField(
+    traits_json = models.JSONField(
         default=list,
         blank=True,
         help_text="Special traits as list of {name, description} objects",
@@ -128,21 +128,21 @@ class MonsterSettings(models.Model):
 
     # Actions (stored as JSON for flexibility)
     # Example: [{"name": "Bite", "description": "Melee Weapon Attack: +5 to hit..."}]
-    actions = models.JSONField(
+    actions_json = models.JSONField(
         default=list,
         blank=True,
         help_text="Actions as list of {name, description} objects",
     )
 
     # Reactions (stored as JSON)
-    reactions = models.JSONField(
+    reactions_json = models.JSONField(
         default=list,
         blank=True,
         help_text="Reactions as list of {name, description} objects",
     )
 
     # Legendary Actions (for legendary creatures)
-    legendary_actions = models.JSONField(
+    legendary_actions_json = models.JSONField(
         default=list,
         blank=True,
         help_text="Legendary actions as list of {name, description, cost} objects",
@@ -153,7 +153,7 @@ class MonsterSettings(models.Model):
     )
 
     # Lair Actions (for creatures with lairs)
-    lair_actions = models.JSONField(
+    lair_actions_json = models.JSONField(
         default=list,
         blank=True,
         help_text="Lair actions as list of {description} objects",
@@ -163,7 +163,7 @@ class MonsterSettings(models.Model):
     # Spellcasting (optional, stored as JSON for flexibility)
     # Example: {"ability": "INT", "save_dc": 15, "attack_bonus": 7,
     #           "spells": {"cantrips": [...], "1st": [...], ...}}
-    spellcasting = models.JSONField(
+    spellcasting_json = models.JSONField(
         default=dict,
         blank=True,
         help_text="Spellcasting details if the creature is a spellcaster",
@@ -268,6 +268,64 @@ class MonsterSettings(models.Model):
     @cached_property
     def languages(self) -> list[str]:
         return list(self.language_entries.values_list("language", flat=True))
+
+    @cached_property
+    def traits(self) -> list[dict]:
+        return list(
+            self.trait_templates.values("name", "description").order_by(
+                "sort_order", "name"
+            )
+        )
+
+    @cached_property
+    def actions(self) -> list[dict]:
+        return list(
+            self.action_templates.values(
+                "name", "description", "attack_bonus", "damage_dice"
+            ).order_by("sort_order", "name")
+        )
+
+    @cached_property
+    def reactions(self) -> list[dict]:
+        return list(
+            self.reaction_templates.values("name", "description").order_by("name")
+        )
+
+    @cached_property
+    def legendary_actions(self) -> list[dict]:
+        return list(
+            self.legendary_action_templates.values(
+                "name", "description", "cost"
+            ).order_by("sort_order", "cost", "name")
+        )
+
+    @cached_property
+    def lair_actions(self) -> list[dict]:
+        return list(
+            self.lair_action_templates.values("description").order_by("sort_order")
+        )
+
+    @cached_property
+    def spellcasting(self) -> dict:
+        try:
+            entry = self.spellcasting_entry
+        except MonsterSpellcasting.DoesNotExist:
+            return {}
+        result: dict = {
+            "ability": entry.ability,
+            "save_dc": entry.save_dc,
+            "attack_bonus": entry.attack_bonus,
+            "spells": {},
+        }
+        for level in entry.levels.order_by("level"):
+            if level.level == "cantrips":
+                result["spells"]["cantrips"] = level.spells
+            else:
+                result["spells"][level.level] = {
+                    "slots": level.slots,
+                    "spells": level.spells,
+                }
+        return result
 
     def get_saving_throw(self, ability: str) -> int:
         """
@@ -1128,3 +1186,64 @@ class MonsterLanguage(models.Model):
 
     def __str__(self):
         return f"{self.monster.name}: {self.language}"
+
+
+class MonsterSpellcasting(models.Model):
+    """Spellcasting ability block for a monster."""
+
+    monster = models.OneToOneField(
+        MonsterSettings,
+        on_delete=models.CASCADE,
+        related_name="spellcasting_entry",
+    )
+    ability = models.CharField(
+        max_length=3,
+        help_text="Spellcasting ability abbreviation (INT, WIS, CHA)",
+    )
+    save_dc = models.PositiveSmallIntegerField()
+    attack_bonus = models.SmallIntegerField()
+
+    class Meta:
+        db_table = "character_monsterspellcasting"
+        verbose_name = "monster spellcasting"
+        verbose_name_plural = "monster spellcasting"
+
+    def __str__(self):
+        return f"{self.monster.name}: {self.ability} (DC {self.save_dc})"
+
+
+class MonsterSpellcastingLevel(models.Model):
+    """Spells known at a specific level for a spellcasting monster."""
+
+    spellcasting = models.ForeignKey(
+        MonsterSpellcasting,
+        on_delete=models.CASCADE,
+        related_name="levels",
+    )
+    level = models.CharField(
+        max_length=10,
+        help_text="Spell level: 'cantrips', '1st', '2nd', ... '9th'",
+    )
+    slots = models.PositiveSmallIntegerField(
+        default=0,
+        help_text="Number of spell slots (0 for cantrips)",
+    )
+    spells = models.JSONField(
+        default=list,
+        help_text="List of spell name strings",
+    )
+
+    class Meta:
+        db_table = "character_monsterspellcastinglevel"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["spellcasting", "level"],
+                name="unique_monster_spellcasting_level",
+            ),
+        ]
+        ordering = ["spellcasting", "level"]
+        verbose_name = "monster spellcasting level"
+        verbose_name_plural = "monster spellcasting levels"
+
+    def __str__(self):
+        return f"{self.spellcasting.monster.name}: {self.level} ({len(self.spells)} spells)"
