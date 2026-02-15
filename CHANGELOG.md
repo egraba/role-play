@@ -12,6 +12,14 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
   - Deleted unused `ci.py` settings module
 
 ### Changed
+* Wired attack views to use `game/attack.py` service module instead of inline combat math
+  - Attack modal now includes weapon selection with per-weapon attack bonuses
+  - Attack resolution uses actual weapon damage dice (not hardcoded 1d8)
+  - Ability selection follows SRD 5.2.1 (STR/DEX/finesse) based on weapon properties
+  - `AttackResult` enhanced with `damage_rolls` and `second_natural_roll` for UI display
+  - Extracted `CombatTurnPermissionMixin` from 4 duplicated permission checks
+  - `DamageRollView` converted to display-only pass-through (no re-rolling)
+  - `ApplyDamageView` uses `apply_damage()` service function
 * Normalized all MonsterSettings JSON fields into proper relational tables
   - Phase 1 (7 fields): MonsterSpeed, MonsterSavingThrow, MonsterSkill, MonsterSense, MonsterDamageRelation, MonsterConditionImmunity, MonsterLanguage
   - Phase 2 (6 fields): Wired up existing MonsterTrait, MonsterActionTemplate, MonsterReaction, LegendaryActionTemplate, LairActionTemplate models; added new MonsterSpellcasting and MonsterSpellcastingLevel models
