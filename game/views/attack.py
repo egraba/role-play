@@ -8,7 +8,7 @@ from django.views import View
 from equipment.models.equipment import Weapon
 from magic.models.spells import Concentration
 
-from ..attack import get_attack_ability
+from ..attack import get_attack_ability, resolve_attack
 from ..constants.combat import CombatAction, CombatState
 from ..models.combat import Combat, Fighter, Turn
 from ..models.events import ActionTaken
@@ -112,6 +112,7 @@ class AttackRollView(
         fighter = combat.current_fighter
 
         target_id = request.POST.get("target_id")
+        weapon_id = request.POST.get("weapon_id")
         roll_modifier = request.POST.get("roll_modifier", "normal")
 
         # Validate target
@@ -122,37 +123,36 @@ class AttackRollView(
             context["error"] = "Invalid target selected"
             return HttpResponse(self.render_attack_modal(context, self.game))
 
-        # Get attack bonus
-        character = fighter.character
+        # Validate weapon
         try:
-            str_modifier = character.strength.modifier
-        except (AttributeError, character.abilities.model.DoesNotExist):
-            str_modifier = 0
-        proficiency = getattr(character, "proficiency_bonus", 2)
-        attack_bonus = str_modifier + proficiency
+            weapon = Weapon.objects.get(
+                id=weapon_id, inventory=fighter.character.inventory
+            )
+        except Weapon.DoesNotExist:
+            context = self.get_attack_context(combat, request.user, fighter)
+            context["error"] = "Invalid weapon selected"
+            return HttpResponse(self.render_attack_modal(context, self.game))
 
-        # Roll the d20
-        roll1 = random.randint(1, 20)
-        roll2 = random.randint(1, 20) if roll_modifier != "normal" else None
+        # Resolve the attack using the service module
+        result = resolve_attack(
+            attacker=fighter.character,
+            target=target.character,
+            weapon=weapon,
+            advantage=(roll_modifier == "advantage"),
+            disadvantage=(roll_modifier == "disadvantage"),
+        )
 
-        # Determine which roll to use
-        if roll_modifier == "advantage":
-            natural_roll = max(roll1, roll2)
-            second_roll = min(roll1, roll2)
-        elif roll_modifier == "disadvantage":
-            natural_roll = min(roll1, roll2)
-            second_roll = max(roll1, roll2)
-        else:
-            natural_roll = roll1
-            second_roll = None
-
-        total_roll = natural_roll + attack_bonus
-
-        # Determine hit/miss (ac field, not armor_class)
-        target_ac = getattr(target.character, "ac", 10) or 10
-        is_critical_hit = natural_roll == 20
-        is_critical_miss = natural_roll == 1
-        is_hit = is_critical_hit or (not is_critical_miss and total_roll >= target_ac)
+        # Build damage formula for display
+        damage_formula = ""
+        if result.damage_rolls:
+            rolls_str = "+".join(map(str, result.damage_rolls))
+            dice_count = len(result.damage_rolls)
+            die_size = (
+                result.damage_dice.split("d")[-1] if "d" in result.damage_dice else "?"
+            )
+            damage_formula = (
+                f"{dice_count}d{die_size} ({rolls_str}) + {result.damage_modifier}"
+            )
 
         # Build result context
         context = self.get_attack_context(combat, request.user, fighter)
@@ -160,14 +160,20 @@ class AttackRollView(
             {
                 "attack_result": True,
                 "target": target,
-                "natural_roll": natural_roll,
-                "second_roll": second_roll,
+                "natural_roll": result.natural_roll,
+                "second_roll": result.second_natural_roll,
                 "roll_modifier": roll_modifier,
-                "attack_bonus": attack_bonus,
-                "total_roll": total_roll,
-                "is_hit": is_hit,
-                "is_critical_hit": is_critical_hit,
-                "is_critical_miss": is_critical_miss,
+                "attack_bonus": result.attack_modifier,
+                "total_roll": result.attack_roll,
+                "is_hit": result.is_hit,
+                "is_critical_hit": result.is_critical_hit,
+                "is_critical_miss": result.is_critical_miss,
+                "weapon_name": result.weapon_name,
+                "weapon_id": weapon.id,
+                # Pre-computed damage (displayed in DamageRollView)
+                "damage_rolls": result.damage_rolls,
+                "damage_formula": damage_formula,
+                "total_damage": result.damage,
                 "animate": True,
             }
         )
