@@ -120,9 +120,13 @@ class TestAttackModalView:
         response = client.get(url)
 
         content = response.content.decode()
-        # Count occurrences - fighter1's name should not be in target dropdown
-        # but might appear elsewhere in the page
-        assert f'value="{setup["fighter1"].id}"' not in content
+        # Extract the target select section and verify fighter1 is excluded.
+        # The weapon select may reuse the same integer IDs, so check the
+        # target-select element specifically.
+        target_select_start = content.index('class="rpg-select target-select"')
+        target_select_end = content.index("</select>", target_select_start)
+        target_select_html = content[target_select_start:target_select_end]
+        assert f'value="{setup["fighter1"].id}"' not in target_select_html
 
     def test_modal_shows_advantage_toggle(self, client, active_combat_setup):
         """Test modal displays advantage/disadvantage toggle."""
