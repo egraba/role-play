@@ -6,7 +6,12 @@ from django.views import View
 from equipment.models.equipment import Weapon
 from magic.models.spells import Concentration
 
-from ..attack import apply_damage, get_attack_ability, resolve_attack
+from ..attack import (
+    apply_damage,
+    get_attack_ability,
+    is_proficient_with_weapon,
+    resolve_attack,
+)
 from ..constants.combat import CombatAction, CombatState
 from ..models.combat import Combat, Fighter, Turn
 from ..models.events import ActionTaken
@@ -55,7 +60,11 @@ class AttackModalMixin:
                 ability_type__name=ability_name
             ).first()
             ability_modifier = ability.modifier if ability else 0
-            proficiency = getattr(character, "proficiency_bonus", 2)
+            proficiency = (
+                character.proficiency_bonus
+                if is_proficient_with_weapon(character, weapon)
+                else 0
+            )
             attack_bonus = ability_modifier + proficiency
             weapon_data.append(
                 {

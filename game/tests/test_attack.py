@@ -685,3 +685,40 @@ class TestApplyDamage:
         target.refresh_from_db()
         assert remaining == 20
         assert target.hp == 20
+
+    def test_apply_damage_absorbs_temp_hp(self, target):
+        """Test that temp HP absorbs damage before real HP."""
+        target.temp_hp = 5
+        target.save()
+
+        remaining = apply_damage(target, 8)
+
+        target.refresh_from_db()
+        assert target.temp_hp == 0
+        assert target.hp == 17  # 20 - (8 - 5) = 17
+        assert remaining == 17
+
+    def test_apply_damage_temp_hp_fully_absorbs(self, target):
+        """Test that temp HP can fully absorb damage."""
+        target.temp_hp = 10
+        target.save()
+
+        remaining = apply_damage(target, 5)
+
+        target.refresh_from_db()
+        assert target.temp_hp == 5
+        assert target.hp == 20  # No real HP lost
+        assert remaining == 20
+
+    def test_apply_damage_resets_death_saves_at_zero_hp(self, target):
+        """Test that death save counters reset when HP drops to 0."""
+        target.death_save_successes = 2
+        target.death_save_failures = 1
+        target.save()
+
+        remaining = apply_damage(target, 100)
+
+        target.refresh_from_db()
+        assert remaining == 0
+        assert target.death_save_successes == 0
+        assert target.death_save_failures == 0

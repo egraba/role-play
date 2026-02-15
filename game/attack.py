@@ -244,6 +244,9 @@ def resolve_attack(
 def apply_damage(target: Character, damage: int) -> int:
     """Apply damage to a target character.
 
+    Delegates to Character.take_damage() which handles temp HP absorption,
+    death save counter resets, and damage <= 0 guards.
+
     Args:
         target: The character taking damage.
         damage: The amount of damage to apply.
@@ -251,6 +254,6 @@ def apply_damage(target: Character, damage: int) -> int:
     Returns:
         The target's remaining HP after damage.
     """
-    target.hp = max(0, target.hp - damage)
-    target.save()
+    target.take_damage(damage)
+    target.refresh_from_db()
     return target.hp
