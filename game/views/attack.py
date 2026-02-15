@@ -5,8 +5,10 @@ from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.views import View
 
+from equipment.models.equipment import Weapon
 from magic.models.spells import Concentration
 
+from ..attack import get_attack_ability
 from ..constants.combat import CombatAction, CombatState
 from ..models.combat import Combat, Fighter, Turn
 from ..models.events import ActionTaken
@@ -39,28 +41,39 @@ class AttackModalMixin:
 
     def get_attack_context(self, combat, user, fighter):
         """Build base context for the attack modal."""
-        # Get potential targets (all fighters except the attacker)
         targets = Fighter.objects.filter(combat=combat).exclude(id=fighter.id)
-
-        # Calculate attack bonus from character
         character = fighter.character
 
-        # Get strength modifier (Ability object has .modifier property)
-        try:
-            str_modifier = character.strength.modifier
-        except (AttributeError, character.abilities.model.DoesNotExist):
-            str_modifier = 0
+        # Get weapons from character's inventory
+        weapons = Weapon.objects.filter(inventory=character.inventory).select_related(
+            "settings"
+        )
 
-        # Use character's proficiency_bonus property
-        proficiency = getattr(character, "proficiency_bonus", 2)
-
-        attack_bonus = str_modifier + proficiency
+        # Calculate attack bonus per weapon for display
+        weapon_data = []
+        for weapon in weapons:
+            ability_name = get_attack_ability(weapon, character)
+            ability = character.abilities.filter(
+                ability_type__name=ability_name
+            ).first()
+            ability_modifier = ability.modifier if ability else 0
+            proficiency = getattr(character, "proficiency_bonus", 2)
+            attack_bonus = ability_modifier + proficiency
+            weapon_data.append(
+                {
+                    "weapon": weapon,
+                    "attack_bonus": attack_bonus,
+                    "ability": ability_name,
+                    "damage": weapon.settings.damage or "1d4",
+                }
+            )
 
         return {
             "combat": combat,
             "fighter": fighter,
             "targets": targets,
-            "attack_bonus": attack_bonus,
+            "weapons": weapon_data,
+            "attack_bonus": weapon_data[0]["attack_bonus"] if weapon_data else 0,
             "show_modal": True,
         }
 

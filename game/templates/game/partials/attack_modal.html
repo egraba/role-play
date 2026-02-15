@@ -33,6 +33,25 @@
                     </select>
                 </div>
 
+            <!-- Weapon Selection -->
+                <div class="attack-section">
+                    <label class="attack-label">
+                        <img src="{% static 'images/icons/actions/attack.svg' %}" alt="" class="rpg-icon rpg-icon-sm">
+                        Select Weapon
+                    </label>
+                    <select name="weapon_id" class="rpg-select weapon-select" required>
+                        {% for wd in weapons %}
+                            <option value="{{ wd.weapon.id }}"
+                                    data-attack-bonus="{{ wd.attack_bonus }}"
+                                    data-damage="{{ wd.damage }}">
+                                {{ wd.weapon.settings.name }} ({{ wd.damage }}, +{{ wd.attack_bonus }})
+                            </option>
+                        {% empty %}
+                            <option value="">-- No weapons equipped --</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
             <!-- Advantage/Disadvantage Toggle -->
                 <div class="attack-section">
                     <label class="attack-label">Roll Modifier</label>

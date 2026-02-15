@@ -6,6 +6,8 @@ import pytest
 from django.urls import reverse
 
 from character.tests.factories import CharacterFactory
+from equipment.constants.equipment import WeaponName, WeaponType
+from equipment.models.equipment import Weapon, WeaponSettings
 from game.models.combat import Combat
 from game.models.game import Player
 from user.tests.factories import UserFactory
@@ -27,6 +29,22 @@ class TestAttackModalView:
         user1 = UserFactory()
         character1 = CharacterFactory(user=user1)
         player1 = Player.objects.create(user=user1, game=game, character=character1)
+
+        # Add a weapon to character1's inventory
+        weapon_settings, _ = WeaponSettings.objects.update_or_create(
+            name=WeaponName.LONGSWORD,
+            defaults={
+                "weapon_type": WeaponType.MARTIAL_MELEE,
+                "cost": 15,
+                "damage": "1d8",
+                "weight": 3,
+                "properties": "versatile",
+            },
+        )
+        weapon = Weapon.objects.create(
+            settings=weapon_settings,
+            inventory=character1.inventory,
+        )
 
         # Create second user/character/player (target)
         user2 = UserFactory()
@@ -56,6 +74,7 @@ class TestAttackModalView:
             "player2": player2,
             "fighter1": fighter1,
             "fighter2": fighter2,
+            "weapon": weapon,
         }
 
     def test_modal_returns_html(self, client, active_combat_setup):
@@ -133,6 +152,21 @@ class TestAttackModalView:
 
         content = response.content.decode()
         assert "Attack Bonus" in content
+
+    def test_modal_shows_weapon_selector(self, client, active_combat_setup):
+        """Test modal displays weapon selection dropdown."""
+        setup = active_combat_setup
+        client.force_login(setup["player1"].user)
+
+        url = reverse(
+            "combat-attack-modal",
+            args=(setup["game"].id, setup["combat"].id),
+        )
+        response = client.get(url)
+
+        content = response.content.decode()
+        assert "Select Weapon" in content
+        assert "Longsword" in content
 
     # Note: test_modal_requires_login is not implemented because GameContextMixin
     # runs setup() before LoginRequiredMixin can redirect, causing errors with
