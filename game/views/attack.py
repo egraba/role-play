@@ -17,6 +17,23 @@ from .concentration import check_concentration_on_damage
 from .mixins import GameContextMixin
 
 
+class CombatTurnPermissionMixin(UserPassesTestMixin):
+    """Mixin that verifies the requesting user is the current fighter in active combat."""
+
+    def test_func(self) -> bool:
+        combat_id = self.kwargs.get("combat_id")
+        try:
+            combat = Combat.objects.get(id=combat_id, game=self.game)
+            if combat.state != CombatState.ACTIVE:
+                return False
+            current_fighter = combat.current_fighter
+            if not current_fighter:
+                return False
+            return current_fighter.player.user == self.request.user
+        except Combat.DoesNotExist:
+            return False
+
+
 class AttackModalMixin:
     """Mixin providing attack modal rendering utilities."""
 
@@ -53,22 +70,10 @@ class AttackModalMixin:
         return render_to_string("game/partials/attack_modal.html", context)
 
 
-class AttackModalView(UserPassesTestMixin, AttackModalMixin, GameContextMixin, View):
+class AttackModalView(
+    CombatTurnPermissionMixin, AttackModalMixin, GameContextMixin, View
+):
     """View for displaying the attack modal."""
-
-    def test_func(self):
-        """Verify it's the player's turn."""
-        combat_id = self.kwargs.get("combat_id")
-        try:
-            combat = Combat.objects.get(id=combat_id, game=self.game)
-            if combat.state != CombatState.ACTIVE:
-                return False
-            current_fighter = combat.current_fighter
-            if not current_fighter:
-                return False
-            return current_fighter.player.user == self.request.user
-        except Combat.DoesNotExist:
-            return False
 
     def get(self, request, *args, **kwargs):
         """Show the attack modal with target selection."""
@@ -82,22 +87,10 @@ class AttackModalView(UserPassesTestMixin, AttackModalMixin, GameContextMixin, V
         return HttpResponse(html)
 
 
-class AttackRollView(UserPassesTestMixin, AttackModalMixin, GameContextMixin, View):
+class AttackRollView(
+    CombatTurnPermissionMixin, AttackModalMixin, GameContextMixin, View
+):
     """View for processing the attack roll."""
-
-    def test_func(self):
-        """Verify it's the player's turn."""
-        combat_id = self.kwargs.get("combat_id")
-        try:
-            combat = Combat.objects.get(id=combat_id, game=self.game)
-            if combat.state != CombatState.ACTIVE:
-                return False
-            current_fighter = combat.current_fighter
-            if not current_fighter:
-                return False
-            return current_fighter.player.user == self.request.user
-        except Combat.DoesNotExist:
-            return False
 
     def post(self, request, *args, **kwargs):
         """Process the attack roll and return results."""
@@ -170,22 +163,10 @@ class AttackRollView(UserPassesTestMixin, AttackModalMixin, GameContextMixin, Vi
         return HttpResponse(html)
 
 
-class DamageRollView(UserPassesTestMixin, AttackModalMixin, GameContextMixin, View):
+class DamageRollView(
+    CombatTurnPermissionMixin, AttackModalMixin, GameContextMixin, View
+):
     """View for processing the damage roll."""
-
-    def test_func(self):
-        """Verify it's the player's turn."""
-        combat_id = self.kwargs.get("combat_id")
-        try:
-            combat = Combat.objects.get(id=combat_id, game=self.game)
-            if combat.state != CombatState.ACTIVE:
-                return False
-            current_fighter = combat.current_fighter
-            if not current_fighter:
-                return False
-            return current_fighter.player.user == self.request.user
-        except Combat.DoesNotExist:
-            return False
 
     def post(self, request, *args, **kwargs):
         """Process the damage roll."""
@@ -253,23 +234,13 @@ class DamageRollView(UserPassesTestMixin, AttackModalMixin, GameContextMixin, Vi
 
 
 class ApplyDamageView(
-    UserPassesTestMixin, ActionPanelMixin, AttackModalMixin, GameContextMixin, View
+    CombatTurnPermissionMixin,
+    ActionPanelMixin,
+    AttackModalMixin,
+    GameContextMixin,
+    View,
 ):
     """View for applying damage to a target."""
-
-    def test_func(self):
-        """Verify it's the player's turn."""
-        combat_id = self.kwargs.get("combat_id")
-        try:
-            combat = Combat.objects.get(id=combat_id, game=self.game)
-            if combat.state != CombatState.ACTIVE:
-                return False
-            current_fighter = combat.current_fighter
-            if not current_fighter:
-                return False
-            return current_fighter.player.user == self.request.user
-        except Combat.DoesNotExist:
-            return False
 
     def post(self, request, *args, **kwargs):
         """Apply damage to target and use the action."""
