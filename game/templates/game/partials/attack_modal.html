@@ -105,6 +105,9 @@
             <!-- Target Info -->
                 <div class="target-info">
                     <span class="target-name">{{ target.character.name }}</span>
+                    {% if weapon_name %}
+                        <span class="weapon-name">{{ weapon_name }}</span>
+                    {% endif %}
                     <span class="target-ac">AC {{ target.character.ac|default:"10" }}</span>
                 </div>
 
@@ -176,6 +179,7 @@
                                   hx-target="#attack-modal"
                                   hx-swap="outerHTML">
                                 <input type="hidden" name="target_id" value="{{ target.id }}">
+                                <input type="hidden" name="weapon_id" value="{{ weapon_id }}">
                                 <input type="hidden" name="damage" value="{{ total_damage }}">
                                 <div class="attack-actions">
                                     <button type="button" class="rpg-btn" onclick="closeAttackModal()">Cancel</button>
@@ -601,6 +605,11 @@
     .target-name {
         color: var(--color-text);
         font-weight: 600;
+    }
+
+    .weapon-name {
+        color: var(--color-primary);
+        font-size: 0.85rem;
     }
 
     .target-ac {
