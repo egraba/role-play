@@ -302,8 +302,9 @@ class TestMasteryIntegration:
 
     def test_graze_damage_on_miss(self, attacker, target, graze_weapon):
         """Test that Graze applies damage on miss."""
-        with patch("game.attack.roll_d20_test") as mock_roll:
-            mock_roll.return_value = (10, False, False)  # Miss
+        # Natural 7 + 3 (STR) = 10, misses AC 15
+        with patch("game.attack.DiceString.roll_keeping_individual") as mock_roll:
+            mock_roll.return_value = (7, [7])
 
             result = resolve_attack(attacker, target, graze_weapon, use_mastery=True)
 
@@ -313,21 +314,20 @@ class TestMasteryIntegration:
 
     def test_vex_advantage_on_hit(self, attacker, target, vex_weapon):
         """Test that Vex grants advantage on next attack."""
-        with patch("game.attack.roll_d20_test") as mock_roll:
-            mock_roll.return_value = (18, False, False)  # Hit
+        # Natural 15 + 3 (STR) = 18, hits AC 15; damage [5]
+        with patch("game.attack.DiceString.roll_keeping_individual") as mock_roll:
+            mock_roll.side_effect = [(15, [15]), (5, [5])]
 
-            with patch("game.attack.DiceString.roll_damage") as mock_damage:
-                mock_damage.return_value = 5
+            result = resolve_attack(attacker, target, vex_weapon, use_mastery=True)
 
-                result = resolve_attack(attacker, target, vex_weapon, use_mastery=True)
-
-                assert result.is_hit is True
-                assert result.mastery_effect.attacker_has_advantage_on_next is True
+            assert result.is_hit is True
+            assert result.mastery_effect.attacker_has_advantage_on_next is True
 
     def test_mastery_not_applied_when_disabled(self, attacker, target, graze_weapon):
         """Test that mastery is not applied when use_mastery=False."""
-        with patch("game.attack.roll_d20_test") as mock_roll:
-            mock_roll.return_value = (10, False, False)  # Miss
+        # Natural 7 + 3 (STR) = 10, misses AC 15
+        with patch("game.attack.DiceString.roll_keeping_individual") as mock_roll:
+            mock_roll.return_value = (7, [7])
 
             result = resolve_attack(attacker, target, graze_weapon, use_mastery=False)
 
@@ -350,15 +350,13 @@ class TestMasteryIntegration:
         )
         weapon = Weapon.objects.create(settings=settings)
 
-        with patch("game.attack.roll_d20_test") as mock_roll:
-            mock_roll.return_value = (18, False, False)
+        # Natural 15 + 3 (STR) = 18, hits AC 15; damage [4]
+        with patch("game.attack.DiceString.roll_keeping_individual") as mock_roll:
+            mock_roll.side_effect = [(15, [15]), (4, [4])]
 
-            with patch("game.attack.DiceString.roll_damage") as mock_damage:
-                mock_damage.return_value = 4
+            result = resolve_attack(attacker, target, weapon, use_mastery=True)
 
-                result = resolve_attack(attacker, target, weapon, use_mastery=True)
-
-                assert result.mastery_effect.triggered is False
+            assert result.mastery_effect.triggered is False
 
 
 class TestMasteryEdgeCases:
@@ -514,46 +512,38 @@ class TestMasteryIntegrationEdgeCases:
 
     def test_push_on_hit(self, attacker, target, push_weapon):
         """Test that Push applies on hit."""
-        with patch("game.attack.roll_d20_test") as mock_roll:
-            mock_roll.return_value = (18, False, False)  # Hit
+        # Natural 15 + 3 (STR) = 18, hits AC 15; damage [6]
+        with patch("game.attack.DiceString.roll_keeping_individual") as mock_roll:
+            mock_roll.side_effect = [(15, [15]), (6, [6])]
 
-            with patch("game.attack.DiceString.roll_damage") as mock_damage:
-                mock_damage.return_value = 6
+            result = resolve_attack(attacker, target, push_weapon, use_mastery=True)
 
-                result = resolve_attack(attacker, target, push_weapon, use_mastery=True)
-
-                assert result.is_hit is True
-                assert result.mastery_effect.push_distance == 10
+            assert result.is_hit is True
+            assert result.mastery_effect.push_distance == 10
 
     def test_topple_on_hit(self, attacker, target, topple_weapon):
         """Test that Topple sets save DC on hit."""
-        with patch("game.attack.roll_d20_test") as mock_roll:
-            mock_roll.return_value = (18, False, False)  # Hit
+        # Natural 15 + 3 (STR) = 18, hits AC 15; damage [6]
+        with patch("game.attack.DiceString.roll_keeping_individual") as mock_roll:
+            mock_roll.side_effect = [(15, [15]), (6, [6])]
 
-            with patch("game.attack.DiceString.roll_damage") as mock_damage:
-                mock_damage.return_value = 6
+            result = resolve_attack(attacker, target, topple_weapon, use_mastery=True)
 
-                result = resolve_attack(
-                    attacker, target, topple_weapon, use_mastery=True
-                )
-
-                assert result.is_hit is True
-                assert (
-                    result.mastery_effect.topple_save_dc == 14
-                )  # 8 + 3 + 3 (level 5 = +3 prof)
+            assert result.is_hit is True
+            assert (
+                result.mastery_effect.topple_save_dc == 14
+            )  # 8 + 3 + 3 (level 5 = +3 prof)
 
     def test_sap_on_hit(self, attacker, target, sap_weapon):
         """Test that Sap gives target disadvantage on hit."""
-        with patch("game.attack.roll_d20_test") as mock_roll:
-            mock_roll.return_value = (18, False, False)  # Hit
+        # Natural 15 + 3 (STR) = 18, hits AC 15; damage [4]
+        with patch("game.attack.DiceString.roll_keeping_individual") as mock_roll:
+            mock_roll.side_effect = [(15, [15]), (4, [4])]
 
-            with patch("game.attack.DiceString.roll_damage") as mock_damage:
-                mock_damage.return_value = 4
+            result = resolve_attack(attacker, target, sap_weapon, use_mastery=True)
 
-                result = resolve_attack(attacker, target, sap_weapon, use_mastery=True)
-
-                assert result.is_hit is True
-                assert result.mastery_effect.target_has_disadvantage is True
+            assert result.is_hit is True
+            assert result.mastery_effect.target_has_disadvantage is True
 
     def test_graze_no_damage_on_critical_miss(self, attacker, target):
         """Test that Graze still applies on critical miss."""
@@ -570,8 +560,9 @@ class TestMasteryIntegrationEdgeCases:
         )
         weapon = Weapon.objects.create(settings=settings)
 
-        with patch("game.attack.roll_d20_test") as mock_roll:
-            mock_roll.return_value = (1, False, True)  # Critical miss (nat 1)
+        # Natural 1 = critical miss
+        with patch("game.attack.DiceString.roll_keeping_individual") as mock_roll:
+            mock_roll.return_value = (1, [1])
 
             result = resolve_attack(attacker, target, weapon, use_mastery=True)
 
@@ -596,17 +587,15 @@ class TestMasteryIntegrationEdgeCases:
         )
         weapon = Weapon.objects.create(settings=settings)
 
-        with patch("game.attack.roll_d20_test") as mock_roll:
-            mock_roll.return_value = (20, True, False)  # Critical hit (nat 20)
+        # Natural 20 = critical hit; two damage rolls (normal + crit)
+        with patch("game.attack.DiceString.roll_keeping_individual") as mock_roll:
+            mock_roll.side_effect = [(20, [20]), (6, [6]), (6, [6])]
 
-            with patch("game.attack.DiceString.roll_damage") as mock_damage:
-                mock_damage.return_value = 12  # Doubled dice
+            result = resolve_attack(attacker, target, weapon, use_mastery=True)
 
-                result = resolve_attack(attacker, target, weapon, use_mastery=True)
-
-                assert result.is_hit is True
-                assert result.is_critical_hit is True
-                assert result.mastery_effect.attacker_has_advantage_on_next is True
+            assert result.is_hit is True
+            assert result.is_critical_hit is True
+            assert result.mastery_effect.attacker_has_advantage_on_next is True
 
     def test_mastery_not_applied_on_miss_except_graze(self, attacker, target):
         """Test that non-Graze masteries don't trigger on miss."""
@@ -629,8 +618,9 @@ class TestMasteryIntegrationEdgeCases:
             )
             weapon = Weapon.objects.create(settings=settings)
 
-            with patch("game.attack.roll_d20_test") as mock_roll:
-                mock_roll.return_value = (10, False, False)  # Miss
+            # Natural 7 + 3 (STR) = 10, misses AC 15
+            with patch("game.attack.DiceString.roll_keeping_individual") as mock_roll:
+                mock_roll.return_value = (7, [7])
 
                 result = resolve_attack(attacker, target, weapon, use_mastery=True)
 

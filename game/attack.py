@@ -16,7 +16,7 @@ from character.models.character import Character
 from equipment.constants.equipment import WeaponProperty, WeaponType
 from equipment.models.equipment import Weapon
 from character.models.proficiencies import WeaponProficiency
-from utils.dice import DiceString, roll_d20_test
+from utils.dice import DiceString
 
 from .mastery import MasteryEffect, resolve_mastery
 
@@ -49,6 +49,12 @@ class AttackResult:
 
     # Weapon mastery effect
     mastery_effect: MasteryEffect = field(default_factory=MasteryEffect)
+
+    # UI display data
+    damage_rolls: list[int] = field(default_factory=list)
+    second_natural_roll: int | None = (
+        None  # Discarded d20 roll (advantage/disadvantage)
+    )
 
 
 def get_attack_ability(weapon: Weapon, attacker: Character) -> str:
@@ -145,14 +151,28 @@ def resolve_attack(
     attack_modifier = ability_modifier + proficiency_bonus
 
     # Roll the attack
-    attack_roll, is_nat_20, is_nat_1 = roll_d20_test(
-        modifier=attack_modifier,
-        advantage=advantage,
-        disadvantage=disadvantage,
-    )
+    d20 = DiceString("d20")
+    second_natural_roll = None
 
-    # Determine natural roll (attack_roll - modifier)
-    natural_roll = attack_roll - attack_modifier
+    if advantage and disadvantage:
+        # Cancel out - single roll
+        _, rolls = d20.roll_keeping_individual()
+        natural_roll = rolls[0]
+    elif advantage:
+        _, roll1, roll2 = d20.roll_with_advantage()
+        natural_roll = max(roll1, roll2)
+        second_natural_roll = min(roll1, roll2)
+    elif disadvantage:
+        _, roll1, roll2 = d20.roll_with_disadvantage()
+        natural_roll = min(roll1, roll2)
+        second_natural_roll = max(roll1, roll2)
+    else:
+        _, rolls = d20.roll_keeping_individual()
+        natural_roll = rolls[0]
+
+    attack_roll = natural_roll + attack_modifier
+    is_nat_20 = natural_roll == 20
+    is_nat_1 = natural_roll == 1
 
     # Determine hit/miss
     # Natural 1 always misses, natural 20 always hits
@@ -170,10 +190,15 @@ def resolve_attack(
     damage = 0
     damage_dice = weapon.settings.damage or "1d4"  # Default to 1d4 if no damage set
     damage_modifier = ability_modifier
+    damage_rolls: list[int] = []
 
     if is_hit:
         dice = DiceString(damage_dice)
-        damage = dice.roll_damage(critical=is_critical_hit) + damage_modifier
+        _, damage_rolls = dice.roll_keeping_individual()
+        if is_critical_hit:
+            _, crit_rolls = dice.roll_keeping_individual()
+            damage_rolls = damage_rolls + crit_rolls
+        damage = sum(damage_rolls) + damage_modifier
         # Ensure damage is at least 0 (negative modifiers can't reduce below 0)
         damage = max(0, damage)
 
@@ -211,11 +236,16 @@ def resolve_attack(
         weapon_name=str(weapon.settings.name),
         ability_used=ability_name,
         mastery_effect=mastery_effect,
+        damage_rolls=damage_rolls,
+        second_natural_roll=second_natural_roll,
     )
 
 
 def apply_damage(target: Character, damage: int) -> int:
     """Apply damage to a target character.
+
+    Delegates to Character.take_damage() which handles temp HP absorption,
+    death save counter resets, and damage <= 0 guards.
 
     Args:
         target: The character taking damage.
@@ -224,6 +254,6 @@ def apply_damage(target: Character, damage: int) -> int:
     Returns:
         The target's remaining HP after damage.
     """
-    target.hp = max(0, target.hp - damage)
-    target.save()
+    target.take_damage(damage)
+    target.refresh_from_db()
     return target.hp

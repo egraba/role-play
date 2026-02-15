@@ -6,6 +6,9 @@ import pytest
 from django.urls import reverse
 
 from character.tests.factories import CharacterFactory
+from equipment.constants.equipment import WeaponName, WeaponType
+from equipment.models.equipment import Weapon, WeaponSettings
+from game.attack import AttackResult
 from game.models.combat import Combat
 from game.models.game import Player
 from user.tests.factories import UserFactory
@@ -27,6 +30,22 @@ class TestAttackModalView:
         user1 = UserFactory()
         character1 = CharacterFactory(user=user1)
         player1 = Player.objects.create(user=user1, game=game, character=character1)
+
+        # Add a weapon to character1's inventory
+        weapon_settings, _ = WeaponSettings.objects.update_or_create(
+            name=WeaponName.LONGSWORD,
+            defaults={
+                "weapon_type": WeaponType.MARTIAL_MELEE,
+                "cost": 15,
+                "damage": "1d8",
+                "weight": 3,
+                "properties": "versatile",
+            },
+        )
+        weapon = Weapon.objects.create(
+            settings=weapon_settings,
+            inventory=character1.inventory,
+        )
 
         # Create second user/character/player (target)
         user2 = UserFactory()
@@ -56,6 +75,7 @@ class TestAttackModalView:
             "player2": player2,
             "fighter1": fighter1,
             "fighter2": fighter2,
+            "weapon": weapon,
         }
 
     def test_modal_returns_html(self, client, active_combat_setup):
@@ -100,9 +120,13 @@ class TestAttackModalView:
         response = client.get(url)
 
         content = response.content.decode()
-        # Count occurrences - fighter1's name should not be in target dropdown
-        # but might appear elsewhere in the page
-        assert f'value="{setup["fighter1"].id}"' not in content
+        # Extract the target select section and verify fighter1 is excluded.
+        # The weapon select may reuse the same integer IDs, so check the
+        # target-select element specifically.
+        target_select_start = content.index('class="rpg-select target-select"')
+        target_select_end = content.index("</select>", target_select_start)
+        target_select_html = content[target_select_start:target_select_end]
+        assert f'value="{setup["fighter1"].id}"' not in target_select_html
 
     def test_modal_shows_advantage_toggle(self, client, active_combat_setup):
         """Test modal displays advantage/disadvantage toggle."""
@@ -134,6 +158,21 @@ class TestAttackModalView:
         content = response.content.decode()
         assert "Attack Bonus" in content
 
+    def test_modal_shows_weapon_selector(self, client, active_combat_setup):
+        """Test modal displays weapon selection dropdown."""
+        setup = active_combat_setup
+        client.force_login(setup["player1"].user)
+
+        url = reverse(
+            "combat-attack-modal",
+            args=(setup["game"].id, setup["combat"].id),
+        )
+        response = client.get(url)
+
+        content = response.content.decode()
+        assert "Select Weapon" in content
+        assert "Longsword" in content
+
     # Note: test_modal_requires_login is not implemented because GameContextMixin
     # runs setup() before LoginRequiredMixin can redirect, causing errors with
     # anonymous users. This would require refactoring the mixin order.
@@ -164,6 +203,22 @@ class TestAttackRollView:
         character1 = CharacterFactory(user=user1)
         player1 = Player.objects.create(user=user1, game=game, character=character1)
 
+        # Add a weapon to character1's inventory
+        weapon_settings, _ = WeaponSettings.objects.update_or_create(
+            name=WeaponName.LONGSWORD,
+            defaults={
+                "weapon_type": WeaponType.MARTIAL_MELEE,
+                "cost": 15,
+                "damage": "1d8",
+                "weight": 3,
+                "properties": "versatile",
+            },
+        )
+        weapon = Weapon.objects.create(
+            settings=weapon_settings,
+            inventory=character1.inventory,
+        )
+
         user2 = UserFactory()
         character2 = CharacterFactory(user=user2)
         character2.ac = 15
@@ -191,10 +246,31 @@ class TestAttackRollView:
             "player2": player2,
             "fighter1": fighter1,
             "fighter2": fighter2,
+            "weapon": weapon,
         }
 
-    def test_attack_roll_returns_result(self, client, active_combat_setup):
+    @patch("game.views.attack.resolve_attack")
+    def test_attack_roll_returns_result(
+        self, mock_resolve, client, active_combat_setup
+    ):
         """Test attack roll returns result HTML."""
+        mock_resolve.return_value = AttackResult(
+            attack_roll=18,
+            natural_roll=15,
+            attack_modifier=3,
+            target_ac=15,
+            is_hit=True,
+            is_critical_hit=False,
+            is_critical_miss=False,
+            damage=7,
+            damage_dice="1d8",
+            damage_modifier=3,
+            attacker_name="Attacker",
+            target_name="Target",
+            weapon_name="Longsword",
+            ability_used="STR",
+            damage_rolls=[4],
+        )
         setup = active_combat_setup
         client.force_login(setup["player1"].user)
 
@@ -206,6 +282,7 @@ class TestAttackRollView:
             url,
             {
                 "target_id": setup["fighter2"].id,
+                "weapon_id": setup["weapon"].id,
                 "roll_modifier": "normal",
             },
         )
@@ -216,12 +293,28 @@ class TestAttackRollView:
         # Should show result (HIT or MISS)
         assert "HIT" in content or "MISS" in content
 
-    @patch("game.views.attack.random.randint")
+    @patch("game.views.attack.resolve_attack")
     def test_attack_roll_shows_critical_hit(
-        self, mock_randint, client, active_combat_setup
+        self, mock_resolve, client, active_combat_setup
     ):
         """Test natural 20 shows critical hit."""
-        mock_randint.return_value = 20  # Natural 20
+        mock_resolve.return_value = AttackResult(
+            attack_roll=25,
+            natural_roll=20,
+            attack_modifier=5,
+            target_ac=15,
+            is_hit=True,
+            is_critical_hit=True,
+            is_critical_miss=False,
+            damage=12,
+            damage_dice="1d8",
+            damage_modifier=3,
+            attacker_name="Attacker",
+            target_name="Target",
+            weapon_name="Longsword",
+            ability_used="STR",
+            damage_rolls=[8],
+        )
         setup = active_combat_setup
         client.force_login(setup["player1"].user)
 
@@ -233,6 +326,7 @@ class TestAttackRollView:
             url,
             {
                 "target_id": setup["fighter2"].id,
+                "weapon_id": setup["weapon"].id,
                 "roll_modifier": "normal",
             },
         )
@@ -241,12 +335,28 @@ class TestAttackRollView:
         assert "CRITICAL HIT" in content
         assert "critical-hit" in content
 
-    @patch("game.views.attack.random.randint")
+    @patch("game.views.attack.resolve_attack")
     def test_attack_roll_shows_critical_miss(
-        self, mock_randint, client, active_combat_setup
+        self, mock_resolve, client, active_combat_setup
     ):
         """Test natural 1 shows critical miss."""
-        mock_randint.return_value = 1  # Natural 1
+        mock_resolve.return_value = AttackResult(
+            attack_roll=4,
+            natural_roll=1,
+            attack_modifier=3,
+            target_ac=15,
+            is_hit=False,
+            is_critical_hit=False,
+            is_critical_miss=True,
+            damage=0,
+            damage_dice="1d8",
+            damage_modifier=3,
+            attacker_name="Attacker",
+            target_name="Target",
+            weapon_name="Longsword",
+            ability_used="STR",
+            damage_rolls=[],
+        )
         setup = active_combat_setup
         client.force_login(setup["player1"].user)
 
@@ -258,6 +368,7 @@ class TestAttackRollView:
             url,
             {
                 "target_id": setup["fighter2"].id,
+                "weapon_id": setup["weapon"].id,
                 "roll_modifier": "normal",
             },
         )
@@ -266,12 +377,29 @@ class TestAttackRollView:
         assert "CRITICAL MISS" in content
         assert "critical-miss" in content
 
-    @patch("game.views.attack.random.randint")
+    @patch("game.views.attack.resolve_attack")
     def test_attack_roll_with_advantage(
-        self, mock_randint, client, active_combat_setup
+        self, mock_resolve, client, active_combat_setup
     ):
-        """Test advantage rolls twice and takes higher."""
-        mock_randint.side_effect = [10, 15]  # Two rolls, 15 is higher
+        """Test advantage passes advantage=True to resolve_attack."""
+        mock_resolve.return_value = AttackResult(
+            attack_roll=18,
+            natural_roll=15,
+            second_natural_roll=10,
+            attack_modifier=3,
+            target_ac=15,
+            is_hit=True,
+            is_critical_hit=False,
+            is_critical_miss=False,
+            damage=7,
+            damage_dice="1d8",
+            damage_modifier=3,
+            attacker_name="Attacker",
+            target_name="Target",
+            weapon_name="Longsword",
+            ability_used="STR",
+            damage_rolls=[4],
+        )
         setup = active_combat_setup
         client.force_login(setup["player1"].user)
 
@@ -283,21 +411,41 @@ class TestAttackRollView:
             url,
             {
                 "target_id": setup["fighter2"].id,
+                "weapon_id": setup["weapon"].id,
                 "roll_modifier": "advantage",
             },
         )
 
         content = response.content.decode()
-        # Should show 15 as the main roll
-        assert ">15<" in content or "15</span>" in content
         assert "Advantage" in content
+        # Verify resolve_attack was called with advantage=True
+        mock_resolve.assert_called_once()
+        call_kwargs = mock_resolve.call_args
+        assert call_kwargs.kwargs.get("advantage") is True
 
-    @patch("game.views.attack.random.randint")
+    @patch("game.views.attack.resolve_attack")
     def test_attack_roll_with_disadvantage(
-        self, mock_randint, client, active_combat_setup
+        self, mock_resolve, client, active_combat_setup
     ):
-        """Test disadvantage rolls twice and takes lower."""
-        mock_randint.side_effect = [15, 10]  # Two rolls, 10 is lower
+        """Test disadvantage passes disadvantage=True to resolve_attack."""
+        mock_resolve.return_value = AttackResult(
+            attack_roll=13,
+            natural_roll=10,
+            second_natural_roll=15,
+            attack_modifier=3,
+            target_ac=15,
+            is_hit=False,
+            is_critical_hit=False,
+            is_critical_miss=False,
+            damage=0,
+            damage_dice="1d8",
+            damage_modifier=3,
+            attacker_name="Attacker",
+            target_name="Target",
+            weapon_name="Longsword",
+            ability_used="STR",
+            damage_rolls=[],
+        )
         setup = active_combat_setup
         client.force_login(setup["player1"].user)
 
@@ -309,14 +457,17 @@ class TestAttackRollView:
             url,
             {
                 "target_id": setup["fighter2"].id,
+                "weapon_id": setup["weapon"].id,
                 "roll_modifier": "disadvantage",
             },
         )
 
         content = response.content.decode()
-        # Should show 10 as the main roll
-        assert ">10<" in content or "10</span>" in content
         assert "Disadvantage" in content
+        # Verify resolve_attack was called with disadvantage=True
+        mock_resolve.assert_called_once()
+        call_kwargs = mock_resolve.call_args
+        assert call_kwargs.kwargs.get("disadvantage") is True
 
     def test_attack_roll_invalid_target(self, client, active_combat_setup):
         """Test attack roll with invalid target returns error."""
@@ -331,6 +482,7 @@ class TestAttackRollView:
             url,
             {
                 "target_id": 99999,  # Invalid
+                "weapon_id": setup["weapon"].id,
                 "roll_modifier": "normal",
             },
         )
@@ -354,6 +506,22 @@ class TestDamageRollView:
         character1 = CharacterFactory(user=user1)
         player1 = Player.objects.create(user=user1, game=game, character=character1)
 
+        # Add a weapon to character1's inventory
+        weapon_settings, _ = WeaponSettings.objects.update_or_create(
+            name=WeaponName.LONGSWORD,
+            defaults={
+                "weapon_type": WeaponType.MARTIAL_MELEE,
+                "cost": 15,
+                "damage": "1d8",
+                "weight": 3,
+                "properties": "versatile",
+            },
+        )
+        weapon = Weapon.objects.create(
+            settings=weapon_settings,
+            inventory=character1.inventory,
+        )
+
         user2 = UserFactory()
         character2 = CharacterFactory(user=user2)
         character2.ac = 15
@@ -383,6 +551,7 @@ class TestDamageRollView:
             "player2": player2,
             "fighter1": fighter1,
             "fighter2": fighter2,
+            "weapon": weapon,
         }
 
     def test_damage_roll_returns_result(self, client, active_combat_setup):
@@ -398,9 +567,14 @@ class TestDamageRollView:
             url,
             {
                 "target_id": setup["fighter2"].id,
+                "weapon_id": setup["weapon"].id,
                 "is_critical": "false",
                 "natural_roll": 15,
                 "total_roll": 18,
+                "attack_bonus": 3,
+                "total_damage": 7,
+                "damage_rolls": "5",
+                "damage_formula": "1d8 (5) + 2",
             },
         )
 
@@ -409,10 +583,8 @@ class TestDamageRollView:
         assert "damage" in content.lower()
         assert "Apply" in content
 
-    @patch("game.views.attack.random.randint")
-    def test_damage_roll_shows_dice(self, mock_randint, client, active_combat_setup):
+    def test_damage_roll_shows_dice(self, client, active_combat_setup):
         """Test damage roll shows individual dice values."""
-        mock_randint.return_value = 6  # Roll a 6 on 1d8
         setup = active_combat_setup
         client.force_login(setup["player1"].user)
 
@@ -424,19 +596,22 @@ class TestDamageRollView:
             url,
             {
                 "target_id": setup["fighter2"].id,
+                "weapon_id": setup["weapon"].id,
                 "is_critical": "false",
                 "natural_roll": 15,
                 "total_roll": 18,
+                "attack_bonus": 3,
+                "total_damage": 8,
+                "damage_rolls": "6",
+                "damage_formula": "1d8 (6) + 2",
             },
         )
 
         content = response.content.decode()
         assert "damage-die" in content
 
-    @patch("game.views.attack.random.randint")
-    def test_critical_doubles_dice(self, mock_randint, client, active_combat_setup):
-        """Test critical hit rolls double dice."""
-        mock_randint.side_effect = [6, 4]  # Two dice for critical
+    def test_critical_doubles_dice(self, client, active_combat_setup):
+        """Test critical hit shows double dice."""
         setup = active_combat_setup
         client.force_login(setup["player1"].user)
 
@@ -448,14 +623,20 @@ class TestDamageRollView:
             url,
             {
                 "target_id": setup["fighter2"].id,
+                "weapon_id": setup["weapon"].id,
                 "is_critical": "true",
                 "natural_roll": 20,
                 "total_roll": 23,
+                "attack_bonus": 3,
+                "total_damage": 12,
+                "damage_rolls": "6,4",
+                "damage_formula": "2d8 (6+4) + 2",
             },
         )
 
         content = response.content.decode()
-        assert "2d8" in content
+        # Verify two dice are shown (count HTML elements, not CSS class definitions)
+        assert content.count('class="damage-die"') == 2
 
     def test_damage_roll_invalid_target(self, client, active_combat_setup):
         """Test damage roll with invalid target returns error."""
@@ -470,9 +651,14 @@ class TestDamageRollView:
             url,
             {
                 "target_id": 99999,
+                "weapon_id": setup["weapon"].id,
                 "is_critical": "false",
                 "natural_roll": 15,
                 "total_roll": 18,
+                "attack_bonus": 3,
+                "total_damage": 7,
+                "damage_rolls": "5",
+                "damage_formula": "1d8 (5) + 2",
             },
         )
 
@@ -490,6 +676,22 @@ class TestApplyDamageView:
         character1 = CharacterFactory(user=user1)
         player1 = Player.objects.create(user=user1, game=game, character=character1)
 
+        # Add a weapon to character1's inventory
+        weapon_settings, _ = WeaponSettings.objects.update_or_create(
+            name=WeaponName.LONGSWORD,
+            defaults={
+                "weapon_type": WeaponType.MARTIAL_MELEE,
+                "cost": 15,
+                "damage": "1d8",
+                "weight": 3,
+                "properties": "versatile",
+            },
+        )
+        weapon = Weapon.objects.create(
+            settings=weapon_settings,
+            inventory=character1.inventory,
+        )
+
         user2 = UserFactory()
         character2 = CharacterFactory(user=user2)
         character2.ac = 15
@@ -519,6 +721,7 @@ class TestApplyDamageView:
             "player2": player2,
             "fighter1": fighter1,
             "fighter2": fighter2,
+            "weapon": weapon,
         }
 
     def test_apply_damage_reduces_hp(self, client, active_combat_setup):
