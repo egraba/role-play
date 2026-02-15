@@ -191,9 +191,14 @@
                                   hx-target="#attack-modal"
                                   hx-swap="outerHTML">
                                 <input type="hidden" name="target_id" value="{{ target.id }}">
+                                <input type="hidden" name="weapon_id" value="{{ weapon_id }}">
                                 <input type="hidden" name="is_critical" value="{{ is_critical_hit|yesno:'true,false' }}">
                                 <input type="hidden" name="natural_roll" value="{{ natural_roll }}">
                                 <input type="hidden" name="total_roll" value="{{ total_roll }}">
+                                <input type="hidden" name="attack_bonus" value="{{ attack_bonus }}">
+                                <input type="hidden" name="total_damage" value="{{ total_damage }}">
+                                <input type="hidden" name="damage_rolls" value="{{ damage_rolls|join:',' }}">
+                                <input type="hidden" name="damage_formula" value="{{ damage_formula }}">
                                 <div class="attack-actions">
                                     <button type="button" class="rpg-btn" onclick="closeAttackModal()">Cancel</button>
                                     <button type="submit" class="rpg-btn btn-primary roll-damage-btn">

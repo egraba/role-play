@@ -1,5 +1,3 @@
-import random
-
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.http import HttpResponse
 from django.template.loader import render_to_string
@@ -8,7 +6,7 @@ from django.views import View
 from equipment.models.equipment import Weapon
 from magic.models.spells import Concentration
 
-from ..attack import get_attack_ability, resolve_attack
+from ..attack import apply_damage, get_attack_ability, resolve_attack
 from ..constants.combat import CombatAction, CombatState
 from ..models.combat import Combat, Fighter, Turn
 from ..models.events import ActionTaken
@@ -188,7 +186,7 @@ class DamageRollView(
     """View for processing the damage roll."""
 
     def post(self, request, *args, **kwargs):
-        """Process the damage roll."""
+        """Display pre-computed damage results."""
         combat_id = kwargs.get("combat_id")
         combat = Combat.objects.get(id=combat_id, game=self.game)
         fighter = combat.current_fighter
@@ -197,39 +195,19 @@ class DamageRollView(
         is_critical = request.POST.get("is_critical") == "true"
         natural_roll = int(request.POST.get("natural_roll", 0))
         total_roll = int(request.POST.get("total_roll", 0))
+        attack_bonus = int(request.POST.get("attack_bonus", 0))
+        total_damage = int(request.POST.get("total_damage", 0))
+        damage_rolls_str = request.POST.get("damage_rolls", "")
+        damage_formula = request.POST.get("damage_formula", "")
 
-        # Validate target
         try:
             target = Fighter.objects.get(id=target_id, combat=combat)
         except Fighter.DoesNotExist:
             return HttpResponse("Invalid target", status=400)
 
-        # Get attack bonus for display
-        character = fighter.character
-        try:
-            str_modifier = character.strength.modifier
-        except (AttributeError, character.abilities.model.DoesNotExist):
-            str_modifier = 0
-        proficiency = getattr(character, "proficiency_bonus", 2)
-        attack_bonus = str_modifier + proficiency
+        # Parse damage rolls from comma-separated string
+        damage_rolls = [int(d) for d in damage_rolls_str.split(",") if d.strip()]
 
-        # Roll damage - default to 1d8 (longsword) + STR modifier
-        # This could be extended to use actual weapon damage dice
-        num_dice = 2 if is_critical else 1  # Double dice on crit
-        damage_dice = [random.randint(1, 8) for _ in range(num_dice)]
-        base_damage = sum(damage_dice)
-        total_damage = base_damage + str_modifier
-
-        # Ensure minimum 1 damage
-        total_damage = max(1, total_damage)
-
-        # Build damage formula string
-        if is_critical:
-            damage_formula = f"2d8 ({'+'.join(map(str, damage_dice))}) + {str_modifier}"
-        else:
-            damage_formula = f"1d8 ({damage_dice[0]}) + {str_modifier}"
-
-        # Build result context
         context = self.get_attack_context(combat, request.user, fighter)
         context.update(
             {
@@ -242,7 +220,7 @@ class DamageRollView(
                 "is_critical_hit": is_critical,
                 "is_critical_miss": False,
                 "damage_rolled": True,
-                "damage_dice": damage_dice,
+                "damage_dice": damage_rolls,
                 "damage_formula": damage_formula,
                 "total_damage": total_damage,
             }
@@ -276,9 +254,9 @@ class ApplyDamageView(
         except Fighter.DoesNotExist:
             return HttpResponse("Invalid target", status=400)
 
-        # Apply damage to target character using the take_damage method
+        # Apply damage to target character using the service module
         target_character = target.character
-        target_character.take_damage(damage)
+        apply_damage(target_character, damage)
 
         # Use the action
         turn = Turn.objects.filter(

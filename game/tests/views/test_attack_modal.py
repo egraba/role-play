@@ -502,6 +502,22 @@ class TestDamageRollView:
         character1 = CharacterFactory(user=user1)
         player1 = Player.objects.create(user=user1, game=game, character=character1)
 
+        # Add a weapon to character1's inventory
+        weapon_settings, _ = WeaponSettings.objects.update_or_create(
+            name=WeaponName.LONGSWORD,
+            defaults={
+                "weapon_type": WeaponType.MARTIAL_MELEE,
+                "cost": 15,
+                "damage": "1d8",
+                "weight": 3,
+                "properties": "versatile",
+            },
+        )
+        weapon = Weapon.objects.create(
+            settings=weapon_settings,
+            inventory=character1.inventory,
+        )
+
         user2 = UserFactory()
         character2 = CharacterFactory(user=user2)
         character2.ac = 15
@@ -531,6 +547,7 @@ class TestDamageRollView:
             "player2": player2,
             "fighter1": fighter1,
             "fighter2": fighter2,
+            "weapon": weapon,
         }
 
     def test_damage_roll_returns_result(self, client, active_combat_setup):
@@ -546,9 +563,14 @@ class TestDamageRollView:
             url,
             {
                 "target_id": setup["fighter2"].id,
+                "weapon_id": setup["weapon"].id,
                 "is_critical": "false",
                 "natural_roll": 15,
                 "total_roll": 18,
+                "attack_bonus": 3,
+                "total_damage": 7,
+                "damage_rolls": "5",
+                "damage_formula": "1d8 (5) + 2",
             },
         )
 
@@ -557,10 +579,8 @@ class TestDamageRollView:
         assert "damage" in content.lower()
         assert "Apply" in content
 
-    @patch("game.views.attack.random.randint")
-    def test_damage_roll_shows_dice(self, mock_randint, client, active_combat_setup):
+    def test_damage_roll_shows_dice(self, client, active_combat_setup):
         """Test damage roll shows individual dice values."""
-        mock_randint.return_value = 6  # Roll a 6 on 1d8
         setup = active_combat_setup
         client.force_login(setup["player1"].user)
 
@@ -572,19 +592,22 @@ class TestDamageRollView:
             url,
             {
                 "target_id": setup["fighter2"].id,
+                "weapon_id": setup["weapon"].id,
                 "is_critical": "false",
                 "natural_roll": 15,
                 "total_roll": 18,
+                "attack_bonus": 3,
+                "total_damage": 8,
+                "damage_rolls": "6",
+                "damage_formula": "1d8 (6) + 2",
             },
         )
 
         content = response.content.decode()
         assert "damage-die" in content
 
-    @patch("game.views.attack.random.randint")
-    def test_critical_doubles_dice(self, mock_randint, client, active_combat_setup):
-        """Test critical hit rolls double dice."""
-        mock_randint.side_effect = [6, 4]  # Two dice for critical
+    def test_critical_doubles_dice(self, client, active_combat_setup):
+        """Test critical hit shows double dice."""
         setup = active_combat_setup
         client.force_login(setup["player1"].user)
 
@@ -596,14 +619,20 @@ class TestDamageRollView:
             url,
             {
                 "target_id": setup["fighter2"].id,
+                "weapon_id": setup["weapon"].id,
                 "is_critical": "true",
                 "natural_roll": 20,
                 "total_roll": 23,
+                "attack_bonus": 3,
+                "total_damage": 12,
+                "damage_rolls": "6,4",
+                "damage_formula": "2d8 (6+4) + 2",
             },
         )
 
         content = response.content.decode()
-        assert "2d8" in content
+        # Verify two dice are shown (count HTML elements, not CSS class definitions)
+        assert content.count('class="damage-die"') == 2
 
     def test_damage_roll_invalid_target(self, client, active_combat_setup):
         """Test damage roll with invalid target returns error."""
@@ -618,9 +647,14 @@ class TestDamageRollView:
             url,
             {
                 "target_id": 99999,
+                "weapon_id": setup["weapon"].id,
                 "is_critical": "false",
                 "natural_roll": 15,
                 "total_roll": 18,
+                "attack_bonus": 3,
+                "total_damage": 7,
+                "damage_rolls": "5",
+                "damage_formula": "1d8 (5) + 2",
             },
         )
 
@@ -638,6 +672,22 @@ class TestApplyDamageView:
         character1 = CharacterFactory(user=user1)
         player1 = Player.objects.create(user=user1, game=game, character=character1)
 
+        # Add a weapon to character1's inventory
+        weapon_settings, _ = WeaponSettings.objects.update_or_create(
+            name=WeaponName.LONGSWORD,
+            defaults={
+                "weapon_type": WeaponType.MARTIAL_MELEE,
+                "cost": 15,
+                "damage": "1d8",
+                "weight": 3,
+                "properties": "versatile",
+            },
+        )
+        weapon = Weapon.objects.create(
+            settings=weapon_settings,
+            inventory=character1.inventory,
+        )
+
         user2 = UserFactory()
         character2 = CharacterFactory(user=user2)
         character2.ac = 15
@@ -667,6 +717,7 @@ class TestApplyDamageView:
             "player2": player2,
             "fighter1": fighter1,
             "fighter2": fighter2,
+            "weapon": weapon,
         }
 
     def test_apply_damage_reduces_hp(self, client, active_combat_setup):
