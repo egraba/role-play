@@ -1,5 +1,4 @@
 import json
-import re
 from enum import StrEnum
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -7,16 +6,6 @@ from django.http import HttpResponseRedirect
 from django.views.generic import DetailView
 from formtools.wizard.views import SessionWizardView
 
-from ..character_attributes_builders import (
-    BackgroundBuilder,
-    BaseBuilder,
-    ClassBuilder,
-    DerivedStatsBuilder,
-    SpeciesBuilder,
-    SpellcastingBuilder,
-)
-from equipment.constants.equipment import ArmorName, GearName, ToolName, WeaponName
-from ..constants.classes import ClassName
 from ..forms.wizard_forms import (
     AbilityScoreForm,
     BackgroundSelectForm,
@@ -27,9 +16,7 @@ from ..forms.wizard_forms import (
     SpeciesSelectForm,
 )
 from ..models.character import Character
-from ..services import CharacterSheetService
-
-MULTI_EQUIPMENT_REGEX = r"\S+\s&\s\S+"
+from ..services import CharacterCreationService, CharacterSheetService
 
 
 class CharacterDetailView(LoginRequiredMixin, DetailView):
@@ -187,7 +174,6 @@ class CharacterCreateView(LoginRequiredMixin, SessionWizardView):
         """Process all forms and create the character."""
         forms_by_type = {type(f).__name__: f for f in form_list}
 
-        # Extract data from each form
         species_form = forms_by_type.get("SpeciesSelectForm")
         class_form = forms_by_type.get("ClassSelectForm")
         ability_form = forms_by_type.get("AbilityScoreForm")
@@ -196,90 +182,40 @@ class CharacterCreateView(LoginRequiredMixin, SessionWizardView):
         equipment_form = forms_by_type.get("EquipmentSelectForm")
         review_form = forms_by_type.get("ReviewForm")
 
-        # Create character with name from review step
-        character = Character(
+        klass = class_form.cleaned_data["klass"]
+
+        # Collect skills
+        skills = [
+            skills_form.cleaned_data[field]
+            for field in skills_form.cleaned_data
+            if skills_form.cleaned_data[field]
+        ]
+
+        # Collect equipment
+        equipment = []
+        if equipment_form and hasattr(equipment_form, "cleaned_data"):
+            equipment = [
+                equipment_form.cleaned_data[field]
+                for field in equipment_form.cleaned_data
+                if equipment_form.cleaned_data.get(field)
+            ]
+
+        character = CharacterCreationService.create_character(
             user=self.request.user,
             name=review_form.cleaned_data["name"],
             species=species_form.cleaned_data["species"],
+            klass=klass,
+            abilities={
+                "strength": ability_form.cleaned_data["strength"],
+                "dexterity": ability_form.cleaned_data["dexterity"],
+                "constitution": ability_form.cleaned_data["constitution"],
+                "intelligence": ability_form.cleaned_data["intelligence"],
+                "wisdom": ability_form.cleaned_data["wisdom"],
+                "charisma": ability_form.cleaned_data["charisma"],
+            },
             background=background_form.cleaned_data["background"],
+            skills=skills,
+            equipment=equipment,
         )
-
-        # Get class from class selection step
-        klass = class_form.cleaned_data["klass"]
-
-        # Create a mock form for BaseBuilder compatibility
-        # BaseBuilder expects ability scores in cleaned_data
-        class MockAbilityForm:
-            def __init__(self, data):
-                self.cleaned_data = data
-
-        ability_data = {
-            "strength": ability_form.cleaned_data["strength"],
-            "dexterity": ability_form.cleaned_data["dexterity"],
-            "constitution": ability_form.cleaned_data["constitution"],
-            "intelligence": ability_form.cleaned_data["intelligence"],
-            "wisdom": ability_form.cleaned_data["wisdom"],
-            "charisma": ability_form.cleaned_data["charisma"],
-        }
-        mock_form = MockAbilityForm(ability_data)
-
-        # Phase 1: Base setup - inventory and ability scores
-        BaseBuilder(character, mock_form).build()
-
-        # Phase 2: Species traits - size, speed, darkvision, languages
-        SpeciesBuilder(character).build()
-
-        # Phase 3: Class - HP, proficiencies, features, wealth
-        ClassBuilder(character, klass).build()
-
-        # Phase 4: Add skills from skills form
-        for field in skills_form.cleaned_data.keys():
-            skill_name = skills_form.cleaned_data[field]
-            if skill_name:
-                character.skills.add(skill_name)
-
-        # Phase 5: Background - skill proficiencies, tools, feat, personality
-        BackgroundBuilder(character).build()
-
-        # Phase 6: Derived stats (after all modifiers are applied)
-        DerivedStatsBuilder(character).build()
-
-        # Phase 7: Spellcasting setup (if class is a spellcaster)
-        SpellcastingBuilder(character, klass).build()
-
-        # Phase 8: Add equipment
-        if equipment_form and hasattr(equipment_form, "cleaned_data"):
-            inventory = character.inventory
-            for field in equipment_form.cleaned_data.keys():
-                try:
-                    equipment_name = equipment_form.cleaned_data[field]
-                    if not equipment_name:
-                        continue
-                    # If the field is under the form "equipment_name1 & equipment_name2",
-                    # each equipment must be added separately.
-                    if re.match(MULTI_EQUIPMENT_REGEX, equipment_name):
-                        names = equipment_name.split(" & ")
-                        for name in names:
-                            inventory.add(name)
-                    else:
-                        inventory.add(equipment_name)
-                except KeyError:
-                    pass
-
-            # Some equipment is added without selection, depending on character's class.
-            match klass.name:
-                case ClassName.CLERIC:
-                    inventory.add(WeaponName.CROSSBOW_LIGHT)
-                    inventory.add(GearName.CROSSBOW_BOLTS)
-                    inventory.add(ArmorName.SHIELD)
-                case ClassName.ROGUE:
-                    inventory.add(WeaponName.SHORTBOW)
-                    inventory.add(GearName.QUIVER)
-                    inventory.add(ArmorName.LEATHER)
-                    inventory.add(WeaponName.DAGGER)
-                    inventory.add(WeaponName.DAGGER)
-                    inventory.add(ToolName.THIEVES_TOOLS)
-                case ClassName.WIZARD:
-                    inventory.add(GearName.SPELLBOOK)
 
         return HttpResponseRedirect(character.get_absolute_url())
