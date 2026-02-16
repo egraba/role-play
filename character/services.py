@@ -1,12 +1,25 @@
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from typing import Any
 
 from magic.constants.spells import SpellLevel, SpellSchool
 from magic.models.spells import Concentration
 
+from .character_attributes_builders import (
+    BackgroundBuilder,
+    BaseBuilder,
+    ClassBuilder,
+    DerivedStatsBuilder,
+    SpeciesBuilder,
+    SpellcastingBuilder,
+)
+from .constants.classes import ClassName
 from .models.character import Character
+from equipment.constants.equipment import ArmorName, GearName, ToolName, WeaponName
+
+MULTI_EQUIPMENT_REGEX = r"\S+\s&\s\S+"
 
 
 @dataclass
@@ -449,3 +462,115 @@ class CharacterSheetService:
         data["spell_slots"] = []
 
         return data
+
+
+class CharacterCreationService:
+    """Encapsulates the builder orchestration for creating a new character."""
+
+    class _AbilityData:
+        """Adapter providing a form-like interface for BaseBuilder compatibility.
+
+        BaseBuilder expects a form object with a ``cleaned_data`` dict
+        mapping lowercase ability names to integer scores.
+        """
+
+        def __init__(self, data: dict[str, int]) -> None:
+            self.cleaned_data = data
+
+    @staticmethod
+    def create_character(
+        user: Any,
+        *,
+        name: str,
+        species: Any,
+        klass: Any,
+        abilities: dict[str, int],
+        background: str,
+        skills: list[str],
+        equipment: list[str],
+    ) -> Character:
+        """Create a fully-built character through the builder pipeline.
+
+        Runs the full character creation pipeline: base setup, species
+        traits, class features, skills, background, derived stats,
+        spellcasting, equipment, and class-specific default equipment.
+
+        Args:
+            user: The user who owns the character.
+            name: The character's name.
+            species: The species model instance.
+            klass: The class model instance.
+            abilities: Mapping of lowercase ability names to integer scores.
+            background: Background identifier string.
+            skills: List of skill names to add.
+            equipment: List of equipment name strings (may contain
+                ``"Name1 & Name2"`` format for multi-equipment).
+
+        Returns:
+            The fully created Character instance.
+        """
+        # Create character instance
+        character = Character(
+            user=user,
+            name=name,
+            species=species,
+            background=background,
+        )
+
+        # Wrap abilities dict for BaseBuilder compatibility
+        ability_data = CharacterCreationService._AbilityData(abilities)
+
+        # Phase 1: Base setup - inventory and ability scores
+        BaseBuilder(character, ability_data).build()  # type: ignore[arg-type]
+
+        # Phase 2: Species traits - size, speed, darkvision, languages
+        SpeciesBuilder(character).build()
+
+        # Phase 3: Class - HP, proficiencies, features, wealth
+        ClassBuilder(character, klass).build()
+
+        # Phase 4: Add skills
+        for skill_name in skills:
+            if skill_name:
+                character.skills.add(skill_name)
+
+        # Phase 5: Background - skill proficiencies, tools, feat, personality
+        BackgroundBuilder(character).build()
+
+        # Phase 6: Derived stats (after all modifiers are applied)
+        DerivedStatsBuilder(character).build()
+
+        # Phase 7: Spellcasting setup (if class is a spellcaster)
+        SpellcastingBuilder(character, klass).build()
+
+        # Phase 8: Add equipment
+        inventory = character.inventory
+        for equipment_name in equipment:
+            if not equipment_name:
+                continue
+            # If the field is under the form "equipment_name1 & equipment_name2",
+            # each equipment must be added separately.
+            if re.match(MULTI_EQUIPMENT_REGEX, equipment_name):
+                names = equipment_name.split(" & ")
+                for item_name in names:
+                    inventory.add(item_name)
+            else:
+                inventory.add(equipment_name)
+
+        # Some equipment is added without selection, depending on character's class.
+        match klass.name:
+            case ClassName.CLERIC:
+                inventory.add(WeaponName.CROSSBOW_LIGHT)
+                inventory.add(GearName.CROSSBOW_BOLTS)
+                inventory.add(ArmorName.SHIELD)
+            case ClassName.ROGUE:
+                inventory.add(WeaponName.SHORTBOW)
+                inventory.add(GearName.QUIVER)
+                inventory.add(ArmorName.LEATHER)
+                inventory.add(WeaponName.DAGGER)
+                inventory.add(WeaponName.DAGGER)
+                inventory.add(ToolName.THIEVES_TOOLS)
+            case ClassName.WIZARD:
+                inventory.add(GearName.SPELLBOOK)
+
+        return character

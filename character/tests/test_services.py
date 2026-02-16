@@ -3,10 +3,20 @@ import pytest
 from magic.constants.spells import SpellLevel, SpellSchool
 from magic.models.spells import Concentration
 
-from ..services import CharacterSheetService, SpellsPanelService
+from ..constants.classes import ClassName
+from ..models.classes import Class
+from ..services import (
+    CharacterCreationService,
+    CharacterSheetService,
+    SpellsPanelService,
+)
+from equipment.constants.equipment import ArmorName, GearName, ToolName, WeaponName
+from user.tests.factories import UserFactory
+
 from .factories import (
     CharacterFactory,
     CharacterSpellSlotFactory,
+    SpeciesFactory,
     SpellFactory,
     SpellPreparationFactory,
     SpellSettingsFactory,
@@ -541,3 +551,123 @@ class TestCharacterSheetServiceGetData:
         data = CharacterSheetService.get_character_sheet_data(character)
 
         assert data["inventory"] is character.inventory
+
+
+@pytest.mark.django_db
+class TestCharacterCreationService:
+    """Tests for CharacterCreationService.create_character."""
+
+    STANDARD_ABILITIES = {
+        "strength": 15,
+        "dexterity": 14,
+        "constitution": 13,
+        "intelligence": 12,
+        "wisdom": 10,
+        "charisma": 8,
+    }
+
+    def test_creates_character_with_name(self):
+        """Character is created with the given name and user."""
+        user = UserFactory()
+        klass = Class.objects.get(name=ClassName.FIGHTER)
+        character = CharacterCreationService.create_character(
+            user=user,
+            name="Test Hero",
+            species=SpeciesFactory(),
+            klass=klass,
+            abilities=self.STANDARD_ABILITIES,
+            background="acolyte",
+            skills=[],
+            equipment=[],
+        )
+
+        assert character.name == "Test Hero"
+        assert character.user == user
+
+    def test_creates_character_with_abilities(self):
+        """Character has 6 ability scores after creation."""
+        user = UserFactory()
+        klass = Class.objects.get(name=ClassName.FIGHTER)
+        character = CharacterCreationService.create_character(
+            user=user,
+            name="Ability Hero",
+            species=SpeciesFactory(),
+            klass=klass,
+            abilities=self.STANDARD_ABILITIES,
+            background="acolyte",
+            skills=[],
+            equipment=[],
+        )
+
+        assert character.abilities.count() == 6
+
+    def test_creates_character_with_inventory(self):
+        """Character has an inventory containing selected equipment."""
+        user = UserFactory()
+        klass = Class.objects.get(name=ClassName.FIGHTER)
+        character = CharacterCreationService.create_character(
+            user=user,
+            name="Equipped Hero",
+            species=SpeciesFactory(),
+            klass=klass,
+            abilities=self.STANDARD_ABILITIES,
+            background="acolyte",
+            skills=[],
+            equipment=[WeaponName.LONGSWORD],
+        )
+
+        assert character.inventory is not None
+        assert character.inventory.contains(WeaponName.LONGSWORD)
+
+    def test_creates_rogue_with_class_equipment(self):
+        """Rogue gets leather armor, 2 daggers, and thieves' tools."""
+        user = UserFactory()
+        klass = Class.objects.get(name=ClassName.ROGUE)
+        character = CharacterCreationService.create_character(
+            user=user,
+            name="Rogue Hero",
+            species=SpeciesFactory(),
+            klass=klass,
+            abilities=self.STANDARD_ABILITIES,
+            background="criminal",
+            skills=[],
+            equipment=[],
+        )
+
+        assert character.inventory.contains(ArmorName.LEATHER)
+        assert character.inventory.contains(WeaponName.DAGGER, 2)
+        assert character.inventory.contains(ToolName.THIEVES_TOOLS)
+
+    def test_creates_wizard_with_spellbook(self):
+        """Wizard gets a spellbook."""
+        user = UserFactory()
+        klass = Class.objects.get(name=ClassName.WIZARD)
+        character = CharacterCreationService.create_character(
+            user=user,
+            name="Wizard Hero",
+            species=SpeciesFactory(),
+            klass=klass,
+            abilities=self.STANDARD_ABILITIES,
+            background="sage",
+            skills=[],
+            equipment=[],
+        )
+
+        assert character.inventory.contains(GearName.SPELLBOOK)
+
+    def test_handles_multi_equipment_names(self):
+        """Equipment strings with ' & ' are split and added separately."""
+        user = UserFactory()
+        klass = Class.objects.get(name=ClassName.FIGHTER)
+        character = CharacterCreationService.create_character(
+            user=user,
+            name="Multi Equip Hero",
+            species=SpeciesFactory(),
+            klass=klass,
+            abilities=self.STANDARD_ABILITIES,
+            background="soldier",
+            skills=[],
+            equipment=[f"{WeaponName.HANDAXE} & {WeaponName.HANDAXE}"],
+        )
+
+        assert character.inventory.contains(WeaponName.HANDAXE, 2)
