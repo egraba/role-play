@@ -21,6 +21,86 @@ class SpellsPanelService:
     """Encapsulates business logic for the spells panel."""
 
     @staticmethod
+    def cast_spell(
+        character: Character,
+        spell_name: str,
+        cast_level: int,
+    ) -> SpellCastResult:
+        """Cast a spell, consuming a slot if needed and starting concentration.
+
+        Searches prepared_spells then spells_known for a spell matching
+        spell_name. Cantrips (level 0) are cast without consuming a slot.
+        Leveled spells consume a slot at cast_level. Concentration spells
+        start concentration on the character.
+
+        Args:
+            character: The character casting the spell.
+            spell_name: The name of the spell to cast.
+            cast_level: The level at which to cast the spell.
+
+        Returns:
+            A SpellCastResult indicating success/failure and a message.
+        """
+        # Find the spell in prepared spells first, then known spells
+        spell_settings = None
+        for spell in character.prepared_spells.select_related("settings").all():
+            if spell.settings.name == spell_name:
+                spell_settings = spell.settings
+                break
+        if not spell_settings:
+            for spell in character.spells_known.select_related("settings").all():
+                if spell.settings.name == spell_name:
+                    spell_settings = spell.settings
+                    break
+
+        if not spell_settings:
+            return SpellCastResult(success=False, message="Spell not found!")
+
+        # Cantrips don't use slots
+        if spell_settings.level == 0:
+            return SpellCastResult(
+                success=True,
+                message=f"Cast {spell_settings.name}!",
+                spell_name=spell_settings.name,
+                cast_level=0,
+            )
+
+        # Try to use a slot at the cast level
+        slot = character.spell_slots.filter(slot_level=cast_level).first()
+        if not slot or not slot.use_slot():
+            return SpellCastResult(
+                success=False,
+                message=f"No level {cast_level} slots remaining!",
+            )
+
+        # Handle concentration
+        if spell_settings.concentration:
+            Concentration.start_concentration(character, spell_settings)
+
+        return SpellCastResult(
+            success=True,
+            message=f"Cast {spell_settings.name} at level {cast_level}!",
+            spell_name=spell_settings.name,
+            cast_level=cast_level,
+        )
+
+    @staticmethod
+    def restore_all_slots(character: Character) -> None:
+        """Restore all spell slots and pact magic (long rest).
+
+        Iterates all character spell slots calling restore_all() on each,
+        and also restores pact magic if the character has it.
+
+        Args:
+            character: The character whose slots to restore.
+        """
+        for slot in character.spell_slots.all():
+            slot.restore_all()
+
+        if hasattr(character, "pact_magic"):
+            character.pact_magic.restore_all()
+
+    @staticmethod
     def get_spells_panel_data(
         character: Character,
         *,

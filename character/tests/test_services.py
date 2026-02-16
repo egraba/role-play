@@ -338,3 +338,116 @@ class TestGetSpellsPanelData:
         assert result["quick_cast_spells"] == []
         assert result["has_prepared"] is False
         assert result["has_known"] is False
+
+
+@pytest.mark.django_db
+class TestSpellsPanelServiceCastSpell:
+    """Tests for SpellsPanelService.cast_spell."""
+
+    def test_cast_cantrip_succeeds(self, character):
+        """Casting a cantrip returns success with spell name in message."""
+        settings = SpellSettingsFactory(name="Fire Bolt", level=SpellLevel.CANTRIP)
+        SpellPreparationFactory(character=character, settings=settings)
+
+        result = SpellsPanelService.cast_spell(character, "Fire Bolt", cast_level=0)
+
+        assert result.success is True
+        assert "Fire Bolt" in result.message
+
+    def test_cast_cantrip_does_not_use_slot(self, character):
+        """Casting a cantrip does not consume a spell slot."""
+        settings = SpellSettingsFactory(name="Fire Bolt", level=SpellLevel.CANTRIP)
+        SpellPreparationFactory(character=character, settings=settings)
+        slot = CharacterSpellSlotFactory(
+            character=character, slot_level=1, total=2, used=0
+        )
+
+        SpellsPanelService.cast_spell(character, "Fire Bolt", cast_level=0)
+
+        slot.refresh_from_db()
+        assert slot.used == 0
+
+    def test_cast_leveled_spell_uses_slot(self, character):
+        """Casting a leveled spell increments slot.used by 1."""
+        settings = SpellSettingsFactory(
+            name="Magic Missile", level=SpellLevel.FIRST, concentration=False
+        )
+        SpellPreparationFactory(character=character, settings=settings)
+        slot = CharacterSpellSlotFactory(
+            character=character, slot_level=1, total=2, used=0
+        )
+
+        result = SpellsPanelService.cast_spell(character, "Magic Missile", cast_level=1)
+
+        assert result.success is True
+        assert "Magic Missile" in result.message
+        assert "level 1" in result.message
+        slot.refresh_from_db()
+        assert slot.used == 1
+
+    def test_cast_concentration_spell_starts_concentration(self, character):
+        """Casting a concentration spell creates a Concentration object."""
+        settings = SpellSettingsFactory(
+            name="Bless", level=SpellLevel.FIRST, concentration=True
+        )
+        SpellPreparationFactory(character=character, settings=settings)
+        CharacterSpellSlotFactory(character=character, slot_level=1, total=2, used=0)
+
+        result = SpellsPanelService.cast_spell(character, "Bless", cast_level=1)
+
+        assert result.success is True
+        conc = Concentration.objects.filter(character=character).first()
+        assert conc is not None
+        assert conc.spell.name == "Bless"
+
+    def test_cast_spell_no_slots_remaining(self, character):
+        """Returns failure when no slots remain at the cast level."""
+        settings = SpellSettingsFactory(
+            name="Magic Missile", level=SpellLevel.FIRST, concentration=False
+        )
+        SpellPreparationFactory(character=character, settings=settings)
+        CharacterSpellSlotFactory(character=character, slot_level=1, total=2, used=2)
+
+        result = SpellsPanelService.cast_spell(character, "Magic Missile", cast_level=1)
+
+        assert result.success is False
+        assert "No level 1 slots remaining" in result.message
+
+    def test_cast_unknown_spell_fails(self, character):
+        """Returns failure with 'Spell not found' for unknown spell."""
+        result = SpellsPanelService.cast_spell(
+            character, "Nonexistent Spell", cast_level=1
+        )
+
+        assert result.success is False
+        assert "Spell not found" in result.message
+
+
+@pytest.mark.django_db
+class TestSpellsPanelServiceRestoreAllSlots:
+    """Tests for SpellsPanelService.restore_all_slots."""
+
+    def test_restores_all_spell_slots(self, character):
+        """All spell slots have used=0 after restore."""
+        slot1 = CharacterSpellSlotFactory(
+            character=character, slot_level=1, total=4, used=3
+        )
+        slot2 = CharacterSpellSlotFactory(
+            character=character, slot_level=2, total=3, used=2
+        )
+
+        SpellsPanelService.restore_all_slots(character)
+
+        slot1.refresh_from_db()
+        slot2.refresh_from_db()
+        assert slot1.used == 0
+        assert slot2.used == 0
+
+    def test_restores_pact_magic(self, character):
+        """Pact magic slot has used=0 after restore."""
+        pact = WarlockSpellSlotFactory(character=character, total=2, used=2)
+
+        SpellsPanelService.restore_all_slots(character)
+
+        pact.refresh_from_db()
+        assert pact.used == 0
