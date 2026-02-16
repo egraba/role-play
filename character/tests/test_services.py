@@ -1,0 +1,673 @@
+import pytest
+
+from magic.constants.spells import SpellLevel, SpellSchool
+from magic.models.spells import Concentration
+
+from ..constants.classes import ClassName
+from ..models.classes import Class
+from ..services import (
+    CharacterCreationService,
+    CharacterSheetService,
+    SpellsPanelService,
+)
+from equipment.constants.equipment import ArmorName, GearName, ToolName, WeaponName
+from user.tests.factories import UserFactory
+
+from .factories import (
+    CharacterFactory,
+    CharacterSpellSlotFactory,
+    SpeciesFactory,
+    SpellFactory,
+    SpellPreparationFactory,
+    SpellSettingsFactory,
+    WarlockSpellSlotFactory,
+)
+
+
+@pytest.fixture()
+def character():
+    return CharacterFactory()
+
+
+@pytest.mark.django_db
+class TestGetSpellsPanelData:
+    """Tests for SpellsPanelService.get_spells_panel_data."""
+
+    def test_returns_spell_slots(self, character):
+        """Verifies slot data structure with circles visualization."""
+        CharacterSpellSlotFactory(character=character, slot_level=1, total=2, used=0)
+        CharacterSpellSlotFactory(character=character, slot_level=2, total=3, used=1)
+
+        result = SpellsPanelService.get_spells_panel_data(character)
+
+        assert len(result["spell_slots"]) == 2
+        slot1 = result["spell_slots"][0]
+        assert slot1["level"] == 1
+        assert slot1["total"] == 2
+        assert slot1["used"] == 0
+        assert slot1["remaining"] == 2
+        assert len(slot1["circles"]) == 2
+        # All circles should be filled (none used)
+        assert all(c["filled"] for c in slot1["circles"])
+
+        slot2 = result["spell_slots"][1]
+        assert slot2["level"] == 2
+        assert slot2["total"] == 3
+        assert slot2["used"] == 1
+        assert slot2["remaining"] == 2
+        assert len(slot2["circles"]) == 3
+        # First circle unfilled (used), rest filled
+        assert not slot2["circles"][0]["filled"]
+        assert slot2["circles"][1]["filled"]
+        assert slot2["circles"][2]["filled"]
+
+    def test_excludes_zero_total_slots(self, character):
+        """Slots with total=0 should not appear in the result."""
+        CharacterSpellSlotFactory(character=character, slot_level=1, total=0, used=0)
+        CharacterSpellSlotFactory(character=character, slot_level=2, total=3, used=0)
+
+        result = SpellsPanelService.get_spells_panel_data(character)
+
+        assert len(result["spell_slots"]) == 1
+        assert result["spell_slots"][0]["level"] == 2
+
+    def test_returns_prepared_spells(self, character):
+        """Verifies prepared spells are included."""
+        settings = SpellSettingsFactory(name="Shield", level=SpellLevel.FIRST)
+        SpellPreparationFactory(character=character, settings=settings)
+
+        result = SpellsPanelService.get_spells_panel_data(character)
+
+        assert len(result["prepared_spells"]) == 1
+        assert result["prepared_spells"][0].settings.name == "Shield"
+        assert result["has_prepared"] is True
+
+    def test_returns_known_spells(self, character):
+        """Verifies known spells are included."""
+        settings = SpellSettingsFactory(name="Magic Missile", level=SpellLevel.FIRST)
+        SpellFactory(character=character, settings=settings)
+
+        result = SpellsPanelService.get_spells_panel_data(character)
+
+        assert len(result["known_spells"]) == 1
+        assert result["known_spells"][0].settings.name == "Magic Missile"
+        assert result["has_known"] is True
+
+    def test_groups_spells_by_level(self, character):
+        """Verifies spells are grouped by level."""
+        cantrip_settings = SpellSettingsFactory(
+            name="Fire Bolt", level=SpellLevel.CANTRIP
+        )
+        first_settings = SpellSettingsFactory(
+            name="Magic Missile", level=SpellLevel.FIRST
+        )
+        second_settings = SpellSettingsFactory(
+            name="Scorching Ray", level=SpellLevel.SECOND
+        )
+        SpellFactory(character=character, settings=cantrip_settings)
+        SpellFactory(character=character, settings=first_settings)
+        SpellFactory(character=character, settings=second_settings)
+
+        result = SpellsPanelService.get_spells_panel_data(character)
+
+        known_by_level = result["known_by_level"]
+        assert 0 in known_by_level
+        assert 1 in known_by_level
+        assert 2 in known_by_level
+        assert known_by_level[0][0].settings.name == "Fire Bolt"
+        assert known_by_level[1][0].settings.name == "Magic Missile"
+        assert known_by_level[2][0].settings.name == "Scorching Ray"
+
+    def test_filter_by_level(self, character):
+        """Level filter returns only matching spells."""
+        first_settings = SpellSettingsFactory(
+            name="Magic Missile", level=SpellLevel.FIRST
+        )
+        second_settings = SpellSettingsFactory(
+            name="Scorching Ray", level=SpellLevel.SECOND
+        )
+        SpellFactory(character=character, settings=first_settings)
+        SpellFactory(character=character, settings=second_settings)
+
+        result = SpellsPanelService.get_spells_panel_data(
+            character, level_filter=SpellLevel.FIRST
+        )
+
+        assert len(result["known_spells"]) == 1
+        assert result["known_spells"][0].settings.name == "Magic Missile"
+
+    def test_filter_by_school(self, character):
+        """School filter returns only matching spells."""
+        evo_settings = SpellSettingsFactory(
+            name="Fireball", level=SpellLevel.THIRD, school=SpellSchool.EVOCATION
+        )
+        abj_settings = SpellSettingsFactory(
+            name="Shield", level=SpellLevel.FIRST, school=SpellSchool.ABJURATION
+        )
+        SpellPreparationFactory(character=character, settings=evo_settings)
+        SpellPreparationFactory(character=character, settings=abj_settings)
+
+        result = SpellsPanelService.get_spells_panel_data(
+            character, school_filter=SpellSchool.EVOCATION
+        )
+
+        assert len(result["prepared_spells"]) == 1
+        assert result["prepared_spells"][0].settings.name == "Fireball"
+
+    def test_filter_by_concentration(self, character):
+        """Concentration filter returns only matching spells."""
+        conc_settings = SpellSettingsFactory(
+            name="Bless", level=SpellLevel.FIRST, concentration=True
+        )
+        non_conc_settings = SpellSettingsFactory(
+            name="Magic Missile", level=SpellLevel.FIRST, concentration=False
+        )
+        SpellPreparationFactory(character=character, settings=conc_settings)
+        SpellPreparationFactory(character=character, settings=non_conc_settings)
+
+        # Filter for concentration spells
+        result = SpellsPanelService.get_spells_panel_data(
+            character, concentration_filter=True
+        )
+        assert len(result["prepared_spells"]) == 1
+        assert result["prepared_spells"][0].settings.name == "Bless"
+
+        # Filter for non-concentration spells
+        result = SpellsPanelService.get_spells_panel_data(
+            character, concentration_filter=False
+        )
+        assert len(result["prepared_spells"]) == 1
+        assert result["prepared_spells"][0].settings.name == "Magic Missile"
+
+    def test_filter_by_search(self, character):
+        """Search query filters by spell name (case-insensitive)."""
+        SpellFactory(
+            character=character,
+            settings=SpellSettingsFactory(name="Fireball", level=SpellLevel.THIRD),
+        )
+        SpellFactory(
+            character=character,
+            settings=SpellSettingsFactory(name="Fire Bolt", level=SpellLevel.CANTRIP),
+        )
+        SpellFactory(
+            character=character,
+            settings=SpellSettingsFactory(name="Magic Missile", level=SpellLevel.FIRST),
+        )
+
+        result = SpellsPanelService.get_spells_panel_data(
+            character, search_query="fire"
+        )
+
+        assert len(result["known_spells"]) == 2
+        names = {s.settings.name for s in result["known_spells"]}
+        assert names == {"Fireball", "Fire Bolt"}
+
+    def test_returns_quick_cast_cantrips(self, character):
+        """Cantrips should appear in quick-cast with can_cast=True."""
+        cantrip_settings = SpellSettingsFactory(
+            name="Fire Bolt", level=SpellLevel.CANTRIP
+        )
+        SpellPreparationFactory(character=character, settings=cantrip_settings)
+
+        result = SpellsPanelService.get_spells_panel_data(character)
+
+        assert len(result["quick_cast_spells"]) == 1
+        qc = result["quick_cast_spells"][0]
+        assert qc["spell"].settings.name == "Fire Bolt"
+        assert qc["type"] == "prepared"
+        assert qc["can_cast"] is True
+
+    def test_quick_cast_includes_first_level_with_slots(self, character):
+        """First-level spells in quick-cast show can_cast based on slots."""
+        CharacterSpellSlotFactory(character=character, slot_level=1, total=2, used=0)
+        first_settings = SpellSettingsFactory(
+            name="Magic Missile", level=SpellLevel.FIRST
+        )
+        SpellPreparationFactory(character=character, settings=first_settings)
+
+        result = SpellsPanelService.get_spells_panel_data(character)
+
+        first_level_qc = [
+            qc for qc in result["quick_cast_spells"] if qc["spell"].settings.level == 1
+        ]
+        assert len(first_level_qc) == 1
+        assert first_level_qc[0]["can_cast"] is True
+
+    def test_quick_cast_first_level_no_slots_remaining(self, character):
+        """First-level spells show can_cast=False when no slots left."""
+        CharacterSpellSlotFactory(character=character, slot_level=1, total=2, used=2)
+        first_settings = SpellSettingsFactory(
+            name="Magic Missile", level=SpellLevel.FIRST
+        )
+        SpellPreparationFactory(character=character, settings=first_settings)
+
+        result = SpellsPanelService.get_spells_panel_data(character)
+
+        first_level_qc = [
+            qc for qc in result["quick_cast_spells"] if qc["spell"].settings.level == 1
+        ]
+        assert len(first_level_qc) == 1
+        assert first_level_qc[0]["can_cast"] is False
+
+    def test_quick_cast_limits_first_level_to_three(self, character):
+        """Quick-cast includes at most 3 first-level spells."""
+        CharacterSpellSlotFactory(character=character, slot_level=1, total=4, used=0)
+        for i in range(5):
+            settings = SpellSettingsFactory(
+                name=f"Spell L1 {i}", level=SpellLevel.FIRST
+            )
+            SpellPreparationFactory(character=character, settings=settings)
+
+        result = SpellsPanelService.get_spells_panel_data(character)
+
+        first_level_qc = [
+            qc for qc in result["quick_cast_spells"] if qc["spell"].settings.level == 1
+        ]
+        assert len(first_level_qc) == 3
+
+    def test_returns_active_concentration(self, character):
+        """Active concentration spell is returned when present."""
+        conc_settings = SpellSettingsFactory(
+            name="Bless", level=SpellLevel.FIRST, concentration=True
+        )
+        Concentration.start_concentration(character, conc_settings)
+
+        result = SpellsPanelService.get_spells_panel_data(character)
+
+        assert result["active_concentration"] is not None
+        assert result["active_concentration"].spell.name == "Bless"
+
+    def test_no_active_concentration(self, character):
+        """No active concentration returns None."""
+        result = SpellsPanelService.get_spells_panel_data(character)
+
+        assert result["active_concentration"] is None
+
+    def test_returns_pact_magic_when_present(self, character):
+        """Warlock pact magic slot data is returned."""
+        WarlockSpellSlotFactory(character=character, slot_level=1, total=2, used=1)
+
+        result = SpellsPanelService.get_spells_panel_data(character)
+
+        pact_magic = result["pact_magic"]
+        assert pact_magic is not None
+        assert pact_magic["level"] == 1
+        assert pact_magic["total"] == 2
+        assert pact_magic["used"] == 1
+        assert pact_magic["remaining"] == 1
+        assert len(pact_magic["circles"]) == 2
+        # First circle unfilled (used), second filled
+        assert not pact_magic["circles"][0]["filled"]
+        assert pact_magic["circles"][1]["filled"]
+
+    def test_no_pact_magic_when_absent(self, character):
+        """Non-warlock characters have pact_magic=None."""
+        result = SpellsPanelService.get_spells_panel_data(character)
+
+        assert result["pact_magic"] is None
+
+    def test_returns_filter_options(self, character):
+        """Spell levels and schools choices are included."""
+        result = SpellsPanelService.get_spells_panel_data(character)
+
+        assert len(result["spell_levels"]) == len(SpellLevel.choices)
+        assert len(result["spell_schools"]) == len(SpellSchool.choices)
+        # Check structure
+        assert result["spell_levels"][0]["value"] == SpellLevel.CANTRIP
+        assert result["spell_levels"][0]["label"] == "Cantrip"
+
+    def test_returns_character(self, character):
+        """The character is included in the result."""
+        result = SpellsPanelService.get_spells_panel_data(character)
+
+        assert result["character"] is character
+
+    def test_returns_filter_values(self, character):
+        """Filter values are echoed back in the result."""
+        result = SpellsPanelService.get_spells_panel_data(
+            character,
+            level_filter=1,
+            school_filter="evocation",
+            concentration_filter=True,
+            search_query="fire",
+        )
+
+        assert result["level_filter"] == 1
+        assert result["school_filter"] == "evocation"
+        assert result["concentration_filter"] is True
+        assert result["search_query"] == "fire"
+
+    def test_empty_spells(self, character):
+        """Character with no spells returns empty lists/dicts."""
+        result = SpellsPanelService.get_spells_panel_data(character)
+
+        assert result["prepared_spells"] == []
+        assert result["known_spells"] == []
+        assert result["prepared_by_level"] == {}
+        assert result["known_by_level"] == {}
+        assert result["quick_cast_spells"] == []
+        assert result["has_prepared"] is False
+        assert result["has_known"] is False
+
+
+@pytest.mark.django_db
+class TestSpellsPanelServiceCastSpell:
+    """Tests for SpellsPanelService.cast_spell."""
+
+    def test_cast_cantrip_succeeds(self, character):
+        """Casting a cantrip returns success with spell name in message."""
+        settings = SpellSettingsFactory(name="Fire Bolt", level=SpellLevel.CANTRIP)
+        SpellPreparationFactory(character=character, settings=settings)
+
+        result = SpellsPanelService.cast_spell(character, "Fire Bolt", cast_level=0)
+
+        assert result.success is True
+        assert "Fire Bolt" in result.message
+
+    def test_cast_cantrip_does_not_use_slot(self, character):
+        """Casting a cantrip does not consume a spell slot."""
+        settings = SpellSettingsFactory(name="Fire Bolt", level=SpellLevel.CANTRIP)
+        SpellPreparationFactory(character=character, settings=settings)
+        slot = CharacterSpellSlotFactory(
+            character=character, slot_level=1, total=2, used=0
+        )
+
+        SpellsPanelService.cast_spell(character, "Fire Bolt", cast_level=0)
+
+        slot.refresh_from_db()
+        assert slot.used == 0
+
+    def test_cast_leveled_spell_uses_slot(self, character):
+        """Casting a leveled spell increments slot.used by 1."""
+        settings = SpellSettingsFactory(
+            name="Magic Missile", level=SpellLevel.FIRST, concentration=False
+        )
+        SpellPreparationFactory(character=character, settings=settings)
+        slot = CharacterSpellSlotFactory(
+            character=character, slot_level=1, total=2, used=0
+        )
+
+        result = SpellsPanelService.cast_spell(character, "Magic Missile", cast_level=1)
+
+        assert result.success is True
+        assert "Magic Missile" in result.message
+        assert "level 1" in result.message
+        slot.refresh_from_db()
+        assert slot.used == 1
+
+    def test_cast_concentration_spell_starts_concentration(self, character):
+        """Casting a concentration spell creates a Concentration object."""
+        settings = SpellSettingsFactory(
+            name="Bless", level=SpellLevel.FIRST, concentration=True
+        )
+        SpellPreparationFactory(character=character, settings=settings)
+        CharacterSpellSlotFactory(character=character, slot_level=1, total=2, used=0)
+
+        result = SpellsPanelService.cast_spell(character, "Bless", cast_level=1)
+
+        assert result.success is True
+        conc = Concentration.objects.filter(character=character).first()
+        assert conc is not None
+        assert conc.spell.name == "Bless"
+
+    def test_cast_spell_no_slots_remaining(self, character):
+        """Returns failure when no slots remain at the cast level."""
+        settings = SpellSettingsFactory(
+            name="Magic Missile", level=SpellLevel.FIRST, concentration=False
+        )
+        SpellPreparationFactory(character=character, settings=settings)
+        CharacterSpellSlotFactory(character=character, slot_level=1, total=2, used=2)
+
+        result = SpellsPanelService.cast_spell(character, "Magic Missile", cast_level=1)
+
+        assert result.success is False
+        assert "No level 1 slots remaining" in result.message
+
+    def test_cast_unknown_spell_fails(self, character):
+        """Returns failure with 'Spell not found' for unknown spell."""
+        result = SpellsPanelService.cast_spell(
+            character, "Nonexistent Spell", cast_level=1
+        )
+
+        assert result.success is False
+        assert "Spell not found" in result.message
+
+
+@pytest.mark.django_db
+class TestSpellsPanelServiceRestoreAllSlots:
+    """Tests for SpellsPanelService.restore_all_slots."""
+
+    def test_restores_all_spell_slots(self, character):
+        """All spell slots have used=0 after restore."""
+        slot1 = CharacterSpellSlotFactory(
+            character=character, slot_level=1, total=4, used=3
+        )
+        slot2 = CharacterSpellSlotFactory(
+            character=character, slot_level=2, total=3, used=2
+        )
+
+        SpellsPanelService.restore_all_slots(character)
+
+        slot1.refresh_from_db()
+        slot2.refresh_from_db()
+        assert slot1.used == 0
+        assert slot2.used == 0
+
+    def test_restores_pact_magic(self, character):
+        """Pact magic slot has used=0 after restore."""
+        pact = WarlockSpellSlotFactory(character=character, total=2, used=2)
+
+        SpellsPanelService.restore_all_slots(character)
+
+        pact.refresh_from_db()
+        assert pact.used == 0
+
+
+@pytest.mark.django_db
+class TestCharacterSheetServiceGetData:
+    """Tests for CharacterSheetService.get_character_sheet_data."""
+
+    def test_returns_abilities(self, character):
+        """Character has 6 abilities with correct abbreviations."""
+        data = CharacterSheetService.get_character_sheet_data(character)
+
+        assert len(data["abilities"]) == 6
+        abbreviations = {a["abbreviation"] for a in data["abilities"]}
+        assert abbreviations == {"STR", "DEX", "CON", "INT", "WIS", "CHA"}
+
+    def test_ability_has_required_fields(self, character):
+        """Each ability dict has name, abbreviation, score, modifier."""
+        data = CharacterSheetService.get_character_sheet_data(character)
+
+        for ability in data["abilities"]:
+            assert "name" in ability
+            assert "abbreviation" in ability
+            assert "score" in ability
+            assert "modifier" in ability
+
+    def test_returns_skills(self, character):
+        """Skills list is not empty, each has name, ability, proficient, modifier."""
+        data = CharacterSheetService.get_character_sheet_data(character)
+
+        assert len(data["skills"]) > 0
+        for skill in data["skills"]:
+            assert "name" in skill
+            assert "ability" in skill
+            assert "proficient" in skill
+            assert "modifier" in skill
+
+    def test_returns_saving_throws(self, character):
+        """6 saving throws, each has name, proficient, modifier."""
+        data = CharacterSheetService.get_character_sheet_data(character)
+
+        assert len(data["saving_throws"]) == 6
+        for st in data["saving_throws"]:
+            assert "name" in st
+            assert "proficient" in st
+            assert "modifier" in st
+
+    def test_returns_attacks_for_character_with_weapon(self, character):
+        """Character with Longsword in inventory gets 1 attack entry."""
+        from equipment.constants.equipment import WeaponName
+        from equipment.models.equipment import Weapon, WeaponSettings
+
+        settings = WeaponSettings.objects.get(name=WeaponName.LONGSWORD)
+        Weapon.objects.create(settings=settings, inventory=character.inventory)
+
+        data = CharacterSheetService.get_character_sheet_data(character)
+
+        assert len(data["attacks"]) == 1
+        attack = data["attacks"][0]
+        assert "name" in attack
+        assert "bonus" in attack
+        assert "damage" in attack
+
+    def test_returns_empty_attacks_without_weapons(self, character):
+        """Empty attacks list when character has no weapons."""
+        data = CharacterSheetService.get_character_sheet_data(character)
+
+        assert data["attacks"] == []
+
+    def test_returns_racial_traits(self, character):
+        """Racial traits is a list."""
+        data = CharacterSheetService.get_character_sheet_data(character)
+
+        assert isinstance(data["racial_traits"], list)
+
+    def test_returns_class_features(self, character):
+        """Class features is a list."""
+        data = CharacterSheetService.get_character_sheet_data(character)
+
+        assert isinstance(data["class_features"], list)
+
+    def test_returns_feats(self, character):
+        """Feats is a list."""
+        data = CharacterSheetService.get_character_sheet_data(character)
+
+        assert isinstance(data["feats"], list)
+
+    def test_returns_inventory(self, character):
+        """Inventory matches character.inventory."""
+        data = CharacterSheetService.get_character_sheet_data(character)
+
+        assert data["inventory"] is character.inventory
+
+
+@pytest.mark.django_db
+class TestCharacterCreationService:
+    """Tests for CharacterCreationService.create_character."""
+
+    STANDARD_ABILITIES = {
+        "strength": 15,
+        "dexterity": 14,
+        "constitution": 13,
+        "intelligence": 12,
+        "wisdom": 10,
+        "charisma": 8,
+    }
+
+    def test_creates_character_with_name(self):
+        """Character is created with the given name and user."""
+        user = UserFactory()
+        klass = Class.objects.get(name=ClassName.FIGHTER)
+        character = CharacterCreationService.create_character(
+            user=user,
+            name="Test Hero",
+            species=SpeciesFactory(),
+            klass=klass,
+            abilities=self.STANDARD_ABILITIES,
+            background="acolyte",
+            skills=[],
+            equipment=[],
+        )
+
+        assert character.name == "Test Hero"
+        assert character.user == user
+
+    def test_creates_character_with_abilities(self):
+        """Character has 6 ability scores after creation."""
+        user = UserFactory()
+        klass = Class.objects.get(name=ClassName.FIGHTER)
+        character = CharacterCreationService.create_character(
+            user=user,
+            name="Ability Hero",
+            species=SpeciesFactory(),
+            klass=klass,
+            abilities=self.STANDARD_ABILITIES,
+            background="acolyte",
+            skills=[],
+            equipment=[],
+        )
+
+        assert character.abilities.count() == 6
+
+    def test_creates_character_with_inventory(self):
+        """Character has an inventory containing selected equipment."""
+        user = UserFactory()
+        klass = Class.objects.get(name=ClassName.FIGHTER)
+        character = CharacterCreationService.create_character(
+            user=user,
+            name="Equipped Hero",
+            species=SpeciesFactory(),
+            klass=klass,
+            abilities=self.STANDARD_ABILITIES,
+            background="acolyte",
+            skills=[],
+            equipment=[WeaponName.LONGSWORD],
+        )
+
+        assert character.inventory is not None
+        assert character.inventory.contains(WeaponName.LONGSWORD)
+
+    def test_creates_rogue_with_class_equipment(self):
+        """Rogue gets leather armor, 2 daggers, and thieves' tools."""
+        user = UserFactory()
+        klass = Class.objects.get(name=ClassName.ROGUE)
+        character = CharacterCreationService.create_character(
+            user=user,
+            name="Rogue Hero",
+            species=SpeciesFactory(),
+            klass=klass,
+            abilities=self.STANDARD_ABILITIES,
+            background="criminal",
+            skills=[],
+            equipment=[],
+        )
+
+        assert character.inventory.contains(ArmorName.LEATHER)
+        assert character.inventory.contains(WeaponName.DAGGER, 2)
+        assert character.inventory.contains(ToolName.THIEVES_TOOLS)
+
+    def test_creates_wizard_with_spellbook(self):
+        """Wizard gets a spellbook."""
+        user = UserFactory()
+        klass = Class.objects.get(name=ClassName.WIZARD)
+        character = CharacterCreationService.create_character(
+            user=user,
+            name="Wizard Hero",
+            species=SpeciesFactory(),
+            klass=klass,
+            abilities=self.STANDARD_ABILITIES,
+            background="sage",
+            skills=[],
+            equipment=[],
+        )
+
+        assert character.inventory.contains(GearName.SPELLBOOK)
+
+    def test_handles_multi_equipment_names(self):
+        """Equipment strings with ' & ' are split and added separately."""
+        user = UserFactory()
+        klass = Class.objects.get(name=ClassName.FIGHTER)
+        character = CharacterCreationService.create_character(
+            user=user,
+            name="Multi Equip Hero",
+            species=SpeciesFactory(),
+            klass=klass,
+            abilities=self.STANDARD_ABILITIES,
+            background="soldier",
+            skills=[],
+            equipment=[f"{WeaponName.HANDAXE} & {WeaponName.HANDAXE}"],
+        )
+
+        assert character.inventory.contains(WeaponName.HANDAXE, 2)
