@@ -289,3 +289,163 @@ class SpellsPanelService:
             "has_prepared": len(prepared_spells) > 0,
             "has_known": len(known_spells) > 0,
         }
+
+
+class CharacterSheetService:
+    """Encapsulates business logic for the character detail sheet."""
+
+    @staticmethod
+    def get_character_sheet_data(character: Character) -> dict[str, Any]:
+        """Build all data needed for the character detail template.
+
+        Computes abilities, skills, saving throws, attacks, racial traits,
+        class features, feats, and spell placeholders from the given
+        character instance.
+
+        Args:
+            character: The character to build sheet data for.
+
+        Returns:
+            A dict containing all character sheet display data.
+        """
+        data: dict[str, Any] = {}
+
+        # Inventory
+        data["inventory"] = character.inventory
+
+        # Abilities with abbreviations for display
+        abilities = []
+        for ability in character.abilities.all().select_related("ability_type"):
+            abilities.append(
+                {
+                    "name": ability.ability_type.get_name_display(),
+                    "abbreviation": ability.ability_type.name,
+                    "score": ability.score,
+                    "modifier": ability.modifier,
+                }
+            )
+        data["abilities"] = abilities
+
+        # Skills with proficiency status and modifiers
+        from .models.skills import Skill
+
+        all_skills = Skill.objects.all().select_related("ability_type")
+        character_skill_names = set(character.skills.values_list("name", flat=True))
+
+        # Build ability modifier lookup
+        ability_modifiers = {a["abbreviation"]: a["modifier"] for a in abilities}
+
+        skills = []
+        for skill in all_skills:
+            is_proficient = skill.name in character_skill_names
+            ability_mod = ability_modifiers.get(skill.ability_type.name, 0)
+            modifier = ability_mod + (
+                character.proficiency_bonus if is_proficient else 0
+            )
+            skills.append(
+                {
+                    "name": skill.get_name_display(),
+                    "ability": skill.ability_type.name,
+                    "proficient": is_proficient,
+                    "modifier": modifier,
+                }
+            )
+        data["skills"] = skills
+
+        # Saving throws with proficiency and modifiers
+        saving_throw_proficiencies = set(
+            character.savingthrowproficiency_set.values_list(
+                "ability_type__name", flat=True
+            )
+        )
+        saving_throws = []
+        for ability in abilities:
+            is_proficient = ability["abbreviation"] in saving_throw_proficiencies
+            modifier = ability["modifier"] + (
+                character.proficiency_bonus if is_proficient else 0
+            )
+            saving_throws.append(
+                {
+                    "name": ability["abbreviation"],
+                    "proficient": is_proficient,
+                    "modifier": modifier,
+                }
+            )
+        data["saving_throws"] = saving_throws
+
+        # Attacks from equipped weapons
+        attacks = []
+        if character.inventory:
+            str_mod = ability_modifiers.get("STR", 0)
+            dex_mod = ability_modifiers.get("DEX", 0)
+            for weapon in character.inventory.weapon_set.select_related(
+                "settings"
+            ).all():
+                settings = weapon.settings
+                # Check if weapon is ranged or has finesse property
+                is_ranged = settings.weapon_type in ("SR", "MR")
+                is_finesse = (
+                    settings.properties and "finesse" in settings.properties.lower()
+                )
+                # Use DEX for finesse/ranged weapons, STR otherwise
+                # For finesse, use the higher of STR or DEX
+                if is_finesse:
+                    attack_mod = max(str_mod, dex_mod)
+                elif is_ranged:
+                    attack_mod = dex_mod
+                else:
+                    attack_mod = str_mod
+                attack_bonus = attack_mod + character.proficiency_bonus
+                damage_dice = settings.damage or "1d4"
+                damage = f"{damage_dice}+{attack_mod}" if attack_mod else damage_dice
+                attacks.append(
+                    {
+                        "name": str(weapon),
+                        "bonus": attack_bonus,
+                        "damage": damage,
+                    }
+                )
+        data["attacks"] = attacks
+
+        # Species/Racial traits
+        racial_traits = []
+        if character.species:
+            for trait in character.species.traits.all():
+                racial_traits.append(
+                    {
+                        "name": trait.get_name_display(),
+                        "description": trait.description,
+                    }
+                )
+        data["racial_traits"] = racial_traits
+
+        # Class features
+        class_features = []
+        for char_feature in character.class_features.all().select_related(
+            "class_feature"
+        ):
+            class_features.append(
+                {
+                    "name": char_feature.class_feature.name,
+                    "description": char_feature.class_feature.description,
+                    "level": char_feature.level_gained,
+                }
+            )
+        data["class_features"] = class_features
+
+        # Feats
+        feats = []
+        for char_feat in character.character_feats.all().select_related("feat"):
+            feats.append(
+                {
+                    "name": char_feat.feat.get_name_display(),
+                    "description": char_feat.feat.description,
+                }
+            )
+        data["feats"] = feats
+
+        # Spells (placeholder - extend if spellcasting model exists)
+        data["spells_by_level"] = {}
+        data["spell_slots"] = []
+
+        return data

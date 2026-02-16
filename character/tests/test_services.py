@@ -3,7 +3,7 @@ import pytest
 from magic.constants.spells import SpellLevel, SpellSchool
 from magic.models.spells import Concentration
 
-from ..services import SpellsPanelService
+from ..services import CharacterSheetService, SpellsPanelService
 from .factories import (
     CharacterFactory,
     CharacterSpellSlotFactory,
@@ -451,3 +451,93 @@ class TestSpellsPanelServiceRestoreAllSlots:
 
         pact.refresh_from_db()
         assert pact.used == 0
+
+
+@pytest.mark.django_db
+class TestCharacterSheetServiceGetData:
+    """Tests for CharacterSheetService.get_character_sheet_data."""
+
+    def test_returns_abilities(self, character):
+        """Character has 6 abilities with correct abbreviations."""
+        data = CharacterSheetService.get_character_sheet_data(character)
+
+        assert len(data["abilities"]) == 6
+        abbreviations = {a["abbreviation"] for a in data["abilities"]}
+        assert abbreviations == {"STR", "DEX", "CON", "INT", "WIS", "CHA"}
+
+    def test_ability_has_required_fields(self, character):
+        """Each ability dict has name, abbreviation, score, modifier."""
+        data = CharacterSheetService.get_character_sheet_data(character)
+
+        for ability in data["abilities"]:
+            assert "name" in ability
+            assert "abbreviation" in ability
+            assert "score" in ability
+            assert "modifier" in ability
+
+    def test_returns_skills(self, character):
+        """Skills list is not empty, each has name, ability, proficient, modifier."""
+        data = CharacterSheetService.get_character_sheet_data(character)
+
+        assert len(data["skills"]) > 0
+        for skill in data["skills"]:
+            assert "name" in skill
+            assert "ability" in skill
+            assert "proficient" in skill
+            assert "modifier" in skill
+
+    def test_returns_saving_throws(self, character):
+        """6 saving throws, each has name, proficient, modifier."""
+        data = CharacterSheetService.get_character_sheet_data(character)
+
+        assert len(data["saving_throws"]) == 6
+        for st in data["saving_throws"]:
+            assert "name" in st
+            assert "proficient" in st
+            assert "modifier" in st
+
+    def test_returns_attacks_for_character_with_weapon(self, character):
+        """Character with Longsword in inventory gets 1 attack entry."""
+        from equipment.constants.equipment import WeaponName
+        from equipment.models.equipment import Weapon, WeaponSettings
+
+        settings = WeaponSettings.objects.get(name=WeaponName.LONGSWORD)
+        Weapon.objects.create(settings=settings, inventory=character.inventory)
+
+        data = CharacterSheetService.get_character_sheet_data(character)
+
+        assert len(data["attacks"]) == 1
+        attack = data["attacks"][0]
+        assert "name" in attack
+        assert "bonus" in attack
+        assert "damage" in attack
+
+    def test_returns_empty_attacks_without_weapons(self, character):
+        """Empty attacks list when character has no weapons."""
+        data = CharacterSheetService.get_character_sheet_data(character)
+
+        assert data["attacks"] == []
+
+    def test_returns_racial_traits(self, character):
+        """Racial traits is a list."""
+        data = CharacterSheetService.get_character_sheet_data(character)
+
+        assert isinstance(data["racial_traits"], list)
+
+    def test_returns_class_features(self, character):
+        """Class features is a list."""
+        data = CharacterSheetService.get_character_sheet_data(character)
+
+        assert isinstance(data["class_features"], list)
+
+    def test_returns_feats(self, character):
+        """Feats is a list."""
+        data = CharacterSheetService.get_character_sheet_data(character)
+
+        assert isinstance(data["feats"], list)
+
+    def test_returns_inventory(self, character):
+        """Inventory matches character.inventory."""
+        data = CharacterSheetService.get_character_sheet_data(character)
+
+        assert data["inventory"] is character.inventory
