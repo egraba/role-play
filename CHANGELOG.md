@@ -4,6 +4,16 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 
 ## Unreleased
 
+### Changed
+* Updated lock file maintenance for Python dependencies
+  - dj-database-url: v3.1.0 → v3.1.1
+  - filelock: v3.24.0 → v3.24.2
+  - platformdirs: v4.9.1 → v4.9.2
+  - pytest-dependency: v0.6.0 → v0.6.1
+  - redis: v7.1.1 → v7.2.0
+  - sentry-sdk: v2.52.0 → v2.53.0
+  - virtualenv: v20.36.1 → v20.37.0
+
 ### Fixed
 * Fixed CI failing for Dependabot PRs due to inaccessible repository secrets
   - Test settings (`test.py`) no longer depend on environment variables or Doppler
