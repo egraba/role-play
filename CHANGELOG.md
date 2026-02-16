@@ -12,6 +12,13 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
   - Deleted unused `ci.py` settings module
 
 ### Changed
+* Extracted business logic from character views into `character/services.py`
+  - `SpellsPanelService`: spell slot visualization, filtering, grouping, quick-cast, casting, and slot restoration
+  - `CharacterSheetService`: character sheet data building (abilities, skills, saving throws, attacks, traits, features, feats)
+  - `CharacterCreationService`: builder pipeline orchestration and equipment handling (eliminates `MockAbilityForm` hack)
+  - `character/views/spells.py` reduced from 430 to 230 lines
+  - `character/views/character.py` reduced from 422 to 290 lines
+  - 45 new service-level tests added
 * Wired attack views to use `game/attack.py` service module instead of inline combat math
   - Attack modal now includes weapon selection with per-weapon attack bonuses
   - Attack resolution uses actual weapon damage dice (not hardcoded 1d8)
