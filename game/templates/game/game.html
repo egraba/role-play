@@ -3,176 +3,136 @@
 
 {% block content %}
 
-    {% include "game/partials/game_log_panel.html" %}
+    <div class="game-layout">
+
+    <!-- ══════════════════════════════════════════ -->
+    <!-- LEFT: Game Log                             -->
+    <!-- ══════════════════════════════════════════ -->
+        <div class="game-log-col" id="game-log-col">
+            {% include "game/partials/game_log_panel.html" %}
+        </div>
+
+    <!-- ══════════════════════════════════════════ -->
+    <!-- RIGHT: Play Area                           -->
+    <!-- ══════════════════════════════════════════ -->
+        <div class="game-play-col">
+
+        <!-- Quest section -->
+            <div class="play-section">
+                <div class="flex-between" style="margin-bottom: 8px;">
+                    <span class="section-label">Quest</span>
+                    {% if game.master.user == user and flow.is_ongoing %}
+                        <a href="{% url 'quest-create' game.id %}" class="btn btn-ghost">Update Quest ▸</a>
+                    {% endif %}
+                </div>
+                <div id="quest" style="white-space: pre-line; font-size: 14px; line-height: 1.6;">{{ quest.environment }}</div>
+            </div>
+
+            <hr class="divider">
+
+        <!-- Messaging + player actions (ongoing games only) -->
+            {% if flow.is_ongoing %}
+                <div class="play-section" id="messaging">
+                    <div style="display: flex; gap: 8px;">
+                        <input id="message-input" type="text" placeholder="What do you do?" style="flex: 1;">
+                        <button id="message-submit" class="btn btn-primary" type="button">Send</button>
+                    </div>
+                    <div style="margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap;">
+                        <button hx-get="{% url 'dice-roller-modal' game.id %}"
+                                hx-target="body"
+                                hx-swap="beforeend"
+                                class="btn btn-ghost"
+                                type="button">Roll Dice</button>
+                        {% if game.master.user == user %}
+                            <a href="{% url 'ability-check-request-create' game.id %}" class="btn btn-ghost">Ask for Ability Check</a>
+                            <a href="{% url 'combat-create' game.id %}" class="btn btn-ghost">Initiate Combat</a>
+                        {% endif %}
+                        {% if player %}
+                            {% if ability_check_request %}
+                                <button id="ability-check-submit" class="btn btn-primary" type="button">Perform Ability Check</button>
+                            {% endif %}
+                            {% if saving_throw_request %}
+                                <button id="saving-throw-submit" class="btn btn-primary" type="button">Perform Saving Throw</button>
+                            {% endif %}
+                            {% if combat_initiative_request %}
+                                <button id="dexterity-check-submit" class="btn btn-primary" type="button">Roll Initiative</button>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+                <hr class="divider">
+            {% endif %}
+
+        <!-- Pre-game: DM start button -->
+            {% if game.master.user == user and flow.is_under_preparation %}
+                <div class="play-section">
+                    <a href="{% url 'game-start' game.id %}" class="btn btn-primary">Start the Game</a>
+                </div>
+                <hr class="divider">
+            {% endif %}
+
+        <!-- Initiative Tracker (combat only) -->
+            {% if combat %}
+                <div class="play-section" id="initiative-section">
+                    <div hx-get="{% url 'initiative-tracker' game.id combat.id %}"
+                         hx-trigger="load, initiative-updated from:body"
+                         hx-swap="innerHTML">
+                    </div>
+                </div>
+                <hr class="divider">
+
+        <!-- Action Panel (combat only) -->
+                <div class="play-section" id="action-section">
+                    <div hx-get="{% url 'action-panel' game.id combat.id %}"
+                         hx-trigger="load, initiative-updated from:body, action-taken from:body"
+                         hx-swap="innerHTML">
+                    </div>
+                </div>
+                <hr class="divider">
+            {% endif %}
+
+        <!-- Characters -->
+            <div class="play-section">
+                <div class="flex-between" style="margin-bottom: 8px;">
+                    <span class="section-label">Characters</span>
+                    {% if game.master.user == user %}
+                        <a href="{% url 'game-invite-user' game.id %}" class="btn btn-ghost">Invite a User ▸</a>
+                    {% endif %}
+                </div>
+                {% for character in character_list %}
+                    {% with character_user=character.user %}
+                        <div style="padding: 4px 0;">
+                            <a href="{{ character.get_absolute_url }}" style="color: var(--accent);">{{ character }}</a>
+                            <span class="text-muted">
+                                {% if character_user == user %}(played by you){% else %}({{ character_user }}){% endif %}
+                            </span>
+                        </div>
+                    {% endwith %}
+                {% empty %}
+                    <p class="text-muted">No characters in this game yet.</p>
+                {% endfor %}
+            </div>
+
+        </div><!-- /.game-play-col -->
+    </div><!-- /.game-layout -->
+
     {% include "game/partials/keyboard_shortcuts_modal.html" %}
     {% include "game/partials/quick_reference_panels.html" %}
 
-    <style>
-        @media (min-width: 901px) {
-            .rpg-container {
-                margin-right: 360px;
-            }
-        }
-    </style>
-
-    <div class="rpg-container">
-        <div class="rpg-panel">
-            <h1 id="title" class="panel-title" style="font-size: 2.5rem;"><img src="/static/images/icons/actions/attack.svg" alt="" class="rpg-icon rpg-icon-xl rpg-icon-primary"> {{ game }}</h1>
-            <div class="text-center mb-2">
-                <a href="{% url 'game-list' %}" style="color: var(--color-primary); text-decoration: underline;">Return to games list</a>
-            </div>
-
-            <div class="rpg-section">
-                <h2 class="panel-title" style="font-size: 1.5rem;"><img src="/static/images/icons/actions/search.svg" alt="" class="rpg-icon rpg-icon-md rpg-icon-warning"> Quest</h2>
-                <div id="quest" class="game-message info" style="white-space: pre-line;">{{ quest.environment }}</div>
-            </div>
-
-            <div id="game">
-                {% if flow.is_ongoing %}
-                    <div id="messaging" class="rpg-section">
-                        <div class="rpg-form-group">
-                            <label for="message-input">Message:</label>
-                            <input id="message-input" type="text" style="width: 100%; padding: 10px; background: rgba(0, 0, 0, 0.5); border: 2px solid var(--color-border); color: var(--color-text); font-family: var(--font-text); border-radius: 4px;">
-                        </div>
-                        <div id="player-actions" class="action-buttons">
-                            <button id="message-submit" class="rpg-btn btn-primary" type="submit">Send</button>
-                            <button hx-get="{% url 'dice-roller-modal' game.id %}"
-                                    hx-target="body"
-                                    hx-swap="beforeend"
-                                    class="rpg-btn btn-skill">
-                                <img src="{% static 'images/icons/actions/roll.svg' %}" alt="" class="rpg-icon rpg-icon-sm"> Roll Dice
-                            </button>
-                            {% if player %}
-                                {% if ability_check_request %}
-                                    <button id="ability-check-submit" class="rpg-btn btn-skill" type="submit">Perform ability check</button>
-                                {% endif %}
-                                {% if saving_throw_request %}
-                                    <button id="saving-throw-submit" class="rpg-btn btn-defend" type="submit">Perform saving throw</button>
-                                {% endif %}
-                                {% if combat_initiative_request %}
-                                    <button id="dexterity-check-submit" class="rpg-btn btn-attack" type="submit">Perform dexterity check</button>
-                                {% endif %}
-                            {% endif%}
-                        </div>
-                    </div>
-                {% endif %}
-
-                {% if combat %}
-                    <div class="rpg-section">
-                        <div hx-get="{% url 'initiative-tracker' game.id combat.id %}"
-                             hx-trigger="load, initiative-updated from:body"
-                             hx-swap="innerHTML">
-                        </div>
-                    </div>
-                    <div class="rpg-section">
-                        <div hx-get="{% url 'action-panel' game.id combat.id %}"
-                             hx-trigger="load, initiative-updated from:body, action-taken from:body"
-                             hx-swap="innerHTML">
-                        </div>
-                    </div>
-                {% endif %}
-
-                <div id="panel" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
-                    <div class="rpg-section">
-                        <div id="characters" class="rpg-panel" style="background: rgba(0, 0, 0, 0.3);">
-                            <h3 class="panel-title" style="font-size: 1.2rem;"><img src="/static/images/icons/actions/help.svg" alt="" class="rpg-icon rpg-icon-md rpg-icon-primary"> Characters</h3>
-                            {% for character in character_list %}
-                                {% with character_user=character.user %}
-                                    <p style="margin: 8px 0;">
-                                        <a href="{{ character.get_absolute_url }}" style="color: var(--color-primary); text-decoration: underline;">{{ character }}</a>
-                                        {% if character_user == user %}
-                                            <span class="text-muted">(played by you)</span>
-                                        {% else %}
-                                            <span class="text-muted">(played by {{ character_user }})</span>
-                                        {% endif %}
-                                    </p>
-                                {% endwith %}
-                            {% empty %}
-                                <p class="text-center text-muted">There are no characters for this game...</p>
-                            {% endfor %}
-                            {% if game.master.user == user %}
-                                <div class="text-center mt-2">
-                                    <a href="{% url 'game-invite-user' game.id %}" class="rpg-btn btn-primary" style="padding: 8px 16px; font-size: 0.9rem;">Invite a user</a>
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-
-                    {% if game.master.user == user %}
-                        <div class="rpg-section">
-                            <div id="master" class="rpg-panel" style="background: rgba(139, 69, 19, 0.2);">
-                                <h3 class="panel-title" style="font-size: 1.2rem;"><img src="/static/images/icons/actions/persuade.svg" alt="" class="rpg-icon rpg-icon-md rpg-icon-warning"> Master's Panel</h3>
-                                <div class="action-buttons" style="flex-direction: column;">
-                                    {% if flow.is_under_preparation %}
-                                        <a href="{% url 'game-start' game.id %}" class="rpg-btn btn-primary">Start the game</a>
-                                    {% elif flow.is_ongoing %}
-                                        <a href="{% url 'quest-create' game.id %}" class="rpg-btn btn-primary">Update the quest</a>
-                                        <a href="{% url 'ability-check-request-create' game.id %}" class="rpg-btn btn-skill">Ask for ability check</a>
-                                        <a href="{% url 'combat-create' game.id %}" class="rpg-btn btn-attack">Initiate combat</a>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                    {% endif %}
-                </div>
-
-            </div>
-
-            <div class="text-center mt-2">
-                <img src="/static/images/icons/conditions/unconscious.svg" alt="" class="rpg-icon rpg-icon-sm rpg-icon-danger" style="transform: scaleX(-1);">
-                <a href="#title" style="color: var(--color-primary); text-decoration: underline; margin: 0 10px;">Back to top</a>
-                <img src="/static/images/icons/conditions/unconscious.svg" alt="" class="rpg-icon rpg-icon-sm rpg-icon-danger">
-            </div>
-        </div>
-    </div>
-
-    <!-- Keyboard shortcuts help button -->
     <button id="shortcuts-help-btn"
             onclick="window.keyboardShortcuts && window.keyboardShortcuts.toggleHelp(event)"
-            title="Keyboard shortcuts (?)">
-        ?
-    </button>
-    <style>
-        #shortcuts-help-btn {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            width: 36px;
-            height: 36px;
-            background: rgba(20, 20, 40, 0.85);
-            border: 1px solid var(--color-border);
-            border-radius: 50%;
-            color: var(--color-text-muted);
-            font-size: 1.1rem;
-            font-weight: bold;
-            font-family: var(--font-text);
-            cursor: pointer;
-            z-index: 999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-        }
-        #shortcuts-help-btn:hover {
-            border-color: var(--color-primary);
-            color: var(--color-primary);
-            background: rgba(20, 20, 40, 0.95);
-        }
-    </style>
+            title="Keyboard shortcuts (?)">?</button>
 
     <script>
-        // WebSocket connection configuration
         const wsProtocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
         const url = wsProtocol + window.location.host + '/events/' + {{ game.id }} + '/';
 
-        // DOM elements
         const input = document.getElementById('message-input');
         const sendButton = document.getElementById('message-submit');
         const abilityCheckButton = document.getElementById('ability-check-submit');
         const dexterityCheckButton = document.getElementById('dexterity-check-submit');
         const savingThrowButton = document.getElementById('saving-throw-submit');
 
-        // Event types
         const MESSAGE = "message";
         const QUEST_UPDATE = "quest.update";
         const ABILITY_CHECK_RESPONSE = "ability.check.response";
@@ -180,38 +140,30 @@
         const COMBAT_INITIATIVE_RESPONSE = "combat.initiative.response";
         const DICE_ROLL = "dice.roll";
 
-        // WebSocket reconnection state
         let eventsSocket = null;
         let reconnectAttempts = 0;
-        const baseReconnectDelay = 1000; // 1 second
-        const maxReconnectDelay = 30000; // 30 seconds
+        const baseReconnectDelay = 1000;
+        const maxReconnectDelay = 30000;
         let reconnectTimeout = null;
 
-        // Create connection status indicator
-        function createConnectionStatus() {
-            const statusDiv = document.createElement('div');
-            statusDiv.id = 'connection-status';
-            statusDiv.style.cssText = 'position: fixed; bottom: 20px; left: 70px; padding: 10px 15px; border-radius: 5px; font-size: 0.9rem; z-index: 1000; display: none; cursor: pointer;';
-            statusDiv.title = 'Click to retry connection';
-            statusDiv.addEventListener('click', function() {
-                if (reconnectTimeout) {
-                    clearTimeout(reconnectTimeout);
-                }
+        const connectionStatus = (function() {
+            const el = document.createElement('div');
+            el.id = 'connection-status';
+            el.title = 'Click to retry connection';
+            el.addEventListener('click', function() {
+                clearTimeout(reconnectTimeout);
                 reconnectAttempts = 0;
-                showConnectionStatus('🔄 Connecting...', true);
+                el.textContent = 'Reconnecting...';
+                el.style.display = 'block';
                 connectWebSocket();
             });
-            document.body.appendChild(statusDiv);
-            return statusDiv;
-        }
-        const connectionStatus = createConnectionStatus();
+            document.body.appendChild(el);
+            return el;
+        })();
 
-        function showConnectionStatus(message, isError) {
+        function showConnectionStatus(message) {
             connectionStatus.textContent = message;
             connectionStatus.style.display = 'block';
-            connectionStatus.style.background = isError ? 'rgba(139, 0, 0, 0.9)' : 'rgba(0, 100, 0, 0.9)';
-            connectionStatus.style.color = 'white';
-            connectionStatus.style.border = isError ? '2px solid #ff6666' : '2px solid #66ff66';
         }
 
         function hideConnectionStatus() {
@@ -219,240 +171,142 @@
         }
 
         function connectWebSocket() {
-            if (eventsSocket && eventsSocket.readyState === WebSocket.OPEN) {
-                return; // Already connected
-            }
-
+            if (eventsSocket && eventsSocket.readyState === WebSocket.OPEN) return;
             eventsSocket = new WebSocket(url);
 
-            eventsSocket.onopen = function(event) {
-                console.log('WebSocket connected');
+            eventsSocket.onopen = function() {
                 reconnectAttempts = 0;
                 hideConnectionStatus();
-                // Enable input if it was disabled
                 if (input) input.disabled = false;
                 if (sendButton) sendButton.disabled = false;
             };
 
             eventsSocket.onmessage = function(event) {
                 const message = JSON.parse(event.data);
-                // Pass to game log panel
-                if (window.gameLog) {
-                    window.gameLog.handleWebSocketEvent(message);
-                }
+                if (window.gameLog) window.gameLog.handleWebSocketEvent(message);
+
                 if (message["type"] === QUEST_UPDATE) {
-                    $("#quest").load(" #quest > *");
+                    htmx.ajax('GET', window.location.pathname, {target: '#quest', swap: 'innerHTML'});
                 } else if (message["type"] === MESSAGE || message["type"] === DICE_ROLL) {
-                    // Handled by game log panel
-                } else if (message["type"].startsWith("turn.") ||
+                // handled by game log
+                } else if (
+                    message["type"].startsWith("turn.") ||
                     message["type"].startsWith("combat.") ||
                     message["type"].startsWith("hp.") ||
                     message["type"].startsWith("concentration.") ||
-                    message["type"] === "action.taken") {
-                    // Trigger HTMX refresh for combat-related events
-                        htmx.trigger(document.body, 'initiative-updated');
-                    } else {
-                    // The full page has to be reloaded, otherwise clicking on the button
-                    // triggers no action.
-                        location.reload();
-                    }
+                    message["type"] === "action.taken"
+                ) {
+                    htmx.trigger(document.body, 'initiative-updated');
+                } else {
+                    location.reload();
+                }
             };
 
-            eventsSocket.onclose = function(event) {
-                console.warn('WebSocket closed:', event.code, event.reason);
-                scheduleReconnect();
-            };
-
-            eventsSocket.onerror = function(error) {
-                console.error('WebSocket error:', error);
-                // onclose will be called after onerror
-            };
+            eventsSocket.onclose = function() { scheduleReconnect(); };
+            eventsSocket.onerror = function() {};
         }
 
         function scheduleReconnect() {
-            if (reconnectTimeout) {
-                clearTimeout(reconnectTimeout);
-            }
-
-            // Disable input while disconnected
+            clearTimeout(reconnectTimeout);
             if (input) input.disabled = true;
             if (sendButton) sendButton.disabled = true;
-
-            // Calculate delay with exponential backoff and jitter (caps at maxReconnectDelay)
             const delay = Math.min(
                 baseReconnectDelay * Math.pow(2, reconnectAttempts) + Math.random() * 1000,
                 maxReconnectDelay
             );
             reconnectAttempts++;
-
-            // Show status - after many attempts, indicate click to retry immediately
-            if (reconnectAttempts > 10) {
-                showConnectionStatus(`🔄 Reconnecting in ${Math.round(delay/1000)}s... (click to retry now)`, true);
-            } else {
-                showConnectionStatus(`🔄 Reconnecting... (attempt ${reconnectAttempts})`, true);
-            }
-
-            reconnectTimeout = setTimeout(function() {
-                console.log(`Reconnecting... attempt ${reconnectAttempts}`);
-                connectWebSocket();
-            }, delay);
+            showConnectionStatus('Reconnecting... (attempt ' + reconnectAttempts + ')');
+            reconnectTimeout = setTimeout(connectWebSocket, delay);
         }
 
         function sendMessage(data) {
             if (eventsSocket && eventsSocket.readyState === WebSocket.OPEN) {
                 eventsSocket.send(JSON.stringify(data));
                 return true;
-            } else {
-                showConnectionStatus('⚠️ Not connected. Reconnecting...', true);
-                scheduleReconnect();
-                return false;
             }
+            showConnectionStatus('Not connected. Reconnecting...');
+            scheduleReconnect();
+            return false;
         }
 
-        // Initialize WebSocket connection
         connectWebSocket();
 
-        // Event listeners
-        if (sendButton !== null) {
-            sendButton.addEventListener('click', function(event) {
-                const userInput = input.value;
-                if (userInput) {
-                    if (sendMessage({
-                        'type': MESSAGE,
-                        'date': Date.now(),
-                        'username': '{{ user.username }}',
-                        'message': userInput,
-                    })) {
-                        input.value = '';
-                        input.focus();
-                    }
+        if (sendButton) {
+            sendButton.addEventListener('click', function() {
+                const userInput = input.value.trim();
+                if (userInput && sendMessage({'type': MESSAGE, 'date': Date.now(), 'username': '{{ user.username }}', 'message': userInput})) {
+                    input.value = '';
+                    input.focus();
                 }
             });
-
-            input.addEventListener('keypress', function(event) {
-                if (event.key === 'Enter') {
-                    event.preventDefault();
-                    sendButton.click();
-                }
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') { e.preventDefault(); sendButton.click(); }
             });
         }
 
-        if (abilityCheckButton !== null) {
-            abilityCheckButton.addEventListener('click', function(event) {
-                sendMessage({
-                    'type': ABILITY_CHECK_RESPONSE,
-                    'date': Date.now(),
-                    'username': '{{ user.username }}',
-                });
+        if (abilityCheckButton) {
+            abilityCheckButton.addEventListener('click', function() {
+                sendMessage({'type': ABILITY_CHECK_RESPONSE, 'date': Date.now(), 'username': '{{ user.username }}'});
             });
         }
 
-        if (savingThrowButton !== null) {
-            savingThrowButton.addEventListener('click', function(event) {
-                sendMessage({
-                    'type': SAVING_THROW_RESPONSE,
-                    'date': Date.now(),
-                    'username': '{{ user.username }}',
-                });
+        if (savingThrowButton) {
+            savingThrowButton.addEventListener('click', function() {
+                sendMessage({'type': SAVING_THROW_RESPONSE, 'date': Date.now(), 'username': '{{ user.username }}'});
             });
         }
 
-        if (dexterityCheckButton !== null) {
-            dexterityCheckButton.addEventListener('click', function(event) {
-                sendMessage({
-                    'type': COMBAT_INITIATIVE_RESPONSE,
-                    'date': Date.now(),
-                    'username': '{{ user.username }}',
-                });
+        if (dexterityCheckButton) {
+            dexterityCheckButton.addEventListener('click', function() {
+                sendMessage({'type': COMBAT_INITIATIVE_RESPONSE, 'date': Date.now(), 'username': '{{ user.username }}'});
             });
         }
 
         if (input) input.focus();
 
-        // Attack modal event handlers
+    // Modal close handlers
         document.body.addEventListener('attack-modal-closed', function() {
-            // Remove any attack modals from the DOM
-            const modals = document.querySelectorAll('#attack-modal');
-            modals.forEach(modal => modal.remove());
-            // Refresh the action panel
+            document.querySelectorAll('#attack-modal').forEach(m => m.remove());
             htmx.trigger(document.body, 'action-taken');
         });
-
         document.body.addEventListener('damage-applied', function() {
-            // Remove any attack modals from the DOM
-            const modals = document.querySelectorAll('#attack-modal');
-            modals.forEach(modal => modal.remove());
-            // Refresh both panels
+            document.querySelectorAll('#attack-modal').forEach(m => m.remove());
             htmx.trigger(document.body, 'initiative-updated');
         });
-
-        // Close modal when clicking outside
-        document.addEventListener('click', function(event) {
-            if (event.target.classList.contains('rpg-modal')) {
-                event.target.classList.remove('active');
-                htmx.trigger(document.body, 'attack-modal-closed');
-            }
-        });
-
-        // Close modal on Escape key
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                const attackModal = document.getElementById('attack-modal');
-                if (attackModal && attackModal.classList.contains('active')) {
-                    attackModal.classList.remove('active');
-                    htmx.trigger(document.body, 'attack-modal-closed');
-                }
-                const diceModal = document.getElementById('dice-roller-modal');
-                if (diceModal && diceModal.classList.contains('active')) {
-                    diceModal.classList.remove('active');
-                    htmx.trigger(document.body, 'dice-roller-closed');
-                }
-            }
-        });
-
-        // Dice roller modal event handlers
         document.body.addEventListener('dice-roller-closed', function() {
-            // Remove dice roller modal from the DOM
-            const modals = document.querySelectorAll('#dice-roller-modal');
-            modals.forEach(modal => modal.remove());
+            document.querySelectorAll('#dice-roller-modal').forEach(m => m.remove());
         });
-
-        // Close dice roller modal when clicking outside
-        document.addEventListener('click', function(event) {
-            if (event.target.id === 'dice-roller-modal') {
-                event.target.classList.remove('active');
-                htmx.trigger(document.body, 'dice-roller-closed');
-            }
-        });
-
-        // Concentration modal event handlers
         document.body.addEventListener('concentration-modal-closed', function() {
-            // Remove concentration modal from the DOM
-            const modals = document.querySelectorAll('#concentration-save-modal');
-            modals.forEach(modal => modal.remove());
-            // Refresh the action panel
+            document.querySelectorAll('#concentration-save-modal').forEach(m => m.remove());
             htmx.trigger(document.body, 'initiative-updated');
         });
 
-        // Close concentration modal when clicking outside
-        document.addEventListener('click', function(event) {
-            if (event.target.id === 'concentration-save-modal') {
-                event.target.classList.remove('active');
-                htmx.trigger(document.body, 'concentration-modal-closed');
+        document.addEventListener('click', function(e) {
+            const modal = e.target;
+            if (modal.classList && modal.classList.contains('rpg-modal') && modal.classList.contains('active')) {
+                modal.classList.remove('active');
+                const id = modal.id;
+                if (id === 'attack-modal') htmx.trigger(document.body, 'attack-modal-closed');
+                if (id === 'dice-roller-modal') htmx.trigger(document.body, 'dice-roller-closed');
+                if (id === 'concentration-save-modal') htmx.trigger(document.body, 'concentration-modal-closed');
             }
         });
 
-        // Add Escape handler for concentration modal
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                const concModal = document.getElementById('concentration-save-modal');
-                if (concModal && concModal.classList.contains('active')) {
-                    concModal.classList.remove('active');
-                    htmx.trigger(document.body, 'concentration-modal-closed');
+        document.addEventListener('keydown', function(e) {
+            if (e.key !== 'Escape') return;
+            ['attack-modal', 'dice-roller-modal', 'concentration-save-modal'].forEach(function(id) {
+                const m = document.getElementById(id);
+                if (m && m.classList.contains('active')) {
+                    m.classList.remove('active');
+                    const events = {
+                        'attack-modal': 'attack-modal-closed',
+                        'dice-roller-modal': 'dice-roller-closed',
+                        'concentration-save-modal': 'concentration-modal-closed'
+                    };
+                    htmx.trigger(document.body, events[id]);
                 }
-            }
+            });
         });
-
     </script>
 
     <script src="{% static 'js/keyboard-shortcuts.js' %}"></script>
