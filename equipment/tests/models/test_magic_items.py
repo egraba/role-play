@@ -12,10 +12,8 @@ from equipment.models.magic_items import (
     MagicItemSettings,
 )
 
-from ..factories import (
-    CharacterFactory,
-    MagicItemFactory,
-)
+from character.tests.factories import CharacterFactory
+from equipment.tests.factories import MagicItemFactory
 
 
 @pytest.mark.django_db

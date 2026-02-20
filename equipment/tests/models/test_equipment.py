@@ -21,10 +21,10 @@ from equipment.models.equipment import (
     WeaponSettings,
 )
 
-from ..factories import (
+from character.tests.factories import CharacterFactory
+from equipment.tests.factories import (
     ArmorFactory,
     ArmorSettingsFactory,
-    CharacterFactory,
     GearFactory,
     InventoryFactory,
     PackFactory,
