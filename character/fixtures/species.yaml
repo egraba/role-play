@@ -141,7 +141,7 @@
       - 8  # Orc
     description: |
       Orcs are a fierce and enduring people with a connection to the
-      natural world. They have 60 feet of Darkvision and can push past
+      natural world. They have 120 feet of Darkvision and can push past
       their limits with Adrenaline Rush and Relentless Endurance.
 
 - model: character.species
