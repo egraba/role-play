@@ -21,10 +21,9 @@ from magic.models.spells import (
     WarlockSpellSlot,
 )
 
-from ..factories import (
-    CharacterFactory,
+from character.tests.factories import CharacterFactory, ClassFactory
+from magic.tests.factories import (
     CharacterSpellSlotFactory,
-    ClassFactory,
     ClassSpellcastingFactory,
     ConcentrationFactory,
     SpellFactory,
