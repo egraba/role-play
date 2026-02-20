@@ -3,10 +3,7 @@
 {% block content %}
     <div class="rpg-container">
         <div class="rpg-panel">
-            <h1 id="title" class="panel-title" style="font-size: 2rem;"><img src="/static/images/icons/actions/roll.svg" alt="" class="rpg-icon rpg-icon-lg rpg-icon-primary"> Games</h1>
-            <div class="text-center mb-2">
-                <a href="{% url 'index' %}" style="color: var(--color-primary); text-decoration: underline;">Return to main menu</a>
-            </div>
+            <h1 id="title" class="panel-title">Games</h1>
 
             <div class="rpg-section">
                 <h2 class="panel-title" style="font-size: 1.3rem;">List of Games</h2>
@@ -25,7 +22,7 @@
                     <tbody>
                         {% for game in page_obj %}
                             <tr>
-                                <td><a href="{{ game.get_absolute_url }}" style="color: var(--color-primary); text-decoration: underline;">{{ game }}</a></td>
+                                <td><a href="{{ game.get_absolute_url }}" style="color: var(--accent);">{{ game }}</a></td>
                                 <td>{{ game.master }}</td>
                                 <td>{{ game.get_state_display }}</td>
                                 <td>{{ game.character_set.all|length }}</td>
@@ -41,7 +38,7 @@
                     {% include 'pagination.html' %}
                     {% if user.is_authenticated %}
                         <div class="action-buttons mt-2">
-                            <a href="{% url 'campaign-create' %}" class="rpg-btn btn-primary">Create a new game</a>
+                            <a href="{% url 'campaign-create' %}" class="btn btn-primary">Create a new game</a>
                         </div>
                     {% endif %}
                 </div>

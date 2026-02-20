@@ -3,17 +3,17 @@
 {% block content %}
     <div class="rpg-container">
         <div class="rpg-panel" style="max-width: 600px; margin: 50px auto;">
-            <h1 class="panel-title"><img src="/static/images/icons/ui/play.svg" alt="" class="rpg-icon rpg-icon-lg rpg-icon-success"> Start Game</h1>
+            <h1 class="panel-title">Start Game</h1>
             <h2 class="text-center text-primary mb-2" style="font-size: 1.2rem;">{{ game }}</h2>
             <div class="game-message warning">
                 <p><strong>Are you sure you want to start the game?</strong></p>
             </div>
             <div class="action-buttons mt-2" style="align-items: stretch;">
-                <form method="post" style="display: flex; flex: 1; max-width: 200px;">
+                <form method="post" style="display: inline;">
                     {% csrf_token %}
-                    <button class="rpg-btn btn-primary" type="submit" style="width: 100%; box-sizing: border-box;">Yes, start it</button>
+                    <button class="btn btn-primary" type="submit">Yes, start it</button>
                 </form>
-                <a href="{{ game.get_absolute_url }}" class="rpg-btn btn-defend" style="flex: 1; max-width: 200px; text-align: center; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">No, go back</a>
+                <a href="{{ game.get_absolute_url }}" class="btn btn-ghost">No, go back</a>
             </div>
         </div>
     </div>

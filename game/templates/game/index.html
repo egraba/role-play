@@ -2,72 +2,41 @@
 {% load static %}
 
 {% block content %}
-    <div class="rpg-container">
-        <div class="rpg-panel">
-            <h1 id="title" class="panel-title" style="font-size: 2.5rem; margin-bottom: 20px;"><img src="/static/images/icons/actions/attack.svg" alt="" class="rpg-icon rpg-icon-xl rpg-icon-primary"> Role Play <img src="/static/images/icons/actions/attack.svg" alt="" class="rpg-icon rpg-icon-xl rpg-icon-primary"></h1>
+    <div class="rpg-container" style="max-width: 600px; padding-top: 48px;">
 
-            <div class="rpg-section text-center">
-                {% if user.is_authenticated %}
-                    <div class="game-message info">
-                        <strong>Welcome, {{ user.username }}!</strong>
-                    </div>
-                {% else %}
-                    <p style="font-size: 1.1rem; margin-bottom: 10px;"><img src="/static/images/icons/ui/settings.svg" alt="" class="rpg-icon rpg-icon-md rpg-icon-primary"> <strong>Your adventure awaits!</strong></p>
-                    <p class="text-muted mb-2">Log in to create your character and begin your epic journey.</p>
+        <h1 style="font-size: 24px; margin-bottom: 8px;">Role Play</h1>
+        <p class="text-muted" style="margin-bottom: 32px;">
+            A virtual tabletop for D&amp;D 5th Edition
+            (<a href="https://media.dndbeyond.com/compendium-images/srd/5.2/SRD_CC_v5.2.1.pdf"
+                style="color: var(--accent);" target="_blank" rel="noopener noreferrer">SRD 5.2.1</a>).
+        </p>
+
+        {% if user.is_authenticated %}
+            <p style="margin-bottom: 24px; font-size: 14px;">Welcome back, {{ user.username }}.</p>
+
+            <div class="action-buttons" style="gap: 8px;">
+                {% if user_character_game %}
+                    <a href="{{ user_character_game.get_absolute_url }}" class="btn btn-primary">
+                        Continue your game ▸
+                    </a>
                 {% endif %}
+                {% if user_has_created_games %}
+                    <a href="{% url 'game-list' %}" class="btn btn-ghost">View all your games</a>
+                {% endif %}
+                {% if user_character %}
+                    <a href="{{ user_character.get_absolute_url }}" class="btn btn-ghost">View your character</a>
+                {% else %}
+                    <a href="{% url 'character-create' %}" class="btn btn-ghost">Create your character</a>
+                {% endif %}
+                <a href="{% url 'campaign-create' %}" class="btn btn-ghost">Create a game</a>
             </div>
-
-            <div class="rpg-section">
-                <div style="text-align: center; margin-bottom: 20px;">
-                    <img src="/static/images/icons/actions/attack.svg" alt="" class="rpg-icon rpg-icon-xl rpg-icon-danger">
-                    <img src="/static/images/icons/actions/defend.svg" alt="" class="rpg-icon rpg-icon-xl rpg-icon-info" style="margin: 0 20px;">
-                    <img src="/static/images/icons/actions/roll.svg" alt="" class="rpg-icon rpg-icon-xl rpg-icon-warning">
-                </div>
-                <h2 class="panel-title" style="font-size: 1.5rem; margin-bottom: 15px;">Embark on Epic Adventures</h2>
-                <p class="mb-1">Welcome to <strong>Role Play</strong> – an open-source virtual tabletop implementation of Dungeons & Dragons! Experience the magic of the world's greatest roleplaying game online, powered by the D&D 5th Edition SRD 5.2.</p>
-                <p class="mb-2"><strong>What awaits you:</strong></p>
-                <ul style="text-align: left; margin: 0 auto 15px; max-width: 600px; line-height: 1.8; list-style: none; padding-left: 0;">
-                    <li><img src="/static/images/icons/actions/persuade.svg" alt="" class="rpg-icon rpg-icon-sm rpg-icon-primary"> <strong>Create unique characters</strong> with diverse races, classes, and abilities</li>
-                    <li><img src="/static/images/icons/actions/roll.svg" alt="" class="rpg-icon rpg-icon-sm rpg-icon-warning"> <strong>Roll dice and make choices</strong> that shape your destiny</li>
-                    <li><img src="/static/images/icons/actions/attack.svg" alt="" class="rpg-icon rpg-icon-sm rpg-icon-danger"> <strong>Engage in tactical combat</strong> and overcome challenging encounters</li>
-                    <li><img src="/static/images/icons/actions/cast-spell.svg" alt="" class="rpg-icon rpg-icon-sm rpg-icon-info"> <strong>Follow rich storylines</strong> filled with mystery and adventure</li>
-                    <li><img src="/static/images/icons/actions/search.svg" alt="" class="rpg-icon rpg-icon-sm rpg-icon-success"> <strong>Explore a living world</strong> where your decisions matter</li>
-                </ul>
+        {% else %}
+            <div class="action-buttons">
+                <a href="{% url 'login' %}" class="btn btn-primary">Log in</a>
+                <a href="https://github.com/egraba/role-play" class="btn btn-ghost"
+                   target="_blank" rel="noopener noreferrer">GitHub ↗</a>
             </div>
+        {% endif %}
 
-            {% if user.is_authenticated %}
-                <div class="rpg-section">
-                    <h2 class="panel-title" style="font-size: 1.5rem;">Quick Actions</h2>
-                    <div class="action-buttons">
-                        <a href="{% url 'campaign-list' %}" class="rpg-btn btn-primary">Create a game</a>
-                        {% if user_has_created_games %}
-                            <a href="{% url 'game-list' %}" class="rpg-btn btn-primary">View all your games</a>
-                        {% endif%}
-                        {% if user_character %}
-                            {% if user_character_game %}
-                                <a href="{{ user_character_game.get_absolute_url }}" class="rpg-btn btn-attack">Continue your game</a>
-                            {% endif %}
-                            <a href="{{ user_character.get_absolute_url }}" class="rpg-btn btn-defend">View your character</a>
-                        {% else %}
-                            <a href="{% url 'character-create' %}" class="rpg-btn btn-skill">Create your character</a>
-                        {% endif %}
-                    </div>
-                </div>
-            {% endif %}
-
-            <div class="rpg-section">
-                <h2 class="panel-title" style="font-size: 1.5rem;"><img src="/static/images/icons/damage-types/radiant.svg" alt="" class="rpg-icon rpg-icon-md rpg-icon-primary"> Join Our Growing Community</h2>
-                <div class="game-message info">
-                    <p class="mb-1"><strong><img src="/static/images/icons/damage-types/radiant.svg" alt="" class="rpg-icon rpg-icon-sm rpg-icon-primary"> Actively Evolving</strong></p>
-                    <p>We're continuously adding new features, quests, and improvements! Your adventure gets better with every update.</p>
-                </div>
-                <p class="text-center mt-2" style="line-height: 1.6;">
-                    <strong>Help shape the future of Role Play!</strong><br>
-                    Share your ideas, report bugs, or contribute to the project on
-                    <a href="https://github.com/egraba/role-play" style="color: var(--color-primary); text-decoration: underline; font-weight: bold;">GitHub</a>.
-                    Every hero's voice matters!
-                </p>
-            </div>
-        </div>
     </div>
 {% endblock %}
