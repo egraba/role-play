@@ -15,9 +15,12 @@ class SpeciesName(TextChoices):
 
 class SpeciesTraitName(TextChoices):
     # Dragonborn traits
-    DRACONIC_ANCESTRY = "draconic_ancestry", "Draconic Ancestry"
     BREATH_WEAPON = "breath_weapon", "Breath Weapon"
-    DAMAGE_RESISTANCE = "damage_resistance", "Damage Resistance"
+    DRACONIC_ANCESTRY = "draconic_ancestry", "Draconic Ancestry"
+    DRACONIC_DAMAGE_RESISTANCE = (
+        "draconic_damage_resistance",
+        "Draconic Damage Resistance",
+    )
     # Dwarf traits
     DWARVEN_RESILIENCE = "dwarven_resilience", "Dwarven Resilience"
     DWARVEN_TOUGHNESS = "dwarven_toughness", "Dwarven Toughness"

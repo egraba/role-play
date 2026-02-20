@@ -23,7 +23,7 @@ class Species(models.Model):
     """D&D 2024 SRD species."""
 
     name = models.CharField(
-        max_length=10, choices=SpeciesName.choices, primary_key=True
+        max_length=20, choices=SpeciesName.choices, primary_key=True
     )
     size = models.CharField(max_length=1, choices=Size.choices)
     speed = models.PositiveSmallIntegerField(default=30)
