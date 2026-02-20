@@ -21,6 +21,7 @@ class SpeciesTraitName(TextChoices):
         "draconic_damage_resistance",
         "Draconic Damage Resistance",
     )
+    DRACONIC_FLIGHT = "draconic_flight", "Draconic Flight"
     # Dwarf traits
     DWARVEN_RESILIENCE = "dwarven_resilience", "Dwarven Resilience"
     DWARVEN_TOUGHNESS = "dwarven_toughness", "Dwarven Toughness"
@@ -31,6 +32,7 @@ class SpeciesTraitName(TextChoices):
     TRANCE = "trance", "Trance"
     # Gnome traits
     GNOMISH_CUNNING = "gnomish_cunning", "Gnomish Cunning"
+    GNOMISH_LINEAGE = "gnomish_lineage", "Gnomish Lineage"
     # Goliath traits
     GIANT_ANCESTRY = "giant_ancestry", "Giant Ancestry"
     LARGE_FORM = "large_form", "Large Form"

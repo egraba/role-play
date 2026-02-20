@@ -75,11 +75,12 @@
     name: dragonborn
     size: M
     speed: 30
-    darkvision: 0
+    darkvision: 60
     traits:
       - draconic_ancestry
       - breath_weapon
       - draconic_damage_resistance
+      - draconic_flight
     languages:
       - 1   # Common
       - 12  # Draconic
@@ -97,6 +98,7 @@
     darkvision: 60
     traits:
       - gnomish_cunning
+      - gnomish_lineage
     languages:
       - 1  # Common
       - 5  # Gnomish
@@ -130,7 +132,7 @@
     name: orc
     size: M
     speed: 30
-    darkvision: 60
+    darkvision: 120
     traits:
       - adrenaline_rush
       - relentless_endurance
