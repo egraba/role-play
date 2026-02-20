@@ -8,7 +8,7 @@ class SpeciesTrait(models.Model):
     """Species traits from D&D 2024 SRD."""
 
     name = models.CharField(
-        max_length=20, choices=SpeciesTraitName.choices, primary_key=True
+        max_length=30, choices=SpeciesTraitName.choices, primary_key=True
     )
     description = models.TextField(max_length=500)
 
