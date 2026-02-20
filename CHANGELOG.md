@@ -4,6 +4,8 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 
 ## Unreleased
 
+## v0.15.0 - 2026-02-20
+
 ### Changed
 * Updated lock file maintenance for Python dependencies
   - dj-database-url: v3.1.0 → v3.1.1
