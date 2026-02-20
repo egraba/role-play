@@ -98,3 +98,118 @@
     description: |
       You gain an Origin feat of your choice. Skilled is recommended if you
       don't have a feat in mind.
+
+# Dragonborn traits
+- model: character.speciestrait
+  pk: draconic_ancestry
+  fields:
+    name: draconic_ancestry
+    description: |
+      You have a special connection to the dragons of your lineage. Choose a
+      dragon type, which determines the damage type of your Breath Weapon and
+      Draconic Damage Resistance trait.
+
+- model: character.speciestrait
+  pk: breath_weapon
+  fields:
+    name: breath_weapon
+    description: |
+      When you take the Attack action on your turn, you can replace one of your
+      attacks with an exhalation of magical energy in a 15-foot Cone or a
+      30-foot Line that is 5 feet wide. Each creature in that area must make a
+      Dexterity saving throw (DC 8 plus your Constitution modifier and
+      Proficiency Bonus). On a failed save, the creature takes 1d10 damage of
+      the type associated with your Draconic Ancestry. On a successful save,
+      the creature takes half as much damage. This damage increases by 1d10
+      when you reach character levels 5 (2d10), 11 (3d10), and 17 (4d10).
+
+- model: character.speciestrait
+  pk: draconic_damage_resistance
+  fields:
+    name: draconic_damage_resistance
+    description: |
+      You have Resistance to the damage type associated with your Draconic
+      Ancestry.
+
+# Gnome traits
+- model: character.speciestrait
+  pk: gnomish_cunning
+  fields:
+    name: gnomish_cunning
+    description: |
+      You have Advantage on Intelligence, Wisdom, and Charisma saving throws.
+
+# Goliath traits
+- model: character.speciestrait
+  pk: giant_ancestry
+  fields:
+    name: giant_ancestry
+    description: |
+      You are descended from Giants. Choose one of the following benefits, a
+      supernatural boon from your Giant heritage: Cloud's Jaunt (Cloud Giant),
+      Fire's Burn (Fire Giant), Frost's Chill (Frost Giant), Hill's Tumble
+      (Hill Giant), Stone's Endurance (Stone Giant), or Storm's Thunder (Storm
+      Giant).
+
+- model: character.speciestrait
+  pk: large_form
+  fields:
+    name: large_form
+    description: |
+      Starting at character level 5, you can change your size to Large as a
+      Bonus Action if you're in a big enough space. This transformation lasts
+      for 10 minutes or until you end it (no action required). For that
+      duration, you have Advantage on Strength checks, and your Speed increases
+      by 10 feet. Once you use this trait, you can't use it again until you
+      finish a Long Rest.
+
+- model: character.speciestrait
+  pk: powerful_build
+  fields:
+    name: powerful_build
+    description: |
+      You have Advantage on any saving throw you make to end the Grappled
+      condition. You also count as one size larger when determining your
+      carrying capacity.
+
+# Orc traits
+- model: character.speciestrait
+  pk: adrenaline_rush
+  fields:
+    name: adrenaline_rush
+    description: |
+      You can take the Dash action as a Bonus Action. When you do so, you gain
+      a number of Temporary Hit Points equal to your Proficiency Bonus. You can
+      use this trait a number of times equal to your Proficiency Bonus, and you
+      regain all expended uses when you finish a Short or Long Rest.
+
+- model: character.speciestrait
+  pk: relentless_endurance
+  fields:
+    name: relentless_endurance
+    description: |
+      When you are reduced to 0 Hit Points but not killed outright, you can
+      drop to 1 Hit Point instead. Once you use this trait, you can't do so
+      again until you finish a Long Rest.
+
+# Tiefling traits
+- model: character.speciestrait
+  pk: fiendish_legacy
+  fields:
+    name: fiendish_legacy
+    description: |
+      You are the recipient of a fiendish legacy that grants you supernatural
+      abilities. Choose a legacy from the Fiendish Legacies table. You gain the
+      1st-level benefit of the chosen legacy. Starting at character level 3 and
+      again at character level 5, you gain the higher-level benefits of the
+      chosen legacy. Once you cast a spell with this trait, you can't cast that
+      spell with it again until you finish a Long Rest; however, you can cast
+      the spell using any spell slots you have of the appropriate level.
+
+- model: character.speciestrait
+  pk: otherworldly_presence
+  fields:
+    name: otherworldly_presence
+    description: |
+      You know the Thaumaturgy cantrip. When you cast it with this trait, the
+      spell uses Charisma as the spellcasting ability.
