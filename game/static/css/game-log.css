@@ -1,394 +1,158 @@
-/* ==================== GAME LOG PANEL ==================== */
+/* ==================== GAME LOG COLUMN ==================== */
 
-.game-log-panel {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    bottom: 20px;
-    width: 340px;
-    background: var(--color-bg-light);
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-default);
-    display: -webkit-flex;
-    display: flex;
-    -webkit-flex-direction: column;
-    flex-direction: column;
-    z-index: 100;
-    -webkit-transition: transform 0.3s ease;
-    transition: transform 0.3s ease;
-}
-
-.game-log-panel.collapsed {
-    -webkit-transform: translateX(calc(100% + 20px));
-    transform: translateX(calc(100% + 20px));
-}
+/* The column shell is styled in rpg-styles.css (.game-log-col) */
 
 .game-log-header {
-    padding: 15px;
-    border-bottom: 1px solid #444;
-    display: -webkit-flex;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
     display: flex;
-    -webkit-justify-content: space-between;
     justify-content: space-between;
-    -webkit-align-items: center;
     align-items: center;
 }
 
 .game-log-header h3 {
     margin: 0;
-    font-size: 1.1rem;
-    color: var(--color-primary);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
 }
 
 .game-log-toggle {
-    background: none;
-    border: none;
-    color: var(--color-text-muted);
-    cursor: pointer;
-    font-size: 1.2rem;
-    padding: 5px;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
+    display: none;  /* collapse not needed in column layout */
 }
 
-.game-log-toggle:hover {
-    color: var(--color-primary);
-}
+/* ==================== EVENT STREAM ==================== */
 
-/* ==================== FILTER BAR ==================== */
-
-.game-log-filters {
-    padding: 10px 15px;
-    border-bottom: 1px solid #444;
-}
-
-.filter-toggles {
-    display: -webkit-flex;
-    display: flex;
-    gap: 8px;
-    margin-bottom: 10px;
-}
-
-.filter-toggle {
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid #444;
-    border-radius: 4px;
-    padding: 6px 10px;
-    cursor: pointer;
-    font-size: 1rem;
-    -webkit-transition: all 0.2s;
-    transition: all 0.2s;
-    opacity: 0.5;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-}
-
-.filter-toggle.active {
-    opacity: 1;
-    border-color: var(--color-primary);
-}
-
-.filter-toggle:hover {
-    border-color: var(--color-primary);
-}
-
-/* Category-specific toggle colors when active */
-.filter-toggle[data-category="rolls"].active {
-    background: rgba(91, 155, 213, 0.2);
-    border-color: #5b9bd5;
-}
-
-.filter-toggle[data-category="combat"].active {
-    background: rgba(224, 82, 82, 0.2);
-    border-color: #e05252;
-}
-
-.filter-toggle[data-category="spells"].active {
-    background: rgba(168, 85, 247, 0.2);
-    border-color: #a855f7;
-}
-
-.filter-toggle[data-category="chat"].active {
-    background: rgba(156, 163, 175, 0.2);
-    border-color: #9ca3af;
-}
-
-.filter-toggle[data-category="dm"].active {
-    background: rgba(212, 168, 87, 0.2);
-    border-color: #d4a857;
-}
-
-.character-filter {
-    position: relative;
-}
-
-.character-filter-btn {
-    width: 100%;
-    padding: 8px 12px;
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid #444;
-    border-radius: 4px;
-    color: var(--color-text);
-    text-align: left;
-    cursor: pointer;
-    display: -webkit-flex;
-    display: flex;
-    -webkit-justify-content: space-between;
-    justify-content: space-between;
-    -webkit-align-items: center;
-    align-items: center;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-}
-
-.character-filter-btn:hover {
-    border-color: var(--color-primary);
-}
-
-.character-filter-dropdown {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: var(--color-bg-medium);
-    border: 1px solid #444;
-    border-radius: 4px;
-    margin-top: 4px;
-    max-height: 200px;
+.game-log-stream {
+    flex: 1;
     overflow-y: auto;
-    display: none;
-    z-index: 10;
-}
-
-.character-filter-dropdown.open {
-    display: block;
-}
-
-.character-filter-option {
-    padding: 8px 12px;
-    cursor: pointer;
-    display: -webkit-flex;
+    padding: 12px 16px;
     display: flex;
-    -webkit-align-items: center;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.event-entry {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.event-meta {
+    display: flex;
     align-items: center;
     gap: 8px;
 }
 
-.character-filter-option:hover {
-    background: rgba(212, 175, 55, 0.1);
+.event-sender {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
 }
 
-.character-filter-option input {
-    accent-color: var(--color-primary);
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    width: 16px;
-    height: 16px;
-    border: 2px solid #666;
-    border-radius: 3px;
-    background: transparent;
-    cursor: pointer;
+.event-sender.system {
+    color: var(--text-muted);
 }
 
-.character-filter-option input:checked {
-    background: var(--color-primary);
-    border-color: var(--color-primary);
+.event-type-icon {
+    font-size: 10px;
+    color: var(--text-muted);
 }
 
-/* ==================== LOG ENTRIES ==================== */
-
-.game-log-entries {
-    -webkit-flex: 1;
-    flex: 1;
-    overflow-y: auto;
-    padding: 10px;
-    position: relative;
+.event-time {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-left: auto;
 }
 
-.log-entry {
-    display: -webkit-flex;
-    display: flex;
-    margin-bottom: 8px;
-    border-radius: 4px;
-    background: rgba(0, 0, 0, 0.2);
-    overflow: hidden;
-    cursor: pointer;
-    -webkit-transition: background 0.2s;
-    transition: background 0.2s;
+.event-content {
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.5;
+    padding-left: 0;
 }
 
-.log-entry:hover {
-    background: rgba(0, 0, 0, 0.3);
-}
-
-.log-entry.hidden {
-    display: none;
-}
-
-/* Category color bar */
-.log-entry-bar {
-    width: 4px;
-    -webkit-flex-shrink: 0;
-    flex-shrink: 0;
-}
-
-.log-entry[data-category="rolls"] .log-entry-bar { background: #5b9bd5; }
-.log-entry[data-category="combat"] .log-entry-bar { background: #e05252; }
-.log-entry[data-category="spells"] .log-entry-bar { background: #a855f7; }
-.log-entry[data-category="chat"] .log-entry-bar { background: #9ca3af; }
-.log-entry[data-category="dm"] .log-entry-bar { background: #d4a857; }
-
-.log-entry-content {
-    -webkit-flex: 1;
-    flex: 1;
-    padding: 8px 10px;
-    min-width: 0;
-}
-
-.log-entry-header {
-    display: -webkit-flex;
-    display: flex;
-    -webkit-justify-content: space-between;
-    justify-content: space-between;
-    -webkit-align-items: baseline;
-    align-items: baseline;
-    margin-bottom: 4px;
-}
-
-.log-entry-time {
-    font-size: 0.75rem;
-    color: var(--color-text-muted);
-}
-
-.log-entry-author {
-    font-size: 0.85rem;
-    color: var(--color-text);
-    font-weight: bold;
-}
-
-.log-entry-message {
-    font-size: 0.85rem;
-    color: var(--color-text-muted);
-    line-height: 1.4;
-    word-wrap: break-word;
-}
-
-/* ==================== EXPANDED DETAILS ==================== */
-
-.log-entry-details {
-    display: none;
-    margin-top: 8px;
-    padding: 8px;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 4px;
-    font-size: 0.8rem;
-}
-
-.log-entry.expanded .log-entry-details {
-    display: block;
-}
-
-.log-entry-details p {
-    margin: 4px 0;
-    color: var(--color-text-muted);
-}
-
-.log-entry-details .label {
-    color: var(--color-text);
-}
-
-.log-entry-details .success {
-    color: var(--color-stamina);
-}
-
-.log-entry-details .failure {
-    color: var(--color-health);
-}
+/* Category-specific content colors */
+.event-entry.category-combat .event-content  { color: var(--text); }
+.event-entry.category-rolls .event-content   { color: var(--text); }
+.event-entry.category-dm .event-content      { color: var(--text-muted); font-style: italic; }
 
 /* ==================== NEW EVENTS INDICATOR ==================== */
 
 .new-events-indicator {
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    -webkit-transform: translateX(-50%);
-    transform: translateX(-50%);
-    background: var(--color-primary);
-    color: var(--color-bg-dark);
-    padding: 8px 16px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 0.85rem;
-    font-weight: bold;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     display: none;
-    z-index: 5;
-}
-
-.new-events-indicator.visible {
-    display: block;
-}
-
-.new-events-indicator:hover {
-    background: #e5c04a;
-}
-
-/* ==================== COLLAPSED STATE TOGGLE BUTTON ==================== */
-
-.game-log-expand-btn {
-    position: fixed;
-    top: 50%;
-    right: 0;
-    -webkit-transform: translateY(-50%);
-    transform: translateY(-50%);
-    background: var(--color-bg-light);
-    border: 1px solid #444;
-    border-right: none;
-    border-radius: 4px 0 0 4px;
-    padding: 15px 8px;
+    text-align: center;
+    padding: 6px;
+    font-size: 12px;
+    color: var(--accent);
     cursor: pointer;
-    color: var(--color-primary);
-    font-size: 1rem;
-    z-index: 99;
-    display: none;
+    background: var(--bg-surface);
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+.new-events-indicator.visible { display: block; }
+
+/* ==================== FILTER BAR ==================== */
+
+.game-log-filters {
+    padding: 0 4px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-shrink: 0;
+    overflow-x: auto;
+}
+
+.filter-toggles {
+    display: flex;
+    gap: 0;
+}
+
+.filter-toggle {
+    padding: 8px 10px;
+    font-size: 12px;
+    font-family: inherit;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: color 0.15s;
+    white-space: nowrap;
     -webkit-appearance: none;
-    -moz-appearance: none;
     appearance: none;
 }
 
-.game-log-panel.collapsed ~ .game-log-expand-btn {
-    display: block;
+.filter-toggle:hover { color: var(--text); }
+
+.filter-toggle.active {
+    color: var(--text);
+    border-bottom-color: var(--accent);
 }
 
-/* ==================== RESPONSIVE ADJUSTMENTS ==================== */
+/* ==================== SEARCH BAR ==================== */
 
-@media (max-width: 1200px) {
-    .game-log-panel {
-        width: 300px;
-    }
-}
+.game-log-search { display: none; }  /* removed per design */
 
-@media (max-width: 900px) {
-    .game-log-panel {
-        width: 100%;
-        top: auto;
+/* ==================== LEGACY COMPAT ==================== */
+
+/* The old panel class — kept so JS doesn't break while being updated */
+.game-log-panel { display: contents; }
+.game-log-entries { flex: 1; overflow-y: auto; padding: 12px 16px; }
+.game-log-expand-btn { display: none; }
+
+/* ==================== RESPONSIVE ==================== */
+
+@media (max-width: 767px) {
+    .game-log-filters {
+        position: fixed;
         bottom: 0;
         left: 0;
         right: 0;
-        height: 300px;
-        border-radius: var(--border-radius) var(--border-radius) 0 0;
-    }
-
-    .game-log-panel.collapsed {
-        -webkit-transform: translateY(calc(100% - 50px));
-        transform: translateY(calc(100% - 50px));
-    }
-
-    .game-log-expand-btn {
-        display: none !important;
+        background: var(--bg-surface);
+        border-top: 1px solid var(--border);
+        justify-content: center;
+        z-index: 50;
     }
 }

@@ -3,9 +3,10 @@
  * Uses safe DOM manipulation (textContent, createElement) to prevent XSS
  */
 class GameLog {
-    constructor(gameId, username) {
+    constructor(gameId, username, containerId) {
         this.gameId = gameId;
         this.username = username;
+        this.containerId = containerId || 'game-log-col';
         this.events = [];
         this.maxEvents = 200;
         this.filters = {
@@ -26,14 +27,12 @@ class GameLog {
     }
 
     createPanel() {
-        var panel = document.createElement("div");
-        panel.className = "game-log-panel";
-        panel.id = "game-log-panel";
+        var container = document.getElementById(this.containerId);
+        if (!container) return;
 
         var header = this._createHeader();
-        var filters = this._createFilters();
         var entries = document.createElement("div");
-        entries.className = "game-log-entries";
+        entries.className = "game-log-stream";
         entries.id = "game-log-entries";
 
         var indicator = document.createElement("div");
@@ -44,26 +43,21 @@ class GameLog {
         countSpan.id = "new-events-count";
         countSpan.textContent = "0";
         indicator.appendChild(countSpan);
-        indicator.appendChild(document.createTextNode(" new events"));
+        indicator.appendChild(document.createTextNode(" new"));
 
-        panel.appendChild(header);
-        panel.appendChild(filters);
-        panel.appendChild(entries);
-        panel.appendChild(indicator);
+        var filters = this._createFilters();
 
-        document.body.appendChild(panel);
+        container.appendChild(header);
+        container.appendChild(entries);
+        container.appendChild(indicator);
+        container.appendChild(filters);
 
-        var expandBtn = document.createElement("button");
-        expandBtn.className = "game-log-expand-btn";
-        expandBtn.textContent = "📜";
-        expandBtn.title = "Open Game Log";
-        document.body.appendChild(expandBtn);
-
-        this.panel = panel;
+        // No expand button needed — column is always visible
+        this.panel = container;
         this.entriesContainer = entries;
         this.newEventsIndicator = indicator;
         this.newEventsCountEl = countSpan;
-        this.expandBtn = expandBtn;
+        this.expandBtn = null;
     }
 
     _createHeader() {
@@ -154,14 +148,19 @@ class GameLog {
     bindEvents() {
         var self = this;
 
-        // Toggle panel collapse
-        this.panel.querySelector(".game-log-toggle").addEventListener("click", function () {
-            self.panel.classList.toggle("collapsed");
-        });
+        // Toggle panel collapse (noop in column layout — toggle is hidden by CSS)
+        var toggleBtn = this.panel.querySelector(".game-log-toggle");
+        if (toggleBtn) {
+            toggleBtn.addEventListener("click", function () {
+                self.panel.classList.toggle("collapsed");
+            });
+        }
 
-        this.expandBtn.addEventListener("click", function () {
-            self.panel.classList.remove("collapsed");
-        });
+        if (this.expandBtn) {
+            this.expandBtn.addEventListener("click", function () {
+                self.panel.classList.remove("collapsed");
+            });
+        }
 
         // Category filter toggles
         this.panel.querySelectorAll(".filter-toggle").forEach(function (btn) {
