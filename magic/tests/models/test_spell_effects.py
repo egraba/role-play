@@ -14,10 +14,9 @@ from magic.models.spell_effects import (
     SummonedCreature,
 )
 
-from ..factories import (
+from character.tests.factories import CharacterFactory, ConditionFactory
+from magic.tests.factories import (
     ActiveSpellEffectFactory,
-    CharacterFactory,
-    ConditionFactory,
     SpellEffectTemplateFactory,
     SpellSettingsFactory,
     SummonedCreatureFactory,
