@@ -12,6 +12,15 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
   - Deleted unused `ci.py` settings module
 
 ### Changed
+* Moved bestiary/equipment/magic tests from `character/tests/` to their respective app test directories
+  - `character/tests/models/test_monsters.py` → `bestiary/tests/models/test_monsters.py`
+  - `character/tests/models/test_equipment.py` → `equipment/tests/models/test_equipment.py`
+  - `character/tests/models/test_magic_items.py` → `equipment/tests/models/test_magic_items.py`
+  - `character/tests/utils/test_equipment_parsers.py` → `equipment/tests/utils/test_equipment_parsers.py`
+  - `character/tests/models/test_spells.py` → `magic/tests/models/test_spells.py`
+  - `character/tests/models/test_spell_effects.py` → `magic/tests/models/test_spell_effects.py`
+* Split `character/tests/factories.py` into per-app factory modules (`bestiary/tests/factories.py`, `equipment/tests/factories.py`, `magic/tests/factories.py`); `character/tests/factories.py` becomes a re-export aggregator for backward compatibility
+* Added magic fixtures (`spells.yaml`, `spell_effects.yaml`) to test session setup
 * Extracted business logic from character views into `character/services.py`
   - `SpellsPanelService`: spell slot visualization, filtering, grouping, quick-cast, casting, and slot restoration
   - `CharacterSheetService`: character sheet data building (abilities, skills, saving throws, attacks, traits, features, feats)
