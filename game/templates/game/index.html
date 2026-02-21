@@ -31,7 +31,7 @@
                 <a href="{% url 'campaign-create' %}" class="btn btn-ghost">Create a game</a>
             </div>
         {% else %}
-            <p style="margin-bottom: 32px; font-size: 15px; line-height: 1.7; color: var(--text-muted);">
+            <p class="text-muted" style="margin-bottom: 32px; font-size: 15px; line-height: 1.7;">
                 Enter a world of dice, darkness, and decisions.
             </p>
 
@@ -43,15 +43,15 @@
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px;">
                 <div style="background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px;">
-                    <div style="font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">⚔ Characters</div>
+                    <div class="section-label" style="color: var(--accent); margin-bottom: 8px;">⚔ Characters</div>
                     <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin: 0;">Build your hero. Choose class, background, and origin feat from the full SRD.</p>
                 </div>
                 <div style="background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px;">
-                    <div style="font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">🎲 Combat</div>
+                    <div class="section-label" style="color: var(--accent); margin-bottom: 8px;">🎲 Combat</div>
                     <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin: 0;">Fight to survive. Real-time turns, initiative rolls, and full SRD combat rules.</p>
                 </div>
                 <div style="background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px;">
-                    <div style="font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">📜 Stories</div>
+                    <div class="section-label" style="color: var(--accent); margin-bottom: 8px;">📜 Stories</div>
                     <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin: 0;">Shape the world. Your master weaves quests while you make choices that matter.</p>
                 </div>
             </div>
