@@ -729,3 +729,543 @@
       When you cast this spell using a spell slot of 2nd level or higher, the damage increases by 1d8 for
       each slot level above 1st.
     classes: ["bard", "druid", "sorcerer", "wizard"]
+
+# =============================================================================
+# LEVEL 2 SPELLS - Additional SRD spells
+# =============================================================================
+
+- model: magic.spellsettings
+  fields:
+    name: Aid
+    level: 2
+    school: abjuration
+    casting_time: action
+    range: 30_feet
+    components: ["V", "S", "M"]
+    material_components: a tiny strip of white cloth
+    duration: 8_hours
+    concentration: false
+    ritual: false
+    description: >
+      Your spell bolsters your allies with toughness and resolve. Choose up to three creatures within range.
+      Each target's hit point maximum and current hit points increase by 5 for the duration.
+    higher_levels: >
+      When you cast this spell using a spell slot of 3rd level or higher, a target's hit points increase by
+      an additional 5 for each slot level above 2nd.
+    classes: ["bard", "cleric", "paladin", "ranger"]
+
+- model: magic.spellsettings
+  fields:
+    name: Alter Self
+    level: 2
+    school: transmutation
+    casting_time: action
+    range: self
+    components: ["V", "S"]
+    duration: 1_hour
+    concentration: true
+    ritual: false
+    description: >
+      You assume a different form. When you cast the spell, choose one of the following options: Aquatic
+      Adaptation, Change Appearance, or Natural Weapons. The effect lasts for the duration, unless you
+      dismiss it as an action.
+    classes: ["sorcerer", "wizard"]
+
+- model: magic.spellsettings
+  fields:
+    name: Arcane Lock
+    level: 2
+    school: abjuration
+    casting_time: action
+    range: touch
+    components: ["V", "S", "M"]
+    material_components: gold dust worth at least 25 gp, which the spell consumes
+    duration: until_dispelled
+    concentration: false
+    ritual: false
+    description: >
+      You touch a closed door, window, gate, chest, or other entryway, and it becomes locked for the duration.
+      You and the creatures you designate when you cast this spell can open the object normally. You can also
+      set a password that, when spoken within 5 feet of the object, suppresses this spell for 1 minute.
+      Otherwise, it is impassable until it is broken or the spell is dispelled.
+    classes: ["wizard"]
+
+- model: magic.spellsettings
+  fields:
+    name: Augury
+    level: 2
+    school: divination
+    casting_time: 1_minute
+    range: self
+    components: ["V", "S", "M"]
+    material_components: specially marked sticks, bones, or similar tokens worth at least 25 gp
+    duration: instantaneous
+    concentration: false
+    ritual: true
+    description: >
+      By casting gem-inlaid sticks, rolling dragon bones, laying out ornate cards, or employing some other
+      divining tool, you receive an omen from an otherworldly entity about the results of a specific course of
+      action that you plan to take within the next 30 minutes. The DM chooses from Weal, Woe, Weal and Woe,
+      or Nothing.
+    classes: ["cleric", "druid", "wizard"]
+
+- model: magic.spellsettings
+  fields:
+    name: Barkskin
+    level: 2
+    school: transmutation
+    casting_time: action
+    range: touch
+    components: ["V", "S", "M"]
+    material_components: a handful of oak bark
+    duration: 1_hour
+    concentration: false
+    ritual: false
+    description: >
+      You touch a willing creature. Until the spell ends, the target's skin has a rough, bark-like appearance,
+      and the target's AC can't be less than 16, regardless of what kind of armor it is wearing.
+    classes: ["druid", "ranger"]
+
+- model: magic.spellsettings
+  fields:
+    name: Blindness/Deafness
+    level: 2
+    school: transmutation
+    casting_time: action
+    range: 120_feet
+    components: ["V"]
+    duration: 1_minute
+    concentration: false
+    ritual: false
+    description: >
+      You can blind or deafen a foe. Choose one creature that you can see within range to make a Constitution
+      saving throw. If it fails, the target is either blinded or deafened (your choice) for the duration. At
+      the end of each of its turns, the target can make a Constitution saving throw. On a success, the spell ends.
+    higher_levels: >
+      When you cast this spell using a spell slot of 3rd level or higher, you can target one additional creature
+      for each slot level above 2nd.
+    classes: ["bard", "cleric", "sorcerer", "wizard"]
+
+- model: magic.spellsettings
+  fields:
+    name: Blur
+    level: 2
+    school: illusion
+    casting_time: action
+    range: self
+    components: ["V"]
+    duration: 1_minute
+    concentration: true
+    ritual: false
+    description: >
+      Your body becomes blurred, shifting and wavering to all who can see you. For the duration, any creature
+      has disadvantage on attack rolls against you. An attacker is immune to this effect if it doesn't rely on
+      sight, as with blindsight, or can see through illusions, as with truesight.
+    classes: ["sorcerer", "wizard"]
+
+- model: magic.spellsettings
+  fields:
+    name: Calm Emotions
+    level: 2
+    school: enchantment
+    casting_time: action
+    range: 60_feet
+    components: ["V", "S"]
+    duration: 1_minute
+    concentration: true
+    ritual: false
+    description: >
+      You attempt to suppress strong emotions in a group of people. Each humanoid in a 20-foot-radius sphere
+      centered on a point you choose within range must make a Charisma saving throw; a creature can choose to
+      fail this throw if it wishes. If a creature fails its saving throw, choose one of two effects: the
+      creature is charmed by you for the duration (suppressing fear and hostility), or all hostile feelings
+      toward creatures of your choice are suppressed.
+    classes: ["bard", "cleric"]
+
+- model: magic.spellsettings
+  fields:
+    name: Cloud of Daggers
+    level: 2
+    school: conjuration
+    casting_time: action
+    range: 60_feet
+    components: ["V", "S", "M"]
+    material_components: a sliver of glass
+    duration: 1_minute
+    concentration: true
+    ritual: false
+    description: >
+      You fill the air with spinning daggers in a cube 5 feet on each side, centered on a point you choose
+      within range. A creature takes 4d4 slashing damage when it enters the spell's area for the first time on
+      a turn or starts its turn there.
+    higher_levels: >
+      When you cast this spell using a spell slot of 3rd level or higher, the damage increases by 2d4 for each
+      slot level above 2nd.
+    classes: ["bard", "sorcerer", "warlock", "wizard"]
+
+- model: magic.spellsettings
+  fields:
+    name: Darkness
+    level: 2
+    school: evocation
+    casting_time: action
+    range: 60_feet
+    components: ["V", "M"]
+    material_components: bat fur and a drop of pitch or piece of coal
+    duration: 10_minutes
+    concentration: true
+    ritual: false
+    description: >
+      Magical darkness spreads from a point you choose within range to fill a 15-foot-radius sphere for the
+      duration. The darkness spreads around corners. A creature with darkvision can't see through this magical
+      darkness, and nonmagical light can't illuminate it. If the point you choose is on an object you are
+      holding or one that isn't being worn or carried, the darkness emanates from the object and moves with it.
+    classes: ["sorcerer", "warlock", "wizard"]
+
+- model: magic.spellsettings
+  fields:
+    name: Darkvision
+    level: 2
+    school: transmutation
+    casting_time: action
+    range: touch
+    components: ["V", "S", "M"]
+    material_components: either a pinch of dried carrot or an agate
+    duration: 8_hours
+    concentration: false
+    ritual: false
+    description: >
+      You touch a willing creature to grant it the ability to see in the dark. For the duration, that creature
+      has darkvision out to a range of 60 feet.
+    classes: ["druid", "ranger", "sorcerer", "wizard"]
+
+- model: magic.spellsettings
+  fields:
+    name: Enhance Ability
+    level: 2
+    school: transmutation
+    casting_time: action
+    range: touch
+    components: ["V", "S", "M"]
+    material_components: fur or a feather from a beast
+    duration: 1_hour
+    concentration: true
+    ritual: false
+    description: >
+      You touch a creature and bestow upon it a magical enhancement. Choose one of the following effects: Bear's
+      Endurance, Bull's Strength, Cat's Grace, Eagle's Splendor, Fox's Cunning, or Owl's Wisdom. Each grants
+      advantage on checks using the relevant ability score, and some grant additional benefits (e.g., Bear's
+      Endurance also grants 2d6 temporary hit points).
+    higher_levels: >
+      When you cast this spell using a spell slot of 3rd level or higher, you can target one additional creature
+      for each slot level above 2nd.
+    classes: ["bard", "cleric", "druid", "ranger", "sorcerer", "wizard"]
+
+- model: magic.spellsettings
+  fields:
+    name: Enlarge/Reduce
+    level: 2
+    school: transmutation
+    casting_time: action
+    range: 30_feet
+    components: ["V", "S", "M"]
+    material_components: a pinch of powdered iron
+    duration: 1_minute
+    concentration: true
+    ritual: false
+    description: >
+      You cause a creature or an object you can see within range to grow larger or smaller for the duration.
+      Choose either a creature or an object that is neither worn nor carried. If the target is unwilling, it can
+      make a Constitution saving throw. On a success, the spell has no effect. Enlarge doubles size and weapon
+      damage dice; Reduce halves size and weapon damage dice.
+    classes: ["sorcerer", "wizard"]
+
+- model: magic.spellsettings
+  fields:
+    name: Flaming Sphere
+    level: 2
+    school: conjuration
+    casting_time: action
+    range: 60_feet
+    components: ["V", "S", "M"]
+    material_components: a bit of tallow, a pinch of brimstone, and a dusting of powdered iron
+    duration: 1_minute
+    concentration: true
+    ritual: false
+    description: >
+      A 5-foot-diameter sphere of fire appears in an unoccupied space of your choice within range and lasts for
+      the duration. Any creature that ends its turn within 5 feet of the sphere must make a Dexterity saving
+      throw, taking 2d6 fire damage on a failed save, or half as much on a successful one. As a bonus action,
+      you can move the sphere up to 30 feet.
+    higher_levels: >
+      When you cast this spell using a spell slot of 3rd level or higher, the damage increases by 1d6 for each
+      slot level above 2nd.
+    classes: ["druid", "wizard"]
+
+- model: magic.spellsettings
+  fields:
+    name: Heat Metal
+    level: 2
+    school: transmutation
+    casting_time: action
+    range: 60_feet
+    components: ["V", "S", "M"]
+    material_components: a piece of iron and a flame
+    duration: 1_minute
+    concentration: true
+    ritual: false
+    description: >
+      Choose a manufactured metal object, such as a metal weapon or a suit of heavy or medium metal armor, that
+      you can see within range. You cause the object to glow red-hot. Any creature in physical contact with the
+      object takes 2d8 fire damage when you cast the spell. Until the spell ends, you can use a bonus action on
+      each of your subsequent turns to deal this damage again.
+    higher_levels: >
+      When you cast this spell using a spell slot of 3rd level or higher, the damage increases by 1d8 for each
+      slot level above 2nd.
+    classes: ["bard", "druid"]
+
+- model: magic.spellsettings
+  fields:
+    name: Lesser Restoration
+    level: 2
+    school: abjuration
+    casting_time: action
+    range: touch
+    components: ["V", "S"]
+    duration: instantaneous
+    concentration: false
+    ritual: false
+    description: >
+      You touch a creature and can end either one disease or one condition afflicting it. The condition can be
+      blinded, deafened, paralyzed, or poisoned.
+    classes: ["bard", "cleric", "druid", "paladin", "ranger"]
+
+- model: magic.spellsettings
+  fields:
+    name: Levitate
+    level: 2
+    school: transmutation
+    casting_time: action
+    range: 60_feet
+    components: ["V", "S", "M"]
+    material_components: either a small leather loop or a piece of golden wire bent into a cup shape with a long shank on one end
+    duration: 10_minutes
+    concentration: true
+    ritual: false
+    description: >
+      One creature or object of your choice that you can see within range rises vertically, up to 20 feet, and
+      remains suspended there for the duration. The spell can levitate a target that weighs up to 500 pounds.
+      An unwilling creature that succeeds on a Constitution saving throw is unaffected. The target can move only
+      by pushing or pulling against a fixed object or surface within reach, allowing it to move as if climbing.
+    classes: ["sorcerer", "wizard"]
+
+- model: magic.spellsettings
+  fields:
+    name: Mirror Image
+    level: 2
+    school: illusion
+    casting_time: action
+    range: self
+    components: ["V", "S"]
+    duration: 1_minute
+    concentration: false
+    ritual: false
+    description: >
+      Three illusory duplicates of yourself appear in your space. Until the spell ends, the duplicates move
+      with you and mimic your actions, shifting position so it's impossible to track which image is real. Each
+      time a creature targets you with an attack, roll a d20 to determine whether the attack targets you or one
+      of your duplicates. A duplicate has AC 10 + your Dexterity modifier. If an attack hits a duplicate, the
+      duplicate is destroyed.
+    classes: ["sorcerer", "warlock", "wizard"]
+
+- model: magic.spellsettings
+  fields:
+    name: Moonbeam
+    level: 2
+    school: evocation
+    casting_time: action
+    range: 120_feet
+    components: ["V", "S", "M"]
+    material_components: several seeds of any moonseed plant and a piece of opalescent feldspar
+    duration: 1_minute
+    concentration: true
+    ritual: false
+    description: >
+      A silvery beam of pale light shines down in a 5-foot-radius, 40-foot-high cylinder centered on a point
+      within range. Until the spell ends, dim light fills the cylinder. When a creature enters the spell's area
+      for the first time on a turn or starts its turn there, it is engulfed in ghostly flames that cause searing
+      pain, and it must make a Constitution saving throw, taking 2d10 radiant damage on a failure, or half on a
+      success.
+    higher_levels: >
+      When you cast this spell using a spell slot of 3rd level or higher, the damage increases by 1d10 for each
+      slot level above 2nd.
+    classes: ["druid"]
+
+- model: magic.spellsettings
+  fields:
+    name: Pass without Trace
+    level: 2
+    school: abjuration
+    casting_time: action
+    range: self
+    components: ["V", "S", "M"]
+    material_components: ashes from a burned leaf of mistletoe and a sprig of spruce
+    duration: 1_hour
+    concentration: true
+    ritual: false
+    description: >
+      A veil of shadows and silence radiates from you, masking you and your companions from detection. For the
+      duration, each creature you choose within 30 feet of you (including you) has a +10 bonus to Dexterity
+      (Stealth) checks and can't be tracked except by magical means. A creature that receives this bonus leaves
+      behind no tracks or other traces of its passage.
+    classes: ["druid", "ranger"]
+
+- model: magic.spellsettings
+  fields:
+    name: Prayer of Healing
+    level: 2
+    school: evocation
+    casting_time: 10_minutes
+    range: 30_feet
+    components: ["V"]
+    duration: instantaneous
+    concentration: false
+    ritual: false
+    description: >
+      Up to six creatures of your choice that you can see within range each regain hit points equal to 2d8 +
+      your spellcasting ability modifier. This spell has no effect on undead or constructs.
+    higher_levels: >
+      When you cast this spell using a spell slot of 3rd level or higher, the healing increases by 1d8 for each
+      slot level above 2nd.
+    classes: ["cleric", "paladin"]
+
+- model: magic.spellsettings
+  fields:
+    name: See Invisibility
+    level: 2
+    school: divination
+    casting_time: action
+    range: self
+    components: ["V", "S", "M"]
+    material_components: a pinch of talc and a small sprinkling of powdered silver
+    duration: 1_hour
+    concentration: false
+    ritual: false
+    description: >
+      For the duration, you see invisible creatures and objects as if they were visible, and you can see into
+      the Ethereal Plane. Ethereal creatures and objects appear ghostly and translucent.
+    classes: ["bard", "sorcerer", "wizard"]
+
+- model: magic.spellsettings
+  fields:
+    name: Silence
+    level: 2
+    school: illusion
+    casting_time: action
+    range: 120_feet
+    components: ["V", "S"]
+    duration: 10_minutes
+    concentration: true
+    ritual: true
+    description: >
+      For the duration, no sound can be created within or pass through a 20-foot-radius sphere centered on a
+      point you choose within range. Any creature or object entirely inside the sphere is immune to thunder
+      damage, and creatures are deafened while entirely inside it. Casting a spell that includes a verbal
+      component is impossible there.
+    classes: ["bard", "cleric", "ranger"]
+
+- model: magic.spellsettings
+  fields:
+    name: Spider Climb
+    level: 2
+    school: transmutation
+    casting_time: action
+    range: touch
+    components: ["V", "S", "M"]
+    material_components: a drop of bitumen and a spider
+    duration: 1_hour
+    concentration: true
+    ritual: false
+    description: >
+      Until the spell ends, one willing creature you touch gains the ability to move up, down, and across
+      vertical surfaces and upside down along ceilings, while leaving its hands free. The target also gains a
+      climbing speed equal to its walking speed.
+    classes: ["sorcerer", "warlock", "wizard"]
+
+- model: magic.spellsettings
+  fields:
+    name: Spiritual Weapon
+    level: 2
+    school: evocation
+    casting_time: bonus_action
+    range: 60_feet
+    components: ["V", "S"]
+    duration: 1_minute
+    concentration: false
+    ritual: false
+    description: >
+      You create a floating, spectral weapon within range that lasts for the duration or until you cast this
+      spell again. When you cast the spell, you can make a melee spell attack against a creature within 5 feet
+      of the weapon. On a hit, the target takes force damage equal to 1d8 + your spellcasting ability modifier.
+      As a bonus action on your turn, you can move the weapon up to 20 feet and repeat the attack.
+    higher_levels: >
+      When you cast this spell using a spell slot of 3rd or 4th level, the damage increases by 1d8 for every
+      two slot levels above 2nd.
+    classes: ["cleric", "paladin"]
+
+- model: magic.spellsettings
+  fields:
+    name: Suggestion
+    level: 2
+    school: enchantment
+    casting_time: action
+    range: 30_feet
+    components: ["V", "M"]
+    material_components: a snake's tongue and either a bit of honeycomb or a drop of sweet oil
+    duration: 8_hours
+    concentration: true
+    ritual: false
+    description: >
+      You suggest a course of activity (limited to a sentence or two) and magically influence a creature you
+      can see within range that can hear and understand you. Creatures that can't be charmed are immune. The
+      suggestion must be worded in such a manner as to make the course of action sound reasonable. The target
+      must make a Wisdom saving throw or pursue the course of action you described to the best of its ability.
+    classes: ["bard", "sorcerer", "warlock", "wizard"]
+
+- model: magic.spellsettings
+  fields:
+    name: Web
+    level: 2
+    school: conjuration
+    casting_time: action
+    range: 60_feet
+    components: ["V", "S", "M"]
+    material_components: a bit of spiderweb
+    duration: 1_hour
+    concentration: true
+    ritual: false
+    description: >
+      You conjure a mass of thick, sticky webbing at a point of your choice within range. The webs fill a
+      20-foot cube from that point for the duration. The webs are difficult terrain and lightly obscure their
+      area. If the webs aren't anchored between two solid masses or layered across a floor, wall, or ceiling,
+      the conjured web collapses on itself. Any creature that starts its turn in the webs or that enters them
+      during its turn must make a Dexterity saving throw or be restrained.
+    classes: ["sorcerer", "wizard"]
+
+- model: magic.spellsettings
+  fields:
+    name: Zone of Truth
+    level: 2
+    school: enchantment
+    casting_time: action
+    range: 60_feet
+    components: ["V", "S"]
+    duration: 10_minutes
+    concentration: false
+    ritual: false
+    description: >
+      You create a magical zone that guards against deception in a 15-foot-radius sphere centered on a point of
+      your choice within range. Until the spell ends, a creature that enters the spell's area for the first time
+      on a turn or starts its turn there must make a Charisma saving throw. On a failed save, a creature can't
+      speak a deliberate lie while in the radius.
+    classes: ["bard", "cleric", "paladin"]
