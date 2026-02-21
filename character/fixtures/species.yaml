@@ -68,3 +68,96 @@
     description: |
       Humans are the most adaptable and versatile of the common peoples.
       They are resourceful, skillful, and gain a feat at first level.
+
+- model: character.species
+  pk: dragonborn
+  fields:
+    name: dragonborn
+    size: M
+    speed: 30
+    darkvision: 60
+    traits:
+      - draconic_ancestry
+      - breath_weapon
+      - draconic_damage_resistance
+      - draconic_flight
+    languages:
+      - 1   # Common
+      - 12  # Draconic
+    description: |
+      Dragonborn are kin to dragons, gifted with draconic heritage that
+      manifests as a breath weapon and resistance to the damage type of
+      their draconic ancestry.
+
+- model: character.species
+  pk: gnome
+  fields:
+    name: gnome
+    size: S
+    speed: 30
+    darkvision: 60
+    traits:
+      - gnomish_cunning
+      - gnomish_lineage
+    languages:
+      - 1  # Common
+      - 5  # Gnomish
+    description: |
+      Gnomes are small, clever folk with a natural gift for illusion and
+      invention. They have 60 feet of Darkvision and advantage on
+      Intelligence, Wisdom, and Charisma saving throws.
+
+- model: character.species
+  pk: goliath
+  fields:
+    name: goliath
+    size: M
+    speed: 35
+    darkvision: 0
+    traits:
+      - giant_ancestry
+      - large_form
+      - powerful_build
+    languages:
+      - 1  # Common
+      - 4  # Giant
+    description: |
+      Goliaths are massive humanoids descended from giants. They have a
+      natural connection to their giant heritage and can temporarily grow
+      to Large size starting at level 5.
+
+- model: character.species
+  pk: orc
+  fields:
+    name: orc
+    size: M
+    speed: 30
+    darkvision: 120
+    traits:
+      - adrenaline_rush
+      - relentless_endurance
+    languages:
+      - 1  # Common
+      - 8  # Orc
+    description: |
+      Orcs are a fierce and enduring people with a connection to the
+      natural world. They have 120 feet of Darkvision and can push past
+      their limits with Adrenaline Rush and Relentless Endurance.
+
+- model: character.species
+  pk: tiefling
+  fields:
+    name: tiefling
+    size: M
+    speed: 30
+    darkvision: 60
+    traits:
+      - fiendish_legacy
+      - otherworldly_presence
+    languages:
+      - 1   # Common
+      - 13  # Infernal
+    description: |
+      Tieflings are touched by the power of the Lower Planes. They have
+      60 feet of Darkvision, a fiendish supernatural legacy, and a
+      natural connection to the cantrip Thaumaturgy.
