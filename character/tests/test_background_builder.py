@@ -123,10 +123,8 @@ class TestBackgroundBuilderOriginFeat:
     @pytest.fixture(autouse=True)
     def setup_feats(self):
         """Ensure feats exist in database."""
-        FeatFactory(name=FeatName.ALERT)
-        FeatFactory(name=FeatName.MAGIC_INITIATE_CLERIC)
-        FeatFactory(name=FeatName.MAGIC_INITIATE_WIZARD)
-        FeatFactory(name=FeatName.SAVAGE_ATTACKER)
+        for feat_name in FeatName:
+            FeatFactory(name=feat_name)
 
     def test_acolyte_origin_feat(self):
         character = CharacterFactory(background=Background.ACOLYTE)
@@ -225,10 +223,8 @@ class TestBackgroundBuilderBuild:
     @pytest.fixture(autouse=True)
     def setup_feats(self):
         """Ensure feats exist in database."""
-        FeatFactory(name=FeatName.ALERT)
-        FeatFactory(name=FeatName.MAGIC_INITIATE_CLERIC)
-        FeatFactory(name=FeatName.MAGIC_INITIATE_WIZARD)
-        FeatFactory(name=FeatName.SAVAGE_ATTACKER)
+        for feat_name in FeatName:
+            FeatFactory(name=feat_name)
 
     def test_build_acolyte(self):
         """Test full build for Acolyte background."""
