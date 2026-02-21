@@ -162,7 +162,7 @@
         display: grid;
         grid-template-columns: 24px 40px 1fr 40px 36px;
         align-items: center;
-        gap: 8px;
+        gap: 4px;
         padding: 8px 10px;
         background: rgba(255, 255, 255, 0.03);
         border-radius: 4px;
@@ -219,12 +219,13 @@
 
 /* Skill Name */
     .skill-name-box {
-        overflow: hidden;
+        min-width: 0;
     }
 
     .skill-name {
         font-size: 0.85rem;
         color: var(--color-text);
+        overflow-wrap: anywhere;
     }
 
 /* Ability Tag */
