@@ -47,12 +47,6 @@
     language_type: S
     script: dwarvish
 - model: character.language
-  pk: 8
-  fields:
-    name: orc
-    language_type: S
-    script: dwarvish
-- model: character.language
   pk: 9
   fields:
     name: abyssal

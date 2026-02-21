@@ -35,3 +35,110 @@
     description: |
       Once per turn when you hit a target with a weapon, you can roll the
       weapon's damage dice twice and use either roll against the target.
+
+- model: character.feat
+  pk: crafter
+  fields:
+    feat_type: O
+    description: |
+      You gain proficiency with three tools of your choice from the artisan's
+      tools category. Whenever you buy a nonmagical item, you receive a 20
+      percent discount on it.
+
+- model: character.feat
+  pk: healer
+  fields:
+    feat_type: O
+    description: |
+      You gain proficiency with the Healer's Kit. As a Magic action, you can
+      expend one use of a Healer's Kit to tend to an incapacitated creature and
+      restore 1d6 + 4 Hit Points to it, plus additional Hit Points equal to the
+      creature's maximum number of Hit Dice.
+
+- model: character.feat
+  pk: lucky
+  fields:
+    feat_type: O
+    description: |
+      You have 3 Luck Points. Whenever you make a d20 Test, you can spend 1
+      Luck Point to roll an extra d20 and use either roll. You can also spend
+      1 Luck Point when an attack roll is made against you, rolling a d20 and
+      using either roll. You regain all Luck Points when you finish a Long Rest.
+
+- model: character.feat
+  pk: magic_initiate_bard
+  fields:
+    feat_type: O
+    description: |
+      You learn two Bard cantrips of your choice. You also learn one 1st-level
+      Bard spell of your choice. You can cast this spell without a spell slot
+      once per Long Rest. You can also cast it using any spell slots you have.
+      Charisma is your spellcasting ability for these spells.
+
+- model: character.feat
+  pk: magic_initiate_druid
+  fields:
+    feat_type: O
+    description: |
+      You learn two Druid cantrips of your choice. You also learn one 1st-level
+      Druid spell of your choice. You can cast this spell without a spell slot
+      once per Long Rest. You can also cast it using any spell slots you have.
+      Wisdom is your spellcasting ability for these spells.
+
+- model: character.feat
+  pk: magic_initiate_sorcerer
+  fields:
+    feat_type: O
+    description: |
+      You learn two Sorcerer cantrips of your choice. You also learn one
+      1st-level Sorcerer spell of your choice. You can cast this spell without
+      a spell slot once per Long Rest. You can also cast it using any spell
+      slots you have. Charisma is your spellcasting ability for these spells.
+
+- model: character.feat
+  pk: magic_initiate_warlock
+  fields:
+    feat_type: O
+    description: |
+      You learn two Warlock cantrips of your choice. You also learn one
+      1st-level Warlock spell of your choice. You can cast this spell without
+      a spell slot once per Long Rest. You can also cast it using any spell
+      slots you have. Charisma is your spellcasting ability for these spells.
+
+- model: character.feat
+  pk: musician
+  fields:
+    feat_type: O
+    description: |
+      You gain proficiency with three musical instruments of your choice. After
+      finishing a Short or Long Rest, you can use one of your musical
+      instruments to play soothing music, granting Heroic Inspiration to allies
+      who hear the music.
+
+- model: character.feat
+  pk: skilled
+  fields:
+    feat_type: O
+    description: |
+      You gain proficiency in any combination of three skills or tools of
+      your choice.
+
+- model: character.feat
+  pk: tavern_brawler
+  fields:
+    feat_type: O
+    description: |
+      You are proficient with improvised weapons. Whenever you hit a creature
+      with an Unarmed Strike as part of the Attack action, you can deal
+      Bludgeoning damage equal to 1d4 + your Strength modifier, and on a hit
+      you can attempt to grapple the creature as a Bonus Action.
+
+- model: character.feat
+  pk: tough
+  fields:
+    feat_type: O
+    description: |
+      Your Hit Point maximum increases by an amount equal to twice your
+      character level when you gain this feat. Whenever you gain a character
+      level thereafter, your Hit Point maximum increases by an additional 2
+      Hit Points.

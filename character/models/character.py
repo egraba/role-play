@@ -49,7 +49,7 @@ class Character(models.Model):
     languages = models.ManyToManyField(Language)
     hit_dice = models.CharField(max_length=5, default="1d8")
     hp_increase = models.SmallIntegerField(default=0)
-    background = models.CharField(max_length=10, choices=Background.choices)
+    background = models.CharField(max_length=15, choices=Background.choices)
     personality_trait = models.TextField(max_length=150)
     ideal = models.TextField(max_length=150, null=True, blank=True)
     bond = models.TextField(max_length=150, null=True, blank=True)
