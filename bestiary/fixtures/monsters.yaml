@@ -443,3 +443,793 @@
     legendary_action_count: 3
     has_lair: true
     description: "A lich is created when a powerful wizard embraces undeath as a means of preserving itself."
+
+# =============================================================================
+# Task 17: Beasts and Humanoids
+# =============================================================================
+
+# CR 0 Beasts
+- model: bestiary.monstersettings
+  fields:
+    name: Bat
+    size: tiny
+    creature_type: beast
+    subtype: ""
+    alignment: U
+    ac: 12
+    ac_type: ""
+    hit_dice: "1d4-1"
+    hp_average: 1
+    passive_perception: 11
+    strength: 2
+    dexterity: 15
+    constitution: 8
+    intelligence: 2
+    wisdom: 12
+    charisma: 4
+    telepathy: 0
+    challenge_rating: "0"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "The bat is a small, winged mammal that uses echolocation to navigate in darkness."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Cat
+    size: tiny
+    creature_type: beast
+    subtype: ""
+    alignment: U
+    ac: 12
+    ac_type: ""
+    hit_dice: "1d4"
+    hp_average: 2
+    passive_perception: 13
+    strength: 3
+    dexterity: 15
+    constitution: 10
+    intelligence: 3
+    wisdom: 12
+    charisma: 7
+    telepathy: 0
+    challenge_rating: "0"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A cat is a small domestic animal known for its agility and predatory instincts."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Hawk
+    size: tiny
+    creature_type: beast
+    subtype: ""
+    alignment: U
+    ac: 13
+    ac_type: ""
+    hit_dice: "1d4-1"
+    hp_average: 1
+    passive_perception: 14
+    strength: 5
+    dexterity: 16
+    constitution: 8
+    intelligence: 2
+    wisdom: 14
+    charisma: 6
+    telepathy: 0
+    challenge_rating: "0"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A hawk is a swift predatory bird with keen eyesight."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Rat
+    size: tiny
+    creature_type: beast
+    subtype: ""
+    alignment: U
+    ac: 10
+    ac_type: ""
+    hit_dice: "1d4-1"
+    hp_average: 1
+    passive_perception: 10
+    strength: 2
+    dexterity: 11
+    constitution: 9
+    intelligence: 2
+    wisdom: 10
+    charisma: 4
+    telepathy: 0
+    challenge_rating: "0"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A rat is a small rodent that can be found almost anywhere."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Raven
+    size: tiny
+    creature_type: beast
+    subtype: ""
+    alignment: U
+    ac: 12
+    ac_type: ""
+    hit_dice: "1d4-1"
+    hp_average: 1
+    passive_perception: 11
+    strength: 2
+    dexterity: 14
+    constitution: 8
+    intelligence: 2
+    wisdom: 12
+    charisma: 6
+    telepathy: 0
+    challenge_rating: "0"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A raven is a large, black bird known for its intelligence and ability to mimic sounds."
+
+# CR 1/8 Beasts
+- model: bestiary.monstersettings
+  fields:
+    name: Mastiff
+    size: medium
+    creature_type: beast
+    subtype: ""
+    alignment: U
+    ac: 12
+    ac_type: ""
+    hit_dice: "1d8+1"
+    hp_average: 5
+    passive_perception: 13
+    strength: 13
+    dexterity: 14
+    constitution: 12
+    intelligence: 3
+    wisdom: 12
+    charisma: 7
+    telepathy: 0
+    challenge_rating: "1/8"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Mastiffs are impressive hounds prized by humanoids for their loyalty and fierce dispositions."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Poisonous Snake
+    size: tiny
+    creature_type: beast
+    subtype: ""
+    alignment: U
+    ac: 13
+    ac_type: ""
+    hit_dice: "1d4"
+    hp_average: 2
+    passive_perception: 10
+    strength: 2
+    dexterity: 16
+    constitution: 11
+    intelligence: 1
+    wisdom: 10
+    charisma: 3
+    telepathy: 0
+    challenge_rating: "1/8"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A poisonous snake is a small reptile with venomous bite."
+
+# CR 1/4 Beasts
+- model: bestiary.monstersettings
+  fields:
+    name: Boar
+    size: medium
+    creature_type: beast
+    subtype: ""
+    alignment: U
+    ac: 11
+    ac_type: natural armor
+    hit_dice: "2d8+2"
+    hp_average: 11
+    passive_perception: 9
+    strength: 13
+    dexterity: 11
+    constitution: 12
+    intelligence: 2
+    wisdom: 9
+    charisma: 5
+    telepathy: 0
+    challenge_rating: "1/4"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A boar is a wild pig known for its tusks and ferocious charge."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Constrictor Snake
+    size: large
+    creature_type: beast
+    subtype: ""
+    alignment: U
+    ac: 12
+    ac_type: ""
+    hit_dice: "2d10+2"
+    hp_average: 13
+    passive_perception: 12
+    strength: 15
+    dexterity: 14
+    constitution: 12
+    intelligence: 1
+    wisdom: 10
+    charisma: 3
+    telepathy: 0
+    challenge_rating: "1/4"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A constrictor snake coils around its prey and squeezes the life from it."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Riding Horse
+    size: large
+    creature_type: beast
+    subtype: ""
+    alignment: U
+    ac: 10
+    ac_type: ""
+    hit_dice: "2d10+2"
+    hp_average: 13
+    passive_perception: 11
+    strength: 16
+    dexterity: 10
+    constitution: 12
+    intelligence: 2
+    wisdom: 11
+    charisma: 7
+    telepathy: 0
+    challenge_rating: "1/4"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A riding horse is a trained domesticated animal used for travel."
+
+# CR 1/2 Beasts
+- model: bestiary.monstersettings
+  fields:
+    name: Ape
+    size: medium
+    creature_type: beast
+    subtype: ""
+    alignment: U
+    ac: 12
+    ac_type: ""
+    hit_dice: "3d8+6"
+    hp_average: 19
+    passive_perception: 13
+    strength: 16
+    dexterity: 14
+    constitution: 14
+    intelligence: 6
+    wisdom: 12
+    charisma: 7
+    telepathy: 0
+    challenge_rating: "1/2"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "An ape is a powerful primate capable of using simple tools and communicating danger."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Black Bear
+    size: medium
+    creature_type: beast
+    subtype: ""
+    alignment: U
+    ac: 11
+    ac_type: natural armor
+    hit_dice: "3d8+6"
+    hp_average: 19
+    passive_perception: 13
+    strength: 15
+    dexterity: 10
+    constitution: 14
+    intelligence: 2
+    wisdom: 12
+    charisma: 7
+    telepathy: 0
+    challenge_rating: "1/2"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A black bear is a forest dweller that will defend itself aggressively when threatened."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Crocodile
+    size: large
+    creature_type: beast
+    subtype: ""
+    alignment: U
+    ac: 12
+    ac_type: natural armor
+    hit_dice: "3d10+3"
+    hp_average: 19
+    passive_perception: 10
+    strength: 15
+    dexterity: 10
+    constitution: 13
+    intelligence: 2
+    wisdom: 10
+    charisma: 5
+    telepathy: 0
+    challenge_rating: "1/2"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A crocodile lurks in rivers and swamps, ambushing prey that comes to drink."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Warhorse
+    size: large
+    creature_type: beast
+    subtype: ""
+    alignment: U
+    ac: 11
+    ac_type: natural armor
+    hit_dice: "3d10+3"
+    hp_average: 19
+    passive_perception: 11
+    strength: 18
+    dexterity: 12
+    constitution: 13
+    intelligence: 2
+    wisdom: 12
+    charisma: 7
+    telepathy: 0
+    challenge_rating: "1/2"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A warhorse is trained for battle and will fight alongside its rider."
+
+# CR 1 Beasts
+- model: bestiary.monstersettings
+  fields:
+    name: Brown Bear
+    size: large
+    creature_type: beast
+    subtype: ""
+    alignment: U
+    ac: 11
+    ac_type: natural armor
+    hit_dice: "4d10+12"
+    hp_average: 34
+    passive_perception: 13
+    strength: 19
+    dexterity: 10
+    constitution: 16
+    intelligence: 2
+    wisdom: 13
+    charisma: 7
+    telepathy: 0
+    challenge_rating: "1"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A brown bear is a massive omnivore that can be a dangerous predator when threatened."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Lion
+    size: large
+    creature_type: beast
+    subtype: ""
+    alignment: U
+    ac: 12
+    ac_type: ""
+    hit_dice: "4d10+4"
+    hp_average: 26
+    passive_perception: 13
+    strength: 17
+    dexterity: 15
+    constitution: 13
+    intelligence: 3
+    wisdom: 12
+    charisma: 8
+    telepathy: 0
+    challenge_rating: "1"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A lion is a powerful predator that hunts in prides across open plains."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Tiger
+    size: large
+    creature_type: beast
+    subtype: ""
+    alignment: U
+    ac: 12
+    ac_type: ""
+    hit_dice: "5d10+10"
+    hp_average: 37
+    passive_perception: 13
+    strength: 17
+    dexterity: 15
+    constitution: 14
+    intelligence: 3
+    wisdom: 12
+    charisma: 8
+    telepathy: 0
+    challenge_rating: "1"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A tiger is a great striped cat that stalks its prey through dense jungle."
+
+# CR 1/8 Humanoids
+- model: bestiary.monstersettings
+  fields:
+    name: Cultist
+    size: medium
+    creature_type: humanoid
+    subtype: any race
+    alignment: any
+    ac: 12
+    ac_type: leather armor
+    hit_dice: "2d8"
+    hp_average: 9
+    passive_perception: 11
+    strength: 11
+    dexterity: 12
+    constitution: 10
+    intelligence: 10
+    wisdom: 11
+    charisma: 10
+    telepathy: 0
+    challenge_rating: "1/8"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Cultists are ordinary folk who have been seduced by the promises of a dark entity."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Guard
+    size: medium
+    creature_type: humanoid
+    subtype: any race
+    alignment: any
+    ac: 16
+    ac_type: chain shirt and shield
+    hit_dice: "2d8+2"
+    hp_average: 11
+    passive_perception: 12
+    strength: 13
+    dexterity: 12
+    constitution: 12
+    intelligence: 10
+    wisdom: 11
+    charisma: 10
+    telepathy: 0
+    challenge_rating: "1/8"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Guards include members of a city watch, sentries in a citadel or fortified town, and the bodyguards of merchants and nobles."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Noble
+    size: medium
+    creature_type: humanoid
+    subtype: any race
+    alignment: any
+    ac: 15
+    ac_type: breastplate
+    hit_dice: "2d8"
+    hp_average: 9
+    passive_perception: 12
+    strength: 11
+    dexterity: 12
+    constitution: 11
+    intelligence: 12
+    wisdom: 14
+    charisma: 16
+    telepathy: 0
+    challenge_rating: "1/8"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Nobles wield great authority and influence as members of the upper class."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Tribal Warrior
+    size: medium
+    creature_type: humanoid
+    subtype: any race
+    alignment: any
+    ac: 12
+    ac_type: hide armor
+    hit_dice: "2d8+2"
+    hp_average: 11
+    passive_perception: 10
+    strength: 13
+    dexterity: 11
+    constitution: 12
+    intelligence: 8
+    wisdom: 11
+    charisma: 8
+    telepathy: 0
+    challenge_rating: "1/8"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Tribal warriors live beyond civilization, most often subsisting on game, wild plants, and looted goods."
+
+# CR 1/4 Humanoids
+- model: bestiary.monstersettings
+  fields:
+    name: Acolyte
+    size: medium
+    creature_type: humanoid
+    subtype: any race
+    alignment: any
+    ac: 10
+    ac_type: ""
+    hit_dice: "2d8"
+    hp_average: 9
+    passive_perception: 12
+    strength: 10
+    dexterity: 10
+    constitution: 10
+    intelligence: 10
+    wisdom: 14
+    charisma: 11
+    telepathy: 0
+    challenge_rating: "1/4"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Acolytes are junior members of a clergy, usually answerable to a priest."
+
+# CR 1/2 Humanoids
+- model: bestiary.monstersettings
+  fields:
+    name: Scout
+    size: medium
+    creature_type: humanoid
+    subtype: any race
+    alignment: any
+    ac: 13
+    ac_type: leather armor
+    hit_dice: "3d8+3"
+    hp_average: 16
+    passive_perception: 15
+    strength: 11
+    dexterity: 14
+    constitution: 12
+    intelligence: 11
+    wisdom: 13
+    charisma: 11
+    telepathy: 0
+    challenge_rating: "1/2"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Scouts are skilled hunters and trackers who offer their services for a fee."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Thug
+    size: medium
+    creature_type: humanoid
+    subtype: any race
+    alignment: any
+    ac: 11
+    ac_type: leather armor
+    hit_dice: "5d8+10"
+    hp_average: 32
+    passive_perception: 10
+    strength: 15
+    dexterity: 11
+    constitution: 14
+    intelligence: 10
+    wisdom: 10
+    charisma: 11
+    telepathy: 0
+    challenge_rating: "1/2"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Thugs are ruthless enforcers skilled at intimidation and violence."
+
+# CR 1 Humanoids
+- model: bestiary.monstersettings
+  fields:
+    name: Spy
+    size: medium
+    creature_type: humanoid
+    subtype: any race
+    alignment: any
+    ac: 12
+    ac_type: ""
+    hit_dice: "6d8"
+    hp_average: 27
+    passive_perception: 14
+    strength: 10
+    dexterity: 15
+    constitution: 10
+    intelligence: 12
+    wisdom: 14
+    charisma: 16
+    telepathy: 0
+    challenge_rating: "1"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Rulers, nobles, merchants, guildmasters, and other wealthy individuals use spies to gain the upper hand in a world of cutthroat politics."
+
+# CR 2 Humanoids
+- model: bestiary.monstersettings
+  fields:
+    name: Bandit Captain
+    size: medium
+    creature_type: humanoid
+    subtype: any race
+    alignment: any
+    ac: 15
+    ac_type: studded leather
+    hit_dice: "10d8+20"
+    hp_average: 65
+    passive_perception: 10
+    strength: 15
+    dexterity: 16
+    constitution: 14
+    intelligence: 14
+    wisdom: 11
+    charisma: 14
+    telepathy: 0
+    challenge_rating: "2"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "It takes a strong personality, ruthless cunning, and a silver tongue to keep a gang of bandits in line."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Berserker
+    size: medium
+    creature_type: humanoid
+    subtype: any race
+    alignment: any
+    ac: 13
+    ac_type: hide armor
+    hit_dice: "9d8+27"
+    hp_average: 67
+    passive_perception: 10
+    strength: 16
+    dexterity: 12
+    constitution: 17
+    intelligence: 9
+    wisdom: 11
+    charisma: 9
+    telepathy: 0
+    challenge_rating: "2"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Hailing from uncivilized lands, unpredictable berserkers come together in war bands and seek conflict wherever they can find it."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Cult Fanatic
+    size: medium
+    creature_type: humanoid
+    subtype: any race
+    alignment: any
+    ac: 13
+    ac_type: leather armor
+    hit_dice: "6d8+6"
+    hp_average: 33
+    passive_perception: 11
+    strength: 11
+    dexterity: 14
+    constitution: 12
+    intelligence: 10
+    wisdom: 13
+    charisma: 14
+    telepathy: 0
+    challenge_rating: "2"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Fanatical believers, cult fanatics are more powerful servants of a cult's dark master."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Priest
+    size: medium
+    creature_type: humanoid
+    subtype: any race
+    alignment: any
+    ac: 13
+    ac_type: chain shirt
+    hit_dice: "5d8+5"
+    hp_average: 27
+    passive_perception: 13
+    strength: 10
+    dexterity: 10
+    constitution: 12
+    intelligence: 13
+    wisdom: 16
+    charisma: 13
+    telepathy: 0
+    challenge_rating: "2"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Priests bring the teachings of their gods to the common folk."
+
+# CR 3 Humanoids
+- model: bestiary.monstersettings
+  fields:
+    name: Knight
+    size: medium
+    creature_type: humanoid
+    subtype: any race
+    alignment: any
+    ac: 18
+    ac_type: plate
+    hit_dice: "8d8+16"
+    hp_average: 52
+    passive_perception: 10
+    strength: 16
+    dexterity: 11
+    constitution: 14
+    intelligence: 11
+    wisdom: 11
+    charisma: 15
+    telepathy: 0
+    challenge_rating: "3"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Knights are warriors who pledge service to a ruler, a faith, or a noble ideal."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Veteran
+    size: medium
+    creature_type: humanoid
+    subtype: any race
+    alignment: any
+    ac: 17
+    ac_type: splint
+    hit_dice: "9d8+18"
+    hp_average: 58
+    passive_perception: 12
+    strength: 16
+    dexterity: 13
+    constitution: 14
+    intelligence: 10
+    wisdom: 11
+    charisma: 10
+    telepathy: 0
+    challenge_rating: "3"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Veterans are professional fighters that take up arms for pay or to protect something they believe in or value."

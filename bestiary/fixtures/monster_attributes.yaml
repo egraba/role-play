@@ -1511,3 +1511,1320 @@
     level: 9th
     slots: 1
     spells: [power word kill]
+
+# =============================================================================
+# Task 17: Beast and Humanoid Attributes
+# =============================================================================
+
+# =============================================================================
+# MonsterSpeed - Beasts
+# =============================================================================
+
+# Bat
+- model: bestiary.monsterspeed
+  fields:
+    monster: Bat
+    movement_type: walk
+    feet: 5
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Bat
+    movement_type: fly
+    feet: 30
+
+# Cat
+- model: bestiary.monsterspeed
+  fields:
+    monster: Cat
+    movement_type: walk
+    feet: 40
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Cat
+    movement_type: climb
+    feet: 30
+
+# Hawk
+- model: bestiary.monsterspeed
+  fields:
+    monster: Hawk
+    movement_type: walk
+    feet: 10
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Hawk
+    movement_type: fly
+    feet: 60
+
+# Rat
+- model: bestiary.monsterspeed
+  fields:
+    monster: Rat
+    movement_type: walk
+    feet: 20
+
+# Raven
+- model: bestiary.monsterspeed
+  fields:
+    monster: Raven
+    movement_type: walk
+    feet: 10
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Raven
+    movement_type: fly
+    feet: 50
+
+# Mastiff
+- model: bestiary.monsterspeed
+  fields:
+    monster: Mastiff
+    movement_type: walk
+    feet: 40
+
+# Poisonous Snake
+- model: bestiary.monsterspeed
+  fields:
+    monster: Poisonous Snake
+    movement_type: walk
+    feet: 30
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Poisonous Snake
+    movement_type: swim
+    feet: 30
+
+# Boar
+- model: bestiary.monsterspeed
+  fields:
+    monster: Boar
+    movement_type: walk
+    feet: 40
+
+# Constrictor Snake
+- model: bestiary.monsterspeed
+  fields:
+    monster: Constrictor Snake
+    movement_type: walk
+    feet: 30
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Constrictor Snake
+    movement_type: swim
+    feet: 30
+
+# Riding Horse
+- model: bestiary.monsterspeed
+  fields:
+    monster: Riding Horse
+    movement_type: walk
+    feet: 60
+
+# Ape
+- model: bestiary.monsterspeed
+  fields:
+    monster: Ape
+    movement_type: walk
+    feet: 30
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Ape
+    movement_type: climb
+    feet: 30
+
+# Black Bear
+- model: bestiary.monsterspeed
+  fields:
+    monster: Black Bear
+    movement_type: walk
+    feet: 40
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Black Bear
+    movement_type: climb
+    feet: 30
+
+# Crocodile
+- model: bestiary.monsterspeed
+  fields:
+    monster: Crocodile
+    movement_type: walk
+    feet: 20
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Crocodile
+    movement_type: swim
+    feet: 30
+
+# Warhorse
+- model: bestiary.monsterspeed
+  fields:
+    monster: Warhorse
+    movement_type: walk
+    feet: 60
+
+# Brown Bear
+- model: bestiary.monsterspeed
+  fields:
+    monster: Brown Bear
+    movement_type: walk
+    feet: 40
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Brown Bear
+    movement_type: climb
+    feet: 30
+
+# Lion
+- model: bestiary.monsterspeed
+  fields:
+    monster: Lion
+    movement_type: walk
+    feet: 50
+
+# Tiger
+- model: bestiary.monsterspeed
+  fields:
+    monster: Tiger
+    movement_type: walk
+    feet: 40
+
+# =============================================================================
+# MonsterSpeed - Humanoids
+# =============================================================================
+
+# Cultist
+- model: bestiary.monsterspeed
+  fields:
+    monster: Cultist
+    movement_type: walk
+    feet: 30
+
+# Guard
+- model: bestiary.monsterspeed
+  fields:
+    monster: Guard
+    movement_type: walk
+    feet: 30
+
+# Noble
+- model: bestiary.monsterspeed
+  fields:
+    monster: Noble
+    movement_type: walk
+    feet: 30
+
+# Tribal Warrior
+- model: bestiary.monsterspeed
+  fields:
+    monster: Tribal Warrior
+    movement_type: walk
+    feet: 30
+
+# Acolyte
+- model: bestiary.monsterspeed
+  fields:
+    monster: Acolyte
+    movement_type: walk
+    feet: 30
+
+# Scout
+- model: bestiary.monsterspeed
+  fields:
+    monster: Scout
+    movement_type: walk
+    feet: 30
+
+# Thug
+- model: bestiary.monsterspeed
+  fields:
+    monster: Thug
+    movement_type: walk
+    feet: 30
+
+# Spy
+- model: bestiary.monsterspeed
+  fields:
+    monster: Spy
+    movement_type: walk
+    feet: 30
+
+# Bandit Captain
+- model: bestiary.monsterspeed
+  fields:
+    monster: Bandit Captain
+    movement_type: walk
+    feet: 30
+
+# Berserker
+- model: bestiary.monsterspeed
+  fields:
+    monster: Berserker
+    movement_type: walk
+    feet: 30
+
+# Cult Fanatic
+- model: bestiary.monsterspeed
+  fields:
+    monster: Cult Fanatic
+    movement_type: walk
+    feet: 30
+
+# Priest
+- model: bestiary.monsterspeed
+  fields:
+    monster: Priest
+    movement_type: walk
+    feet: 30
+
+# Knight
+- model: bestiary.monsterspeed
+  fields:
+    monster: Knight
+    movement_type: walk
+    feet: 30
+
+# Veteran
+- model: bestiary.monsterspeed
+  fields:
+    monster: Veteran
+    movement_type: walk
+    feet: 30
+
+# =============================================================================
+# MonsterSavingThrow - Beasts and Humanoids
+# =============================================================================
+
+# Bandit Captain
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Bandit Captain
+    ability: STR
+    bonus: 4
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Bandit Captain
+    ability: DEX
+    bonus: 5
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Bandit Captain
+    ability: WIS
+    bonus: 2
+
+# Cult Fanatic
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Cult Fanatic
+    ability: WIS
+    bonus: 3
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Cult Fanatic
+    ability: CHA
+    bonus: 4
+
+# Knight
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Knight
+    ability: CON
+    bonus: 4
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Knight
+    ability: WIS
+    bonus: 2
+
+# =============================================================================
+# MonsterSkill - Beasts
+# =============================================================================
+
+# Ape
+- model: bestiary.monsterskill
+  fields:
+    monster: Ape
+    skill: Athletics
+    bonus: 5
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Ape
+    skill: Perception
+    bonus: 3
+
+# Black Bear
+- model: bestiary.monsterskill
+  fields:
+    monster: Black Bear
+    skill: Perception
+    bonus: 3
+
+# Brown Bear
+- model: bestiary.monsterskill
+  fields:
+    monster: Brown Bear
+    skill: Perception
+    bonus: 3
+
+# Cat
+- model: bestiary.monsterskill
+  fields:
+    monster: Cat
+    skill: Perception
+    bonus: 3
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Cat
+    skill: Stealth
+    bonus: 4
+
+# Hawk
+- model: bestiary.monsterskill
+  fields:
+    monster: Hawk
+    skill: Perception
+    bonus: 4
+
+# Lion
+- model: bestiary.monsterskill
+  fields:
+    monster: Lion
+    skill: Perception
+    bonus: 3
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Lion
+    skill: Stealth
+    bonus: 6
+
+# Mastiff
+- model: bestiary.monsterskill
+  fields:
+    monster: Mastiff
+    skill: Perception
+    bonus: 3
+
+# Tiger
+- model: bestiary.monsterskill
+  fields:
+    monster: Tiger
+    skill: Perception
+    bonus: 3
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Tiger
+    skill: Stealth
+    bonus: 6
+
+# =============================================================================
+# MonsterSkill - Humanoids
+# =============================================================================
+
+# Acolyte
+- model: bestiary.monsterskill
+  fields:
+    monster: Acolyte
+    skill: Medicine
+    bonus: 4
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Acolyte
+    skill: Religion
+    bonus: 2
+
+# Bandit Captain
+- model: bestiary.monsterskill
+  fields:
+    monster: Bandit Captain
+    skill: Athletics
+    bonus: 4
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Bandit Captain
+    skill: Deception
+    bonus: 4
+
+# Cult Fanatic
+- model: bestiary.monsterskill
+  fields:
+    monster: Cult Fanatic
+    skill: Deception
+    bonus: 4
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Cult Fanatic
+    skill: Persuasion
+    bonus: 4
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Cult Fanatic
+    skill: Religion
+    bonus: 2
+
+# Cultist
+- model: bestiary.monsterskill
+  fields:
+    monster: Cultist
+    skill: Deception
+    bonus: 2
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Cultist
+    skill: Religion
+    bonus: 2
+
+# Guard
+- model: bestiary.monsterskill
+  fields:
+    monster: Guard
+    skill: Perception
+    bonus: 2
+
+# Noble
+- model: bestiary.monsterskill
+  fields:
+    monster: Noble
+    skill: Deception
+    bonus: 5
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Noble
+    skill: Insight
+    bonus: 4
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Noble
+    skill: Persuasion
+    bonus: 5
+
+# Priest
+- model: bestiary.monsterskill
+  fields:
+    monster: Priest
+    skill: Medicine
+    bonus: 7
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Priest
+    skill: Persuasion
+    bonus: 3
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Priest
+    skill: Religion
+    bonus: 4
+
+# Scout
+- model: bestiary.monsterskill
+  fields:
+    monster: Scout
+    skill: Nature
+    bonus: 4
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Scout
+    skill: Perception
+    bonus: 5
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Scout
+    skill: Stealth
+    bonus: 6
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Scout
+    skill: Survival
+    bonus: 5
+
+# Spy
+- model: bestiary.monsterskill
+  fields:
+    monster: Spy
+    skill: Deception
+    bonus: 5
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Spy
+    skill: Insight
+    bonus: 4
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Spy
+    skill: Investigation
+    bonus: 5
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Spy
+    skill: Perception
+    bonus: 4
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Spy
+    skill: Persuasion
+    bonus: 5
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Spy
+    skill: Sleight of Hand
+    bonus: 4
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Spy
+    skill: Stealth
+    bonus: 4
+
+# Thug
+- model: bestiary.monsterskill
+  fields:
+    monster: Thug
+    skill: Intimidation
+    bonus: 2
+
+# Veteran
+- model: bestiary.monsterskill
+  fields:
+    monster: Veteran
+    skill: Athletics
+    bonus: 5
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Veteran
+    skill: Perception
+    bonus: 2
+
+# =============================================================================
+# MonsterSense - Beasts
+# =============================================================================
+
+# Bat
+- model: bestiary.monstersense
+  fields:
+    monster: Bat
+    sense_type: blindsight
+    range_feet: 60
+
+# Constrictor Snake
+- model: bestiary.monstersense
+  fields:
+    monster: Constrictor Snake
+    sense_type: blindsight
+    range_feet: 10
+
+# Poisonous Snake
+- model: bestiary.monstersense
+  fields:
+    monster: Poisonous Snake
+    sense_type: blindsight
+    range_feet: 10
+
+# Rat
+- model: bestiary.monstersense
+  fields:
+    monster: Rat
+    sense_type: darkvision
+    range_feet: 30
+
+# Tiger
+- model: bestiary.monstersense
+  fields:
+    monster: Tiger
+    sense_type: darkvision
+    range_feet: 60
+
+# =============================================================================
+# MonsterLanguage - Humanoids
+# =============================================================================
+
+# Acolyte
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Acolyte
+    language: Common
+
+# Bandit Captain
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Bandit Captain
+    language: Common
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Bandit Captain
+    language: "any two languages"
+
+# Berserker
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Berserker
+    language: Common
+
+# Cultist
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Cultist
+    language: Common
+
+# Cult Fanatic
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Cult Fanatic
+    language: Common
+
+# Guard
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Guard
+    language: Common
+
+# Knight
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Knight
+    language: Common
+
+# Noble
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Noble
+    language: Common
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Noble
+    language: "any two languages"
+
+# Priest
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Priest
+    language: Common
+
+# Scout
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Scout
+    language: Common
+
+# Spy
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Spy
+    language: Common
+
+# Thug
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Thug
+    language: Common
+
+# Tribal Warrior
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Tribal Warrior
+    language: Common
+
+# Veteran
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Veteran
+    language: Common
+
+# =============================================================================
+# MonsterTrait - Beasts
+# =============================================================================
+
+# Bat
+- model: bestiary.monstertrait
+  fields:
+    monster: Bat
+    name: Echolocation
+    description: "The bat can't use its blindsight while deafened."
+    sort_order: 0
+
+# Boar
+- model: bestiary.monstertrait
+  fields:
+    monster: Boar
+    name: Charge
+    description: "If the boar moves at least 20 feet straight toward a target and then hits it with a tusk attack on the same turn, the target takes an extra 3 (1d6) slashing damage. If the target is a creature, it must succeed on a DC 11 Strength saving throw or be knocked prone."
+    sort_order: 0
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Boar
+    name: Relentless (Recharges after a Short or Long Rest)
+    description: "If the boar takes 7 damage or less that would reduce it to 0 hit points, it is reduced to 1 hit point instead."
+    sort_order: 1
+
+# Lion
+- model: bestiary.monstertrait
+  fields:
+    monster: Lion
+    name: Keen Smell
+    description: "The lion has advantage on Wisdom (Perception) checks that rely on smell."
+    sort_order: 0
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Lion
+    name: Pack Tactics
+    description: "The lion has advantage on attack rolls against a creature if at least one of the lion's allies is within 5 feet of the creature and the ally isn't incapacitated."
+    sort_order: 1
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Lion
+    name: Pounce
+    description: "If the lion moves at least 20 feet straight toward a creature and then hits it with a claw attack on the same turn, that target must succeed on a DC 13 Strength saving throw or be knocked prone. If the target is prone, the lion can make one bite attack against it as a bonus action."
+    sort_order: 2
+
+# Raven
+- model: bestiary.monstertrait
+  fields:
+    monster: Raven
+    name: Mimicry
+    description: "The raven can mimic simple sounds it has heard, such as a person whispering, a baby crying, or an animal chittering. A creature that hears the sounds can tell they are imitations with a successful DC 10 Wisdom (Insight) check."
+    sort_order: 0
+
+# Tiger
+- model: bestiary.monstertrait
+  fields:
+    monster: Tiger
+    name: Keen Smell
+    description: "The tiger has advantage on Wisdom (Perception) checks that rely on smell."
+    sort_order: 0
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Tiger
+    name: Pounce
+    description: "If the tiger moves at least 20 feet straight toward a creature and then hits it with a claw attack on the same turn, that target must succeed on a DC 13 Strength saving throw or be knocked prone. If the target is prone, the tiger can make one bite attack against it as a bonus action."
+    sort_order: 1
+
+# =============================================================================
+# MonsterTrait - Humanoids
+# =============================================================================
+
+# Berserker
+- model: bestiary.monstertrait
+  fields:
+    monster: Berserker
+    name: Reckless
+    description: "At the start of its turn, the berserker can gain advantage on all melee weapon attack rolls during that turn, but attack rolls against it have advantage until the start of its next turn."
+    sort_order: 0
+
+# Cultist
+- model: bestiary.monstertrait
+  fields:
+    monster: Cultist
+    name: Dark Devotion
+    description: "The cultist has advantage on saving throws against being charmed or frightened."
+    sort_order: 0
+
+# Knight
+- model: bestiary.monstertrait
+  fields:
+    monster: Knight
+    name: Brave
+    description: "The knight has advantage on saving throws against being frightened."
+    sort_order: 0
+
+# Priest
+- model: bestiary.monstertrait
+  fields:
+    monster: Priest
+    name: Divine Eminence
+    description: "As a bonus action, the priest can expend a spell slot to cause its melee weapon attacks to magically deal an extra 10 (3d6) radiant damage to a target on a hit. This benefit lasts until the end of the turn. If the priest expends a spell slot of 2nd level or higher, the extra damage increases by 1d6 for each level above 1st."
+    sort_order: 0
+
+# Scout
+- model: bestiary.monstertrait
+  fields:
+    monster: Scout
+    name: Keen Hearing and Sight
+    description: "The scout has advantage on Wisdom (Perception) checks that rely on hearing or sight."
+    sort_order: 0
+
+# Spy
+- model: bestiary.monstertrait
+  fields:
+    monster: Spy
+    name: Cunning Action
+    description: "On each of its turns, the spy can use a bonus action to take the Dash, Disengage, or Hide action."
+    sort_order: 0
+
+# Thug
+- model: bestiary.monstertrait
+  fields:
+    monster: Thug
+    name: Pack Tactics
+    description: "The thug has advantage on attack rolls against a creature if at least one of the thug's allies is within 5 feet of the creature and the ally isn't incapacitated."
+    sort_order: 0
+
+# =============================================================================
+# MonsterActionTemplate - Beasts
+# =============================================================================
+
+# Ape
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Ape
+    name: Multiattack
+    description: "The ape makes two fist attacks."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Ape
+    name: Fist
+    description: "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 6 (1d6 + 3) bludgeoning damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Ape
+    name: Rock
+    description: "Ranged Weapon Attack: +5 to hit, range 25/50 ft., one target. Hit: 6 (1d6 + 3) bludgeoning damage."
+    sort_order: 2
+
+# Bat
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Bat
+    name: Bite
+    description: "Melee Weapon Attack: +0 to hit, reach 5 ft., one creature. Hit: 1 piercing damage."
+    sort_order: 0
+
+# Black Bear
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Black Bear
+    name: Multiattack
+    description: "The bear makes two attacks: one with its bite and one with its claws."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Black Bear
+    name: Bite
+    description: "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Black Bear
+    name: Claws
+    description: "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 7 (2d4 + 2) slashing damage."
+    sort_order: 2
+
+# Boar
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Boar
+    name: Tusk
+    description: "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 4 (1d6 + 1) slashing damage."
+    sort_order: 0
+
+# Brown Bear
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Brown Bear
+    name: Multiattack
+    description: "The bear makes two attacks: one with its bite and one with its claws."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Brown Bear
+    name: Bite
+    description: "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 8 (1d8 + 4) piercing damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Brown Bear
+    name: Claws
+    description: "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 11 (2d6 + 4) slashing damage."
+    sort_order: 2
+
+# Cat
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Cat
+    name: Claws
+    description: "Melee Weapon Attack: +0 to hit, reach 5 ft., one target. Hit: 1 slashing damage."
+    sort_order: 0
+
+# Constrictor Snake
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Constrictor Snake
+    name: Bite
+    description: "Melee Weapon Attack: +4 to hit, reach 5 ft., one creature. Hit: 5 (1d6 + 2) piercing damage."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Constrictor Snake
+    name: Constrict
+    description: "Melee Weapon Attack: +4 to hit, reach 5 ft., one creature. Hit: 6 (1d8 + 2) bludgeoning damage, and the target is grappled (escape DC 14). Until this grapple ends, the creature is restrained, and the snake can't constrict another target."
+    sort_order: 1
+
+# Crocodile
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Crocodile
+    name: Bite
+    description: "Melee Weapon Attack: +4 to hit, reach 5 ft., one creature. Hit: 7 (1d10 + 2) piercing damage, and the target is grappled (escape DC 12). Until this grapple ends, the target is restrained, and the crocodile can't bite another target."
+    sort_order: 0
+
+# Hawk
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Hawk
+    name: Talons
+    description: "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 1 slashing damage."
+    sort_order: 0
+
+# Lion
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Lion
+    name: Multiattack
+    description: "The lion makes two attacks: one with its bite and one with its claws."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Lion
+    name: Bite
+    description: "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 7 (1d8 + 3) piercing damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Lion
+    name: Claw
+    description: "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 6 (1d6 + 3) slashing damage."
+    sort_order: 2
+
+# Mastiff
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Mastiff
+    name: Bite
+    description: "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 4 (1d6 + 1) piercing damage. If the target is a creature, it must succeed on a DC 11 Strength saving throw or be knocked prone."
+    sort_order: 0
+
+# Poisonous Snake
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Poisonous Snake
+    name: Bite
+    description: "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 1 piercing damage, and the target must make a DC 10 Constitution saving throw, taking 5 (2d4) poison damage on a failed save, or half as much damage on a successful one."
+    sort_order: 0
+
+# Rat
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Rat
+    name: Bite
+    description: "Melee Weapon Attack: +0 to hit, reach 5 ft., one target. Hit: 1 piercing damage."
+    sort_order: 0
+
+# Raven
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Raven
+    name: Beak
+    description: "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 1 piercing damage."
+    sort_order: 0
+
+# Riding Horse
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Riding Horse
+    name: Hooves
+    description: "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 8 (2d4 + 3) bludgeoning damage."
+    sort_order: 0
+
+# Tiger
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Tiger
+    name: Multiattack
+    description: "The tiger makes two attacks: one with its bite and one with its claws."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Tiger
+    name: Bite
+    description: "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 8 (1d10 + 3) piercing damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Tiger
+    name: Claw
+    description: "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 7 (1d8 + 3) slashing damage."
+    sort_order: 2
+
+# Warhorse
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Warhorse
+    name: Hooves
+    description: "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 11 (2d6 + 4) bludgeoning damage."
+    sort_order: 0
+
+# =============================================================================
+# MonsterActionTemplate - Humanoids
+# =============================================================================
+
+# Acolyte
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Acolyte
+    name: Club
+    description: "Melee Weapon Attack: +2 to hit, reach 5 ft., one target. Hit: 2 (1d4) bludgeoning damage."
+    sort_order: 0
+
+# Bandit Captain
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Bandit Captain
+    name: Multiattack
+    description: "The bandit captain makes three melee attacks: two with its scimitar and one with its dagger. Or the bandit captain makes two ranged attacks with its daggers."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Bandit Captain
+    name: Scimitar
+    description: "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 6 (1d6 + 3) slashing damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Bandit Captain
+    name: Dagger
+    description: "Melee or Ranged Weapon Attack: +5 to hit, reach 5 ft. or range 20/60 ft., one target. Hit: 5 (1d4 + 3) piercing damage."
+    sort_order: 2
+
+# Berserker
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Berserker
+    name: Greataxe
+    description: "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 9 (1d12 + 3) slashing damage."
+    sort_order: 0
+
+# Cultist
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Cultist
+    name: Scimitar
+    description: "Melee Weapon Attack: +3 to hit, reach 5 ft., one creature. Hit: 4 (1d6 + 1) slashing damage."
+    sort_order: 0
+
+# Cult Fanatic
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Cult Fanatic
+    name: Multiattack
+    description: "The fanatic makes two melee attacks."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Cult Fanatic
+    name: Dagger
+    description: "Melee or Ranged Weapon Attack: +4 to hit, reach 5 ft. or range 20/60 ft., one creature. Hit: 4 (1d4 + 2) piercing damage."
+    sort_order: 1
+
+# Guard
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Guard
+    name: Spear
+    description: "Melee or Ranged Weapon Attack: +3 to hit, reach 5 ft. or range 20/60 ft., one target. Hit: 4 (1d6 + 1) piercing damage, or 5 (1d8 + 1) piercing damage if used with two hands to make a melee attack."
+    sort_order: 0
+
+# Knight
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Knight
+    name: Multiattack
+    description: "The knight makes two melee attacks."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Knight
+    name: Greatsword
+    description: "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 10 (2d6 + 3) slashing damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Knight
+    name: Heavy Crossbow
+    description: "Ranged Weapon Attack: +2 to hit, range 100/400 ft., one target. Hit: 5 (1d10) piercing damage."
+    sort_order: 2
+
+# Noble
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Noble
+    name: Rapier
+    description: "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 5 (1d8 + 1) piercing damage."
+    sort_order: 0
+
+# Priest
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Priest
+    name: Mace
+    description: "Melee Weapon Attack: +2 to hit, reach 5 ft., one target. Hit: 3 (1d6) bludgeoning damage."
+    sort_order: 0
+
+# Scout
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Scout
+    name: Multiattack
+    description: "The scout makes two melee attacks or two ranged attacks."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Scout
+    name: Shortsword
+    description: "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Scout
+    name: Longbow
+    description: "Ranged Weapon Attack: +4 to hit, ranged 150/600 ft., one target. Hit: 6 (1d8 + 2) piercing damage."
+    sort_order: 2
+
+# Spy
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Spy
+    name: Multiattack
+    description: "The spy makes two melee attacks."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Spy
+    name: Shortsword
+    description: "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Spy
+    name: Hand Crossbow
+    description: "Ranged Weapon Attack: +4 to hit, range 30/120 ft., one target. Hit: 5 (1d6 + 2) piercing damage."
+    sort_order: 2
+
+# Thug
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Thug
+    name: Multiattack
+    description: "The thug makes two melee attacks."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Thug
+    name: Mace
+    description: "Melee Weapon Attack: +4 to hit, reach 5 ft., one creature. Hit: 5 (1d6 + 2) bludgeoning damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Thug
+    name: Heavy Crossbow
+    description: "Ranged Weapon Attack: +2 to hit, range 100/400 ft., one target. Hit: 5 (1d10) piercing damage."
+    sort_order: 2
+
+# Tribal Warrior
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Tribal Warrior
+    name: Spear
+    description: "Melee or Ranged Weapon Attack: +3 to hit, reach 5 ft. or range 20/60 ft., one target. Hit: 4 (1d6 + 1) piercing damage, or 5 (1d8 + 1) piercing damage if used with two hands to make a melee attack."
+    sort_order: 0
+
+# Veteran
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Veteran
+    name: Multiattack
+    description: "The veteran makes two longsword attacks. If it has a shortsword drawn, it can also make a shortsword attack."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Veteran
+    name: Longsword
+    description: "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 7 (1d8 + 3) slashing damage, or 8 (1d10 + 3) slashing damage if used with two hands."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Veteran
+    name: Shortsword
+    description: "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 6 (1d6 + 3) piercing damage."
+    sort_order: 2
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Veteran
+    name: Heavy Crossbow
+    description: "Ranged Weapon Attack: +3 to hit, range 100/400 ft., one target. Hit: 6 (1d10 + 1) piercing damage."
+    sort_order: 3
