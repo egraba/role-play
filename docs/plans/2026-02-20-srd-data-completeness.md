@@ -444,7 +444,7 @@ Background → origin feat mapping:
 - Noble → `FeatName.SKILLED`
 - Pilgrim → `FeatName.HEALER`
 - Sailor → `FeatName.TAVERN_BRAWLER`
-- Scribe → `FeatName.MAGIC_INITIATE_WIZARD`
+- Scribe → `FeatName.SKILLED`
 - Wayfarer → `FeatName.LUCKY`
 
 Background → skill proficiencies mapping (verify against SRD 5.2.1):
