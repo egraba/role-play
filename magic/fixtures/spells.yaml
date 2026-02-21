@@ -301,3 +301,431 @@
       When you cast this spell using a spell slot of 4th level or higher, you can target one additional creature
       for each slot level above 3rd.
     classes: ["sorcerer", "warlock", "wizard"]
+
+# =============================================================================
+# LEVEL 1 SPELLS - Additional SRD spells
+# =============================================================================
+
+- model: magic.spellsettings
+  fields:
+    name: Alarm
+    level: 1
+    school: abjuration
+    casting_time: 1_minute
+    range: 30_feet
+    components: ["V", "S", "M"]
+    material_components: a tiny bell and a piece of fine silver wire
+    duration: 8_hours
+    concentration: false
+    ritual: true
+    description: >
+      You set an alarm against unwanted intrusion. Choose a door, a window, or an area within range that
+      is no larger than a 20-foot cube. Until the spell ends, an alarm alerts you whenever a Tiny or larger
+      creature touches or enters the warded area. When you cast the spell, you can designate creatures that
+      won't set off the alarm. You also choose whether the alarm is mental or audible.
+    classes: ["ranger", "wizard"]
+
+- model: magic.spellsettings
+  fields:
+    name: Animal Friendship
+    level: 1
+    school: enchantment
+    casting_time: action
+    range: 30_feet
+    components: ["V", "S", "M"]
+    material_components: a morsel of food
+    duration: 24_hours
+    concentration: false
+    ritual: false
+    description: >
+      This spell lets you convince a beast that you mean it no harm. Choose a beast that you can see within
+      range. It must see and hear you. If the beast's Intelligence is 4 or higher, the spell fails. Otherwise,
+      the beast must succeed on a Wisdom saving throw or be charmed by you for the spell's duration. If you or
+      one of your companions harms the target, the spell ends.
+    higher_levels: >
+      When you cast this spell using a spell slot of 2nd level or higher, you can affect one additional beast
+      for each slot level above 1st.
+    classes: ["bard", "druid", "ranger"]
+
+- model: magic.spellsettings
+  fields:
+    name: Bane
+    level: 1
+    school: enchantment
+    casting_time: action
+    range: 30_feet
+    components: ["V", "S", "M"]
+    material_components: a drop of blood
+    duration: 1_minute
+    concentration: true
+    ritual: false
+    description: >
+      Up to three creatures of your choice that you can see within range must make Charisma saving throws.
+      Whenever a target that fails this saving throw makes an attack roll or a saving throw before the spell
+      ends, the target must roll a d4 and subtract the number rolled from the attack roll or saving throw.
+    higher_levels: >
+      When you cast this spell using a spell slot of 2nd level or higher, you can target one additional creature
+      for each slot level above 1st.
+    classes: ["bard", "cleric"]
+
+- model: magic.spellsettings
+  fields:
+    name: Bless
+    level: 1
+    school: enchantment
+    casting_time: action
+    range: 30_feet
+    components: ["V", "S", "M"]
+    material_components: a sprinkling of holy water
+    duration: 1_minute
+    concentration: true
+    ritual: false
+    description: >
+      You bless up to three creatures of your choice within range. Whenever a target makes an attack roll
+      or a saving throw before the spell ends, the target can roll a d4 and add the number rolled to the
+      attack roll or saving throw.
+    higher_levels: >
+      When you cast this spell using a spell slot of 2nd level or higher, you can target one additional creature
+      for each slot level above 1st.
+    classes: ["cleric", "paladin"]
+
+- model: magic.spellsettings
+  fields:
+    name: Burning Hands
+    level: 1
+    school: evocation
+    casting_time: action
+    range: self
+    components: ["V", "S"]
+    duration: instantaneous
+    concentration: false
+    ritual: false
+    description: >
+      As you hold your hands with thumbs touching and fingers spread, a thin sheet of flames shoots forth
+      from your outstretched fingertips. Each creature in a 15-foot cone must make a Dexterity saving throw.
+      A creature takes 3d6 fire damage on a failed save, or half as much on a successful one. The fire
+      ignites any flammable objects in the area that aren't being worn or carried.
+    higher_levels: >
+      When you cast this spell using a spell slot of 2nd level or higher, the damage increases by 1d6 for
+      each slot level above 1st.
+    classes: ["sorcerer", "wizard"]
+
+- model: magic.spellsettings
+  fields:
+    name: Charm Person
+    level: 1
+    school: enchantment
+    casting_time: action
+    range: 30_feet
+    components: ["V", "S"]
+    duration: 1_hour
+    concentration: false
+    ritual: false
+    description: >
+      You attempt to charm a humanoid you can see within range. It must make a Wisdom saving throw, and does
+      so with advantage if you or your companions are fighting it. If it fails the saving throw, it is charmed
+      by you until the spell ends or until you or your companions do anything harmful to it. The charmed creature
+      regards you as a friendly acquaintance. When the spell ends, the creature knows it was charmed by you.
+    higher_levels: >
+      When you cast this spell using a spell slot of 2nd level or higher, you can target one additional creature
+      for each slot level above 1st.
+    classes: ["bard", "druid", "sorcerer", "warlock", "wizard"]
+
+- model: magic.spellsettings
+  fields:
+    name: Command
+    level: 1
+    school: enchantment
+    casting_time: action
+    range: 60_feet
+    components: ["V"]
+    duration: instantaneous
+    concentration: false
+    ritual: false
+    description: >
+      You speak a one-word command to a creature you can see within range. The target must succeed on a Wisdom
+      saving throw or follow the command on its next turn. The spell has no effect if the target is undead, if
+      it doesn't understand your language, or if your command is directly harmful to it. Some typical commands
+      include Flee, Grovel, Halt, Drop, and Approach.
+    higher_levels: >
+      When you cast this spell using a spell slot of 2nd level or higher, you can affect one additional creature
+      for each slot level above 1st.
+    classes: ["cleric", "paladin"]
+
+- model: magic.spellsettings
+  fields:
+    name: Detect Magic
+    level: 1
+    school: divination
+    casting_time: action
+    range: self
+    components: ["V", "S"]
+    duration: 10_minutes
+    concentration: true
+    ritual: true
+    description: >
+      For the duration, you sense the presence of magic within 30 feet of you. If you sense magic in this way,
+      you can use your action to see a faint aura around any visible creature or object in the area that bears
+      magic, and you learn its school of magic, if any. The spell can penetrate most barriers, but is blocked
+      by 1 foot of stone, 1 inch of common metal, a thin sheet of lead, or 3 feet of wood or dirt.
+    classes: ["bard", "cleric", "druid", "paladin", "ranger", "sorcerer", "wizard"]
+
+- model: magic.spellsettings
+  fields:
+    name: Entangle
+    level: 1
+    school: conjuration
+    casting_time: action
+    range: 90_feet
+    components: ["V", "S"]
+    duration: 1_minute
+    concentration: true
+    ritual: false
+    description: >
+      Grasping weeds and vines sprout from the ground in a 20-foot square starting from a point within range.
+      For the duration, these plants turn the ground in the area into difficult terrain. A creature in the area
+      when you cast the spell must succeed on a Strength saving throw or be restrained by the entangling plants
+      until the spell ends. A restrained creature can use its action to make a Strength check against your spell
+      save DC, freeing itself on a success.
+    classes: ["druid"]
+
+- model: magic.spellsettings
+  fields:
+    name: Faerie Fire
+    level: 1
+    school: evocation
+    casting_time: action
+    range: 60_feet
+    components: ["V"]
+    duration: 1_minute
+    concentration: true
+    ritual: false
+    description: >
+      Each object in a 20-foot cube within range is outlined in blue, green, or violet light (your choice).
+      Any creature in the area when the spell is cast is also outlined in light if it fails a Dexterity saving
+      throw. For the duration, objects and affected creatures shed dim light in a 10-foot radius. Any attack
+      roll against an affected creature or object has advantage if the attacker can see it, and the affected
+      creature or object can't benefit from being invisible.
+    classes: ["bard", "druid"]
+
+- model: magic.spellsettings
+  fields:
+    name: False Life
+    level: 1
+    school: necromancy
+    casting_time: action
+    range: self
+    components: ["V", "S", "M"]
+    material_components: a small amount of alcohol or distilled spirits
+    duration: 1_hour
+    concentration: false
+    ritual: false
+    description: >
+      Bolstering yourself with a necromantic facsimile of life, you gain 1d4 + 4 temporary hit points for
+      the duration.
+    higher_levels: >
+      When you cast this spell using a spell slot of 2nd level or higher, you gain 5 additional temporary
+      hit points for each slot level above 1st.
+    classes: ["sorcerer", "wizard"]
+
+- model: magic.spellsettings
+  fields:
+    name: Feather Fall
+    level: 1
+    school: transmutation
+    casting_time: reaction
+    casting_time_detail: which you take when you or a creature within 60 feet of you falls
+    range: 60_feet
+    components: ["V", "M"]
+    material_components: a small feather or piece of down
+    duration: 1_minute
+    concentration: false
+    ritual: false
+    description: >
+      Choose up to five falling creatures within range. A falling creature's rate of descent slows to 60 feet
+      per round until the spell ends. If the creature lands before the spell ends, it takes no falling damage
+      and can land on its feet, and the spell ends for that creature.
+    classes: ["bard", "sorcerer", "wizard"]
+
+- model: magic.spellsettings
+  fields:
+    name: Fog Cloud
+    level: 1
+    school: conjuration
+    casting_time: action
+    range: 120_feet
+    components: ["V", "S"]
+    duration: 1_hour
+    concentration: true
+    ritual: false
+    description: >
+      You create a 20-foot-radius sphere of fog centered on a point within range. The sphere spreads around
+      corners, and its area is heavily obscured. It lasts for the duration or until a wind of moderate or
+      greater speed (at least 10 miles per hour) disperses it.
+    higher_levels: >
+      When you cast this spell using a spell slot of 2nd level or higher, the radius of the fog increases by
+      20 feet for each slot level above 1st.
+    classes: ["druid", "ranger", "sorcerer", "wizard"]
+
+- model: magic.spellsettings
+  fields:
+    name: Goodberry
+    level: 1
+    school: transmutation
+    casting_time: action
+    range: touch
+    components: ["V", "S", "M"]
+    material_components: a sprig of mistletoe
+    duration: instantaneous
+    concentration: false
+    ritual: false
+    description: >
+      Up to ten berries appear in your hand and are infused with magic for the duration. A creature can use
+      its action to eat one berry. Eating a berry restores 1 hit point, and the berry provides enough nourishment
+      to sustain a creature for one day. The berries lose their potency if they have not been consumed within
+      24 hours of the casting of this spell.
+    classes: ["druid", "ranger"]
+
+- model: magic.spellsettings
+  fields:
+    name: Healing Word
+    level: 1
+    school: evocation
+    casting_time: bonus_action
+    range: 60_feet
+    components: ["V"]
+    duration: instantaneous
+    concentration: false
+    ritual: false
+    description: >
+      A creature of your choice that you can see within range regains hit points equal to 1d4 + your
+      spellcasting ability modifier. This spell has no effect on undead or constructs.
+    higher_levels: >
+      When you cast this spell using a spell slot of 2nd level or higher, the healing increases by 1d4 for
+      each slot level above 1st.
+    classes: ["bard", "cleric", "druid"]
+
+- model: magic.spellsettings
+  fields:
+    name: Heroism
+    level: 1
+    school: enchantment
+    casting_time: action
+    range: touch
+    components: ["V", "S"]
+    duration: 1_minute
+    concentration: true
+    ritual: false
+    description: >
+      A willing creature you touch is imbued with bravery. Until the spell ends, the creature is immune to
+      being frightened and gains temporary hit points equal to your spellcasting ability modifier at the start
+      of each of its turns. When the spell ends, the target loses any remaining temporary hit points from this
+      spell.
+    higher_levels: >
+      When you cast this spell using a spell slot of 2nd level or higher, you can target one additional creature
+      for each slot level above 1st.
+    classes: ["bard", "paladin"]
+
+- model: magic.spellsettings
+  fields:
+    name: Hunter's Mark
+    level: 1
+    school: divination
+    casting_time: bonus_action
+    range: 90_feet
+    components: ["V"]
+    duration: 1_hour
+    concentration: true
+    ritual: false
+    description: >
+      You choose a creature you can see within range and mystically mark it as your quarry. Until the spell
+      ends, you deal an extra 1d6 damage to the target whenever you hit it with a weapon attack, and you have
+      advantage on any Wisdom (Perception) or Wisdom (Survival) check you make to find it. If the target drops
+      to 0 hit points before this spell ends, you can use a bonus action to mark a new creature.
+    higher_levels: >
+      When you cast this spell using a spell slot of 3rd or 4th level, you can maintain your concentration on
+      the spell for up to 8 hours. When you use a spell slot of 5th level or higher, you can maintain your
+      concentration for up to 24 hours.
+    classes: ["ranger"]
+
+- model: magic.spellsettings
+  fields:
+    name: Inflict Wounds
+    level: 1
+    school: necromancy
+    casting_time: action
+    range: touch
+    components: ["V", "S"]
+    duration: instantaneous
+    concentration: false
+    ritual: false
+    description: >
+      Make a melee spell attack against a creature you can reach. On a hit, the target takes 3d10 necrotic
+      damage.
+    higher_levels: >
+      When you cast this spell using a spell slot of 2nd level or higher, the damage increases by 1d10 for
+      each slot level above 1st.
+    classes: ["cleric"]
+
+- model: magic.spellsettings
+  fields:
+    name: Protection from Evil and Good
+    level: 1
+    school: abjuration
+    casting_time: action
+    range: touch
+    components: ["V", "S", "M"]
+    material_components: holy water or powdered silver and iron, which the spell consumes
+    duration: 10_minutes
+    concentration: true
+    ritual: false
+    description: >
+      Until the spell ends, one willing creature you touch is protected against certain types of creatures:
+      aberrations, celestials, elementals, fey, fiends, and undead. The protection grants several benefits:
+      creatures of those types have disadvantage on attack rolls against the target; the target can't be
+      charmed, frightened, or possessed by them; if already affected, the target has advantage on new saving
+      throws against such effects.
+    classes: ["cleric", "paladin", "warlock", "wizard"]
+
+- model: magic.spellsettings
+  fields:
+    name: Sanctuary
+    level: 1
+    school: abjuration
+    casting_time: action
+    range: 30_feet
+    components: ["V", "S", "M"]
+    material_components: a small silver mirror
+    duration: 1_minute
+    concentration: false
+    ritual: false
+    description: >
+      You ward a creature within range against attack. Until the spell ends, any creature who targets the
+      warded creature with an attack or a harmful spell must first make a Wisdom saving throw. On a failed
+      save, the creature must choose a new target or lose the attack or spell. This spell doesn't protect the
+      warded creature from area effects, such as the explosion of a fireball. If the warded creature makes an
+      attack, casts a spell that affects an enemy, or deals damage to another creature, this spell ends.
+    classes: ["cleric"]
+
+- model: magic.spellsettings
+  fields:
+    name: Thunderwave
+    level: 1
+    school: evocation
+    casting_time: action
+    range: self
+    components: ["V", "S"]
+    duration: instantaneous
+    concentration: false
+    ritual: false
+    description: >
+      A wave of thunderous force sweeps out from you. Each creature in a 15-foot cube originating from you
+      must make a Constitution saving throw. On a failed save, a creature takes 2d8 thunder damage and is
+      pushed 10 feet away from you. On a successful save, the creature takes half as much damage and isn't
+      pushed. In addition, unsecured objects that are completely within the area of effect are automatically
+      pushed 10 feet away from you by the spell's effect, and the spell emits a thunderclap audible out to
+      300 feet.
+    higher_levels: >
+      When you cast this spell using a spell slot of 2nd level or higher, the damage increases by 1d8 for
+      each slot level above 1st.
+    classes: ["bard", "druid", "sorcerer", "wizard"]
