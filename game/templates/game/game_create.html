@@ -3,16 +3,16 @@
 {% block content %}
     <div class="rpg-container">
         <div class="rpg-panel" style="max-width: 600px; margin: 50px auto;">
-            <h1 class="panel-title"><img src="/static/images/icons/ui/play.svg" alt="" class="rpg-icon rpg-icon-lg rpg-icon-primary"> Create Game</h1>
+            <h1 class="panel-title">Create Game</h1>
             <div class="game-message warning">
                 <p><strong>Are you sure you want to create this game?</strong></p>
             </div>
             <div class="action-buttons mt-2">
                 <form method="post" style="display: inline;">
                     {% csrf_token %}
-                    <button class="rpg-btn btn-primary" type="submit">Yes, create it</button>
+                    <button class="btn btn-primary" type="submit">Yes, create it</button>
                 </form>
-                <a href="{{ campaign.get_absolute_url }}" class="rpg-btn btn-defend">No, go back</a>
+                <a href="{{ campaign.get_absolute_url }}" class="btn btn-ghost">No, go back</a>
             </div>
         </div>
     </div>
