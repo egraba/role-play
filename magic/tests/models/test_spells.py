@@ -378,6 +378,45 @@ class TestClassSpellcastingModel:
 
 
 @pytest.mark.django_db
+class TestSRDSpellCompleteness:
+    """Verify SRD 5.2.1 spell fixtures are loaded correctly."""
+
+    def test_total_spell_count(self):
+        count = SpellSettings.objects.count()
+        assert count >= 140, f"Expected at least 140 spells, found {count}"
+
+    def test_cantrip_count(self):
+        count = SpellSettings.objects.filter(level=0).count()
+        assert count >= 20, f"Expected at least 20 cantrips, found {count}"
+
+    def test_key_spells_loaded(self):
+        required_spells = [
+            "Eldritch Blast",
+            "Guidance",
+            "Vicious Mockery",
+            "Sacred Flame",
+            "Bless",
+            "Healing Word",
+            "Hunter's Mark",
+            "Fireball",
+            "Spiritual Weapon",
+            "Moonbeam",
+            "Greater Restoration",
+            "Wall of Force",
+        ]
+        for spell_name in required_spells:
+            assert SpellSettings.objects.filter(name=spell_name).exists(), (
+                f"Missing required spell: {spell_name}"
+            )
+
+    def test_all_spells_have_description(self):
+        empty = SpellSettings.objects.filter(description="")
+        assert empty.count() == 0, (
+            f"Spells with empty description: {list(empty.values_list('name', flat=True))}"
+        )
+
+
+@pytest.mark.django_db
 class TestConcentrationModel:
     def test_creation(self):
         character = CharacterFactory()

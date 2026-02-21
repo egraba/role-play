@@ -4,6 +4,9 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 
 ## Unreleased
 
+### Added
+* Spells: 135 new SRD 5.2.1 spells (cantrips through level 5, covering all classes)
+
 ## v0.15.0 - 2026-02-20
 
 ### Changed
