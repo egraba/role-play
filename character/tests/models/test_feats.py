@@ -195,13 +195,7 @@ class TestSRDFeatCompleteness:
 
     def test_general_feat_count(self):
         general_count = Feat.objects.filter(feat_type=FeatType.GENERAL).count()
-        assert general_count == len(
-            [
-                n
-                for n in FeatName
-                if Feat.objects.filter(name=n, feat_type=FeatType.GENERAL).exists()
-            ]
-        )
+        assert general_count == 30, f"Expected 30 general feats, found {general_count}"
 
     def test_all_general_feats_have_description(self):
         feats = Feat.objects.filter(feat_type=FeatType.GENERAL)
