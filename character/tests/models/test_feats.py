@@ -74,13 +74,18 @@ class TestFeatModel:
         assert feat.prerequisite == "Level 4"
 
     def test_ordering(self):
-        """Feats are ordered by name (ascending alphabetical)."""
-        FeatFactory(name=FeatName.SAVAGE_ATTACKER)
-        FeatFactory(name=FeatName.ALERT)
-        FeatFactory(name=FeatName.MAGIC_INITIATE_CLERIC)
-        feats = list(Feat.objects.all())
-        names = [f.name for f in feats]
-        assert names == sorted(names)
+        """Feats are ordered by name."""
+        names = [
+            FeatName.SAVAGE_ATTACKER,
+            FeatName.ALERT,
+            FeatName.MAGIC_INITIATE_CLERIC,
+        ]
+        for name in names:
+            FeatFactory(name=name)
+        feats = list(Feat.objects.filter(name__in=names))
+        assert feats[0].name == FeatName.ALERT
+        assert feats[1].name == FeatName.MAGIC_INITIATE_CLERIC
+        assert feats[2].name == FeatName.SAVAGE_ATTACKER
 
 
 @pytest.mark.django_db
