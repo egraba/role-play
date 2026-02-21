@@ -1,7 +1,7 @@
 import pytest
 
 from character.constants.species import SpeciesName, SpeciesTraitName
-from character.models.species import SpeciesTrait
+from character.models.species import Species, SpeciesTrait
 
 from ..factories import CharacterFactory, SpeciesFactory
 
@@ -132,3 +132,48 @@ class TestCharacterSpeciesRelation:
         character = CharacterFactory(species=None)
         assert character.species is None
         assert not character._has_trait(SpeciesTraitName.BRAVE.value)
+
+
+@pytest.mark.django_db
+class TestNewSRDSpecies:
+    """Verify all 5 new SRD 5.2.1 species load from fixtures correctly."""
+
+    def test_all_nine_species_exist(self):
+        assert Species.objects.count() == 9
+
+    def test_dragonborn_loaded(self):
+        species = Species.objects.get(name=SpeciesName.DRAGONBORN)
+        assert species.size == "M"
+        assert species.speed == 30
+        assert species.darkvision == 60  # SRD 5.2.1 Dragonborn has darkvision
+        assert (
+            species.traits.count() == 4
+        )  # draconic_ancestry, breath_weapon, draconic_damage_resistance, draconic_flight
+
+    def test_gnome_loaded(self):
+        species = Species.objects.get(name=SpeciesName.GNOME)
+        assert species.size == "S"
+        assert species.darkvision == 60
+        assert species.traits.count() == 2  # gnomish_cunning, gnomish_lineage
+
+    def test_goliath_loaded(self):
+        species = Species.objects.get(name=SpeciesName.GOLIATH)
+        assert species.speed == 35  # Giant Ancestry +5 ft
+        assert species.darkvision == 0
+        assert species.traits.count() == 3  # giant_ancestry, large_form, powerful_build
+
+    def test_orc_loaded(self):
+        species = Species.objects.get(name=SpeciesName.ORC)
+        assert species.darkvision == 120  # SRD 5.2.1 Orc has 120 ft darkvision
+        assert species.traits.count() == 2  # adrenaline_rush, relentless_endurance
+
+    def test_tiefling_loaded(self):
+        species = Species.objects.get(name=SpeciesName.TIEFLING)
+        assert species.darkvision == 60
+        assert species.traits.count() == 2  # fiendish_legacy, otherworldly_presence
+
+    def test_all_species_name_choices_have_fixture(self):
+        for name, _ in SpeciesName.choices:
+            assert Species.objects.filter(name=name).exists(), (
+                f"Missing fixture for species: {name}"
+            )
