@@ -181,3 +181,29 @@ class TestCharacterFeatModel:
         assert char_feat.character is not None
         assert char_feat.feat is not None
         assert char_feat.granted_by == "background"
+
+
+@pytest.mark.django_db
+class TestSRDFeatCompleteness:
+    """Verify all SRD 5.2.1 feats load from fixtures correctly."""
+
+    def test_all_feat_names_have_fixture(self):
+        for name, _ in FeatName.choices:
+            assert Feat.objects.filter(name=name).exists(), (
+                f"Missing fixture for feat: {name}"
+            )
+
+    def test_general_feat_count(self):
+        general_count = Feat.objects.filter(feat_type=FeatType.GENERAL).count()
+        assert general_count == len(
+            [
+                n
+                for n in FeatName
+                if Feat.objects.filter(name=n, feat_type=FeatType.GENERAL).exists()
+            ]
+        )
+
+    def test_all_general_feats_have_description(self):
+        feats = Feat.objects.filter(feat_type=FeatType.GENERAL)
+        for feat in feats:
+            assert feat.description, f"Feat {feat.name} has empty description"

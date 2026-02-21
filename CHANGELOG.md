@@ -6,9 +6,10 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 
 ### Added
 - Monsters: 87 new SRD 5.2.1 monsters covering all 14 creature types and CR 0–24
-* Spells: 135 new SRD 5.2.1 spells (cantrips through level 5, covering all classes)
+- Spells: 135 new SRD 5.2.1 spells (cantrips through level 5, covering all classes)
 - Species: Dragonborn, Gnome, Goliath, Orc, Tiefling (SRD 5.2.1)
 - Backgrounds: Artisan, Charlatan, Entertainer, Farmer, Guard, Guide, Hermit, Merchant, Noble, Pilgrim, Sailor, Scribe, Wayfarer (SRD 5.2.1)
+- Feats: 30 general feats (Ability Score Improvement, Actor, Athlete, Charger, Chef, Crossbow Expert, Crusher, Defensive Duelist, Dual Wielder, Durable, Elemental Adept, Fey-Touched, Grappler, Great Weapon Master, Heavy Armor Master, Inspiring Leader, Mage Slayer, Mounted Combatant, Observant, Polearm Master, Resilient, Sentinel, Shadow-Touched, Sharpshooter, Shield Master, Skulker, Slasher, Spell Sniper, War Caster, Weapon Master) (SRD 5.2.1)
 - Stub origin feats: Crafter, Healer, Lucky, Magic Initiate (Bard/Druid/Sorcerer/Warlock), Musician, Skilled, Tavern Brawler, Tough
 
 ## v0.15.0 - 2026-02-20
