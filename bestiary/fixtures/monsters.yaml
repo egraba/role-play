@@ -2111,3 +2111,571 @@
     legendary_action_count: 3
     has_lair: true
     description: "An ancient red dragon is the mightiest of all chromatic dragons, a creature of immense power, vanity, and cruelty."
+
+# =============================================================================
+# Task 20: Giants, Monstrosities, and Remaining Types
+# =============================================================================
+
+# --- Giants ---
+
+- model: bestiary.monstersettings
+  fields:
+    name: Hill Giant
+    size: huge
+    creature_type: giant
+    subtype: ""
+    alignment: CE
+    ac: 13
+    ac_type: natural armor
+    hit_dice: "10d12+40"
+    hp_average: 105
+    passive_perception: 9
+    strength: 21
+    dexterity: 8
+    constitution: 19
+    intelligence: 5
+    wisdom: 9
+    charisma: 6
+    telepathy: 0
+    challenge_rating: "5"
+    proficiency_bonus: 3
+    legendary_action_count: 0
+    has_lair: false
+    description: "Hill giants are selfish, dim-witted brutes that occupy a lowly place in the giant ordning."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Stone Giant
+    size: huge
+    creature_type: giant
+    subtype: ""
+    alignment: N
+    ac: 17
+    ac_type: natural armor
+    hit_dice: "11d12+55"
+    hp_average: 126
+    passive_perception: 14
+    strength: 23
+    dexterity: 15
+    constitution: 20
+    intelligence: 10
+    wisdom: 12
+    charisma: 9
+    telepathy: 0
+    challenge_rating: "7"
+    proficiency_bonus: 3
+    legendary_action_count: 0
+    has_lair: false
+    description: "Stone giants dwell in mountains and underground caverns, viewing the surface world as a realm of dreams."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Frost Giant
+    size: huge
+    creature_type: giant
+    subtype: ""
+    alignment: NE
+    ac: 15
+    ac_type: patchwork armor
+    hit_dice: "12d12+60"
+    hp_average: 138
+    passive_perception: 10
+    strength: 23
+    dexterity: 9
+    constitution: 21
+    intelligence: 9
+    wisdom: 10
+    charisma: 12
+    telepathy: 0
+    challenge_rating: "8"
+    proficiency_bonus: 3
+    legendary_action_count: 0
+    has_lair: false
+    description: "Frost giants are fearsome raiders who dwell in the frozen reaches of the world."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Fire Giant
+    size: huge
+    creature_type: giant
+    subtype: ""
+    alignment: LE
+    ac: 18
+    ac_type: plate
+    hit_dice: "13d12+78"
+    hp_average: 162
+    passive_perception: 12
+    strength: 25
+    dexterity: 9
+    constitution: 23
+    intelligence: 10
+    wisdom: 14
+    charisma: 13
+    telepathy: 0
+    challenge_rating: "9"
+    proficiency_bonus: 4
+    legendary_action_count: 0
+    has_lair: false
+    description: "Fire giants are militaristic and aggressive, building fortresses in volcanic regions."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Cloud Giant
+    size: huge
+    creature_type: giant
+    subtype: ""
+    alignment: NG
+    ac: 14
+    ac_type: natural armor
+    hit_dice: "16d12+96"
+    hp_average: 200
+    passive_perception: 16
+    strength: 27
+    dexterity: 10
+    constitution: 22
+    intelligence: 12
+    wisdom: 16
+    charisma: 16
+    telepathy: 0
+    challenge_rating: "9"
+    proficiency_bonus: 4
+    legendary_action_count: 0
+    has_lair: false
+    description: "Cloud giants dwell in cloud castles high above the world and are among the most powerful of giants."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Storm Giant
+    size: huge
+    creature_type: giant
+    subtype: ""
+    alignment: CG
+    ac: 16
+    ac_type: scale mail
+    hit_dice: "20d12+100"
+    hp_average: 230
+    passive_perception: 17
+    strength: 29
+    dexterity: 14
+    constitution: 20
+    intelligence: 16
+    wisdom: 18
+    charisma: 18
+    telepathy: 0
+    challenge_rating: "13"
+    proficiency_bonus: 5
+    legendary_action_count: 3
+    has_lair: false
+    description: "Storm giants are the most powerful of all giants, dwelling in the ocean depths or on the highest peaks."
+
+# --- Monstrosities ---
+
+- model: bestiary.monstersettings
+  fields:
+    name: Basilisk
+    size: medium
+    creature_type: monstrosity
+    subtype: ""
+    alignment: U
+    ac: 15
+    ac_type: natural armor
+    hit_dice: "8d8+16"
+    hp_average: 52
+    passive_perception: 9
+    strength: 16
+    dexterity: 8
+    constitution: 15
+    intelligence: 2
+    wisdom: 8
+    charisma: 7
+    telepathy: 0
+    challenge_rating: "3"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A basilisk is a multi-legged reptile whose gaze can turn flesh to stone."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Griffon
+    size: large
+    creature_type: monstrosity
+    subtype: ""
+    alignment: U
+    ac: 12
+    ac_type: ""
+    hit_dice: "7d10+21"
+    hp_average: 59
+    passive_perception: 15
+    strength: 18
+    dexterity: 15
+    constitution: 16
+    intelligence: 2
+    wisdom: 13
+    charisma: 8
+    telepathy: 0
+    challenge_rating: "2"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A griffon is a ferocious beast with the body of a lion and the head and wings of an eagle."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Harpy
+    size: medium
+    creature_type: monstrosity
+    subtype: ""
+    alignment: CE
+    ac: 11
+    ac_type: ""
+    hit_dice: "7d8+7"
+    hp_average: 38
+    passive_perception: 10
+    strength: 12
+    dexterity: 13
+    constitution: 12
+    intelligence: 7
+    wisdom: 10
+    charisma: 13
+    telepathy: 0
+    challenge_rating: "1"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Harpies are vicious, cruel creatures that combine the worst features of birds and humans."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Hydra
+    size: huge
+    creature_type: monstrosity
+    subtype: ""
+    alignment: U
+    ac: 15
+    ac_type: natural armor
+    hit_dice: "15d12+75"
+    hp_average: 172
+    passive_perception: 16
+    strength: 20
+    dexterity: 12
+    constitution: 20
+    intelligence: 2
+    wisdom: 10
+    charisma: 7
+    telepathy: 0
+    challenge_rating: "8"
+    proficiency_bonus: 3
+    legendary_action_count: 0
+    has_lair: false
+    description: "A hydra is a reptilian horror with a crocodilian body and numerous heads on long, serpentine necks."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Medusa
+    size: medium
+    creature_type: monstrosity
+    subtype: ""
+    alignment: LE
+    ac: 15
+    ac_type: natural armor
+    hit_dice: "17d8+51"
+    hp_average: 127
+    passive_perception: 14
+    strength: 16
+    dexterity: 15
+    constitution: 16
+    intelligence: 12
+    wisdom: 13
+    charisma: 15
+    telepathy: 0
+    challenge_rating: "6"
+    proficiency_bonus: 3
+    legendary_action_count: 0
+    has_lair: false
+    description: "A medusa is a monstrous creature that can turn creatures to stone with its petrifying gaze."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Roc
+    size: gargantuan
+    creature_type: monstrosity
+    subtype: ""
+    alignment: U
+    ac: 15
+    ac_type: natural armor
+    hit_dice: "16d20+80"
+    hp_average: 248
+    passive_perception: 14
+    strength: 28
+    dexterity: 10
+    constitution: 20
+    intelligence: 3
+    wisdom: 10
+    charisma: 9
+    telepathy: 0
+    challenge_rating: "11"
+    proficiency_bonus: 4
+    legendary_action_count: 0
+    has_lair: false
+    description: "A roc is an enormous bird of prey capable of carrying off an elephant."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Winter Wolf
+    size: large
+    creature_type: monstrosity
+    subtype: ""
+    alignment: NE
+    ac: 13
+    ac_type: natural armor
+    hit_dice: "10d10+20"
+    hp_average: 75
+    passive_perception: 15
+    strength: 18
+    dexterity: 13
+    constitution: 14
+    intelligence: 7
+    wisdom: 12
+    charisma: 8
+    telepathy: 0
+    challenge_rating: "3"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Winter wolves are large, intelligent wolves with white fur and icy breath, often allied with frost giants."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Phase Spider
+    size: large
+    creature_type: monstrosity
+    subtype: ""
+    alignment: U
+    ac: 13
+    ac_type: natural armor
+    hit_dice: "5d10+5"
+    hp_average: 32
+    passive_perception: 10
+    strength: 15
+    dexterity: 15
+    constitution: 12
+    intelligence: 6
+    wisdom: 10
+    charisma: 6
+    telepathy: 0
+    challenge_rating: "3"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A phase spider possesses the magical ability to phase in and out of the Ethereal Plane."
+
+# --- Constructs ---
+
+- model: bestiary.monstersettings
+  fields:
+    name: Stone Golem
+    size: large
+    creature_type: construct
+    subtype: ""
+    alignment: U
+    ac: 17
+    ac_type: natural armor
+    hit_dice: "17d10+85"
+    hp_average: 178
+    passive_perception: 10
+    strength: 22
+    dexterity: 9
+    constitution: 20
+    intelligence: 3
+    wisdom: 11
+    charisma: 1
+    telepathy: 0
+    challenge_rating: "10"
+    proficiency_bonus: 4
+    legendary_action_count: 0
+    has_lair: false
+    description: "A stone golem is a massive, slow-moving construct of chiseled stone animated by a powerful enchantment."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Animated Armor
+    size: medium
+    creature_type: construct
+    subtype: ""
+    alignment: U
+    ac: 18
+    ac_type: natural armor
+    hit_dice: "6d8+6"
+    hp_average: 33
+    passive_perception: 6
+    strength: 14
+    dexterity: 11
+    constitution: 13
+    intelligence: 1
+    wisdom: 3
+    charisma: 1
+    telepathy: 0
+    challenge_rating: "1"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Suits of animated armor stand guard in dungeons, temples, and the towers of wizards."
+
+# --- Oozes ---
+
+- model: bestiary.monstersettings
+  fields:
+    name: Gelatinous Cube
+    size: large
+    creature_type: ooze
+    subtype: ""
+    alignment: U
+    ac: 6
+    ac_type: ""
+    hit_dice: "8d10+40"
+    hp_average: 84
+    passive_perception: 8
+    strength: 14
+    dexterity: 3
+    constitution: 20
+    intelligence: 1
+    wisdom: 6
+    charisma: 1
+    telepathy: 0
+    challenge_rating: "2"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A gelatinous cube is a nearly transparent ooze that scours dungeon passages clean of organic matter."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Black Pudding
+    size: large
+    creature_type: ooze
+    subtype: ""
+    alignment: U
+    ac: 7
+    ac_type: ""
+    hit_dice: "10d10+30"
+    hp_average: 85
+    passive_perception: 8
+    strength: 16
+    dexterity: 5
+    constitution: 16
+    intelligence: 1
+    wisdom: 6
+    charisma: 1
+    telepathy: 0
+    challenge_rating: "4"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A black pudding is a monster made of living, acid-secreting slime."
+
+# --- Aberrations ---
+
+- model: bestiary.monstersettings
+  fields:
+    name: Aboleth
+    size: large
+    creature_type: aberration
+    subtype: ""
+    alignment: LE
+    ac: 17
+    ac_type: natural armor
+    hit_dice: "18d10+36"
+    hp_average: 135
+    passive_perception: 20
+    strength: 21
+    dexterity: 9
+    constitution: 15
+    intelligence: 18
+    wisdom: 15
+    charisma: 18
+    telepathy: 120
+    challenge_rating: "10"
+    proficiency_bonus: 4
+    legendary_action_count: 3
+    has_lair: true
+    description: "An aboleth is a terrifying, ancient creature that lurks in the depths of the Underdark, enslaving all who come near."
+
+# --- Celestials ---
+
+- model: bestiary.monstersettings
+  fields:
+    name: Couatl
+    size: medium
+    creature_type: celestial
+    subtype: ""
+    alignment: LG
+    ac: 19
+    ac_type: natural armor
+    hit_dice: "13d8+39"
+    hp_average: 97
+    passive_perception: 15
+    strength: 16
+    dexterity: 20
+    constitution: 17
+    intelligence: 18
+    wisdom: 20
+    charisma: 18
+    telepathy: 0
+    challenge_rating: "4"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Couatls are sacred, divine serpents that serve as agents of the gods of goodness."
+
+# --- Plants ---
+
+- model: bestiary.monstersettings
+  fields:
+    name: Treant
+    size: huge
+    creature_type: plant
+    subtype: ""
+    alignment: CG
+    ac: 16
+    ac_type: natural armor
+    hit_dice: "12d12+60"
+    hp_average: 138
+    passive_perception: 13
+    strength: 23
+    dexterity: 8
+    constitution: 21
+    intelligence: 12
+    wisdom: 16
+    charisma: 12
+    telepathy: 0
+    challenge_rating: "9"
+    proficiency_bonus: 4
+    legendary_action_count: 0
+    has_lair: false
+    description: "Treants are ancient, sentient trees that protect forests from those who would despoil them."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Shambling Mound
+    size: large
+    creature_type: plant
+    subtype: ""
+    alignment: U
+    ac: 15
+    ac_type: natural armor
+    hit_dice: "16d10+48"
+    hp_average: 136
+    passive_perception: 10
+    strength: 18
+    dexterity: 8
+    constitution: 16
+    intelligence: 5
+    wisdom: 10
+    charisma: 5
+    telepathy: 0
+    challenge_rating: "5"
+    proficiency_bonus: 3
+    legendary_action_count: 0
+    has_lair: false
+    description: "A shambling mound is a mass of decaying vegetation animated by an animating lightning strike."

@@ -7352,3 +7352,1826 @@
     description: "The dragon beats its wings. Each creature within 15 feet of the dragon must succeed on a DC 22 Dexterity saving throw or take 15 (2d6 + 8) bludgeoning damage and be knocked prone. The dragon can then fly up to half its flying speed."
     cost: 2
     sort_order: 2
+
+# =============================================================================
+# Task 20: Giants, Monstrosities, and Remaining Types - Attributes
+# =============================================================================
+
+# =============================================================================
+# MonsterSpeed
+# =============================================================================
+
+# Giants
+- model: bestiary.monsterspeed
+  fields:
+    monster: Hill Giant
+    movement_type: walk
+    feet: 40
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Stone Giant
+    movement_type: walk
+    feet: 40
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Frost Giant
+    movement_type: walk
+    feet: 40
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Fire Giant
+    movement_type: walk
+    feet: 30
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Cloud Giant
+    movement_type: walk
+    feet: 40
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Storm Giant
+    movement_type: walk
+    feet: 50
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Storm Giant
+    movement_type: swim
+    feet: 50
+
+# Monstrosities
+- model: bestiary.monsterspeed
+  fields:
+    monster: Basilisk
+    movement_type: walk
+    feet: 20
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Griffon
+    movement_type: walk
+    feet: 30
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Griffon
+    movement_type: fly
+    feet: 80
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Harpy
+    movement_type: walk
+    feet: 20
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Harpy
+    movement_type: fly
+    feet: 40
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Hydra
+    movement_type: walk
+    feet: 30
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Hydra
+    movement_type: swim
+    feet: 30
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Medusa
+    movement_type: walk
+    feet: 30
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Roc
+    movement_type: walk
+    feet: 20
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Roc
+    movement_type: fly
+    feet: 120
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Winter Wolf
+    movement_type: walk
+    feet: 50
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Phase Spider
+    movement_type: walk
+    feet: 30
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Phase Spider
+    movement_type: climb
+    feet: 30
+
+# Constructs
+- model: bestiary.monsterspeed
+  fields:
+    monster: Stone Golem
+    movement_type: walk
+    feet: 30
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Animated Armor
+    movement_type: walk
+    feet: 25
+
+# Oozes
+- model: bestiary.monsterspeed
+  fields:
+    monster: Gelatinous Cube
+    movement_type: walk
+    feet: 15
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Black Pudding
+    movement_type: walk
+    feet: 20
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Black Pudding
+    movement_type: climb
+    feet: 20
+
+# Aberrations
+- model: bestiary.monsterspeed
+  fields:
+    monster: Aboleth
+    movement_type: walk
+    feet: 10
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Aboleth
+    movement_type: swim
+    feet: 40
+
+# Celestials
+- model: bestiary.monsterspeed
+  fields:
+    monster: Couatl
+    movement_type: walk
+    feet: 30
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Couatl
+    movement_type: fly
+    feet: 90
+
+# Plants
+- model: bestiary.monsterspeed
+  fields:
+    monster: Treant
+    movement_type: walk
+    feet: 30
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Shambling Mound
+    movement_type: walk
+    feet: 20
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Shambling Mound
+    movement_type: swim
+    feet: 20
+
+# =============================================================================
+# MonsterSavingThrow
+# =============================================================================
+
+# Stone Giant
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Stone Giant
+    ability: DEX
+    bonus: 5
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Stone Giant
+    ability: CON
+    bonus: 8
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Stone Giant
+    ability: WIS
+    bonus: 4
+
+# Frost Giant
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Frost Giant
+    ability: CON
+    bonus: 8
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Frost Giant
+    ability: WIS
+    bonus: 3
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Frost Giant
+    ability: CHA
+    bonus: 4
+
+# Fire Giant
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Fire Giant
+    ability: DEX
+    bonus: 2
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Fire Giant
+    ability: CON
+    bonus: 9
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Fire Giant
+    ability: WIS
+    bonus: 5
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Fire Giant
+    ability: CHA
+    bonus: 4
+
+# Cloud Giant
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Cloud Giant
+    ability: CON
+    bonus: 10
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Cloud Giant
+    ability: WIS
+    bonus: 7
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Cloud Giant
+    ability: CHA
+    bonus: 7
+
+# Storm Giant
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Storm Giant
+    ability: STR
+    bonus: 14
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Storm Giant
+    ability: CON
+    bonus: 10
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Storm Giant
+    ability: WIS
+    bonus: 9
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Storm Giant
+    ability: CHA
+    bonus: 9
+
+# Roc
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Roc
+    ability: DEX
+    bonus: 4
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Roc
+    ability: CON
+    bonus: 9
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Roc
+    ability: WIS
+    bonus: 4
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Roc
+    ability: CHA
+    bonus: 3
+
+# Aboleth
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Aboleth
+    ability: CON
+    bonus: 6
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Aboleth
+    ability: INT
+    bonus: 8
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Aboleth
+    ability: WIS
+    bonus: 6
+
+# Couatl
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Couatl
+    ability: CON
+    bonus: 5
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Couatl
+    ability: WIS
+    bonus: 7
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Couatl
+    ability: CHA
+    bonus: 6
+
+# =============================================================================
+# MonsterSkill
+# =============================================================================
+
+# Stone Giant
+- model: bestiary.monsterskill
+  fields:
+    monster: Stone Giant
+    skill: Athletics
+    bonus: 12
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Stone Giant
+    skill: Perception
+    bonus: 4
+
+# Frost Giant
+- model: bestiary.monsterskill
+  fields:
+    monster: Frost Giant
+    skill: Athletics
+    bonus: 9
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Frost Giant
+    skill: Perception
+    bonus: 3
+
+# Fire Giant
+- model: bestiary.monsterskill
+  fields:
+    monster: Fire Giant
+    skill: Athletics
+    bonus: 11
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Fire Giant
+    skill: Perception
+    bonus: 5
+
+# Cloud Giant
+- model: bestiary.monsterskill
+  fields:
+    monster: Cloud Giant
+    skill: Insight
+    bonus: 7
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Cloud Giant
+    skill: Perception
+    bonus: 7
+
+# Storm Giant
+- model: bestiary.monsterskill
+  fields:
+    monster: Storm Giant
+    skill: Arcana
+    bonus: 8
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Storm Giant
+    skill: Athletics
+    bonus: 14
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Storm Giant
+    skill: History
+    bonus: 8
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Storm Giant
+    skill: Perception
+    bonus: 9
+
+# Griffon
+- model: bestiary.monsterskill
+  fields:
+    monster: Griffon
+    skill: Perception
+    bonus: 5
+
+# Hydra
+- model: bestiary.monsterskill
+  fields:
+    monster: Hydra
+    skill: Perception
+    bonus: 6
+
+# Medusa
+- model: bestiary.monsterskill
+  fields:
+    monster: Medusa
+    skill: Deception
+    bonus: 5
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Medusa
+    skill: Insight
+    bonus: 4
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Medusa
+    skill: Perception
+    bonus: 4
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Medusa
+    skill: Stealth
+    bonus: 5
+
+# Phase Spider
+- model: bestiary.monsterskill
+  fields:
+    monster: Phase Spider
+    skill: Stealth
+    bonus: 6
+
+# Roc
+- model: bestiary.monsterskill
+  fields:
+    monster: Roc
+    skill: Perception
+    bonus: 4
+
+# Winter Wolf
+- model: bestiary.monsterskill
+  fields:
+    monster: Winter Wolf
+    skill: Perception
+    bonus: 5
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Winter Wolf
+    skill: Stealth
+    bonus: 3
+
+# Aboleth
+- model: bestiary.monsterskill
+  fields:
+    monster: Aboleth
+    skill: History
+    bonus: 12
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Aboleth
+    skill: Perception
+    bonus: 10
+
+# =============================================================================
+# MonsterSense
+# =============================================================================
+
+# Basilisk
+- model: bestiary.monstersense
+  fields:
+    monster: Basilisk
+    sense_type: darkvision
+    range_feet: 60
+
+# Griffon
+- model: bestiary.monstersense
+  fields:
+    monster: Griffon
+    sense_type: darkvision
+    range_feet: 60
+
+# Hydra
+- model: bestiary.monstersense
+  fields:
+    monster: Hydra
+    sense_type: darkvision
+    range_feet: 60
+
+# Medusa
+- model: bestiary.monstersense
+  fields:
+    monster: Medusa
+    sense_type: darkvision
+    range_feet: 60
+
+# Phase Spider
+- model: bestiary.monstersense
+  fields:
+    monster: Phase Spider
+    sense_type: darkvision
+    range_feet: 60
+
+# Winter Wolf (no special senses)
+
+# Stone Golem
+- model: bestiary.monstersense
+  fields:
+    monster: Stone Golem
+    sense_type: darkvision
+    range_feet: 120
+
+# Animated Armor
+- model: bestiary.monstersense
+  fields:
+    monster: Animated Armor
+    sense_type: blindsight
+    range_feet: 60
+
+# Gelatinous Cube
+- model: bestiary.monstersense
+  fields:
+    monster: Gelatinous Cube
+    sense_type: blindsight
+    range_feet: 60
+
+# Black Pudding
+- model: bestiary.monstersense
+  fields:
+    monster: Black Pudding
+    sense_type: blindsight
+    range_feet: 60
+
+# Aboleth
+- model: bestiary.monstersense
+  fields:
+    monster: Aboleth
+    sense_type: darkvision
+    range_feet: 120
+
+# Couatl
+- model: bestiary.monstersense
+  fields:
+    monster: Couatl
+    sense_type: truesight
+    range_feet: 120
+
+# =============================================================================
+# MonsterDamageRelation
+# =============================================================================
+
+# Frost Giant - immunities
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Frost Giant
+    damage_type: cold
+    relation_type: immunity
+
+# Fire Giant - immunities
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Fire Giant
+    damage_type: fire
+    relation_type: immunity
+
+# Storm Giant - resistances
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Storm Giant
+    damage_type: cold
+    relation_type: resistance
+
+# Storm Giant - immunities
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Storm Giant
+    damage_type: lightning
+    relation_type: immunity
+
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Storm Giant
+    damage_type: thunder
+    relation_type: immunity
+
+# Winter Wolf - immunities
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Winter Wolf
+    damage_type: cold
+    relation_type: immunity
+
+# Stone Golem - immunities
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Stone Golem
+    damage_type: poison
+    relation_type: immunity
+
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Stone Golem
+    damage_type: psychic
+    relation_type: immunity
+
+# Animated Armor - immunities
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Animated Armor
+    damage_type: poison
+    relation_type: immunity
+
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Animated Armor
+    damage_type: psychic
+    relation_type: immunity
+
+# Gelatinous Cube - immunities
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Gelatinous Cube
+    damage_type: acid
+    relation_type: immunity
+
+# Black Pudding - immunities
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Black Pudding
+    damage_type: acid
+    relation_type: immunity
+
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Black Pudding
+    damage_type: cold
+    relation_type: immunity
+
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Black Pudding
+    damage_type: lightning
+    relation_type: immunity
+
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Black Pudding
+    damage_type: slashing
+    relation_type: immunity
+
+# Shambling Mound - resistances
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Shambling Mound
+    damage_type: cold
+    relation_type: resistance
+
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Shambling Mound
+    damage_type: fire
+    relation_type: resistance
+
+# Shambling Mound - immunities
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Shambling Mound
+    damage_type: lightning
+    relation_type: immunity
+
+# Treant - vulnerabilities
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Treant
+    damage_type: fire
+    relation_type: vulnerability
+
+# Treant - resistances
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Treant
+    damage_type: bludgeoning
+    relation_type: resistance
+
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Treant
+    damage_type: piercing
+    relation_type: resistance
+
+# Couatl - resistances
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Couatl
+    damage_type: radiant
+    relation_type: resistance
+
+# Couatl - immunities
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Couatl
+    damage_type: psychic
+    relation_type: immunity
+
+# =============================================================================
+# MonsterConditionImmunity
+# =============================================================================
+
+# Stone Golem
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Stone Golem
+    condition: charmed
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Stone Golem
+    condition: exhaustion
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Stone Golem
+    condition: frightened
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Stone Golem
+    condition: paralyzed
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Stone Golem
+    condition: petrified
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Stone Golem
+    condition: poisoned
+
+# Animated Armor
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Animated Armor
+    condition: blinded
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Animated Armor
+    condition: charmed
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Animated Armor
+    condition: deafened
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Animated Armor
+    condition: exhaustion
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Animated Armor
+    condition: frightened
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Animated Armor
+    condition: paralyzed
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Animated Armor
+    condition: petrified
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Animated Armor
+    condition: poisoned
+
+# Gelatinous Cube
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Gelatinous Cube
+    condition: blinded
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Gelatinous Cube
+    condition: charmed
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Gelatinous Cube
+    condition: deafened
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Gelatinous Cube
+    condition: exhaustion
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Gelatinous Cube
+    condition: frightened
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Gelatinous Cube
+    condition: prone
+
+# Black Pudding
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Black Pudding
+    condition: blinded
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Black Pudding
+    condition: charmed
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Black Pudding
+    condition: deafened
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Black Pudding
+    condition: exhaustion
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Black Pudding
+    condition: frightened
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Black Pudding
+    condition: prone
+
+# Shambling Mound
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Shambling Mound
+    condition: blinded
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Shambling Mound
+    condition: deafened
+
+- model: bestiary.monsterconditionimmunity
+  fields:
+    monster: Shambling Mound
+    condition: exhaustion
+
+# =============================================================================
+# MonsterLanguage
+# =============================================================================
+
+# Giants
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Hill Giant
+    language: Common
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Hill Giant
+    language: Giant
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Stone Giant
+    language: Giant
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Frost Giant
+    language: Common
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Frost Giant
+    language: Giant
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Fire Giant
+    language: Giant
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Cloud Giant
+    language: Common
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Cloud Giant
+    language: Giant
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Storm Giant
+    language: Common
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Storm Giant
+    language: Giant
+
+# Monstrosities
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Harpy
+    language: Common
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Winter Wolf
+    language: Common
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Winter Wolf
+    language: Giant
+
+# Aboleth
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Aboleth
+    language: Deep Speech
+
+# Couatl
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Couatl
+    language: Celestial
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Couatl
+    language: Common
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Couatl
+    language: Draconic
+
+# Treant
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Treant
+    language: Common
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Treant
+    language: Druidic
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Treant
+    language: Elvish
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Treant
+    language: Sylvan
+
+# =============================================================================
+# MonsterTrait
+# =============================================================================
+
+# Stone Giant
+- model: bestiary.monstertrait
+  fields:
+    monster: Stone Giant
+    name: Stone Camouflage
+    description: "The giant has advantage on Dexterity (Stealth) checks made to hide in rocky terrain."
+    sort_order: 0
+
+# Cloud Giant
+- model: bestiary.monstertrait
+  fields:
+    monster: Cloud Giant
+    name: Keen Smell
+    description: "The giant has advantage on Wisdom (Perception) checks that rely on smell."
+    sort_order: 0
+
+# Storm Giant
+- model: bestiary.monstertrait
+  fields:
+    monster: Storm Giant
+    name: Amphibious
+    description: "The giant can breathe air and water."
+    sort_order: 0
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Storm Giant
+    name: Legendary Resistance (3/Day)
+    description: "If the giant fails a saving throw, it can choose to succeed instead."
+    sort_order: 1
+
+# Griffon
+- model: bestiary.monstertrait
+  fields:
+    monster: Griffon
+    name: Keen Sight
+    description: "The griffon has advantage on Wisdom (Perception) checks that rely on sight."
+    sort_order: 0
+
+# Hydra
+- model: bestiary.monstertrait
+  fields:
+    monster: Hydra
+    name: Hold Breath
+    description: "The hydra can hold its breath for 1 hour."
+    sort_order: 0
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Hydra
+    name: Multiple Heads
+    description: "The hydra has five heads. While it has more than one head, the hydra has advantage on saving throws against being blinded, charmed, deafened, frightened, stunned, and knocked unconscious. Whenever the hydra takes 25 or more damage in a single turn, one of its heads dies. If all its heads die, the hydra dies. At the end of its turn, it grows two heads for each of its heads that died since its last turn, unless it took fire damage since its last turn."
+    sort_order: 1
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Hydra
+    name: Reactive Heads
+    description: "For each head the hydra has beyond one, it gets an extra reaction that can be used only for opportunity attacks."
+    sort_order: 2
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Hydra
+    name: Wakeful
+    description: "While the hydra sleeps, at least one of its heads is awake."
+    sort_order: 3
+
+# Medusa
+- model: bestiary.monstertrait
+  fields:
+    monster: Medusa
+    name: Petrifying Gaze
+    description: "When a creature that can see the medusa's eyes starts its turn within 30 feet of the medusa, the medusa can force it to make a DC 14 Constitution saving throw if the medusa isn't incapacitated and can see the creature. If the saving throw fails by 5 or more, the creature is instantly petrified. Otherwise, a creature that fails the save begins to turn to stone and is restrained. The restrained creature must repeat the saving throw at the end of its next turn, becoming petrified on a failure or ending the effect on a success."
+    sort_order: 0
+
+# Basilisk
+- model: bestiary.monstertrait
+  fields:
+    monster: Basilisk
+    name: Petrifying Gaze
+    description: "If a creature starts its turn within 30 feet of the basilisk and the two of them can see each other, the basilisk can force the creature to make a DC 12 Constitution saving throw if the basilisk isn't incapacitated. On a failed save, the creature magically begins to turn to stone and is restrained. It must repeat the saving throw at the end of its next turn. On a success, the effect ends. On a failure, the creature is petrified until freed by the greater restoration spell or other magic."
+    sort_order: 0
+
+# Roc
+- model: bestiary.monstertrait
+  fields:
+    monster: Roc
+    name: Keen Sight
+    description: "The roc has advantage on Wisdom (Perception) checks that rely on sight."
+    sort_order: 0
+
+# Winter Wolf
+- model: bestiary.monstertrait
+  fields:
+    monster: Winter Wolf
+    name: Keen Hearing and Smell
+    description: "The wolf has advantage on Wisdom (Perception) checks that rely on hearing or smell."
+    sort_order: 0
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Winter Wolf
+    name: Pack Tactics
+    description: "The wolf has advantage on attack rolls against a creature if at least one of the wolf's allies is within 5 feet of the creature and the ally isn't incapacitated."
+    sort_order: 1
+
+# Phase Spider
+- model: bestiary.monstertrait
+  fields:
+    monster: Phase Spider
+    name: Ethereal Jaunt
+    description: "As a bonus action, the spider can magically shift from the Material Plane to the Ethereal Plane, or vice versa."
+    sort_order: 0
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Phase Spider
+    name: Spider Climb
+    description: "The spider can climb difficult surfaces, including upside down on ceilings, without needing to make an ability check."
+    sort_order: 1
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Phase Spider
+    name: Web Walker
+    description: "The spider ignores movement restrictions caused by webbing."
+    sort_order: 2
+
+# Stone Golem
+- model: bestiary.monstertrait
+  fields:
+    monster: Stone Golem
+    name: Immutable Form
+    description: "The golem is immune to any spell or effect that would alter its form."
+    sort_order: 0
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Stone Golem
+    name: Magic Resistance
+    description: "The golem has advantage on saving throws against spells and other magical effects."
+    sort_order: 1
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Stone Golem
+    name: Magic Weapons
+    description: "The golem's weapon attacks are magical."
+    sort_order: 2
+
+# Animated Armor
+- model: bestiary.monstertrait
+  fields:
+    monster: Animated Armor
+    name: Antimagic Susceptibility
+    description: "The armor is incapacitated while in the area of an antimagic field. If targeted by dispel magic, the armor must succeed on a Constitution saving throw against the caster's spell save DC or fall unconscious for 1 minute."
+    sort_order: 0
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Animated Armor
+    name: False Appearance
+    description: "While the armor remains motionless, it is indistinguishable from a normal suit of armor."
+    sort_order: 1
+
+# Gelatinous Cube
+- model: bestiary.monstertrait
+  fields:
+    monster: Gelatinous Cube
+    name: Ooze Cube
+    description: "The cube takes up its entire space. Other creatures can enter the space, but a creature that does so is subjected to the cube's Engulf and has disadvantage on the saving throw. Creatures inside the cube can be seen but have total cover. A creature within 5 feet of the cube can take an action to pull a creature or object out of the cube. Doing so requires a successful DC 12 Strength check, and the creature making the attempt takes 10 (3d6) acid damage."
+    sort_order: 0
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Gelatinous Cube
+    name: Transparent
+    description: "Even when the cube is in plain sight, it takes a successful DC 15 Wisdom (Perception) check to spot a cube that has neither moved nor attacked. A creature that tries to enter the cube's space while unaware of the cube is surprised by the cube."
+    sort_order: 1
+
+# Black Pudding
+- model: bestiary.monstertrait
+  fields:
+    monster: Black Pudding
+    name: Amorphous
+    description: "The pudding can move through a space as narrow as 1 inch wide without squeezing."
+    sort_order: 0
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Black Pudding
+    name: Corrosive Form
+    description: "A creature that touches the pudding or hits it with a melee attack while within 5 feet of it takes 4 (1d8) acid damage. Any nonmagical weapon made of metal or wood that hits the pudding corrodes. After dealing damage, the weapon takes a permanent and cumulative -1 penalty to damage rolls. If its penalty drops to -5, the weapon is destroyed."
+    sort_order: 1
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Black Pudding
+    name: Spider Climb
+    description: "The pudding can climb difficult surfaces, including upside down on ceilings, without needing to make an ability check."
+    sort_order: 2
+
+# Aboleth
+- model: bestiary.monstertrait
+  fields:
+    monster: Aboleth
+    name: Amphibious
+    description: "The aboleth can breathe air and water."
+    sort_order: 0
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Aboleth
+    name: Mucous Cloud
+    description: "While underwater, the aboleth is surrounded by transformative mucus. A creature that touches the aboleth or that hits it with a melee attack while within 5 feet of it must make a DC 14 Constitution saving throw. On a failure, the creature is diseased for 1d4 hours. The diseased creature can breathe only underwater."
+    sort_order: 1
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Aboleth
+    name: Probing Telepathy
+    description: "If a creature communicates telepathically with the aboleth, the aboleth learns the creature's greatest desires if the aboleth can see the creature."
+    sort_order: 2
+
+# Couatl
+- model: bestiary.monstertrait
+  fields:
+    monster: Couatl
+    name: Innate Spellcasting
+    description: "The couatl's spellcasting ability is Wisdom (spell save DC 13). It can innately cast the following spells, requiring only verbal components: At will: detect evil and good, detect magic, detect thoughts; 3/day each: bless, create food and water, cure wounds, lesser restoration, protection from poison, sanctuary, shield of faith; 1/day each: dream, greater restoration, scrying."
+    sort_order: 0
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Couatl
+    name: Magic Weapons
+    description: "The couatl's weapon attacks are magical."
+    sort_order: 1
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Couatl
+    name: Shielded Mind
+    description: "The couatl is immune to scrying and to any effect that would sense its emotions, read its thoughts, or detect its location."
+    sort_order: 2
+
+# Treant
+- model: bestiary.monstertrait
+  fields:
+    monster: Treant
+    name: False Appearance
+    description: "While the treant remains motionless, it is indistinguishable from a normal tree."
+    sort_order: 0
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Treant
+    name: Siege Monster
+    description: "The treant deals double damage to objects and structures."
+    sort_order: 1
+
+# Shambling Mound
+- model: bestiary.monstertrait
+  fields:
+    monster: Shambling Mound
+    name: Lightning Absorption
+    description: "Whenever the shambling mound is subjected to lightning damage, it takes no damage and regains a number of hit points equal to the lightning damage dealt."
+    sort_order: 0
+
+# =============================================================================
+# MonsterActionTemplate
+# =============================================================================
+
+# Hill Giant
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Hill Giant
+    name: Multiattack
+    description: "The giant makes two greatclub attacks."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Hill Giant
+    name: Greatclub
+    description: "Melee Weapon Attack: +8 to hit, reach 10 ft., one target. Hit: 18 (3d8 + 5) bludgeoning damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Hill Giant
+    name: Rock
+    description: "Ranged Weapon Attack: +8 to hit, range 60/240 ft., one target. Hit: 21 (3d10 + 5) bludgeoning damage."
+    sort_order: 2
+
+# Stone Giant
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Stone Giant
+    name: Multiattack
+    description: "The giant makes two greatclub attacks."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Stone Giant
+    name: Greatclub
+    description: "Melee Weapon Attack: +9 to hit, reach 15 ft., one target. Hit: 19 (3d8 + 6) bludgeoning damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Stone Giant
+    name: Rock
+    description: "Ranged Weapon Attack: +9 to hit, range 60/240 ft., one target. Hit: 28 (4d10 + 6) bludgeoning damage. If the target is a creature, it must succeed on a DC 17 Strength saving throw or be knocked prone."
+    sort_order: 2
+
+# Frost Giant
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Frost Giant
+    name: Multiattack
+    description: "The giant makes two greataxe attacks."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Frost Giant
+    name: Greataxe
+    description: "Melee Weapon Attack: +9 to hit, reach 10 ft., one target. Hit: 25 (3d12 + 6) slashing damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Frost Giant
+    name: Rock
+    description: "Ranged Weapon Attack: +9 to hit, range 60/240 ft., one target. Hit: 28 (4d10 + 6) bludgeoning damage."
+    sort_order: 2
+
+# Fire Giant
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Fire Giant
+    name: Multiattack
+    description: "The giant makes two greatsword attacks."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Fire Giant
+    name: Greatsword
+    description: "Melee Weapon Attack: +11 to hit, reach 10 ft., one target. Hit: 28 (6d6 + 7) slashing damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Fire Giant
+    name: Rock
+    description: "Ranged Weapon Attack: +11 to hit, range 60/240 ft., one target. Hit: 29 (4d10 + 7) bludgeoning damage."
+    sort_order: 2
+
+# Cloud Giant
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Cloud Giant
+    name: Multiattack
+    description: "The giant makes two morningstar attacks."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Cloud Giant
+    name: Morningstar
+    description: "Melee Weapon Attack: +12 to hit, reach 10 ft., one target. Hit: 21 (3d8 + 8) piercing damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Cloud Giant
+    name: Rock
+    description: "Ranged Weapon Attack: +12 to hit, range 60/240 ft., one target. Hit: 30 (4d10 + 8) bludgeoning damage."
+    sort_order: 2
+
+# Storm Giant
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Storm Giant
+    name: Multiattack
+    description: "The giant makes two greatsword attacks."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Storm Giant
+    name: Greatsword
+    description: "Melee Weapon Attack: +14 to hit, reach 10 ft., one target. Hit: 30 (6d6 + 9) slashing damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Storm Giant
+    name: Rock
+    description: "Ranged Weapon Attack: +14 to hit, range 60/240 ft., one target. Hit: 35 (4d12 + 9) bludgeoning damage."
+    sort_order: 2
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Storm Giant
+    name: Lightning Strike (Recharge 5-6)
+    description: "The giant hurls a magical lightning bolt at a point it can see within 500 feet of it. Each creature within 10 feet of that point must make a DC 17 Dexterity saving throw, taking 54 (12d8) lightning damage on a failed save, or half as much damage on a successful one."
+    sort_order: 3
+
+# Basilisk
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Basilisk
+    name: Bite
+    description: "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 10 (2d6 + 3) piercing damage plus 7 (2d6) poison damage."
+    sort_order: 0
+
+# Griffon
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Griffon
+    name: Multiattack
+    description: "The griffon makes two attacks: one with its beak and one with its claws."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Griffon
+    name: Beak
+    description: "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 9 (1d8 + 4) piercing damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Griffon
+    name: Claws
+    description: "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 11 (2d6 + 4) slashing damage."
+    sort_order: 2
+
+# Harpy
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Harpy
+    name: Multiattack
+    description: "The harpy makes two attacks: one with its claws and one with its club."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Harpy
+    name: Claws
+    description: "Melee Weapon Attack: +3 to hit, reach 5 ft., one target. Hit: 6 (2d4 + 1) slashing damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Harpy
+    name: Luring Song
+    description: "The harpy sings a magical melody. Every humanoid and giant within 300 feet of the harpy that can hear the song must succeed on a DC 11 Wisdom saving throw or be charmed until the song ends. The harpy must take a bonus action on its subsequent turns to continue singing. A charmed target is incapacitated and ignores the songs of other harpies. If the charmed target is more than 5 feet away from the harpy, the target must move on its turn toward the harpy by the most direct route."
+    sort_order: 2
+
+# Hydra
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Hydra
+    name: Multiattack
+    description: "The hydra makes as many bite attacks as it has heads."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Hydra
+    name: Bite
+    description: "Melee Weapon Attack: +8 to hit, reach 10 ft., one target. Hit: 10 (1d10 + 5) piercing damage."
+    sort_order: 1
+
+# Medusa
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Medusa
+    name: Multiattack
+    description: "The medusa makes either three melee attacks — one with its snake hair and two with its shortsword — or two ranged attacks with its longbow."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Medusa
+    name: Snake Hair
+    description: "Melee Weapon Attack: +5 to hit, reach 5 ft., one creature. Hit: 4 (1d4 + 2) piercing damage plus 14 (4d6) poison damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Medusa
+    name: Shortsword
+    description: "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) piercing damage."
+    sort_order: 2
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Medusa
+    name: Longbow
+    description: "Ranged Weapon Attack: +5 to hit, range 150/600 ft., one target. Hit: 6 (1d8 + 2) piercing damage plus 7 (2d6) poison damage."
+    sort_order: 3
+
+# Roc
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Roc
+    name: Multiattack
+    description: "The roc makes two attacks: one with its beak and one with its talons."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Roc
+    name: Beak
+    description: "Melee Weapon Attack: +13 to hit, reach 10 ft., one target. Hit: 27 (4d8 + 9) piercing damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Roc
+    name: Talons
+    description: "Melee Weapon Attack: +13 to hit, reach 5 ft., one target. Hit: 23 (4d6 + 9) slashing damage, and the target is grappled (escape DC 19). Until this grapple ends, the target is restrained, and the roc can't use its talons on another target."
+    sort_order: 2
+
+# Winter Wolf
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Winter Wolf
+    name: Bite
+    description: "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 11 (2d6 + 4) piercing damage. If the target is a creature, it must succeed on a DC 14 Strength saving throw or be knocked prone."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Winter Wolf
+    name: Cold Breath (Recharge 5-6)
+    description: "The wolf exhales a blast of freezing wind in a 15-foot cone. Each creature in that area must make a DC 12 Dexterity saving throw, taking 18 (4d8) cold damage on a failed save, or half as much damage on a successful one."
+    sort_order: 1
+
+# Phase Spider
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Phase Spider
+    name: Bite
+    description: "Melee Weapon Attack: +4 to hit, reach 5 ft., one creature. Hit: 7 (1d10 + 2) piercing damage, and the target must make a DC 11 Constitution saving throw, taking 18 (4d8) poison damage on a failed save, or half as much damage on a successful one."
+    sort_order: 0
+
+# Stone Golem
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Stone Golem
+    name: Multiattack
+    description: "The golem makes two slam attacks."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Stone Golem
+    name: Slam
+    description: "Melee Weapon Attack: +10 to hit, reach 5 ft., one target. Hit: 19 (3d8 + 6) bludgeoning damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Stone Golem
+    name: Slow (Recharge 5-6)
+    description: "The golem targets one or more creatures it can see within 10 feet of it. Each target must make a DC 17 Wisdom saving throw against this magic. On a failed save, a target can't use reactions, its speed is halved, and it can't make more than one attack on its turn. In addition, the target can take either an action or a bonus action on its turn, not both. These effects last for 1 minute."
+    sort_order: 2
+
+# Animated Armor
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Animated Armor
+    name: Multiattack
+    description: "The armor makes two melee attacks."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Animated Armor
+    name: Slam
+    description: "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 5 (1d6 + 2) bludgeoning damage."
+    sort_order: 1
+
+# Gelatinous Cube
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Gelatinous Cube
+    name: Pseudopod
+    description: "Melee Weapon Attack: +4 to hit, reach 5 ft., one creature. Hit: 10 (3d6) acid damage."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Gelatinous Cube
+    name: Engulf
+    description: "The cube moves up to its speed. While doing so, it can enter Large or smaller creatures' spaces. Whenever the cube enters a creature's space, the creature must make a DC 12 Dexterity saving throw. On a successful save, the creature can choose to be pushed 5 feet back or to the side of the cube. A creature that chooses not to be pushed suffers the consequences of a failed saving throw. On a failed save, the cube enters the creature's space, and the creature takes 10 (3d6) acid damage and is engulfed. The engulfed creature can't breathe, is restrained, and takes 21 (6d6) acid damage at the start of each of the cube's turns."
+    sort_order: 1
+
+# Black Pudding
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Black Pudding
+    name: Pseudopod
+    description: "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 6 (1d6 + 3) bludgeoning damage plus 18 (4d8) acid damage. In addition, nonmagical armor worn by the target is partly dissolved and takes a permanent and cumulative -1 penalty to the AC it offers."
+    sort_order: 0
+
+# Aboleth
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Aboleth
+    name: Multiattack
+    description: "The aboleth makes three tentacle attacks."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Aboleth
+    name: Tentacle
+    description: "Melee Weapon Attack: +9 to hit, reach 10 ft., one target. Hit: 12 (2d6 + 5) bludgeoning damage. If the target is a creature, it must succeed on a DC 14 Constitution saving throw or become diseased. The disease has no effect for 1 minute and can be removed by any magic that cures disease. After 1 minute, the diseased creature's skin becomes translucent and slimy, the creature can't regain hit points unless it is underwater, and the disease can be removed only by heal or another disease-curing spell of 6th level or higher."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Aboleth
+    name: Tail
+    description: "Melee Weapon Attack: +9 to hit, reach 10 ft., one target. Hit: 15 (3d6 + 5) bludgeoning damage."
+    sort_order: 2
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Aboleth
+    name: Enslave (3/Day)
+    description: "The aboleth targets one creature it can see within 30 feet of it. The target must succeed on a DC 14 Wisdom saving throw or be magically charmed by the aboleth until the aboleth dies or until it is on a different plane of existence from the target. The charmed target is under the aboleth's control and can't take reactions."
+    sort_order: 3
+
+# Couatl
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Couatl
+    name: Bite
+    description: "Melee Weapon Attack: +8 to hit, reach 5 ft., one creature. Hit: 8 (1d6 + 5) piercing damage, and the target must succeed on a DC 13 Constitution saving throw or be poisoned for 24 hours. Until this poison ends, the target is unconscious."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Couatl
+    name: Constrict
+    description: "Melee Weapon Attack: +6 to hit, reach 10 ft., one Medium or smaller creature. Hit: 10 (2d6 + 3) bludgeoning damage, and the target is grappled (escape DC 15). Until this grapple ends, the target is restrained, and the couatl can't constrict another target."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Couatl
+    name: Change Shape
+    description: "The couatl polymorphs into a humanoid or beast that has a challenge rating equal to or less than its own, or back into its true form. It reverts to its true form if it dies."
+    sort_order: 2
+
+# Treant
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Treant
+    name: Multiattack
+    description: "The treant makes two slam attacks."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Treant
+    name: Slam
+    description: "Melee Weapon Attack: +10 to hit, reach 5 ft., one target. Hit: 16 (3d6 + 6) bludgeoning damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Treant
+    name: Rock
+    description: "Ranged Weapon Attack: +10 to hit, range 60/180 ft., one target. Hit: 28 (4d10 + 6) bludgeoning damage."
+    sort_order: 2
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Treant
+    name: Animate Trees (1/Day)
+    description: "The treant magically animates one or two trees it can see within 60 feet of it. These trees have the same statistics as a treant, except they have Intelligence and Charisma scores of 1, they can't speak, and they have only the Slam action option. An animated tree acts as an ally of the treant. The tree remains animate for 1 day or until it dies; until the treant dies or is more than 120 feet from the tree; or until the treant takes a bonus action to turn it back into an inanimate tree."
+    sort_order: 3
+
+# Shambling Mound
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Shambling Mound
+    name: Multiattack
+    description: "The shambling mound makes two slam attacks. If both attacks hit a Medium or smaller target, the target is grappled (escape DC 14), and the shambling mound uses its Engulf on it."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Shambling Mound
+    name: Slam
+    description: "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 13 (2d8 + 4) bludgeoning damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Shambling Mound
+    name: Engulf
+    description: "The shambling mound engulfs a Medium or smaller creature grappled by it. The engulfed target is blinded, restrained, and unable to breathe, and it must succeed on a DC 14 Constitution saving throw at the start of each of the mound's turns or take 13 (2d8 + 4) bludgeoning damage. If the mound moves, the engulfed target moves with it."
+    sort_order: 2
+
+# =============================================================================
+# LegendaryActionTemplate - Storm Giant and Aboleth
+# =============================================================================
+
+# Storm Giant
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Storm Giant
+    name: Weapon Attack
+    description: "The giant makes a melee weapon attack."
+    cost: 1
+    sort_order: 0
+
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Storm Giant
+    name: Lightning Strike (Costs 2 Actions)
+    description: "The giant uses its Lightning Strike."
+    cost: 2
+    sort_order: 1
+
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Storm Giant
+    name: Frightening Strike (Costs 2 Actions)
+    description: "The giant makes a weapon attack, and each creature within 5 feet of the target must make a DC 17 Wisdom saving throw or be frightened of the giant until the end of the creature's next turn."
+    cost: 2
+    sort_order: 2
+
+# Aboleth
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Aboleth
+    name: Detect
+    description: "The aboleth makes a Wisdom (Perception) check."
+    cost: 1
+    sort_order: 0
+
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Aboleth
+    name: Tail Swipe
+    description: "The aboleth makes one tail attack."
+    cost: 1
+    sort_order: 1
+
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Aboleth
+    name: Psychic Drain (Costs 2 Actions)
+    description: "One creature charmed by the aboleth takes 10 (3d6) psychic damage, and the aboleth regains hit points equal to the damage the creature takes."
+    cost: 2
+    sort_order: 2
