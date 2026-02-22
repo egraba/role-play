@@ -5,6 +5,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Added
+- Monsters: 87 new SRD 5.2.1 monsters covering all 14 creature types and CR 0–24
 * Spells: 135 new SRD 5.2.1 spells (cantrips through level 5, covering all classes)
 - Species: Dragonborn, Gnome, Goliath, Orc, Tiefling (SRD 5.2.1)
 - Backgrounds: Artisan, Charlatan, Entertainer, Farmer, Guard, Guide, Hermit, Merchant, Noble, Pilgrim, Sailor, Scribe, Wayfarer (SRD 5.2.1)

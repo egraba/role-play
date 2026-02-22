@@ -443,3 +443,2239 @@
     legendary_action_count: 3
     has_lair: true
     description: "A lich is created when a powerful wizard embraces undeath as a means of preserving itself."
+
+# =============================================================================
+# Task 17: Beasts and Humanoids
+# =============================================================================
+
+# CR 0 Beasts
+- model: bestiary.monstersettings
+  fields:
+    name: Bat
+    size: tiny
+    creature_type: beast
+    subtype: ""
+    alignment: U
+    ac: 12
+    ac_type: ""
+    hit_dice: "1d4-1"
+    hp_average: 1
+    passive_perception: 11
+    strength: 2
+    dexterity: 15
+    constitution: 8
+    intelligence: 2
+    wisdom: 12
+    charisma: 4
+    telepathy: 0
+    challenge_rating: "0"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "The bat is a small, winged mammal that uses echolocation to navigate in darkness."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Cat
+    size: tiny
+    creature_type: beast
+    subtype: ""
+    alignment: U
+    ac: 12
+    ac_type: ""
+    hit_dice: "1d4"
+    hp_average: 2
+    passive_perception: 13
+    strength: 3
+    dexterity: 15
+    constitution: 10
+    intelligence: 3
+    wisdom: 12
+    charisma: 7
+    telepathy: 0
+    challenge_rating: "0"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A cat is a small domestic animal known for its agility and predatory instincts."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Hawk
+    size: tiny
+    creature_type: beast
+    subtype: ""
+    alignment: U
+    ac: 13
+    ac_type: ""
+    hit_dice: "1d4-1"
+    hp_average: 1
+    passive_perception: 14
+    strength: 5
+    dexterity: 16
+    constitution: 8
+    intelligence: 2
+    wisdom: 14
+    charisma: 6
+    telepathy: 0
+    challenge_rating: "0"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A hawk is a swift predatory bird with keen eyesight."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Rat
+    size: tiny
+    creature_type: beast
+    subtype: ""
+    alignment: U
+    ac: 10
+    ac_type: ""
+    hit_dice: "1d4-1"
+    hp_average: 1
+    passive_perception: 10
+    strength: 2
+    dexterity: 11
+    constitution: 9
+    intelligence: 2
+    wisdom: 10
+    charisma: 4
+    telepathy: 0
+    challenge_rating: "0"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A rat is a small rodent that can be found almost anywhere."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Raven
+    size: tiny
+    creature_type: beast
+    subtype: ""
+    alignment: U
+    ac: 12
+    ac_type: ""
+    hit_dice: "1d4-1"
+    hp_average: 1
+    passive_perception: 11
+    strength: 2
+    dexterity: 14
+    constitution: 8
+    intelligence: 2
+    wisdom: 12
+    charisma: 6
+    telepathy: 0
+    challenge_rating: "0"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A raven is a large, black bird known for its intelligence and ability to mimic sounds."
+
+# CR 1/8 Beasts
+- model: bestiary.monstersettings
+  fields:
+    name: Mastiff
+    size: medium
+    creature_type: beast
+    subtype: ""
+    alignment: U
+    ac: 12
+    ac_type: ""
+    hit_dice: "1d8+1"
+    hp_average: 5
+    passive_perception: 13
+    strength: 13
+    dexterity: 14
+    constitution: 12
+    intelligence: 3
+    wisdom: 12
+    charisma: 7
+    telepathy: 0
+    challenge_rating: "1/8"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Mastiffs are impressive hounds prized by humanoids for their loyalty and fierce dispositions."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Poisonous Snake
+    size: tiny
+    creature_type: beast
+    subtype: ""
+    alignment: U
+    ac: 13
+    ac_type: ""
+    hit_dice: "1d4"
+    hp_average: 2
+    passive_perception: 10
+    strength: 2
+    dexterity: 16
+    constitution: 11
+    intelligence: 1
+    wisdom: 10
+    charisma: 3
+    telepathy: 0
+    challenge_rating: "1/8"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A poisonous snake is a small reptile with venomous bite."
+
+# CR 1/4 Beasts
+- model: bestiary.monstersettings
+  fields:
+    name: Boar
+    size: medium
+    creature_type: beast
+    subtype: ""
+    alignment: U
+    ac: 11
+    ac_type: natural armor
+    hit_dice: "2d8+2"
+    hp_average: 11
+    passive_perception: 9
+    strength: 13
+    dexterity: 11
+    constitution: 12
+    intelligence: 2
+    wisdom: 9
+    charisma: 5
+    telepathy: 0
+    challenge_rating: "1/4"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A boar is a wild pig known for its tusks and ferocious charge."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Constrictor Snake
+    size: large
+    creature_type: beast
+    subtype: ""
+    alignment: U
+    ac: 12
+    ac_type: ""
+    hit_dice: "2d10+2"
+    hp_average: 13
+    passive_perception: 12
+    strength: 15
+    dexterity: 14
+    constitution: 12
+    intelligence: 1
+    wisdom: 10
+    charisma: 3
+    telepathy: 0
+    challenge_rating: "1/4"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A constrictor snake coils around its prey and squeezes the life from it."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Riding Horse
+    size: large
+    creature_type: beast
+    subtype: ""
+    alignment: U
+    ac: 10
+    ac_type: ""
+    hit_dice: "2d10+2"
+    hp_average: 13
+    passive_perception: 11
+    strength: 16
+    dexterity: 10
+    constitution: 12
+    intelligence: 2
+    wisdom: 11
+    charisma: 7
+    telepathy: 0
+    challenge_rating: "1/4"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A riding horse is a trained domesticated animal used for travel."
+
+# CR 1/2 Beasts
+- model: bestiary.monstersettings
+  fields:
+    name: Ape
+    size: medium
+    creature_type: beast
+    subtype: ""
+    alignment: U
+    ac: 12
+    ac_type: ""
+    hit_dice: "3d8+6"
+    hp_average: 19
+    passive_perception: 13
+    strength: 16
+    dexterity: 14
+    constitution: 14
+    intelligence: 6
+    wisdom: 12
+    charisma: 7
+    telepathy: 0
+    challenge_rating: "1/2"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "An ape is a powerful primate capable of using simple tools and communicating danger."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Black Bear
+    size: medium
+    creature_type: beast
+    subtype: ""
+    alignment: U
+    ac: 11
+    ac_type: natural armor
+    hit_dice: "3d8+6"
+    hp_average: 19
+    passive_perception: 13
+    strength: 15
+    dexterity: 10
+    constitution: 14
+    intelligence: 2
+    wisdom: 12
+    charisma: 7
+    telepathy: 0
+    challenge_rating: "1/2"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A black bear is a forest dweller that will defend itself aggressively when threatened."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Crocodile
+    size: large
+    creature_type: beast
+    subtype: ""
+    alignment: U
+    ac: 12
+    ac_type: natural armor
+    hit_dice: "3d10+3"
+    hp_average: 19
+    passive_perception: 10
+    strength: 15
+    dexterity: 10
+    constitution: 13
+    intelligence: 2
+    wisdom: 10
+    charisma: 5
+    telepathy: 0
+    challenge_rating: "1/2"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A crocodile lurks in rivers and swamps, ambushing prey that comes to drink."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Warhorse
+    size: large
+    creature_type: beast
+    subtype: ""
+    alignment: U
+    ac: 11
+    ac_type: natural armor
+    hit_dice: "3d10+3"
+    hp_average: 19
+    passive_perception: 11
+    strength: 18
+    dexterity: 12
+    constitution: 13
+    intelligence: 2
+    wisdom: 12
+    charisma: 7
+    telepathy: 0
+    challenge_rating: "1/2"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A warhorse is trained for battle and will fight alongside its rider."
+
+# CR 1 Beasts
+- model: bestiary.monstersettings
+  fields:
+    name: Brown Bear
+    size: large
+    creature_type: beast
+    subtype: ""
+    alignment: U
+    ac: 11
+    ac_type: natural armor
+    hit_dice: "4d10+12"
+    hp_average: 34
+    passive_perception: 13
+    strength: 19
+    dexterity: 10
+    constitution: 16
+    intelligence: 2
+    wisdom: 13
+    charisma: 7
+    telepathy: 0
+    challenge_rating: "1"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A brown bear is a massive omnivore that can be a dangerous predator when threatened."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Lion
+    size: large
+    creature_type: beast
+    subtype: ""
+    alignment: U
+    ac: 12
+    ac_type: ""
+    hit_dice: "4d10+4"
+    hp_average: 26
+    passive_perception: 13
+    strength: 17
+    dexterity: 15
+    constitution: 13
+    intelligence: 3
+    wisdom: 12
+    charisma: 8
+    telepathy: 0
+    challenge_rating: "1"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A lion is a powerful predator that hunts in prides across open plains."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Tiger
+    size: large
+    creature_type: beast
+    subtype: ""
+    alignment: U
+    ac: 12
+    ac_type: ""
+    hit_dice: "5d10+10"
+    hp_average: 37
+    passive_perception: 13
+    strength: 17
+    dexterity: 15
+    constitution: 14
+    intelligence: 3
+    wisdom: 12
+    charisma: 8
+    telepathy: 0
+    challenge_rating: "1"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A tiger is a great striped cat that stalks its prey through dense jungle."
+
+# CR 1/8 Humanoids
+- model: bestiary.monstersettings
+  fields:
+    name: Cultist
+    size: medium
+    creature_type: humanoid
+    subtype: any race
+    alignment: any
+    ac: 12
+    ac_type: leather armor
+    hit_dice: "2d8"
+    hp_average: 9
+    passive_perception: 11
+    strength: 11
+    dexterity: 12
+    constitution: 10
+    intelligence: 10
+    wisdom: 11
+    charisma: 10
+    telepathy: 0
+    challenge_rating: "1/8"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Cultists are ordinary folk who have been seduced by the promises of a dark entity."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Guard
+    size: medium
+    creature_type: humanoid
+    subtype: any race
+    alignment: any
+    ac: 16
+    ac_type: chain shirt and shield
+    hit_dice: "2d8+2"
+    hp_average: 11
+    passive_perception: 12
+    strength: 13
+    dexterity: 12
+    constitution: 12
+    intelligence: 10
+    wisdom: 11
+    charisma: 10
+    telepathy: 0
+    challenge_rating: "1/8"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Guards include members of a city watch, sentries in a citadel or fortified town, and the bodyguards of merchants and nobles."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Noble
+    size: medium
+    creature_type: humanoid
+    subtype: any race
+    alignment: any
+    ac: 15
+    ac_type: breastplate
+    hit_dice: "2d8"
+    hp_average: 9
+    passive_perception: 12
+    strength: 11
+    dexterity: 12
+    constitution: 11
+    intelligence: 12
+    wisdom: 14
+    charisma: 16
+    telepathy: 0
+    challenge_rating: "1/8"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Nobles wield great authority and influence as members of the upper class."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Tribal Warrior
+    size: medium
+    creature_type: humanoid
+    subtype: any race
+    alignment: any
+    ac: 12
+    ac_type: hide armor
+    hit_dice: "2d8+2"
+    hp_average: 11
+    passive_perception: 10
+    strength: 13
+    dexterity: 11
+    constitution: 12
+    intelligence: 8
+    wisdom: 11
+    charisma: 8
+    telepathy: 0
+    challenge_rating: "1/8"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Tribal warriors live beyond civilization, most often subsisting on game, wild plants, and looted goods."
+
+# CR 1/4 Humanoids
+- model: bestiary.monstersettings
+  fields:
+    name: Acolyte
+    size: medium
+    creature_type: humanoid
+    subtype: any race
+    alignment: any
+    ac: 10
+    ac_type: ""
+    hit_dice: "2d8"
+    hp_average: 9
+    passive_perception: 12
+    strength: 10
+    dexterity: 10
+    constitution: 10
+    intelligence: 10
+    wisdom: 14
+    charisma: 11
+    telepathy: 0
+    challenge_rating: "1/4"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Acolytes are junior members of a clergy, usually answerable to a priest."
+
+# CR 1/2 Humanoids
+- model: bestiary.monstersettings
+  fields:
+    name: Scout
+    size: medium
+    creature_type: humanoid
+    subtype: any race
+    alignment: any
+    ac: 13
+    ac_type: leather armor
+    hit_dice: "3d8+3"
+    hp_average: 16
+    passive_perception: 15
+    strength: 11
+    dexterity: 14
+    constitution: 12
+    intelligence: 11
+    wisdom: 13
+    charisma: 11
+    telepathy: 0
+    challenge_rating: "1/2"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Scouts are skilled hunters and trackers who offer their services for a fee."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Thug
+    size: medium
+    creature_type: humanoid
+    subtype: any race
+    alignment: any
+    ac: 11
+    ac_type: leather armor
+    hit_dice: "5d8+10"
+    hp_average: 32
+    passive_perception: 10
+    strength: 15
+    dexterity: 11
+    constitution: 14
+    intelligence: 10
+    wisdom: 10
+    charisma: 11
+    telepathy: 0
+    challenge_rating: "1/2"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Thugs are ruthless enforcers skilled at intimidation and violence."
+
+# CR 1 Humanoids
+- model: bestiary.monstersettings
+  fields:
+    name: Spy
+    size: medium
+    creature_type: humanoid
+    subtype: any race
+    alignment: any
+    ac: 12
+    ac_type: ""
+    hit_dice: "6d8"
+    hp_average: 27
+    passive_perception: 14
+    strength: 10
+    dexterity: 15
+    constitution: 10
+    intelligence: 12
+    wisdom: 14
+    charisma: 16
+    telepathy: 0
+    challenge_rating: "1"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Rulers, nobles, merchants, guildmasters, and other wealthy individuals use spies to gain the upper hand in a world of cutthroat politics."
+
+# CR 2 Humanoids
+- model: bestiary.monstersettings
+  fields:
+    name: Bandit Captain
+    size: medium
+    creature_type: humanoid
+    subtype: any race
+    alignment: any
+    ac: 15
+    ac_type: studded leather
+    hit_dice: "10d8+20"
+    hp_average: 65
+    passive_perception: 10
+    strength: 15
+    dexterity: 16
+    constitution: 14
+    intelligence: 14
+    wisdom: 11
+    charisma: 14
+    telepathy: 0
+    challenge_rating: "2"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "It takes a strong personality, ruthless cunning, and a silver tongue to keep a gang of bandits in line."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Berserker
+    size: medium
+    creature_type: humanoid
+    subtype: any race
+    alignment: any
+    ac: 13
+    ac_type: hide armor
+    hit_dice: "9d8+27"
+    hp_average: 67
+    passive_perception: 10
+    strength: 16
+    dexterity: 12
+    constitution: 17
+    intelligence: 9
+    wisdom: 11
+    charisma: 9
+    telepathy: 0
+    challenge_rating: "2"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Hailing from uncivilized lands, unpredictable berserkers come together in war bands and seek conflict wherever they can find it."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Cult Fanatic
+    size: medium
+    creature_type: humanoid
+    subtype: any race
+    alignment: any
+    ac: 13
+    ac_type: leather armor
+    hit_dice: "6d8+6"
+    hp_average: 33
+    passive_perception: 11
+    strength: 11
+    dexterity: 14
+    constitution: 12
+    intelligence: 10
+    wisdom: 13
+    charisma: 14
+    telepathy: 0
+    challenge_rating: "2"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Fanatical believers, cult fanatics are more powerful servants of a cult's dark master."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Priest
+    size: medium
+    creature_type: humanoid
+    subtype: any race
+    alignment: any
+    ac: 13
+    ac_type: chain shirt
+    hit_dice: "5d8+5"
+    hp_average: 27
+    passive_perception: 13
+    strength: 10
+    dexterity: 10
+    constitution: 12
+    intelligence: 13
+    wisdom: 16
+    charisma: 13
+    telepathy: 0
+    challenge_rating: "2"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Priests bring the teachings of their gods to the common folk."
+
+# CR 3 Humanoids
+- model: bestiary.monstersettings
+  fields:
+    name: Knight
+    size: medium
+    creature_type: humanoid
+    subtype: any race
+    alignment: any
+    ac: 18
+    ac_type: plate
+    hit_dice: "8d8+16"
+    hp_average: 52
+    passive_perception: 10
+    strength: 16
+    dexterity: 11
+    constitution: 14
+    intelligence: 11
+    wisdom: 11
+    charisma: 15
+    telepathy: 0
+    challenge_rating: "3"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Knights are warriors who pledge service to a ruler, a faith, or a noble ideal."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Veteran
+    size: medium
+    creature_type: humanoid
+    subtype: any race
+    alignment: any
+    ac: 17
+    ac_type: splint
+    hit_dice: "9d8+18"
+    hp_average: 58
+    passive_perception: 12
+    strength: 16
+    dexterity: 13
+    constitution: 14
+    intelligence: 10
+    wisdom: 11
+    charisma: 10
+    telepathy: 0
+    challenge_rating: "3"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Veterans are professional fighters that take up arms for pay or to protect something they believe in or value."
+
+# =============================================================================
+# Task 18: Undead, Fiend, and Elemental Monsters
+# =============================================================================
+
+# CR 1/4 Fiends
+- model: bestiary.monstersettings
+  fields:
+    name: Dretch
+    size: small
+    creature_type: fiend
+    subtype: demon
+    alignment: CE
+    ac: 11
+    ac_type: natural armor
+    hit_dice: "4d6+4"
+    hp_average: 18
+    passive_perception: 9
+    strength: 11
+    dexterity: 11
+    constitution: 12
+    intelligence: 5
+    wisdom: 8
+    charisma: 3
+    telepathy: 60
+    challenge_rating: "1/4"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Dretches are among the least of demonkind, yet they serve as the shock troops of the Abyss."
+
+# CR 1 Undead
+- model: bestiary.monstersettings
+  fields:
+    name: Specter
+    size: medium
+    creature_type: undead
+    subtype: ""
+    alignment: CE
+    ac: 12
+    ac_type: ""
+    hit_dice: "5d8"
+    hp_average: 22
+    passive_perception: 10
+    strength: 1
+    dexterity: 14
+    constitution: 11
+    intelligence: 10
+    wisdom: 10
+    charisma: 11
+    telepathy: 0
+    challenge_rating: "1"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A specter is the angry, unfettered spirit of a humanoid that has been prevented from passing into the afterlife."
+
+# CR 1 Fiends
+- model: bestiary.monstersettings
+  fields:
+    name: Imp
+    size: tiny
+    creature_type: fiend
+    subtype: devil
+    alignment: LE
+    ac: 13
+    ac_type: natural armor
+    hit_dice: "3d4+3"
+    hp_average: 10
+    passive_perception: 11
+    strength: 6
+    dexterity: 17
+    constitution: 13
+    intelligence: 11
+    wisdom: 12
+    charisma: 14
+    telepathy: 0
+    challenge_rating: "1"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Imps are the sycophantic toadies of the Nine Hells, bound to the service of more powerful devils."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Quasit
+    size: tiny
+    creature_type: fiend
+    subtype: demon
+    alignment: CE
+    ac: 13
+    ac_type: natural armor
+    hit_dice: "3d4"
+    hp_average: 7
+    passive_perception: 10
+    strength: 5
+    dexterity: 17
+    constitution: 10
+    intelligence: 7
+    wisdom: 10
+    charisma: 10
+    telepathy: 0
+    challenge_rating: "1"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Quasits are tiny demons that serve as spies, familiars, and toadies to more powerful demons."
+
+# CR 3 Undead
+- model: bestiary.monstersettings
+  fields:
+    name: Wight
+    size: medium
+    creature_type: undead
+    subtype: ""
+    alignment: NE
+    ac: 14
+    ac_type: studded leather
+    hit_dice: "6d8+18"
+    hp_average: 45
+    passive_perception: 13
+    strength: 15
+    dexterity: 14
+    constitution: 16
+    intelligence: 10
+    wisdom: 13
+    charisma: 15
+    telepathy: 0
+    challenge_rating: "3"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A wight is a ghastly undead warrior that hungers for life essence and can raise its victims as zombies."
+
+# CR 3 Fiends
+- model: bestiary.monstersettings
+  fields:
+    name: Bearded Devil
+    size: medium
+    creature_type: fiend
+    subtype: devil
+    alignment: LE
+    ac: 13
+    ac_type: natural armor
+    hit_dice: "8d8+16"
+    hp_average: 52
+    passive_perception: 10
+    strength: 16
+    dexterity: 15
+    constitution: 15
+    intelligence: 9
+    wisdom: 11
+    charisma: 11
+    telepathy: 120
+    challenge_rating: "3"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Bearded devils, also known as barbazu, serve as powerful shock troops and guards in the Nine Hells."
+
+# CR 3 Undead
+- model: bestiary.monstersettings
+  fields:
+    name: Mummy
+    size: medium
+    creature_type: undead
+    subtype: ""
+    alignment: LE
+    ac: 11
+    ac_type: natural armor
+    hit_dice: "9d8+18"
+    hp_average: 58
+    passive_perception: 10
+    strength: 16
+    dexterity: 8
+    constitution: 15
+    intelligence: 6
+    wisdom: 10
+    charisma: 12
+    telepathy: 0
+    challenge_rating: "3"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Mummies are undead created through ancient rituals, bound to protect tombs and punish intruders."
+
+# CR 4 Undead
+- model: bestiary.monstersettings
+  fields:
+    name: Ghost
+    size: medium
+    creature_type: undead
+    subtype: ""
+    alignment: any
+    ac: 11
+    ac_type: ""
+    hit_dice: "10d8"
+    hp_average: 45
+    passive_perception: 11
+    strength: 7
+    dexterity: 13
+    constitution: 10
+    intelligence: 10
+    wisdom: 12
+    charisma: 17
+    telepathy: 0
+    challenge_rating: "4"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A ghost is the soul of a once-living creature, bound to haunt a specific location or creature until some goal is fulfilled."
+
+# CR 5 Undead
+- model: bestiary.monstersettings
+  fields:
+    name: Wraith
+    size: medium
+    creature_type: undead
+    subtype: ""
+    alignment: NE
+    ac: 13
+    ac_type: ""
+    hit_dice: "9d8+27"
+    hp_average: 67
+    passive_perception: 12
+    strength: 6
+    dexterity: 16
+    constitution: 16
+    intelligence: 12
+    wisdom: 14
+    charisma: 15
+    telepathy: 0
+    challenge_rating: "5"
+    proficiency_bonus: 3
+    legendary_action_count: 0
+    has_lair: false
+    description: "A wraith is the malevolent, undead remnant of a hateful creature, driven by wrath and envy."
+
+# CR 5 Elementals
+- model: bestiary.monstersettings
+  fields:
+    name: Earth Elemental
+    size: large
+    creature_type: elemental
+    subtype: ""
+    alignment: N
+    ac: 17
+    ac_type: natural armor
+    hit_dice: "12d10+60"
+    hp_average: 126
+    passive_perception: 13
+    strength: 20
+    dexterity: 8
+    constitution: 20
+    intelligence: 5
+    wisdom: 10
+    charisma: 5
+    telepathy: 0
+    challenge_rating: "5"
+    proficiency_bonus: 3
+    legendary_action_count: 0
+    has_lair: false
+    description: "An earth elemental is a hulking, slow-moving creature of rock and soil."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Fire Elemental
+    size: large
+    creature_type: elemental
+    subtype: ""
+    alignment: N
+    ac: 13
+    ac_type: ""
+    hit_dice: "12d10+36"
+    hp_average: 102
+    passive_perception: 10
+    strength: 10
+    dexterity: 17
+    constitution: 16
+    intelligence: 6
+    wisdom: 10
+    charisma: 7
+    telepathy: 0
+    challenge_rating: "5"
+    proficiency_bonus: 3
+    legendary_action_count: 0
+    has_lair: false
+    description: "A fire elemental is a being of living flame that blazes across the landscape leaving scorched earth in its wake."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Water Elemental
+    size: large
+    creature_type: elemental
+    subtype: ""
+    alignment: N
+    ac: 14
+    ac_type: natural armor
+    hit_dice: "12d10+48"
+    hp_average: 114
+    passive_perception: 10
+    strength: 18
+    dexterity: 14
+    constitution: 18
+    intelligence: 5
+    wisdom: 10
+    charisma: 8
+    telepathy: 0
+    challenge_rating: "5"
+    proficiency_bonus: 3
+    legendary_action_count: 0
+    has_lair: false
+    description: "A water elemental is a churning mass of water and foam that sweeps across the landscape."
+
+# CR 5 Fiends
+- model: bestiary.monstersettings
+  fields:
+    name: Barbed Devil
+    size: medium
+    creature_type: fiend
+    subtype: devil
+    alignment: LE
+    ac: 15
+    ac_type: natural armor
+    hit_dice: "13d8+52"
+    hp_average: 110
+    passive_perception: 15
+    strength: 16
+    dexterity: 17
+    constitution: 18
+    intelligence: 12
+    wisdom: 14
+    charisma: 14
+    telepathy: 120
+    challenge_rating: "5"
+    proficiency_bonus: 3
+    legendary_action_count: 0
+    has_lair: false
+    description: "Barbed devils, also known as hamatulas, are cruel and avaricious devils that guard the treasures of the Nine Hells."
+
+# CR 6 Fiends
+- model: bestiary.monstersettings
+  fields:
+    name: Vrock
+    size: large
+    creature_type: fiend
+    subtype: demon
+    alignment: CE
+    ac: 15
+    ac_type: natural armor
+    hit_dice: "11d10+44"
+    hp_average: 104
+    passive_perception: 14
+    strength: 17
+    dexterity: 15
+    constitution: 18
+    intelligence: 8
+    wisdom: 13
+    charisma: 8
+    telepathy: 120
+    challenge_rating: "6"
+    proficiency_bonus: 3
+    legendary_action_count: 0
+    has_lair: false
+    description: "Vrocks are vulture-like demons that inhabit the Abyss and crave flesh and destruction."
+
+# CR 13 Undead
+- model: bestiary.monstersettings
+  fields:
+    name: Vampire
+    size: medium
+    creature_type: undead
+    subtype: ""
+    alignment: LE
+    ac: 16
+    ac_type: natural armor
+    hit_dice: "17d8+68"
+    hp_average: 144
+    passive_perception: 17
+    strength: 18
+    dexterity: 18
+    constitution: 18
+    intelligence: 17
+    wisdom: 15
+    charisma: 18
+    telepathy: 0
+    challenge_rating: "13"
+    proficiency_bonus: 5
+    legendary_action_count: 3
+    has_lair: false
+    description: "Vampires are undead creatures of the night that feed on the blood of the living."
+
+# =============================================================================
+# Task 19: Dragons
+# =============================================================================
+
+# --- Wyrmlings (CR 2-4, medium, proficiency_bonus 2) ---
+
+- model: bestiary.monstersettings
+  fields:
+    name: Black Dragon Wyrmling
+    size: medium
+    creature_type: dragon
+    subtype: ""
+    alignment: CE
+    ac: 17
+    ac_type: natural armor
+    hit_dice: "6d8+6"
+    hp_average: 33
+    passive_perception: 13
+    strength: 15
+    dexterity: 14
+    constitution: 13
+    intelligence: 10
+    wisdom: 11
+    charisma: 13
+    telepathy: 0
+    challenge_rating: "2"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A black dragon wyrmling is a small but vicious creature that already displays the cruelty and cunning of its kind."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Green Dragon Wyrmling
+    size: medium
+    creature_type: dragon
+    subtype: ""
+    alignment: LE
+    ac: 17
+    ac_type: natural armor
+    hit_dice: "7d8+7"
+    hp_average: 38
+    passive_perception: 14
+    strength: 15
+    dexterity: 12
+    constitution: 13
+    intelligence: 14
+    wisdom: 11
+    charisma: 13
+    telepathy: 0
+    challenge_rating: "2"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A green dragon wyrmling is already a cunning and manipulative creature that delights in lying and deception."
+
+- model: bestiary.monstersettings
+  fields:
+    name: White Dragon Wyrmling
+    size: medium
+    creature_type: dragon
+    subtype: ""
+    alignment: CE
+    ac: 16
+    ac_type: natural armor
+    hit_dice: "5d8+10"
+    hp_average: 32
+    passive_perception: 12
+    strength: 14
+    dexterity: 10
+    constitution: 14
+    intelligence: 5
+    wisdom: 10
+    charisma: 11
+    telepathy: 0
+    challenge_rating: "2"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A white dragon wyrmling is brutish and feral, driven by primal instincts and a cold fury."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Blue Dragon Wyrmling
+    size: medium
+    creature_type: dragon
+    subtype: ""
+    alignment: LE
+    ac: 17
+    ac_type: natural armor
+    hit_dice: "8d8+16"
+    hp_average: 52
+    passive_perception: 13
+    strength: 17
+    dexterity: 10
+    constitution: 15
+    intelligence: 12
+    wisdom: 11
+    charisma: 15
+    telepathy: 0
+    challenge_rating: "3"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A blue dragon wyrmling is arrogant and territorial, already beginning to accumulate a small hoard."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Red Dragon Wyrmling
+    size: medium
+    creature_type: dragon
+    subtype: ""
+    alignment: CE
+    ac: 17
+    ac_type: natural armor
+    hit_dice: "10d8+30"
+    hp_average: 75
+    passive_perception: 13
+    strength: 19
+    dexterity: 10
+    constitution: 17
+    intelligence: 12
+    wisdom: 11
+    charisma: 15
+    telepathy: 0
+    challenge_rating: "4"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A red dragon wyrmling is already arrogant and aggressive, displaying the volcanic temper of its kind."
+
+# --- Young Dragons (CR 6-10, large, proficiency_bonus 3) ---
+
+- model: bestiary.monstersettings
+  fields:
+    name: Young White Dragon
+    size: large
+    creature_type: dragon
+    subtype: ""
+    alignment: CE
+    ac: 17
+    ac_type: natural armor
+    hit_dice: "14d10+56"
+    hp_average: 133
+    passive_perception: 14
+    strength: 18
+    dexterity: 10
+    constitution: 18
+    intelligence: 6
+    wisdom: 11
+    charisma: 12
+    telepathy: 0
+    challenge_rating: "6"
+    proficiency_bonus: 3
+    legendary_action_count: 0
+    has_lair: false
+    description: "A young white dragon is a savage and merciless predator of arctic regions."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Young Black Dragon
+    size: large
+    creature_type: dragon
+    subtype: ""
+    alignment: CE
+    ac: 18
+    ac_type: natural armor
+    hit_dice: "15d10+45"
+    hp_average: 127
+    passive_perception: 15
+    strength: 19
+    dexterity: 14
+    constitution: 17
+    intelligence: 12
+    wisdom: 11
+    charisma: 15
+    telepathy: 0
+    challenge_rating: "7"
+    proficiency_bonus: 3
+    legendary_action_count: 0
+    has_lair: false
+    description: "A young black dragon is cruel and moody, quick to take offense and equally quick to attack."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Young Green Dragon
+    size: large
+    creature_type: dragon
+    subtype: ""
+    alignment: LE
+    ac: 18
+    ac_type: natural armor
+    hit_dice: "16d10+48"
+    hp_average: 136
+    passive_perception: 16
+    strength: 19
+    dexterity: 12
+    constitution: 17
+    intelligence: 16
+    wisdom: 13
+    charisma: 15
+    telepathy: 0
+    challenge_rating: "8"
+    proficiency_bonus: 3
+    legendary_action_count: 0
+    has_lair: false
+    description: "A young green dragon is a manipulative and deceitful creature that enjoys corrupting other creatures."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Young Blue Dragon
+    size: large
+    creature_type: dragon
+    subtype: ""
+    alignment: LE
+    ac: 18
+    ac_type: natural armor
+    hit_dice: "16d10+64"
+    hp_average: 152
+    passive_perception: 15
+    strength: 21
+    dexterity: 10
+    constitution: 19
+    intelligence: 14
+    wisdom: 13
+    charisma: 17
+    telepathy: 0
+    challenge_rating: "9"
+    proficiency_bonus: 4
+    legendary_action_count: 0
+    has_lair: false
+    description: "A young blue dragon is vain and territorial, already beginning to demand tribute from weaker creatures."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Young Red Dragon
+    size: large
+    creature_type: dragon
+    subtype: ""
+    alignment: CE
+    ac: 18
+    ac_type: natural armor
+    hit_dice: "17d10+85"
+    hp_average: 178
+    passive_perception: 16
+    strength: 23
+    dexterity: 10
+    constitution: 21
+    intelligence: 16
+    wisdom: 13
+    charisma: 21
+    telepathy: 0
+    challenge_rating: "10"
+    proficiency_bonus: 4
+    legendary_action_count: 0
+    has_lair: false
+    description: "A young red dragon is aggressive and territorial, already accumulating a substantial hoard."
+
+# --- Adult Dragons (CR 11-17, huge, legendary_action_count 3, has_lair true) ---
+
+- model: bestiary.monstersettings
+  fields:
+    name: Adult White Dragon
+    size: huge
+    creature_type: dragon
+    subtype: ""
+    alignment: CE
+    ac: 18
+    ac_type: natural armor
+    hit_dice: "16d12+96"
+    hp_average: 200
+    passive_perception: 14
+    strength: 22
+    dexterity: 10
+    constitution: 22
+    intelligence: 8
+    wisdom: 12
+    charisma: 12
+    telepathy: 0
+    challenge_rating: "13"
+    proficiency_bonus: 5
+    legendary_action_count: 3
+    has_lair: true
+    description: "An adult white dragon is a savage, territorial creature that rules over frigid arctic wastes."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Adult Black Dragon
+    size: huge
+    creature_type: dragon
+    subtype: ""
+    alignment: CE
+    ac: 19
+    ac_type: natural armor
+    hit_dice: "17d12+85"
+    hp_average: 195
+    passive_perception: 17
+    strength: 23
+    dexterity: 14
+    constitution: 21
+    intelligence: 14
+    wisdom: 13
+    charisma: 17
+    telepathy: 0
+    challenge_rating: "14"
+    proficiency_bonus: 5
+    legendary_action_count: 3
+    has_lair: true
+    description: "An adult black dragon is one of the most cruel and vile creatures in existence, ruling vast swamps and marshes."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Adult Green Dragon
+    size: huge
+    creature_type: dragon
+    subtype: ""
+    alignment: LE
+    ac: 19
+    ac_type: natural armor
+    hit_dice: "18d12+90"
+    hp_average: 207
+    passive_perception: 19
+    strength: 23
+    dexterity: 12
+    constitution: 21
+    intelligence: 18
+    wisdom: 15
+    charisma: 17
+    telepathy: 0
+    challenge_rating: "15"
+    proficiency_bonus: 5
+    legendary_action_count: 3
+    has_lair: true
+    description: "An adult green dragon is a master manipulator and schemer that uses lies, deceit, and mind-influencing magic to control others."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Adult Blue Dragon
+    size: huge
+    creature_type: dragon
+    subtype: ""
+    alignment: LE
+    ac: 19
+    ac_type: natural armor
+    hit_dice: "18d12+108"
+    hp_average: 225
+    passive_perception: 19
+    strength: 25
+    dexterity: 10
+    constitution: 23
+    intelligence: 16
+    wisdom: 15
+    charisma: 19
+    telepathy: 0
+    challenge_rating: "16"
+    proficiency_bonus: 5
+    legendary_action_count: 3
+    has_lair: true
+    description: "An adult blue dragon is a vain and territorial creature that rules vast desert expanses."
+
+# --- Ancient Dragons (CR 20-24, gargantuan, legendary_action_count 3, has_lair true) ---
+
+- model: bestiary.monstersettings
+  fields:
+    name: Ancient White Dragon
+    size: gargantuan
+    creature_type: dragon
+    subtype: ""
+    alignment: CE
+    ac: 20
+    ac_type: natural armor
+    hit_dice: "18d20+144"
+    hp_average: 333
+    passive_perception: 17
+    strength: 26
+    dexterity: 10
+    constitution: 26
+    intelligence: 10
+    wisdom: 13
+    charisma: 14
+    telepathy: 0
+    challenge_rating: "20"
+    proficiency_bonus: 6
+    legendary_action_count: 3
+    has_lair: true
+    description: "An ancient white dragon is the most primal and feral of the true dragons, a savage predator of ice and snow."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Ancient Black Dragon
+    size: gargantuan
+    creature_type: dragon
+    subtype: ""
+    alignment: CE
+    ac: 22
+    ac_type: natural armor
+    hit_dice: "21d20+147"
+    hp_average: 367
+    passive_perception: 20
+    strength: 27
+    dexterity: 14
+    constitution: 25
+    intelligence: 16
+    wisdom: 15
+    charisma: 19
+    telepathy: 0
+    challenge_rating: "21"
+    proficiency_bonus: 7
+    legendary_action_count: 3
+    has_lair: true
+    description: "An ancient black dragon is perhaps the most evil-tempered and vile-natured of all chromatic dragons."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Ancient Green Dragon
+    size: gargantuan
+    creature_type: dragon
+    subtype: ""
+    alignment: LE
+    ac: 21
+    ac_type: natural armor
+    hit_dice: "22d20+154"
+    hp_average: 385
+    passive_perception: 21
+    strength: 27
+    dexterity: 12
+    constitution: 25
+    intelligence: 20
+    wisdom: 17
+    charisma: 19
+    telepathy: 0
+    challenge_rating: "22"
+    proficiency_bonus: 7
+    legendary_action_count: 3
+    has_lair: true
+    description: "An ancient green dragon is the most cunning and treacherous of the chromatic dragons, manipulating others through fear and deception."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Ancient Blue Dragon
+    size: gargantuan
+    creature_type: dragon
+    subtype: ""
+    alignment: LE
+    ac: 22
+    ac_type: natural armor
+    hit_dice: "26d20+208"
+    hp_average: 481
+    passive_perception: 21
+    strength: 29
+    dexterity: 10
+    constitution: 27
+    intelligence: 18
+    wisdom: 17
+    charisma: 21
+    telepathy: 0
+    challenge_rating: "23"
+    proficiency_bonus: 7
+    legendary_action_count: 3
+    has_lair: true
+    description: "An ancient blue dragon is a supremely arrogant creature that rules vast desert territories and demands tribute from all who live within them."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Ancient Red Dragon
+    size: gargantuan
+    creature_type: dragon
+    subtype: ""
+    alignment: CE
+    ac: 22
+    ac_type: natural armor
+    hit_dice: "28d20+252"
+    hp_average: 546
+    passive_perception: 19
+    strength: 30
+    dexterity: 10
+    constitution: 29
+    intelligence: 18
+    wisdom: 15
+    charisma: 23
+    telepathy: 0
+    challenge_rating: "24"
+    proficiency_bonus: 7
+    legendary_action_count: 3
+    has_lair: true
+    description: "An ancient red dragon is the mightiest of all chromatic dragons, a creature of immense power, vanity, and cruelty."
+
+# =============================================================================
+# Task 20: Giants, Monstrosities, and Remaining Types
+# =============================================================================
+
+# --- Giants ---
+
+- model: bestiary.monstersettings
+  fields:
+    name: Hill Giant
+    size: huge
+    creature_type: giant
+    subtype: ""
+    alignment: CE
+    ac: 13
+    ac_type: natural armor
+    hit_dice: "10d12+40"
+    hp_average: 105
+    passive_perception: 9
+    strength: 21
+    dexterity: 8
+    constitution: 19
+    intelligence: 5
+    wisdom: 9
+    charisma: 6
+    telepathy: 0
+    challenge_rating: "5"
+    proficiency_bonus: 3
+    legendary_action_count: 0
+    has_lair: false
+    description: "Hill giants are selfish, dim-witted brutes that occupy a lowly place in the giant ordning."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Stone Giant
+    size: huge
+    creature_type: giant
+    subtype: ""
+    alignment: N
+    ac: 17
+    ac_type: natural armor
+    hit_dice: "11d12+55"
+    hp_average: 126
+    passive_perception: 14
+    strength: 23
+    dexterity: 15
+    constitution: 20
+    intelligence: 10
+    wisdom: 12
+    charisma: 9
+    telepathy: 0
+    challenge_rating: "7"
+    proficiency_bonus: 3
+    legendary_action_count: 0
+    has_lair: false
+    description: "Stone giants dwell in mountains and underground caverns, viewing the surface world as a realm of dreams."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Frost Giant
+    size: huge
+    creature_type: giant
+    subtype: ""
+    alignment: NE
+    ac: 15
+    ac_type: patchwork armor
+    hit_dice: "12d12+60"
+    hp_average: 138
+    passive_perception: 10
+    strength: 23
+    dexterity: 9
+    constitution: 21
+    intelligence: 9
+    wisdom: 10
+    charisma: 12
+    telepathy: 0
+    challenge_rating: "8"
+    proficiency_bonus: 3
+    legendary_action_count: 0
+    has_lair: false
+    description: "Frost giants are fearsome raiders who dwell in the frozen reaches of the world."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Fire Giant
+    size: huge
+    creature_type: giant
+    subtype: ""
+    alignment: LE
+    ac: 18
+    ac_type: plate
+    hit_dice: "13d12+78"
+    hp_average: 162
+    passive_perception: 12
+    strength: 25
+    dexterity: 9
+    constitution: 23
+    intelligence: 10
+    wisdom: 14
+    charisma: 13
+    telepathy: 0
+    challenge_rating: "9"
+    proficiency_bonus: 4
+    legendary_action_count: 0
+    has_lair: false
+    description: "Fire giants are militaristic and aggressive, building fortresses in volcanic regions."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Cloud Giant
+    size: huge
+    creature_type: giant
+    subtype: ""
+    alignment: NG
+    ac: 14
+    ac_type: natural armor
+    hit_dice: "16d12+96"
+    hp_average: 200
+    passive_perception: 16
+    strength: 27
+    dexterity: 10
+    constitution: 22
+    intelligence: 12
+    wisdom: 16
+    charisma: 16
+    telepathy: 0
+    challenge_rating: "9"
+    proficiency_bonus: 4
+    legendary_action_count: 0
+    has_lair: false
+    description: "Cloud giants dwell in cloud castles high above the world and are among the most powerful of giants."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Storm Giant
+    size: huge
+    creature_type: giant
+    subtype: ""
+    alignment: CG
+    ac: 16
+    ac_type: scale mail
+    hit_dice: "20d12+100"
+    hp_average: 230
+    passive_perception: 17
+    strength: 29
+    dexterity: 14
+    constitution: 20
+    intelligence: 16
+    wisdom: 18
+    charisma: 18
+    telepathy: 0
+    challenge_rating: "13"
+    proficiency_bonus: 5
+    legendary_action_count: 3
+    has_lair: false
+    description: "Storm giants are the most powerful of all giants, dwelling in the ocean depths or on the highest peaks."
+
+# --- Monstrosities ---
+
+- model: bestiary.monstersettings
+  fields:
+    name: Basilisk
+    size: medium
+    creature_type: monstrosity
+    subtype: ""
+    alignment: U
+    ac: 15
+    ac_type: natural armor
+    hit_dice: "8d8+16"
+    hp_average: 52
+    passive_perception: 9
+    strength: 16
+    dexterity: 8
+    constitution: 15
+    intelligence: 2
+    wisdom: 8
+    charisma: 7
+    telepathy: 0
+    challenge_rating: "3"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A basilisk is a multi-legged reptile whose gaze can turn flesh to stone."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Griffon
+    size: large
+    creature_type: monstrosity
+    subtype: ""
+    alignment: U
+    ac: 12
+    ac_type: ""
+    hit_dice: "7d10+21"
+    hp_average: 59
+    passive_perception: 15
+    strength: 18
+    dexterity: 15
+    constitution: 16
+    intelligence: 2
+    wisdom: 13
+    charisma: 8
+    telepathy: 0
+    challenge_rating: "2"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A griffon is a ferocious beast with the body of a lion and the head and wings of an eagle."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Harpy
+    size: medium
+    creature_type: monstrosity
+    subtype: ""
+    alignment: CE
+    ac: 11
+    ac_type: ""
+    hit_dice: "7d8+7"
+    hp_average: 38
+    passive_perception: 10
+    strength: 12
+    dexterity: 13
+    constitution: 12
+    intelligence: 7
+    wisdom: 10
+    charisma: 13
+    telepathy: 0
+    challenge_rating: "1"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Harpies are vicious, cruel creatures that combine the worst features of birds and humans."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Hydra
+    size: huge
+    creature_type: monstrosity
+    subtype: ""
+    alignment: U
+    ac: 15
+    ac_type: natural armor
+    hit_dice: "15d12+75"
+    hp_average: 172
+    passive_perception: 16
+    strength: 20
+    dexterity: 12
+    constitution: 20
+    intelligence: 2
+    wisdom: 10
+    charisma: 7
+    telepathy: 0
+    challenge_rating: "8"
+    proficiency_bonus: 3
+    legendary_action_count: 0
+    has_lair: false
+    description: "A hydra is a reptilian horror with a crocodilian body and numerous heads on long, serpentine necks."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Medusa
+    size: medium
+    creature_type: monstrosity
+    subtype: ""
+    alignment: LE
+    ac: 15
+    ac_type: natural armor
+    hit_dice: "17d8+51"
+    hp_average: 127
+    passive_perception: 14
+    strength: 16
+    dexterity: 15
+    constitution: 16
+    intelligence: 12
+    wisdom: 13
+    charisma: 15
+    telepathy: 0
+    challenge_rating: "6"
+    proficiency_bonus: 3
+    legendary_action_count: 0
+    has_lair: false
+    description: "A medusa is a monstrous creature that can turn creatures to stone with its petrifying gaze."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Roc
+    size: gargantuan
+    creature_type: monstrosity
+    subtype: ""
+    alignment: U
+    ac: 15
+    ac_type: natural armor
+    hit_dice: "16d20+80"
+    hp_average: 248
+    passive_perception: 14
+    strength: 28
+    dexterity: 10
+    constitution: 20
+    intelligence: 3
+    wisdom: 10
+    charisma: 9
+    telepathy: 0
+    challenge_rating: "11"
+    proficiency_bonus: 4
+    legendary_action_count: 0
+    has_lair: false
+    description: "A roc is an enormous bird of prey capable of carrying off an elephant."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Winter Wolf
+    size: large
+    creature_type: monstrosity
+    subtype: ""
+    alignment: NE
+    ac: 13
+    ac_type: natural armor
+    hit_dice: "10d10+20"
+    hp_average: 75
+    passive_perception: 15
+    strength: 18
+    dexterity: 13
+    constitution: 14
+    intelligence: 7
+    wisdom: 12
+    charisma: 8
+    telepathy: 0
+    challenge_rating: "3"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Winter wolves are large, intelligent wolves with white fur and icy breath, often allied with frost giants."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Phase Spider
+    size: large
+    creature_type: monstrosity
+    subtype: ""
+    alignment: U
+    ac: 13
+    ac_type: natural armor
+    hit_dice: "5d10+5"
+    hp_average: 32
+    passive_perception: 10
+    strength: 15
+    dexterity: 15
+    constitution: 12
+    intelligence: 6
+    wisdom: 10
+    charisma: 6
+    telepathy: 0
+    challenge_rating: "3"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A phase spider possesses the magical ability to phase in and out of the Ethereal Plane."
+
+# --- Constructs ---
+
+- model: bestiary.monstersettings
+  fields:
+    name: Stone Golem
+    size: large
+    creature_type: construct
+    subtype: ""
+    alignment: U
+    ac: 17
+    ac_type: natural armor
+    hit_dice: "17d10+85"
+    hp_average: 178
+    passive_perception: 10
+    strength: 22
+    dexterity: 9
+    constitution: 20
+    intelligence: 3
+    wisdom: 11
+    charisma: 1
+    telepathy: 0
+    challenge_rating: "10"
+    proficiency_bonus: 4
+    legendary_action_count: 0
+    has_lair: false
+    description: "A stone golem is a massive, slow-moving construct of chiseled stone animated by a powerful enchantment."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Animated Armor
+    size: medium
+    creature_type: construct
+    subtype: ""
+    alignment: U
+    ac: 18
+    ac_type: natural armor
+    hit_dice: "6d8+6"
+    hp_average: 33
+    passive_perception: 6
+    strength: 14
+    dexterity: 11
+    constitution: 13
+    intelligence: 1
+    wisdom: 3
+    charisma: 1
+    telepathy: 0
+    challenge_rating: "1"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Suits of animated armor stand guard in dungeons, temples, and the towers of wizards."
+
+# --- Oozes ---
+
+- model: bestiary.monstersettings
+  fields:
+    name: Gelatinous Cube
+    size: large
+    creature_type: ooze
+    subtype: ""
+    alignment: U
+    ac: 6
+    ac_type: ""
+    hit_dice: "8d10+40"
+    hp_average: 84
+    passive_perception: 8
+    strength: 14
+    dexterity: 3
+    constitution: 20
+    intelligence: 1
+    wisdom: 6
+    charisma: 1
+    telepathy: 0
+    challenge_rating: "2"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A gelatinous cube is a nearly transparent ooze that scours dungeon passages clean of organic matter."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Black Pudding
+    size: large
+    creature_type: ooze
+    subtype: ""
+    alignment: U
+    ac: 7
+    ac_type: ""
+    hit_dice: "10d10+30"
+    hp_average: 85
+    passive_perception: 8
+    strength: 16
+    dexterity: 5
+    constitution: 16
+    intelligence: 1
+    wisdom: 6
+    charisma: 1
+    telepathy: 0
+    challenge_rating: "4"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A black pudding is a monster made of living, acid-secreting slime."
+
+# --- Aberrations ---
+
+- model: bestiary.monstersettings
+  fields:
+    name: Aboleth
+    size: large
+    creature_type: aberration
+    subtype: ""
+    alignment: LE
+    ac: 17
+    ac_type: natural armor
+    hit_dice: "18d10+36"
+    hp_average: 135
+    passive_perception: 20
+    strength: 21
+    dexterity: 9
+    constitution: 15
+    intelligence: 18
+    wisdom: 15
+    charisma: 18
+    telepathy: 120
+    challenge_rating: "10"
+    proficiency_bonus: 4
+    legendary_action_count: 3
+    has_lair: true
+    description: "An aboleth is a terrifying, ancient creature that lurks in the depths of the Underdark, enslaving all who come near."
+
+# --- Celestials ---
+
+- model: bestiary.monstersettings
+  fields:
+    name: Couatl
+    size: medium
+    creature_type: celestial
+    subtype: ""
+    alignment: LG
+    ac: 19
+    ac_type: natural armor
+    hit_dice: "13d8+39"
+    hp_average: 97
+    passive_perception: 15
+    strength: 16
+    dexterity: 20
+    constitution: 17
+    intelligence: 18
+    wisdom: 20
+    charisma: 18
+    telepathy: 0
+    challenge_rating: "4"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Couatls are sacred, divine serpents that serve as agents of the gods of goodness."
+
+# --- Plants ---
+
+- model: bestiary.monstersettings
+  fields:
+    name: Treant
+    size: huge
+    creature_type: plant
+    subtype: ""
+    alignment: CG
+    ac: 16
+    ac_type: natural armor
+    hit_dice: "12d12+60"
+    hp_average: 138
+    passive_perception: 13
+    strength: 23
+    dexterity: 8
+    constitution: 21
+    intelligence: 12
+    wisdom: 16
+    charisma: 12
+    telepathy: 0
+    challenge_rating: "9"
+    proficiency_bonus: 4
+    legendary_action_count: 0
+    has_lair: false
+    description: "Treants are ancient, sentient trees that protect forests from those who would despoil them."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Shambling Mound
+    size: large
+    creature_type: plant
+    subtype: ""
+    alignment: U
+    ac: 15
+    ac_type: natural armor
+    hit_dice: "16d10+48"
+    hp_average: 136
+    passive_perception: 10
+    strength: 18
+    dexterity: 8
+    constitution: 16
+    intelligence: 5
+    wisdom: 10
+    charisma: 5
+    telepathy: 0
+    challenge_rating: "5"
+    proficiency_bonus: 3
+    legendary_action_count: 0
+    has_lair: false
+    description: "A shambling mound is a mass of decaying vegetation animated by an animating lightning strike."
