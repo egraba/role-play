@@ -1622,7 +1622,7 @@
     challenge_rating: "13"
     proficiency_bonus: 5
     legendary_action_count: 3
-    has_lair: true
+    has_lair: false
     description: "Vampires are undead creatures of the night that feed on the blood of the living."
 
 # =============================================================================
