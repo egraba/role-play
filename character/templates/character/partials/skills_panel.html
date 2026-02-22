@@ -47,11 +47,6 @@
                     <span class="skill-name">{{ skill.name }}</span>
                 </div>
 
-                <!-- Ability Tag -->
-                <div class="skill-ability-box">
-                    <span class="skill-ability-tag {{ skill.ability|lower }}">{{ skill.ability }}</span>
-                </div>
-
                 <!-- Roll Button -->
                 <div class="skill-roll-box">
                     <button type="button"
@@ -160,7 +155,7 @@
 /* Skill Row */
     .skill-row {
         display: grid;
-        grid-template-columns: 24px 40px 1fr 40px 36px;
+        grid-template-columns: 24px 40px 1fr 36px;
         align-items: center;
         gap: 4px;
         padding: 8px 10px;
@@ -226,50 +221,6 @@
         font-size: 0.85rem;
         color: var(--color-text);
         overflow-wrap: anywhere;
-    }
-
-/* Ability Tag */
-    .skill-ability-box {
-        display: flex;
-        justify-content: center;
-    }
-
-    .skill-ability-tag {
-        font-size: 0.7rem;
-        font-weight: bold;
-        padding: 2px 6px;
-        border-radius: 3px;
-        text-transform: uppercase;
-    }
-
-    .skill-ability-tag.str {
-        background: rgba(231, 76, 60, 0.2);
-        color: #e74c3c;
-    }
-
-    .skill-ability-tag.dex {
-        background: rgba(46, 204, 113, 0.2);
-        color: #2ecc71;
-    }
-
-    .skill-ability-tag.con {
-        background: rgba(230, 126, 34, 0.2);
-        color: #e67e22;
-    }
-
-    .skill-ability-tag.int {
-        background: rgba(52, 152, 219, 0.2);
-        color: #3498db;
-    }
-
-    .skill-ability-tag.wis {
-        background: rgba(155, 89, 182, 0.2);
-        color: #9b59b6;
-    }
-
-    .skill-ability-tag.cha {
-        background: rgba(241, 196, 15, 0.2);
-        color: #f1c40f;
     }
 
 /* Roll Button */
@@ -389,18 +340,13 @@
 /* Responsive */
     @media (max-width: 480px) {
         .skill-row {
-            grid-template-columns: 20px 36px 1fr 32px 32px;
+            grid-template-columns: 20px 36px 1fr 28px;
             gap: 4px;
             padding: 6px 8px;
         }
 
         .skill-name {
             font-size: 0.8rem;
-        }
-
-        .skill-ability-tag {
-            font-size: 0.65rem;
-            padding: 1px 4px;
         }
 
         .skill-roll-btn {
