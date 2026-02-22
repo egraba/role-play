@@ -1749,3 +1749,41 @@ class TestPassivePerception:
         """Passive perception included in senses cached_property."""
         dragon = MonsterSettings.objects.get(name=MonsterName.ADULT_RED_DRAGON)
         assert dragon.senses["passive_perception"] == 23
+
+
+@pytest.mark.django_db
+class TestSRDMonsterCompleteness:
+    def test_total_monster_count(self):
+        assert MonsterSettings.objects.count() >= 100
+
+    def test_all_creature_types_represented(self):
+        # fey is defined in CreatureType but not included in the SRD 5.2.1 fixture
+        excluded = {"fey"}
+        for creature_type, _ in CreatureType.choices:
+            if creature_type in excluded:
+                continue
+            assert MonsterSettings.objects.filter(
+                creature_type=creature_type
+            ).exists(), f"No monsters for type: {creature_type}"
+
+    def test_cr_range_represented(self):
+        low_cr = MonsterSettings.objects.filter(
+            challenge_rating__in=["0", "1/8", "1/4", "1/2"]
+        ).count()
+        mid_cr = MonsterSettings.objects.filter(
+            challenge_rating__in=["1", "2", "3", "4", "5"]
+        ).count()
+        high_cr = MonsterSettings.objects.filter(
+            challenge_rating__in=["10", "15", "20"]
+        ).count()
+        assert low_cr >= 5
+        assert mid_cr >= 10
+        assert high_cr >= 3
+
+    def test_dragons_have_breath_weapons(self):
+        dragons = MonsterSettings.objects.filter(creature_type="dragon")
+        assert dragons.count() >= 17
+        for dragon in dragons:
+            # All dragons should have at least one action
+            actions = MonsterActionTemplate.objects.filter(monster=dragon)
+            assert actions.exists(), f"{dragon.name} has no actions"
