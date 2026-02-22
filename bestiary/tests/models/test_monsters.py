@@ -63,42 +63,42 @@ class TestMonsterSettingsFixture:
     """Tests for the SRD monster database fixture."""
 
     def test_total_monster_count(self):
-        """Fixture should have 17 monsters."""
-        assert MonsterSettings.objects.count() == 17
+        """Fixture should have 104 monsters."""
+        assert MonsterSettings.objects.count() == 104
 
     # Creature type tests
     def test_beast_count(self):
-        """Should have 2 beasts."""
+        """Should have 19 beasts."""
         count = MonsterSettings.objects.filter(creature_type=CreatureType.BEAST).count()
-        assert count == 2
+        assert count == 19
 
     def test_humanoid_count(self):
-        """Should have 5 humanoids."""
+        """Should have 19 humanoids."""
         count = MonsterSettings.objects.filter(
             creature_type=CreatureType.HUMANOID
         ).count()
-        assert count == 5
+        assert count == 19
 
     def test_undead_count(self):
-        """Should have 4 undead."""
+        """Should have 10 undead."""
         count = MonsterSettings.objects.filter(
             creature_type=CreatureType.UNDEAD
         ).count()
-        assert count == 4
+        assert count == 10
 
     def test_monstrosity_count(self):
-        """Should have 2 monstrosities."""
+        """Should have 10 monstrosities."""
         count = MonsterSettings.objects.filter(
             creature_type=CreatureType.MONSTROSITY
         ).count()
-        assert count == 2
+        assert count == 10
 
     def test_dragon_count(self):
-        """Should have 1 dragon."""
+        """Should have 20 dragons."""
         count = MonsterSettings.objects.filter(
             creature_type=CreatureType.DRAGON
         ).count()
-        assert count == 1
+        assert count == 20
 
     # Size tests
     def test_medium_creatures(self):
@@ -112,24 +112,24 @@ class TestMonsterSettingsFixture:
         assert count >= 4
 
     def test_huge_creatures(self):
-        """Should have 1 huge creature (Adult Red Dragon)."""
+        """Should have 13 huge creatures."""
         count = MonsterSettings.objects.filter(size=CreatureSize.HUGE).count()
-        assert count == 1
+        assert count == 13
 
     # Challenge Rating tests
     def test_cr_0_monsters(self):
-        """Should have 1 CR 0 monster."""
+        """Should have 6 CR 0 monsters."""
         count = MonsterSettings.objects.filter(
             challenge_rating=ChallengeRating.CR_0
         ).count()
-        assert count == 1
+        assert count == 6
 
     def test_cr_1_4_monsters(self):
-        """Should have 3 CR 1/4 monsters."""
+        """Should have 8 CR 1/4 monsters."""
         count = MonsterSettings.objects.filter(
             challenge_rating=ChallengeRating.CR_1_4
         ).count()
-        assert count == 3
+        assert count == 8
 
     def test_high_cr_monsters(self):
         """Should have legendary creatures with high CR."""
