@@ -142,3 +142,367 @@
       character level when you gain this feat. Whenever you gain a character
       level thereafter, your Hit Point maximum increases by an additional 2
       Hit Points.
+
+- model: character.feat
+  pk: ability_score_improvement
+  fields:
+    feat_type: G
+    prerequisite: "Level 4+"
+    description: >-
+      Increase one ability score of your choice by 2, or increase two ability
+      scores of your choice by 1 each. This feat can be taken multiple times.
+
+- model: character.feat
+  pk: actor
+  fields:
+    feat_type: G
+    prerequisite: "Charisma 13+"
+    description: >-
+      Increase your Charisma score by 1, to a maximum of 20. You have Expertise
+      in the Performance skill. You can also mimic the speech of another person
+      or sounds made by other creatures after hearing them for at least 1 minute.
+
+- model: character.feat
+  pk: athlete
+  fields:
+    feat_type: G
+    prerequisite: "Strength or Dexterity 13+"
+    description: >-
+      Increase your Strength, Dexterity, or Constitution score by 1, to a
+      maximum of 20. When you are Prone, standing up uses only 5 feet of
+      movement. Climbing doesn't cost you extra movement. You can make a
+      running long or high jump after moving only 5 feet.
+
+- model: character.feat
+  pk: charger
+  fields:
+    feat_type: G
+    prerequisite: "Proficiency with any Martial weapon"
+    description: >-
+      Increase your Strength or Dexterity score by 1, to a maximum of 20. If
+      you move at least 10 feet in a straight line immediately before hitting
+      with a melee attack as part of the Attack action, choose one of the
+      following effects: the target takes an extra 1d8 damage from the hit, or
+      the target must succeed on a DC 8 + your proficiency bonus + your Strength
+      modifier Strength saving throw or be pushed 10 feet away and knocked Prone.
+
+- model: character.feat
+  pk: chef
+  fields:
+    feat_type: G
+    prerequisite: ""
+    description: >-
+      Increase your Constitution or Wisdom score by 1, to a maximum of 20. You
+      gain proficiency with Cook's Utensils. As part of a short rest, you can
+      cook special food if you have ingredients and Cook's Utensils. You can
+      prepare enough food for a number of creatures equal to 4 + your
+      proficiency bonus. Each creature that eats the food and spends Hit Dice
+      during the short rest can forgo one of the dice to instead regain the
+      maximum number of Hit Points the die can restore.
+
+- model: character.feat
+  pk: crossbow_expert
+  fields:
+    feat_type: G
+    prerequisite: "Proficiency with any Crossbow"
+    description: >-
+      When you use the Attack action and attack with a one-handed weapon, you
+      can use a Bonus Action to attack with a Hand Crossbow. You ignore the
+      Loading property of Crossbows. Being within 5 feet of a hostile creature
+      doesn't impose Disadvantage on your ranged attack rolls.
+
+- model: character.feat
+  pk: crusher
+  fields:
+    feat_type: G
+    prerequisite: ""
+    description: >-
+      Increase your Strength or Constitution score by 1, to a maximum of 20.
+      Once per turn, when you hit a creature with an attack that deals
+      Bludgeoning damage, you can move it 5 feet to an unoccupied space, provided
+      the target is no more than one size larger than you. When you score a
+      Critical Hit that deals Bludgeoning damage, attack rolls against that
+      creature have Advantage until the start of your next turn.
+
+- model: character.feat
+  pk: defensive_duelist
+  fields:
+    feat_type: G
+    prerequisite: "Dexterity 13+"
+    description: >-
+      When you are wielding a Finesse weapon and another creature hits you with
+      a melee attack, you can use your Reaction to add your proficiency bonus to
+      your Armor Class for that attack, potentially causing it to miss.
+
+- model: character.feat
+  pk: dual_wielder
+  fields:
+    feat_type: G
+    prerequisite: "Proficiency with any Martial weapon"
+    description: >-
+      Increase your Strength or Dexterity score by 1, to a maximum of 20. You
+      can use two-weapon fighting even when the one-handed melee weapons you are
+      wielding aren't Light. You can draw or stow two one-handed weapons when
+      you would normally be able to draw or stow only one. While you are holding
+      a melee weapon in each hand, you gain a +1 bonus to Armor Class.
+
+- model: character.feat
+  pk: durable
+  fields:
+    feat_type: G
+    prerequisite: ""
+    description: >-
+      Increase your Constitution score by 1, to a maximum of 20. When you roll
+      a Hit Die to regain Hit Points, the minimum number of Hit Points you regain
+      equals twice your Constitution modifier (minimum of 2).
+
+- model: character.feat
+  pk: elemental_adept
+  fields:
+    feat_type: G
+    prerequisite: "Spellcasting or Pact Magic feature"
+    description: >-
+      When you gain this feat, choose one of the following damage types: Acid,
+      Cold, Fire, Lightning, or Thunder. Spells you cast ignore resistance to
+      damage of the chosen type. In addition, when you roll damage for a spell
+      you cast that deals damage of that type, you can treat any 1 on a damage
+      die as a 2. You can select this feat multiple times, choosing a different
+      damage type each time.
+
+- model: character.feat
+  pk: fey_touched
+  fields:
+    feat_type: G
+    prerequisite: ""
+    description: >-
+      Increase your Intelligence, Wisdom, or Charisma score by 1, to a maximum
+      of 20. You learn the Misty Step spell and one 1st-level spell of your
+      choice from the Divination or Enchantment school of magic. You can cast
+      each of these spells once without expending a spell slot. Once you cast
+      either spell in this way, you can't do so again until you finish a Long
+      Rest. You can also cast these spells using any spell slots you have.
+
+- model: character.feat
+  pk: grappler
+  fields:
+    feat_type: G
+    prerequisite: "Strength 13+"
+    description: >-
+      Increase your Strength score by 1, to a maximum of 20. You have Advantage
+      on attack rolls against a creature Grappled by you. You can use your
+      Action to try to pin a creature Grappled by you. To do so, make another
+      grapple check. If you succeed, you and the creature are both Restrained
+      until the grapple ends.
+
+- model: character.feat
+  pk: great_weapon_master
+  fields:
+    feat_type: G
+    prerequisite: "Proficiency with any Martial Melee weapon"
+    description: >-
+      Increase your Strength score by 1, to a maximum of 20. Before you make a
+      melee attack roll with a Heavy weapon that you are proficient with, you
+      can choose to take a -5 penalty to the roll. If the attack hits, you add
+      +10 to the attack's damage. When you score a Critical Hit with a melee
+      weapon or reduce a creature to 0 Hit Points with one, you can make one
+      melee weapon attack as a Bonus Action.
+
+- model: character.feat
+  pk: heavy_armor_master
+  fields:
+    feat_type: G
+    prerequisite: "Proficiency with Heavy Armor"
+    description: >-
+      Increase your Strength score by 1, to a maximum of 20. While you are
+      wearing Heavy Armor, Bludgeoning, Piercing, and Slashing damage that you
+      take from nonmagical attacks is reduced by 3.
+
+- model: character.feat
+  pk: inspiring_leader
+  fields:
+    feat_type: G
+    prerequisite: "Charisma 13+"
+    description: >-
+      Increase your Charisma score by 1, to a maximum of 20. You can spend 10
+      minutes inspiring your companions, shoring up their resolve to fight. When
+      you do so, choose up to six friendly creatures (which can include yourself)
+      within 30 feet of you who can see or hear you and who can understand you.
+      Each creature can gain Temporary Hit Points equal to your level + your
+      Charisma modifier.
+
+- model: character.feat
+  pk: mage_slayer
+  fields:
+    feat_type: G
+    prerequisite: ""
+    description: >-
+      When a creature within 5 feet of you casts a spell, you can use your
+      Reaction to make a melee weapon attack against that creature. When you
+      damage a creature that is concentrating on a spell, that creature has
+      Disadvantage on the saving throw it makes to maintain its Concentration.
+      You have Advantage on saving throws against spells cast by creatures within
+      5 feet of you.
+
+- model: character.feat
+  pk: mounted_combatant
+  fields:
+    feat_type: G
+    prerequisite: ""
+    description: >-
+      While you are mounted and aren't Incapacitated, you have Advantage on
+      melee attack rolls against any unmounted creature that is smaller than
+      your mount. You can force an attack targeted at your mount to target you
+      instead. If your mount is subjected to an effect that allows it to make
+      a Dexterity saving throw to take only half damage, it instead takes no
+      damage if it succeeds, and only half damage if it fails.
+
+- model: character.feat
+  pk: observant
+  fields:
+    feat_type: G
+    prerequisite: ""
+    description: >-
+      Increase your Intelligence or Wisdom score by 1, to a maximum of 20. If
+      you can see a creature's mouth while it is speaking a language you
+      understand, you can interpret what it's saying by reading its lips. You
+      have a +5 bonus to your passive Wisdom (Perception) and passive
+      Intelligence (Investigation) scores.
+
+- model: character.feat
+  pk: polearm_master
+  fields:
+    feat_type: G
+    prerequisite: "Proficiency with any Polearm"
+    description: >-
+      When you take the Attack action and attack with only a glaive, halberd,
+      quarterstaff, or spear, you can use a Bonus Action to make a melee attack
+      with the opposite end of the weapon. This attack uses the same ability
+      modifier as the primary attack. The weapon deals 1d4 Bludgeoning damage.
+      While you are wielding a glaive, halberd, pike, quarterstaff, or spear,
+      other creatures provoke an Opportunity Attack from you when they enter
+      the reach you have with that weapon.
+
+- model: character.feat
+  pk: resilient
+  fields:
+    feat_type: G
+    prerequisite: ""
+    description: >-
+      Choose one ability score. Increase the chosen ability score by 1, to a
+      maximum of 20. You gain proficiency in saving throws using the chosen
+      ability.
+
+- model: character.feat
+  pk: sentinel
+  fields:
+    feat_type: G
+    prerequisite: ""
+    description: >-
+      When you hit a creature with an Opportunity Attack, the creature's Speed
+      becomes 0 for the rest of the current turn. Creatures within 5 feet of
+      you provoke Opportunity Attacks from you even if they took the Disengage
+      action. When a creature within 5 feet of you makes an attack against a
+      target other than you (and that target doesn't have this feat), you can
+      use your Reaction to make a melee weapon attack against the attacking
+      creature.
+
+- model: character.feat
+  pk: shadow_touched
+  fields:
+    feat_type: G
+    prerequisite: ""
+    description: >-
+      Increase your Intelligence, Wisdom, or Charisma score by 1, to a maximum
+      of 20. You learn the Invisibility spell and one 1st-level spell of your
+      choice from the Illusion or Necromancy school. You can cast each of these
+      spells once without expending a spell slot. Once you cast either spell in
+      this way, you can't do so again until you finish a Long Rest. You can also
+      cast these spells using any spell slots you have.
+
+- model: character.feat
+  pk: sharpshooter
+  fields:
+    feat_type: G
+    prerequisite: "Proficiency with any Ranged weapon"
+    description: >-
+      Increase your Dexterity score by 1, to a maximum of 20. Before you make
+      a ranged attack roll with a weapon you are proficient with, you can choose
+      to take a -5 penalty to the roll. If that attack hits, you add +10 to the
+      damage. Attacking at long range doesn't impose Disadvantage on your ranged
+      weapon attack rolls. Your ranged weapon attacks ignore Half Cover and
+      Three-Quarters Cover.
+
+- model: character.feat
+  pk: shield_master
+  fields:
+    feat_type: G
+    prerequisite: "Proficiency with Shields"
+    description: >-
+      If you take the Attack action on your turn, you can use a Bonus Action to
+      try to shove a creature within 5 feet of you with your Shield. If you
+      aren't Incapacitated, you can add your Shield's Armor Class bonus to any
+      Dexterity saving throw you make against a spell or other harmful effect
+      that targets only you. If you are subjected to an effect that allows you
+      to make a Dexterity saving throw to take only half damage, you can use
+      your Reaction to take no damage if you succeed on the saving throw.
+
+- model: character.feat
+  pk: skulker
+  fields:
+    feat_type: G
+    prerequisite: "Dexterity 13+"
+    description: >-
+      Increase your Dexterity score by 1, to a maximum of 20. You can try to
+      hide when you are only lightly obscured from the creature from which you
+      are hiding. When you are hidden from a creature and miss it with a ranged
+      weapon attack, making the attack doesn't reveal your position. Dim light
+      doesn't impose Disadvantage on your Wisdom (Perception) checks relying on
+      sight.
+
+- model: character.feat
+  pk: slasher
+  fields:
+    feat_type: G
+    prerequisite: ""
+    description: >-
+      Increase your Strength or Dexterity score by 1, to a maximum of 20. Once
+      per turn, when you hit a creature with an attack that deals Slashing
+      damage, you can reduce the Speed of that creature by 10 feet until the
+      start of your next turn. When you score a Critical Hit that deals Slashing
+      damage, the target has Disadvantage on attack rolls until the start of your
+      next turn.
+
+- model: character.feat
+  pk: spell_sniper
+  fields:
+    feat_type: G
+    prerequisite: "Spellcasting or Pact Magic feature"
+    description: >-
+      Increase your Intelligence, Wisdom, or Charisma score by 1, to a maximum
+      of 20. You learn one cantrip that requires an attack roll. The cantrip can
+      be from any spell list. When you cast a spell that requires you to make an
+      attack roll, the spell's range is doubled. Your ranged spell attacks ignore
+      Half Cover and Three-Quarters Cover.
+
+- model: character.feat
+  pk: war_caster
+  fields:
+    feat_type: G
+    prerequisite: "Spellcasting or Pact Magic feature"
+    description: >-
+      You have Advantage on Constitution saving throws that you make to maintain
+      Concentration. You can perform the Somatic components of spells even when
+      you have weapons or a Shield in one or both hands. When a creature
+      provokes an Opportunity Attack from you, you can use your Reaction to cast
+      a spell at the creature rather than making an Opportunity Attack. The spell
+      must have a casting time of one action and must target only that creature.
+
+- model: character.feat
+  pk: weapon_master
+  fields:
+    feat_type: G
+    prerequisite: ""
+    description: >-
+      Increase your Strength, Dexterity, Intelligence, Wisdom, or Charisma
+      score by 1, to a maximum of 20. You gain proficiency with four weapons of
+      your choice. Each one must be a Simple or Martial weapon.

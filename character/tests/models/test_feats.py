@@ -74,13 +74,18 @@ class TestFeatModel:
         assert feat.prerequisite == "Level 4"
 
     def test_ordering(self):
-        """Feats are ordered by name (ascending alphabetical)."""
-        FeatFactory(name=FeatName.SAVAGE_ATTACKER)
-        FeatFactory(name=FeatName.ALERT)
-        FeatFactory(name=FeatName.MAGIC_INITIATE_CLERIC)
-        feats = list(Feat.objects.all())
-        names = [f.name for f in feats]
-        assert names == sorted(names)
+        """Feats are ordered by name."""
+        names = [
+            FeatName.SAVAGE_ATTACKER,
+            FeatName.ALERT,
+            FeatName.MAGIC_INITIATE_CLERIC,
+        ]
+        for name in names:
+            FeatFactory(name=name)
+        feats = list(Feat.objects.filter(name__in=names))
+        assert feats[0].name == FeatName.ALERT
+        assert feats[1].name == FeatName.MAGIC_INITIATE_CLERIC
+        assert feats[2].name == FeatName.SAVAGE_ATTACKER
 
 
 @pytest.mark.django_db
@@ -176,3 +181,23 @@ class TestCharacterFeatModel:
         assert char_feat.character is not None
         assert char_feat.feat is not None
         assert char_feat.granted_by == "background"
+
+
+@pytest.mark.django_db
+class TestSRDFeatCompleteness:
+    """Verify all SRD 5.2.1 feats load from fixtures correctly."""
+
+    def test_all_feat_names_have_fixture(self):
+        for name, _ in FeatName.choices:
+            assert Feat.objects.filter(name=name).exists(), (
+                f"Missing fixture for feat: {name}"
+            )
+
+    def test_general_feat_count(self):
+        general_count = Feat.objects.filter(feat_type=FeatType.GENERAL).count()
+        assert general_count == 30, f"Expected 30 general feats, found {general_count}"
+
+    def test_all_general_feats_have_description(self):
+        feats = Feat.objects.filter(feat_type=FeatType.GENERAL)
+        for feat in feats:
+            assert feat.description, f"Feat {feat.name} has empty description"
