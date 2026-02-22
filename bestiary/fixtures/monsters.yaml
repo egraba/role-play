@@ -1233,3 +1233,394 @@
     legendary_action_count: 0
     has_lair: false
     description: "Veterans are professional fighters that take up arms for pay or to protect something they believe in or value."
+
+# =============================================================================
+# Task 18: Undead, Fiend, and Elemental Monsters
+# =============================================================================
+
+# CR 1/4 Fiends
+- model: bestiary.monstersettings
+  fields:
+    name: Dretch
+    size: small
+    creature_type: fiend
+    subtype: demon
+    alignment: CE
+    ac: 11
+    ac_type: natural armor
+    hit_dice: "4d6+4"
+    hp_average: 18
+    passive_perception: 9
+    strength: 11
+    dexterity: 11
+    constitution: 12
+    intelligence: 5
+    wisdom: 8
+    charisma: 3
+    telepathy: 60
+    challenge_rating: "1/4"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Dretches are among the least of demonkind, yet they serve as the shock troops of the Abyss."
+
+# CR 1 Undead
+- model: bestiary.monstersettings
+  fields:
+    name: Specter
+    size: medium
+    creature_type: undead
+    subtype: ""
+    alignment: CE
+    ac: 12
+    ac_type: ""
+    hit_dice: "5d8"
+    hp_average: 22
+    passive_perception: 10
+    strength: 1
+    dexterity: 14
+    constitution: 11
+    intelligence: 10
+    wisdom: 10
+    charisma: 11
+    telepathy: 0
+    challenge_rating: "1"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A specter is the angry, unfettered spirit of a humanoid that has been prevented from passing into the afterlife."
+
+# CR 1 Fiends
+- model: bestiary.monstersettings
+  fields:
+    name: Imp
+    size: tiny
+    creature_type: fiend
+    subtype: devil
+    alignment: LE
+    ac: 13
+    ac_type: natural armor
+    hit_dice: "3d4+3"
+    hp_average: 10
+    passive_perception: 11
+    strength: 6
+    dexterity: 17
+    constitution: 13
+    intelligence: 11
+    wisdom: 12
+    charisma: 14
+    telepathy: 0
+    challenge_rating: "1"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Imps are the sycophantic toadies of the Nine Hells, bound to the service of more powerful devils."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Quasit
+    size: tiny
+    creature_type: fiend
+    subtype: demon
+    alignment: CE
+    ac: 13
+    ac_type: natural armor
+    hit_dice: "3d4"
+    hp_average: 7
+    passive_perception: 10
+    strength: 5
+    dexterity: 17
+    constitution: 10
+    intelligence: 7
+    wisdom: 10
+    charisma: 10
+    telepathy: 0
+    challenge_rating: "1"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Quasits are tiny demons that serve as spies, familiars, and toadies to more powerful demons."
+
+# CR 3 Undead
+- model: bestiary.monstersettings
+  fields:
+    name: Wight
+    size: medium
+    creature_type: undead
+    subtype: ""
+    alignment: NE
+    ac: 14
+    ac_type: studded leather
+    hit_dice: "6d8+18"
+    hp_average: 45
+    passive_perception: 13
+    strength: 15
+    dexterity: 14
+    constitution: 16
+    intelligence: 10
+    wisdom: 13
+    charisma: 15
+    telepathy: 0
+    challenge_rating: "3"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A wight is a ghastly undead warrior that hungers for life essence and can raise its victims as zombies."
+
+# CR 3 Fiends
+- model: bestiary.monstersettings
+  fields:
+    name: Bearded Devil
+    size: medium
+    creature_type: fiend
+    subtype: devil
+    alignment: LE
+    ac: 13
+    ac_type: natural armor
+    hit_dice: "8d8+16"
+    hp_average: 52
+    passive_perception: 10
+    strength: 16
+    dexterity: 15
+    constitution: 15
+    intelligence: 9
+    wisdom: 11
+    charisma: 11
+    telepathy: 120
+    challenge_rating: "3"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Bearded devils, also known as barbazu, serve as powerful shock troops and guards in the Nine Hells."
+
+# CR 3 Undead
+- model: bestiary.monstersettings
+  fields:
+    name: Mummy
+    size: medium
+    creature_type: undead
+    subtype: ""
+    alignment: LE
+    ac: 11
+    ac_type: natural armor
+    hit_dice: "9d8+18"
+    hp_average: 58
+    passive_perception: 10
+    strength: 16
+    dexterity: 8
+    constitution: 15
+    intelligence: 6
+    wisdom: 10
+    charisma: 12
+    telepathy: 0
+    challenge_rating: "3"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "Mummies are undead created through ancient rituals, bound to protect tombs and punish intruders."
+
+# CR 4 Undead
+- model: bestiary.monstersettings
+  fields:
+    name: Ghost
+    size: medium
+    creature_type: undead
+    subtype: ""
+    alignment: any
+    ac: 11
+    ac_type: ""
+    hit_dice: "10d8"
+    hp_average: 45
+    passive_perception: 11
+    strength: 7
+    dexterity: 13
+    constitution: 10
+    intelligence: 10
+    wisdom: 12
+    charisma: 17
+    telepathy: 0
+    challenge_rating: "4"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A ghost is the soul of a once-living creature, bound to haunt a specific location or creature until some goal is fulfilled."
+
+# CR 5 Undead
+- model: bestiary.monstersettings
+  fields:
+    name: Wraith
+    size: medium
+    creature_type: undead
+    subtype: ""
+    alignment: NE
+    ac: 13
+    ac_type: ""
+    hit_dice: "9d8+27"
+    hp_average: 67
+    passive_perception: 12
+    strength: 6
+    dexterity: 16
+    constitution: 16
+    intelligence: 12
+    wisdom: 14
+    charisma: 15
+    telepathy: 0
+    challenge_rating: "5"
+    proficiency_bonus: 3
+    legendary_action_count: 0
+    has_lair: false
+    description: "A wraith is the malevolent, undead remnant of a hateful creature, driven by wrath and envy."
+
+# CR 5 Elementals
+- model: bestiary.monstersettings
+  fields:
+    name: Earth Elemental
+    size: large
+    creature_type: elemental
+    subtype: ""
+    alignment: N
+    ac: 17
+    ac_type: natural armor
+    hit_dice: "12d10+60"
+    hp_average: 126
+    passive_perception: 13
+    strength: 20
+    dexterity: 8
+    constitution: 20
+    intelligence: 5
+    wisdom: 10
+    charisma: 5
+    telepathy: 0
+    challenge_rating: "5"
+    proficiency_bonus: 3
+    legendary_action_count: 0
+    has_lair: false
+    description: "An earth elemental is a hulking, slow-moving creature of rock and soil."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Fire Elemental
+    size: large
+    creature_type: elemental
+    subtype: ""
+    alignment: N
+    ac: 13
+    ac_type: ""
+    hit_dice: "12d10+36"
+    hp_average: 102
+    passive_perception: 10
+    strength: 10
+    dexterity: 17
+    constitution: 16
+    intelligence: 6
+    wisdom: 10
+    charisma: 7
+    telepathy: 0
+    challenge_rating: "5"
+    proficiency_bonus: 3
+    legendary_action_count: 0
+    has_lair: false
+    description: "A fire elemental is a being of living flame that blazes across the landscape leaving scorched earth in its wake."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Water Elemental
+    size: large
+    creature_type: elemental
+    subtype: ""
+    alignment: N
+    ac: 14
+    ac_type: natural armor
+    hit_dice: "12d10+48"
+    hp_average: 114
+    passive_perception: 10
+    strength: 18
+    dexterity: 14
+    constitution: 18
+    intelligence: 5
+    wisdom: 10
+    charisma: 8
+    telepathy: 0
+    challenge_rating: "5"
+    proficiency_bonus: 3
+    legendary_action_count: 0
+    has_lair: false
+    description: "A water elemental is a churning mass of water and foam that sweeps across the landscape."
+
+# CR 5 Fiends
+- model: bestiary.monstersettings
+  fields:
+    name: Barbed Devil
+    size: medium
+    creature_type: fiend
+    subtype: devil
+    alignment: LE
+    ac: 15
+    ac_type: natural armor
+    hit_dice: "13d8+52"
+    hp_average: 110
+    passive_perception: 15
+    strength: 16
+    dexterity: 17
+    constitution: 18
+    intelligence: 12
+    wisdom: 14
+    charisma: 14
+    telepathy: 120
+    challenge_rating: "5"
+    proficiency_bonus: 3
+    legendary_action_count: 0
+    has_lair: false
+    description: "Barbed devils, also known as hamatulas, are cruel and avaricious devils that guard the treasures of the Nine Hells."
+
+# CR 6 Fiends
+- model: bestiary.monstersettings
+  fields:
+    name: Vrock
+    size: large
+    creature_type: fiend
+    subtype: demon
+    alignment: CE
+    ac: 15
+    ac_type: natural armor
+    hit_dice: "11d10+44"
+    hp_average: 104
+    passive_perception: 14
+    strength: 17
+    dexterity: 15
+    constitution: 18
+    intelligence: 8
+    wisdom: 13
+    charisma: 8
+    telepathy: 120
+    challenge_rating: "6"
+    proficiency_bonus: 3
+    legendary_action_count: 0
+    has_lair: false
+    description: "Vrocks are vulture-like demons that inhabit the Abyss and crave flesh and destruction."
+
+# CR 13 Undead
+- model: bestiary.monstersettings
+  fields:
+    name: Vampire
+    size: medium
+    creature_type: undead
+    subtype: ""
+    alignment: LE
+    ac: 16
+    ac_type: natural armor
+    hit_dice: "17d8+68"
+    hp_average: 144
+    passive_perception: 17
+    strength: 18
+    dexterity: 18
+    constitution: 18
+    intelligence: 17
+    wisdom: 15
+    charisma: 18
+    telepathy: 0
+    challenge_rating: "13"
+    proficiency_bonus: 5
+    legendary_action_count: 3
+    has_lair: true
+    description: "Vampires are undead creatures of the night that feed on the blood of the living."
