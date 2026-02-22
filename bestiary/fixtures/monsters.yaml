@@ -1624,3 +1624,490 @@
     legendary_action_count: 3
     has_lair: true
     description: "Vampires are undead creatures of the night that feed on the blood of the living."
+
+# =============================================================================
+# Task 19: Dragons
+# =============================================================================
+
+# --- Wyrmlings (CR 2-4, medium, proficiency_bonus 2) ---
+
+- model: bestiary.monstersettings
+  fields:
+    name: Black Dragon Wyrmling
+    size: medium
+    creature_type: dragon
+    subtype: ""
+    alignment: CE
+    ac: 17
+    ac_type: natural armor
+    hit_dice: "6d8+6"
+    hp_average: 33
+    passive_perception: 13
+    strength: 15
+    dexterity: 14
+    constitution: 13
+    intelligence: 10
+    wisdom: 11
+    charisma: 13
+    telepathy: 0
+    challenge_rating: "2"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A black dragon wyrmling is a small but vicious creature that already displays the cruelty and cunning of its kind."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Green Dragon Wyrmling
+    size: medium
+    creature_type: dragon
+    subtype: ""
+    alignment: LE
+    ac: 17
+    ac_type: natural armor
+    hit_dice: "7d8+7"
+    hp_average: 38
+    passive_perception: 14
+    strength: 15
+    dexterity: 12
+    constitution: 13
+    intelligence: 14
+    wisdom: 11
+    charisma: 13
+    telepathy: 0
+    challenge_rating: "2"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A green dragon wyrmling is already a cunning and manipulative creature that delights in lying and deception."
+
+- model: bestiary.monstersettings
+  fields:
+    name: White Dragon Wyrmling
+    size: medium
+    creature_type: dragon
+    subtype: ""
+    alignment: CE
+    ac: 16
+    ac_type: natural armor
+    hit_dice: "5d8+10"
+    hp_average: 32
+    passive_perception: 12
+    strength: 14
+    dexterity: 10
+    constitution: 14
+    intelligence: 5
+    wisdom: 10
+    charisma: 11
+    telepathy: 0
+    challenge_rating: "2"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A white dragon wyrmling is brutish and feral, driven by primal instincts and a cold fury."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Blue Dragon Wyrmling
+    size: medium
+    creature_type: dragon
+    subtype: ""
+    alignment: LE
+    ac: 17
+    ac_type: natural armor
+    hit_dice: "8d8+16"
+    hp_average: 52
+    passive_perception: 13
+    strength: 17
+    dexterity: 10
+    constitution: 15
+    intelligence: 12
+    wisdom: 11
+    charisma: 15
+    telepathy: 0
+    challenge_rating: "3"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A blue dragon wyrmling is arrogant and territorial, already beginning to accumulate a small hoard."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Red Dragon Wyrmling
+    size: medium
+    creature_type: dragon
+    subtype: ""
+    alignment: CE
+    ac: 17
+    ac_type: natural armor
+    hit_dice: "10d8+30"
+    hp_average: 75
+    passive_perception: 13
+    strength: 19
+    dexterity: 10
+    constitution: 17
+    intelligence: 12
+    wisdom: 11
+    charisma: 15
+    telepathy: 0
+    challenge_rating: "4"
+    proficiency_bonus: 2
+    legendary_action_count: 0
+    has_lair: false
+    description: "A red dragon wyrmling is already arrogant and aggressive, displaying the volcanic temper of its kind."
+
+# --- Young Dragons (CR 6-10, large, proficiency_bonus 3) ---
+
+- model: bestiary.monstersettings
+  fields:
+    name: Young White Dragon
+    size: large
+    creature_type: dragon
+    subtype: ""
+    alignment: CE
+    ac: 17
+    ac_type: natural armor
+    hit_dice: "14d10+56"
+    hp_average: 133
+    passive_perception: 14
+    strength: 18
+    dexterity: 10
+    constitution: 18
+    intelligence: 6
+    wisdom: 11
+    charisma: 12
+    telepathy: 0
+    challenge_rating: "6"
+    proficiency_bonus: 3
+    legendary_action_count: 0
+    has_lair: false
+    description: "A young white dragon is a savage and merciless predator of arctic regions."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Young Black Dragon
+    size: large
+    creature_type: dragon
+    subtype: ""
+    alignment: CE
+    ac: 18
+    ac_type: natural armor
+    hit_dice: "15d10+45"
+    hp_average: 127
+    passive_perception: 15
+    strength: 19
+    dexterity: 14
+    constitution: 17
+    intelligence: 12
+    wisdom: 11
+    charisma: 15
+    telepathy: 0
+    challenge_rating: "7"
+    proficiency_bonus: 3
+    legendary_action_count: 0
+    has_lair: false
+    description: "A young black dragon is cruel and moody, quick to take offense and equally quick to attack."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Young Green Dragon
+    size: large
+    creature_type: dragon
+    subtype: ""
+    alignment: LE
+    ac: 18
+    ac_type: natural armor
+    hit_dice: "16d10+48"
+    hp_average: 136
+    passive_perception: 16
+    strength: 19
+    dexterity: 12
+    constitution: 17
+    intelligence: 16
+    wisdom: 13
+    charisma: 15
+    telepathy: 0
+    challenge_rating: "8"
+    proficiency_bonus: 3
+    legendary_action_count: 0
+    has_lair: false
+    description: "A young green dragon is a manipulative and deceitful creature that enjoys corrupting other creatures."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Young Blue Dragon
+    size: large
+    creature_type: dragon
+    subtype: ""
+    alignment: LE
+    ac: 18
+    ac_type: natural armor
+    hit_dice: "16d10+64"
+    hp_average: 152
+    passive_perception: 15
+    strength: 21
+    dexterity: 10
+    constitution: 19
+    intelligence: 14
+    wisdom: 13
+    charisma: 17
+    telepathy: 0
+    challenge_rating: "9"
+    proficiency_bonus: 4
+    legendary_action_count: 0
+    has_lair: false
+    description: "A young blue dragon is vain and territorial, already beginning to demand tribute from weaker creatures."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Young Red Dragon
+    size: large
+    creature_type: dragon
+    subtype: ""
+    alignment: CE
+    ac: 18
+    ac_type: natural armor
+    hit_dice: "17d10+85"
+    hp_average: 178
+    passive_perception: 16
+    strength: 23
+    dexterity: 10
+    constitution: 21
+    intelligence: 16
+    wisdom: 13
+    charisma: 21
+    telepathy: 0
+    challenge_rating: "10"
+    proficiency_bonus: 4
+    legendary_action_count: 0
+    has_lair: false
+    description: "A young red dragon is aggressive and territorial, already accumulating a substantial hoard."
+
+# --- Adult Dragons (CR 11-17, huge, legendary_action_count 3, has_lair true) ---
+
+- model: bestiary.monstersettings
+  fields:
+    name: Adult White Dragon
+    size: huge
+    creature_type: dragon
+    subtype: ""
+    alignment: CE
+    ac: 18
+    ac_type: natural armor
+    hit_dice: "16d12+96"
+    hp_average: 200
+    passive_perception: 14
+    strength: 22
+    dexterity: 10
+    constitution: 22
+    intelligence: 8
+    wisdom: 12
+    charisma: 12
+    telepathy: 0
+    challenge_rating: "13"
+    proficiency_bonus: 5
+    legendary_action_count: 3
+    has_lair: true
+    description: "An adult white dragon is a savage, territorial creature that rules over frigid arctic wastes."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Adult Black Dragon
+    size: huge
+    creature_type: dragon
+    subtype: ""
+    alignment: CE
+    ac: 19
+    ac_type: natural armor
+    hit_dice: "17d12+85"
+    hp_average: 195
+    passive_perception: 17
+    strength: 23
+    dexterity: 14
+    constitution: 21
+    intelligence: 14
+    wisdom: 13
+    charisma: 17
+    telepathy: 0
+    challenge_rating: "14"
+    proficiency_bonus: 5
+    legendary_action_count: 3
+    has_lair: true
+    description: "An adult black dragon is one of the most cruel and vile creatures in existence, ruling vast swamps and marshes."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Adult Green Dragon
+    size: huge
+    creature_type: dragon
+    subtype: ""
+    alignment: LE
+    ac: 19
+    ac_type: natural armor
+    hit_dice: "18d12+90"
+    hp_average: 207
+    passive_perception: 19
+    strength: 23
+    dexterity: 12
+    constitution: 21
+    intelligence: 18
+    wisdom: 15
+    charisma: 17
+    telepathy: 0
+    challenge_rating: "15"
+    proficiency_bonus: 5
+    legendary_action_count: 3
+    has_lair: true
+    description: "An adult green dragon is a master manipulator and schemer that uses lies, deceit, and mind-influencing magic to control others."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Adult Blue Dragon
+    size: huge
+    creature_type: dragon
+    subtype: ""
+    alignment: LE
+    ac: 19
+    ac_type: natural armor
+    hit_dice: "18d12+108"
+    hp_average: 225
+    passive_perception: 19
+    strength: 25
+    dexterity: 10
+    constitution: 23
+    intelligence: 16
+    wisdom: 15
+    charisma: 19
+    telepathy: 0
+    challenge_rating: "16"
+    proficiency_bonus: 5
+    legendary_action_count: 3
+    has_lair: true
+    description: "An adult blue dragon is a vain and territorial creature that rules vast desert expanses."
+
+# --- Ancient Dragons (CR 20-24, gargantuan, legendary_action_count 3, has_lair true) ---
+
+- model: bestiary.monstersettings
+  fields:
+    name: Ancient White Dragon
+    size: gargantuan
+    creature_type: dragon
+    subtype: ""
+    alignment: CE
+    ac: 20
+    ac_type: natural armor
+    hit_dice: "18d20+144"
+    hp_average: 333
+    passive_perception: 17
+    strength: 26
+    dexterity: 10
+    constitution: 26
+    intelligence: 10
+    wisdom: 13
+    charisma: 14
+    telepathy: 0
+    challenge_rating: "20"
+    proficiency_bonus: 6
+    legendary_action_count: 3
+    has_lair: true
+    description: "An ancient white dragon is the most primal and feral of the true dragons, a savage predator of ice and snow."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Ancient Black Dragon
+    size: gargantuan
+    creature_type: dragon
+    subtype: ""
+    alignment: CE
+    ac: 22
+    ac_type: natural armor
+    hit_dice: "21d20+147"
+    hp_average: 367
+    passive_perception: 20
+    strength: 27
+    dexterity: 14
+    constitution: 25
+    intelligence: 16
+    wisdom: 15
+    charisma: 19
+    telepathy: 0
+    challenge_rating: "21"
+    proficiency_bonus: 7
+    legendary_action_count: 3
+    has_lair: true
+    description: "An ancient black dragon is perhaps the most evil-tempered and vile-natured of all chromatic dragons."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Ancient Green Dragon
+    size: gargantuan
+    creature_type: dragon
+    subtype: ""
+    alignment: LE
+    ac: 21
+    ac_type: natural armor
+    hit_dice: "22d20+154"
+    hp_average: 385
+    passive_perception: 21
+    strength: 27
+    dexterity: 12
+    constitution: 25
+    intelligence: 20
+    wisdom: 17
+    charisma: 19
+    telepathy: 0
+    challenge_rating: "22"
+    proficiency_bonus: 7
+    legendary_action_count: 3
+    has_lair: true
+    description: "An ancient green dragon is the most cunning and treacherous of the chromatic dragons, manipulating others through fear and deception."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Ancient Blue Dragon
+    size: gargantuan
+    creature_type: dragon
+    subtype: ""
+    alignment: LE
+    ac: 22
+    ac_type: natural armor
+    hit_dice: "26d20+208"
+    hp_average: 481
+    passive_perception: 21
+    strength: 29
+    dexterity: 10
+    constitution: 27
+    intelligence: 18
+    wisdom: 17
+    charisma: 21
+    telepathy: 0
+    challenge_rating: "23"
+    proficiency_bonus: 7
+    legendary_action_count: 3
+    has_lair: true
+    description: "An ancient blue dragon is a supremely arrogant creature that rules vast desert territories and demands tribute from all who live within them."
+
+- model: bestiary.monstersettings
+  fields:
+    name: Ancient Red Dragon
+    size: gargantuan
+    creature_type: dragon
+    subtype: ""
+    alignment: CE
+    ac: 22
+    ac_type: natural armor
+    hit_dice: "28d20+252"
+    hp_average: 546
+    passive_perception: 19
+    strength: 30
+    dexterity: 10
+    constitution: 29
+    intelligence: 18
+    wisdom: 15
+    charisma: 23
+    telepathy: 0
+    challenge_rating: "24"
+    proficiency_bonus: 7
+    legendary_action_count: 3
+    has_lair: true
+    description: "An ancient red dragon is the mightiest of all chromatic dragons, a creature of immense power, vanity, and cruelty."

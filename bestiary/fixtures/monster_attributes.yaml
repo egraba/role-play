@@ -4695,3 +4695,2660 @@
     description: "The vampire makes one bite attack."
     cost: 2
     sort_order: 2
+
+# =============================================================================
+# Task 19: Dragon Attributes
+# =============================================================================
+
+# =============================================================================
+# MonsterSpeed
+# =============================================================================
+
+# Black Dragon Wyrmling
+- model: bestiary.monsterspeed
+  fields:
+    monster: Black Dragon Wyrmling
+    movement_type: walk
+    feet: 30
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Black Dragon Wyrmling
+    movement_type: fly
+    feet: 60
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Black Dragon Wyrmling
+    movement_type: swim
+    feet: 30
+
+# Blue Dragon Wyrmling
+- model: bestiary.monsterspeed
+  fields:
+    monster: Blue Dragon Wyrmling
+    movement_type: walk
+    feet: 30
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Blue Dragon Wyrmling
+    movement_type: burrow
+    feet: 15
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Blue Dragon Wyrmling
+    movement_type: fly
+    feet: 60
+
+# Green Dragon Wyrmling
+- model: bestiary.monsterspeed
+  fields:
+    monster: Green Dragon Wyrmling
+    movement_type: walk
+    feet: 30
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Green Dragon Wyrmling
+    movement_type: fly
+    feet: 60
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Green Dragon Wyrmling
+    movement_type: swim
+    feet: 30
+
+# Red Dragon Wyrmling
+- model: bestiary.monsterspeed
+  fields:
+    monster: Red Dragon Wyrmling
+    movement_type: walk
+    feet: 30
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Red Dragon Wyrmling
+    movement_type: climb
+    feet: 30
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Red Dragon Wyrmling
+    movement_type: fly
+    feet: 60
+
+# White Dragon Wyrmling
+- model: bestiary.monsterspeed
+  fields:
+    monster: White Dragon Wyrmling
+    movement_type: walk
+    feet: 30
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: White Dragon Wyrmling
+    movement_type: burrow
+    feet: 15
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: White Dragon Wyrmling
+    movement_type: fly
+    feet: 60
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: White Dragon Wyrmling
+    movement_type: swim
+    feet: 30
+
+# Young Black Dragon
+- model: bestiary.monsterspeed
+  fields:
+    monster: Young Black Dragon
+    movement_type: walk
+    feet: 40
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Young Black Dragon
+    movement_type: fly
+    feet: 80
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Young Black Dragon
+    movement_type: swim
+    feet: 40
+
+# Young Blue Dragon
+- model: bestiary.monsterspeed
+  fields:
+    monster: Young Blue Dragon
+    movement_type: walk
+    feet: 40
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Young Blue Dragon
+    movement_type: burrow
+    feet: 20
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Young Blue Dragon
+    movement_type: fly
+    feet: 80
+
+# Young Green Dragon
+- model: bestiary.monsterspeed
+  fields:
+    monster: Young Green Dragon
+    movement_type: walk
+    feet: 40
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Young Green Dragon
+    movement_type: fly
+    feet: 80
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Young Green Dragon
+    movement_type: swim
+    feet: 40
+
+# Young Red Dragon
+- model: bestiary.monsterspeed
+  fields:
+    monster: Young Red Dragon
+    movement_type: walk
+    feet: 40
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Young Red Dragon
+    movement_type: climb
+    feet: 40
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Young Red Dragon
+    movement_type: fly
+    feet: 80
+
+# Young White Dragon
+- model: bestiary.monsterspeed
+  fields:
+    monster: Young White Dragon
+    movement_type: walk
+    feet: 40
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Young White Dragon
+    movement_type: burrow
+    feet: 20
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Young White Dragon
+    movement_type: fly
+    feet: 80
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Young White Dragon
+    movement_type: swim
+    feet: 40
+
+# Adult Black Dragon
+- model: bestiary.monsterspeed
+  fields:
+    monster: Adult Black Dragon
+    movement_type: walk
+    feet: 40
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Adult Black Dragon
+    movement_type: fly
+    feet: 80
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Adult Black Dragon
+    movement_type: swim
+    feet: 40
+
+# Adult Blue Dragon
+- model: bestiary.monsterspeed
+  fields:
+    monster: Adult Blue Dragon
+    movement_type: walk
+    feet: 40
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Adult Blue Dragon
+    movement_type: burrow
+    feet: 30
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Adult Blue Dragon
+    movement_type: fly
+    feet: 80
+
+# Adult Green Dragon
+- model: bestiary.monsterspeed
+  fields:
+    monster: Adult Green Dragon
+    movement_type: walk
+    feet: 40
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Adult Green Dragon
+    movement_type: fly
+    feet: 80
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Adult Green Dragon
+    movement_type: swim
+    feet: 40
+
+# Adult White Dragon
+- model: bestiary.monsterspeed
+  fields:
+    monster: Adult White Dragon
+    movement_type: walk
+    feet: 40
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Adult White Dragon
+    movement_type: burrow
+    feet: 30
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Adult White Dragon
+    movement_type: fly
+    feet: 80
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Adult White Dragon
+    movement_type: swim
+    feet: 40
+
+# Ancient Black Dragon
+- model: bestiary.monsterspeed
+  fields:
+    monster: Ancient Black Dragon
+    movement_type: walk
+    feet: 40
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Ancient Black Dragon
+    movement_type: fly
+    feet: 80
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Ancient Black Dragon
+    movement_type: swim
+    feet: 40
+
+# Ancient Blue Dragon
+- model: bestiary.monsterspeed
+  fields:
+    monster: Ancient Blue Dragon
+    movement_type: walk
+    feet: 40
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Ancient Blue Dragon
+    movement_type: burrow
+    feet: 40
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Ancient Blue Dragon
+    movement_type: fly
+    feet: 80
+
+# Ancient Green Dragon
+- model: bestiary.monsterspeed
+  fields:
+    monster: Ancient Green Dragon
+    movement_type: walk
+    feet: 40
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Ancient Green Dragon
+    movement_type: fly
+    feet: 80
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Ancient Green Dragon
+    movement_type: swim
+    feet: 40
+
+# Ancient Red Dragon
+- model: bestiary.monsterspeed
+  fields:
+    monster: Ancient Red Dragon
+    movement_type: walk
+    feet: 40
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Ancient Red Dragon
+    movement_type: climb
+    feet: 40
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Ancient Red Dragon
+    movement_type: fly
+    feet: 80
+
+# Ancient White Dragon
+- model: bestiary.monsterspeed
+  fields:
+    monster: Ancient White Dragon
+    movement_type: walk
+    feet: 40
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Ancient White Dragon
+    movement_type: burrow
+    feet: 40
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Ancient White Dragon
+    movement_type: fly
+    feet: 80
+
+- model: bestiary.monsterspeed
+  fields:
+    monster: Ancient White Dragon
+    movement_type: swim
+    feet: 40
+
+# =============================================================================
+# MonsterSavingThrow
+# =============================================================================
+
+# Black Dragon Wyrmling
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Black Dragon Wyrmling
+    ability: DEX
+    bonus: 4
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Black Dragon Wyrmling
+    ability: CON
+    bonus: 3
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Black Dragon Wyrmling
+    ability: WIS
+    bonus: 2
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Black Dragon Wyrmling
+    ability: CHA
+    bonus: 3
+
+# Blue Dragon Wyrmling
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Blue Dragon Wyrmling
+    ability: DEX
+    bonus: 2
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Blue Dragon Wyrmling
+    ability: CON
+    bonus: 4
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Blue Dragon Wyrmling
+    ability: WIS
+    bonus: 2
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Blue Dragon Wyrmling
+    ability: CHA
+    bonus: 4
+
+# Green Dragon Wyrmling
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Green Dragon Wyrmling
+    ability: DEX
+    bonus: 3
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Green Dragon Wyrmling
+    ability: CON
+    bonus: 3
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Green Dragon Wyrmling
+    ability: WIS
+    bonus: 2
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Green Dragon Wyrmling
+    ability: CHA
+    bonus: 3
+
+# Red Dragon Wyrmling
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Red Dragon Wyrmling
+    ability: DEX
+    bonus: 2
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Red Dragon Wyrmling
+    ability: CON
+    bonus: 5
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Red Dragon Wyrmling
+    ability: WIS
+    bonus: 2
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Red Dragon Wyrmling
+    ability: CHA
+    bonus: 4
+
+# White Dragon Wyrmling
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: White Dragon Wyrmling
+    ability: DEX
+    bonus: 2
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: White Dragon Wyrmling
+    ability: CON
+    bonus: 4
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: White Dragon Wyrmling
+    ability: WIS
+    bonus: 2
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: White Dragon Wyrmling
+    ability: CHA
+    bonus: 2
+
+# Young Black Dragon
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Young Black Dragon
+    ability: DEX
+    bonus: 5
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Young Black Dragon
+    ability: CON
+    bonus: 6
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Young Black Dragon
+    ability: WIS
+    bonus: 3
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Young Black Dragon
+    ability: CHA
+    bonus: 5
+
+# Young Blue Dragon
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Young Blue Dragon
+    ability: DEX
+    bonus: 4
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Young Blue Dragon
+    ability: CON
+    bonus: 8
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Young Blue Dragon
+    ability: WIS
+    bonus: 5
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Young Blue Dragon
+    ability: CHA
+    bonus: 7
+
+# Young Green Dragon
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Young Green Dragon
+    ability: DEX
+    bonus: 4
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Young Green Dragon
+    ability: CON
+    bonus: 6
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Young Green Dragon
+    ability: WIS
+    bonus: 4
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Young Green Dragon
+    ability: CHA
+    bonus: 5
+
+# Young Red Dragon
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Young Red Dragon
+    ability: DEX
+    bonus: 4
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Young Red Dragon
+    ability: CON
+    bonus: 9
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Young Red Dragon
+    ability: WIS
+    bonus: 5
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Young Red Dragon
+    ability: CHA
+    bonus: 9
+
+# Young White Dragon
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Young White Dragon
+    ability: DEX
+    bonus: 3
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Young White Dragon
+    ability: CON
+    bonus: 7
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Young White Dragon
+    ability: WIS
+    bonus: 3
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Young White Dragon
+    ability: CHA
+    bonus: 4
+
+# Adult Black Dragon
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Adult Black Dragon
+    ability: DEX
+    bonus: 7
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Adult Black Dragon
+    ability: CON
+    bonus: 10
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Adult Black Dragon
+    ability: WIS
+    bonus: 6
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Adult Black Dragon
+    ability: CHA
+    bonus: 8
+
+# Adult Blue Dragon
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Adult Blue Dragon
+    ability: DEX
+    bonus: 5
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Adult Blue Dragon
+    ability: CON
+    bonus: 11
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Adult Blue Dragon
+    ability: WIS
+    bonus: 7
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Adult Blue Dragon
+    ability: CHA
+    bonus: 9
+
+# Adult Green Dragon
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Adult Green Dragon
+    ability: DEX
+    bonus: 6
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Adult Green Dragon
+    ability: CON
+    bonus: 10
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Adult Green Dragon
+    ability: WIS
+    bonus: 7
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Adult Green Dragon
+    ability: CHA
+    bonus: 8
+
+# Adult White Dragon
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Adult White Dragon
+    ability: DEX
+    bonus: 4
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Adult White Dragon
+    ability: CON
+    bonus: 10
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Adult White Dragon
+    ability: WIS
+    bonus: 5
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Adult White Dragon
+    ability: CHA
+    bonus: 5
+
+# Ancient Black Dragon
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Ancient Black Dragon
+    ability: DEX
+    bonus: 9
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Ancient Black Dragon
+    ability: CON
+    bonus: 14
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Ancient Black Dragon
+    ability: WIS
+    bonus: 9
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Ancient Black Dragon
+    ability: CHA
+    bonus: 11
+
+# Ancient Blue Dragon
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Ancient Blue Dragon
+    ability: DEX
+    bonus: 7
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Ancient Blue Dragon
+    ability: CON
+    bonus: 15
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Ancient Blue Dragon
+    ability: WIS
+    bonus: 10
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Ancient Blue Dragon
+    ability: CHA
+    bonus: 12
+
+# Ancient Green Dragon
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Ancient Green Dragon
+    ability: DEX
+    bonus: 8
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Ancient Green Dragon
+    ability: CON
+    bonus: 14
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Ancient Green Dragon
+    ability: WIS
+    bonus: 10
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Ancient Green Dragon
+    ability: CHA
+    bonus: 11
+
+# Ancient Red Dragon
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Ancient Red Dragon
+    ability: DEX
+    bonus: 7
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Ancient Red Dragon
+    ability: CON
+    bonus: 16
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Ancient Red Dragon
+    ability: WIS
+    bonus: 9
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Ancient Red Dragon
+    ability: CHA
+    bonus: 13
+
+# Ancient White Dragon
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Ancient White Dragon
+    ability: DEX
+    bonus: 6
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Ancient White Dragon
+    ability: CON
+    bonus: 14
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Ancient White Dragon
+    ability: WIS
+    bonus: 7
+
+- model: bestiary.monstersavingthrow
+  fields:
+    monster: Ancient White Dragon
+    ability: CHA
+    bonus: 8
+
+# =============================================================================
+# MonsterSkill
+# =============================================================================
+
+# Black Dragon Wyrmling
+- model: bestiary.monsterskill
+  fields:
+    monster: Black Dragon Wyrmling
+    skill: Perception
+    bonus: 4
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Black Dragon Wyrmling
+    skill: Stealth
+    bonus: 4
+
+# Blue Dragon Wyrmling
+- model: bestiary.monsterskill
+  fields:
+    monster: Blue Dragon Wyrmling
+    skill: Perception
+    bonus: 4
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Blue Dragon Wyrmling
+    skill: Stealth
+    bonus: 2
+
+# Green Dragon Wyrmling
+- model: bestiary.monsterskill
+  fields:
+    monster: Green Dragon Wyrmling
+    skill: Deception
+    bonus: 3
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Green Dragon Wyrmling
+    skill: Perception
+    bonus: 4
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Green Dragon Wyrmling
+    skill: Stealth
+    bonus: 3
+
+# Red Dragon Wyrmling
+- model: bestiary.monsterskill
+  fields:
+    monster: Red Dragon Wyrmling
+    skill: Perception
+    bonus: 3
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Red Dragon Wyrmling
+    skill: Stealth
+    bonus: 2
+
+# White Dragon Wyrmling
+- model: bestiary.monsterskill
+  fields:
+    monster: White Dragon Wyrmling
+    skill: Perception
+    bonus: 4
+
+- model: bestiary.monsterskill
+  fields:
+    monster: White Dragon Wyrmling
+    skill: Stealth
+    bonus: 2
+
+# Young Black Dragon
+- model: bestiary.monsterskill
+  fields:
+    monster: Young Black Dragon
+    skill: Perception
+    bonus: 6
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Young Black Dragon
+    skill: Stealth
+    bonus: 5
+
+# Young Blue Dragon
+- model: bestiary.monsterskill
+  fields:
+    monster: Young Blue Dragon
+    skill: Perception
+    bonus: 9
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Young Blue Dragon
+    skill: Stealth
+    bonus: 4
+
+# Young Green Dragon
+- model: bestiary.monsterskill
+  fields:
+    monster: Young Green Dragon
+    skill: Deception
+    bonus: 5
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Young Green Dragon
+    skill: Insight
+    bonus: 4
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Young Green Dragon
+    skill: Perception
+    bonus: 7
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Young Green Dragon
+    skill: Persuasion
+    bonus: 5
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Young Green Dragon
+    skill: Stealth
+    bonus: 4
+
+# Young Red Dragon
+- model: bestiary.monsterskill
+  fields:
+    monster: Young Red Dragon
+    skill: Perception
+    bonus: 10
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Young Red Dragon
+    skill: Stealth
+    bonus: 4
+
+# Young White Dragon
+- model: bestiary.monsterskill
+  fields:
+    monster: Young White Dragon
+    skill: Perception
+    bonus: 6
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Young White Dragon
+    skill: Stealth
+    bonus: 3
+
+# Adult Black Dragon
+- model: bestiary.monsterskill
+  fields:
+    monster: Adult Black Dragon
+    skill: Perception
+    bonus: 11
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Adult Black Dragon
+    skill: Stealth
+    bonus: 7
+
+# Adult Blue Dragon
+- model: bestiary.monsterskill
+  fields:
+    monster: Adult Blue Dragon
+    skill: Perception
+    bonus: 14
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Adult Blue Dragon
+    skill: Stealth
+    bonus: 5
+
+# Adult Green Dragon
+- model: bestiary.monsterskill
+  fields:
+    monster: Adult Green Dragon
+    skill: Deception
+    bonus: 8
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Adult Green Dragon
+    skill: Insight
+    bonus: 7
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Adult Green Dragon
+    skill: Perception
+    bonus: 12
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Adult Green Dragon
+    skill: Persuasion
+    bonus: 8
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Adult Green Dragon
+    skill: Stealth
+    bonus: 6
+
+# Adult White Dragon
+- model: bestiary.monsterskill
+  fields:
+    monster: Adult White Dragon
+    skill: Perception
+    bonus: 9
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Adult White Dragon
+    skill: Stealth
+    bonus: 4
+
+# Ancient Black Dragon
+- model: bestiary.monsterskill
+  fields:
+    monster: Ancient Black Dragon
+    skill: Perception
+    bonus: 17
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Ancient Black Dragon
+    skill: Stealth
+    bonus: 9
+
+# Ancient Blue Dragon
+- model: bestiary.monsterskill
+  fields:
+    monster: Ancient Blue Dragon
+    skill: Perception
+    bonus: 17
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Ancient Blue Dragon
+    skill: Stealth
+    bonus: 7
+
+# Ancient Green Dragon
+- model: bestiary.monsterskill
+  fields:
+    monster: Ancient Green Dragon
+    skill: Deception
+    bonus: 11
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Ancient Green Dragon
+    skill: Insight
+    bonus: 10
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Ancient Green Dragon
+    skill: Perception
+    bonus: 17
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Ancient Green Dragon
+    skill: Persuasion
+    bonus: 11
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Ancient Green Dragon
+    skill: Stealth
+    bonus: 8
+
+# Ancient Red Dragon
+- model: bestiary.monsterskill
+  fields:
+    monster: Ancient Red Dragon
+    skill: Perception
+    bonus: 16
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Ancient Red Dragon
+    skill: Stealth
+    bonus: 7
+
+# Ancient White Dragon
+- model: bestiary.monsterskill
+  fields:
+    monster: Ancient White Dragon
+    skill: Perception
+    bonus: 13
+
+- model: bestiary.monsterskill
+  fields:
+    monster: Ancient White Dragon
+    skill: Stealth
+    bonus: 6
+
+# =============================================================================
+# MonsterSense
+# =============================================================================
+
+# Wyrmlings (blindsight 10, darkvision 60)
+- model: bestiary.monstersense
+  fields:
+    monster: Black Dragon Wyrmling
+    sense_type: blindsight
+    range_feet: 10
+
+- model: bestiary.monstersense
+  fields:
+    monster: Black Dragon Wyrmling
+    sense_type: darkvision
+    range_feet: 60
+
+- model: bestiary.monstersense
+  fields:
+    monster: Blue Dragon Wyrmling
+    sense_type: blindsight
+    range_feet: 10
+
+- model: bestiary.monstersense
+  fields:
+    monster: Blue Dragon Wyrmling
+    sense_type: darkvision
+    range_feet: 60
+
+- model: bestiary.monstersense
+  fields:
+    monster: Green Dragon Wyrmling
+    sense_type: blindsight
+    range_feet: 10
+
+- model: bestiary.monstersense
+  fields:
+    monster: Green Dragon Wyrmling
+    sense_type: darkvision
+    range_feet: 60
+
+- model: bestiary.monstersense
+  fields:
+    monster: Red Dragon Wyrmling
+    sense_type: blindsight
+    range_feet: 10
+
+- model: bestiary.monstersense
+  fields:
+    monster: Red Dragon Wyrmling
+    sense_type: darkvision
+    range_feet: 60
+
+- model: bestiary.monstersense
+  fields:
+    monster: White Dragon Wyrmling
+    sense_type: blindsight
+    range_feet: 10
+
+- model: bestiary.monstersense
+  fields:
+    monster: White Dragon Wyrmling
+    sense_type: darkvision
+    range_feet: 60
+
+# Young Dragons (blindsight 30, darkvision 120)
+- model: bestiary.monstersense
+  fields:
+    monster: Young Black Dragon
+    sense_type: blindsight
+    range_feet: 30
+
+- model: bestiary.monstersense
+  fields:
+    monster: Young Black Dragon
+    sense_type: darkvision
+    range_feet: 120
+
+- model: bestiary.monstersense
+  fields:
+    monster: Young Blue Dragon
+    sense_type: blindsight
+    range_feet: 30
+
+- model: bestiary.monstersense
+  fields:
+    monster: Young Blue Dragon
+    sense_type: darkvision
+    range_feet: 120
+
+- model: bestiary.monstersense
+  fields:
+    monster: Young Green Dragon
+    sense_type: blindsight
+    range_feet: 30
+
+- model: bestiary.monstersense
+  fields:
+    monster: Young Green Dragon
+    sense_type: darkvision
+    range_feet: 120
+
+- model: bestiary.monstersense
+  fields:
+    monster: Young Red Dragon
+    sense_type: blindsight
+    range_feet: 30
+
+- model: bestiary.monstersense
+  fields:
+    monster: Young Red Dragon
+    sense_type: darkvision
+    range_feet: 120
+
+- model: bestiary.monstersense
+  fields:
+    monster: Young White Dragon
+    sense_type: blindsight
+    range_feet: 30
+
+- model: bestiary.monstersense
+  fields:
+    monster: Young White Dragon
+    sense_type: darkvision
+    range_feet: 120
+
+# Adult Dragons (blindsight 60, darkvision 120)
+- model: bestiary.monstersense
+  fields:
+    monster: Adult Black Dragon
+    sense_type: blindsight
+    range_feet: 60
+
+- model: bestiary.monstersense
+  fields:
+    monster: Adult Black Dragon
+    sense_type: darkvision
+    range_feet: 120
+
+- model: bestiary.monstersense
+  fields:
+    monster: Adult Blue Dragon
+    sense_type: blindsight
+    range_feet: 60
+
+- model: bestiary.monstersense
+  fields:
+    monster: Adult Blue Dragon
+    sense_type: darkvision
+    range_feet: 120
+
+- model: bestiary.monstersense
+  fields:
+    monster: Adult Green Dragon
+    sense_type: blindsight
+    range_feet: 60
+
+- model: bestiary.monstersense
+  fields:
+    monster: Adult Green Dragon
+    sense_type: darkvision
+    range_feet: 120
+
+- model: bestiary.monstersense
+  fields:
+    monster: Adult White Dragon
+    sense_type: blindsight
+    range_feet: 60
+
+- model: bestiary.monstersense
+  fields:
+    monster: Adult White Dragon
+    sense_type: darkvision
+    range_feet: 120
+
+# Ancient Dragons (blindsight 60, darkvision 120)
+- model: bestiary.monstersense
+  fields:
+    monster: Ancient Black Dragon
+    sense_type: blindsight
+    range_feet: 60
+
+- model: bestiary.monstersense
+  fields:
+    monster: Ancient Black Dragon
+    sense_type: darkvision
+    range_feet: 120
+
+- model: bestiary.monstersense
+  fields:
+    monster: Ancient Blue Dragon
+    sense_type: blindsight
+    range_feet: 60
+
+- model: bestiary.monstersense
+  fields:
+    monster: Ancient Blue Dragon
+    sense_type: darkvision
+    range_feet: 120
+
+- model: bestiary.monstersense
+  fields:
+    monster: Ancient Green Dragon
+    sense_type: blindsight
+    range_feet: 60
+
+- model: bestiary.monstersense
+  fields:
+    monster: Ancient Green Dragon
+    sense_type: darkvision
+    range_feet: 120
+
+- model: bestiary.monstersense
+  fields:
+    monster: Ancient Red Dragon
+    sense_type: blindsight
+    range_feet: 60
+
+- model: bestiary.monstersense
+  fields:
+    monster: Ancient Red Dragon
+    sense_type: darkvision
+    range_feet: 120
+
+- model: bestiary.monstersense
+  fields:
+    monster: Ancient White Dragon
+    sense_type: blindsight
+    range_feet: 60
+
+- model: bestiary.monstersense
+  fields:
+    monster: Ancient White Dragon
+    sense_type: darkvision
+    range_feet: 120
+
+# =============================================================================
+# MonsterDamageRelation (immunities only — each color has one)
+# =============================================================================
+
+# Black = acid
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Black Dragon Wyrmling
+    damage_type: acid
+    relation_type: immunity
+
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Young Black Dragon
+    damage_type: acid
+    relation_type: immunity
+
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Adult Black Dragon
+    damage_type: acid
+    relation_type: immunity
+
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Ancient Black Dragon
+    damage_type: acid
+    relation_type: immunity
+
+# Blue = lightning
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Blue Dragon Wyrmling
+    damage_type: lightning
+    relation_type: immunity
+
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Young Blue Dragon
+    damage_type: lightning
+    relation_type: immunity
+
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Adult Blue Dragon
+    damage_type: lightning
+    relation_type: immunity
+
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Ancient Blue Dragon
+    damage_type: lightning
+    relation_type: immunity
+
+# Green = poison
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Green Dragon Wyrmling
+    damage_type: poison
+    relation_type: immunity
+
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Young Green Dragon
+    damage_type: poison
+    relation_type: immunity
+
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Adult Green Dragon
+    damage_type: poison
+    relation_type: immunity
+
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Ancient Green Dragon
+    damage_type: poison
+    relation_type: immunity
+
+# Red = fire
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Red Dragon Wyrmling
+    damage_type: fire
+    relation_type: immunity
+
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Young Red Dragon
+    damage_type: fire
+    relation_type: immunity
+
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Ancient Red Dragon
+    damage_type: fire
+    relation_type: immunity
+
+# White = cold
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: White Dragon Wyrmling
+    damage_type: cold
+    relation_type: immunity
+
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Young White Dragon
+    damage_type: cold
+    relation_type: immunity
+
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Adult White Dragon
+    damage_type: cold
+    relation_type: immunity
+
+- model: bestiary.monsterdamagerelation
+  fields:
+    monster: Ancient White Dragon
+    damage_type: cold
+    relation_type: immunity
+
+# =============================================================================
+# MonsterLanguage
+# =============================================================================
+
+# All wyrmlings: Common + Draconic
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Black Dragon Wyrmling
+    language: Common
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Black Dragon Wyrmling
+    language: Draconic
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Blue Dragon Wyrmling
+    language: Common
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Blue Dragon Wyrmling
+    language: Draconic
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Green Dragon Wyrmling
+    language: Common
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Green Dragon Wyrmling
+    language: Draconic
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Red Dragon Wyrmling
+    language: Common
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Red Dragon Wyrmling
+    language: Draconic
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: White Dragon Wyrmling
+    language: Common
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: White Dragon Wyrmling
+    language: Draconic
+
+# Young dragons: Common + Draconic
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Young Black Dragon
+    language: Common
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Young Black Dragon
+    language: Draconic
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Young Blue Dragon
+    language: Common
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Young Blue Dragon
+    language: Draconic
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Young Green Dragon
+    language: Common
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Young Green Dragon
+    language: Draconic
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Young Red Dragon
+    language: Common
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Young Red Dragon
+    language: Draconic
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Young White Dragon
+    language: Common
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Young White Dragon
+    language: Draconic
+
+# Adult dragons: Common + Draconic
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Adult Black Dragon
+    language: Common
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Adult Black Dragon
+    language: Draconic
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Adult Blue Dragon
+    language: Common
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Adult Blue Dragon
+    language: Draconic
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Adult Green Dragon
+    language: Common
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Adult Green Dragon
+    language: Draconic
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Adult Green Dragon
+    language: "any four languages"
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Adult White Dragon
+    language: Common
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Adult White Dragon
+    language: Draconic
+
+# Ancient dragons: Common + Draconic
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Ancient Black Dragon
+    language: Common
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Ancient Black Dragon
+    language: Draconic
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Ancient Blue Dragon
+    language: Common
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Ancient Blue Dragon
+    language: Draconic
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Ancient Green Dragon
+    language: Common
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Ancient Green Dragon
+    language: Draconic
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Ancient Green Dragon
+    language: "any five languages"
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Ancient Red Dragon
+    language: Common
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Ancient Red Dragon
+    language: Draconic
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Ancient White Dragon
+    language: Common
+
+- model: bestiary.monsterlanguage
+  fields:
+    monster: Ancient White Dragon
+    language: Draconic
+
+# =============================================================================
+# MonsterTrait (Legendary Resistance for adults/ancients)
+# =============================================================================
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Adult Black Dragon
+    name: Legendary Resistance (3/Day)
+    description: "If the dragon fails a saving throw, it can choose to succeed instead."
+    sort_order: 0
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Adult Blue Dragon
+    name: Legendary Resistance (3/Day)
+    description: "If the dragon fails a saving throw, it can choose to succeed instead."
+    sort_order: 0
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Adult Green Dragon
+    name: Legendary Resistance (3/Day)
+    description: "If the dragon fails a saving throw, it can choose to succeed instead."
+    sort_order: 0
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Adult White Dragon
+    name: Legendary Resistance (3/Day)
+    description: "If the dragon fails a saving throw, it can choose to succeed instead."
+    sort_order: 0
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Ancient Black Dragon
+    name: Legendary Resistance (3/Day)
+    description: "If the dragon fails a saving throw, it can choose to succeed instead."
+    sort_order: 0
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Ancient Blue Dragon
+    name: Legendary Resistance (3/Day)
+    description: "If the dragon fails a saving throw, it can choose to succeed instead."
+    sort_order: 0
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Ancient Green Dragon
+    name: Legendary Resistance (3/Day)
+    description: "If the dragon fails a saving throw, it can choose to succeed instead."
+    sort_order: 0
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Ancient Red Dragon
+    name: Legendary Resistance (3/Day)
+    description: "If the dragon fails a saving throw, it can choose to succeed instead."
+    sort_order: 0
+
+- model: bestiary.monstertrait
+  fields:
+    monster: Ancient White Dragon
+    name: Legendary Resistance (3/Day)
+    description: "If the dragon fails a saving throw, it can choose to succeed instead."
+    sort_order: 0
+
+# =============================================================================
+# MonsterActionTemplate
+# =============================================================================
+
+# Black Dragon Wyrmling
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Black Dragon Wyrmling
+    name: Bite
+    description: "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 7 (1d10 + 2) piercing damage plus 2 (1d4) acid damage."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Black Dragon Wyrmling
+    name: Acid Breath (Recharge 5-6)
+    description: "The dragon exhales acid in a 15-foot line that is 5 feet wide. Each creature in that line must make a DC 11 Dexterity saving throw, taking 22 (5d8) acid damage on a failed save, or half as much damage on a successful one."
+    sort_order: 1
+
+# Blue Dragon Wyrmling
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Blue Dragon Wyrmling
+    name: Bite
+    description: "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 8 (1d10 + 3) piercing damage plus 3 (1d6) lightning damage."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Blue Dragon Wyrmling
+    name: Lightning Breath (Recharge 5-6)
+    description: "The dragon exhales lightning in a 30-foot line that is 5 feet wide. Each creature in that line must make a DC 12 Dexterity saving throw, taking 22 (4d10) lightning damage on a failed save, or half as much damage on a successful one."
+    sort_order: 1
+
+# Green Dragon Wyrmling
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Green Dragon Wyrmling
+    name: Bite
+    description: "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 7 (1d10 + 2) piercing damage plus 3 (1d6) poison damage."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Green Dragon Wyrmling
+    name: Poison Breath (Recharge 5-6)
+    description: "The dragon exhales poisonous gas in a 15-foot cone. Each creature in that area must make a DC 11 Constitution saving throw, taking 21 (6d6) poison damage on a failed save, or half as much damage on a successful one."
+    sort_order: 1
+
+# Red Dragon Wyrmling
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Red Dragon Wyrmling
+    name: Bite
+    description: "Melee Weapon Attack: +6 to hit, reach 5 ft., one target. Hit: 9 (1d10 + 4) piercing damage plus 3 (1d6) fire damage."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Red Dragon Wyrmling
+    name: Fire Breath (Recharge 5-6)
+    description: "The dragon exhales fire in a 15-foot cone. Each creature in that area must make a DC 13 Dexterity saving throw, taking 24 (7d6) fire damage on a failed save, or half as much damage on a successful one."
+    sort_order: 1
+
+# White Dragon Wyrmling
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: White Dragon Wyrmling
+    name: Bite
+    description: "Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 7 (1d10 + 2) piercing damage plus 2 (1d4) cold damage."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: White Dragon Wyrmling
+    name: Cold Breath (Recharge 5-6)
+    description: "The dragon exhales an icy blast in a 15-foot cone. Each creature in that area must make a DC 12 Constitution saving throw, taking 22 (5d8) cold damage on a failed save, or half as much damage on a successful one."
+    sort_order: 1
+
+# Young Black Dragon
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Young Black Dragon
+    name: Multiattack
+    description: "The dragon makes three attacks: one with its bite and two with its claws."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Young Black Dragon
+    name: Bite
+    description: "Melee Weapon Attack: +7 to hit, reach 10 ft., one target. Hit: 15 (2d10 + 4) piercing damage plus 4 (1d8) acid damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Young Black Dragon
+    name: Claw
+    description: "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 11 (2d6 + 4) slashing damage."
+    sort_order: 2
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Young Black Dragon
+    name: Acid Breath (Recharge 5-6)
+    description: "The dragon exhales acid in a 30-foot line that is 5 feet wide. Each creature in that line must make a DC 14 Dexterity saving throw, taking 49 (11d8) acid damage on a failed save, or half as much damage on a successful one."
+    sort_order: 3
+
+# Young Blue Dragon
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Young Blue Dragon
+    name: Multiattack
+    description: "The dragon makes three attacks: one with its bite and two with its claws."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Young Blue Dragon
+    name: Bite
+    description: "Melee Weapon Attack: +9 to hit, reach 10 ft., one target. Hit: 16 (2d10 + 5) piercing damage plus 5 (1d10) lightning damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Young Blue Dragon
+    name: Claw
+    description: "Melee Weapon Attack: +9 to hit, reach 5 ft., one target. Hit: 12 (2d6 + 5) slashing damage."
+    sort_order: 2
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Young Blue Dragon
+    name: Lightning Breath (Recharge 5-6)
+    description: "The dragon exhales lightning in a 60-foot line that is 5 feet wide. Each creature in that line must make a DC 16 Dexterity saving throw, taking 55 (10d10) lightning damage on a failed save, or half as much damage on a successful one."
+    sort_order: 3
+
+# Young Green Dragon
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Young Green Dragon
+    name: Multiattack
+    description: "The dragon makes three attacks: one with its bite and two with its claws."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Young Green Dragon
+    name: Bite
+    description: "Melee Weapon Attack: +7 to hit, reach 10 ft., one target. Hit: 15 (2d10 + 4) piercing damage plus 7 (2d6) poison damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Young Green Dragon
+    name: Claw
+    description: "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 11 (2d6 + 4) slashing damage."
+    sort_order: 2
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Young Green Dragon
+    name: Poison Breath (Recharge 5-6)
+    description: "The dragon exhales poisonous gas in a 30-foot cone. Each creature in that area must make a DC 14 Constitution saving throw, taking 42 (12d6) poison damage on a failed save, or half as much damage on a successful one."
+    sort_order: 3
+
+# Young Red Dragon
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Young Red Dragon
+    name: Multiattack
+    description: "The dragon makes three attacks: one with its bite and two with its claws."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Young Red Dragon
+    name: Bite
+    description: "Melee Weapon Attack: +10 to hit, reach 10 ft., one target. Hit: 17 (2d10 + 6) piercing damage plus 3 (1d6) fire damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Young Red Dragon
+    name: Claw
+    description: "Melee Weapon Attack: +10 to hit, reach 5 ft., one target. Hit: 13 (2d6 + 6) slashing damage."
+    sort_order: 2
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Young Red Dragon
+    name: Fire Breath (Recharge 5-6)
+    description: "The dragon exhales fire in a 30-foot cone. Each creature in that area must make a DC 17 Dexterity saving throw, taking 56 (16d6) fire damage on a failed save, or half as much damage on a successful one."
+    sort_order: 3
+
+# Young White Dragon
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Young White Dragon
+    name: Multiattack
+    description: "The dragon makes three attacks: one with its bite and two with its claws."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Young White Dragon
+    name: Bite
+    description: "Melee Weapon Attack: +7 to hit, reach 10 ft., one target. Hit: 15 (2d10 + 4) piercing damage plus 4 (1d8) cold damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Young White Dragon
+    name: Claw
+    description: "Melee Weapon Attack: +7 to hit, reach 5 ft., one target. Hit: 11 (2d6 + 4) slashing damage."
+    sort_order: 2
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Young White Dragon
+    name: Cold Breath (Recharge 5-6)
+    description: "The dragon exhales an icy blast in a 30-foot cone. Each creature in that area must make a DC 15 Constitution saving throw, taking 45 (10d8) cold damage on a failed save, or half as much damage on a successful one."
+    sort_order: 3
+
+# Adult Black Dragon
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Adult Black Dragon
+    name: Multiattack
+    description: "The dragon can use its Frightful Presence. It then makes three attacks: one with its bite and two with its claws."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Adult Black Dragon
+    name: Bite
+    description: "Melee Weapon Attack: +11 to hit, reach 10 ft., one target. Hit: 17 (2d10 + 6) piercing damage plus 9 (2d8) acid damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Adult Black Dragon
+    name: Claw
+    description: "Melee Weapon Attack: +11 to hit, reach 5 ft., one target. Hit: 13 (2d6 + 6) slashing damage."
+    sort_order: 2
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Adult Black Dragon
+    name: Tail
+    description: "Melee Weapon Attack: +11 to hit, reach 15 ft., one target. Hit: 15 (2d8 + 6) bludgeoning damage."
+    sort_order: 3
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Adult Black Dragon
+    name: Frightful Presence
+    description: "Each creature of the dragon's choice that is within 120 feet of the dragon and aware of it must succeed on a DC 16 Wisdom saving throw or become frightened for 1 minute."
+    sort_order: 4
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Adult Black Dragon
+    name: Acid Breath (Recharge 5-6)
+    description: "The dragon exhales acid in a 60-foot line that is 5 feet wide. Each creature in that line must make a DC 18 Dexterity saving throw, taking 54 (12d8) acid damage on a failed save, or half as much damage on a successful one."
+    sort_order: 5
+
+# Adult Blue Dragon
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Adult Blue Dragon
+    name: Multiattack
+    description: "The dragon can use its Frightful Presence. It then makes three attacks: one with its bite and two with its claws."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Adult Blue Dragon
+    name: Bite
+    description: "Melee Weapon Attack: +12 to hit, reach 10 ft., one target. Hit: 18 (2d10 + 7) piercing damage plus 5 (1d10) lightning damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Adult Blue Dragon
+    name: Claw
+    description: "Melee Weapon Attack: +12 to hit, reach 5 ft., one target. Hit: 14 (2d6 + 7) slashing damage."
+    sort_order: 2
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Adult Blue Dragon
+    name: Tail
+    description: "Melee Weapon Attack: +12 to hit, reach 15 ft., one target. Hit: 16 (2d8 + 7) bludgeoning damage."
+    sort_order: 3
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Adult Blue Dragon
+    name: Frightful Presence
+    description: "Each creature of the dragon's choice that is within 120 feet of the dragon and aware of it must succeed on a DC 17 Wisdom saving throw or become frightened for 1 minute."
+    sort_order: 4
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Adult Blue Dragon
+    name: Lightning Breath (Recharge 5-6)
+    description: "The dragon exhales lightning in a 90-foot line that is 5 feet wide. Each creature in that line must make a DC 19 Dexterity saving throw, taking 88 (16d10) lightning damage on a failed save, or half as much damage on a successful one."
+    sort_order: 5
+
+# Adult Green Dragon
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Adult Green Dragon
+    name: Multiattack
+    description: "The dragon can use its Frightful Presence. It then makes three attacks: one with its bite and two with its claws."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Adult Green Dragon
+    name: Bite
+    description: "Melee Weapon Attack: +11 to hit, reach 10 ft., one target. Hit: 17 (2d10 + 6) piercing damage plus 10 (3d6) poison damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Adult Green Dragon
+    name: Claw
+    description: "Melee Weapon Attack: +11 to hit, reach 5 ft., one target. Hit: 13 (2d6 + 6) slashing damage."
+    sort_order: 2
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Adult Green Dragon
+    name: Tail
+    description: "Melee Weapon Attack: +11 to hit, reach 15 ft., one target. Hit: 15 (2d8 + 6) bludgeoning damage."
+    sort_order: 3
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Adult Green Dragon
+    name: Frightful Presence
+    description: "Each creature of the dragon's choice that is within 120 feet of the dragon and aware of it must succeed on a DC 16 Wisdom saving throw or become frightened for 1 minute."
+    sort_order: 4
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Adult Green Dragon
+    name: Poison Breath (Recharge 5-6)
+    description: "The dragon exhales poisonous gas in a 60-foot cone. Each creature in that area must make a DC 18 Constitution saving throw, taking 56 (16d6) poison damage on a failed save, or half as much damage on a successful one."
+    sort_order: 5
+
+# Adult White Dragon
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Adult White Dragon
+    name: Multiattack
+    description: "The dragon can use its Frightful Presence. It then makes three attacks: one with its bite and two with its claws."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Adult White Dragon
+    name: Bite
+    description: "Melee Weapon Attack: +10 to hit, reach 10 ft., one target. Hit: 17 (2d10 + 6) piercing damage plus 9 (2d8) cold damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Adult White Dragon
+    name: Claw
+    description: "Melee Weapon Attack: +10 to hit, reach 5 ft., one target. Hit: 13 (2d6 + 6) slashing damage."
+    sort_order: 2
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Adult White Dragon
+    name: Tail
+    description: "Melee Weapon Attack: +10 to hit, reach 15 ft., one target. Hit: 15 (2d8 + 6) bludgeoning damage."
+    sort_order: 3
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Adult White Dragon
+    name: Frightful Presence
+    description: "Each creature of the dragon's choice that is within 120 feet of the dragon and aware of it must succeed on a DC 14 Wisdom saving throw or become frightened for 1 minute."
+    sort_order: 4
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Adult White Dragon
+    name: Cold Breath (Recharge 5-6)
+    description: "The dragon exhales an icy blast in a 60-foot cone. Each creature in that area must make a DC 19 Constitution saving throw, taking 54 (12d8) cold damage on a failed save, or half as much damage on a successful one."
+    sort_order: 5
+
+# Ancient Black Dragon
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Ancient Black Dragon
+    name: Multiattack
+    description: "The dragon can use its Frightful Presence. It then makes three attacks: one with its bite and two with its claws."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Ancient Black Dragon
+    name: Bite
+    description: "Melee Weapon Attack: +15 to hit, reach 15 ft., one target. Hit: 19 (2d10 + 8) piercing damage plus 9 (2d8) acid damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Ancient Black Dragon
+    name: Claw
+    description: "Melee Weapon Attack: +15 to hit, reach 10 ft., one target. Hit: 15 (2d6 + 8) slashing damage."
+    sort_order: 2
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Ancient Black Dragon
+    name: Tail
+    description: "Melee Weapon Attack: +15 to hit, reach 20 ft., one target. Hit: 17 (2d8 + 8) bludgeoning damage."
+    sort_order: 3
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Ancient Black Dragon
+    name: Frightful Presence
+    description: "Each creature of the dragon's choice that is within 120 feet of the dragon and aware of it must succeed on a DC 19 Wisdom saving throw or become frightened for 1 minute."
+    sort_order: 4
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Ancient Black Dragon
+    name: Acid Breath (Recharge 5-6)
+    description: "The dragon exhales acid in a 90-foot line that is 10 feet wide. Each creature in that line must make a DC 22 Dexterity saving throw, taking 67 (15d8) acid damage on a failed save, or half as much damage on a successful one."
+    sort_order: 5
+
+# Ancient Blue Dragon
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Ancient Blue Dragon
+    name: Multiattack
+    description: "The dragon can use its Frightful Presence. It then makes three attacks: one with its bite and two with its claws."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Ancient Blue Dragon
+    name: Bite
+    description: "Melee Weapon Attack: +16 to hit, reach 15 ft., one target. Hit: 20 (2d10 + 9) piercing damage plus 11 (2d10) lightning damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Ancient Blue Dragon
+    name: Claw
+    description: "Melee Weapon Attack: +16 to hit, reach 10 ft., one target. Hit: 16 (2d6 + 9) slashing damage."
+    sort_order: 2
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Ancient Blue Dragon
+    name: Tail
+    description: "Melee Weapon Attack: +16 to hit, reach 20 ft., one target. Hit: 18 (2d8 + 9) bludgeoning damage."
+    sort_order: 3
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Ancient Blue Dragon
+    name: Frightful Presence
+    description: "Each creature of the dragon's choice that is within 120 feet of the dragon and aware of it must succeed on a DC 20 Wisdom saving throw or become frightened for 1 minute."
+    sort_order: 4
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Ancient Blue Dragon
+    name: Lightning Breath (Recharge 5-6)
+    description: "The dragon exhales lightning in a 120-foot line that is 10 feet wide. Each creature in that line must make a DC 23 Dexterity saving throw, taking 110 (20d10) lightning damage on a failed save, or half as much damage on a successful one."
+    sort_order: 5
+
+# Ancient Green Dragon
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Ancient Green Dragon
+    name: Multiattack
+    description: "The dragon can use its Frightful Presence. It then makes three attacks: one with its bite and two with its claws."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Ancient Green Dragon
+    name: Bite
+    description: "Melee Weapon Attack: +15 to hit, reach 15 ft., one target. Hit: 19 (2d10 + 8) piercing damage plus 10 (3d6) poison damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Ancient Green Dragon
+    name: Claw
+    description: "Melee Weapon Attack: +15 to hit, reach 10 ft., one target. Hit: 22 (4d6 + 8) slashing damage."
+    sort_order: 2
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Ancient Green Dragon
+    name: Tail
+    description: "Melee Weapon Attack: +15 to hit, reach 20 ft., one target. Hit: 26 (4d8 + 8) bludgeoning damage."
+    sort_order: 3
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Ancient Green Dragon
+    name: Frightful Presence
+    description: "Each creature of the dragon's choice that is within 120 feet of the dragon and aware of it must succeed on a DC 19 Wisdom saving throw or become frightened for 1 minute."
+    sort_order: 4
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Ancient Green Dragon
+    name: Poison Breath (Recharge 5-6)
+    description: "The dragon exhales poisonous gas in a 90-foot cone. Each creature in that area must make a DC 22 Constitution saving throw, taking 77 (22d6) poison damage on a failed save, or half as much damage on a successful one."
+    sort_order: 5
+
+# Ancient Red Dragon
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Ancient Red Dragon
+    name: Multiattack
+    description: "The dragon can use its Frightful Presence. It then makes three attacks: one with its bite and two with its claws."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Ancient Red Dragon
+    name: Bite
+    description: "Melee Weapon Attack: +17 to hit, reach 15 ft., one target. Hit: 21 (2d10 + 10) piercing damage plus 14 (4d6) fire damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Ancient Red Dragon
+    name: Claw
+    description: "Melee Weapon Attack: +17 to hit, reach 10 ft., one target. Hit: 17 (2d6 + 10) slashing damage."
+    sort_order: 2
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Ancient Red Dragon
+    name: Tail
+    description: "Melee Weapon Attack: +17 to hit, reach 20 ft., one target. Hit: 19 (2d8 + 10) bludgeoning damage."
+    sort_order: 3
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Ancient Red Dragon
+    name: Frightful Presence
+    description: "Each creature of the dragon's choice that is within 120 feet of the dragon and aware of it must succeed on a DC 21 Wisdom saving throw or become frightened for 1 minute."
+    sort_order: 4
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Ancient Red Dragon
+    name: Fire Breath (Recharge 5-6)
+    description: "The dragon exhales fire in a 90-foot cone. Each creature in that area must make a DC 24 Dexterity saving throw, taking 91 (26d6) fire damage on a failed save, or half as much damage on a successful one."
+    sort_order: 5
+
+# Ancient White Dragon
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Ancient White Dragon
+    name: Multiattack
+    description: "The dragon can use its Frightful Presence. It then makes three attacks: one with its bite and two with its claws."
+    sort_order: 0
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Ancient White Dragon
+    name: Bite
+    description: "Melee Weapon Attack: +14 to hit, reach 15 ft., one target. Hit: 19 (2d10 + 8) piercing damage plus 9 (2d8) cold damage."
+    sort_order: 1
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Ancient White Dragon
+    name: Claw
+    description: "Melee Weapon Attack: +14 to hit, reach 10 ft., one target. Hit: 15 (2d6 + 8) slashing damage."
+    sort_order: 2
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Ancient White Dragon
+    name: Tail
+    description: "Melee Weapon Attack: +14 to hit, reach 20 ft., one target. Hit: 17 (2d8 + 8) bludgeoning damage."
+    sort_order: 3
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Ancient White Dragon
+    name: Frightful Presence
+    description: "Each creature of the dragon's choice that is within 120 feet of the dragon and aware of it must succeed on a DC 16 Wisdom saving throw or become frightened for 1 minute."
+    sort_order: 4
+
+- model: bestiary.monsteractiontemplate
+  fields:
+    monster: Ancient White Dragon
+    name: Cold Breath (Recharge 5-6)
+    description: "The dragon exhales an icy blast in a 90-foot cone. Each creature in that area must make a DC 22 Constitution saving throw, taking 72 (16d8) cold damage on a failed save, or half as much damage on a successful one."
+    sort_order: 5
+
+# =============================================================================
+# LegendaryActionTemplate (all adult and ancient dragons)
+# =============================================================================
+
+# Adult Black Dragon
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Adult Black Dragon
+    name: Detect
+    description: "The dragon makes a Wisdom (Perception) check."
+    cost: 1
+    sort_order: 0
+
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Adult Black Dragon
+    name: Tail Attack
+    description: "The dragon makes a tail attack."
+    cost: 1
+    sort_order: 1
+
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Adult Black Dragon
+    name: Wing Attack (Costs 2 Actions)
+    description: "The dragon beats its wings. Each creature within 10 feet of the dragon must succeed on a DC 19 Dexterity saving throw or take 13 (2d6 + 6) bludgeoning damage and be knocked prone. The dragon can then fly up to half its flying speed."
+    cost: 2
+    sort_order: 2
+
+# Adult Blue Dragon
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Adult Blue Dragon
+    name: Detect
+    description: "The dragon makes a Wisdom (Perception) check."
+    cost: 1
+    sort_order: 0
+
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Adult Blue Dragon
+    name: Tail Attack
+    description: "The dragon makes a tail attack."
+    cost: 1
+    sort_order: 1
+
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Adult Blue Dragon
+    name: Wing Attack (Costs 2 Actions)
+    description: "The dragon beats its wings. Each creature within 10 feet of the dragon must succeed on a DC 20 Dexterity saving throw or take 14 (2d6 + 7) bludgeoning damage and be knocked prone. The dragon can then fly up to half its flying speed."
+    cost: 2
+    sort_order: 2
+
+# Adult Green Dragon
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Adult Green Dragon
+    name: Detect
+    description: "The dragon makes a Wisdom (Perception) check."
+    cost: 1
+    sort_order: 0
+
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Adult Green Dragon
+    name: Tail Attack
+    description: "The dragon makes a tail attack."
+    cost: 1
+    sort_order: 1
+
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Adult Green Dragon
+    name: Wing Attack (Costs 2 Actions)
+    description: "The dragon beats its wings. Each creature within 10 feet of the dragon must succeed on a DC 19 Dexterity saving throw or take 13 (2d6 + 6) bludgeoning damage and be knocked prone. The dragon can then fly up to half its flying speed."
+    cost: 2
+    sort_order: 2
+
+# Adult White Dragon
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Adult White Dragon
+    name: Detect
+    description: "The dragon makes a Wisdom (Perception) check."
+    cost: 1
+    sort_order: 0
+
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Adult White Dragon
+    name: Tail Attack
+    description: "The dragon makes a tail attack."
+    cost: 1
+    sort_order: 1
+
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Adult White Dragon
+    name: Wing Attack (Costs 2 Actions)
+    description: "The dragon beats its wings. Each creature within 10 feet of the dragon must succeed on a DC 18 Dexterity saving throw or take 13 (2d6 + 6) bludgeoning damage and be knocked prone. The dragon can then fly up to half its flying speed."
+    cost: 2
+    sort_order: 2
+
+# Ancient Black Dragon
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Ancient Black Dragon
+    name: Detect
+    description: "The dragon makes a Wisdom (Perception) check."
+    cost: 1
+    sort_order: 0
+
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Ancient Black Dragon
+    name: Tail Attack
+    description: "The dragon makes a tail attack."
+    cost: 1
+    sort_order: 1
+
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Ancient Black Dragon
+    name: Wing Attack (Costs 2 Actions)
+    description: "The dragon beats its wings. Each creature within 15 feet of the dragon must succeed on a DC 23 Dexterity saving throw or take 15 (2d6 + 8) bludgeoning damage and be knocked prone. The dragon can then fly up to half its flying speed."
+    cost: 2
+    sort_order: 2
+
+# Ancient Blue Dragon
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Ancient Blue Dragon
+    name: Detect
+    description: "The dragon makes a Wisdom (Perception) check."
+    cost: 1
+    sort_order: 0
+
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Ancient Blue Dragon
+    name: Tail Attack
+    description: "The dragon makes a tail attack."
+    cost: 1
+    sort_order: 1
+
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Ancient Blue Dragon
+    name: Wing Attack (Costs 2 Actions)
+    description: "The dragon beats its wings. Each creature within 15 feet of the dragon must succeed on a DC 24 Dexterity saving throw or take 16 (2d6 + 9) bludgeoning damage and be knocked prone. The dragon can then fly up to half its flying speed."
+    cost: 2
+    sort_order: 2
+
+# Ancient Green Dragon
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Ancient Green Dragon
+    name: Detect
+    description: "The dragon makes a Wisdom (Perception) check."
+    cost: 1
+    sort_order: 0
+
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Ancient Green Dragon
+    name: Tail Attack
+    description: "The dragon makes a tail attack."
+    cost: 1
+    sort_order: 1
+
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Ancient Green Dragon
+    name: Wing Attack (Costs 2 Actions)
+    description: "The dragon beats its wings. Each creature within 15 feet of the dragon must succeed on a DC 23 Dexterity saving throw or take 15 (2d6 + 8) bludgeoning damage and be knocked prone. The dragon can then fly up to half its flying speed."
+    cost: 2
+    sort_order: 2
+
+# Ancient Red Dragon
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Ancient Red Dragon
+    name: Detect
+    description: "The dragon makes a Wisdom (Perception) check."
+    cost: 1
+    sort_order: 0
+
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Ancient Red Dragon
+    name: Tail Attack
+    description: "The dragon makes a tail attack."
+    cost: 1
+    sort_order: 1
+
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Ancient Red Dragon
+    name: Wing Attack (Costs 2 Actions)
+    description: "The dragon beats its wings. Each creature within 15 feet of the dragon must succeed on a DC 25 Dexterity saving throw or take 17 (2d6 + 10) bludgeoning damage and be knocked prone. The dragon can then fly up to half its flying speed."
+    cost: 2
+    sort_order: 2
+
+# Ancient White Dragon
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Ancient White Dragon
+    name: Detect
+    description: "The dragon makes a Wisdom (Perception) check."
+    cost: 1
+    sort_order: 0
+
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Ancient White Dragon
+    name: Tail Attack
+    description: "The dragon makes a tail attack."
+    cost: 1
+    sort_order: 1
+
+- model: bestiary.legendaryactiontemplate
+  fields:
+    monster: Ancient White Dragon
+    name: Wing Attack (Costs 2 Actions)
+    description: "The dragon beats its wings. Each creature within 15 feet of the dragon must succeed on a DC 22 Dexterity saving throw or take 15 (2d6 + 8) bludgeoning damage and be knocked prone. The dragon can then fly up to half its flying speed."
+    cost: 2
+    sort_order: 2
