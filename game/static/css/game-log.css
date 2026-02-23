@@ -62,7 +62,7 @@
 
 .log-entry[data-category="rolls"]  .log-entry-bar { background: var(--accent); }
 .log-entry[data-category="combat"] .log-entry-bar { background: var(--red); }
-.log-entry[data-category="spells"] .log-entry-bar { background: #9b59b6; }
+.log-entry[data-category="spells"] .log-entry-bar { background: var(--purple); }
 .log-entry[data-category="chat"]   .log-entry-bar { background: var(--text-muted); }
 .log-entry[data-category="dm"]     .log-entry-bar { background: var(--green); }
 

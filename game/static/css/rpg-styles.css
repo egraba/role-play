@@ -20,6 +20,7 @@ Clean dark mode. No gradients. No glow. No serif.
   --red:        #c0392b;
   --green:      #27ae60;
   --blue:       #2980b9;
+  --purple:     #9b59b6;
   --radius:     4px;
 
   /* Legacy aliases — removed once all inline styles are updated */
