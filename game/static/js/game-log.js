@@ -256,18 +256,20 @@ class GameLog {
                     });
                     self.filters.characters.clear();
                 } else {
-                    var charId = parseInt(e.target.value);
+                    // Rebuild include-list from all currently-checked character checkboxes
+                    self.filters.characters.clear();
+                    dropdown.querySelectorAll('input:not([value="all"]):checked').forEach(function (cb) {
+                        self.filters.characters.add(parseInt(cb.value));
+                    });
 
-                    if (e.target.checked) {
-                        self.filters.characters.delete(charId);
-                    } else {
-                        self.filters.characters.add(charId);
+                    // If all characters are checked, clear the set (empty = show all)
+                    var totalCount = dropdown.querySelectorAll('input:not([value="all"])').length;
+                    if (self.filters.characters.size === totalCount) {
+                        self.filters.characters.clear();
                     }
 
                     var allCheckbox = dropdown.querySelector('input[value="all"]');
-                    var allChecked = dropdown.querySelectorAll('input:not([value="all"]):checked').length ===
-                                     dropdown.querySelectorAll('input:not([value="all"])').length;
-                    allCheckbox.checked = allChecked;
+                    allCheckbox.checked = self.filters.characters.size === 0;
                 }
 
                 self.updateCharacterButtonText();
@@ -277,7 +279,8 @@ class GameLog {
     }
 
     updateCharacterButtonText() {
-        var btn = this.panel.querySelector(".character-filter-btn span:first-child");
+        var charBtn = this.panel.querySelector(".character-filter-btn");
+        var btn = charBtn.querySelector("span:first-child");
         var dropdown = this.panel.querySelector("#character-dropdown");
         var checkedCount = dropdown.querySelectorAll('input:not([value="all"]):checked').length;
         var totalCount = this.characters.length;
@@ -290,6 +293,13 @@ class GameLog {
             btn.textContent = name;
         } else {
             btn.textContent = checkedCount + " Characters";
+        }
+
+        // Update active state: active when some (but not all) characters are filtered
+        if (this.filters.characters.size > 0) {
+            charBtn.classList.add("active");
+        } else {
+            charBtn.classList.remove("active");
         }
     }
 
@@ -448,9 +458,10 @@ class GameLog {
             visible = false;
         }
 
-        // Character filter (if filtering specific characters)
+        // Character filter (include-list: only show characters in the set; empty set = show all)
+        // DM/system events (no character_id) are always shown regardless of filter state
         if (visible && this.filters.characters.size > 0 && event.character_id) {
-            if (this.filters.characters.has(event.character_id)) {
+            if (!this.filters.characters.has(event.character_id)) {
                 visible = false;
             }
         }
