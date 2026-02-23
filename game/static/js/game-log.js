@@ -371,6 +371,10 @@ class GameLog {
 
         var details = this.createDetailsElement(event);
         if (details) {
+            var expandIndicator = document.createElement("span");
+            expandIndicator.className = "log-entry-expand";
+            expandIndicator.textContent = "▶";
+            header.appendChild(expandIndicator);
             content.appendChild(details);
         }
 
