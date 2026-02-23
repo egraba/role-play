@@ -97,8 +97,12 @@ class GameLog {
             btn.className = "filter-toggle active";
             btn.dataset.category = cat.key;
             btn.title = cat.title;
-            // Values are hardcoded static strings, not user input — safe to use innerHTML
-            btn.innerHTML = '<img src="' + cat.icon + '" alt="" class="rpg-icon rpg-icon-sm"> ' + cat.label; // noqa: security/detect-non-literal-regexp
+            var img = document.createElement("img");
+            img.src = cat.icon;
+            img.alt = "";
+            img.className = "rpg-icon rpg-icon-sm";
+            btn.appendChild(img);
+            btn.appendChild(document.createTextNode(" " + cat.label));
             toggles.appendChild(btn);
         });
 
