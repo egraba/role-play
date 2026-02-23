@@ -167,41 +167,83 @@
 
 .new-events-indicator.visible { display: block; }
 
-/* ==================== FILTER BAR ==================== */
-
+/* FILTER BAR */
 .game-log-filters {
-    padding: 0 4px;
-    border-top: 1px solid var(--border);
     display: flex;
-    flex-shrink: 0;
-    overflow-x: auto;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
 }
 
-.filter-toggles {
+.category-filters {
     display: flex;
-    gap: 0;
+    gap: 4px;
+    flex: 1;
+    flex-wrap: wrap;
 }
 
 .filter-toggle {
-    padding: 8px 10px;
-    font-size: 12px;
-    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    background: transparent;
     color: var(--text-muted);
-    background: none;
-    border: none;
-    border-bottom: 2px solid transparent;
+    font-size: 12px;
     cursor: pointer;
-    transition: color 0.15s;
+    transition: color 0.15s, border-color 0.15s;
     white-space: nowrap;
-    -webkit-appearance: none;
-    appearance: none;
 }
 
-.filter-toggle:hover { color: var(--text); }
+.filter-toggle:hover {
+    color: var(--text);
+}
 
 .filter-toggle.active {
+    color: var(--accent);
+    border-bottom: 2px solid var(--accent);
+    border-radius: 0;
+    padding-bottom: 2px;
+}
+
+.filter-toggle .rpg-icon {
+    width: 14px;
+    height: 14px;
+    opacity: 0.5;
+}
+
+.filter-toggle.active .rpg-icon {
+    opacity: 1;
+}
+
+.character-filter-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 12px;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.character-filter-btn:hover {
     color: var(--text);
-    border-bottom-color: var(--accent);
+    border-color: var(--text-muted);
+}
+
+.character-filter-btn.active {
+    color: var(--accent);
+    border-bottom: 2px solid var(--accent);
 }
 
 /* ==================== SEARCH BAR ==================== */
