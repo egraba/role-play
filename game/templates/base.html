@@ -24,39 +24,22 @@
 
                 <ul class="navbar-menu" id="navbar-menu">
                     <li class="navbar-item">
-                        <a href="{% url 'index' %}" class="navbar-link">
-                            <img src="{% static 'images/icons/actions/roll.svg' %}" alt="" class="rpg-icon rpg-icon-primary">
-                            Home
-                        </a>
+                        <a href="{% url 'index' %}" class="navbar-link">Home</a>
                     </li>
                     <li class="navbar-item">
-                        <a href="{% url 'game-list' %}" class="navbar-link">
-                            <img src="{% static 'images/icons/actions/attack.svg' %}" alt="" class="rpg-icon rpg-icon-danger">
-                            Games
-                        </a>
+                        <a href="{% url 'game-list' %}" class="navbar-link">Games</a>
                     </li>
                     {% if user.is_authenticated %}
                         <li class="navbar-item">
-                            <a href="{% url 'campaign-list' %}" class="navbar-link">
-                                <img src="{% static 'images/icons/actions/cast-spell.svg' %}" alt="" class="rpg-icon rpg-icon-info">
-                                Campaigns
-                            </a>
+                            <a href="{% url 'campaign-list' %}" class="navbar-link">Campaigns</a>
                         </li>
                         {% if user_character %}
                             <li class="navbar-item">
-                                <a href="{{ user_character.get_absolute_url }}" class="navbar-link">
-                                    <img src="{% static 'images/icons/actions/help.svg' %}" alt="" class="rpg-icon rpg-icon-success">
-                                    My Character
-                                </a>
+                                <a href="{{ user_character.get_absolute_url }}" class="navbar-link">My Character</a>
                             </li>
                         {% endif %}
                         <li class="navbar-item navbar-user">
                             <button class="navbar-user-toggle" aria-expanded="false" aria-controls="user-dropdown">
-                                {% if user_character and user_character.primary_class %}
-                                    <img src="{% static 'images/icons/classes/' %}{{ user_character.primary_class.name|lower }}.svg" alt="" class="rpg-icon rpg-icon-primary">
-                                {% else %}
-                                    <img src="{% static 'images/icons/ui/settings.svg' %}" alt="" class="rpg-icon rpg-icon-primary">
-                                {% endif %}
                                 {{ user.username }}
                             </button>
                             <ul class="navbar-dropdown" id="user-dropdown">
@@ -64,7 +47,6 @@
                                     <form method="post" action="{% url 'logout' %}" id="logout-form">
                                         {% csrf_token %}
                                         <a href="#" class="navbar-dropdown-link" onclick="document.getElementById('logout-form').submit(); return false;">
-                                            <img src="{% static 'images/icons/ui/close.svg' %}" alt="" class="rpg-icon rpg-icon-danger">
                                             Log out
                                         </a>
                                     </form>
@@ -72,11 +54,8 @@
                             </ul>
                         </li>
                     {% else %}
-                        <li class="navbar-item">
-                            <a href="{% url 'login' %}" class="navbar-login">
-                                <img src="{% static 'images/icons/ui/settings.svg' %}" alt="" class="rpg-icon">
-                                Log in
-                            </a>
+                        <li class="navbar-item navbar-user">
+                            <a href="{% url 'login' %}" class="navbar-login">Log in</a>
                         </li>
                     {% endif %}
                 </ul>
@@ -86,18 +65,18 @@
         <main class="main-content">
             {% block content %}{% endblock%}
 
-            <footer style="text-align: center; padding: 20px; margin-top: 40px; border-top: 1px solid var(--color-border, #4a4a4a); font-size: 0.85rem; color: var(--color-text-muted, #999);">
+            <footer style="text-align: center; padding: 20px; margin-top: 40px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-muted);">
                 <p style="margin: 5px 0;">
                     This virtual tabletop implements D&D 5th Edition rules based on the
                     <a href="https://media.dndbeyond.com/compendium-images/srd/5.2/SRD_CC_v5.2.1.pdf"
-                       style="color: var(--color-primary, #d4af37); text-decoration: underline;"
+                       style="color: var(--accent); text-decoration: underline;"
                        target="_blank"
                        rel="noopener noreferrer">Systems Reference Document 5.2</a>
                 </p>
                 <p style="margin: 5px 0;">
                     The SRD 5.2 is © Wizards of the Coast and licensed under
                     <a href="https://creativecommons.org/licenses/by/4.0/"
-                       style="color: var(--color-primary, #d4af37); text-decoration: underline;"
+                       style="color: var(--accent); text-decoration: underline;"
                        target="_blank"
                        rel="noopener noreferrer">CC-BY-4.0</a>
                 </p>

@@ -3,9 +3,10 @@
  * Uses safe DOM manipulation (textContent, createElement) to prevent XSS
  */
 class GameLog {
-    constructor(gameId, username) {
+    constructor(gameId, username, containerId) {
         this.gameId = gameId;
         this.username = username;
+        this.containerId = containerId || 'game-log-col';
         this.events = [];
         this.maxEvents = 200;
         this.filters = {
@@ -26,14 +27,12 @@ class GameLog {
     }
 
     createPanel() {
-        var panel = document.createElement("div");
-        panel.className = "game-log-panel";
-        panel.id = "game-log-panel";
+        var container = document.getElementById(this.containerId);
+        if (!container) return;
 
         var header = this._createHeader();
-        var filters = this._createFilters();
         var entries = document.createElement("div");
-        entries.className = "game-log-entries";
+        entries.className = "game-log-stream";
         entries.id = "game-log-entries";
 
         var indicator = document.createElement("div");
@@ -44,26 +43,21 @@ class GameLog {
         countSpan.id = "new-events-count";
         countSpan.textContent = "0";
         indicator.appendChild(countSpan);
-        indicator.appendChild(document.createTextNode(" new events"));
+        indicator.appendChild(document.createTextNode(" new"));
 
-        panel.appendChild(header);
-        panel.appendChild(filters);
-        panel.appendChild(entries);
-        panel.appendChild(indicator);
+        var filters = this._createFilters();
 
-        document.body.appendChild(panel);
+        container.appendChild(header);
+        container.appendChild(entries);
+        container.appendChild(indicator);
+        container.appendChild(filters);
 
-        var expandBtn = document.createElement("button");
-        expandBtn.className = "game-log-expand-btn";
-        expandBtn.textContent = "📜";
-        expandBtn.title = "Open Game Log";
-        document.body.appendChild(expandBtn);
-
-        this.panel = panel;
+        // No expand button needed — column is always visible
+        this.panel = container;
         this.entriesContainer = entries;
         this.newEventsIndicator = indicator;
         this.newEventsCountEl = countSpan;
-        this.expandBtn = expandBtn;
+        this.expandBtn = null;
     }
 
     _createHeader() {
@@ -91,11 +85,11 @@ class GameLog {
         toggles.className = "filter-toggles";
 
         var categories = [
-            { key: "rolls", icon: "🎲", title: "Dice Rolls" },
-            { key: "combat", icon: "⚔️", title: "Combat" },
-            { key: "spells", icon: "✨", title: "Spells" },
-            { key: "chat", icon: "💬", title: "Chat" },
-            { key: "dm", icon: "📢", title: "DM" },
+            { key: "rolls", icon: "/static/images/icons/actions/roll.svg", label: "Rolls", title: "Dice Rolls" },
+            { key: "combat", icon: "/static/images/icons/actions/attack.svg", label: "Combat", title: "Combat" },
+            { key: "spells", icon: "/static/images/icons/actions/cast-spell.svg", label: "Spells", title: "Spells" },
+            { key: "chat", icon: "/static/images/icons/actions/persuade.svg", label: "Chat", title: "Chat" },
+            { key: "dm", icon: "/static/images/icons/ui/info.svg", label: "DM", title: "DM" },
         ];
 
         categories.forEach(function (cat) {
@@ -103,7 +97,12 @@ class GameLog {
             btn.className = "filter-toggle active";
             btn.dataset.category = cat.key;
             btn.title = cat.title;
-            btn.textContent = cat.icon;
+            var img = document.createElement("img");
+            img.src = cat.icon;
+            img.alt = "";
+            img.className = "rpg-icon rpg-icon-sm";
+            btn.appendChild(img);
+            btn.appendChild(document.createTextNode(" " + cat.label));
             toggles.appendChild(btn);
         });
 
@@ -154,14 +153,19 @@ class GameLog {
     bindEvents() {
         var self = this;
 
-        // Toggle panel collapse
-        this.panel.querySelector(".game-log-toggle").addEventListener("click", function () {
-            self.panel.classList.toggle("collapsed");
-        });
+        // Toggle panel collapse (noop in column layout — toggle is hidden by CSS)
+        var toggleBtn = this.panel.querySelector(".game-log-toggle");
+        if (toggleBtn) {
+            toggleBtn.addEventListener("click", function () {
+                self.panel.classList.toggle("collapsed");
+            });
+        }
 
-        this.expandBtn.addEventListener("click", function () {
-            self.panel.classList.remove("collapsed");
-        });
+        if (this.expandBtn) {
+            this.expandBtn.addEventListener("click", function () {
+                self.panel.classList.remove("collapsed");
+            });
+        }
 
         // Category filter toggles
         this.panel.querySelectorAll(".filter-toggle").forEach(function (btn) {
@@ -252,18 +256,20 @@ class GameLog {
                     });
                     self.filters.characters.clear();
                 } else {
-                    var charId = parseInt(e.target.value);
+                    // Rebuild include-list from all currently-checked character checkboxes
+                    self.filters.characters.clear();
+                    dropdown.querySelectorAll('input:not([value="all"]):checked').forEach(function (cb) {
+                        self.filters.characters.add(parseInt(cb.value));
+                    });
 
-                    if (e.target.checked) {
-                        self.filters.characters.delete(charId);
-                    } else {
-                        self.filters.characters.add(charId);
+                    // If all characters are checked, clear the set (empty = show all)
+                    var totalCount = dropdown.querySelectorAll('input:not([value="all"])').length;
+                    if (self.filters.characters.size === totalCount) {
+                        self.filters.characters.clear();
                     }
 
                     var allCheckbox = dropdown.querySelector('input[value="all"]');
-                    var allChecked = dropdown.querySelectorAll('input:not([value="all"]):checked').length ===
-                                     dropdown.querySelectorAll('input:not([value="all"])').length;
-                    allCheckbox.checked = allChecked;
+                    allCheckbox.checked = self.filters.characters.size === 0;
                 }
 
                 self.updateCharacterButtonText();
@@ -273,7 +279,8 @@ class GameLog {
     }
 
     updateCharacterButtonText() {
-        var btn = this.panel.querySelector(".character-filter-btn span:first-child");
+        var charBtn = this.panel.querySelector(".character-filter-btn");
+        var btn = charBtn.querySelector("span:first-child");
         var dropdown = this.panel.querySelector("#character-dropdown");
         var checkedCount = dropdown.querySelectorAll('input:not([value="all"]):checked').length;
         var totalCount = this.characters.length;
@@ -286,6 +293,13 @@ class GameLog {
             btn.textContent = name;
         } else {
             btn.textContent = checkedCount + " Characters";
+        }
+
+        // Update active state: active when some (but not all) characters are filtered
+        if (this.filters.characters.size > 0) {
+            charBtn.classList.add("active");
+        } else {
+            charBtn.classList.remove("active");
         }
     }
 
@@ -357,6 +371,10 @@ class GameLog {
 
         var details = this.createDetailsElement(event);
         if (details) {
+            var expandIndicator = document.createElement("span");
+            expandIndicator.className = "log-entry-expand";
+            expandIndicator.textContent = "▶";
+            header.appendChild(expandIndicator);
             content.appendChild(details);
         }
 
@@ -444,9 +462,10 @@ class GameLog {
             visible = false;
         }
 
-        // Character filter (if filtering specific characters)
+        // Character filter (include-list: only show characters in the set; empty set = show all)
+        // DM/system events (no character_id) are always shown regardless of filter state
         if (visible && this.filters.characters.size > 0 && event.character_id) {
-            if (this.filters.characters.has(event.character_id)) {
+            if (!this.filters.characters.has(event.character_id)) {
                 visible = false;
             }
         }
