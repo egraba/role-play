@@ -7,6 +7,7 @@ INSTALLED_APPS = [
     "daphne",
     "game.apps.GameConfig",
     "master.apps.MasterConfig",
+    "adventure.apps.AdventureConfig",
     "user.apps.UserConfig",
     "character.apps.CharacterConfig",
     "bestiary.apps.BestiaryConfig",
