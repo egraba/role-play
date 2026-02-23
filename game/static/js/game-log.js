@@ -85,11 +85,11 @@ class GameLog {
         toggles.className = "filter-toggles";
 
         var categories = [
-            { key: "rolls", icon: "🎲", title: "Dice Rolls" },
-            { key: "combat", icon: "⚔️", title: "Combat" },
-            { key: "spells", icon: "✨", title: "Spells" },
-            { key: "chat", icon: "💬", title: "Chat" },
-            { key: "dm", icon: "📢", title: "DM" },
+            { key: "rolls", icon: "/static/images/icons/actions/roll.svg", label: "Rolls", title: "Dice Rolls" },
+            { key: "combat", icon: "/static/images/icons/actions/attack.svg", label: "Combat", title: "Combat" },
+            { key: "spells", icon: "/static/images/icons/actions/cast-spell.svg", label: "Spells", title: "Spells" },
+            { key: "chat", icon: "/static/images/icons/actions/persuade.svg", label: "Chat", title: "Chat" },
+            { key: "dm", icon: "/static/images/icons/ui/info.svg", label: "DM", title: "DM" },
         ];
 
         categories.forEach(function (cat) {
@@ -97,7 +97,8 @@ class GameLog {
             btn.className = "filter-toggle active";
             btn.dataset.category = cat.key;
             btn.title = cat.title;
-            btn.textContent = cat.icon;
+            // Values are hardcoded static strings, not user input — safe to use innerHTML
+            btn.innerHTML = '<img src="' + cat.icon + '" alt="" class="rpg-icon rpg-icon-sm"> ' + cat.label; // noqa: security/detect-non-literal-regexp
             toggles.appendChild(btn);
         });
 
