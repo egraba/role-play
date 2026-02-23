@@ -167,7 +167,7 @@
 
 .new-events-indicator.visible { display: block; }
 
-/* FILTER BAR */
+/* ==================== FILTER BAR ==================== */
 .game-log-filters {
     display: flex;
     align-items: center;
@@ -188,8 +188,9 @@
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    padding: 4px 8px;
+    padding: 4px 8px 2px;
     border: 1px solid transparent;
+    border-bottom: 2px solid transparent;
     border-radius: var(--radius);
     background: transparent;
     color: var(--text-muted);
@@ -207,7 +208,6 @@
     color: var(--accent);
     border-bottom: 2px solid var(--accent);
     border-radius: 0;
-    padding-bottom: 2px;
 }
 
 .filter-toggle .rpg-icon {
@@ -224,8 +224,9 @@
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    padding: 4px 8px;
+    padding: 4px 8px 2px;
     border: 1px solid var(--border);
+    border-bottom: 2px solid transparent;
     border-radius: var(--radius);
     background: transparent;
     color: var(--text-muted);
@@ -244,6 +245,7 @@
 .character-filter-btn.active {
     color: var(--accent);
     border-bottom: 2px solid var(--accent);
+    border-radius: 0;
 }
 
 /* ==================== SEARCH BAR ==================== */
