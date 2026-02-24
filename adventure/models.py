@@ -3,7 +3,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
 
-from .constants import Region, SceneType, Tone
+from .constants import Difficulty, EncounterType, Region, SceneType, Tone
 
 
 class Campaign(models.Model):
@@ -102,3 +102,43 @@ class Location(models.Model):
 
     def __str__(self) -> str:
         return str(self.name)
+
+
+class Encounter(models.Model):
+    scene = models.ForeignKey(
+        Scene, on_delete=models.CASCADE, related_name="encounters"
+    )
+    title = models.CharField(max_length=100)
+    encounter_type = models.CharField(
+        max_length=1, choices=EncounterType, default=EncounterType.COMBAT
+    )
+    description = models.TextField(max_length=2000, blank=True)
+    difficulty = models.CharField(
+        max_length=1, choices=Difficulty, default=Difficulty.MEDIUM
+    )
+    monsters = models.ManyToManyField(
+        "bestiary.MonsterSettings",
+        through="EncounterMonster",
+        blank=True,
+        related_name="encounters",
+    )
+    npcs = models.ManyToManyField(NPC, blank=True, related_name="encounters")
+    rewards = models.TextField(max_length=500, blank=True)
+
+    def __str__(self) -> str:
+        return str(self.title)
+
+
+class EncounterMonster(models.Model):
+    encounter = models.ForeignKey(
+        Encounter, on_delete=models.CASCADE, related_name="encounter_monsters"
+    )
+    monster_settings = models.ForeignKey(
+        "bestiary.MonsterSettings",
+        on_delete=models.CASCADE,
+        related_name="encounter_monsters",
+    )
+    count = models.PositiveSmallIntegerField(default=1)
+
+    class Meta:
+        unique_together = [("encounter", "monster_settings")]

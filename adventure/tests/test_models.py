@@ -3,6 +3,7 @@ import pytest
 from adventure.tests.factories import (
     ActFactory,
     CampaignFactory,
+    EncounterFactory,
     LocationFactory,
     NPCFactory,
     SceneFactory,
@@ -70,3 +71,22 @@ def test_npc_str():
 def test_location_str():
     loc = LocationFactory(name="Cragmaw Hideout")
     assert str(loc) == "Cragmaw Hideout"
+
+
+@pytest.mark.django_db
+def test_encounter_str():
+    enc = EncounterFactory(title="Goblin Ambush")
+    assert str(enc) == "Goblin Ambush"
+
+
+@pytest.mark.django_db
+def test_encounter_difficulty_default():
+    enc = EncounterFactory()
+    assert enc.difficulty == "M"
+
+
+@pytest.mark.django_db
+def test_encounter_belongs_to_scene():
+    scene = SceneFactory()
+    enc = EncounterFactory(scene=scene)
+    assert enc.scene == scene

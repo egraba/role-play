@@ -1,7 +1,7 @@
 import factory
 
-from adventure.constants import Region, SceneType
-from adventure.models import Act, Campaign, Location, NPC, Scene
+from adventure.constants import Difficulty, EncounterType, Region, SceneType
+from adventure.models import Act, Campaign, Encounter, Location, NPC, Scene
 from user.tests.factories import UserFactory
 
 
@@ -59,3 +59,14 @@ class LocationFactory(factory.django.DjangoModelFactory):
     name = factory.Sequence(lambda n: f"Location {n}")
     description = factory.Faker("paragraph", nb_sentences=2)
     region = Region.DUNGEON
+
+
+class EncounterFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Encounter
+
+    scene = factory.SubFactory(SceneFactory)
+    title = factory.Sequence(lambda n: f"Encounter {n}")
+    encounter_type = EncounterType.COMBAT
+    difficulty = Difficulty.MEDIUM
+    description = factory.Faker("paragraph", nb_sentences=2)
