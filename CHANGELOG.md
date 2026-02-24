@@ -5,6 +5,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Fixed
+- Ops: add `LOGGING` config to production settings — WARNING+ to stdout, ERROR for `django.request`; previously no structured logging in prod
 - Security: Redis connection upgraded to TLS (`rediss://`, port 6380) — was plaintext `redis://` to external Upstash instance
 - Ops: Production cache backend switched from `LocMemCache` to Redis — was per-process, lost on restart, not shared across machines
 - Privacy: removed `send_default_pii=True` from Sentry — was sending user IPs, session cookies, and all request headers to Sentry's US servers
