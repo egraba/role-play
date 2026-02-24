@@ -9,9 +9,7 @@ SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 DEBUG = False
 
 # Security
-# Include .fly.dev and .internal for Fly's private network
-# Use * to allow health checks from any internal IP
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["role-play.fly.dev", "role-play.internal"]
 CSRF_TRUSTED_ORIGINS = ["https://role-play.fly.dev"]
 CSRF_COOKIE_SECURE = True
 SECURE_SSL_REDIRECT = False

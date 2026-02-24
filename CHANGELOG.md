@@ -5,6 +5,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Fixed
+- Security: `ALLOWED_HOSTS` restricted to `role-play.fly.dev` and `role-play.internal` (was `["*"]`, disabling Django's host header validation)
 - Security: `SECURE_HSTS_SECONDS` raised from 3600 (1 hour) to 31536000 (1 year) — required for HSTS preload list eligibility
 - Ops: add `LOGGING` config to production settings — WARNING+ to stdout, ERROR for `django.request`; previously no structured logging in prod
 - Security: Redis connection upgraded to TLS (`rediss://`, port 6380) — was plaintext `redis://` to external Upstash instance
