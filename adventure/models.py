@@ -109,6 +109,7 @@ class Encounter(models.Model):
         Scene, on_delete=models.CASCADE, related_name="encounters"
     )
     title = models.CharField(max_length=100)
+    order = models.PositiveSmallIntegerField(default=1)
     encounter_type = models.CharField(
         max_length=1, choices=EncounterType, default=EncounterType.COMBAT
     )
@@ -124,6 +125,10 @@ class Encounter(models.Model):
     )
     npcs = models.ManyToManyField(NPC, blank=True, related_name="encounters")
     rewards = models.TextField(max_length=500, blank=True)
+
+    class Meta:
+        ordering = ["order"]
+        unique_together = [("scene", "order")]
 
     def __str__(self) -> str:
         return str(self.title)
@@ -142,3 +147,6 @@ class EncounterMonster(models.Model):
 
     class Meta:
         unique_together = [("encounter", "monster_settings")]
+
+    def __str__(self) -> str:
+        return f"{self.monster_settings} x{self.count} in {self.encounter}"
