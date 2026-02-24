@@ -5,6 +5,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Fixed
+- Security: `SECURE_HSTS_SECONDS` raised from 3600 (1 hour) to 31536000 (1 year) — required for HSTS preload list eligibility
 - Ops: add `LOGGING` config to production settings — WARNING+ to stdout, ERROR for `django.request`; previously no structured logging in prod
 - Security: Redis connection upgraded to TLS (`rediss://`, port 6380) — was plaintext `redis://` to external Upstash instance
 - Ops: Production cache backend switched from `LocMemCache` to Redis — was per-process, lost on restart, not shared across machines
