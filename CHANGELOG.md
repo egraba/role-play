@@ -5,6 +5,8 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Fixed
+- Privacy: removed `send_default_pii=True` from Sentry — was sending user IPs, session cookies, and all request headers to Sentry's US servers
+- Ops: added `environment="production"` and `traces_sample_rate=0.1` to Sentry config
 - Security: WebSocket consumer now rejects unauthenticated connections with close code 4003
 - Security: Production `SECRET_KEY` now read from `DJANGO_SECRET_KEY` env var instead of regenerating on every restart (previously invalidated all sessions, CSRF tokens, and signed cookies on every deploy)
 
