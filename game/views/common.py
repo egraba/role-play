@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.views.generic import CreateView, ListView, TemplateView
 
 from character.models.character import Character
-from master.models import Campaign
+from adventure.models import Campaign
 
 from ..constants.combat import CombatState
 from ..constants.events import RollStatus, RollType

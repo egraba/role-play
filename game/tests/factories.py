@@ -50,7 +50,7 @@ class GameFactory(factory.django.DjangoModelFactory):
         skip_postgeneration_save = True
 
     name = factory.Sequence(lambda n: f"game{n}")
-    campaign = factory.SubFactory("master.tests.factories.CampaignFactory")
+    campaign = factory.SubFactory("adventure.tests.factories.CampaignFactory")
     master = factory.RelatedFactory(MasterFactory, factory_related_name="game")
 
     @factory.post_generation

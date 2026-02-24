@@ -4,7 +4,7 @@ from django.db.models.functions import Upper
 from django.urls import reverse
 
 from character.models.character import Character
-from master.models import Campaign
+from adventure.models import Campaign
 
 from ..constants.game import GameState
 
