@@ -61,7 +61,9 @@ Each app follows a consistent pattern: `models/`, `views/`, `forms/`, `tests/`, 
   - Use `-webkit-appearance: none` for form elements
 - **CSS**: Uses `rpg-styles.css` design system (dark theme, gold accents)
   - Components: `rpg-panel`, `rpg-btn`, `rpg-table`, `rpg-form-group`
-- **Templates**: Extend `base.html`, use emoji icons over images
+- **Templates**: Extend `base.html`, use SVG icons (never emoji as icon substitutes)
+  - SVG icons use `class="rpg-icon"` — `filter: invert(1)` makes black SVGs white on dark backgrounds
+  - Color variants: `rpg-icon-primary` (gold), `rpg-icon-danger` (red), `rpg-icon-success` (green), `rpg-icon-info` (blue), `rpg-icon-warning` (yellow)
 
 ### Testing
 

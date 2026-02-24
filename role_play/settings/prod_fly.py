@@ -1,11 +1,10 @@
 import sentry_sdk
-import secrets
 
 import dj_database_url
 
 from role_play.settings.base import *
 
-SECRET_KEY = secrets.token_urlsafe(50)
+SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 
 DEBUG = False
 
