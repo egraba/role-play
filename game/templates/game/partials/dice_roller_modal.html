@@ -1,610 +1,133 @@
-{% load static %}
-
 <div id="dice-roller-modal" class="rpg-modal {% if show_modal %}active{% endif %}">
-    <div class="modal-content dice-roller-modal-content">
-        <span class="modal-close" onclick="closeDiceRollerModal()">&times;</span>
-        <h2 class="modal-header">
-            <img src="{% static 'images/icons/actions/roll.svg' %}" alt="" class="rpg-icon rpg-icon-lg rpg-icon-primary">
-            Dice Roller
-        </h2>
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeDiceRollerModal()" type="button">&times;</button>
+        <div class="modal-header">Roll Dice</div>
 
         {% if error %}
-            <div class="dice-error">{{ error }}</div>
+            <div style="padding: 8px 12px; border: 1px solid rgba(192,57,43,0.4); border-radius: var(--radius); color: var(--red); font-size: 13px; margin-bottom: 12px;">
+                {{ error }}
+            </div>
         {% endif %}
 
         {% if not roll_result %}
-        <!-- Phase 1: Dice Selection -->
             <form id="dice-roller-form"
                   hx-post="{% url 'dice-roll' game.id %}"
                   hx-target="#dice-roller-modal"
                   hx-swap="outerHTML">
 
-            <!-- Dice Type Selection -->
-                <div class="dice-section">
-                    <label class="dice-label">Select Dice Type</label>
-                    <div class="dice-type-grid">
+                <div class="form-group">
+                    <label>Die type</label>
+                    <div class="toggle-group" style="flex-wrap: wrap;">
                         {% for die in dice_types %}
                             <button type="button"
-                                    class="dice-type-btn {% if die.value == 20 %}active{% endif %}"
+                                    class="btn btn-ghost {% if die.value == 20 %}active{% endif %}"
                                     data-value="{{ die.value }}"
-                                    style="--dice-color: {{ die.color }}"
-                                    onclick="selectDiceType(this, {{ die.value }})">
-                                <span class="dice-type-icon">{{ die.label }}</span>
-                            </button>
+                                    onclick="selectDiceType(this, {{ die.value }})">{{ die.label }}</button>
                         {% endfor %}
                     </div>
                     <input type="hidden" name="dice_type" id="dice-type-input" value="20">
                 </div>
 
-            <!-- Number of Dice -->
-                <div class="dice-section">
-                    <label class="dice-label">Number of Dice</label>
-                    <div class="dice-count-controls">
-                        <button type="button" class="count-btn" onclick="adjustDiceCount(-1)">-</button>
-                        <input type="number" name="num_dice" id="num-dice-input" value="1" min="1" max="10" class="dice-count-input">
-                        <button type="button" class="count-btn" onclick="adjustDiceCount(1)">+</button>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="form-group">
+                        <label>Number of Dice</label>
+                        <input type="number" name="num_dice" id="num-dice-input" value="1" min="1" max="10">
+                    </div>
+                    <div class="form-group">
+                        <label>Modifier</label>
+                        <input type="number" name="modifier" id="modifier-input" value="0" min="-20" max="20">
                     </div>
                 </div>
 
-            <!-- Modifier -->
-                <div class="dice-section">
-                    <label class="dice-label">Modifier</label>
-                    <div class="modifier-controls">
-                        <button type="button" class="modifier-btn" onclick="adjustModifier(-1)">-</button>
-                        <input type="number" name="modifier" id="modifier-input" value="0" min="-20" max="20" class="modifier-input">
-                        <button type="button" class="modifier-btn" onclick="adjustModifier(1)">+</button>
-                    </div>
+                <div class="form-group">
+                    <label>Purpose (optional)</label>
+                    <input type="text" name="roll_purpose" id="roll-purpose-input"
+                           placeholder="e.g. Perception check" maxlength="50">
                 </div>
 
-            <!-- Purpose (Optional) -->
-                <div class="dice-section">
-                    <label class="dice-label">Purpose (Optional)</label>
-                    <input type="text" name="roll_purpose" id="roll-purpose-input" class="purpose-input" placeholder="e.g., Perception check, Damage roll..." maxlength="50">
+                <div style="text-align: center; padding: 8px; font-size: 18px; font-weight: 600; color: var(--accent); font-family: ui-monospace, monospace;"
+                     id="roll-preview-display">
+                    1d20
                 </div>
 
-            <!-- Roll Preview -->
-                <div class="dice-section roll-preview">
-                    <span class="preview-notation" id="roll-preview">1d20</span>
-                    <span class="preview-modifier" id="modifier-preview"></span>
-                </div>
-
-            <!-- Roll Button -->
-                <div class="dice-actions">
-                    <button type="button" class="rpg-btn" onclick="closeDiceRollerModal()">Cancel</button>
-                    <button type="submit" class="rpg-btn btn-primary roll-dice-btn">
-                        <img src="{% static 'images/icons/actions/roll.svg' %}" alt="" class="rpg-icon rpg-icon-sm">
-                        Roll Dice
-                    </button>
+                <div class="flex-end gap-8"
+                     style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">
+                    <button type="button" class="btn btn-ghost" onclick="closeDiceRollerModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Roll</button>
                 </div>
             </form>
 
         {% else %}
-        <!-- Phase 2: Roll Result Display -->
-            <div class="roll-result-container">
+            <div style="text-align: center; padding: 8px 0;">
                 {% if roll_purpose %}
-                    <div class="roll-purpose-display">{{ roll_purpose }}</div>
+                    <div class="text-muted" style="font-size: 12px; margin-bottom: 12px;">{{ roll_purpose }}</div>
                 {% endif %}
 
-            <!-- Animated Dice Display -->
-                <div class="dice-result-display">
-                    <div class="dice-container" style="--dice-color: {{ dice_color }}">
+                {% if individual_rolls %}
+                    <div style="display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px;">
                         {% for roll in individual_rolls %}
-                            <div class="die-result {% if animate %}rolling{% endif %} {% if roll == dice_type %}max-roll{% elif roll == 1 %}min-roll{% endif %}"
-                                 style="animation-delay: {{ forloop.counter0 }}00ms">
-                                <span class="die-value">{{ roll }}</span>
-                                <span class="die-type">d{{ dice_type }}</span>
-                            </div>
+                            <span class="die-result {% if roll == dice_type %}max-roll{% elif roll == 1 %}min-roll{% endif %}"
+                                  style="display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 13px; color: {% if roll == dice_type %}var(--green){% elif roll == 1 %}var(--red){% else %}var(--text){% endif %};">{{ roll }}</span>
                         {% endfor %}
                     </div>
+                {% endif %}
+
+                <div class="text-mono" style="font-size: 13px; color: var(--text-muted); margin-bottom: 4px;">
+                    {{ dice_notation }}{% if modifier > 0 %} +{{ modifier }}{% elif modifier < 0 %} {{ modifier }}{% endif %}
+                    =
+                    ({% for roll in individual_rolls %}{{ roll }}{% if not forloop.last %} + {% endif %}{% endfor %}){% if modifier != 0 %} {% if modifier > 0 %}+{% endif %}{{ modifier }}{% endif %}
                 </div>
 
-            <!-- Roll Breakdown -->
-                <div class="roll-breakdown-section">
-                    <div class="breakdown-formula">
-                        <span class="dice-notation-display">{{ dice_notation }}</span>
-                        {% if modifier > 0 %}
-                            <span class="modifier-display positive">+{{ modifier }}</span>
-                        {% elif modifier < 0 %}
-                            <span class="modifier-display negative">{{ modifier }}</span>
-                        {% endif %}
-                    </div>
-                    <div class="breakdown-calculation">
-                        ({% for roll in individual_rolls %}{{ roll }}{% if not forloop.last %} + {% endif %}{% endfor %}){% if modifier != 0 %} {% if modifier > 0 %}+{% endif %}{{ modifier }}{% endif %} =
-                    </div>
-                    <div class="total-result">{{ total }}</div>
+                <div class="text-mono total-result"
+                     style="font-size: 48px; font-weight: 700; color: var(--accent); line-height: 1.1;">
+                    {{ total }}
                 </div>
+            </div>
 
-            <!-- Actions -->
-                <div class="dice-actions">
-                    <button type="button" class="rpg-btn" onclick="closeDiceRollerModal()">Close</button>
-                    <button type="button" class="rpg-btn btn-primary" onclick="resetDiceRoller()">
-                        <img src="{% static 'images/icons/actions/roll.svg' %}" alt="" class="rpg-icon rpg-icon-sm">
-                        Roll Again
-                    </button>
-                </div>
+            <div class="flex-end gap-8"
+                 style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">
+                <button type="button" class="btn btn-ghost" onclick="closeDiceRollerModal()">Close</button>
+                <button type="button" class="btn btn-ghost" onclick="resetDiceRoller()">Roll Again</button>
             </div>
         {% endif %}
     </div>
 </div>
 
-<style>
-/* Dice Roller Modal Styles */
-    .dice-roller-modal-content {
-        min-width: 400px;
-        max-width: 500px;
-    }
-
-    .dice-error {
-        background: rgba(231, 76, 60, 0.2);
-        border: 1px solid var(--color-health);
-        color: var(--color-health);
-        padding: 10px 15px;
-        border-radius: 6px;
-        margin-bottom: 15px;
-        text-align: center;
-    }
-
-    .dice-section {
-        margin-bottom: 20px;
-    }
-
-    .dice-label {
-        display: block;
-        margin-bottom: 10px;
-        color: var(--color-text);
-        font-weight: 600;
-        font-size: 0.95rem;
-    }
-
-/* Dice Type Grid */
-    .dice-type-grid {
-        display: grid;
-        grid-template-columns: repeat(6, 1fr);
-        gap: 8px;
-    }
-
-    .dice-type-btn {
-        aspect-ratio: 1;
-        background: rgba(0, 0, 0, 0.4);
-        border: 2px solid #444;
-        border-radius: 8px;
-        color: var(--color-text-muted);
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-family: inherit;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 8px;
-    }
-
-    .dice-type-btn:hover {
-        border-color: var(--dice-color);
-        color: var(--dice-color);
-        transform: scale(1.05);
-    }
-
-    .dice-type-btn.active {
-        background: rgba(255, 255, 255, 0.1);
-        border-color: var(--dice-color);
-        color: var(--dice-color);
-        box-shadow: 0 0 15px color-mix(in srgb, var(--dice-color) 40%, transparent);
-    }
-
-    .dice-type-icon {
-        font-size: 1.1rem;
-        font-weight: bold;
-    }
-
-/* Count Controls */
-    .dice-count-controls,
-    .modifier-controls {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 15px;
-    }
-
-    .count-btn,
-    .modifier-btn {
-        width: 40px;
-        height: 40px;
-        background: rgba(0, 0, 0, 0.4);
-        border: 2px solid var(--color-border);
-        border-radius: 8px;
-        color: var(--color-text);
-        font-size: 1.5rem;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .count-btn:hover,
-    .modifier-btn:hover {
-        border-color: var(--color-primary);
-        color: var(--color-primary);
-    }
-
-    .dice-count-input,
-    .modifier-input {
-        width: 60px;
-        height: 40px;
-        background: rgba(0, 0, 0, 0.5);
-        border: 2px solid var(--color-border);
-        border-radius: 6px;
-        color: var(--color-text);
-        font-size: 1.2rem;
-        font-family: inherit;
-        text-align: center;
-    }
-
-    .dice-count-input:focus,
-    .modifier-input:focus {
-        outline: none;
-        border-color: var(--color-primary);
-    }
-
-/* Purpose Input */
-    .purpose-input {
-        width: 100%;
-        padding: 10px 12px;
-        background: rgba(0, 0, 0, 0.5);
-        border: 2px solid var(--color-border);
-        border-radius: 6px;
-        color: var(--color-text);
-        font-family: inherit;
-        font-size: 0.95rem;
-    }
-
-    .purpose-input:focus {
-        outline: none;
-        border-color: var(--color-primary);
-    }
-
-    .purpose-input::placeholder {
-        color: var(--color-text-muted);
-    }
-
-/* Roll Preview */
-    .roll-preview {
-        background: rgba(0, 0, 0, 0.3);
-        border-radius: 8px;
-        padding: 15px;
-        text-align: center;
-        display: flex;
-        justify-content: center;
-        align-items: baseline;
-        gap: 5px;
-    }
-
-    .preview-notation {
-        font-size: 2rem;
-        font-weight: bold;
-        color: var(--color-primary);
-    }
-
-    .preview-modifier {
-        font-size: 1.5rem;
-        font-weight: bold;
-    }
-
-    .preview-modifier.positive {
-        color: var(--color-stamina);
-    }
-
-    .preview-modifier.negative {
-        color: var(--color-health);
-    }
-
-/* Dice Actions */
-    .dice-actions {
-        display: flex;
-        gap: 10px;
-        justify-content: flex-end;
-        margin-top: 20px;
-        padding-top: 20px;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .roll-dice-btn {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-/* Roll Result Display */
-    .roll-result-container {
-        text-align: center;
-    }
-
-    .roll-purpose-display {
-        background: rgba(212, 175, 55, 0.15);
-        border: 1px solid var(--color-primary);
-        border-radius: 6px;
-        padding: 8px 15px;
-        margin-bottom: 20px;
-        color: var(--color-primary);
-        font-weight: 600;
-    }
-
-/* Animated Dice Container */
-    .dice-result-display {
-        margin: 25px 0;
-    }
-
-    .dice-container {
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 12px;
-    }
-
-    .die-result {
-        width: 70px;
-        height: 70px;
-        background: linear-gradient(145deg, #2a2a4a, #1a1a2e);
-        border: 3px solid var(--dice-color, var(--color-primary));
-        border-radius: 10px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        box-shadow:
-        0 8px 20px rgba(0, 0, 0, 0.4),
-        inset 0 2px 10px rgba(255, 255, 255, 0.1);
-        transform-style: preserve-3d;
-    }
-
-    .die-value {
-        font-size: 1.8rem;
-        font-weight: bold;
-        color: var(--dice-color, var(--color-primary));
-    }
-
-    .die-type {
-        font-size: 0.7rem;
-        color: var(--color-text-muted);
-        text-transform: uppercase;
-    }
-
-/* Rolling Animation */
-    .die-result.rolling {
-        animation: diceRoll3D 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-    }
-
-    @keyframes diceRoll3D {
-        0% {
-            transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(0.5);
-            opacity: 0;
-        }
-        20% {
-            transform: rotateX(180deg) rotateY(90deg) rotateZ(45deg) scale(1.2);
-            opacity: 1;
-        }
-        40% {
-            transform: rotateX(360deg) rotateY(180deg) rotateZ(90deg) scale(1);
-        }
-        60% {
-            transform: rotateX(540deg) rotateY(270deg) rotateZ(135deg) scale(1.1);
-        }
-        80% {
-            transform: rotateX(680deg) rotateY(340deg) rotateZ(170deg) scale(1.05);
-        }
-        100% {
-            transform: rotateX(720deg) rotateY(360deg) rotateZ(180deg) scale(1);
-        }
-    }
-
-/* Max/Min Roll Effects */
-    .die-result.max-roll {
-        border-color: var(--color-stamina);
-        animation: diceRoll3D 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
-                   maxRollGlow 1s ease-in-out infinite 1.2s;
-    }
-
-    .die-result.max-roll .die-value {
-        color: var(--color-stamina);
-        text-shadow: 0 0 15px rgba(46, 204, 113, 0.8);
-    }
-
-    .die-result.min-roll {
-        border-color: var(--color-health);
-    }
-
-    .die-result.min-roll .die-value {
-        color: var(--color-health);
-        text-shadow: 0 0 10px rgba(231, 76, 60, 0.6);
-    }
-
-    @keyframes maxRollGlow {
-        0%, 100% {
-            box-shadow:
-            0 8px 20px rgba(0, 0, 0, 0.4),
-            0 0 15px rgba(46, 204, 113, 0.3);
-        }
-        50% {
-            box-shadow:
-            0 8px 20px rgba(0, 0, 0, 0.4),
-            0 0 30px rgba(46, 204, 113, 0.6);
-        }
-    }
-
-/* Roll Breakdown */
-    .roll-breakdown-section {
-        background: rgba(0, 0, 0, 0.3);
-        border-radius: 8px;
-        padding: 20px;
-        margin: 20px 0;
-    }
-
-    .breakdown-formula {
-        display: flex;
-        justify-content: center;
-        align-items: baseline;
-        gap: 5px;
-        margin-bottom: 10px;
-    }
-
-    .dice-notation-display {
-        font-size: 1.5rem;
-        font-weight: bold;
-        color: var(--color-text);
-    }
-
-    .modifier-display {
-        font-size: 1.3rem;
-        font-weight: bold;
-    }
-
-    .modifier-display.positive {
-        color: var(--color-stamina);
-    }
-
-    .modifier-display.negative {
-        color: var(--color-health);
-    }
-
-    .breakdown-calculation {
-        color: var(--color-text-muted);
-        font-size: 1rem;
-        margin-bottom: 15px;
-    }
-
-    .total-result {
-        font-size: 3rem;
-        font-weight: bold;
-        color: var(--color-primary);
-        text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
-    }
-
-/* Responsive */
-    @media (max-width: 500px) {
-        .dice-roller-modal-content {
-            min-width: auto;
-            max-width: 100%;
-            margin: 10px;
-        }
-
-        .dice-type-grid {
-            grid-template-columns: repeat(3, 1fr);
-        }
-
-        .die-result {
-            width: 55px;
-            height: 55px;
-        }
-
-        .die-value {
-            font-size: 1.4rem;
-        }
-
-        .total-result {
-            font-size: 2.5rem;
-        }
-    }
-</style>
-
 <script>
     function selectDiceType(button, value) {
-    // Remove active class from all dice type buttons
-        document.querySelectorAll('.dice-type-btn').forEach(btn => {
-            btn.classList.remove('active');
+        document.querySelectorAll('#dice-roller-modal .toggle-group .btn').forEach(function(b) {
+            b.classList.remove('active');
         });
-    // Add active class to clicked button
         button.classList.add('active');
-    // Update hidden input
         document.getElementById('dice-type-input').value = value;
-    // Update preview
-        updateRollPreview();
+        updateDicePreview();
     }
 
-    function adjustDiceCount(delta) {
-        const input = document.getElementById('num-dice-input');
-        let value = parseInt(input.value) + delta;
-        value = Math.max(1, Math.min(10, value));
-        input.value = value;
-        updateRollPreview();
-    }
-
-    function adjustModifier(delta) {
-        const input = document.getElementById('modifier-input');
-        let value = parseInt(input.value) + delta;
-        value = Math.max(-20, Math.min(20, value));
-        input.value = value;
-        updateRollPreview();
-    }
-
-    function updateRollPreview() {
-        const numDice = document.getElementById('num-dice-input').value;
-        const diceType = document.getElementById('dice-type-input').value;
-        const modifier = parseInt(document.getElementById('modifier-input').value);
-
-        const notationEl = document.getElementById('roll-preview');
-        const modifierEl = document.getElementById('modifier-preview');
-
-        notationEl.textContent = numDice + 'd' + diceType;
-
-        if (modifier > 0) {
-            modifierEl.textContent = '+' + modifier;
-            modifierEl.className = 'preview-modifier positive';
-        } else if (modifier < 0) {
-            modifierEl.textContent = modifier;
-            modifierEl.className = 'preview-modifier negative';
-        } else {
-            modifierEl.textContent = '';
-            modifierEl.className = 'preview-modifier';
-        }
+    function updateDicePreview() {
+        const n = document.getElementById('num-dice-input')?.value || 1;
+        const t = document.getElementById('dice-type-input')?.value || 20;
+        const m = parseInt(document.getElementById('modifier-input')?.value || 0);
+        const el = document.getElementById('roll-preview-display');
+        if (!el) return;
+        let text = n + 'd' + t;
+        if (m > 0) text += ' +' + m;
+        else if (m < 0) text += ' ' + m;
+        el.textContent = text;
     }
 
     function closeDiceRollerModal() {
         const modal = document.getElementById('dice-roller-modal');
-        if (modal) {
-            modal.classList.remove('active');
-        }
+        if (modal) modal.classList.remove('active');
         htmx.trigger(document.body, 'dice-roller-closed');
     }
 
     function resetDiceRoller() {
-    // Re-fetch the empty modal
         htmx.ajax('GET', '{% url "dice-roller-modal" game.id %}', {
-            target: '#dice-roller-modal',
-            swap: 'outerHTML'
+            target: '#dice-roller-modal', swap: 'outerHTML'
         });
     }
 
-// Initialize preview on load
-    document.addEventListener('DOMContentLoaded', function() {
-        const preview = document.getElementById('roll-preview');
-        if (preview) {
-            updateRollPreview();
-        }
-    });
-
-// Update preview when inputs change manually
-    document.addEventListener('input', function(event) {
-        if (event.target.id === 'num-dice-input' ||
-            event.target.id === 'modifier-input') {
-                updateRollPreview();
-            }
-    });
-
-// Trigger animation when modal content updates
-    document.addEventListener('htmx:afterSwap', function(event) {
-        if (event.detail.target.id === 'dice-roller-modal') {
-            const dice = document.querySelectorAll('.die-result');
-            dice.forEach((die, index) => {
-                if (!die.classList.contains('rolling')) {
-                    die.classList.add('rolling');
-                }
-            });
-        // Re-initialize preview if we're back to selection mode
-            const preview = document.getElementById('roll-preview');
-            if (preview) {
-                updateRollPreview();
-            }
-        }
+    document.addEventListener('input', function(e) {
+        if (['num-dice-input', 'modifier-input'].includes(e.target.id)) updateDicePreview();
     });
 </script>

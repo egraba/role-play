@@ -9,12 +9,12 @@
     display: -webkit-flex;
     display: flex;
     gap: 6px;
-    background: var(--color-bg-light);
-    border: 1px solid #444;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
     border-radius: 8px;
     padding: 6px 10px;
     z-index: 150;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
 }
 
 .qr-toolbar-btn {
@@ -23,14 +23,14 @@
     -webkit-align-items: center;
     align-items: center;
     gap: 5px;
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid #555;
-    border-radius: 6px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
     padding: 6px 10px;
     cursor: pointer;
-    color: var(--color-text-muted);
+    color: var(--text-muted);
     font-family: inherit;
-    font-size: 0.8rem;
+    font-size: 12px;
     -webkit-transition: all 0.2s;
     transition: all 0.2s;
     -webkit-appearance: none;
@@ -39,14 +39,14 @@
 }
 
 .qr-toolbar-btn:hover {
-    border-color: var(--color-primary);
-    color: var(--color-text);
+    border-color: var(--accent);
+    color: var(--text);
 }
 
 .qr-toolbar-btn.qr-active {
-    background: rgba(212, 175, 55, 0.2);
-    border-color: var(--color-primary);
-    color: var(--color-primary);
+    background: rgba(201, 162, 39, 0.1);
+    border-color: var(--accent);
+    color: var(--accent);
 }
 
 .qr-toolbar-icon {
@@ -69,10 +69,10 @@
     position: fixed;
     width: 320px;
     max-height: 70vh;
-    background: var(--color-bg-light);
-    border: 1px solid #555;
-    border-radius: var(--border-radius);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     display: -webkit-flex;
     display: flex;
     -webkit-flex-direction: column;
@@ -86,7 +86,6 @@
 
 .qr-panel.qr-dragging {
     opacity: 0.85;
-    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6);
 }
 
 .qr-panel.qr-collapsed .qr-panel-body {
@@ -106,8 +105,8 @@
     align-items: center;
     gap: 8px;
     padding: 10px 12px;
-    background: rgba(212, 175, 55, 0.1);
-    border-bottom: 1px solid #444;
+    background: rgba(201, 162, 39, 0.06);
+    border-bottom: 1px solid var(--border);
     cursor: grab;
 }
 
@@ -122,9 +121,9 @@
 .qr-panel-title {
     -webkit-flex: 1;
     flex: 1;
-    font-size: 0.95rem;
-    font-weight: bold;
-    color: var(--color-primary);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
 }
 
 .qr-panel-controls {
@@ -137,9 +136,9 @@
     background: none;
     border: 1px solid transparent;
     border-radius: 3px;
-    color: var(--color-text-muted);
+    color: var(--text-muted);
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 12px;
     padding: 2px 6px;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -149,18 +148,18 @@
 }
 
 .qr-control-btn:hover {
-    border-color: #666;
-    color: var(--color-text);
+    border-color: var(--border);
+    color: var(--text);
 }
 
 .qr-pin-btn.qr-pinned {
-    color: var(--color-primary);
-    border-color: var(--color-primary);
+    color: var(--accent);
+    border-color: var(--accent);
 }
 
 .qr-close-btn:hover {
-    color: var(--color-health);
-    border-color: var(--color-health);
+    color: var(--red);
+    border-color: var(--red);
 }
 
 /* ==================== PANEL BODY ==================== */
@@ -187,21 +186,21 @@
 }
 
 .qr-section-title {
-    font-size: 0.8rem;
-    font-weight: bold;
-    color: var(--color-primary);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     padding: 6px 8px;
-    background: rgba(212, 175, 55, 0.05);
-    border-radius: 4px;
+    background: rgba(201, 162, 39, 0.05);
+    border-radius: var(--radius);
     cursor: pointer;
     -webkit-transition: background 0.2s;
     transition: background 0.2s;
 }
 
 .qr-section-title:hover {
-    background: rgba(212, 175, 55, 0.1);
+    background: rgba(201, 162, 39, 0.1);
 }
 
 .qr-section-title::before {
@@ -227,8 +226,8 @@
 }
 
 .qr-text {
-    font-size: 0.82rem;
-    color: var(--color-text-muted);
+    font-size: 12px;
+    color: var(--text-muted);
     line-height: 1.5;
     padding: 6px 8px;
     margin: 0;
@@ -238,7 +237,7 @@
 
 .qr-item {
     padding: 5px 8px;
-    border-radius: 4px;
+    border-radius: var(--radius);
     cursor: pointer;
     -webkit-transition: background 0.2s;
     transition: background 0.2s;
@@ -249,14 +248,14 @@
 }
 
 .qr-item-name {
-    font-size: 0.85rem;
-    font-weight: bold;
-    color: var(--color-text);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
 }
 
 .qr-item-desc {
-    font-size: 0.8rem;
-    color: var(--color-text-muted);
+    font-size: 12px;
+    color: var(--text-muted);
     line-height: 1.4;
     max-height: 0;
     overflow: hidden;
@@ -273,7 +272,7 @@
 .qr-item-name::after {
     content: " \25B8";
     font-size: 0.65rem;
-    color: var(--color-text-muted);
+    color: var(--text-muted);
     -webkit-transition: transform 0.2s;
     transition: transform 0.2s;
     display: inline-block;
@@ -295,12 +294,12 @@
 }
 
 .qr-panel-body::-webkit-scrollbar-thumb {
-    background: #555;
+    background: var(--border);
     border-radius: 3px;
 }
 
 .qr-panel-body::-webkit-scrollbar-thumb:hover {
-    background: #777;
+    background: var(--text-muted);
 }
 
 /* ==================== RESPONSIVE ==================== */
