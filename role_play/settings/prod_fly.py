@@ -39,13 +39,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "role_play.wsgi.application"
 
+REDIS_URL = f"rediss://default:{os.environ['REDIS_PASSWORD']}@fly-role-play-redis.upstash.io:6380"
+
 # Channels
 ASGI_APPLICATION = "role_play.asgi.application"
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [f"redis://default:{os.environ['REDIS_PASSWORD']}@fly-role-play-redis.upstash.io:6379"],
+            "hosts": [REDIS_URL],
         },
     },
 }
@@ -62,10 +64,11 @@ DATABASES = {
     }
 }
 
-# Cache (using local memory - Redis still needed for Channels)
+# Cache
 CACHES = {
     "default": {
-        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": REDIS_URL,
     }
 }
 
@@ -115,7 +118,6 @@ DATABASES["default"].update(db_from_env)
 # Sentry
 sentry_sdk.init(
     dsn="https://40c2965ccfcc77646efabdb60a8bcaf5@o4507867128201216.ingest.us.sentry.io/4510585279152128",
-    # Add data like request headers and IP for users,
-    # see https://docs.sentry.io/platforms/python/data-management/data-collected/ for more info
-    send_default_pii=True,
+    environment="production",
+    traces_sample_rate=0.1,
 )

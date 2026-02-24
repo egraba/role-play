@@ -6,6 +6,10 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 
 ### Fixed
 - Ops: add `LOGGING` config to production settings — WARNING+ to stdout, ERROR for `django.request`; previously no structured logging in prod
+- Security: Redis connection upgraded to TLS (`rediss://`, port 6380) — was plaintext `redis://` to external Upstash instance
+- Ops: Production cache backend switched from `LocMemCache` to Redis — was per-process, lost on restart, not shared across machines
+- Privacy: removed `send_default_pii=True` from Sentry — was sending user IPs, session cookies, and all request headers to Sentry's US servers
+- Ops: added `environment="production"` and `traces_sample_rate=0.1` to Sentry config
 - Security: WebSocket consumer now rejects unauthenticated connections with close code 4003
 - Security: Production `SECRET_KEY` now read from `DJANGO_SECRET_KEY` env var instead of regenerating on every restart (previously invalidated all sessions, CSRF tokens, and signed cookies on every deploy)
 
