@@ -44,6 +44,7 @@ class Act(models.Model):
 
     class Meta:
         ordering = ["order"]
+        unique_together = [("campaign", "order")]
 
     def __str__(self) -> str:
         return str(self.title)
@@ -62,6 +63,7 @@ class Scene(models.Model):
 
     class Meta:
         ordering = ["order"]
+        unique_together = [("act", "order")]
 
     def __str__(self) -> str:
         return str(self.title)
@@ -72,7 +74,7 @@ class NPC(models.Model):
         Campaign, on_delete=models.CASCADE, related_name="npcs"
     )
     name = models.CharField(max_length=100)
-    role = models.CharField(max_length=20, blank=True)
+    role = models.CharField(max_length=50, blank=True)
     motivation = models.TextField(max_length=500, blank=True)
     personality = models.TextField(max_length=500, blank=True)
     appearance = models.TextField(max_length=500, blank=True)

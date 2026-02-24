@@ -1,5 +1,6 @@
 import factory
 
+from adventure.constants import Region, SceneType
 from adventure.models import Act, Campaign, Location, NPC, Scene
 from user.tests.factories import UserFactory
 
@@ -32,7 +33,7 @@ class SceneFactory(factory.django.DjangoModelFactory):
     act = factory.SubFactory(ActFactory)
     title = factory.Sequence(lambda n: f"Scene {n}")
     order = factory.Sequence(lambda n: n + 1)
-    scene_type = "E"
+    scene_type = SceneType.EXPLORATION
     description = factory.Faker("paragraph", nb_sentences=3)
     hook = factory.Faker("sentence")
     resolution = factory.Faker("sentence")
@@ -57,4 +58,4 @@ class LocationFactory(factory.django.DjangoModelFactory):
     campaign = factory.SubFactory(CampaignFactory)
     name = factory.Sequence(lambda n: f"Location {n}")
     description = factory.Faker("paragraph", nb_sentences=2)
-    region = "dungeon"
+    region = Region.DUNGEON
