@@ -39,13 +39,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "role_play.wsgi.application"
 
+REDIS_URL = f"rediss://default:{os.environ['REDIS_PASSWORD']}@fly-role-play-redis.upstash.io:6380"
+
 # Channels
 ASGI_APPLICATION = "role_play.asgi.application"
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [f"redis://default:{os.environ['REDIS_PASSWORD']}@fly-role-play-redis.upstash.io:6379"],
+            "hosts": [REDIS_URL],
         },
     },
 }
@@ -62,10 +64,11 @@ DATABASES = {
     }
 }
 
-# Cache (using local memory - Redis still needed for Channels)
+# Cache
 CACHES = {
     "default": {
-        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": REDIS_URL,
     }
 }
 
