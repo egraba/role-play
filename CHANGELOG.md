@@ -4,6 +4,9 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 
 ## Unreleased
 
+### Fixed
+- Security: Production `SECRET_KEY` now read from `DJANGO_SECRET_KEY` env var instead of regenerating on every restart (previously invalidated all sessions, CSRF tokens, and signed cookies on every deploy)
+
 ### Added
 - Game log: SVG icon + text labels for category filter buttons (replaces emoji)
 - Game log: `--purple` CSS token added to `rpg-styles.css` design system
