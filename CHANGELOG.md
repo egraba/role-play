@@ -4,6 +4,10 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 
 ## Unreleased
 
+### Fixed
+- Security: Redis connection upgraded to TLS (`rediss://`, port 6380) — was plaintext `redis://` to external Upstash instance
+- Ops: Production cache backend switched from `LocMemCache` to Redis — was per-process, lost on restart, not shared across machines
+
 ### Added
 - Monsters: 87 new SRD 5.2.1 monsters covering all 14 creature types and CR 0–24
 - Spells: 135 new SRD 5.2.1 spells (cantrips through level 5, covering all classes)
