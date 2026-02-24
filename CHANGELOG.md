@@ -4,6 +4,9 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 
 ## Unreleased
 
+### Fixed
+- Ops: add `LOGGING` config to production settings — WARNING+ to stdout, ERROR for `django.request`; previously no structured logging in prod
+
 ### Added
 - Monsters: 87 new SRD 5.2.1 monsters covering all 14 creature types and CR 0–24
 - Spells: 135 new SRD 5.2.1 spells (cantrips through level 5, covering all classes)
