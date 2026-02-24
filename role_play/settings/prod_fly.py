@@ -115,7 +115,7 @@ DATABASES["default"].update(db_from_env)
 
 # Sentry
 sentry_sdk.init(
-    dsn="https://40c2965ccfcc77646efabdb60a8bcaf5@o4507867128201216.ingest.us.sentry.io/4510585279152128",
+    dsn=os.environ.get("SENTRY_DSN", ""),
     environment="production",
     traces_sample_rate=0.1,
 )
