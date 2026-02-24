@@ -1,12 +1,18 @@
 from django.conf import settings
 from django.contrib import admin
+from django.db import connection
+from django.db.utils import OperationalError
 from django.http import JsonResponse
 from django.urls import include, path
 from django.views.generic import RedirectView
 
 
 def health_check(request):
-    """Simple health check endpoint for Fly.io."""
+    """Health check endpoint for Fly.io — probes the database connection."""
+    try:
+        connection.ensure_connection()
+    except OperationalError:
+        return JsonResponse({"status": "error"}, status=503)
     return JsonResponse({"status": "ok"})
 
 
