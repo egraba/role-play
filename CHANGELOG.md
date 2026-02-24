@@ -5,6 +5,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Fixed
+- Security: Add `SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"` to limit referrer header leakage
 - Security: Set `SECURE_PROXY_SSL_HEADER` so Django correctly detects HTTPS behind Fly.io's TLS-terminating proxy
 - Security: Sentry DSN moved from source code to `SENTRY_DSN` env var (Doppler)
 - Security: `ALLOWED_HOSTS` restricted to `role-play.fly.dev` and `role-play.internal` (was `["*"]`, disabling Django's host header validation)
