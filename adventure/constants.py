@@ -1,7 +1,7 @@
-from django.db import models
+from django.db.models import TextChoices
 
 
-class SceneType(models.TextChoices):
+class SceneType(TextChoices):
     COMBAT = "C", "Combat"
     SOCIAL = "S", "Social Interaction"
     EXPLORATION = "E", "Exploration"
@@ -9,7 +9,7 @@ class SceneType(models.TextChoices):
     TRANSITION = "T", "Transition"
 
 
-class EncounterType(models.TextChoices):
+class EncounterType(TextChoices):
     COMBAT = "C", "Combat"
     SOCIAL = "S", "Social"
     TRAP = "T", "Trap"
@@ -17,14 +17,14 @@ class EncounterType(models.TextChoices):
     EXPLORATION = "E", "Exploration"
 
 
-class Difficulty(models.TextChoices):
+class Difficulty(TextChoices):
     EASY = "E", "Easy"
     MEDIUM = "M", "Medium"
     HARD = "H", "Hard"
     DEADLY = "D", "Deadly"
 
 
-class Tone(models.TextChoices):
+class Tone(TextChoices):
     HEROIC = "heroic", "Heroic"
     DARK = "dark", "Dark"
     COMEDIC = "comedic", "Comedic"
@@ -32,7 +32,7 @@ class Tone(models.TextChoices):
     HORROR = "horror", "Horror"
 
 
-class Region(models.TextChoices):
+class Region(TextChoices):
     DUNGEON = "dungeon", "Dungeon"
     CITY = "city", "City"
     WILDERNESS = "wilderness", "Wilderness"
