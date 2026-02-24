@@ -1,6 +1,6 @@
 import factory
 
-from adventure.models import Campaign
+from adventure.models import Act, Campaign, Location, NPC, Scene
 from user.tests.factories import UserFactory
 
 
@@ -12,3 +12,49 @@ class CampaignFactory(factory.django.DjangoModelFactory):
     title = factory.Sequence(lambda n: f"campaign{n}")
     synopsis = factory.Faker("paragraph", nb_sentences=5)
     owner = factory.SubFactory(UserFactory)
+
+
+class ActFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Act
+
+    campaign = factory.SubFactory(CampaignFactory)
+    title = factory.Sequence(lambda n: f"Act {n}")
+    order = factory.Sequence(lambda n: n + 1)
+    summary = factory.Faker("paragraph", nb_sentences=3)
+    goal = factory.Faker("sentence")
+
+
+class SceneFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Scene
+
+    act = factory.SubFactory(ActFactory)
+    title = factory.Sequence(lambda n: f"Scene {n}")
+    order = factory.Sequence(lambda n: n + 1)
+    scene_type = "E"
+    description = factory.Faker("paragraph", nb_sentences=3)
+    hook = factory.Faker("sentence")
+    resolution = factory.Faker("sentence")
+
+
+class NPCFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = NPC
+
+    campaign = factory.SubFactory(CampaignFactory)
+    name = factory.Sequence(lambda n: f"NPC {n}")
+    role = "ally"
+    motivation = factory.Faker("sentence")
+    personality = factory.Faker("sentence")
+    appearance = factory.Faker("sentence")
+
+
+class LocationFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Location
+
+    campaign = factory.SubFactory(CampaignFactory)
+    name = factory.Sequence(lambda n: f"Location {n}")
+    description = factory.Faker("paragraph", nb_sentences=2)
+    region = "dungeon"
