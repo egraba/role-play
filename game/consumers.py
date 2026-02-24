@@ -23,6 +23,9 @@ class GameEventsConsumer(JsonWebsocketConsumer):
     def connect(self):
         # self.scope is set in parent's connect()
         self.user = self.scope["user"]
+        if not self.user.is_authenticated:
+            self.close(code=4003)
+            return
         # The game ID has to be retrieved to create a channel.
         # There is one room per game.
         game_id = self.scope["url_route"]["kwargs"]["game_id"]

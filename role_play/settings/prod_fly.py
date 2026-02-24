@@ -1,11 +1,10 @@
 import sentry_sdk
-import secrets
 
 import dj_database_url
 
 from role_play.settings.base import *
 
-SECRET_KEY = secrets.token_urlsafe(50)
+SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 
 DEBUG = False
 
@@ -15,7 +14,7 @@ CSRF_TRUSTED_ORIGINS = ["https://role-play.fly.dev"]
 CSRF_COOKIE_SECURE = True
 SECURE_SSL_REDIRECT = False
 SESSION_COOKIE_SECURE = True
-SECURE_HSTS_SECONDS = 3600
+SECURE_HSTS_SECONDS = 31536000  # 1 year — required for HSTS preload list
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 
@@ -38,13 +37,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "role_play.wsgi.application"
 
+REDIS_URL = f"rediss://default:{os.environ['REDIS_PASSWORD']}@fly-role-play-redis.upstash.io:6380"
+
 # Channels
 ASGI_APPLICATION = "role_play.asgi.application"
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [f"redis://default:{os.environ['REDIS_PASSWORD']}@fly-role-play-redis.upstash.io:6379"],
+            "hosts": [REDIS_URL],
         },
     },
 }
@@ -61,10 +62,11 @@ DATABASES = {
     }
 }
 
-# Cache (using local memory - Redis still needed for Channels)
+# Cache
 CACHES = {
     "default": {
-        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": REDIS_URL,
     }
 }
 
@@ -78,6 +80,32 @@ EMAIL_USE_TLS = True
 EMAIL_TIMEOUT = 10
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "WARNING",
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": "WARNING",
+            "propagate": False,
+        },
+        "django.request": {
+            "handlers": ["console"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+    },
+}
+
 # Static files (CSS, JavaScript, Images)
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
@@ -88,7 +116,6 @@ DATABASES["default"].update(db_from_env)
 # Sentry
 sentry_sdk.init(
     dsn="https://40c2965ccfcc77646efabdb60a8bcaf5@o4507867128201216.ingest.us.sentry.io/4510585279152128",
-    # Add data like request headers and IP for users,
-    # see https://docs.sentry.io/platforms/python/data-management/data-collected/ for more info
-    send_default_pii=True,
+    environment="production",
+    traces_sample_rate=0.1,
 )

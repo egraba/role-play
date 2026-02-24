@@ -3,11 +3,8 @@
 {% block content %}
     <div class="rpg-container">
         <div class="rpg-panel">
-            <h1 class="panel-title" style="font-size: 2rem;"><img src="/static/images/icons/actions/help.svg" alt="" class="rpg-icon rpg-icon-lg rpg-icon-primary"> Invite Users</h1>
+            <h1 class="panel-title">Invite Users</h1>
             <h2 class="text-center text-primary mb-2" style="font-size: 1.2rem;">{{ game }}</h2>
-            <div class="text-center mb-2">
-                <a href="{{ game.get_absolute_url }}" style="color: var(--color-primary); text-decoration: underline;">Return to game</a>
-            </div>
 
             <div class="rpg-section">
                 <h2 class="panel-title" style="font-size: 1.3rem;">Available Users</h2>
@@ -27,11 +24,11 @@
                         {% for user in page_obj %}
                             <tr>
                                 <td>{{ user }}</td>
-                                <td><a href="{{ user.character.get_absolute_url }}" style="color: var(--color-primary); text-decoration: underline;">{{ user.character }}</a></td>
+                                <td><a href="{{ user.character.get_absolute_url }}" style="color: var(--accent);">{{ user.character }}</a></td>
                                 <td>{{ user.character.get_race_display }}</td>
                                 <td>{{ user.character.xp }}</td>
                                 <td>
-                                    <a href="{% url 'game-invite-user-confirm' game.id user.id %}" class="rpg-btn btn-primary" style="padding: 8px 16px; font-size: 0.9rem;">Invite</a>
+                                    <a href="{% url 'game-invite-user-confirm' game.id user.id %}" class="btn btn-primary">Invite</a>
                                 </td>
                             </tr>
                         {% empty %}

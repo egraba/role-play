@@ -1,6 +1,7 @@
 import pytest
 from channels.routing import URLRouter
 from channels.testing import WebsocketCommunicator
+from django.contrib.auth.models import AnonymousUser
 from django.urls import re_path
 from faker import Faker
 
@@ -58,6 +59,15 @@ async def test_connect_game_not_found(application, player_user):
     communicator.scope["game_id"] = game_id
     connected, _ = await communicator.connect()
     assert not connected
+
+
+@pytest.mark.asyncio
+async def test_connect_anonymous_user_is_rejected(application, game):
+    communicator = WebsocketCommunicator(application, f"/events/{game.id}/")
+    communicator.scope["user"] = AnonymousUser()
+    connected, code = await communicator.connect()
+    assert not connected
+    assert code == 4003
 
 
 @pytest.mark.asyncio
