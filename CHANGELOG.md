@@ -4,6 +4,10 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 
 ## Unreleased
 
+### Fixed
+- Privacy: removed `send_default_pii=True` from Sentry — was sending user IPs, session cookies, and all request headers to Sentry's US servers
+- Ops: added `environment="production"` and `traces_sample_rate=0.1` to Sentry config
+
 ### Added
 - Monsters: 87 new SRD 5.2.1 monsters covering all 14 creature types and CR 0–24
 - Spells: 135 new SRD 5.2.1 spells (cantrips through level 5, covering all classes)
