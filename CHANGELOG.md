@@ -6,8 +6,27 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 
 ### Fixed
 - Security: `SECURE_HSTS_SECONDS` raised from 3600 (1 hour) to 31536000 (1 year) — required for HSTS preload list eligibility
+- Ops: add `LOGGING` config to production settings — WARNING+ to stdout, ERROR for `django.request`; previously no structured logging in prod
+- Security: Redis connection upgraded to TLS (`rediss://`, port 6380) — was plaintext `redis://` to external Upstash instance
+- Ops: Production cache backend switched from `LocMemCache` to Redis — was per-process, lost on restart, not shared across machines
+- Privacy: removed `send_default_pii=True` from Sentry — was sending user IPs, session cookies, and all request headers to Sentry's US servers
+- Ops: added `environment="production"` and `traces_sample_rate=0.1` to Sentry config
+- Security: WebSocket consumer now rejects unauthenticated connections with close code 4003
+- Security: Production `SECRET_KEY` now read from `DJANGO_SECRET_KEY` env var instead of regenerating on every restart (previously invalidated all sessions, CSRF tokens, and signed cookies on every deploy)
 
 ### Added
+- Game log: SVG icon + text labels for category filter buttons (replaces emoji)
+- Game log: `--purple` CSS token added to `rpg-styles.css` design system
+- Game log: Category color bars on log entries (rolls=gold, combat=red, spells=purple, chat=muted, dm=green)
+- Game log: Expand indicator (`▶`) on entries with details, rotates on expand
+
+### Fixed
+- Game log: CSS/JS class name mismatch causing all styling and filtering to be broken
+- Game log: Character filter logic corrected to use include-list semantics (was inverted)
+- Skills panel: Skill names no longer truncated ("Acrob" → "Acrobatics") — widened column and removed ability tag
+
+### Changed
+- Game log: Filter bar restyled with tab-underline active indicator, no layout shift on toggle
 - Monsters: 87 new SRD 5.2.1 monsters covering all 14 creature types and CR 0–24
 - Spells: 135 new SRD 5.2.1 spells (cantrips through level 5, covering all classes)
 - Species: Dragonborn, Gnome, Goliath, Orc, Tiefling (SRD 5.2.1)
