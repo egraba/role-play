@@ -34,6 +34,13 @@ class Game(models.Model):
 class Quest(models.Model):
     environment = models.TextField(max_length=3000)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
+    scene = models.ForeignKey(
+        "adventure.Scene",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="quests",
+    )
 
     def __str__(self):
         return self.environment[:10]
