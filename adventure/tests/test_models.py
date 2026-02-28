@@ -31,7 +31,6 @@ def test_campaign_has_owner():
 
 
 @pytest.mark.django_db
-@pytest.mark.skip(reason="URL config registered in Task 9")
 def test_campaign_get_absolute_url():
     campaign = CampaignFactory(title="Test Campaign")
     assert campaign.get_absolute_url() == f"/adventure/{campaign.slug}/"

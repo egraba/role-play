@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="rpg-container">
+        <div class="rpg-panel">
+            <h1 class="panel-title" style="font-size: 2rem;">
+                <img src="/static/images/icons/actions/cast-spell.svg" alt="" class="rpg-icon rpg-icon-lg rpg-icon-primary">
+                {{ campaign }}
+            </h1>
+            <div class="text-center mb-2">
+                <a href="{% url 'adventure:campaign-list' %}" style="color: var(--color-primary); text-decoration: underline;">Return to campaign list</a>
+            </div>
+
+            <div class="rpg-section">
+                <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+                    <div>
+                        <span class="text-muted">Tone:</span>
+                        <strong>{{ campaign.get_tone_display }}</strong>
+                    </div>
+                    <div>
+                        <span class="text-muted">Party Level:</span>
+                        <strong>{{ campaign.party_level }}</strong>
+                    </div>
+                </div>
+            </div>
+
+            {% if campaign.synopsis %}
+                <div class="rpg-section">
+                    <h2 class="panel-title" style="font-size: 1.3rem;">Synopsis</h2>
+                    <div class="text-muted">
+                        {{ campaign.synopsis|linebreaks }}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if campaign.main_conflict %}
+                <div class="rpg-section">
+                    <h2 class="panel-title" style="font-size: 1.3rem;">Main Conflict</h2>
+                    <div class="text-muted">
+                        {{ campaign.main_conflict|linebreaks }}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if campaign.objective %}
+                <div class="rpg-section">
+                    <h2 class="panel-title" style="font-size: 1.3rem;">Objective</h2>
+                    <div class="text-muted">
+                        {{ campaign.objective|linebreaks }}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if campaign.setting %}
+                <div class="rpg-section">
+                    <h2 class="panel-title" style="font-size: 1.3rem;">Setting</h2>
+                    <div class="text-muted">
+                        {{ campaign.setting|linebreaks }}
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="rpg-section">
+                <h2 class="panel-title" style="font-size: 1.3rem;">Acts</h2>
+                {% with acts=campaign.acts.all %}
+                    {% if acts %}
+                        <table class="rpg-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Title</th>
+                                    <th>Goal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for act in acts %}
+                                    <tr>
+                                        <td>{{ act.order }}</td>
+                                        <td>{{ act.title }}</td>
+                                        <td class="text-muted">{{ act.goal }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p class="text-muted text-center">No acts yet.</p>
+                    {% endif %}
+                {% endwith %}
+            </div>
+
+            <div class="action-buttons mt-2">
+                <a href="{% url 'adventure:campaign-update' campaign.slug %}" class="rpg-btn btn-primary">Edit campaign</a>
+                <a href="{% url 'adventure:campaign-delete' campaign.slug %}" class="rpg-btn btn-danger">Delete campaign</a>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="rpg-container">
+        <div class="rpg-panel" style="max-width: 800px; margin: 50px auto;">
+            <h1 class="panel-title">
+                <img src="/static/images/icons/damage-types/radiant.svg" alt="" class="rpg-icon rpg-icon-lg rpg-icon-primary">
+                {% if object %}Edit Campaign{% else %}New Campaign{% endif %}
+            </h1>
+            <div class="text-center mb-2">
+                <a href="{% url 'adventure:campaign-list' %}" style="color: var(--color-primary); text-decoration: underline;">Return to campaign list</a>
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                <div class="rpg-form-group">
+                    {{ form.as_p }}
+                </div>
+                <div class="action-buttons mt-2">
+                    <button class="rpg-btn btn-primary" type="submit">
+                        {% if object %}Save Changes{% else %}Create Campaign{% endif %}
+                    </button>
+                    <a href="{% if object %}{{ object.get_absolute_url }}{% else %}{% url 'adventure:campaign-list' %}{% endif %}" class="rpg-btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

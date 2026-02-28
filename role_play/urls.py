@@ -12,6 +12,7 @@ def health_check(request):
 
 urlpatterns = [
     path("health/", health_check, name="health_check"),
+    path("adventure/", include("adventure.urls")),
     path("game/", include("game.urls")),
     path("master/", include("master.urls")),
     path("character/", include("character.urls")),

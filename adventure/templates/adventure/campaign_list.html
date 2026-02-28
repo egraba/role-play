@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="rpg-container">
+        <div class="rpg-panel">
+            <h1 class="panel-title" style="font-size: 2rem;">
+                <img src="/static/images/icons/actions/cast-spell.svg" alt="" class="rpg-icon rpg-icon-lg rpg-icon-primary">
+                Campaigns
+            </h1>
+            <div class="text-center mb-2">
+                <a href="{% url 'index' %}" style="color: var(--color-primary); text-decoration: underline;">Return to main menu</a>
+            </div>
+
+            <div class="rpg-section">
+                <h2 class="panel-title" style="font-size: 1.3rem;">Your Campaigns</h2>
+                <table class="rpg-table">
+                    {% if campaigns %}
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Tone</th>
+                                <th>Party Level</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                    {% endif %}
+                    <tbody>
+                        {% for campaign in campaigns %}
+                            <tr>
+                                <td>
+                                    <a href="{{ campaign.get_absolute_url }}" style="color: var(--color-primary); text-decoration: underline;">{{ campaign }}</a>
+                                </td>
+                                <td>{{ campaign.get_tone_display }}</td>
+                                <td>{{ campaign.party_level }}</td>
+                                <td>
+                                    <a href="{% url 'adventure:campaign-update' campaign.slug %}" class="rpg-btn btn-primary" style="font-size: 0.8rem; padding: 4px 10px;">Edit</a>
+                                    <a href="{% url 'adventure:campaign-delete' campaign.slug %}" class="rpg-btn btn-danger" style="font-size: 0.8rem; padding: 4px 10px;">Delete</a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr><td colspan="4" class="text-center text-muted">No campaigns yet. Create your first one!</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <div class="text-center mt-2">
+                    <div class="action-buttons mt-2">
+                        <a href="{% url 'adventure:campaign-create' %}" class="rpg-btn btn-primary">Create a new campaign</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
