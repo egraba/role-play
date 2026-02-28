@@ -6,6 +6,8 @@ from django.http import JsonResponse
 from django.urls import include, path
 from django.views.generic import RedirectView
 
+from user.views import RateLimitedLoginView
+
 
 def health_check(request):
     """Health check endpoint for Fly.io — probes the database connection."""
@@ -22,6 +24,7 @@ urlpatterns = [
     path("master/", include("master.urls")),
     path("character/", include("character.urls")),
     path("admin/", admin.site.urls),
+    path("accounts/login/", RateLimitedLoginView.as_view(), name="login"),
     path("accounts/", include("django.contrib.auth.urls")),
     path("", RedirectView.as_view(url="game/", permanent=True)),
 ]
