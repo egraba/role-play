@@ -7,6 +7,9 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ### Security
 - Add IP-based login rate limiting (5 requests/minute) via `django-ratelimit`
 
+### Changed
+- `prod-deploy` poe task no longer runs `db-load-settings` on every deploy (prevents overwriting admin edits); new `prod-initial-setup` task for one-time fixture loading
+
 ### Fixed
 - Ops: Health check (`/health/`) now probes DB connection and returns 503 if unreachable (was always 200)
 - Security: Add `SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"` to limit referrer header leakage

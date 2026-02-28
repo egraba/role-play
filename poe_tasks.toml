@@ -151,7 +151,11 @@ sequence = [
 # Production Tasks
 # ----------------------------------------------------------------------------
 [tasks.prod-deploy]
-help = "Run production deployment tasks"
+help = "Run production deployment tasks (migrate only — safe to run on every deploy)"
+sequence = ["db-migrate"]
+
+[tasks.prod-initial-setup]
+help = "One-time production setup: migrate + load fixtures (run once after first deploy)"
 sequence = ["db-migrate", "db-load-settings"]
 
 [tasks.prod-run]
