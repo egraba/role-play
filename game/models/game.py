@@ -24,10 +24,10 @@ class Game(models.Model):
             models.Index(Upper("name"), name="game_name_upper_idx"),
         ]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         return reverse("game", args=(self.id,))
 
 
@@ -42,7 +42,7 @@ class Quest(models.Model):
         related_name="quests",
     )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.environment[:10]
 
 
@@ -56,7 +56,7 @@ class Actor(models.Model):
         else:
             return None
 
-    def __str__(self):
+    def __str__(self) -> str:
         user = self.user
         return user.username if user else f"Actor {self.pk}"
 
@@ -65,7 +65,7 @@ class Master(Actor):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     game = models.OneToOneField(Game, on_delete=models.CASCADE)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.user.username
 
 
@@ -74,5 +74,5 @@ class Player(Actor):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     character = models.OneToOneField(Character, on_delete=models.CASCADE)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.user.username

@@ -81,6 +81,7 @@ class QuestFactory(factory.django.DjangoModelFactory):
 
     environment = factory.Faker("text", max_nb_chars=1000)
     game = factory.SubFactory(GameFactory)
+    scene = None
 
 
 class EventFactory(factory.django.DjangoModelFactory):
