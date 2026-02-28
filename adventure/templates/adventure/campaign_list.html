@@ -7,23 +7,18 @@
                 <img src="/static/images/icons/actions/cast-spell.svg" alt="" class="rpg-icon rpg-icon-lg rpg-icon-primary">
                 Campaigns
             </h1>
-            <div class="text-center mb-2">
-                <a href="{% url 'index' %}" style="color: var(--color-primary); text-decoration: underline;">Return to main menu</a>
-            </div>
 
             <div class="rpg-section">
                 <h2 class="panel-title" style="font-size: 1.3rem;">Your Campaigns</h2>
                 <table class="rpg-table">
-                    {% if campaigns %}
-                        <thead>
-                            <tr>
-                                <th>Title</th>
-                                <th>Tone</th>
-                                <th>Party Level</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                    {% endif %}
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Tone</th>
+                            <th>Party Level</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
                     <tbody>
                         {% for campaign in campaigns %}
                             <tr>

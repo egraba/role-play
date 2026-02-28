@@ -1,6 +1,7 @@
 import pytest
 from django.urls import reverse
 
+from adventure.models import Campaign
 from adventure.tests.factories import CampaignFactory
 from user.tests.factories import UserFactory
 
@@ -62,8 +63,6 @@ def test_campaign_create(client):
         },
     )
     assert response.status_code == 302
-    from adventure.models import Campaign
-
     assert Campaign.objects.filter(title="Test Campaign", owner=user).exists()
 
 
@@ -76,6 +75,4 @@ def test_campaign_delete(client):
         reverse("adventure:campaign-delete", kwargs={"slug": campaign.slug})
     )
     assert response.status_code == 302
-    from adventure.models import Campaign
-
     assert not Campaign.objects.filter(pk=campaign.pk).exists()
