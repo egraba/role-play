@@ -24,6 +24,7 @@ dependencies = [
     "django-formtools",
     "django-htmx>=1.27.0",
     "django-model-utils",
+    "django-ratelimit>=4.1.0",
     "django-viewflow",
     "email-validator",
     "gunicorn",

@@ -68,6 +68,9 @@ PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.MD5PasswordHasher",
 ]
 
+# Disable rate limiting during tests
+RATELIMIT_ENABLE = False
+
 # Disable logging during tests for speed
 LOGGING = {
     "version": 1,
