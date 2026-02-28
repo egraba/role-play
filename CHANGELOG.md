@@ -5,6 +5,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Fixed
+- Security: Set `SECURE_PROXY_SSL_HEADER` so Django correctly detects HTTPS behind Fly.io's TLS-terminating proxy
 - Security: Sentry DSN moved from source code to `SENTRY_DSN` env var (Doppler)
 - Security: `ALLOWED_HOSTS` restricted to `role-play.fly.dev` and `role-play.internal` (was `["*"]`, disabling Django's host header validation)
 - Security: `SECURE_HSTS_SECONDS` raised from 3600 (1 hour) to 31536000 (1 year) — required for HSTS preload list eligibility
