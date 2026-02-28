@@ -5,6 +5,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Fixed
+- Security: Sentry DSN moved from source code to `SENTRY_DSN` env var (Doppler)
 - Security: `ALLOWED_HOSTS` restricted to `role-play.fly.dev` and `role-play.internal` (was `["*"]`, disabling Django's host header validation)
 - Security: `SECURE_HSTS_SECONDS` raised from 3600 (1 hour) to 31536000 (1 year) — required for HSTS preload list eligibility
 - Ops: add `LOGGING` config to production settings — WARNING+ to stdout, ERROR for `django.request`; previously no structured logging in prod
