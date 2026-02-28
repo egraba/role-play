@@ -5,6 +5,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Security
+- Add `pip-audit` dependency vulnerability scanning job to CI — blocks PRs on known CVEs
 - Pin `superfly/flyctl-actions/setup-flyctl` to `@1.5` (was `@master`) to prevent supply-chain attacks
 - Add Dependabot `github-actions` ecosystem to keep CI action versions up to date
 - Add IP-based login rate limiting (5 requests/minute) via `django-ratelimit`

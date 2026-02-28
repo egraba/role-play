@@ -26,6 +26,25 @@ jobs:
       - name: Run pre-commit checks
         uses: pre-commit/action@v3.0.1
 
+  security:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.14'
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+      - name: Install Dependencies
+        run: uv sync
+      - name: Audit dependencies for known vulnerabilities
+        run: uv run pip-audit
+
   test:
     name: Test
     runs-on: ubuntu-latest
