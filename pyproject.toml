@@ -53,6 +53,7 @@ dev = [
     "pytest-django",
     "pytest-mock",
     "pytest-xdist",
+    "pip-audit>=2.10.0",
 ]
 
 # Coverage configuration (kept here as it's small and well-integrated)
