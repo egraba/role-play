@@ -76,3 +76,45 @@ def test_campaign_delete(client):
     )
     assert response.status_code == 302
     assert not Campaign.objects.filter(pk=campaign.pk).exists()
+
+
+@pytest.mark.django_db
+def test_campaign_update_by_owner(client):
+    user = UserFactory()
+    campaign = CampaignFactory(owner=user)
+    client.force_login(user)
+    response = client.post(
+        reverse("adventure:campaign-update", kwargs={"slug": campaign.slug}),
+        {
+            "title": campaign.title,
+            "synopsis": "Updated synopsis",
+            "main_conflict": "",
+            "objective": "",
+            "party_level": 1,
+            "tone": "heroic",
+            "setting": "",
+        },
+    )
+    assert response.status_code == 302
+    campaign.refresh_from_db()
+    assert campaign.synopsis == "Updated synopsis"
+
+
+@pytest.mark.django_db
+def test_campaign_update_inaccessible_by_non_owner(client):
+    user = UserFactory()
+    campaign = CampaignFactory()  # different owner
+    client.force_login(user)
+    response = client.post(
+        reverse("adventure:campaign-update", kwargs={"slug": campaign.slug}),
+        {
+            "title": campaign.title,
+            "synopsis": "Hacked",
+            "main_conflict": "",
+            "objective": "",
+            "party_level": 1,
+            "tone": "heroic",
+            "setting": "",
+        },
+    )
+    assert response.status_code == 404

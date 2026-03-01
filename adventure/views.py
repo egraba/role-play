@@ -29,7 +29,7 @@ class CampaignDetailView(LoginRequiredMixin, DetailView):
     context_object_name = "campaign"
 
     def get_queryset(self) -> QuerySet[Campaign]:
-        return Campaign.objects.filter(owner=self.request.user)
+        return Campaign.objects.filter(owner=self.request.user).prefetch_related("acts")
 
 
 class CampaignCreateView(LoginRequiredMixin, CreateView):
