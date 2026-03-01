@@ -14,6 +14,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 - `prod-deploy` poe task no longer runs `db-load-settings` on every deploy (prevents overwriting admin edits); new `prod-initial-setup` task for one-time fixture loading
 
 ### Fixed
+- Ops: Run `collectstatic` at Docker build time instead of server startup — daphne now binds immediately, eliminating flyctl health-check timeouts on deploy
 - Ops: Health check (`/health/`) now probes DB connection and returns 503 if unreachable (was always 200)
 - Security: Add `SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"` to limit referrer header leakage
 - Security: Set `SECURE_PROXY_SSL_HEADER` so Django correctly detects HTTPS behind Fly.io's TLS-terminating proxy
