@@ -43,6 +43,9 @@ COPY . .
 # Sync again to install the project
 RUN uv sync --frozen --no-dev
 
+# Collect static files at build time so daphne starts immediately on deploy
+RUN DJANGO_SETTINGS_MODULE=role_play.settings.build uv run manage.py collectstatic --noinput
+
 EXPOSE 8000
 
 CMD ["doppler", "run", "--", "uv", "run", "poe", "prod-run"]

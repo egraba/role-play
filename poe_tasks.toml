@@ -161,6 +161,5 @@ sequence = ["db-migrate", "db-load-settings"]
 [tasks.prod-run]
 help = "Run the production server"
 sequence = [
-    { cmd = "manage.py collectstatic --noinput" },
     { shell = "daphne role_play.asgi:application -b 0.0.0.0 -p $PORT --access-log -" },
 ]
