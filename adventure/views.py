@@ -84,9 +84,10 @@ class ActDetailView(LoginRequiredMixin, DetailView):
     context_object_name = "act"
 
     def get_queryset(self) -> QuerySet[Act]:
-        return Act.objects.filter(campaign__owner=self.request.user).select_related(
-            "campaign"
-        )
+        return Act.objects.filter(
+            campaign__owner=self.request.user,
+            campaign__slug=self.kwargs["slug"],
+        ).select_related("campaign")
 
 
 class ActCreateView(LoginRequiredMixin, CreateView):
@@ -118,9 +119,10 @@ class ActUpdateView(LoginRequiredMixin, UpdateView):
     template_name = "adventure/act_form.html"
 
     def get_queryset(self) -> QuerySet[Act]:
-        return Act.objects.filter(campaign__owner=self.request.user).select_related(
-            "campaign"
-        )
+        return Act.objects.filter(
+            campaign__owner=self.request.user,
+            campaign__slug=self.kwargs["slug"],
+        ).select_related("campaign")
 
     def get_context_data(self, **kwargs: object) -> dict:
         context = super().get_context_data(**kwargs)
@@ -136,9 +138,10 @@ class ActDeleteView(LoginRequiredMixin, DeleteView):
     template_name = "adventure/act_confirm_delete.html"
 
     def get_queryset(self) -> QuerySet[Act]:
-        return Act.objects.filter(campaign__owner=self.request.user).select_related(
-            "campaign"
-        )
+        return Act.objects.filter(
+            campaign__owner=self.request.user,
+            campaign__slug=self.kwargs["slug"],
+        ).select_related("campaign")
 
     def get_success_url(self) -> str:
         return self.object.campaign.get_absolute_url()
@@ -386,7 +389,9 @@ class EncounterUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_queryset(self) -> QuerySet[Encounter]:
         return Encounter.objects.filter(
-            scene__act__campaign__owner=self.request.user
+            scene__act__campaign__owner=self.request.user,
+            scene__pk=self.kwargs["scene_pk"],
+            scene__act__pk=self.kwargs["act_pk"],
         ).select_related("scene__act__campaign")
 
     def get_context_data(self, **kwargs: object) -> dict:
@@ -406,7 +411,9 @@ class EncounterDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_queryset(self) -> QuerySet[Encounter]:
         return Encounter.objects.filter(
-            scene__act__campaign__owner=self.request.user
+            scene__act__campaign__owner=self.request.user,
+            scene__pk=self.kwargs["scene_pk"],
+            scene__act__pk=self.kwargs["act_pk"],
         ).select_related("scene__act__campaign")
 
     def get_success_url(self) -> str:

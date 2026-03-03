@@ -570,3 +570,65 @@ def test_encounter_delete_non_owner_denied(client):
     )
     assert response.status_code == 404
     assert Encounter.objects.filter(pk=encounter.pk).exists()
+
+
+@pytest.mark.django_db
+def test_encounter_update_by_owner(client):
+    user = UserFactory()
+    campaign = CampaignFactory(owner=user)
+    act = ActFactory(campaign=campaign)
+    scene = SceneFactory(act=act)
+    encounter = EncounterFactory(scene=scene)
+    client.force_login(user)
+    response = client.post(
+        reverse(
+            "adventure:encounter-update",
+            kwargs={
+                "slug": campaign.slug,
+                "act_pk": act.pk,
+                "scene_pk": scene.pk,
+                "pk": encounter.pk,
+            },
+        ),
+        {
+            "title": encounter.title,
+            "order": encounter.order,
+            "encounter_type": encounter.encounter_type,
+            "description": "Updated description",
+            "difficulty": encounter.difficulty,
+            "rewards": "",
+        },
+    )
+    assert response.status_code == 302
+    encounter.refresh_from_db()
+    assert encounter.description == "Updated description"
+
+
+@pytest.mark.django_db
+def test_encounter_update_non_owner_denied(client):
+    user = UserFactory()
+    campaign = CampaignFactory()  # different owner
+    act = ActFactory(campaign=campaign)
+    scene = SceneFactory(act=act)
+    encounter = EncounterFactory(scene=scene)
+    client.force_login(user)
+    response = client.post(
+        reverse(
+            "adventure:encounter-update",
+            kwargs={
+                "slug": campaign.slug,
+                "act_pk": act.pk,
+                "scene_pk": scene.pk,
+                "pk": encounter.pk,
+            },
+        ),
+        {
+            "title": "Hacked",
+            "order": 1,
+            "encounter_type": "C",
+            "description": "",
+            "difficulty": "M",
+            "rewards": "",
+        },
+    )
+    assert response.status_code == 404
