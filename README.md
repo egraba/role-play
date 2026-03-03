@@ -79,7 +79,7 @@ The SRD 5.2 includes content from the 2024 D&D core rulebooks:
 
 ```
 role_play/
-├── character/    # Character creation, abilities, inventory, equipment
+├── character/    # Character creation, abilities, classes, races, skills
 ├── game/         # Game engine, events, combat, real-time WebSocket
 │   ├── models/          # Game, combat, and event models (pure data)
 │   ├── constants/       # Event registry, combat states, log categories
@@ -87,7 +87,11 @@ role_play/
 │   └── consumers.py     # WebSocket consumer with dynamic dispatch
 ├── master/       # Campaign management
 ├── user/         # Custom user authentication
-└── ai/           # Claude AI integration for content generation
+├── ai/           # Claude AI integration for content generation
+├── bestiary/     # Monster stat blocks
+├── equipment/    # Equipment and magic items
+├── magic/        # Spells and spell effects
+└── utils/        # Shared utilities (dice, converters)
 ```
 
 For detailed architecture information, see [ARCHITECTURE.md](ARCHITECTURE.md).
@@ -116,26 +120,26 @@ uv sync
 source .venv/bin/activate
 
 # Set up database (migrate + load fixtures)
-doppler run -- poe db-setup
+doppler run -- uv run poe db-setup
 
 # Start the development server
-doppler run -- poe run
+doppler run -- uv run poe dev-run
 ```
 
 ### Common Tasks
 
 ```bash
-poe run          # Start development server
-poe test         # Run tests
-poe ci           # Run full CI locally (tests + lint + typecheck)
-poe db-setup     # Set up database (migrate + load fixtures)
+uv run poe dev-run     # Start development server
+uv run poe test        # Run tests
+uv run poe ci          # Run full CI locally (tests + lint + typecheck)
+uv run poe db-setup    # Set up database (migrate + load fixtures)
 ```
 
 Run `poe --help` to see all available tasks.
 
 ## Contributing
 
-For AI coding assistants working on this project, see [AGENTS.md](AGENTS.md) for guidelines and conventions.
+For AI coding assistants working on this project, see [CLAUDE.md](CLAUDE.md) for guidelines and conventions.
 
 ## License
 

@@ -18,23 +18,29 @@ A Django-based D&D 5e virtual tabletop with real-time WebSocket gameplay, AI-pow
 
 ```
 role_play/
-├── character/    # Character creation, spells, equipment, D&D mechanics
+├── character/    # Character creation, abilities, classes, species, skills
 ├── game/         # Game engine, combat, events, WebSocket
 ├── master/       # Campaign management
 ├── user/         # Custom user model
 ├── ai/           # Anthropic Claude integration
-└── utils/        # Shared utilities (dice, channels)
+├── bestiary/     # Monster stat blocks
+├── equipment/    # Equipment and magic items
+├── magic/        # Spells and spell effects
+└── utils/        # Shared utilities (dice, converters)
 ```
 
 ### App Responsibilities
 
 | App | Purpose |
 |-----|---------|
-| `character/` | Character sheets, spellcasting, equipment, skills, species, classes |
+| `character/` | Character sheets, abilities, skills, species, classes |
 | `game/` | Game sessions, combat, events, real-time communication |
 | `master/` | Campaign creation and configuration |
 | `user/` | Authentication (extends Django's AbstractUser) |
 | `ai/` | Quest enrichment via Claude API |
+| `bestiary/` | Monster definitions and stat blocks |
+| `equipment/` | Weapons, armor, gear, tools, packs, magic items |
+| `magic/` | Spell definitions, spell slots, spell effects, concentration |
 
 ---
 
@@ -97,7 +103,20 @@ Species
 └── languages: M2M → Language
 ```
 
-### Spellcasting System (`spells.py`)
+### Additional Character Models
+
+| Model | File | Purpose |
+|-------|------|---------|
+| `Ability`, `AbilityType` | `abilities.py` | STR, DEX, CON, INT, WIS, CHA |
+| `Skill` | `skills.py` | All 18 D&D skills |
+| `Feat`, `CharacterFeat` | `feats.py` | Feats and origin feats |
+| `Condition`, `CharacterCondition` | `conditions.py` | Status conditions |
+| `Language` | `races.py` | Language definitions |
+| `Proficiency` | `proficiencies.py` | Proficiency junction tables |
+| `Disadvantage` | `disadvantages.py` | Disadvantage tracking |
+| `Advancement` | `advancement.py` | Level advancement rules |
+
+### Spellcasting System (`magic/models/spells.py`)
 
 Complete D&D 5e magic implementation.
 
@@ -127,7 +146,13 @@ SpellPreparation (Prepared spells - prepared casters)
 ClassSpellcasting (Class casting config)
 ```
 
-### Equipment System (`equipment.py`)
+### Spell Effects (`magic/models/spell_effects.py`)
+
+| Model | Purpose |
+|-------|---------|
+| `SpellEffectTemplate`, `ActiveSpellEffect` | Spell effect tracking |
+
+### Equipment System (`equipment/models/equipment.py`)
 
 ```
 Inventory
@@ -141,17 +166,17 @@ GearSettings / Gear
 PackSettings / Pack
 ```
 
-### Additional Character Models
+### Magic Items (`equipment/models/magic_items.py`)
 
-| Model | File | Purpose |
-|-------|------|---------|
-| `Ability`, `AbilityType` | `abilities.py` | STR, DEX, CON, INT, WIS, CHA |
-| `Skill` | `skills.py` | All 18 D&D skills |
-| `Feat`, `CharacterFeat` | `feats.py` | Feats and origin feats |
-| `Condition`, `CharacterCondition` | `conditions.py` | Status conditions |
-| `MagicItem`, `Attunement` | `magic_items.py` | Magic item tracking |
-| `MonsterSettings`, `Monster` | `monsters.py` | Monster stat blocks |
-| `SpellEffectTemplate`, `ActiveSpellEffect` | `spell_effects.py` | Spell effect tracking |
+| Model | Purpose |
+|-------|---------|
+| `MagicItem`, `Attunement` | Magic item tracking |
+
+### Bestiary (`bestiary/models/monsters.py`)
+
+| Model | Purpose |
+|-------|---------|
+| `MonsterSettings`, `Monster` | Monster stat blocks |
 
 ### Character Creation
 
@@ -301,7 +326,7 @@ Event routing:
 - `CLIENT_SIDE` events → Save to DB via service → Broadcast
 - `SERVER_SIDE` events → Forward to channel group
 
-### Channel Utilities (`utils/channels.py`)
+### Channel Utilities (`game/utils/channels.py`)
 
 ```python
 build_event_payload(event)  # Build payload using registry + presenter
@@ -408,10 +433,13 @@ GameContextMixin:
 - `role_play/asgi.py` - ASGI configuration
 
 ### Models
-- `character/models/` - Character system (~15 files)
+- `character/models/` - Character system (abilities, classes, species, skills, feats, conditions, proficiencies)
 - `game/models/` - Game/combat/events (3 files)
 - `master/models.py` - Campaign
 - `user/models.py` - User
+- `bestiary/models/monsters.py` - Monster stat blocks
+- `equipment/models/` - Equipment and magic items
+- `magic/models/` - Spells and spell effects
 
 ### Business Logic
 - `game/services.py` - Event and roll services
@@ -432,4 +460,4 @@ GameContextMixin:
 ### Real-Time
 - `game/consumers.py` - WebSocket consumer
 - `game/schemas.py` - Event validation
-- `utils/channels.py` - Broadcast utilities
+- `game/utils/channels.py` - Broadcast utilities
