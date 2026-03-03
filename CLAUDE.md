@@ -35,11 +35,15 @@ Run `poe --help` to see all available tasks.
 ## Project Structure
 
 ```
-character/     # Character system (abilities, classes, races, skills, equipment, spells)
+character/     # Character system (abilities, classes, races, skills)
 game/          # Game engine (events, combat, WebSocket consumers, rolls)
 master/        # Campaign management
 user/          # Authentication
 ai/            # Claude API integration for content generation
+bestiary/      # Monster stat blocks
+equipment/     # Equipment and magic items
+magic/         # Spells and spell effects
+utils/         # Shared utilities (dice, converters)
 role_play/     # Django settings
 ```
 
