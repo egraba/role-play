@@ -156,7 +156,8 @@ class SceneDetailView(LoginRequiredMixin, DetailView):
 
     def get_queryset(self) -> QuerySet[Scene]:
         return Scene.objects.filter(
-            act__campaign__owner=self.request.user
+            act__campaign__owner=self.request.user,
+            act__pk=self.kwargs["act_pk"],
         ).select_related("act__campaign")
 
 
@@ -195,7 +196,8 @@ class SceneUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_queryset(self) -> QuerySet[Scene]:
         return Scene.objects.filter(
-            act__campaign__owner=self.request.user
+            act__campaign__owner=self.request.user,
+            act__pk=self.kwargs["act_pk"],
         ).select_related("act__campaign")
 
     def get_context_data(self, **kwargs: object) -> dict:
@@ -214,7 +216,8 @@ class SceneDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_queryset(self) -> QuerySet[Scene]:
         return Scene.objects.filter(
-            act__campaign__owner=self.request.user
+            act__campaign__owner=self.request.user,
+            act__pk=self.kwargs["act_pk"],
         ).select_related("act__campaign")
 
     def get_success_url(self) -> str:
