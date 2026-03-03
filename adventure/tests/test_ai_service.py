@@ -4,8 +4,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
+from adventure.exceptions import AIGenerationError
 from adventure.services.ai import (
-    AIGenerationError,
     _get_api_key,
     generate_campaign_synopsis,
     generate_scene_description,

@@ -4,11 +4,8 @@ from typing import Any
 
 import anthropic
 
+from ..exceptions import AIGenerationError
 from adventure.models import Act, Campaign, Encounter, Location, NPC, Scene
-
-
-class AIGenerationError(Exception):
-    """Raised when AI generation fails."""
 
 
 def _get_api_key(user: Any) -> str:
