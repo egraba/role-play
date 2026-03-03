@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="rpg-container">
+        <div class="rpg-panel" style="max-width: 600px; margin: 50px auto;">
+            <h1 class="panel-title">
+                <img src="/static/images/icons/damage-types/fire.svg" alt="" class="rpg-icon rpg-icon-lg rpg-icon-danger">
+                Delete Scene
+            </h1>
+
+            <div class="rpg-section text-center">
+                <p>Are you sure you want to delete <strong>{{ scene }}</strong>?</p>
+                <p class="text-muted">This action cannot be undone. All encounters in this scene will also be deleted.</p>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="action-buttons mt-2 text-center">
+                    <button class="rpg-btn btn-danger" type="submit">Delete Scene</button>
+                    <a href="{{ scene.act.campaign.get_absolute_url }}" class="rpg-btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock content %}

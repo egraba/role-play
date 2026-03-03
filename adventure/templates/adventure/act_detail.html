@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="rpg-container">
+        <div class="rpg-panel">
+            <h1 class="panel-title" style="font-size: 2rem;">
+                <img src="/static/images/icons/actions/cast-spell.svg" alt="" class="rpg-icon rpg-icon-lg rpg-icon-primary">
+                {{ act }}
+            </h1>
+            <div class="text-center mb-2">
+                <a href="{{ act.campaign.get_absolute_url }}" style="color: var(--color-primary); text-decoration: underline;">Return to {{ act.campaign }}</a>
+            </div>
+
+            <div class="rpg-section">
+                <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+                    <div>
+                        <span class="text-muted">Order:</span>
+                        <strong>{{ act.order }}</strong>
+                    </div>
+                </div>
+            </div>
+
+            {% if act.summary %}
+                <div class="rpg-section">
+                    <h2 class="panel-title" style="font-size: 1.3rem;">Summary</h2>
+                    <div class="text-muted">{{ act.summary|linebreaks }}</div>
+                </div>
+            {% endif %}
+
+            {% if act.goal %}
+                <div class="rpg-section">
+                    <h2 class="panel-title" style="font-size: 1.3rem;">Goal</h2>
+                    <div class="text-muted">{{ act.goal|linebreaks }}</div>
+                </div>
+            {% endif %}
+
+            <div class="rpg-section">
+                <h2 class="panel-title" style="font-size: 1.3rem;">Scenes</h2>
+                {% with scenes=act.scenes.all %}
+                    {% if scenes %}
+                        <table class="rpg-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Title</th>
+                                    <th>Type</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for scene in scenes %}
+                                    <tr>
+                                        <td>{{ scene.order }}</td>
+                                        <td>{{ scene.title }}</td>
+                                        <td class="text-muted">{{ scene.get_scene_type_display }}</td>
+                                        <td>
+                                            <a href="{% url 'adventure:scene-detail' act.campaign.slug act.pk scene.pk %}" class="rpg-btn btn-secondary" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">View</a>
+                                            <a href="{% url 'adventure:scene-update' act.campaign.slug act.pk scene.pk %}" class="rpg-btn btn-primary" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">Edit</a>
+                                            <a href="{% url 'adventure:scene-delete' act.campaign.slug act.pk scene.pk %}" class="rpg-btn btn-danger" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">Delete</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p class="text-muted text-center">No scenes yet.</p>
+                    {% endif %}
+                {% endwith %}
+                <div class="mt-2">
+                    <a href="{% url 'adventure:scene-create' act.campaign.slug act.pk %}" class="rpg-btn btn-primary">Add Scene</a>
+                </div>
+            </div>
+
+            <div class="action-buttons mt-2">
+                <a href="{% url 'adventure:act-update' act.campaign.slug act.pk %}" class="rpg-btn btn-primary">Edit Act</a>
+                <a href="{% url 'adventure:act-delete' act.campaign.slug act.pk %}" class="rpg-btn btn-danger">Delete Act</a>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="rpg-container">
+        <div class="rpg-panel">
+            <h1 class="panel-title" style="font-size: 2rem;">
+                <img src="/static/images/icons/actions/cast-spell.svg" alt="" class="rpg-icon rpg-icon-lg rpg-icon-primary">
+                {{ scene }}
+            </h1>
+            <div class="text-center mb-2">
+                <a href="{{ scene.act.campaign.get_absolute_url }}" style="color: var(--color-primary); text-decoration: underline;">Return to {{ scene.act.campaign }}</a>
+            </div>
+
+            <div class="rpg-section">
+                <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+                    <div>
+                        <span class="text-muted">Order:</span>
+                        <strong>{{ scene.order }}</strong>
+                    </div>
+                    <div>
+                        <span class="text-muted">Type:</span>
+                        <strong>{{ scene.get_scene_type_display }}</strong>
+                    </div>
+                    <div>
+                        <span class="text-muted">Act:</span>
+                        <strong>{{ scene.act }}</strong>
+                    </div>
+                </div>
+            </div>
+
+            {% if scene.description %}
+                <div class="rpg-section">
+                    <h2 class="panel-title" style="font-size: 1.3rem;">Description</h2>
+                    <div class="text-muted">{{ scene.description|linebreaks }}</div>
+                </div>
+            {% endif %}
+
+            {% if scene.hook %}
+                <div class="rpg-section">
+                    <h2 class="panel-title" style="font-size: 1.3rem;">Hook</h2>
+                    <div class="text-muted">{{ scene.hook|linebreaks }}</div>
+                </div>
+            {% endif %}
+
+            {% if scene.resolution %}
+                <div class="rpg-section">
+                    <h2 class="panel-title" style="font-size: 1.3rem;">Resolution</h2>
+                    <div class="text-muted">{{ scene.resolution|linebreaks }}</div>
+                </div>
+            {% endif %}
+
+            <div class="rpg-section">
+                <h2 class="panel-title" style="font-size: 1.3rem;">Encounters</h2>
+                {% with encounters=scene.encounters.all %}
+                    {% if encounters %}
+                        <table class="rpg-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Title</th>
+                                    <th>Type</th>
+                                    <th>Difficulty</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for encounter in encounters %}
+                                    <tr>
+                                        <td>{{ encounter.order }}</td>
+                                        <td>{{ encounter.title }}</td>
+                                        <td class="text-muted">{{ encounter.get_encounter_type_display }}</td>
+                                        <td class="text-muted">{{ encounter.get_difficulty_display }}</td>
+                                        <td>
+                                            <a href="{% url 'adventure:encounter-update' scene.act.campaign.slug scene.act.pk scene.pk encounter.pk %}" class="rpg-btn btn-primary" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">Edit</a>
+                                            <a href="{% url 'adventure:encounter-delete' scene.act.campaign.slug scene.act.pk scene.pk encounter.pk %}" class="rpg-btn btn-danger" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">Delete</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p class="text-muted text-center">No encounters yet.</p>
+                    {% endif %}
+                {% endwith %}
+                <div class="mt-2">
+                    <a href="{% url 'adventure:encounter-create' scene.act.campaign.slug scene.act.pk scene.pk %}" class="rpg-btn btn-primary">Add Encounter</a>
+                </div>
+            </div>
+
+            <div class="action-buttons mt-2">
+                <a href="{% url 'adventure:scene-update' scene.act.campaign.slug scene.act.pk scene.pk %}" class="rpg-btn btn-primary">Edit Scene</a>
+                <a href="{% url 'adventure:scene-delete' scene.act.campaign.slug scene.act.pk scene.pk %}" class="rpg-btn btn-danger">Delete Scene</a>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

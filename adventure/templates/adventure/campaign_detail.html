@@ -70,14 +70,21 @@
                                     <th>#</th>
                                     <th>Title</th>
                                     <th>Goal</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for act in acts %}
                                     <tr>
                                         <td>{{ act.order }}</td>
-                                        <td>{{ act.title }}</td>
+                                        <td>
+                                            <a href="{% url 'adventure:act-detail' campaign.slug act.pk %}" style="color: var(--color-primary);">{{ act.title }}</a>
+                                        </td>
                                         <td class="text-muted">{{ act.goal }}</td>
+                                        <td>
+                                            <a href="{% url 'adventure:act-update' campaign.slug act.pk %}" class="rpg-btn btn-primary" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">Edit</a>
+                                            <a href="{% url 'adventure:act-delete' campaign.slug act.pk %}" class="rpg-btn btn-danger" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">Delete</a>
+                                        </td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
@@ -86,6 +93,77 @@
                         <p class="text-muted text-center">No acts yet.</p>
                     {% endif %}
                 {% endwith %}
+                <div class="mt-2">
+                    <a href="{% url 'adventure:act-create' campaign.slug %}" class="rpg-btn btn-primary">Add Act</a>
+                </div>
+            </div>
+
+            <div class="rpg-section">
+                <h2 class="panel-title" style="font-size: 1.3rem;">NPCs</h2>
+                {% with npcs=campaign.npcs.all %}
+                    {% if npcs %}
+                        <table class="rpg-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Role</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for npc in npcs %}
+                                    <tr>
+                                        <td>{{ npc.name }}</td>
+                                        <td class="text-muted">{{ npc.role }}</td>
+                                        <td>
+                                            <a href="{% url 'adventure:npc-update' campaign.slug npc.pk %}" class="rpg-btn btn-primary" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">Edit</a>
+                                            <a href="{% url 'adventure:npc-delete' campaign.slug npc.pk %}" class="rpg-btn btn-danger" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">Delete</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p class="text-muted text-center">No NPCs yet.</p>
+                    {% endif %}
+                {% endwith %}
+                <div class="mt-2">
+                    <a href="{% url 'adventure:npc-create' campaign.slug %}" class="rpg-btn btn-primary">Add NPC</a>
+                </div>
+            </div>
+
+            <div class="rpg-section">
+                <h2 class="panel-title" style="font-size: 1.3rem;">Locations</h2>
+                {% with locations=campaign.locations.all %}
+                    {% if locations %}
+                        <table class="rpg-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Region</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for location in locations %}
+                                    <tr>
+                                        <td>{{ location.name }}</td>
+                                        <td class="text-muted">{{ location.get_region_display }}</td>
+                                        <td>
+                                            <a href="{% url 'adventure:location-update' campaign.slug location.pk %}" class="rpg-btn btn-primary" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">Edit</a>
+                                            <a href="{% url 'adventure:location-delete' campaign.slug location.pk %}" class="rpg-btn btn-danger" style="padding: 0.2rem 0.5rem; font-size: 0.8rem;">Delete</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p class="text-muted text-center">No locations yet.</p>
+                    {% endif %}
+                {% endwith %}
+                <div class="mt-2">
+                    <a href="{% url 'adventure:location-create' campaign.slug %}" class="rpg-btn btn-primary">Add Location</a>
+                </div>
             </div>
 
             <div class="action-buttons mt-2">
