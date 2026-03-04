@@ -10,6 +10,12 @@
             <div class="text-center mb-2">
                 <a href="{{ campaign.get_absolute_url }}" style="color: var(--color-primary); text-decoration: underline;">Return to {{ campaign }}</a>
             </div>
+            {% if not request.user.anthropic_api_key %}
+                <div class="rpg-alert">
+                    <strong>AI generation requires an Anthropic API key.</strong>
+                    <a href="#" style="color: var(--color-primary);">Configure your API key</a> to enable AI-assisted content generation.
+                </div>
+            {% endif %}
             <form method="post">
                 {% csrf_token %}
 
