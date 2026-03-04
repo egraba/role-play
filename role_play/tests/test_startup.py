@@ -27,7 +27,7 @@ class TestDjangoStartup:
         assert len(app_configs) > 0
 
         # Verify our main apps are loaded
-        expected_apps = ["character", "game", "master", "user"]
+        expected_apps = ["adventure", "character", "game", "user"]
         loaded_app_names = [config.name for config in app_configs]
 
         for app_name in expected_apps:

@@ -6,7 +6,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 INSTALLED_APPS = [
     "daphne",
     "game.apps.GameConfig",
-    "master.apps.MasterConfig",
     "adventure.apps.AdventureConfig",
     "user.apps.UserConfig",
     "character.apps.CharacterConfig",

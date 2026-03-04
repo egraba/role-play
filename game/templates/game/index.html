@@ -28,7 +28,7 @@
                 {% else %}
                     <a href="{% url 'character-create' %}" class="btn btn-ghost">Create your character</a>
                 {% endif %}
-                <a href="{% url 'campaign-create' %}" class="btn btn-ghost">Create a game</a>
+                <a href="{% url 'adventure:campaign-create' %}" class="btn btn-ghost">Create a game</a>
             </div>
         {% else %}
             <p class="text-muted" style="margin-bottom: 32px; font-size: 15px; line-height: 1.7;">

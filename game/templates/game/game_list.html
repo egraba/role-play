@@ -38,7 +38,7 @@
                     {% include 'pagination.html' %}
                     {% if user.is_authenticated %}
                         <div class="action-buttons mt-2">
-                            <a href="{% url 'campaign-create' %}" class="btn btn-primary">Create a new game</a>
+                            <a href="{% url 'adventure:campaign-create' %}" class="btn btn-primary">Create a new game</a>
                         </div>
                     {% endif %}
                 </div>

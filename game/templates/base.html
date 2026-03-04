@@ -31,7 +31,7 @@
                     </li>
                     {% if user.is_authenticated %}
                         <li class="navbar-item">
-                            <a href="{% url 'campaign-list' %}" class="navbar-link">Campaigns</a>
+                            <a href="{% url 'adventure:campaign-list' %}" class="navbar-link">Campaigns</a>
                         </li>
                         {% if user_character %}
                             <li class="navbar-item">

@@ -14,7 +14,6 @@ urlpatterns = [
     path("health/", health_check, name="health_check"),
     path("adventure/", include("adventure.urls")),
     path("game/", include("game.urls")),
-    path("master/", include("master.urls")),
     path("character/", include("character.urls")),
     path("admin/", admin.site.urls),
     path("accounts/", include("django.contrib.auth.urls")),

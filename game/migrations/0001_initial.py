@@ -10,8 +10,8 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
+        ("adventure", "0001_initial"),
         ("character", "0006_alter_character_user"),
-        ("master", "0001_initial"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
@@ -138,7 +138,7 @@ class Migration(migrations.Migration):
                         blank=True,
                         null=True,
                         on_delete=django.db.models.deletion.SET_NULL,
-                        to="master.campaign",
+                        to="adventure.campaign",
                     ),
                 ),
             ],

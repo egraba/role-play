@@ -2,7 +2,11 @@ from django.db import migrations
 
 
 def copy_campaigns_forward(apps, schema_editor):
-    MasterCampaign = apps.get_model("master", "Campaign")
+    try:
+        MasterCampaign = apps.get_model("master", "Campaign")
+    except LookupError:
+        return  # master app not present — nothing to migrate
+
     AdventureCampaign = apps.get_model("adventure", "Campaign")
     User = apps.get_model("user", "User")
 
@@ -28,9 +32,13 @@ def copy_campaigns_forward(apps, schema_editor):
 
 
 def copy_campaigns_backward(apps, schema_editor):
+    try:
+        MasterCampaign = apps.get_model("master", "Campaign")
+    except LookupError:
+        return  # master app not present — nothing to reverse
+
     # Reverse: remove adventure campaigns that were created from master
     AdventureCampaign = apps.get_model("adventure", "Campaign")
-    MasterCampaign = apps.get_model("master", "Campaign")
     master_slugs = set(MasterCampaign.objects.values_list("slug", flat=True))
     AdventureCampaign.objects.filter(slug__in=master_slugs).delete()
 
@@ -38,7 +46,6 @@ def copy_campaigns_backward(apps, schema_editor):
 class Migration(migrations.Migration):
     dependencies = [
         ("adventure", "0005_alter_encounter_options_encounter_order_and_more"),
-        ("master", "0001_initial"),
         ("user", "0001_initial"),
     ]
 
