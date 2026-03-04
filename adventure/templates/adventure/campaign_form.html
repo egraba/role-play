@@ -10,11 +10,73 @@
             <div class="text-center mb-2">
                 <a href="{% url 'adventure:campaign-list' %}" style="color: var(--color-primary); text-decoration: underline;">Return to campaign list</a>
             </div>
+
+            {% if not request.user.anthropic_api_key %}
+                <div class="rpg-alert">
+                    <strong>AI generation requires an Anthropic API key.</strong>
+                    <a href="#" style="color: var(--color-primary);">Configure your API key</a> to enable AI-assisted content generation.
+                </div>
+            {% endif %}
+
             <form method="post">
                 {% csrf_token %}
-                <div class="rpg-form-group">
-                    {{ form.as_p }}
-                </div>
+
+                {% if object %}
+                    {# Render all fields except synopsis manually so we can add the Generate button #}
+                    <div class="rpg-form-group">
+                        {{ form.title.label_tag }}
+                        {{ form.title }}
+                        {% if form.title.errors %}<p class="rpg-error">{{ form.title.errors }}</p>{% endif %}
+                    </div>
+                    <div class="rpg-form-group">
+                        {{ form.main_conflict.label_tag }}
+                        {{ form.main_conflict }}
+                        {% if form.main_conflict.errors %}<p class="rpg-error">{{ form.main_conflict.errors }}</p>{% endif %}
+                    </div>
+                    <div class="rpg-form-group">
+                        {{ form.objective.label_tag }}
+                        {{ form.objective }}
+                        {% if form.objective.errors %}<p class="rpg-error">{{ form.objective.errors }}</p>{% endif %}
+                    </div>
+                    <div class="rpg-form-group">
+                        {{ form.party_level.label_tag }}
+                        {{ form.party_level }}
+                        {% if form.party_level.errors %}<p class="rpg-error">{{ form.party_level.errors }}</p>{% endif %}
+                    </div>
+                    <div class="rpg-form-group">
+                        {{ form.tone.label_tag }}
+                        {{ form.tone }}
+                        {% if form.tone.errors %}<p class="rpg-error">{{ form.tone.errors }}</p>{% endif %}
+                    </div>
+                    <div class="rpg-form-group">
+                        {{ form.setting.label_tag }}
+                        {{ form.setting }}
+                        {% if form.setting.errors %}<p class="rpg-error">{{ form.setting.errors }}</p>{% endif %}
+                    </div>
+                    <div class="rpg-form-group">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                            {{ form.synopsis.label_tag }}
+                            <button type="button"
+                                    hx-post="{% url 'adventure:ai-draft-campaign-synopsis' object.slug %}"
+                                    hx-target="#synopsis-container"
+                                    hx-swap="innerHTML"
+                                    hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                                    class="rpg-btn rpg-btn-sm">
+                                <img src="/static/images/icons/actions/cast-spell.svg" alt="" class="rpg-icon rpg-icon-sm rpg-icon-primary">
+                                Generate Synopsis
+                            </button>
+                        </div>
+                        <div id="synopsis-container">
+                            {{ form.synopsis }}
+                        </div>
+                        {% if form.synopsis.errors %}<p class="rpg-error">{{ form.synopsis.errors }}</p>{% endif %}
+                    </div>
+                {% else %}
+                    <div class="rpg-form-group">
+                        {{ form.as_p }}
+                    </div>
+                {% endif %}
+
                 <div class="action-buttons mt-2">
                     <button class="rpg-btn btn-primary" type="submit">
                         {% if object %}Save Changes{% else %}Create Campaign{% endif %}

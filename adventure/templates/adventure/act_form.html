@@ -12,9 +12,47 @@
             </div>
             <form method="post">
                 {% csrf_token %}
-                <div class="rpg-form-group">
-                    {{ form.as_p }}
-                </div>
+
+                {% if object %}
+                    <div class="rpg-form-group">
+                        {{ form.title.label_tag }}
+                        {{ form.title }}
+                        {% if form.title.errors %}<p class="rpg-error">{{ form.title.errors }}</p>{% endif %}
+                    </div>
+                    <div class="rpg-form-group">
+                        {{ form.order.label_tag }}
+                        {{ form.order }}
+                        {% if form.order.errors %}<p class="rpg-error">{{ form.order.errors }}</p>{% endif %}
+                    </div>
+                    <div class="rpg-form-group">
+                        {{ form.goal.label_tag }}
+                        {{ form.goal }}
+                        {% if form.goal.errors %}<p class="rpg-error">{{ form.goal.errors }}</p>{% endif %}
+                    </div>
+                    <div class="rpg-form-group">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                            {{ form.summary.label_tag }}
+                            <button type="button"
+                                    hx-post="{% url 'adventure:ai-draft-act-summary' campaign.slug object.pk %}"
+                                    hx-target="#summary-container"
+                                    hx-swap="innerHTML"
+                                    hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                                    class="rpg-btn rpg-btn-sm">
+                                <img src="/static/images/icons/actions/cast-spell.svg" alt="" class="rpg-icon rpg-icon-sm rpg-icon-primary">
+                                Generate Summary
+                            </button>
+                        </div>
+                        <div id="summary-container">
+                            {{ form.summary }}
+                        </div>
+                        {% if form.summary.errors %}<p class="rpg-error">{{ form.summary.errors }}</p>{% endif %}
+                    </div>
+                {% else %}
+                    <div class="rpg-form-group">
+                        {{ form.as_p }}
+                    </div>
+                {% endif %}
+
                 <div class="action-buttons mt-2">
                     <button class="rpg-btn btn-primary" type="submit">
                         {% if object %}Save Changes{% else %}Create Act{% endif %}

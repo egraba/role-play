@@ -1,14 +1,25 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import QuerySet
-from django.http import HttpResponseBase
+from django.http import HttpRequest, HttpResponse, HttpResponseBase
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import (
     CreateView,
     DeleteView,
     DetailView,
     ListView,
     UpdateView,
+)
+
+from adventure.exceptions import AIGenerationError
+from ai.adventure import (
+    generate_act_summary,
+    generate_campaign_synopsis,
+    generate_encounter_description,
+    generate_location_description,
+    generate_npc_personality,
+    generate_scene_description,
 )
 
 from .forms import (
@@ -418,3 +429,117 @@ class EncounterDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_success_url(self) -> str:
         return self.object.scene.act.campaign.get_absolute_url()
+
+
+# ---------------------------------------------------------------------------
+# AI draft HTMX endpoints
+# ---------------------------------------------------------------------------
+
+
+class AIDraftCampaignSynopsisView(LoginRequiredMixin, View):
+    def post(self, request: HttpRequest, slug: str) -> HttpResponse:
+        campaign = get_object_or_404(Campaign, slug=slug, owner=request.user)
+        try:
+            text = generate_campaign_synopsis(request.user, campaign)
+        except AIGenerationError as exc:
+            return HttpResponse(f'<p class="rpg-error">{exc}</p>')
+        return HttpResponse(
+            f'<textarea name="synopsis" class="rpg-input" rows="8">{text}</textarea>'
+        )
+
+
+class AIDraftActSummaryView(LoginRequiredMixin, View):
+    def post(self, request: HttpRequest, slug: str, pk: int) -> HttpResponse:
+        act = get_object_or_404(
+            Act,
+            pk=pk,
+            campaign__slug=slug,
+            campaign__owner=request.user,
+        )
+        try:
+            text = generate_act_summary(request.user, act)
+        except AIGenerationError as exc:
+            return HttpResponse(f'<p class="rpg-error">{exc}</p>')
+        return HttpResponse(
+            f'<textarea name="summary" class="rpg-input" rows="8">{text}</textarea>'
+        )
+
+
+class AIDraftSceneDescriptionView(LoginRequiredMixin, View):
+    def post(
+        self, request: HttpRequest, slug: str, act_pk: int, pk: int
+    ) -> HttpResponse:
+        scene = get_object_or_404(
+            Scene,
+            pk=pk,
+            act__pk=act_pk,
+            act__campaign__slug=slug,
+            act__campaign__owner=request.user,
+        )
+        try:
+            text = generate_scene_description(request.user, scene)
+        except AIGenerationError as exc:
+            return HttpResponse(f'<p class="rpg-error">{exc}</p>')
+        return HttpResponse(
+            f'<textarea name="description" class="rpg-input" rows="8">{text}</textarea>'
+        )
+
+
+class AIDraftNPCPersonalityView(LoginRequiredMixin, View):
+    def post(self, request: HttpRequest, slug: str, pk: int) -> HttpResponse:
+        npc = get_object_or_404(
+            NPC,
+            pk=pk,
+            campaign__slug=slug,
+            campaign__owner=request.user,
+        )
+        try:
+            text = generate_npc_personality(request.user, npc)
+        except AIGenerationError as exc:
+            return HttpResponse(f'<p class="rpg-error">{exc}</p>')
+        return HttpResponse(
+            f'<textarea name="personality" class="rpg-input" rows="8">{text}</textarea>'
+        )
+
+
+class AIDraftLocationDescriptionView(LoginRequiredMixin, View):
+    def post(self, request: HttpRequest, slug: str, pk: int) -> HttpResponse:
+        location = get_object_or_404(
+            Location,
+            pk=pk,
+            campaign__slug=slug,
+            campaign__owner=request.user,
+        )
+        try:
+            text = generate_location_description(request.user, location)
+        except AIGenerationError as exc:
+            return HttpResponse(f'<p class="rpg-error">{exc}</p>')
+        return HttpResponse(
+            f'<textarea name="description" class="rpg-input" rows="8">{text}</textarea>'
+        )
+
+
+class AIDraftEncounterDescriptionView(LoginRequiredMixin, View):
+    def post(
+        self,
+        request: HttpRequest,
+        slug: str,
+        act_pk: int,
+        scene_pk: int,
+        pk: int,
+    ) -> HttpResponse:
+        encounter = get_object_or_404(
+            Encounter,
+            pk=pk,
+            scene__pk=scene_pk,
+            scene__act__pk=act_pk,
+            scene__act__campaign__slug=slug,
+            scene__act__campaign__owner=request.user,
+        )
+        try:
+            text = generate_encounter_description(request.user, encounter)
+        except AIGenerationError as exc:
+            return HttpResponse(f'<p class="rpg-error">{exc}</p>')
+        return HttpResponse(
+            f'<textarea name="description" class="rpg-input" rows="8">{text}</textarea>'
+        )

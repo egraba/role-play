@@ -12,9 +12,57 @@
             </div>
             <form method="post">
                 {% csrf_token %}
-                <div class="rpg-form-group">
-                    {{ form.as_p }}
-                </div>
+
+                {% if object %}
+                    <div class="rpg-form-group">
+                        {{ form.name.label_tag }}
+                        {{ form.name }}
+                        {% if form.name.errors %}<p class="rpg-error">{{ form.name.errors }}</p>{% endif %}
+                    </div>
+                    <div class="rpg-form-group">
+                        {{ form.role.label_tag }}
+                        {{ form.role }}
+                        {% if form.role.errors %}<p class="rpg-error">{{ form.role.errors }}</p>{% endif %}
+                    </div>
+                    <div class="rpg-form-group">
+                        {{ form.motivation.label_tag }}
+                        {{ form.motivation }}
+                        {% if form.motivation.errors %}<p class="rpg-error">{{ form.motivation.errors }}</p>{% endif %}
+                    </div>
+                    <div class="rpg-form-group">
+                        {{ form.appearance.label_tag }}
+                        {{ form.appearance }}
+                        {% if form.appearance.errors %}<p class="rpg-error">{{ form.appearance.errors }}</p>{% endif %}
+                    </div>
+                    <div class="rpg-form-group">
+                        {{ form.notes.label_tag }}
+                        {{ form.notes }}
+                        {% if form.notes.errors %}<p class="rpg-error">{{ form.notes.errors }}</p>{% endif %}
+                    </div>
+                    <div class="rpg-form-group">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                            {{ form.personality.label_tag }}
+                            <button type="button"
+                                    hx-post="{% url 'adventure:ai-draft-npc-personality' campaign.slug object.pk %}"
+                                    hx-target="#personality-container"
+                                    hx-swap="innerHTML"
+                                    hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                                    class="rpg-btn rpg-btn-sm">
+                                <img src="/static/images/icons/actions/cast-spell.svg" alt="" class="rpg-icon rpg-icon-sm rpg-icon-primary">
+                                Generate Personality
+                            </button>
+                        </div>
+                        <div id="personality-container">
+                            {{ form.personality }}
+                        </div>
+                        {% if form.personality.errors %}<p class="rpg-error">{{ form.personality.errors }}</p>{% endif %}
+                    </div>
+                {% else %}
+                    <div class="rpg-form-group">
+                        {{ form.as_p }}
+                    </div>
+                {% endif %}
+
                 <div class="action-buttons mt-2">
                     <button class="rpg-btn btn-primary" type="submit">
                         {% if object %}Save Changes{% else %}Create NPC{% endif %}

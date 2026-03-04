@@ -107,4 +107,35 @@ urlpatterns = [
         views.EncounterDeleteView.as_view(),
         name="encounter-delete",
     ),
+    # AI draft endpoints
+    path(
+        "<slug:slug>/ai-draft-synopsis/",
+        views.AIDraftCampaignSynopsisView.as_view(),
+        name="ai-draft-campaign-synopsis",
+    ),
+    path(
+        "<slug:slug>/acts/<int:pk>/ai-draft-summary/",
+        views.AIDraftActSummaryView.as_view(),
+        name="ai-draft-act-summary",
+    ),
+    path(
+        "<slug:slug>/acts/<int:act_pk>/scenes/<int:pk>/ai-draft-description/",
+        views.AIDraftSceneDescriptionView.as_view(),
+        name="ai-draft-scene-description",
+    ),
+    path(
+        "<slug:slug>/npcs/<int:pk>/ai-draft-personality/",
+        views.AIDraftNPCPersonalityView.as_view(),
+        name="ai-draft-npc-personality",
+    ),
+    path(
+        "<slug:slug>/locations/<int:pk>/ai-draft-description/",
+        views.AIDraftLocationDescriptionView.as_view(),
+        name="ai-draft-location-description",
+    ),
+    path(
+        "<slug:slug>/acts/<int:act_pk>/scenes/<int:scene_pk>/encounters/<int:pk>/ai-draft-description/",
+        views.AIDraftEncounterDescriptionView.as_view(),
+        name="ai-draft-encounter-description",
+    ),
 ]

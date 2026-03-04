@@ -12,9 +12,57 @@
             </div>
             <form method="post">
                 {% csrf_token %}
-                <div class="rpg-form-group">
-                    {{ form.as_p }}
-                </div>
+
+                {% if object %}
+                    <div class="rpg-form-group">
+                        {{ form.title.label_tag }}
+                        {{ form.title }}
+                        {% if form.title.errors %}<p class="rpg-error">{{ form.title.errors }}</p>{% endif %}
+                    </div>
+                    <div class="rpg-form-group">
+                        {{ form.order.label_tag }}
+                        {{ form.order }}
+                        {% if form.order.errors %}<p class="rpg-error">{{ form.order.errors }}</p>{% endif %}
+                    </div>
+                    <div class="rpg-form-group">
+                        {{ form.encounter_type.label_tag }}
+                        {{ form.encounter_type }}
+                        {% if form.encounter_type.errors %}<p class="rpg-error">{{ form.encounter_type.errors }}</p>{% endif %}
+                    </div>
+                    <div class="rpg-form-group">
+                        {{ form.difficulty.label_tag }}
+                        {{ form.difficulty }}
+                        {% if form.difficulty.errors %}<p class="rpg-error">{{ form.difficulty.errors }}</p>{% endif %}
+                    </div>
+                    <div class="rpg-form-group">
+                        {{ form.rewards.label_tag }}
+                        {{ form.rewards }}
+                        {% if form.rewards.errors %}<p class="rpg-error">{{ form.rewards.errors }}</p>{% endif %}
+                    </div>
+                    <div class="rpg-form-group">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                            {{ form.description.label_tag }}
+                            <button type="button"
+                                    hx-post="{% url 'adventure:ai-draft-encounter-description' campaign.slug act.pk scene.pk object.pk %}"
+                                    hx-target="#description-container"
+                                    hx-swap="innerHTML"
+                                    hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                                    class="rpg-btn rpg-btn-sm">
+                                <img src="/static/images/icons/actions/cast-spell.svg" alt="" class="rpg-icon rpg-icon-sm rpg-icon-primary">
+                                Generate Description
+                            </button>
+                        </div>
+                        <div id="description-container">
+                            {{ form.description }}
+                        </div>
+                        {% if form.description.errors %}<p class="rpg-error">{{ form.description.errors }}</p>{% endif %}
+                    </div>
+                {% else %}
+                    <div class="rpg-form-group">
+                        {{ form.as_p }}
+                    </div>
+                {% endif %}
+
                 <div class="action-buttons mt-2">
                     <button class="rpg-btn btn-primary" type="submit">
                         {% if object %}Save Changes{% else %}Create Encounter{% endif %}
