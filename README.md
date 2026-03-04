@@ -85,7 +85,7 @@ role_play/
 │   ├── constants/       # Event registry, combat states, log categories
 │   ├── presenters.py    # Event message formatting
 │   └── consumers.py     # WebSocket consumer with dynamic dispatch
-├── master/       # Campaign management
+├── adventure/    # Campaign planning (Campaign → Act → Scene → Encounter)
 ├── user/         # Custom user authentication
 └── ai/           # Claude AI integration for content generation
 ```

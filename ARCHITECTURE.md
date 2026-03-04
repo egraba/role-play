@@ -20,7 +20,7 @@ A Django-based D&D 5e virtual tabletop with real-time WebSocket gameplay, AI-pow
 role_play/
 ├── character/    # Character creation, spells, equipment, D&D mechanics
 ├── game/         # Game engine, combat, events, WebSocket
-├── master/       # Campaign management
+├── adventure/    # Campaign planning
 ├── user/         # Custom user model
 ├── ai/           # Anthropic Claude integration
 └── utils/        # Shared utilities (dice, channels)
@@ -32,7 +32,7 @@ role_play/
 |-----|---------|
 | `character/` | Character sheets, spellcasting, equipment, skills, species, classes |
 | `game/` | Game sessions, combat, events, real-time communication |
-| `master/` | Campaign creation and configuration |
+| `adventure/` | Campaign planning (Campaign → Act → Scene → Encounter) |
 | `user/` | Authentication (extends Django's AbstractUser) |
 | `ai/` | Quest enrichment via Claude API |
 
@@ -410,7 +410,7 @@ GameContextMixin:
 ### Models
 - `character/models/` - Character system (~15 files)
 - `game/models/` - Game/combat/events (3 files)
-- `master/models.py` - Campaign
+- `adventure/models.py` - Campaign
 - `user/models.py` - User
 
 ### Business Logic

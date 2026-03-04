@@ -37,7 +37,7 @@ Run `poe --help` to see all available tasks.
 ```
 character/     # Character system (abilities, classes, races, skills, equipment, spells)
 game/          # Game engine (events, combat, WebSocket consumers, rolls)
-master/        # Campaign management
+adventure/     # Campaign planning (Campaign → Act → Scene → Encounter)
 user/          # Authentication
 ai/            # Claude API integration for content generation
 role_play/     # Django settings
