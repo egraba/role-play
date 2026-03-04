@@ -43,6 +43,8 @@ def test_ai_draft_synopsis_returns_html(mock_generate, client):
     )
     assert response.status_code == 200
     assert b"A great campaign synopsis." in response.content
+    assert b"<textarea" in response.content
+    assert b'name="synopsis"' in response.content
 
 
 @pytest.mark.django_db
@@ -103,6 +105,8 @@ def test_ai_draft_act_summary_returns_html(mock_generate, client):
     )
     assert response.status_code == 200
     assert b"Act summary text." in response.content
+    assert b"<textarea" in response.content
+    assert b'name="summary"' in response.content
 
 
 @pytest.mark.django_db
@@ -176,6 +180,8 @@ def test_ai_draft_scene_description_returns_html(mock_generate, client):
     )
     assert response.status_code == 200
     assert b"Scene description text." in response.content
+    assert b"<textarea" in response.content
+    assert b'name="description"' in response.content
 
 
 @pytest.mark.django_db
@@ -230,6 +236,8 @@ def test_ai_draft_npc_personality_returns_html(mock_generate, client):
     )
     assert response.status_code == 200
     assert b"NPC personality text." in response.content
+    assert b"<textarea" in response.content
+    assert b'name="personality"' in response.content
 
 
 @pytest.mark.django_db
@@ -279,6 +287,8 @@ def test_ai_draft_location_description_returns_html(mock_generate, client):
     )
     assert response.status_code == 200
     assert b"Location description text." in response.content
+    assert b"<textarea" in response.content
+    assert b'name="description"' in response.content
 
 
 @pytest.mark.django_db
@@ -342,6 +352,8 @@ def test_ai_draft_encounter_description_returns_html(mock_generate, client):
     )
     assert response.status_code == 200
     assert b"Encounter description text." in response.content
+    assert b"<textarea" in response.content
+    assert b'name="description"' in response.content
 
 
 @pytest.mark.django_db

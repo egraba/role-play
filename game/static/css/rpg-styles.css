@@ -189,6 +189,7 @@ h3 { font-size: 14px; font-weight: 600; margin: 0 0 8px; }
 /* Legacy button aliases */
 .rpg-btn       { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; font-family: inherit; font-size: 13px; border-radius: var(--radius); border: 1px solid var(--border); background: transparent; color: var(--text); cursor: pointer; text-decoration: none; transition: border-color 0.15s, color 0.15s; white-space: nowrap; -webkit-appearance: none; appearance: none; }
 .rpg-btn:hover { border-color: rgba(255,255,255,0.2); }
+.rpg-btn-sm    { font-size: 0.8rem; padding: 0.25rem 0.75rem; }
 .btn-attack    { border-color: var(--red);    color: var(--red);    }
 .btn-defend    { border-color: var(--border); color: var(--text-muted); }
 .btn-skill     { border-color: var(--border); color: var(--text-muted); }
@@ -255,6 +256,10 @@ label {
 /* Legacy form alias */
 .rpg-form-group   { margin-bottom: 16px; }
 .rpg-select       { width: 100%; padding: 8px 10px; font-family: inherit; font-size: 14px; background: var(--bg-raised); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); -webkit-appearance: none; appearance: none; }
+.rpg-input        { width: 100%; padding: 8px 10px; font-family: inherit; font-size: 14px; background: var(--bg-raised); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); -webkit-appearance: none; appearance: none; }
+.rpg-input:focus  { border-color: var(--accent); outline: none; }
+.rpg-error        { color: var(--red); font-size: 0.875rem; margin-top: 0.25rem; }
+.rpg-alert        { background: rgba(201, 162, 39, 0.1); border: 1px solid var(--accent); border-radius: var(--radius); color: var(--accent); padding: 0.75rem 1rem; margin-bottom: 1rem; }
 
 /* ==================== TABLE ==================== */
 

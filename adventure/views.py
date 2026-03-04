@@ -1,6 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import QuerySet
 from django.http import HttpRequest, HttpResponse, HttpResponseBase
+from django.utils.html import format_html
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views import View
@@ -442,9 +443,12 @@ class AIDraftCampaignSynopsisView(LoginRequiredMixin, View):
         try:
             text = generate_campaign_synopsis(request.user, campaign)
         except AIGenerationError as exc:
-            return HttpResponse(f'<p class="rpg-error">{exc}</p>')
+            return HttpResponse(format_html('<p class="rpg-error">{}</p>', str(exc)))
         return HttpResponse(
-            f'<textarea name="synopsis" class="rpg-input" rows="8">{text}</textarea>'
+            format_html(
+                '<textarea name="synopsis" class="rpg-input" rows="8">{}</textarea>',
+                text,
+            )
         )
 
 
@@ -459,9 +463,12 @@ class AIDraftActSummaryView(LoginRequiredMixin, View):
         try:
             text = generate_act_summary(request.user, act)
         except AIGenerationError as exc:
-            return HttpResponse(f'<p class="rpg-error">{exc}</p>')
+            return HttpResponse(format_html('<p class="rpg-error">{}</p>', str(exc)))
         return HttpResponse(
-            f'<textarea name="summary" class="rpg-input" rows="8">{text}</textarea>'
+            format_html(
+                '<textarea name="summary" class="rpg-input" rows="8">{}</textarea>',
+                text,
+            )
         )
 
 
@@ -479,9 +486,12 @@ class AIDraftSceneDescriptionView(LoginRequiredMixin, View):
         try:
             text = generate_scene_description(request.user, scene)
         except AIGenerationError as exc:
-            return HttpResponse(f'<p class="rpg-error">{exc}</p>')
+            return HttpResponse(format_html('<p class="rpg-error">{}</p>', str(exc)))
         return HttpResponse(
-            f'<textarea name="description" class="rpg-input" rows="8">{text}</textarea>'
+            format_html(
+                '<textarea name="description" class="rpg-input" rows="8">{}</textarea>',
+                text,
+            )
         )
 
 
@@ -496,9 +506,12 @@ class AIDraftNPCPersonalityView(LoginRequiredMixin, View):
         try:
             text = generate_npc_personality(request.user, npc)
         except AIGenerationError as exc:
-            return HttpResponse(f'<p class="rpg-error">{exc}</p>')
+            return HttpResponse(format_html('<p class="rpg-error">{}</p>', str(exc)))
         return HttpResponse(
-            f'<textarea name="personality" class="rpg-input" rows="8">{text}</textarea>'
+            format_html(
+                '<textarea name="personality" class="rpg-input" rows="8">{}</textarea>',
+                text,
+            )
         )
 
 
@@ -513,9 +526,12 @@ class AIDraftLocationDescriptionView(LoginRequiredMixin, View):
         try:
             text = generate_location_description(request.user, location)
         except AIGenerationError as exc:
-            return HttpResponse(f'<p class="rpg-error">{exc}</p>')
+            return HttpResponse(format_html('<p class="rpg-error">{}</p>', str(exc)))
         return HttpResponse(
-            f'<textarea name="description" class="rpg-input" rows="8">{text}</textarea>'
+            format_html(
+                '<textarea name="description" class="rpg-input" rows="8">{}</textarea>',
+                text,
+            )
         )
 
 
@@ -539,7 +555,10 @@ class AIDraftEncounterDescriptionView(LoginRequiredMixin, View):
         try:
             text = generate_encounter_description(request.user, encounter)
         except AIGenerationError as exc:
-            return HttpResponse(f'<p class="rpg-error">{exc}</p>')
+            return HttpResponse(format_html('<p class="rpg-error">{}</p>', str(exc)))
         return HttpResponse(
-            f'<textarea name="description" class="rpg-input" rows="8">{text}</textarea>'
+            format_html(
+                '<textarea name="description" class="rpg-input" rows="8">{}</textarea>',
+                text,
+            )
         )
