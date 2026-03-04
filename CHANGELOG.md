@@ -27,6 +27,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 - Stub origin feats: Crafter, Healer, Lucky, Magic Initiate (Bard/Druid/Sorcerer/Warlock), Musician, Skilled, Tavern Brawler, Tough
 
 ### Fixed
+- Renovate: remove unsupported `"uv"` manager from `enabledManagers` (uv is handled by `pep621`)
 - Ops: Run `collectstatic` at Docker build time instead of server startup — daphne now binds immediately, eliminating flyctl health-check timeouts on deploy
 - Ops: Health check (`/health/`) now probes DB connection and returns 503 if unreachable (was always 200)
 - Security: Add `SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"` to limit referrer header leakage

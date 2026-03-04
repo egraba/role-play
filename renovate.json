@@ -60,7 +60,6 @@
   ],
   "enabledManagers": [
     "pep621",
-    "uv",
     "dockerfile",
     "docker-compose",
     "github-actions",
