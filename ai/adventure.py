@@ -1,14 +1,17 @@
 """AI content generation service for adventure planning."""
 
-from typing import Any
+from typing import TYPE_CHECKING
 
 import anthropic
 
-from ..exceptions import AIGenerationError
+from adventure.exceptions import AIGenerationError
 from adventure.models import Act, Campaign, Encounter, Location, NPC, Scene
 
+if TYPE_CHECKING:
+    from user.models import User
 
-def _get_api_key(user: Any) -> str:
+
+def _get_api_key(user: "User") -> str:
     """Get the Anthropic API key for the user. Raises AIGenerationError if not set."""
     key = getattr(user, "anthropic_api_key", "")
     if not key:
@@ -19,16 +22,19 @@ def _get_api_key(user: Any) -> str:
 def _call_claude(api_key: str, system_prompt: str, user_prompt: str) -> str:
     """Call Claude API and return the response text."""
     client = anthropic.Anthropic(api_key=api_key)
-    message = client.messages.create(
-        model="claude-opus-4-6",
-        max_tokens=1024,
-        messages=[{"role": "user", "content": user_prompt}],
-        system=system_prompt,
-    )
-    return message.content[0].text
+    try:
+        message = client.messages.create(
+            model="claude-opus-4-6",
+            max_tokens=1024,
+            messages=[{"role": "user", "content": user_prompt}],
+            system=system_prompt,
+        )
+        return message.content[0].text
+    except anthropic.APIError as exc:
+        raise AIGenerationError(f"Claude API error: {exc}") from exc
 
 
-def generate_campaign_synopsis(user: Any, campaign: Campaign) -> str:
+def generate_campaign_synopsis(user: "User", campaign: Campaign) -> str:
     """Generate a synopsis for a campaign based on its title, conflict, and objective."""
     system = "You are a creative D&D campaign writer. Write vivid, engaging content for tabletop RPG campaigns following SRD 5.2.1 conventions."
     prompt = f"""Write a compelling 2-3 paragraph campaign synopsis for:
@@ -43,7 +49,7 @@ Write the synopsis in second person ("The players will...") suitable for a DM ov
     return _call_claude(_get_api_key(user), system, prompt)
 
 
-def generate_act_summary(user: Any, act: Act) -> str:
+def generate_act_summary(user: "User", act: Act) -> str:
     """Generate a summary for an act."""
     campaign = act.campaign
     system = "You are a creative D&D campaign writer. Write concise, action-focused act summaries for tabletop RPG campaigns."
@@ -57,7 +63,7 @@ Write the summary from a DM perspective, describing what happens in this act."""
     return _call_claude(_get_api_key(user), system, prompt)
 
 
-def generate_scene_description(user: Any, scene: Scene) -> str:
+def generate_scene_description(user: "User", scene: Scene) -> str:
     """Generate a description for a scene."""
     act = scene.act
     campaign = act.campaign
@@ -72,7 +78,7 @@ Write the description in present tense from the DM perspective, describing the e
     return _call_claude(_get_api_key(user), system, prompt)
 
 
-def generate_npc_personality(user: Any, npc: NPC) -> str:
+def generate_npc_personality(user: "User", npc: NPC) -> str:
     """Generate personality details for an NPC."""
     campaign = npc.campaign
     system = "You are a creative D&D storyteller. Create memorable, consistent NPC personalities for tabletop RPG campaigns."
@@ -90,7 +96,7 @@ Format as plain text, label each section."""
     return _call_claude(_get_api_key(user), system, prompt)
 
 
-def generate_location_description(user: Any, location: Location) -> str:
+def generate_location_description(user: "User", location: Location) -> str:
     """Generate a description for a location."""
     campaign = location.campaign
     system = "You are a creative D&D worldbuilder. Write vivid location descriptions for tabletop RPG settings."
@@ -103,7 +109,7 @@ Describe the location's atmosphere, key features, and what makes it memorable.""
     return _call_claude(_get_api_key(user), system, prompt)
 
 
-def generate_encounter_description(user: Any, encounter: Encounter) -> str:
+def generate_encounter_description(user: "User", encounter: Encounter) -> str:
     """Generate a description for an encounter."""
     scene = encounter.scene
     campaign = scene.act.campaign
