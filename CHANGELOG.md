@@ -10,8 +10,21 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 - Add Dependabot `github-actions` ecosystem to keep CI action versions up to date
 - Add IP-based login rate limiting (5 requests/minute) via `django-ratelimit`
 
+### Added
+- Game log: SVG icon + text labels for category filter buttons (replaces emoji)
+- Game log: `--purple` CSS token added to `rpg-styles.css` design system
+- Game log: Category color bars on log entries (rolls=gold, combat=red, spells=purple, chat=muted, dm=green)
+- Game log: Expand indicator (`▶`) on entries with details, rotates on expand
+
 ### Changed
 - `prod-deploy` poe task no longer runs `db-load-settings` on every deploy (prevents overwriting admin edits); new `prod-initial-setup` task for one-time fixture loading
+- Game log: Filter bar restyled with tab-underline active indicator, no layout shift on toggle
+- Monsters: 87 new SRD 5.2.1 monsters covering all 14 creature types and CR 0–24
+- Spells: 135 new SRD 5.2.1 spells (cantrips through level 5, covering all classes)
+- Species: Dragonborn, Gnome, Goliath, Orc, Tiefling (SRD 5.2.1)
+- Backgrounds: Artisan, Charlatan, Entertainer, Farmer, Guard, Guide, Hermit, Merchant, Noble, Pilgrim, Sailor, Scribe, Wayfarer (SRD 5.2.1)
+- Feats: 30 general feats (Ability Score Improvement, Actor, Athlete, Charger, Chef, Crossbow Expert, Crusher, Defensive Duelist, Dual Wielder, Durable, Elemental Adept, Fey-Touched, Grappler, Great Weapon Master, Heavy Armor Master, Inspiring Leader, Mage Slayer, Mounted Combatant, Observant, Polearm Master, Resilient, Sentinel, Shadow-Touched, Sharpshooter, Shield Master, Skulker, Slasher, Spell Sniper, War Caster, Weapon Master) (SRD 5.2.1)
+- Stub origin feats: Crafter, Healer, Lucky, Magic Initiate (Bard/Druid/Sorcerer/Warlock), Musician, Skilled, Tavern Brawler, Tough
 
 ### Fixed
 - Ops: Run `collectstatic` at Docker build time instead of server startup — daphne now binds immediately, eliminating flyctl health-check timeouts on deploy
@@ -28,26 +41,9 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 - Ops: added `environment="production"` and `traces_sample_rate=0.1` to Sentry config
 - Security: WebSocket consumer now rejects unauthenticated connections with close code 4003
 - Security: Production `SECRET_KEY` now read from `DJANGO_SECRET_KEY` env var instead of regenerating on every restart (previously invalidated all sessions, CSRF tokens, and signed cookies on every deploy)
-
-### Added
-- Game log: SVG icon + text labels for category filter buttons (replaces emoji)
-- Game log: `--purple` CSS token added to `rpg-styles.css` design system
-- Game log: Category color bars on log entries (rolls=gold, combat=red, spells=purple, chat=muted, dm=green)
-- Game log: Expand indicator (`▶`) on entries with details, rotates on expand
-
-### Fixed
 - Game log: CSS/JS class name mismatch causing all styling and filtering to be broken
 - Game log: Character filter logic corrected to use include-list semantics (was inverted)
 - Skills panel: Skill names no longer truncated ("Acrob" → "Acrobatics") — widened column and removed ability tag
-
-### Changed
-- Game log: Filter bar restyled with tab-underline active indicator, no layout shift on toggle
-- Monsters: 87 new SRD 5.2.1 monsters covering all 14 creature types and CR 0–24
-- Spells: 135 new SRD 5.2.1 spells (cantrips through level 5, covering all classes)
-- Species: Dragonborn, Gnome, Goliath, Orc, Tiefling (SRD 5.2.1)
-- Backgrounds: Artisan, Charlatan, Entertainer, Farmer, Guard, Guide, Hermit, Merchant, Noble, Pilgrim, Sailor, Scribe, Wayfarer (SRD 5.2.1)
-- Feats: 30 general feats (Ability Score Improvement, Actor, Athlete, Charger, Chef, Crossbow Expert, Crusher, Defensive Duelist, Dual Wielder, Durable, Elemental Adept, Fey-Touched, Grappler, Great Weapon Master, Heavy Armor Master, Inspiring Leader, Mage Slayer, Mounted Combatant, Observant, Polearm Master, Resilient, Sentinel, Shadow-Touched, Sharpshooter, Shield Master, Skulker, Slasher, Spell Sniper, War Caster, Weapon Master) (SRD 5.2.1)
-- Stub origin feats: Crafter, Healer, Lucky, Magic Initiate (Bard/Druid/Sorcerer/Warlock), Musician, Skilled, Tavern Brawler, Tough
 
 ## v0.15.0 - 2026-02-20
 
@@ -60,15 +56,6 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
   - redis: v7.1.1 → v7.2.0
   - sentry-sdk: v2.52.0 → v2.53.0
   - virtualenv: v20.36.1 → v20.37.0
-
-### Fixed
-* Fixed CI failing for Dependabot PRs due to inaccessible repository secrets
-  - Test settings (`test.py`) no longer depend on environment variables or Doppler
-  - Removed unused Postgres/Redis service containers from CI (tests use SQLite + InMemoryChannelLayer)
-  - Removed Doppler CLI dependency from CI test job
-  - Deleted unused `ci.py` settings module
-
-### Changed
 * Moved bestiary/equipment/magic tests from `character/tests/` to their respective app test directories
   - `character/tests/models/test_monsters.py` → `bestiary/tests/models/test_monsters.py`
   - `character/tests/models/test_equipment.py` → `equipment/tests/models/test_equipment.py`
@@ -112,14 +99,6 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
   - Zero-downtime migration using `SeparateDatabaseAndState` (state-only, no DB changes)
   - All moved models use `db_table` to preserve existing table names
   - Updated all cross-app imports and FK references
-
-### Removed
-* Removed deprecated Game Events panel from game view in favor of the Game Log panel
-  - Events are now exclusively displayed in the right-side Game Log panel with filtering, categories, and expandable details
-  - Refactored `GameView` from `ListView` to `TemplateView` (eliminates unnecessary event query on page load)
-  - Moved connection status indicator to bottom-left to avoid overlapping with the Game Log panel
-
-### Changed
 * Harmonized naming between poe tasks and Django settings files
   - Renamed `local.py` to `dev.py` to match `dev-*` task prefix
   - Renamed `production_fly.py` to `prod_fly.py` to match `prod-*` task prefix
@@ -134,14 +113,40 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
   - Added Service Layer section (GameEventService, DiceRollService)
   - Updated technology stack (Django 6.0, HTMX, removed Celery references)
   - Documented all event types, combat system, and character creation flow
+* Enhanced character detail template to follow SRD 5.2 structure:
+  - 3-column responsive layout with ability scores, combat stats, and skills
+  - Ability scores with abbreviations and calculated modifiers in grid layout
+  - Saving throws with proficiency markers and modifiers
+  - Combat stats panel with HP bar, Armor Class, Initiative, Speed, and Hit Dice
+  - Attacks section with attack bonus and damage
+  - Full skill list with proficiency indicators, modifiers, and associated abilities
+  - CSS-only tabbed interface for Features & Traits, Spells, Equipment, and Background
+  - Species traits, class features, and feats with descriptions
+  - Equipment tab with currency (CP, SP, GP, PP), armor, weapons, gear, packs, and tools
+  - Background tab with personality trait, ideal, bond, and flaw
+  - Responsive design with breakpoints for desktop, tablet, and mobile
+  - Removed unused character_sheet.html template
+
+### Removed
+* Removed deprecated Game Events panel from game view in favor of the Game Log panel
+  - Events are now exclusively displayed in the right-side Game Log panel with filtering, categories, and expandable details
+  - Refactored `GameView` from `ListView` to `TemplateView` (eliminates unnecessary event query on page load)
+  - Moved connection status indicator to bottom-left to avoid overlapping with the Game Log panel
+* Removed staging (`stg-*`) poe tasks from `poe_tasks.toml`
 
 ### Fixed
+* Fixed CI failing for Dependabot PRs due to inaccessible repository secrets
+  - Test settings (`test.py`) no longer depend on environment variables or Doppler
+  - Removed unused Postgres/Redis service containers from CI (tests use SQLite + InMemoryChannelLayer)
+  - Removed Doppler CLI dependency from CI test job
+  - Deleted unused `ci.py` settings module
 * Fixed Fly.io deployment failure caused by remote builder network restrictions preventing uv installation from GHCR and PyPI; switched to multi-stage `COPY --from` for uv and local Docker builds
 * Fixed deployment failure by updating Docker base image from removed `bookworm-slim` to `trixie-slim` (uv 0.9+)
 * Fixed flaky tests in CI caused by parallel test execution with shared PostgreSQL database
   - CI now runs tests serially (`-n 0`) to avoid race conditions and duplicate key violations
   - Made `TestSkillModel` tests more robust by handling missing fixtures gracefully
   - Improved `conftest.py` fixture loading with better documentation for xdist compatibility
+* Test settings no longer require environment variables - tests can run without ANTHROPIC_API_KEY, DJANGO_SECRET_KEY, or POSTGRES_PASSWORD being set
 
 ### Added
 * Keyboard shortcuts for the game page:
@@ -290,26 +295,6 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
   - Responsive design with mobile breakpoints
   - New views: AttackModalView, AttackRollView, DamageRollView, ApplyDamageView
   - New URL endpoints: combat-attack-modal, combat-attack-roll, combat-damage-roll, combat-apply-damage
-
-### Removed
-* Removed staging (`stg-*`) poe tasks from `poe_tasks.toml`
-
-### Changed
-* Enhanced character detail template to follow SRD 5.2 structure:
-  - 3-column responsive layout with ability scores, combat stats, and skills
-  - Ability scores with abbreviations and calculated modifiers in grid layout
-  - Saving throws with proficiency markers and modifiers
-  - Combat stats panel with HP bar, Armor Class, Initiative, Speed, and Hit Dice
-  - Attacks section with attack bonus and damage
-  - Full skill list with proficiency indicators, modifiers, and associated abilities
-  - CSS-only tabbed interface for Features & Traits, Spells, Equipment, and Background
-  - Species traits, class features, and feats with descriptions
-  - Equipment tab with currency (CP, SP, GP, PP), armor, weapons, gear, packs, and tools
-  - Background tab with personality trait, ideal, bond, and flaw
-  - Responsive design with breakpoints for desktop, tablet, and mobile
-  - Removed unused character_sheet.html template
-
-### Added
 * Dynamic HP bar component with HTMX and real-time WebSocket updates:
   - HTMX-powered HP bar partial template with automatic refresh
   - Current/max HP display with animated progress bar
@@ -358,9 +343,6 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
   - Auto-refresh on turn changes via HTMX and WebSocket events
   - HTMX endpoints updated: combat-take-action, combat-move return HTML for seamless updates
   - Responsive grid layout with mobile breakpoints
-
-### Fixed
-* Test settings no longer require environment variables - tests can run without ANTHROPIC_API_KEY, DJANGO_SECRET_KEY, or POSTGRES_PASSWORD being set
 
 ## v0.14.1 - 2026-01-27
 

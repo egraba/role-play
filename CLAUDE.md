@@ -89,10 +89,12 @@ Before submitting any PR:
 2. **Coverage maintained**: `doppler run -- uv run poe test-cov`
 3. **Pre-commit passes**: `pre-commit run --all-files`
 4. **CHANGELOG.md updated** under `## Unreleased`:
+   - `### Security` - security fixes/hardening
    - `### Added` - new features
    - `### Changed` - modifications
-   - `### Fixed` - bug fixes
    - `### Removed` - removed features
+   - `### Fixed` - bug fixes
+   - Each section type must appear **at most once** per release — append to the existing section, never add a second one
 5. **Architecture changes documented** in all applicable files: `CLAUDE.md`, `ARCHITECTURE.md`, `README.md`
 
 ## Key Technical Details
