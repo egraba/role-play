@@ -5,6 +5,15 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 ## Unreleased
 
 ### Added
+- New `adventure/` app: Campaign planning with full SRD hierarchy (Campaign → Act → Scene → Encounter)
+  - Campaign model with owner, party_level, tone, setting fields
+  - Act, Scene, NPC, Location, Encounter, EncounterMonster models
+  - Full CRUD views with owner-scoped access control
+  - AI-assisted content generation (BYOK: Anthropic API key per user)
+  - HTMX Generate buttons in all edit forms
+  - Breadcrumb navigation throughout
+- `user.anthropic_api_key` field for BYOK AI generation
+- `adventure.Scene` FK on `game.Quest` for tying live games to planned scenes
 - Game log: SVG icon + text labels for category filter buttons (replaces emoji)
 - Game log: `--purple` CSS token added to `rpg-styles.css` design system
 - Game log: Category color bars on log entries (rolls=gold, combat=red, spells=purple, chat=muted, dm=green)
@@ -16,6 +25,8 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 - Skills panel: Skill names no longer truncated ("Acrob" → "Acrobatics") — widened column and removed ability tag
 
 ### Changed
+- `game.Game.campaign` FK re-pointed from `master.Campaign` to `adventure.Campaign`
+- Navigation updated to link to adventure campaign management
 - Game log: Filter bar restyled with tab-underline active indicator, no layout shift on toggle
 - Monsters: 87 new SRD 5.2.1 monsters covering all 14 creature types and CR 0–24
 - Spells: 135 new SRD 5.2.1 spells (cantrips through level 5, covering all classes)
@@ -23,6 +34,9 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 - Backgrounds: Artisan, Charlatan, Entertainer, Farmer, Guard, Guide, Hermit, Merchant, Noble, Pilgrim, Sailor, Scribe, Wayfarer (SRD 5.2.1)
 - Feats: 30 general feats (Ability Score Improvement, Actor, Athlete, Charger, Chef, Crossbow Expert, Crusher, Defensive Duelist, Dual Wielder, Durable, Elemental Adept, Fey-Touched, Grappler, Great Weapon Master, Heavy Armor Master, Inspiring Leader, Mage Slayer, Mounted Combatant, Observant, Polearm Master, Resilient, Sentinel, Shadow-Touched, Sharpshooter, Shield Master, Skulker, Slasher, Spell Sniper, War Caster, Weapon Master) (SRD 5.2.1)
 - Stub origin feats: Crafter, Healer, Lucky, Magic Initiate (Bard/Druid/Sorcerer/Warlock), Musician, Skilled, Tavern Brawler, Tough
+
+### Removed
+- `master/` app removed — replaced by `adventure/`
 
 ## v0.15.0 - 2026-02-20
 
