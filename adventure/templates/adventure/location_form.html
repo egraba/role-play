@@ -2,14 +2,19 @@
 
 {% block content %}
     <div class="rpg-container">
-        <div class="rpg-panel" style="max-width: 800px; margin: 50px auto;">
+        <nav class="rpg-breadcrumb" aria-label="Breadcrumb">
+            <a href="{% url 'adventure:campaign-list' %}">Campaigns</a>
+            <span class="rpg-breadcrumb-sep">›</span>
+            <a href="{{ campaign.get_absolute_url }}">{{ campaign }}</a>
+            <span class="rpg-breadcrumb-sep">›</span>
+            <span>{% if object %}Edit Location{% else %}New Location{% endif %}</span>
+        </nav>
+
+        <div class="rpg-panel" style="max-width: 800px; margin: 0 auto;">
             <h1 class="panel-title">
                 <img src="/static/images/icons/actions/cast-spell.svg" alt="" class="rpg-icon rpg-icon-lg rpg-icon-primary">
                 {% if object %}Edit Location{% else %}New Location{% endif %}
             </h1>
-            <div class="text-center mb-2">
-                <a href="{{ campaign.get_absolute_url }}" style="color: var(--color-primary); text-decoration: underline;">Return to {{ campaign }}</a>
-            </div>
             {% if not request.user.anthropic_api_key %}
                 <div class="rpg-alert">
                     <strong>AI generation requires an Anthropic API key.</strong>

@@ -2,14 +2,19 @@
 
 {% block content %}
     <div class="rpg-container">
+        <nav class="rpg-breadcrumb" aria-label="Breadcrumb">
+            <a href="{% url 'adventure:campaign-list' %}">Campaigns</a>
+            <span class="rpg-breadcrumb-sep">›</span>
+            <a href="{{ act.campaign.get_absolute_url }}">{{ act.campaign }}</a>
+            <span class="rpg-breadcrumb-sep">›</span>
+            <span>{{ act }}</span>
+        </nav>
+
         <div class="rpg-panel">
             <h1 class="panel-title" style="font-size: 2rem;">
                 <img src="/static/images/icons/actions/cast-spell.svg" alt="" class="rpg-icon rpg-icon-lg rpg-icon-primary">
                 {{ act }}
             </h1>
-            <div class="text-center mb-2">
-                <a href="{{ act.campaign.get_absolute_url }}" style="color: var(--color-primary); text-decoration: underline;">Return to {{ act.campaign }}</a>
-            </div>
 
             <div class="rpg-section">
                 <div style="display: flex; gap: 2rem; flex-wrap: wrap;">

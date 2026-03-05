@@ -546,6 +546,10 @@ label {
 .rpg-container { max-width: 960px; margin: 0 auto; padding: 24px 16px; }
 .rpg-panel     { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
 .rpg-section   { margin-bottom: 16px; }
+.rpg-breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-muted); margin-bottom: 16px; flex-wrap: wrap; }
+.rpg-breadcrumb a { color: var(--accent); text-decoration: none; }
+.rpg-breadcrumb a:hover { text-decoration: underline; }
+.rpg-breadcrumb-sep { opacity: 0.4; }
 .rpg-grid      { display: grid; gap: 16px; }
 .rpg-icon      { display: inline-block; vertical-align: middle; filter: invert(1); }
 .rpg-icon-sm   { width: 16px; height: 16px; }
