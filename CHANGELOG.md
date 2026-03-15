@@ -11,6 +11,8 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 - Add IP-based login rate limiting (5 requests/minute) via `django-ratelimit`
 
 ### Added
+- `db-populate-users` poe task: idempotently creates thomas (DM), eric and seb (with characters) for local testing
+- Fix `game/models/__init__.py` to register all game models with Django's app registry (was causing system check errors)
 - Game log: SVG icon + text labels for category filter buttons (replaces emoji)
 - Game log: `--purple` CSS token added to `rpg-styles.css` design system
 - Game log: Category color bars on log entries (rolls=gold, combat=red, spells=purple, chat=muted, dm=green)
