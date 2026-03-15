@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from game.models.game import Game
+from game.models.game import Game, Master
 
 
 class Command(BaseCommand):
@@ -21,9 +21,9 @@ class Command(BaseCommand):
         for game in games:
             try:
                 master = game.master.user.username
-            except Game.master.RelatedObjectDoesNotExist:
+            except Master.DoesNotExist:
                 master = "-"
-            player_count = game.player_set.count()
+            player_count = len(game.player_set.all())
             self.stdout.write(
                 f"{game.id:<6} {game.name:<30} {game.get_state_display():<20} {master:<20} {player_count}"
             )

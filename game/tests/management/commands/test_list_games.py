@@ -3,7 +3,9 @@ from io import StringIO
 import pytest
 from django.core.management import call_command
 
-from game.tests.factories import GameFactory
+from character.tests.factories import CharacterFactory
+from game.tests.factories import GameFactory, PlayerFactory
+from user.tests.factories import UserFactory
 
 pytestmark = pytest.mark.django_db
 
@@ -40,3 +42,13 @@ def test_list_games_shows_master():
     game = GameFactory()
     call_command("list_games", stdout=out)
     assert game.master.user.username in out.getvalue()
+
+
+def test_list_games_shows_player_count():
+    out = StringIO()
+    game = GameFactory()
+    user = UserFactory()
+    char = CharacterFactory(user=user)
+    PlayerFactory(user=user, game=game, character=char)
+    call_command("list_games", stdout=out)
+    assert "1" in out.getvalue()
