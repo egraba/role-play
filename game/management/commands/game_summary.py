@@ -2,6 +2,7 @@ from argparse import ArgumentParser
 
 from django.core.management.base import BaseCommand, CommandError
 
+from game.constants.combat import CombatState
 from game.models.combat import Combat
 from game.models.game import Game, Master
 
@@ -47,5 +48,7 @@ class Command(BaseCommand):
         else:
             self.stdout.write("\nNo players.")
 
-        combat_count = Combat.objects.filter(game=game).count()
+        combat_count = Combat.objects.filter(
+            game=game, state=CombatState.ACTIVE
+        ).count()
         self.stdout.write(f"\nActive combats: {combat_count}")
