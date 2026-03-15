@@ -35,6 +35,10 @@ cmd = "manage.py loaddata advancement abilities languages skills equipment condi
 help = "Populate the DB with realistic data"
 sequence = ["db-reset", "db-migrate", "db-load-settings", { cmd = "manage.py populate_db" }]
 
+[tasks.db-populate-users]
+help = "Create test accounts: thomas (DM), eric and seb (with characters)"
+cmd = "manage.py populate_users"
+
 [tasks.db-setup]
 help = "Full database setup (migrate + load fixtures)"
 sequence = ["db-migrate", "db-load-settings"]
