@@ -20,11 +20,15 @@ def test_start_game_sets_state_ongoing():
 
 
 def test_start_game_sets_start_date():
+    from django.utils import timezone
+
     out = StringIO()
     game = GameFactory()
+    before = timezone.now()
     call_command("start_game", game.id, stdout=out)
     game.refresh_from_db()
     assert game.start_date is not None
+    assert game.start_date >= before
 
 
 def test_start_game_does_not_exist():

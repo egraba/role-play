@@ -24,5 +24,5 @@ class Command(BaseCommand):
 
         game.state = GameState.ONGOING
         game.start_date = timezone.now()
-        game.save()
+        game.save(update_fields=["state", "start_date"])
         self.stdout.write(self.style.SUCCESS(f"Successfully started game {game.id}"))
