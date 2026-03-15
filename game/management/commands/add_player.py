@@ -1,6 +1,7 @@
 from argparse import ArgumentParser
 
 from django.core.management.base import BaseCommand, CommandError
+from django.db import IntegrityError, transaction
 
 from character.models.character import Character
 from game.models.game import Game, Player
@@ -34,7 +35,11 @@ class Command(BaseCommand):
         if Player.objects.filter(user=user).exists():
             raise CommandError(f"{username=} is already a player in a game")
 
-        Player.objects.create(user=user, game=game, character=character)
+        try:
+            with transaction.atomic():
+                Player.objects.create(user=user, game=game, character=character)
+        except IntegrityError as exc:
+            raise CommandError(f"{username=} is already a player in a game") from exc
         self.stdout.write(
             self.style.SUCCESS(
                 f"Successfully added player {username} to game {game.id}"

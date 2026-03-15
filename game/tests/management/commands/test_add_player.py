@@ -20,6 +20,8 @@ def test_add_player_success():
     call_command("add_player", game.id, user.username, stdout=out)
     assert Player.objects.filter(user=user, game=game).exists()
     assert "Successfully added player" in out.getvalue()
+    assert user.username in out.getvalue()
+    assert str(game.id) in out.getvalue()
 
 
 def test_add_player_game_does_not_exist():
@@ -52,3 +54,4 @@ def test_add_player_already_a_player():
     Player.objects.create(user=user, game=game, character=char)
     with pytest.raises(CommandError):
         call_command("add_player", game.id, user.username, stdout=out)
+    assert Player.objects.count() == 1
