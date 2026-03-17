@@ -14,6 +14,7 @@ class Command(BaseCommand):
 
     def handle(self, *args: object, **options: object) -> None:
         username = options["master"]
+        assert isinstance(username, str)
         try:
             user = User.objects.get(username=username)
         except User.DoesNotExist as exc:

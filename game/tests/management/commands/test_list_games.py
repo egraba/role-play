@@ -51,4 +51,7 @@ def test_list_games_shows_player_count():
     char = CharacterFactory(user=user)
     PlayerFactory(user=user, game=game, character=char)
     call_command("list_games", stdout=out)
-    assert "1" in out.getvalue()
+    # Each output line ends with the player count; game name appears on its line
+    output_lines = [line for line in out.getvalue().splitlines() if game.name in line]
+    assert len(output_lines) == 1
+    assert output_lines[0].strip().endswith("1")

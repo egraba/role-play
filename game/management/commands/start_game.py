@@ -14,10 +14,12 @@ class Command(BaseCommand):
         parser.add_argument("game_id", type=int, help="game ID")
 
     def handle(self, *args: object, **options: object) -> None:
+        game_id = options["game_id"]
+        assert isinstance(game_id, int)
         try:
-            game = Game.objects.get(id=options["game_id"])
+            game = Game.objects.get(id=game_id)
         except Game.DoesNotExist as exc:
-            raise CommandError(f"game id={options['game_id']} doesn't exist") from exc
+            raise CommandError(f"game id={game_id} doesn't exist") from exc
 
         if game.state == GameState.ONGOING:
             raise CommandError(f"game id={game.id} is already ongoing")

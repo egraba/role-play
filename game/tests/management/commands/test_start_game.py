@@ -3,6 +3,7 @@ from io import StringIO
 import pytest
 from django.core.management import call_command
 from django.core.management.base import CommandError
+from django.utils import timezone
 
 from game.constants.game import GameState
 from game.tests.factories import GameFactory
@@ -20,8 +21,6 @@ def test_start_game_sets_state_ongoing():
 
 
 def test_start_game_sets_start_date():
-    from django.utils import timezone
-
     out = StringIO()
     game = GameFactory()
     before = timezone.now()

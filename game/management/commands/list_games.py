@@ -7,10 +7,10 @@ class Command(BaseCommand):
     help = "list all games"
 
     def handle(self, *args: object, **options: object) -> None:
-        games = Game.objects.select_related("master__user").prefetch_related(
-            "player_set"
+        games = list(
+            Game.objects.select_related("master__user").prefetch_related("player_set")
         )
-        if not games.exists():
+        if not games:
             self.stdout.write("No games found.")
             return
 

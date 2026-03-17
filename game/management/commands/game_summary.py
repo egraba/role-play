@@ -14,14 +14,16 @@ class Command(BaseCommand):
         parser.add_argument("game_id", type=int, help="game ID")
 
     def handle(self, *args: object, **options: object) -> None:
+        game_id = options["game_id"]
+        assert isinstance(game_id, int)
         try:
             game = (
                 Game.objects.select_related("master__user")
                 .prefetch_related("player_set__user", "player_set__character")
-                .get(id=options["game_id"])
+                .get(id=game_id)
             )
         except Game.DoesNotExist as exc:
-            raise CommandError(f"game id={options['game_id']} doesn't exist") from exc
+            raise CommandError(f"game id={game_id} doesn't exist") from exc
 
         self.stdout.write(f"Game: {game.name} (id={game.id})")
         self.stdout.write(f"State: {game.get_state_display()}")

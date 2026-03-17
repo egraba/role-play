@@ -23,8 +23,11 @@ def test_set_hp_updates_hp():
 def test_set_hp_to_zero():
     out = StringIO()
     user = UserFactory()
-    CharacterFactory(user=user)
+    char = CharacterFactory(user=user)
     call_command("set_hp", user.username, "0", stdout=out)
+    char.refresh_from_db()
+    assert char.hp == 0
+    assert "Successfully set HP" in out.getvalue()
 
 
 def test_set_hp_exceeds_max_hp():

@@ -7,10 +7,12 @@ class Command(BaseCommand):
     help = "list all characters"
 
     def handle(self, *args: object, **options: object) -> None:
-        characters = Character.objects.select_related("user", "species").order_by(
-            "user__username"
+        characters = list(
+            Character.objects.select_related("user", "species").order_by(
+                "user__username"
+            )
         )
-        if not characters.exists():
+        if not characters:
             self.stdout.write("No characters found.")
             return
 
