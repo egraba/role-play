@@ -28,10 +28,21 @@ def test_list_characters_shows_character_name():
 def test_list_characters_shows_hp():
     out = StringIO()
     user = UserFactory()
-    CharacterFactory(user=user)
+    char = CharacterFactory(user=user)
     call_command("list_characters", stdout=out)
     output = out.getvalue()
-    assert "/" in output  # hp/max_hp format
+    assert f"{char.hp}/{char.max_hp}" in output
+
+
+def test_list_characters_shows_species_level_xp():
+    out = StringIO()
+    user = UserFactory()
+    char = CharacterFactory(user=user)
+    call_command("list_characters", stdout=out)
+    output = out.getvalue()
+    assert char.species.name in output
+    assert str(char.level) in output
+    assert str(char.xp) in output
 
 
 def test_list_characters_no_characters():

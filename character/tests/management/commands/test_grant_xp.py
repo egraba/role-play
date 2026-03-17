@@ -39,3 +39,11 @@ def test_grant_xp_invalid_amount():
     CharacterFactory(user=user)
     with pytest.raises(CommandError):
         call_command("grant_xp", user.username, "0", stdout=out)
+
+
+def test_grant_xp_negative_amount():
+    out = StringIO()
+    user = UserFactory()
+    CharacterFactory(user=user)
+    with pytest.raises(CommandError):
+        call_command("grant_xp", user.username, "-1", stdout=out)
