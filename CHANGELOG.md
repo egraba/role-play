@@ -11,6 +11,7 @@ Versions follow [Semantic Versioning](https://semver.org/) (`<major>.<minor>.<pa
 - Add IP-based login rate limiting (5 requests/minute) via `django-ratelimit`
 
 ### Added
+- Management command suite for local testing workflow: `create_scenario`, `create_game`, `add_player`, `start_game`, `list_games`, `game_summary`, `grant_xp`, `set_hp`, `list_characters` — all exposed as poe tasks
 - `db-populate-users` poe task: idempotently creates thomas (DM), eric and seb (with characters) for local testing
 - Fix `game/models/__init__.py` to register all game models with Django's app registry (was causing system check errors)
 - Game log: SVG icon + text labels for category filter buttons (replaces emoji)

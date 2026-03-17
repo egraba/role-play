@@ -46,6 +46,57 @@ sequence = ["db-migrate", "db-load-settings"]
 # ----------------------------------------------------------------------------
 # Management Commands
 # ----------------------------------------------------------------------------
+[tasks.db-create-scenario]
+help = "Create full test scenario: users, characters, game, and players"
+cmd = "manage.py create_scenario"
+
+[tasks.create-game]
+help = "Create a game for a master user"
+args = [{ name = "master", positional = true, required = true }]
+cmd = "manage.py create_game ${master}"
+
+[tasks.add-player]
+help = "Add a player to a game"
+args = [
+    { name = "game_id", positional = true, required = true },
+    { name = "username", positional = true, required = true },
+]
+cmd = "manage.py add_player ${game_id} ${username}"
+
+[tasks.start-game]
+help = "Start a game (set state to ongoing)"
+args = [{ name = "game_id", positional = true, required = true }]
+cmd = "manage.py start_game ${game_id}"
+
+[tasks.list-games]
+help = "List all games"
+cmd = "manage.py list_games"
+
+[tasks.game-summary]
+help = "Show a detailed summary of a game"
+args = [{ name = "game_id", positional = true, required = true }]
+cmd = "manage.py game_summary ${game_id}"
+
+[tasks.grant-xp]
+help = "Grant XP to a character"
+args = [
+    { name = "username", positional = true, required = true },
+    { name = "amount", positional = true, required = true },
+]
+cmd = "manage.py grant_xp ${username} ${amount}"
+
+[tasks.set-hp]
+help = "Set a character's current HP"
+args = [
+    { name = "username", positional = true, required = true },
+    { name = "amount", positional = true, required = true },
+]
+cmd = "manage.py set_hp ${username} ${amount}"
+
+[tasks.list-characters]
+help = "List all characters"
+cmd = "manage.py list_characters"
+
 [tasks.delete-character]
 help = "Delete a user's character"
 args = [{ name = "user", positional = true, required = true, help = "Username of the character owner" }]
