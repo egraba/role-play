@@ -4,10 +4,8 @@
 
 [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
-[![Renovate enabled](https://img.shields.io/badge/renovate-enabled-brightgreen.svg)](https://renovatebot.com)
-[![CI status](https://github.com/egraba/role-play/actions/workflows/ci.yml/badge.svg)](https://github.com/egraba/role-play/actions)
-[![codecov](https://codecov.io/gh/egraba/role-play/graph/badge.svg?token=Z3E788461G)](https://codecov.io/gh/egraba/role-play)
-[![Fly Deploy](https://github.com/egraba/role-play/actions/workflows/fly-deploy.yml/badge.svg)](https://github.com/egraba/role-play/actions/workflows/fly-deploy.yml)
+
+> **This project is currently paused.** The codebase is available for reference but is not actively maintained or deployed.
 
 ---
 
@@ -24,7 +22,6 @@ Tired of coordinating schedules, hauling books, and losing character sheets? **r
 - **AI-Enhanced Narratives** — Enrich your quests with AI-generated descriptions powered by Claude
 - **Live Updates** — WebSocket-powered real-time interactions between players and the Game Master
 
-> **Note:** This project is under active development. New features are being added regularly!
 
 ## How It Works
 
@@ -136,10 +133,6 @@ uv run poe db-setup    # Set up database (migrate + load fixtures)
 ```
 
 Run `poe --help` to see all available tasks.
-
-## Contributing
-
-For AI coding assistants working on this project, see [CLAUDE.md](CLAUDE.md) for guidelines and conventions.
 
 ## License
 
